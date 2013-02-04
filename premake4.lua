@@ -1,6 +1,4 @@
-project "db"
-    --uses "sqlite3"
-    
+project "arg3db"
     files {
         "db.h",
         "db.cpp"

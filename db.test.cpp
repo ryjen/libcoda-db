@@ -1,5 +1,7 @@
-#include <iostream>
+#include <igloo/igloo.h>
 #include "db.h"
+
+using namespace igloo;
 
 using namespace std;
 
@@ -36,10 +38,10 @@ public:
 	}
 };
 
-int main()
+Context(sqldb_test)
 {
-	try {
-
+	Spec(save_test)
+	{
 		testdb.open();
 
 		user user1;
@@ -66,9 +68,6 @@ int main()
 
 			cout << "User: " << user2.to_string() << endl;
 		}
-		return 0;
 	}
-	catch(const database_exception &e) {
-		cerr << "Error: " << testdb.last_error() << endl;
-	}
-}
+};
+
