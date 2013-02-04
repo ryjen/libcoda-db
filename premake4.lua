@@ -1,8 +1,8 @@
 project "arg3db"
     files {
-        "db.h",
-        "db.cpp"
+        "*.cpp",
+        "*.h"
     }
     excludes {
-        "db.test.cpp"
+        "*.test.cpp"
     }
