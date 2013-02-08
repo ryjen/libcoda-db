@@ -10,11 +10,11 @@ namespace arg3
     namespace db
     {
 
-        sqldb::sqldb(const string &name) : mDb(NULL), mFileName(name)
+        sqldb::sqldb(const string &name) : m_db(NULL), m_fileName(name)
         {
         }
 
-        sqldb::sqldb(const sqldb &other) : mDb(other.mDb), mFileName(other.mFileName)
+        sqldb::sqldb(const sqldb &other) : m_db(other.m_db), m_fileName(other.m_fileName)
         {
 
         }
@@ -22,8 +22,8 @@ namespace arg3
         sqldb &sqldb::operator=(const sqldb &other) 
         {
         	if(this != &other) {
-        		mDb = other.mDb;
-        		mFileName = other.mFileName;
+        		m_db = other.m_db;
+        		m_fileName = other.m_fileName;
         	}
 
         	return *this;
@@ -34,22 +34,20 @@ namespace arg3
 
         void sqldb::open() {
 
-        	if(mDb != NULL) return;
+        	if(m_db != NULL) return;
 
-            cout << "opening db " << mFileName << endl;
-
-            if (sqlite3_open(mFileName.c_str(), &mDb) != SQLITE_OK)
+            if (sqlite3_open(m_fileName.c_str(), &m_db) != SQLITE_OK)
                 throw database_exception();
         }
 
         void sqldb::close() {
-			if(mDb == NULL) return;
+			if(m_db == NULL) return;
 
-        	sqlite3_close(mDb);
-        	mDb = NULL;
+        	sqlite3_close(m_db);
+        	m_db = NULL;
         }
 
-        select_query sqldb::select(const columnset &columns, const string &tablename, const string &where, 
+        select_query sqldb::select(const column_definition &columns, const string &tablename, const string &where, 
         	const string &orderBy, const string &limit, const string &groupBy) const
         {
             select_query query(*this, tablename, columns);
@@ -68,20 +66,30 @@ namespace arg3
         select_query sqldb::select(const string &tablename, const string &where, 
         	const string &orderBy, const string &limit, const string &groupBy) const
         {	
-            return select({}, tablename, where, orderBy, limit, groupBy);
+            select_query query(*this, tablename);
+
+            query.where(where);
+
+            query.orderBy(orderBy);
+
+            query.limit(limit);
+
+            query.groupBy(groupBy);
+
+            return query;
         }
 
         string sqldb::last_error() const {
         	ostringstream buf;
 
-        	buf << sqlite3_errcode(mDb);
-        	buf << ": " << sqlite3_errmsg(mDb);
+        	buf << sqlite3_errcode(m_db);
+        	buf << ": " << sqlite3_errmsg(m_db);
 
         	return buf.str();
         }
 
         void sqldb::execute(const string &sql, sql_callback callback) {
-        	if(sqlite3_exec(mDb, sql.c_str(), callback, this, NULL) != SQLITE_OK)
+        	if(sqlite3_exec(m_db, sql.c_str(), callback, this, NULL) != SQLITE_OK)
         		throw database_exception();
         }
     }

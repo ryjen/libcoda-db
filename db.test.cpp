@@ -16,11 +16,14 @@ class user : public base_record
 public:
 	user() {}
 
-	user(const row &row) : base_record(row) {
-	}
+	user(const row &values) : base_record(values) {}
 
-	columnset columns() const {
-		return {"id","first_name","last_name"};
+	column_definition columns() const {
+		return {
+			{"id",SQLITE_INTEGER },
+			{"first_name",SQLITE_TEXT},
+			{"last_name", SQLITE_TEXT}
+		};
 	}
 
 	string tableName() const {
@@ -38,6 +41,7 @@ public:
 
 		return buf.str();
 	}
+
 };
 
 Context(sqldb_test)
@@ -51,31 +55,37 @@ Context(sqldb_test)
 
 			testdb.execute("create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45))");
 
-			user1.set("id", 1);
+			user1.set("id", 1LL);
 			user1.set("first_name", "Ryan");
 			user1.set("last_name", "Jennings");
 
-			user1.save();
+			cout << "Saving " << user1.to_string() << endl;
+
+			if(!user1.save())
+				cerr << "Error1: " << testdb.last_error() << endl;
 
 			user1.set("first_name", "Bryan");
 			user1.set("last_name", "Jenkins");
 
-			user1.save();
+			cout << "Saving " << user1.to_string() << endl;
+
+			if(!user1.save())
+				cerr << "Error2: " << testdb.last_error() << endl;
 
 			auto query2 = testdb.select("users");
 
-			auto results = query2.execute();
+			auto results = user::findAll<user>();
 
-			for(auto row : results) {
-				user user2(row);
+			for(auto user2 : results) {
+				//user user2(row);
 
-				cout << "User: " << user2.to_string() << endl;
+				cout << "Loaded " << user2.to_string() << endl;
 			}
 
 			testdb.close();
 		}
 		catch(const database_exception &e) {
-			cerr << "Error: " << testdb.last_error() << endl;
+			cerr << "Error3: " << testdb.last_error() << endl;
 			throw e;
 		}
 	}

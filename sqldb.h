@@ -3,9 +3,8 @@
 
 #include <string>
 #include <sstream>
-#include <exception>
 #include <sqlite3.h>
-
+#include <type_traits>
 #include "defines.h"
 
 using namespace std;
@@ -14,19 +13,16 @@ namespace arg3
 {
     namespace db
     {
-        class database_exception : public exception
-        {
-
-        };
 
         class select_query;
+        class base_record;
 
         class sqldb
         {
         friend class base_query;
         private:
-            sqlite3 *mDb;
-            string mFileName;
+            sqlite3 *m_db;
+            string m_fileName;
         public:
             sqldb(const string &name = "arg3.db");
             sqldb(const sqldb &other);
@@ -36,7 +32,7 @@ namespace arg3
             void open();
             void close();
 
-            select_query select(const columnset &columns, const string &tablename,
+            select_query select(const column_definition &columns, const string &tablename,
             	const string &where = "", const string &orderBy = "", const string &limit = "", const string &groupBy = "") const;
             
             select_query select(const string &tablename,

@@ -10,8 +10,32 @@ namespace arg3
         {}
         
         select_query::select_query(const sqldb &db, const string &tableName, 
-        	const columnset &columns) : base_query(db, tableName, columns)
+        	const column_definition &columns) : base_query(db, tableName, columns)
         {}
+
+        select_query::select_query(const sqldb &db, const string &tableName) : base_query(db, tableName)
+        {}
+
+        void select_query::where(const string &value)
+        {
+            m_where = value;
+        }
+
+        void select_query::limit(const string &value)
+        {
+            m_limit = value;
+        }
+
+        void select_query::orderBy(const string &value)
+        {
+            m_orderBy = value;
+        }
+
+        void select_query::groupBy(const string &value)
+        {
+            m_groupBy = value;
+        }
+
 
         string select_query::to_string() const
         {
@@ -19,60 +43,39 @@ namespace arg3
 
             buf << "SELECT ";
 
-            buf << (mColumns.size() == 0 ? "*" : join(mColumns));
+            buf << (m_columns.size() == 0 ? "*" : join(m_columns));
 
-            buf << " FROM " << mTableName;
+            buf << " FROM " << m_tableName;
 
-            if (!mWhere.empty())
+            if (!m_where.empty())
             {
-                buf << " WHERE " << mWhere;
+                buf << " WHERE " << m_where;
             }
 
-            if (!mOrderBy.empty())
+            if (!m_orderBy.empty())
             {
-                buf << " ORDER BY " << mOrderBy;
+                buf << " ORDER BY " << m_orderBy;
             }
 
-            if (!mLimit.empty())
+            if (!m_limit.empty())
             {
-                buf << " LIMIT " << mLimit;
+                buf << " LIMIT " << m_limit;
             }
 
-            if (!mGroupBy.empty())
+            if (!m_groupBy.empty())
             {
-                buf << " GROUP BY " << mGroupBy;
+                buf << " GROUP BY " << m_groupBy;
             }
 
             return buf.str();
         }
 
-        rowset select_query::execute()
+        resultset select_query::execute()
         {
         	prepare();
 
-            int res = sqlite3_step(mStmt);
+            return resultset(m_stmt);
 
-            rowset set;
-
-            while (res == SQLITE_ROW)
-            {
-                row row;
-
-                size_t count = sqlite3_column_count(mStmt);
-
-                for (size_t i = 0; i < count; i++)
-                {
-                    string name = sqlite3_column_name(mStmt, i);
-
-                    row[name] = reinterpret_cast<const char *>(sqlite3_column_text(mStmt, i));
-                }
-
-                set.push_back(row);
-
-                res = sqlite3_step(mStmt);
-            }
-
-            return set;
         }
 	}
 }

@@ -1,4 +1,5 @@
 #include "modify_query.h"
+#include "database_exception.h"
 #include "../collections/collections.h"
 #include "../strings/strings.h"
 
@@ -11,24 +12,27 @@ namespace arg3
         }
 
         modify_query::modify_query(const sqldb &db, const string &tableName, 
-        	const columnset &columns) : base_query(db, tableName, columns)
+        	const column_definition &columns) : base_query(db, tableName, columns)
+        {}
+
+        modify_query::modify_query(const sqldb &db, const string &tableName) : base_query(db, tableName)
         {}
 
         string modify_query::to_string() const
         {
             ostringstream buf;
 
-            buf << "REPLACE INTO " << mTableName;
+            buf << "REPLACE INTO " << m_tableName;
 
-            if (mColumns.size() > 0)
+            if (m_columns.size() > 0)
             {
                 buf << "(";
 
-                buf << join(mColumns);
+                buf << join(m_columns);
 
                 buf << ") VALUES (";
 
-                buf << join('?', mColumns.size());
+                buf << join('?', m_columns.size());
 
                 buf << ")";
             }
@@ -40,15 +44,24 @@ namespace arg3
             return buf.str();
         }
 
-        bool modify_query::execute()
+        bool modify_query::execute(bool batch)
         {
         	prepare();
 
-            int res = sqlite3_step(mStmt);
+            int res = sqlite3_step(m_stmt);
 
-            sqlite3_finalize(mStmt);
+            if(!batch) {
+                if(sqlite3_finalize(m_stmt) != SQLITE_OK)
+                    throw database_exception();
 
-            return res == SQLITE_OK;
+                m_stmt = NULL;
+            }
+            else {
+                if(sqlite3_reset(m_stmt) != SQLITE_OK)
+                    throw database_exception();
+            }
+
+            return res == SQLITE_DONE;
         }
 	}
 }

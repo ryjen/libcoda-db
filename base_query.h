@@ -13,29 +13,32 @@ namespace arg3
         {
             friend class sqldb;
         protected:
-            sqlite3 *mDb;
-            sqlite3_stmt *mStmt;
-            string mTableName;
-            columnset mColumns;
+            sqlite3 *m_db;
+            sqlite3_stmt *m_stmt;
+            string m_tableName;
+            column_definition m_columns;
 
             void prepare();
 
         public:
-        	base_query(const sqldb &db, const string &tableName, const columnset &columns);
+        	base_query(const sqldb &db, const string &tableName, const column_definition &columns);
+
+            base_query(const sqldb &db, const string &tableName);
 
             virtual string to_string() const = 0;
 
-            base_query &bind(size_t index, const string &value);
+            base_query &bind(size_t index, const string &value, int len = -1);
 
             base_query &bind(size_t index, int value);
 
-            base_query &bind(size_t index, sqlite3_int64 value);
+            base_query &bind(size_t index, long long value);
 
             base_query &bind(size_t index);
 
             base_query &bind(size_t index, double value);
 
-            base_query &bind(size_t index, const void *data, size_t size);
+            base_query &bind(size_t index, const void *data, size_t size = -1, void(* pFree)(void *) = SQLITE_STATIC);
+
         };
 
 	}

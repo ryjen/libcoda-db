@@ -5,18 +5,13 @@
 #include <vector>
 #include <string>
 
-#include "../variant/variant.h"
+using namespace std;
 
 namespace arg3
 {
     namespace db
     {
-
-        typedef map<string, variant> row;
-
-        typedef vector<row> rowset;
-
-        typedef vector<string> columnset;
+        typedef map<string,int> column_definition;
 
         typedef int (*sql_callback)(void *, int, char **, char **);
     }

@@ -14,11 +14,13 @@ namespace arg3
         public:
         	modify_query(const base_record &record);
 
-			modify_query(const sqldb &db, const string &tableName, const columnset &columns);
+			modify_query(const sqldb &db, const string &tableName, const column_definition &columns);
+
+            modify_query(const sqldb &db, const string &tableName);
 
             string to_string() const;
 
-            bool execute();
+            bool execute(bool batch = false);
         };
 
 	}
