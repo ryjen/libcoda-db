@@ -5,14 +5,15 @@
 
 namespace arg3
 {
-	namespace db
-	{
+    namespace db
+    {
 
-        modify_query::modify_query(const base_record &record) : base_query(record.db(), record.tableName(), record.columns()) {
+        modify_query::modify_query(const base_record &record) : base_query(record.db(), record.tableName(), record.columns())
+        {
         }
 
-        modify_query::modify_query(const sqldb &db, const string &tableName, 
-        	const column_definition &columns) : base_query(db, tableName, columns)
+        modify_query::modify_query(const sqldb &db, const string &tableName,
+                                   const column_definition &columns) : base_query(db, tableName, columns)
         {}
 
         modify_query::modify_query(const sqldb &db, const string &tableName) : base_query(db, tableName)
@@ -46,22 +47,24 @@ namespace arg3
 
         bool modify_query::execute(bool batch)
         {
-        	prepare();
+            prepare();
 
             int res = sqlite3_step(m_stmt);
 
-            if(!batch) {
+            if(!batch)
+            {
                 if(sqlite3_finalize(m_stmt) != SQLITE_OK)
                     throw database_exception();
 
                 m_stmt = NULL;
             }
-            else {
+            else
+            {
                 if(sqlite3_reset(m_stmt) != SQLITE_OK)
                     throw database_exception();
             }
 
             return res == SQLITE_DONE;
         }
-	}
+    }
 }

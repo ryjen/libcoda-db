@@ -7,9 +7,9 @@
 
 namespace arg3
 {
-	namespace db
-	{
-        
+    namespace db
+    {
+
         template<class _Ty, class _non_const_Ty, class TRow>
         class column_iterator : public std::iterator<std::random_access_iterator_tag, _Ty>
         {
@@ -152,7 +152,8 @@ namespace arg3
                 return m_position - other.m_position;
             }
 
-            string name() const {
+            string name() const
+            {
                 return m_row->column_name(m_position);
             }
         protected:
@@ -162,9 +163,11 @@ namespace arg3
         };
 
 
+        class resultset;
+
         class row
         {
-        friend class resultset_iterator;
+            friend class resultset_iterator;
         public:
             //Typedefs
             typedef column_iterator<column_value, column_value, row>                          iterator;
@@ -177,10 +180,10 @@ namespace arg3
             typedef size_t                                                                    size_type;
             typedef iterator::difference_type                                                 difference_type;
         private:
-            sqlite3_stmt *m_stmt;
+            resultset *m_results;
             size_t m_size;
             mutable value_type m_value;
-            row(sqlite3_stmt *stmt);
+            row(resultset *results);
 
         public:
 

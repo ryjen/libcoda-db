@@ -7,14 +7,14 @@
 
 namespace arg3
 {
-	namespace db
-	{
+    namespace db
+    {
         class modify_query : public base_query
         {
         public:
-        	modify_query(const base_record &record);
+            modify_query(const base_record &record);
 
-			modify_query(const sqldb &db, const string &tableName, const column_definition &columns);
+            modify_query(const sqldb &db, const string &tableName, const column_definition &columns);
 
             modify_query(const sqldb &db, const string &tableName);
 
@@ -23,7 +23,7 @@ namespace arg3
             bool execute(bool batch = false);
         };
 
-	}
+    }
 }
 
 #endif

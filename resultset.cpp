@@ -8,26 +8,42 @@ namespace arg3
         {
 
         }
+
+        void resultset::step() {
+
+            m_status = sqlite3_step(m_stmt);
+        }
+
         resultset::iterator resultset::begin()
         {
             sqlite3_reset(m_stmt);
 
-            int res = sqlite3_step(m_stmt);
+            step();
 
-            return iterator(m_stmt, res == SQLITE_ROW ? 0 : -1);
+            return iterator(this, m_status == SQLITE_ROW ? 0 : -1);
+        }
+
+        row *resultset::first() {
+            sqlite3_reset(m_stmt);
+
+            step();
+
+            if(m_status == SQLITE_ROW)
+                return &(*iterator(this, 0));
+            else
+                return NULL;
         }
 
 
         resultset::iterator resultset::end()
         {
-            return iterator(m_stmt, -1);
+            return iterator(this, -1);
         }
 
 
-        resultset_iterator::resultset_iterator(sqlite3_stmt *stmt, int position) : m_stmt(stmt),
-            m_position(position), m_row(stmt)
+        resultset_iterator::resultset_iterator(resultset *rset, int position) : m_results(rset),
+            m_position(position), m_row(m_results)
         {
-
         }
 
         resultset_iterator::reference resultset_iterator::operator*()
@@ -40,10 +56,7 @@ namespace arg3
             if (m_position == -1)
                 return *this;
 
-            //Validate our parameters
-            assert(m_stmt != NULL);
-
-            int res = sqlite3_step(m_stmt);
+            int res = sqlite3_step(m_results->m_stmt);
 
             switch (res)
             {
@@ -53,7 +66,7 @@ namespace arg3
                 break;
             case SQLITE_ROW:
                 ++m_position;
-                m_row = row(m_stmt);
+                m_row = row(m_results);
                 break;
             default:
                 throw database_exception();

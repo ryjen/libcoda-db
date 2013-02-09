@@ -1,3 +1,7 @@
+/*!
+ * implementation of a query
+ * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ */
 #include "base_record.h"
 #include "modify_query.h"
 #include "row.h"
@@ -54,12 +58,20 @@ namespace arg3
             return query.execute();
         }
 
+        bool base_record::has(const string &name) const {
+            return m_values.find(name) != m_values.end();
+        }
         variant base_record::get(const string &name)
         {
             return m_values[name];
         }
 
         void base_record::set(const string &name, const string &value)
+        {
+            m_values[name] = value;
+        }
+
+        void base_record::set(const string &name, int value)
         {
             m_values[name] = value;
         }

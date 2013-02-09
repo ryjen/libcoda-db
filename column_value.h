@@ -9,9 +9,9 @@ using namespace std;
 
 namespace arg3
 {
-	namespace db
-	{
-	class column_value //Encapsulates a sqlite3_value*
+    namespace db
+    {
+        class column_value //Encapsulates a sqlite3_value*
         {
         public:
             //Constructors / Destructors
@@ -101,7 +101,8 @@ namespace arg3
                 return sqlite3_value_text(m_p);
             }
 
-            string to_string() const {
+            string to_string() const
+            {
                 assert(m_p != NULL);
 
                 return reinterpret_cast<const char *>(sqlite3_value_text(m_p));
@@ -172,7 +173,7 @@ namespace arg3
             sqlite3_value *m_p;
         };
 
-	}
+    }
 }
 
 #endif

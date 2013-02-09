@@ -5,13 +5,13 @@
 
 namespace arg3
 {
-	namespace db 
-	{
-		class database_exception : public std::exception
-		{
+    namespace db
+    {
+        class database_exception : public std::exception
+        {
 
-		};
-	}
+        };
+    }
 }
 
 #endif

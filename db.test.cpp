@@ -11,83 +11,113 @@ using namespace arg3::db;
 
 sqldb testdb("test.db");
 
-class user : public base_record
+class user : public id_record<int>
 {
+private:
+    string idColumnName() const {
+        return "id";
+    }
 public:
-	user() {}
+    user() {}
 
-	user(const row &values) : base_record(values) {}
+    user(int id) : id_record(id) {}
 
-	column_definition columns() const {
-		return {
-			{"id",SQLITE_INTEGER },
-			{"first_name",SQLITE_TEXT},
-			{"last_name", SQLITE_TEXT}
-		};
-	}
+    user(const row &values) : id_record(values) {}
 
-	string tableName() const {
-		return "users";
-	}
+    column_definition columns() const
+    {
+        return
+        {
+            {"id", SQLITE_INTEGER },
+            {"first_name", SQLITE_TEXT},
+            {"last_name", SQLITE_TEXT}
+        };
+    }
 
-	sqldb db() const {
-		return testdb;
-	}
+    string tableName() const
+    {
+        return "users";
+    }
 
-	string to_string() {
-		ostringstream buf;
+    sqldb db() const
+    {
+        return testdb;
+    }
 
-		buf << get("id") << ": " << get("first_name") << " " << get("last_name");
+    string to_string()
+    {
+        ostringstream buf;
 
-		return buf.str();
-	}
+        buf << getId() << ": " << get("first_name") << " " << get("last_name");
 
+        return buf.str();
+    }
+
+    vector<user> findAll() {
+        return base_record::findAll<user>();
+    }
+
+    void initById(const long long id) {
+        base_record::initBy<user>("id", id);
+    }
 };
 
 Context(sqldb_test)
 {
-	Spec(save_test)
-	{
-		try {
-			testdb.open();
+    void SetUp() {
+        testdb.open();
 
-			user user1;
 
-			testdb.execute("create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45))");
+        testdb.execute("create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45))");
 
-			user1.set("id", 1LL);
-			user1.set("first_name", "Ryan");
-			user1.set("last_name", "Jennings");
+    }
 
-			cout << "Saving " << user1.to_string() << endl;
+    void TearDown() {
+        testdb.close();
+    }
 
-			if(!user1.save())
-				cerr << "Error1: " << testdb.last_error() << endl;
+    Spec(save_test)
+    {
+        try
+        {
+            user user1;
 
-			user1.set("first_name", "Bryan");
-			user1.set("last_name", "Jenkins");
+            user1.set("id", 1);
+            user1.set("first_name", "Ryan");
+            user1.set("last_name", "Jennings");
 
-			cout << "Saving " << user1.to_string() << endl;
+            Assert::That(user1.save(), Equals(true));
 
-			if(!user1.save())
-				cerr << "Error2: " << testdb.last_error() << endl;
+            user1.initById(1); // load values back up from db
 
-			auto query2 = testdb.select("users");
+            Assert::That(user1.get("first_name"), Equals("Ryan"));
 
-			auto results = user::findAll<user>();
+            user1.set("first_name", "Bryan");
+            user1.set("last_name", "Jenkins");
 
-			for(auto user2 : results) {
-				//user user2(row);
+            Assert::That(user1.save(), Equals(true));
 
-				cout << "Loaded " << user2.to_string() << endl;
-			}
+            user1.initById(1); // load values back up from db
 
-			testdb.close();
-		}
-		catch(const database_exception &e) {
-			cerr << "Error3: " << testdb.last_error() << endl;
-			throw e;
-		}
-	}
+            Assert::That(user1.get("first_name"), Equals("Bryan"));
+
+        }
+        catch (const database_exception &e)
+        {
+            cerr << "Error3: " << testdb.last_error() << endl;
+            throw e;
+        }
+    }
+
+    Spec(is_valid_test)
+    {
+
+            user user1;
+
+            user1.initById(1432123);
+
+            Assert::That(user1.is_valid(), Equals(false));
+
+    }
 };
 

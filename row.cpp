@@ -1,15 +1,20 @@
 #include "row.h"
+#include "resultset.h"
 
 namespace arg3
 {
     namespace db
     {
-        row::row(sqlite3_stmt *stmt) : m_stmt(stmt), m_size(0)
+        row::row(resultset *results) : m_results(results), m_size(0)
         {
-            m_size = sqlite3_column_count(m_stmt);
+            assert(m_results != NULL);
+
+            assert(m_results->m_stmt != NULL);
+
+            m_size = sqlite3_column_count(m_results->m_stmt);
         }
 
-        //Methods
+//Methods
         row::iterator row::begin()
         {
             return iterator(this, 0);
@@ -72,31 +77,26 @@ namespace arg3
 
         row::reference row::operator[](size_type nPosition) const
         {
-        	return column_value(nPosition);
+            return column_value(nPosition);
         }
 
-        row::reference row::column_value(size_type nPosition) const 
+        row::reference row::column_value(size_type nPosition) const
         {
-            //Validate our parameters
-            assert(m_stmt != NULL);
-
             assert(nPosition < size());
 
             //Update the cached value
-            m_value = db::column_value( 
-            	sqlite3_column_value(m_stmt, static_cast<int>(nPosition) ) );
+            m_value = db::column_value(
+                          sqlite3_column_value(m_results->m_stmt, static_cast<int>(nPosition) ) );
 
             //Return the cached value
             return m_value;
         }
 
-        string row::column_name(size_type nPosition) const 
+        string row::column_name(size_type nPosition) const
         {
-        	assert(m_stmt != NULL);
+            assert(nPosition < size());
 
-        	assert(nPosition < size());
-
-        	return sqlite3_column_name(m_stmt, static_cast<int>(nPosition));
+            return sqlite3_column_name(m_results->m_stmt, static_cast<int>(nPosition));
         }
 
         row::size_type row::size() const

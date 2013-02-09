@@ -2,18 +2,41 @@
 #define _ARG3_DB_SELECT_QUERY_H_
 
 #include "base_query.h"
-#include "base_record.h"
 #include "resultset.h"
 
 namespace arg3
 {
     namespace db
-    {
+    {   
+        class where
+        {
+        private:
+            vector<where> m_and;
+            vector<where> m_or;
+            string m_value;
+
+        public:
+            where();
+            where(const string &value);
+
+            string to_string() const;
+
+            operator string();
+
+            where &operator&&(const where &value);
+            where &operator||(const where &value);
+
+            bool empty() const;
+        };
+
+        class base_record;
+        class sqldb;
+
         class select_query : public base_query
         {
             friend class resultset;
         private:
-            string m_where;
+            where m_where;
             string m_limit;
             string m_orderBy;
             string m_groupBy;
@@ -24,13 +47,13 @@ namespace arg3
 
             select_query(const sqldb &db, const string &tableName);
 
-            void where(const string &value);
+            select_query &where(const where& value);
 
-            void limit(const string &value);
+            select_query & limit(const string &value);
 
-            void orderBy(const string &value);
+            select_query & orderBy(const string &value);
 
-            void groupBy(const string &value);
+            select_query & groupBy(const string &value);
 
             string to_string() const;
 

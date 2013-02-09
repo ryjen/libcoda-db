@@ -16,7 +16,7 @@ namespace arg3
         private:
 
             //Constructors / Destructors
-            resultset_iterator(sqlite3_stmt *stmt, int position);
+            resultset_iterator(resultset *rset, int position);
 
         public:
             //Typedefs
@@ -55,7 +55,7 @@ namespace arg3
 
             bool operator>=(const self_type &other) const;
         protected:
-            sqlite3_stmt *m_stmt;
+            resultset *m_results;
             int m_position;
             value_type m_row;
         };
@@ -63,6 +63,8 @@ namespace arg3
         class resultset
         {
             friend class select_query;
+            friend class resultset_iterator;
+            friend class row;
         public:
             //Typedefs
             typedef resultset_iterator iterator;
@@ -72,12 +74,17 @@ namespace arg3
 
             resultset(sqlite3_stmt *stmt);
 
+            int m_status;
+
+            void step();
+
         public:
             //Methods
             iterator begin();
 
             iterator end();
 
+            row *first();
         };
     }
 

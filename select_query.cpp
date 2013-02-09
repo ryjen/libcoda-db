@@ -1,39 +1,90 @@
 #include "select_query.h"
 #include "../collections/collections.h"
+#include "base_record.h"
 
 namespace arg3
 {
-	namespace db
-	{
+    namespace db
+    {
+        where::where() {}
+
+        where::where(const string &value) : m_value(value) {}
+
+        string where::to_string() const {
+            ostringstream buf;
+
+            buf << m_value;
+
+            if(m_and.size() > 0) {
+                buf << " AND ";
+                for(auto &w : m_and)
+                {
+                    buf << w.to_string();
+                }
+            }
+
+            if(m_or.size() > 0) {
+                buf << " OR ";
+                for(auto &w : m_or)
+                {
+                    buf << w.to_string();
+                }
+            }
+            return buf.str();
+        }
+
+        bool where::empty() const {
+            return m_value.empty() && m_and.empty() && m_or.empty();
+        }
+
+        where::operator string() {
+            return to_string();
+        }
+
+        where &where::operator&&(const where &value) {
+            m_and.push_back(value);
+            return *this;
+        }
+
+        where &where::operator||(const where &value) {
+            m_or.push_back(value);
+            return *this;
+        }
 
         select_query::select_query(const base_record &record) : base_query(record.db(), record.tableName(), record.columns())
         {}
-        
-        select_query::select_query(const sqldb &db, const string &tableName, 
-        	const column_definition &columns) : base_query(db, tableName, columns)
+
+        select_query::select_query(const sqldb &db, const string &tableName,
+                                   const column_definition &columns) : base_query(db, tableName, columns)
         {}
 
         select_query::select_query(const sqldb &db, const string &tableName) : base_query(db, tableName)
         {}
 
-        void select_query::where(const string &value)
+        select_query & select_query::where(const where::where &value)
         {
             m_where = value;
+
+            return *this;
         }
 
-        void select_query::limit(const string &value)
+        select_query& select_query::limit(const string &value)
         {
             m_limit = value;
+
+            return *this;
         }
 
-        void select_query::orderBy(const string &value)
+        select_query& select_query::orderBy(const string &value)
         {
             m_orderBy = value;
+            return *this;
         }
 
-        void select_query::groupBy(const string &value)
+        select_query& select_query::groupBy(const string &value)
         {
             m_groupBy = value;
+            return *this;
         }
 
 
@@ -49,7 +100,7 @@ namespace arg3
 
             if (!m_where.empty())
             {
-                buf << " WHERE " << m_where;
+                buf << " WHERE " << m_where.to_string();
             }
 
             if (!m_orderBy.empty())
@@ -72,10 +123,10 @@ namespace arg3
 
         resultset select_query::execute()
         {
-        	prepare();
+            prepare();
 
             return resultset(m_stmt);
 
         }
-	}
+    }
 }
