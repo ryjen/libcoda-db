@@ -1,6 +1,7 @@
 /*!
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
+#include "base_record.h"
 #include "select_query.h"
 #include "../collections/collections.h"
 #include "base_record.h"
@@ -13,22 +14,25 @@ namespace arg3
 
         where::where(const string &value) : m_value(value) {}
 
-        string where::to_string() const {
+        string where::to_string() const
+        {
             ostringstream buf;
 
             buf << m_value;
 
-            if(m_and.size() > 0) {
+            if(m_and.size() > 0)
+            {
                 buf << " AND ";
-                for(auto &w : m_and)
+for(auto &w : m_and)
                 {
                     buf << w.to_string();
                 }
             }
 
-            if(m_or.size() > 0) {
+            if(m_or.size() > 0)
+            {
                 buf << " OR ";
-                for(auto &w : m_or)
+for(auto &w : m_or)
                 {
                     buf << w.to_string();
                 }
@@ -36,26 +40,27 @@ namespace arg3
             return buf.str();
         }
 
-        bool where::empty() const {
+        bool where::empty() const
+        {
             return m_value.empty() && m_and.empty() && m_or.empty();
         }
 
-        where::operator string() {
+        where::operator string()
+        {
             return to_string();
         }
 
-        where &where::operator&&(const where &value) {
+        where &where::operator&&(const where &value)
+        {
             m_and.push_back(value);
             return *this;
         }
 
-        where &where::operator||(const where &value) {
+        where &where::operator||(const where &value)
+        {
             m_or.push_back(value);
             return *this;
         }
-
-        select_query::select_query(const base_record &record) : base_query(record.db(), record.tableName(), record.columns())
-        {}
 
         select_query::select_query(const sqldb &db, const string &tableName,
                                    const column_definition &columns) : base_query(db, tableName, columns)

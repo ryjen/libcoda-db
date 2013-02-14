@@ -82,7 +82,7 @@ namespace arg3
             return column_value(nPosition);
         }
 
-        row::reference row::operator[](const string &name) const 
+        row::reference row::operator[](const string &name) const
         {
             return column_value(name);
         }
@@ -99,7 +99,7 @@ namespace arg3
             return m_value;
         }
 
-        row::reference row::column_value(const string &name) const 
+        row::reference row::column_value(const string &name) const
         {
             assert(!name.empty());
 

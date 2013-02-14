@@ -9,15 +9,17 @@ namespace arg3
     {
         resultset::resultset(sqlite3_stmt *stmt) : m_stmt(stmt), m_status(-1)
         {
-        
+
         }
 
-        void resultset::step() {
+        void resultset::step()
+        {
 
             m_status = sqlite3_step(m_stmt);
         }
 
-        int resultset::status() {
+        int resultset::status()
+        {
             if(m_status == -1)
                 step();
 

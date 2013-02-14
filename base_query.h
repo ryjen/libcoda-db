@@ -6,8 +6,8 @@
 #ifndef _ARG3_DB_BASE_QUERY_H_
 #define _ARG3_DB_BASE_QUERY_H_
 
-#include "defines.h"
 #include <sqlite3.h>
+#include "defines.h"
 
 namespace arg3
 {

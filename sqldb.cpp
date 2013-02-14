@@ -2,11 +2,8 @@
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
 #include "sqldb.h"
-#include "../collections/collections.h"
-#include "../strings/strings.h"
-#include "select_query.h"
-
-//using namespace arg3::collections;
+#include "base_query.h"
+#include "database_exception.h"
 
 namespace arg3
 {
@@ -52,38 +49,6 @@ namespace arg3
 
             sqlite3_close(m_db);
             m_db = NULL;
-        }
-
-        select_query sqldb::select(const column_definition &columns, const string &tablename, const string &where,
-                                   const string &orderBy, const string &limit, const string &groupBy) const
-        {
-            select_query query(*this, tablename, columns);
-
-            query.where(where);
-
-            query.orderBy(orderBy);
-
-            query.limit(limit);
-
-            query.groupBy(groupBy);
-
-            return query;
-        }
-
-        select_query sqldb::select(const string &tablename, const string &where,
-                                   const string &orderBy, const string &limit, const string &groupBy) const
-        {
-            select_query query(*this, tablename);
-
-            query.where(where);
-
-            query.orderBy(orderBy);
-
-            query.limit(limit);
-
-            query.groupBy(groupBy);
-
-            return query;
         }
 
         string sqldb::last_error() const

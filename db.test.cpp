@@ -2,9 +2,9 @@
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
 #include <igloo/igloo.h>
-#include "sqldb.h"
 #include "base_record.h"
 #include "select_query.h"
+#include "sqldb.h"
 
 using namespace igloo;
 
@@ -14,18 +14,12 @@ using namespace arg3::db;
 
 sqldb testdb("test.db");
 
-class user : public id_record<int>
+class user : public base_record<user>
 {
-private:
-    string idColumnName() const {
-        return "id";
-    }
 public:
     user() {}
 
-    user(int id) : id_record(id) {}
-
-    user(const row &values) : id_record(values) {}
+    user(const row &values) : base_record(values) {}
 
     column_definition columns() const
     {
@@ -51,23 +45,16 @@ public:
     {
         ostringstream buf;
 
-        buf << getId() << ": " << get("first_name") << " " << get("last_name");
+        buf << get("id") << ": " << get("first_name") << " " << get("last_name");
 
         return buf.str();
-    }
-
-    vector<user> findAll() {
-        return base_record::findAll<user>();
-    }
-
-    void initById(const long long id) {
-        base_record::initBy<user>("id", id);
     }
 };
 
 Context(sqldb_test)
 {
-    void SetUp() {
+    void SetUp()
+    {
         testdb.open();
 
 
@@ -75,7 +62,8 @@ Context(sqldb_test)
 
     }
 
-    void TearDown() {
+    void TearDown()
+    {
         testdb.close();
     }
 
@@ -91,7 +79,7 @@ Context(sqldb_test)
 
             Assert::That(user1.save(), Equals(true));
 
-            user1.initById(1); // load values back up from db
+            user1.loadBy("id", 1); // load values back up from db
 
             Assert::That(user1.get("first_name"), Equals("Ryan"));
 
@@ -100,7 +88,7 @@ Context(sqldb_test)
 
             Assert::That(user1.save(), Equals(true));
 
-            user1.initById(1); // load values back up from db
+            user1.loadBy("id", 1); // load values back up from db
 
             Assert::That(user1.get("first_name"), Equals("Bryan"));
 
@@ -114,36 +102,42 @@ Context(sqldb_test)
 
     Spec(is_valid_test)
     {
-
+        try
+        {
             user user1;
 
-            user1.initById(1432123);
+            user1.loadBy("id", 1432123);
 
-            Assert::That(user1.is_valid(), Equals(false));
-
+            Assert::That(user1.get("id").to_int(0) != 0, Equals(false));
+        }
+        catch (const exception &e)
+        {
+            cerr << "Error: " << e.what() << endl;
+            throw e;
+        }
     }
 
     Spec(where_test)
     {
-        
-            auto query = testdb.select("users");
 
-            query.where("first_name=? OR last_name=?");
+        auto query = select_query(testdb, "users");
 
-            query.bind(1, "Bryan");
-            query.bind(2, "Jenkins");
+        query.where("first_name=? OR last_name=?");
 
-            //cout << query.to_string() << endl;
+        query.bind(1, "Bryan");
+        query.bind(2, "Jenkins");
 
-            auto results = query.execute();
+        //cout << query.to_string() << endl;
 
-            auto row = results.begin();//results.first();
+        auto results = query.execute();
 
-            Assert::That(row != results.end(), Equals(true));
+        auto row = results.begin();//results.first();
 
-            string lastName = row->column_value("last_name").to_string();
+        Assert::That(row != results.end(), Equals(true));
 
-            Assert::That(lastName, Equals("Jenkins"));
+        string lastName = row->column_value("last_name").to_string();
+
+        Assert::That(lastName, Equals("Jenkins"));
 
     }
 };

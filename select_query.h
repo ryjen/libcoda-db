@@ -10,8 +10,7 @@
 namespace arg3
 {
     namespace db
-    {   
-
+    {
         class where
         {
         private:
@@ -38,7 +37,6 @@ namespace arg3
             return where(str);
         }
 
-        class base_record;
         class sqldb;
 
         class select_query : public base_query
@@ -50,7 +48,6 @@ namespace arg3
             string m_orderBy;
             string m_groupBy;
         public:
-            select_query(const base_record &record);
 
             select_query(const sqldb &db, const string &tableName, const column_definition &columns);
 

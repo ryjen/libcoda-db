@@ -10,11 +10,6 @@ namespace arg3
 {
     namespace db
     {
-
-        modify_query::modify_query(const base_record &record) : base_query(record.db(), record.tableName(), record.columns())
-        {
-        }
-
         modify_query::modify_query(const sqldb &db, const string &tableName,
                                    const column_definition &columns) : base_query(db, tableName, columns)
         {}

@@ -7,6 +7,8 @@
 
 #include "defines.h"
 #include "sqldb.h"
+#include "select_query.h"
+#include "modify_query.h"
 #include "../variant/variant.h"
 #include "../format/format.h"
 
@@ -21,6 +23,7 @@ namespace arg3
          * implementation of a query
          * @copyright ryan jennings (arg3.com), 2013 under LGPL
          */
+        template<typename T>
         class base_record
         {
         private:
@@ -29,17 +32,27 @@ namespace arg3
             /*!
              * default constructor
              */
-            base_record();
+            base_record() {}
 
             /*!
              * construct with values from a database row
              */
-            base_record(const row &values);
+            base_record(const row &values)
+            {
+                init(values);
+            }
 
             /*!
              * initializes with values from a database row
              */
-            void init(const row &values);
+            void init(const row &values)
+            {
+
+                for (row::const_iterator v = values.begin(); v != values.end(); v++)
+                {
+                    m_values[v.name()] = v->to_string();
+                }
+            }
 
             /*!
              * sub classes should define the table schema here
@@ -59,58 +72,108 @@ namespace arg3
             /*!
              * saves this instance
              */
-            bool save();
+            bool save()
+            {
+                modify_query query(db(), tableName(), columns());
+
+                int index = 1;
+for (auto & column : columns())
+                {
+                    auto value = m_values[column.first];
+
+                    switch (column.second)
+                    {
+                    case SQLITE_TEXT:
+                        query.bind(index, value.to_string());
+                        break;
+                    case SQLITE_INTEGER:
+                        query.bind(index, stoll(value));
+                        break;
+                    case SQLITE_FLOAT:
+                        query.bind(index, stod(value));
+                        break;
+                    default:
+                        query.bind(index);
+                        break;
+                    }
+
+                    index++;
+                }
+
+                return query.execute();
+            }
 
             /*!
              * gets a value specified by column name
              */
-            variant get(const string &name);
+            variant get(const string &name)
+            {
+                return m_values[name];
+            }
 
-            bool has(const string &name) const;
+            bool has(const string &name) const
+            {
+                return m_values.find(name) != m_values.end();
+            }
 
             /*!
              * sets a string for a column name
              */
-            void set(const string &name, const string &value);
+            void set(const string &name, const string &value)
+            {
+                m_values[name] = value;
+            }
 
-            void set(const string &name, int value);
+            void set(const string &name, int value)
+            {
+                m_values[name] = value;
+            }
 
             /*!
              * sets an integer for a column name
              */
-            void set(const string &name, long long value);
+            void set(const string &name, long long value)
+            {
+                m_values[name] = value;
+            }
 
             /*!
              * sets a double for a column name
              */
-            void set(const string &name, double value);
+            void set(const string &name, double value)
+            {
+                m_values[name] = std::to_string(value);
+            }
 
             /*!
              * sets bytes for a column name
              */
-            void set(const string &name, void *data, size_t size);
+            void set(const string &name, void *data, size_t size)
+            {
+
+            }
 
             /*!
              * unsets / removes a column
              */
-            void unset(const string &name);
+            void unset(const string &name)
+            {
+                m_values.erase(name);
+            }
 
-        protected:
             /*!
              * looks up and returns all objects of a base_record type
              */
-            template<typename T>
-            vector<T> findAll()
-            {
-                static_assert(is_base_of<base_record, T>::value, "template argument is not of type base_record");
 
-                auto query = db().select(columns(), tableName());
+            vector<T> findAll() const
+            {
+                auto query = select_query(db(), tableName(), columns());
 
                 auto results = query.execute();
 
                 vector<T> items;
 
-                for (auto & row : results)
+for (auto & row : results)
                 {
                     items.emplace_back(row);
                 }
@@ -118,12 +181,10 @@ namespace arg3
                 return items;
             }
 
-            template<typename T, typename V>
+            template<typename V>
             vector<T> findBy(const string &name, const V &value)
             {
-                static_assert(is_base_of<base_record, T>::value, "template argument is not of type base_record");
-
-                auto query = db().select(columns(), tableName());
+                auto query = select_query(db(), tableName(), columns());
 
                 query.where(format("{0} = ?", name).str());
 
@@ -133,7 +194,7 @@ namespace arg3
 
                 vector<T> items;
 
-                for(auto &row : results)
+for (auto & row : results)
                 {
                     items.emplace_back(row);
                 }
@@ -141,12 +202,10 @@ namespace arg3
                 return items;
             }
 
-            template<typename T, typename V>
-            void initBy(const string &name, const V &value)
+            template<typename V>
+            void loadBy(const string &name, const V &value)
             {
-                static_assert(is_base_of<base_record, T>::value, "template argument is not of type base_record");
-
-                auto query = db().select(columns(), tableName());
+                auto query = select_query(db(), tableName(), columns());
 
                 query.where(format("{0} = ?", name).str());
 
@@ -156,42 +215,7 @@ namespace arg3
 
                 auto it = results.begin();
 
-                if(it != results.end())
-                    init(*it);
-            }
-
-        };
-
-
-        template<typename ID>
-        class id_record : public base_record
-        {
-        protected:
-            virtual string idColumnName() const  = 0;
-        public:
-            id_record() : base_record() {}
-
-            id_record(ID id) : base_record() {
-                initById(id);
-            }
-            id_record(const row &row) : base_record(row) {}
-
-            variant getId() { return get(idColumnName()); }
-            void setId(const ID &value) { set(idColumnName(), value); }
-
-            bool is_valid() const {
-                return has(idColumnName());
-            }
-
-            void initById(ID value) {
-                auto query = db().select(columns(), tableName());
-
-                query.where(format("{0} = ?", idColumnName()).str());
-
-                auto results = query.execute();
-
-                auto it = results.begin();
-                if(it != results.end())
+                if (it != results.end())
                     init(*it);
             }
         };
