@@ -73,7 +73,7 @@ namespace arg3
             return *this;
         }
 
-        base_query &base_query::bind(size_t index, const void *data, size_t size, void (*pFree)(void*))
+        base_query &base_query::bind_bytes(size_t index, const void *data, size_t size, void (*pFree)(void*))
         {
             prepare();
 

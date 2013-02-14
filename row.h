@@ -1,3 +1,6 @@
+/*!
+ * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ */
 #ifndef _ARG3_DB_ROW_H_
 #define _ARG3_DB_ROW_H_
 
@@ -168,6 +171,7 @@ namespace arg3
         class row
         {
             friend class resultset_iterator;
+            friend class resultset;
         public:
             //Typedefs
             typedef column_iterator<column_value, column_value, row>                          iterator;
@@ -214,9 +218,13 @@ namespace arg3
 
             reference operator[](size_type nPosition) const;
 
+            reference operator[](const string &name) const;
+
             string column_name(size_type nPosition) const;
 
             reference column_value(size_type nPosition) const;
+
+            reference column_value(const string &name) const;
 
             size_type size() const;
 

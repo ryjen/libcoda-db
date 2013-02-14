@@ -1,3 +1,6 @@
+/*!
+ * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ */
 #include "row.h"
 #include "resultset.h"
 
@@ -14,7 +17,6 @@ namespace arg3
             m_size = sqlite3_column_count(m_results->m_stmt);
         }
 
-//Methods
         row::iterator row::begin()
         {
             return iterator(this, 0);
@@ -80,6 +82,11 @@ namespace arg3
             return column_value(nPosition);
         }
 
+        row::reference row::operator[](const string &name) const 
+        {
+            return column_value(name);
+        }
+
         row::reference row::column_value(size_type nPosition) const
         {
             assert(nPosition < size());
@@ -89,6 +96,22 @@ namespace arg3
                           sqlite3_column_value(m_results->m_stmt, static_cast<int>(nPosition) ) );
 
             //Return the cached value
+            return m_value;
+        }
+
+        row::reference row::column_value(const string &name) const 
+        {
+            assert(!name.empty());
+
+            for(size_t i = 0, size = sqlite3_column_count(m_results->m_stmt); i < size; i++)
+            {
+                const char *col_name = sqlite3_column_name(m_results->m_stmt, i);
+
+                if(name == col_name)
+                {
+                    return column_value(i);
+                }
+            }
             return m_value;
         }
 

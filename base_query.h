@@ -1,4 +1,5 @@
 /*!
+ * @header Base Query
  * implementation of a query
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
@@ -77,7 +78,7 @@ namespace arg3
             /*!
              * binds bytes to a parameterized query
              */
-            base_query &bind(size_t index, const void *data, size_t size = -1, void(* pFree)(void *) = SQLITE_STATIC);
+            base_query &bind_bytes(size_t index, const void *data, size_t size, void(* pFree)(void *) = SQLITE_STATIC);
 
         };
 

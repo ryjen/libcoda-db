@@ -1,3 +1,6 @@
+/*!
+ * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ */
 #include <igloo/igloo.h>
 #include "sqldb.h"
 #include "base_record.h"
@@ -117,6 +120,30 @@ Context(sqldb_test)
             user1.initById(1432123);
 
             Assert::That(user1.is_valid(), Equals(false));
+
+    }
+
+    Spec(where_test)
+    {
+        
+            auto query = testdb.select("users");
+
+            query.where("first_name=? OR last_name=?");
+
+            query.bind(1, "Bryan");
+            query.bind(2, "Jenkins");
+
+            //cout << query.to_string() << endl;
+
+            auto results = query.execute();
+
+            auto row = results.begin();//results.first();
+
+            Assert::That(row != results.end(), Equals(true));
+
+            string lastName = row->column_value("last_name").to_string();
+
+            Assert::That(lastName, Equals("Jenkins"));
 
     }
 };

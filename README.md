@@ -49,7 +49,7 @@ public:
 
 and using the user object:
 ```c++
- 	auto results = user::findAll<user>();
+ 	auto results = user().findAll();
 
     for (auto &obj : results)
     {
@@ -66,6 +66,11 @@ and using the user object:
     	
 ```
 
+TODO
+====
+
+* BLOB support
+* More tests
 
 licensing
 =========

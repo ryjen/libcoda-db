@@ -1,8 +1,12 @@
+/*!
+ * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ */
 #ifndef _ARG3_DB_RESULTSET_H_
 #define _ARG3_DB_RESULTSET_H_
 
 #include "row.h"
 #include "database_exception.h"
+#include <memory>
 
 namespace arg3
 {
@@ -84,7 +88,7 @@ namespace arg3
 
             iterator end();
 
-            row *first();
+            int status();
         };
     }
 

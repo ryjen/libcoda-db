@@ -1,3 +1,6 @@
+/*!
+ * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ */
 #ifndef _ARG3_DB_SELECT_QUERY_H_
 #define _ARG3_DB_SELECT_QUERY_H_
 
@@ -8,6 +11,7 @@ namespace arg3
 {
     namespace db
     {   
+
         class where
         {
         private:
@@ -29,6 +33,11 @@ namespace arg3
             bool empty() const;
         };
 
+        inline where Q(const char *str)
+        {
+            return where(str);
+        }
+
         class base_record;
         class sqldb;
 
@@ -48,6 +57,8 @@ namespace arg3
             select_query(const sqldb &db, const string &tableName);
 
             select_query &where(const where& value);
+
+            select_query &where(const string &value);
 
             select_query & limit(const string &value);
 

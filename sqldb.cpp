@@ -1,3 +1,6 @@
+/*!
+ * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ */
 #include "sqldb.h"
 #include "../collections/collections.h"
 #include "../strings/strings.h"

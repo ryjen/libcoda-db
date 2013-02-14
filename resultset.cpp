@@ -1,17 +1,27 @@
+/*!
+ * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ */
 #include "resultset.h"
 
 namespace arg3
 {
     namespace db
     {
-        resultset::resultset(sqlite3_stmt *stmt) : m_stmt(stmt)
+        resultset::resultset(sqlite3_stmt *stmt) : m_stmt(stmt), m_status(-1)
         {
-
+        
         }
 
         void resultset::step() {
 
             m_status = sqlite3_step(m_stmt);
+        }
+
+        int resultset::status() {
+            if(m_status == -1)
+                step();
+
+            return m_status;
         }
 
         resultset::iterator resultset::begin()
@@ -22,18 +32,6 @@ namespace arg3
 
             return iterator(this, m_status == SQLITE_ROW ? 0 : -1);
         }
-
-        row *resultset::first() {
-            sqlite3_reset(m_stmt);
-
-            step();
-
-            if(m_status == SQLITE_ROW)
-                return &(*iterator(this, 0));
-            else
-                return NULL;
-        }
-
 
         resultset::iterator resultset::end()
         {

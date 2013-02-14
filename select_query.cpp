@@ -1,3 +1,6 @@
+/*!
+ * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ */
 #include "select_query.h"
 #include "../collections/collections.h"
 #include "base_record.h"
@@ -62,6 +65,13 @@ namespace arg3
         {}
 
         select_query & select_query::where(const where::where &value)
+        {
+            m_where = value;
+
+            return *this;
+        }
+
+        select_query & select_query::where(const string &value)
         {
             m_where = value;
 

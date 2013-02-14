@@ -1,3 +1,6 @@
+/*!
+ * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ */
 #ifndef _ARG3_DB_MODIFY_QUERY_H_
 #define _ARG3_DB_MODIFY_QUERY_H_
 
