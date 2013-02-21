@@ -29,7 +29,6 @@ namespace arg3
             column_definition m_columns;
 
             void prepare();
-
         public:
 
             /*!

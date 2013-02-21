@@ -5,7 +5,7 @@
 #define _ARG3_DB_ROW_H_
 
 #include <sqlite3.h>
-#include "column_value.h"
+#include "column.h"
 #include <iterator>
 
 namespace arg3
@@ -13,144 +13,132 @@ namespace arg3
     namespace db
     {
 
-        template<class _Ty, class _non_const_Ty, class TRow>
-        class column_iterator : public std::iterator<std::random_access_iterator_tag, _Ty>
+        template<class ValueType, class NonConst, class RowType>
+        class row_iterator : public std::iterator<std::random_access_iterator_tag, ValueType>
         {
-        public:
-            //Typedefs
-            typedef const column_iterator const_self_type;
-            typedef column_iterator       self_type;
-            typedef size_t                size_type;
-            typedef _non_const_Ty            &reference;
-            typedef _non_const_Ty            *pointer;
-            typedef int                   difference_type;
+        protected:
+            RowType *m_row;
+            int m_position;
 
-            //Constructors / Destructors
-            column_iterator() : m_row(NULL),
+            ValueType get_value(int nPosition) {
+
+            }
+        public:
+            row_iterator() : m_row(NULL),
                 m_position(-1)
             {
             }
 
-            column_iterator(const_self_type &other) : m_row(other.m_row),
-                m_position(other.m_position)
-            {
-            }
-
-            column_iterator(TRow *pRow, int nPosition) : m_row(pRow),
+            row_iterator(RowType *pRow, int nPosition) : m_row(pRow),
                 m_position(nPosition)
             {
             }
 
-            //Methods
-            reference operator*()
+            ValueType operator*()
             {
                 return operator[](m_position);
             }
 
-            self_type &operator=(const_self_type &other)
+            ValueType* operator->()
             {
-                m_row = other.m_row;
-                m_position = other.m_position;
+                static NonConst operator_pointer;
 
-                return *this;
+                operator_pointer = operator[](m_position);
+
+                return &operator_pointer;
             }
 
-            pointer operator->()
+            ValueType operator[](size_t nPosition)
             {
-                return &(operator*());
-            }
-
-            reference operator[](size_type nPosition)
-            {
-                //Validate our parameters
+               
                 assert(m_row != NULL);
 
-                return m_row->operator[](nPosition);
+               return m_row->operator[](nPosition);
             }
 
-            self_type &operator++()
+            row_iterator &operator++()
             {
                 ++m_position;
                 return *this;
             }
 
-            self_type operator++(int)
+            row_iterator operator++(int)
             {
-                self_type tmp(*this);
+                row_iterator tmp(*this);
                 ++(*this);
                 return tmp;
             }
 
-            self_type &operator--()
+            row_iterator &operator--()
             {
                 --m_position;
                 return *this;
             }
 
-            self_type operator--(int)
+            row_iterator operator--(int)
             {
-                self_type tmp(*this);
+                row_iterator tmp(*this);
                 --(*this);
                 return tmp;
             }
 
-            self_type operator+(difference_type n)
+            row_iterator operator+(int n)
             {
-                self_type tmp(*this);
+                row_iterator tmp(*this);
                 tmp.m_position += n;
                 return tmp;
             }
 
-            self_type &operator+=(difference_type n)
+            row_iterator &operator+=(int n)
             {
                 m_position += n;
                 return *this;
             }
 
-            self_type operator-(difference_type n)
+            row_iterator operator-(int n)
             {
-                self_type tmp(*this);
+                row_iterator tmp(*this);
                 tmp.m_position -= n;
                 return tmp;
             }
 
-            self_type &operator-=(difference_type n)
+            row_iterator &operator-=(int n)
             {
                 m_position -= n;
                 return *this;
             }
 
-            bool operator==(const_self_type &other) const
+            bool operator==(const row_iterator &other) const
             {
                 return m_position == other.m_position;
             }
 
-            bool operator!=(const_self_type &other) const
+            bool operator!=(const row_iterator &other) const
             {
                 return !operator==(other);
             }
 
-            bool operator<(const_self_type &other) const
+            bool operator<(const row_iterator &other) const
             {
                 return m_position < other.m_position;
             }
 
-            bool operator<=(const_self_type &other) const
+            bool operator<=(const row_iterator &other) const
             {
                 return operator<(other) || operator==(other);
             }
 
-            bool operator>(const_self_type &other) const
+            bool operator>(const row_iterator &other) const
             {
                 return !operator<(other);
             }
 
-            bool operator>=(const_self_type &other) const
+            bool operator>=(const row_iterator &other) const
             {
                 return operator>(other) || operator==(other);
             }
 
-            difference_type operator-(const_self_type &other)
+            int operator-(const row_iterator &other)
             {
                 return m_position - other.m_position;
             }
@@ -159,10 +147,6 @@ namespace arg3
             {
                 return m_row->column_name(m_position);
             }
-        protected:
-            //Member variables
-            TRow           *m_row;
-            difference_type m_position;
         };
 
 
@@ -174,19 +158,15 @@ namespace arg3
             friend class resultset;
         public:
             //Typedefs
-            typedef column_iterator<column_value, column_value, row>                          iterator;
-            typedef column_iterator<const column_value, column_value, const row>              const_iterator;
-            typedef std::reverse_iterator<column_iterator<column_value, column_value, row> >  reverse_iterator;
-            typedef std::reverse_iterator<column_iterator<const column_value, column_value, const row> > const_reverse_iterator;
-            typedef column_value                                                                    value_type;
-            typedef column_value                                                                   &reference;
-            typedef const column_value                                                             &const_reference;
-            typedef size_t                                                                    size_type;
-            typedef iterator::difference_type                                                 difference_type;
+            typedef row_iterator<column, column, row>               iterator;
+            typedef row_iterator<const column, column, const row>   const_iterator;
+            typedef std::reverse_iterator<iterator>                      reverse_iterator;
+            typedef std::reverse_iterator<const_iterator>                const_reverse_iterator;
+            
         private:
             resultset *m_results;
             size_t m_size;
-            mutable value_type m_value;
+
             row(resultset *results);
 
         public:
@@ -216,17 +196,17 @@ namespace arg3
 
             const_reverse_iterator crend() const;
 
-            reference operator[](size_type nPosition) const;
+            column operator[](size_t nPosition) const;
 
-            reference operator[](const string &name) const;
+            column operator[](const string &name) const;
 
-            string column_name(size_type nPosition) const;
+            string column_name(size_t nPosition) const;
 
-            reference column_value(size_type nPosition) const;
+            column column_value(size_t nPosition) const;
 
-            reference column_value(const string &name) const;
+            column column_value(const string &name) const;
 
-            size_type size() const;
+            size_t size() const;
 
             bool empty() const;
         };

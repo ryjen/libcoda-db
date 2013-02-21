@@ -12,10 +12,12 @@ namespace arg3
 
         }
 
-        void resultset::step()
+        int resultset::step()
         {
 
             m_status = sqlite3_step(m_stmt);
+
+            return m_status;
         }
 
         int resultset::status()
@@ -32,7 +34,7 @@ namespace arg3
 
             step();
 
-            return iterator(this, m_status == SQLITE_ROW ? 0 : -1);
+            return iterator(this, 0);
         }
 
         resultset::iterator resultset::end()
@@ -41,32 +43,33 @@ namespace arg3
         }
 
 
-        resultset_iterator::resultset_iterator(resultset *rset, int position) : m_results(rset),
-            m_position(position), m_row(m_results)
+        resultset_iterator::resultset_iterator(resultset *rset, int position) : m_rs(rset), m_pos(position), m_value(rset)
         {
         }
 
         resultset_iterator::reference resultset_iterator::operator*()
         {
-            return m_row;
+            return m_value;
         }
 
-        resultset_iterator::self_type &resultset_iterator::operator++()
+        resultset_iterator &resultset_iterator::operator++()
         {
-            if (m_position == -1)
+            if (m_rs == NULL)
                 return *this;
 
-            int res = sqlite3_step(m_results->m_stmt);
+            int res = m_rs->step();
+
+            m_pos++;
 
             switch (res)
             {
 
             case SQLITE_DONE:
-                m_position = -1;
+                m_rs = NULL;
+                m_pos = -1;
                 break;
             case SQLITE_ROW:
-                ++m_position;
-                m_row = row(m_results);
+                m_value = row(m_rs);
                 break;
             default:
                 throw database_exception();
@@ -83,61 +86,61 @@ namespace arg3
             return &(operator*());
         }
 
-        resultset_iterator::self_type resultset_iterator::operator++(int)
+        resultset_iterator resultset_iterator::operator++(int)
         {
-            self_type tmp(*this);
+            resultset_iterator tmp(*this);
             ++(*this);
             return tmp;
         }
 
-        resultset_iterator::self_type resultset_iterator::operator+(resultset_iterator::difference_type n)
+        resultset_iterator resultset_iterator::operator+(difference_type n)
         {
-            self_type tmp(*this);
-            for (int i = 0; i < n; i++)
+            resultset_iterator tmp(*this);
+            for (difference_type i = 0; i < n; i++)
                 ++(tmp);
             return tmp;
         }
 
-        resultset_iterator::self_type &resultset_iterator::operator+=(resultset_iterator::difference_type n)
+        resultset_iterator &resultset_iterator::operator+=(difference_type n)
         {
-            for (int i = 0; i < n; i++)
+            for (difference_type i = 0; i < n; i++)
                 operator++();
             return *this;
         }
 
-        bool resultset_iterator::operator==(const resultset_iterator::self_type &other) const
+        bool resultset_iterator::operator==(const resultset_iterator &other) const
         {
-            return m_position == other.m_position;
+            return m_pos == other.m_pos;
         }
 
-        bool resultset_iterator::operator!=(const resultset_iterator::self_type &other) const
+        bool resultset_iterator::operator!=(const resultset_iterator &other) const
         {
             return !operator==(other);
         }
 
-        bool resultset_iterator::operator<(const resultset_iterator::self_type &other) const
+        bool resultset_iterator::operator<(const resultset_iterator &other) const
         {
-            if (m_position == -1 && other.m_position == -1)
+            if (m_pos == -1 && other.m_pos == -1)
                 return false;
-            else if (m_position == -1)
+            else if (m_pos == -1)
                 return false;
-            else if (other.m_position == -1)
+            else if (other.m_pos == -1)
                 return true;
             else
-                return m_position < other.m_position;
+                return m_pos < other.m_pos;
         }
 
-        bool resultset_iterator::operator<=(const resultset_iterator::self_type &other) const
+        bool resultset_iterator::operator<=(const resultset_iterator &other) const
         {
             return operator<(other) || operator==(other);
         }
 
-        bool resultset_iterator::operator>(const resultset_iterator::self_type &other) const
+        bool resultset_iterator::operator>(const resultset_iterator &other) const
         {
             return !operator<(other);
         }
 
-        bool resultset_iterator::operator>=(const resultset_iterator::self_type &other) const
+        bool resultset_iterator::operator>=(const resultset_iterator &other) const
         {
             return operator>(other) || operator==(other);
         }

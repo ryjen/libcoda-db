@@ -5,7 +5,7 @@
 #define _ARG3_DB_RESULTSET_H_
 
 #include "row.h"
-#include "database_exception.h"
+#include "exception.h"
 #include <memory>
 
 namespace arg3
@@ -14,81 +14,66 @@ namespace arg3
     {
         class resultset;
 
-        class resultset_iterator //An STL iterator for CRowset
+        class resultset_iterator : public std::iterator<std::input_iterator_tag, row>
         {
-            friend class resultset;
         private:
-
-            //Constructors / Destructors
-            resultset_iterator(resultset *rset, int position);
-
+            resultset *m_rs;
+            int m_pos;
+            row m_value;
         public:
-            //Typedefs
-            typedef resultset_iterator         self_type;
-            typedef std::input_iterator_tag iterator_category;
-            typedef row                    value_type;
-            typedef row                   *pointer;
-            typedef const row             *const_pointer;
-            typedef row                   &reference;
-            typedef const row             &const_reference;
-            typedef size_t                  size_type;
-            typedef ptrdiff_t               difference_type;
 
-            //Methods
+            resultset_iterator(resultset* rs, int position);
+
             reference operator*();
+
+            const reference operator*() const;
 
             pointer operator->();
 
-            self_type &operator++();
+            const pointer operator->() const;
 
-            self_type operator++(int);
+            resultset_iterator& operator++();
 
-            self_type operator+(difference_type n);
+            resultset_iterator operator++(int);
 
-            self_type &operator+=(difference_type n);
+            resultset_iterator operator+(difference_type n);
 
-            bool operator==(const self_type &other) const;
+            resultset_iterator &operator+=(difference_type n);
 
-            bool operator!=(const self_type &other) const;
+            bool operator==(const resultset_iterator& other) const;
 
-            bool operator<(const self_type &other) const;
+            bool operator!=(const resultset_iterator& other) const;
 
-            bool operator<=(const self_type &other) const;
+            bool operator<(const resultset_iterator &other) const;
 
-            bool operator>(const self_type &other) const;
+            bool operator<=(const resultset_iterator &other) const;
 
-            bool operator>=(const self_type &other) const;
-        protected:
-            resultset *m_results;
-            int m_position;
-            value_type m_row;
+            bool operator>(const resultset_iterator &other) const;
+
+            bool operator>=(const resultset_iterator &other) const;
+
         };
 
         class resultset
         {
             friend class select_query;
-            friend class resultset_iterator;
             friend class row;
         public:
-            //Typedefs
             typedef resultset_iterator iterator;
-
         private:
             sqlite3_stmt *m_stmt;
 
             resultset(sqlite3_stmt *stmt);
 
             int m_status;
-
-            void step();
-
         public:
-            //Methods
             iterator begin();
 
             iterator end();
 
             int status();
+
+            int step();
         };
     }
 

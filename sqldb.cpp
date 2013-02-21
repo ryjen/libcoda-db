@@ -3,7 +3,7 @@
  */
 #include "sqldb.h"
 #include "base_query.h"
-#include "database_exception.h"
+#include "exception.h"
 
 namespace arg3
 {

@@ -19,10 +19,6 @@ namespace arg3
         class sqldb;
         class row;
 
-        /*!
-         * implementation of a query
-         * @copyright ryan jennings (arg3.com), 2013 under LGPL
-         */
         template<typename T>
         class base_record
         {
@@ -48,7 +44,7 @@ namespace arg3
             void init(const row &values)
             {
 
-                for (row::const_iterator v = values.begin(); v != values.end(); v++)
+                for (auto v = values.begin(); v != values.end(); v++)
                 {
                     m_values[v.name()] = v->to_string();
                 }
@@ -77,7 +73,8 @@ namespace arg3
                 modify_query query(db(), tableName(), columns());
 
                 int index = 1;
-for (auto & column : columns())
+
+                for (auto & column : columns())
                 {
                     auto value = m_values[column.first];
 
@@ -173,7 +170,7 @@ for (auto & column : columns())
 
                 vector<T> items;
 
-for (auto & row : results)
+                for (auto & row : results)
                 {
                     items.emplace_back(row);
                 }
@@ -194,7 +191,7 @@ for (auto & row : results)
 
                 vector<T> items;
 
-for (auto & row : results)
+                for (auto & row : results)
                 {
                     items.emplace_back(row);
                 }

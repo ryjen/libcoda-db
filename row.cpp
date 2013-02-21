@@ -8,7 +8,7 @@ namespace arg3
 {
     namespace db
     {
-        row::row(resultset *results) : m_results(results), m_size(0)
+        row::row(resultset *results) : m_results(results)
         {
             assert(m_results != NULL);
 
@@ -34,12 +34,12 @@ namespace arg3
 
         row::iterator row::end()
         {
-            return iterator(this, static_cast<int>(size()));
+            return iterator(this, size());
         }
 
         row::const_iterator row::end() const
         {
-            return const_iterator(this, static_cast<int>(size()));
+            return const_iterator(this, size());
         }
 
         row::const_iterator row::cend() const
@@ -77,29 +77,24 @@ namespace arg3
             return rend();
         }
 
-        row::reference row::operator[](size_type nPosition) const
+        column row::operator[](size_t nPosition) const
         {
             return column_value(nPosition);
         }
 
-        row::reference row::operator[](const string &name) const
+        column row::operator[](const string &name) const
         {
             return column_value(name);
         }
 
-        row::reference row::column_value(size_type nPosition) const
+        column row::column_value(size_t nPosition) const
         {
             assert(nPosition < size());
 
-            //Update the cached value
-            m_value = db::column_value(
-                          sqlite3_column_value(m_results->m_stmt, static_cast<int>(nPosition) ) );
-
-            //Return the cached value
-            return m_value;
+            return db::column( sqlite3_column_value(m_results->m_stmt, nPosition ) );
         }
 
-        row::reference row::column_value(const string &name) const
+        column row::column_value(const string &name) const
         {
             assert(!name.empty());
 
@@ -112,17 +107,17 @@ namespace arg3
                     return column_value(i);
                 }
             }
-            return m_value;
+            return column();
         }
 
-        string row::column_name(size_type nPosition) const
+        string row::column_name(size_t nPosition) const
         {
             assert(nPosition < size());
 
-            return sqlite3_column_name(m_results->m_stmt, static_cast<int>(nPosition));
+            return sqlite3_column_name(m_results->m_stmt, nPosition);
         }
 
-        row::size_type row::size() const
+        size_t row::size() const
         {
             return m_size;
         }

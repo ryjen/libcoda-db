@@ -2,7 +2,7 @@
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
 #include "modify_query.h"
-#include "database_exception.h"
+#include "exception.h"
 #include "../collections/collections.h"
 #include "../strings/strings.h"
 

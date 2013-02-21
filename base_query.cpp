@@ -3,7 +3,7 @@
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
 #include "base_query.h"
-#include "database_exception.h"
+#include "exception.h"
 #include "sqldb.h"
 
 namespace arg3

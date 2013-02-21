@@ -23,7 +23,7 @@ namespace arg3
             if(m_and.size() > 0)
             {
                 buf << " AND ";
-for(auto &w : m_and)
+                for(auto &w : m_and)
                 {
                     buf << w.to_string();
                 }
@@ -32,7 +32,7 @@ for(auto &w : m_and)
             if(m_or.size() > 0)
             {
                 buf << " OR ";
-for(auto &w : m_or)
+                for(auto &w : m_or)
                 {
                     buf << w.to_string();
                 }
