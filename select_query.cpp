@@ -63,7 +63,7 @@ namespace arg3
         }
 
         select_query::select_query(const sqldb &db, const string &tableName,
-                                   const column_definition &columns) : base_query(db, tableName, columns)
+                                   const vector<column_definition> &columns) : base_query(db, tableName, columns)
         {}
 
         select_query::select_query(const sqldb &db, const string &tableName) : base_query(db, tableName)

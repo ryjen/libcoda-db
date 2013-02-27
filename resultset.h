@@ -58,6 +58,7 @@ namespace arg3
         {
             friend class select_query;
             friend class row;
+            friend class sqldb;
         public:
             typedef resultset_iterator iterator;
         private:
@@ -72,6 +73,8 @@ namespace arg3
             iterator end();
 
             int status();
+
+            bool has_more();
 
             int step();
         };

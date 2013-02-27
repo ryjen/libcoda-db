@@ -21,16 +21,6 @@ public:
 
     user(const row &values) : base_record(values) {}
 
-    column_definition columns() const
-    {
-        return
-        {
-            {"id", SQLITE_INTEGER },
-            {"first_name", SQLITE_TEXT},
-            {"last_name", SQLITE_TEXT}
-        };
-    }
-
     string tableName() const
     {
         return "users";

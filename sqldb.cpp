@@ -4,7 +4,8 @@
 #include "sqldb.h"
 #include "base_query.h"
 #include "exception.h"
-
+#include "resultset.h"
+ 
 namespace arg3
 {
     namespace db
@@ -43,6 +44,10 @@ namespace arg3
                 throw database_exception();
         }
 
+        bool sqldb::is_open() const {
+            return m_db != NULL;
+        }
+
         void sqldb::close()
         {
             if(m_db == NULL) return;
@@ -61,10 +66,14 @@ namespace arg3
             return buf.str();
         }
 
-        void sqldb::execute(const string &sql, sql_callback callback)
+        resultset sqldb::execute(const string &sql)
         {
-            if(sqlite3_exec(m_db, sql.c_str(), callback, this, NULL) != SQLITE_OK)
+            sqlite3_stmt *stmt;
+
+            if(sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK)
                 throw database_exception();
+
+            return resultset(stmt);
         }
     }
 }

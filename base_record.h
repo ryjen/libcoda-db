@@ -5,12 +5,13 @@
 #ifndef _ARG3_DB_BASE_RECORD_H_
 #define _ARG3_DB_BASE_RECORD_H_
 
-#include "defines.h"
 #include "sqldb.h"
 #include "select_query.h"
 #include "modify_query.h"
 #include "../variant/variant.h"
 #include "../format/format.h"
+#include "schema.h"
+#include <map>
 
 namespace arg3
 {
@@ -24,11 +25,13 @@ namespace arg3
         {
         private:
             map<string, variant> m_values;
+            schema m_schema;
         public:
             /*!
              * default constructor
              */
-            base_record() {}
+            base_record() {
+            }
 
             /*!
              * construct with values from a database row
@@ -43,7 +46,6 @@ namespace arg3
              */
             void init(const row &values)
             {
-
                 for (auto v = values.begin(); v != values.end(); v++)
                 {
                     m_values[v.name()] = v->to_string();
@@ -53,7 +55,7 @@ namespace arg3
             /*!
              * sub classes should define the table schema here
              */
-            virtual column_definition columns() const = 0;
+            //virtual column_definition columns() const = 0;
 
             /*!
              * should return the database for the record
@@ -70,24 +72,27 @@ namespace arg3
              */
             bool save()
             {
-                modify_query query(db(), tableName(), columns());
+                if(!m_schema.is_valid())
+                    m_schema.init(db(), tableName());
+
+                modify_query query(db(), tableName(), m_schema.columns());
 
                 int index = 1;
 
-                for (auto & column : columns())
+                for (auto & column : m_schema.columns())
                 {
-                    auto value = m_values[column.first];
+                    auto value = m_values[column.name()];
 
-                    switch (column.second)
+                    switch (column.type())
                     {
                     case SQLITE_TEXT:
                         query.bind(index, value.to_string());
                         break;
                     case SQLITE_INTEGER:
-                        query.bind(index, stoll(value));
+                        query.bind(index, value.to_llong());
                         break;
                     case SQLITE_FLOAT:
-                        query.bind(index, stod(value));
+                        query.bind(index, value.to_double());
                         break;
                     default:
                         query.bind(index);
@@ -116,39 +121,44 @@ namespace arg3
             /*!
              * sets a string for a column name
              */
-            void set(const string &name, const string &value)
+            void set(const string &name, const variant &value)
             {
                 m_values[name] = value;
             }
 
+            /*
             void set(const string &name, int value)
             {
                 m_values[name] = value;
-            }
+            }*/
 
             /*!
              * sets an integer for a column name
              */
+             /*
             void set(const string &name, long long value)
             {
                 m_values[name] = value;
-            }
+            }*/
 
             /*!
              * sets a double for a column name
              */
+             /*
             void set(const string &name, double value)
             {
                 m_values[name] = std::to_string(value);
-            }
+            }*/
 
             /*!
              * sets bytes for a column name
              */
+             /*
             void set(const string &name, void *data, size_t size)
             {
 
             }
+            */
 
             /*!
              * unsets / removes a column
@@ -164,7 +174,7 @@ namespace arg3
 
             vector<T> findAll() const
             {
-                auto query = select_query(db(), tableName(), columns());
+                auto query = select_query(db(), tableName(), m_schema.columns());
 
                 auto results = query.execute();
 
@@ -181,7 +191,7 @@ namespace arg3
             template<typename V>
             vector<T> findBy(const string &name, const V &value)
             {
-                auto query = select_query(db(), tableName(), columns());
+                auto query = select_query(db(), tableName(), m_schema.columns());
 
                 query.where(format("{0} = ?", name).str());
 
@@ -202,9 +212,9 @@ namespace arg3
             template<typename V>
             void loadBy(const string &name, const V &value)
             {
-                auto query = select_query(db(), tableName(), columns());
+                auto query = select_query(db(), tableName(), m_schema.columns());
 
-                query.where(format("{0} = ?", name).str());
+                query.where(format("{0} = ? LIMIT 1", name).str());
 
                 query.bind(1, value);
 

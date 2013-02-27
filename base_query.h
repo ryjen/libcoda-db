@@ -7,7 +7,7 @@
 #define _ARG3_DB_BASE_QUERY_H_
 
 #include <sqlite3.h>
-#include "defines.h"
+#include "schema.h"
 
 namespace arg3
 {
@@ -26,7 +26,7 @@ namespace arg3
             sqlite3 *m_db;
             sqlite3_stmt *m_stmt;
             string m_tableName;
-            column_definition m_columns;
+            vector<column_definition> m_columns;
 
             void prepare();
         public:
@@ -36,7 +36,7 @@ namespace arg3
              * @param tableName the table to perform the query on
              * @param columns the columns to operate with
              */
-            base_query(const sqldb &db, const string &tableName, const column_definition &columns);
+            base_query(const sqldb &db, const string &tableName, const vector<column_definition> &columns);
 
             /*!
              * @param db the database to perform the query on

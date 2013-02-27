@@ -11,7 +11,7 @@ namespace arg3
     namespace db
     {
 
-        base_query::base_query(const sqldb &db, const string &tableName, const column_definition &columns)
+        base_query::base_query(const sqldb &db, const string &tableName, const vector<column_definition> &columns)
             : m_db(db.m_db), m_stmt(NULL), m_tableName(tableName), m_columns(columns)
         {}
 

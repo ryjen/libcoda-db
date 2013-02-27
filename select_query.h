@@ -49,7 +49,7 @@ namespace arg3
             string m_groupBy;
         public:
 
-            select_query(const sqldb &db, const string &tableName, const column_definition &columns);
+            select_query(const sqldb &db, const string &tableName, const vector<column_definition> &columns);
 
             select_query(const sqldb &db, const string &tableName);
 

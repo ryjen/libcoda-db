@@ -8,7 +8,6 @@
 #include <sstream>
 #include <sqlite3.h>
 #include <type_traits>
-#include "defines.h"
 //#include "select_query.h"
 
 using namespace std;
@@ -17,6 +16,8 @@ namespace arg3
 {
     namespace db
     {
+        class resultset;
+        
         class sqldb
         {
             friend class base_query;
@@ -29,10 +30,12 @@ namespace arg3
             sqldb &operator=(const sqldb &other);
             ~sqldb();
 
+            bool is_open() const;
+
             void open();
             void close();
 
-            void execute(const string &sql, sql_callback = NULL);
+            resultset execute(const string &sql);
 
             string last_error() const;
         };

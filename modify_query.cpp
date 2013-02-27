@@ -11,7 +11,7 @@ namespace arg3
     namespace db
     {
         modify_query::modify_query(const sqldb &db, const string &tableName,
-                                   const column_definition &columns) : base_query(db, tableName, columns)
+                                   const vector<column_definition> &columns) : base_query(db, tableName, columns)
         {}
 
         modify_query::modify_query(const sqldb &db, const string &tableName) : base_query(db, tableName)

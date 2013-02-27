@@ -28,6 +28,13 @@ namespace arg3
             return m_status;
         }
 
+        bool resultset::has_more() {
+            if(m_status == -1)
+                step();
+
+            return m_status == SQLITE_ROW;
+        }
+        
         resultset::iterator resultset::begin()
         {
             sqlite3_reset(m_stmt);
