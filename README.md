@@ -2,7 +2,7 @@
 libarg3db
 =========
 
-a sqlite3 wrapper / active record implementation
+a sqlite3 wrapper / active record (ish) implementation
 
 a sample model object:
 ```c++
@@ -14,16 +14,6 @@ public:
     user() {}
 
     user(const row &values) : base_record(values) {}
-
-    column_definition columns() const
-    {
-        return
-        {
-            {"id",SQLITE_INTEGER },
-            {"first_name",SQLITE_TEXT},
-            {"last_name", SQLITE_TEXT}
-        };
-    }
 
     string tableName() const
     {
