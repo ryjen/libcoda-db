@@ -44,6 +44,12 @@ namespace arg3
 
             vector<column_definition> columns() const;
 
+            vector<string> column_names() const;
+
+            vector<string> primary_keys() const;
+
+            column_definition operator[](size_t index) const;
+
             bool is_valid() const;
         };
     }

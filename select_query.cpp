@@ -10,11 +10,11 @@ namespace arg3
 {
     namespace db
     {
-        where::where() {}
+        select_query::where_clause::where_clause() {}
 
-        where::where(const string &value) : m_value(value) {}
+        select_query::where_clause::where_clause(const string &value) : m_value(value) {}
 
-        string where::to_string() const
+        string select_query::where_clause::to_string() const
         {
             ostringstream buf;
 
@@ -40,36 +40,44 @@ namespace arg3
             return buf.str();
         }
 
-        bool where::empty() const
+        bool select_query::where_clause::empty() const
         {
             return m_value.empty() && m_and.empty() && m_or.empty();
         }
 
-        where::operator string()
+        select_query::where_clause::operator string()
         {
             return to_string();
         }
 
-        where &where::operator&&(const where &value)
+        select_query::where_clause &select_query::where_clause::operator&&(const select_query::where_clause &value)
         {
             m_and.push_back(value);
             return *this;
         }
-
-        where &where::operator||(const where &value)
+        select_query::where_clause &select_query::where_clause::operator&&(const string &value)
+        {
+            m_and.push_back(value);
+            return *this;
+        }
+        select_query::where_clause &select_query::where_clause::operator||(const select_query::where_clause &value)
         {
             m_or.push_back(value);
             return *this;
         }
-
+        select_query::where_clause &select_query::where_clause::operator||(const string &value)
+        {
+            m_or.push_back(value);
+            return *this;
+        }
         select_query::select_query(const sqldb &db, const string &tableName,
-                                   const vector<column_definition> &columns) : base_query(db, tableName, columns)
+                                   const vector<string> &columns) : base_query(db, tableName, columns)
         {}
 
         select_query::select_query(const sqldb &db, const string &tableName) : base_query(db, tableName)
         {}
 
-        select_query & select_query::where(const where::where &value)
+        select_query & select_query::where(const select_query::where_clause &value)
         {
             m_where = value;
 

@@ -34,6 +34,11 @@ namespace arg3
         {
         	
         };
+
+        class record_not_found_exception : public std::exception 
+        {
+
+        };
     }
 }
 

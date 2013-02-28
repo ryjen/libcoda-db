@@ -11,49 +11,46 @@ namespace arg3
 {
     namespace db
     {
-        class where
-        {
-        private:
-            vector<where> m_and;
-            vector<where> m_or;
-            string m_value;
-
-        public:
-            where();
-            where(const string &value);
-
-            string to_string() const;
-
-            operator string();
-
-            where &operator&&(const where &value);
-            where &operator||(const where &value);
-
-            bool empty() const;
-        };
-
-        inline where Q(const char *str)
-        {
-            return where(str);
-        }
-
         class sqldb;
 
         class select_query : public base_query
         {
+        public:
+            class where_clause
+            {
+            private:
+                vector<where_clause> m_and;
+                vector<where_clause> m_or;
+                string m_value;
+
+            public:
+                where_clause();
+                where_clause(const string &value);
+
+                string to_string() const;
+
+                operator string();
+
+                where_clause &operator&&(const string &value);
+                where_clause &operator&&(const where_clause &value);
+                where_clause &operator||(const where_clause &value);
+                where_clause &operator||(const string &value);
+
+                bool empty() const;
+            };
             friend class resultset;
         private:
-            where m_where;
+            where_clause m_where;
             string m_limit;
             string m_orderBy;
             string m_groupBy;
         public:
 
-            select_query(const sqldb &db, const string &tableName, const vector<column_definition> &columns);
+            select_query(const sqldb &db, const string &tableName, const vector<string> &columns);
 
             select_query(const sqldb &db, const string &tableName);
 
-            select_query &where(const where& value);
+            select_query &where(const where_clause& value);
 
             select_query &where(const string &value);
 
@@ -66,7 +63,14 @@ namespace arg3
             string to_string() const;
 
             resultset execute();
+
         };
+
+
+        inline select_query::where_clause Q(const char *str)
+        {
+            return select_query::where_clause(str);
+        }
 
     }
 }

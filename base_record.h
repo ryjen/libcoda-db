@@ -52,6 +52,10 @@ namespace arg3
                 }
             }
 
+            bool is_valid() const {
+                return m_schema.is_valid();
+            }
+
             /*!
              * sub classes should define the table schema here
              */
@@ -75,7 +79,7 @@ namespace arg3
                 if(!m_schema.is_valid())
                     m_schema.init(db(), tableName());
 
-                modify_query query(db(), tableName(), m_schema.columns());
+                modify_query query(db(), tableName(), m_schema.column_names());
 
                 int index = 1;
 
@@ -188,10 +192,39 @@ namespace arg3
                 return items;
             }
 
-            template<typename V>
-            vector<T> findBy(const string &name, const V &value)
+            T findById() const 
             {
                 auto query = select_query(db(), tableName(), m_schema.columns());
+
+                auto params = select_query::where_clause();
+
+                for(auto &pk : m_schema.primary_keys()) {
+                    params && (format("{0} = ?", pk));
+                }
+
+                query.where(params);
+
+                int index = 1;
+
+                for(auto &pk : m_schema.primary_keys()) {
+                    query.bind(index, m_values[index-1]);
+                    index++;
+                }
+
+                auto results = query.execute();
+
+                auto it = results.begin();
+
+                if (it != results.end())
+                    return *it;
+
+                throw record_not_found_exception();
+            }
+
+            template<typename V>
+            vector<T> findBy(const string &name, const V &value) const
+            {
+                auto query = select_query(db(), tableName(), m_schema.column_names());
 
                 query.where(format("{0} = ?", name).str());
 
@@ -212,7 +245,7 @@ namespace arg3
             template<typename V>
             void loadBy(const string &name, const V &value)
             {
-                auto query = select_query(db(), tableName(), m_schema.columns());
+                auto query = select_query(db(), tableName(), m_schema.column_names());
 
                 query.where(format("{0} = ? LIMIT 1", name).str());
 

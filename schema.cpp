@@ -22,7 +22,6 @@ namespace arg3
             return m_type;
         }
 
-
         ostream &operator<<(ostream &os, const column_definition &def) {
         	os << def.name();
         	return os;
@@ -74,6 +73,31 @@ namespace arg3
         vector<column_definition> schema::columns() const
         {
             return m_columns;
+        }
+
+        vector<string> schema::column_names() const
+        {
+        	vector<string> names;
+
+        	for(auto &c : m_columns) {
+        		names.push_back(c.name());
+        	}
+        	return names;
+        }
+
+        vector<string> schema::primary_keys() const
+        {
+        	vector<string> names;
+
+        	for(auto &c : m_columns) {
+        		if(c.pk())
+        			names.push_back(c.name());
+        	}
+        	return names;
+        }
+
+        column_definition schema::operator[](size_t index) const {
+        	return m_columns[index];
         }
     };
 
