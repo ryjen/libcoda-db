@@ -39,9 +39,10 @@ namespace arg3
         {
             sqlite3_reset(m_stmt);
 
-            step();
-
-            return iterator(this, 0);
+            if(step() == SQLITE_ROW)
+                return iterator(this, 0);
+            else 
+                return end();
         }
 
         resultset::iterator resultset::end()

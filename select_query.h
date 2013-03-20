@@ -25,11 +25,11 @@ namespace arg3
 
             public:
                 where_clause();
-                where_clause(const string &value);
+                explicit where_clause(const string &value);
 
                 string to_string() const;
 
-                operator string();
+                explicit operator string();
 
                 where_clause &operator&&(const string &value);
                 where_clause &operator&&(const where_clause &value);

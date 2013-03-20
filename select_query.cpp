@@ -57,7 +57,7 @@ namespace arg3
         }
         select_query::where_clause &select_query::where_clause::operator&&(const string &value)
         {
-            m_and.push_back(value);
+            m_and.push_back(where_clause(value));
             return *this;
         }
         select_query::where_clause &select_query::where_clause::operator||(const select_query::where_clause &value)
@@ -67,7 +67,7 @@ namespace arg3
         }
         select_query::where_clause &select_query::where_clause::operator||(const string &value)
         {
-            m_or.push_back(value);
+            m_or.push_back(where_clause(value));
             return *this;
         }
         select_query::select_query(const sqldb &db, const string &tableName,
@@ -86,7 +86,7 @@ namespace arg3
 
         select_query & select_query::where(const string &value)
         {
-            m_where = value;
+            m_where = where_clause(value);
 
             return *this;
         }

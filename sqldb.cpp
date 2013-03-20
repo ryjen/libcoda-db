@@ -73,7 +73,11 @@ namespace arg3
             if(sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK)
                 throw database_exception();
 
-            return resultset(stmt);
+            resultset set(stmt);
+
+            set.step();
+
+            return set;
         }
     }
 }

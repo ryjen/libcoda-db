@@ -47,7 +47,6 @@ Context(sqldb_test)
     {
         testdb.open();
 
-
         testdb.execute("create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45))");
 
     }
@@ -110,6 +109,7 @@ Context(sqldb_test)
     Spec(where_test)
     {
 
+        try {
         auto query = select_query(testdb, "users");
 
         query.where("first_name=? OR last_name=?");
@@ -128,7 +128,10 @@ Context(sqldb_test)
         string lastName = row->column_value("last_name").to_string();
 
         Assert::That(lastName, Equals("Jenkins"));
-
+        }
+        catch(const database_exception &e) {
+            cout << testdb.last_error() << endl;
+        }
     }
 };
 
