@@ -5,6 +5,7 @@
 #include "base_record.h"
 #include "select_query.h"
 #include "sqldb.h"
+#include <unistd.h>
 
 using namespace igloo;
 
@@ -43,7 +44,7 @@ public:
 
 Context(sqldb_test)
 {
-    void SetUp()
+    static void SetUpContext()
     {
         testdb.open();
 
@@ -51,9 +52,11 @@ Context(sqldb_test)
 
     }
 
-    void TearDown()
+    static void TearDownContext()
     {
         testdb.close();
+
+        unlink("test.db");
     }
 
     Spec(save_test)
