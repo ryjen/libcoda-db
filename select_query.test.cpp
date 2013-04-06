@@ -14,9 +14,9 @@ Context(select_query_test)
     {
         testdb.setup();
 
-    	user user1;
+        user user1;
 
-    	user1.set("id", 1);
+        user1.set("id", 1);
         user1.set("first_name", "Bryan");
         user1.set("last_name", "Jenkins");
 
@@ -40,7 +40,8 @@ Context(select_query_test)
 
     Spec(where_test)
     {
-        try {
+        try
+        {
             auto query = select_query(testdb, "users");
 
             query.where("first_name=? OR last_name=?");
@@ -58,7 +59,8 @@ Context(select_query_test)
 
             Assert::That(lastName, Equals("Jenkins"));
         }
-        catch(const database_exception &e) {
+        catch(const database_exception &e)
+        {
             cout << testdb.last_error() << endl;
             throw e;
         }

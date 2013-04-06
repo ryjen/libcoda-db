@@ -11,7 +11,7 @@ namespace arg3
 {
     namespace db
     {
-        
+
         class modify_query : public base_query
         {
         public:

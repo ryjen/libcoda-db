@@ -4,10 +4,10 @@ namespace arg3
 {
     namespace db
     {
-    	column::column() : value_(NULL)
-    	{
+        column::column() : value_(NULL)
+        {
 
-    	}
+        }
         column::column(sqlite3_value *pValue) : value_(pValue)
         {
 
@@ -15,23 +15,26 @@ namespace arg3
 
         column::column(const column &other) : value_(other.value_) {}
 
-        column &column::operator=(const column &other)  {
-        	if(this != &other) {
-        		value_ = other.value_;
-        	}
-        	return *this;
+        column &column::operator=(const column &other)
+        {
+            if (this != &other)
+            {
+                value_ = other.value_;
+            }
+            return *this;
         }
 
-        bool column::is_valid() const {
-        	return value_ != NULL;
+        bool column::is_valid() const
+        {
+            return value_ != NULL;
         }
 
         void column::assert_value() const throw (no_such_column_exception)
         {
-        	if(value_ == NULL)
-        	{
-        		throw no_such_column_exception();
-        	}
+            if (value_ == NULL)
+            {
+                throw no_such_column_exception();
+            }
         }
 
         const void *column::to_blob() const
@@ -96,8 +99,8 @@ namespace arg3
 
             const unsigned char *textValue = sqlite3_value_text(value_);
 
-            if(textValue == NULL)
-            	return string();
+            if (textValue == NULL)
+                return string();
 
             return reinterpret_cast<const char *>(textValue);
         }

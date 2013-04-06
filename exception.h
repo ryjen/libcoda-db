@@ -21,13 +21,14 @@ namespace arg3
         class illegal_state_exception : public std::exception
         {
         private:
-        	string what_;
+            string what_;
         public:
-        	illegal_state_exception(const string &what) : what_(what) {}
+            illegal_state_exception(const string &what) : what_(what) {}
 
-        	const char* what() const throw() {
-        		return what_.c_str();
-        	}
+            const char *what() const throw()
+            {
+                return what_.c_str();
+            }
         };
 
         class no_such_column_exception : public std::exception
@@ -35,7 +36,7 @@ namespace arg3
 
         };
 
-        class record_not_found_exception : public std::exception 
+        class record_not_found_exception : public std::exception
         {
 
         };

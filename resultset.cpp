@@ -28,25 +28,29 @@ namespace arg3
             return status_;
         }*/
 
-        bool resultset::has_more() {
+        bool resultset::has_more()
+        {
             if(status_ == -1)
                 step();
 
             return status_ == SQLITE_ROW;
         }
 
-        bool resultset::is_valid() {
+        bool resultset::is_valid()
+        {
             return has_more();
         }
-        
-        row resultset::operator*() {
+
+        row resultset::operator*()
+        {
             if(status_ == -1)
                 step();
 
             return row(this);
         }
 
-        bool resultset::next() {
+        bool resultset::next()
+        {
             return step() == SQLITE_ROW;
         }
 
@@ -56,7 +60,7 @@ namespace arg3
 
             if(step() == SQLITE_ROW)
                 return iterator(this, 0);
-            else 
+            else
                 return end();
         }
 

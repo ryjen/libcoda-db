@@ -20,7 +20,8 @@ namespace arg3
             RowType *row_;
             int position_;
 
-            ValueType get_value(int nPosition) {
+            ValueType get_value(int nPosition)
+            {
 
             }
         public:
@@ -50,10 +51,10 @@ namespace arg3
 
             ValueType operator[](size_t nPosition)
             {
-               
+
                 assert(row_ != NULL);
 
-               return row_->operator[](nPosition);
+                return row_->operator[](nPosition);
             }
 
             row_iterator &operator++()
@@ -162,7 +163,7 @@ namespace arg3
             typedef row_iterator<const column, column, const row>   const_iterator;
             typedef std::reverse_iterator<iterator>                      reverse_iterator;
             typedef std::reverse_iterator<const_iterator>                const_reverse_iterator;
-            
+
         private:
             resultset *results_;
             size_t size_;

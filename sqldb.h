@@ -17,7 +17,7 @@ namespace arg3
     namespace db
     {
         class resultset;
-        
+
         // an instanceof a database
         class sqldb
         {

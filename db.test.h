@@ -8,19 +8,19 @@
 class testsqldb : public arg3::db::sqldb
 {
 public:
-	testsqldb() : sqldb("test.db") {}
+    testsqldb() : sqldb("test.db") {}
 
-	void setup() 
-	{
-		open();
-		execute("create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45))");
-	}
+    void setup()
+    {
+        open();
+        execute("create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45))");
+    }
 
-	void teardown()
-	{
-		close();
-		unlink(filename().c_str());
-	}
+    void teardown()
+    {
+        close();
+        unlink(filename().c_str());
+    }
 };
 
 extern testsqldb testdb;

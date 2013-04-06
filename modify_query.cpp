@@ -49,16 +49,16 @@ namespace arg3
 
             int res = sqlite3_step(stmt_);
 
-            if(!batch)
+            if (!batch)
             {
-                if(sqlite3_finalize(stmt_) != SQLITE_OK)
+                if (sqlite3_finalize(stmt_) != SQLITE_OK)
                     throw database_exception();
 
                 stmt_ = NULL;
             }
             else
             {
-                if(sqlite3_reset(stmt_) != SQLITE_OK)
+                if (sqlite3_reset(stmt_) != SQLITE_OK)
                     throw database_exception();
             }
 

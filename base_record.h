@@ -27,9 +27,10 @@ namespace arg3
             map<string, variant> values_;
             schema schema_;
 
-            void assert_schema() {
+            void assert_schema()
+            {
 
-                if(!schema_.is_valid())
+                if (!schema_.is_valid())
                     schema_.init(db(), tableName());
             }
 
@@ -37,7 +38,8 @@ namespace arg3
             /*!
              * default constructor
              */
-            base_record() {
+            base_record()
+            {
             }
 
             /*!
@@ -59,7 +61,8 @@ namespace arg3
                 }
             }
 
-            bool is_valid() const {
+            bool is_valid() const
+            {
                 return schema_.is_valid();
             }
 
@@ -78,7 +81,8 @@ namespace arg3
              */
             virtual string tableName() const = 0;
 
-            const schema &schema() {
+            const schema &schema()
+            {
                 assert_schema();
                 return schema_;
             }
@@ -93,7 +97,7 @@ namespace arg3
                 int index = 1;
 
                 // bind the object values
-                for (auto & column : schema().columns())
+for (auto & column : schema().columns())
                 {
                     auto value = values_[column.name()];
 
@@ -163,7 +167,7 @@ namespace arg3
 
                 vector<T> items;
 
-                for (auto & row : results)
+for (auto & row : results)
                 {
                     items.emplace_back(row);
                 }
@@ -171,14 +175,15 @@ namespace arg3
                 return items;
             }
 
-            T findById() const 
+            T findById() const
             {
                 auto query = select_query(db(), tableName(), schema().columns());
 
                 auto params = select_query::where_clause();
 
                 // find by primary keys
-                for(auto &pk : schema_.primary_keys()) {
+for (auto & pk : schema_.primary_keys())
+                {
                     params && (format("{0} = ?", pk));
                 }
 
@@ -187,8 +192,9 @@ namespace arg3
                 int index = 1;
 
                 // bind primary key values
-                for(auto &pk : schema_.primary_keys()) {
-                    query.bind(index, values_[index-1]);
+for (auto & pk : schema_.primary_keys())
+                {
+                    query.bind(index, values_[index - 1]);
                     index++;
                 }
 
@@ -215,7 +221,7 @@ namespace arg3
 
                 vector<T> items;
 
-                for (auto & row : results)
+for (auto & row : results)
                 {
                     items.emplace_back(row);
                 }
@@ -234,7 +240,7 @@ namespace arg3
 
                 auto result = query.execute();
 
-                if(!result.is_valid())
+                if (!result.is_valid())
                     return false;
 
                 init(*result);

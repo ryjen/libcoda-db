@@ -15,7 +15,7 @@ namespace arg3
         // definition of a column
         class column_definition
         {
-        	friend class schema;
+            friend class schema;
         private:
             string name_;
             bool pk_;

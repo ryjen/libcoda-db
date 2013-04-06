@@ -20,7 +20,7 @@ namespace arg3
 
         void base_query::prepare()
         {
-            if(stmt_ != NULL) return;
+            if (stmt_ != NULL) return;
 
             string sql = to_string();
 
@@ -73,7 +73,7 @@ namespace arg3
             return *this;
         }
 
-        base_query &base_query::bind_bytes(size_t index, const void *data, size_t size, void (*pFree)(void*))
+        base_query &base_query::bind_bytes(size_t index, const void *data, size_t size, void (*pFree)(void *))
         {
             prepare();
 

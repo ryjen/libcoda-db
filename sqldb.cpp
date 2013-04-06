@@ -5,7 +5,7 @@
 #include "base_query.h"
 #include "exception.h"
 #include "resultset.h"
- 
+
 namespace arg3
 {
     namespace db
@@ -35,7 +35,8 @@ namespace arg3
         {
         }
 
-        string sqldb::filename() const {
+        string sqldb::filename() const
+        {
             return filename_;
         }
 
@@ -48,7 +49,8 @@ namespace arg3
                 throw database_exception();
         }
 
-        bool sqldb::is_open() const {
+        bool sqldb::is_open() const
+        {
             return db_ != NULL;
         }
 
