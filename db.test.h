@@ -19,7 +19,7 @@ public:
     void teardown()
     {
         close();
-        unlink(filename().c_str());
+        unlink(getFilename().c_str());
     }
 };
 

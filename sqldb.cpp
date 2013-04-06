@@ -34,9 +34,14 @@ namespace arg3
         {
         }
 
-        string sqldb::filename() const
+        string sqldb::getFilename() const
         {
             return filename_;
+        }
+
+        void sqldb::setFilename(const string &value)
+        {
+            filename_ = value;
         }
 
         void sqldb::open()

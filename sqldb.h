@@ -36,7 +36,8 @@ namespace arg3
             void open();
             void close();
 
-            string filename() const;
+            string getFilename() const;
+            void setFilename(const string &value);
 
             resultset execute(const string &sql);
 
