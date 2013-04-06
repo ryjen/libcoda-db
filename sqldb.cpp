@@ -10,7 +10,6 @@ namespace arg3
 {
     namespace db
     {
-
         sqldb::sqldb(const string &name) : db_(NULL), filename_(name)
         {
         }
@@ -38,6 +37,12 @@ namespace arg3
         string sqldb::filename() const
         {
             return filename_;
+        }
+
+        void sqldb::filename(const string &value) 
+        {
+            assert(db_ == NULL);
+            filename_ = value;
         }
 
         void sqldb::open()
