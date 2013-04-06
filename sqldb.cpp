@@ -39,12 +39,6 @@ namespace arg3
             return filename_;
         }
 
-        void sqldb::filename(const string &value) 
-        {
-            assert(db_ == NULL);
-            filename_ = value;
-        }
-
         void sqldb::open()
         {
 

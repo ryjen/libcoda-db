@@ -38,8 +38,6 @@ namespace arg3
 
             string filename() const;
 
-            void filename(const string &value);
-
             resultset execute(const string &sql);
 
             string last_error() const;
