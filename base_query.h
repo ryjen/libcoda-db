@@ -23,10 +23,10 @@ namespace arg3
         {
             friend class sqldb;
         protected:
-            sqlite3 *m_db;
-            sqlite3_stmt *m_stmt;
-            string m_tableName;
-            vector<string> m_columns;
+            sqlite3 *db_;
+            sqlite3_stmt *stmt_;
+            string tableName_;
+            vector<string> columns_;
 
             void prepare();
         public:

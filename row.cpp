@@ -8,13 +8,13 @@ namespace arg3
 {
     namespace db
     {
-        row::row(resultset *results) : m_results(results)
+        row::row(resultset *results) : results_(results)
         {
-            assert(m_results != NULL);
+            assert(results_ != NULL);
 
-            assert(m_results->m_stmt != NULL);
+            assert(results_->stmt_ != NULL);
 
-            m_size = sqlite3_column_count(m_results->m_stmt);
+            size_ = sqlite3_column_count(results_->stmt_);
         }
 
         row::iterator row::begin()
@@ -91,16 +91,16 @@ namespace arg3
         {
             assert(nPosition < size());
 
-            return db::column( sqlite3_column_value(m_results->m_stmt, nPosition ) );
+            return db::column( sqlite3_column_value(results_->stmt_, nPosition ) );
         }
 
         column row::column_value(const string &name) const
         {
             assert(!name.empty());
 
-            for(size_t i = 0, size = sqlite3_column_count(m_results->m_stmt); i < size; i++)
+            for(size_t i = 0, size = sqlite3_column_count(results_->stmt_); i < size; i++)
             {
-                const char *col_name = sqlite3_column_name(m_results->m_stmt, i);
+                const char *col_name = sqlite3_column_name(results_->stmt_, i);
 
                 if(name == col_name)
                 {
@@ -114,12 +114,12 @@ namespace arg3
         {
             assert(nPosition < size());
 
-            return sqlite3_column_name(m_results->m_stmt, nPosition);
+            return sqlite3_column_name(results_->stmt_, nPosition);
         }
 
         size_t row::size() const
         {
-            return m_size;
+            return size_;
         }
 
         bool row::empty() const

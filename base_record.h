@@ -24,8 +24,15 @@ namespace arg3
         class base_record
         {
         private:
-            map<string, variant> m_values;
-            schema m_schema;
+            map<string, variant> values_;
+            schema schema_;
+
+            void assert_schema() {
+
+                if(!schema_.is_valid())
+                    schema_.init(db(), tableName());
+            }
+
         public:
             /*!
              * default constructor
@@ -48,12 +55,12 @@ namespace arg3
             {
                 for (auto v = values.begin(); v != values.end(); v++)
                 {
-                    m_values[v.name()] = v->to_string();
+                    values_[v.name()] = v->to_string();
                 }
             }
 
             bool is_valid() const {
-                return m_schema.is_valid();
+                return schema_.is_valid();
             }
 
             /*!
@@ -71,21 +78,24 @@ namespace arg3
              */
             virtual string tableName() const = 0;
 
+            const schema &schema() {
+                assert_schema();
+                return schema_;
+            }
+
             /*!
              * saves this instance
              */
             bool save()
             {
-                if(!m_schema.is_valid())
-                    m_schema.init(db(), tableName());
-
-                modify_query query(db(), tableName(), m_schema.column_names());
+                modify_query query(db(), tableName(), schema().column_names());
 
                 int index = 1;
 
-                for (auto & column : m_schema.columns())
+                // bind the object values
+                for (auto & column : schema().columns())
                 {
-                    auto value = m_values[column.name()];
+                    auto value = values_[column.name()];
 
                     switch (column.type())
                     {
@@ -114,12 +124,15 @@ namespace arg3
              */
             variant get(const string &name)
             {
-                return m_values[name];
+                return values_[name];
             }
 
+            /*!
+             * check for the existance of a column by name
+             */
             bool has(const string &name) const
             {
-                return m_values.find(name) != m_values.end();
+                return values_.find(name) != values_.end();
             }
 
             /*!
@@ -127,49 +140,15 @@ namespace arg3
              */
             void set(const string &name, const variant &value)
             {
-                m_values[name] = value;
+                values_[name] = value;
             }
-
-            /*
-            void set(const string &name, int value)
-            {
-                m_values[name] = value;
-            }*/
-
-            /*!
-             * sets an integer for a column name
-             */
-             /*
-            void set(const string &name, long long value)
-            {
-                m_values[name] = value;
-            }*/
-
-            /*!
-             * sets a double for a column name
-             */
-             /*
-            void set(const string &name, double value)
-            {
-                m_values[name] = std::to_string(value);
-            }*/
-
-            /*!
-             * sets bytes for a column name
-             */
-             /*
-            void set(const string &name, void *data, size_t size)
-            {
-
-            }
-            */
 
             /*!
              * unsets / removes a column
              */
             void unset(const string &name)
             {
-                m_values.erase(name);
+                values_.erase(name);
             }
 
             /*!
@@ -178,7 +157,7 @@ namespace arg3
 
             vector<T> findAll() const
             {
-                auto query = select_query(db(), tableName(), m_schema.columns());
+                auto query = select_query(db(), tableName(), schema().columns());
 
                 auto results = query.execute();
 
@@ -194,11 +173,12 @@ namespace arg3
 
             T findById() const 
             {
-                auto query = select_query(db(), tableName(), m_schema.columns());
+                auto query = select_query(db(), tableName(), schema().columns());
 
                 auto params = select_query::where_clause();
 
-                for(auto &pk : m_schema.primary_keys()) {
+                // find by primary keys
+                for(auto &pk : schema_.primary_keys()) {
                     params && (format("{0} = ?", pk));
                 }
 
@@ -206,8 +186,9 @@ namespace arg3
 
                 int index = 1;
 
-                for(auto &pk : m_schema.primary_keys()) {
-                    query.bind(index, m_values[index-1]);
+                // bind primary key values
+                for(auto &pk : schema_.primary_keys()) {
+                    query.bind(index, values_[index-1]);
                     index++;
                 }
 
@@ -224,7 +205,7 @@ namespace arg3
             template<typename V>
             vector<T> findBy(const string &name, const V &value) const
             {
-                auto query = select_query(db(), tableName(), m_schema.column_names());
+                auto query = select_query(db(), tableName(), schema().column_names());
 
                 query.where(format("{0} = ?", name).str());
 
@@ -243,20 +224,22 @@ namespace arg3
             }
 
             template<typename V>
-            void loadBy(const string &name, const V &value)
+            bool loadBy(const string &name, const V &value)
             {
-                auto query = select_query(db(), tableName(), m_schema.column_names());
+                auto query = select_query(db(), tableName(), schema().column_names());
 
                 query.where(format("{0} = ? LIMIT 1", name).str());
 
                 query.bind(1, value);
 
-                auto results = query.execute();
+                auto result = query.execute();
 
-                auto it = results.begin();
+                if(!result.is_valid())
+                    return false;
 
-                if (it != results.end())
-                    init(*it);
+                init(*result);
+
+                return true;
             }
         };
     }

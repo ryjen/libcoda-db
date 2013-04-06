@@ -18,7 +18,7 @@ namespace arg3
         class column
         {
         protected:
-            sqlite3_value *m_p;
+            sqlite3_value *value_;
 
             void assert_value() const throw (no_such_column_exception);
         public:
@@ -41,6 +41,8 @@ namespace arg3
             double to_double() const;
 
             int to_int() const;
+
+            bool to_bool() const;
 
             sqlite3_int64 to_int64() const;
 

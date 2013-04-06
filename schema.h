@@ -12,14 +12,14 @@ namespace arg3
 
     namespace db
     {
-
+        // definition of a column
         class column_definition
         {
         	friend class schema;
         private:
-            string m_name;
-            bool m_pk;
-            int m_type;
+            string name_;
+            bool pk_;
+            int type_;
         public:
             string name() const;
 
@@ -30,10 +30,11 @@ namespace arg3
 
         ostream &operator<<(ostream &os, const column_definition &def);
 
+        // definition of a table
         class schema
         {
         private:
-            vector<column_definition> m_columns;
+            vector<column_definition> columns_;
 
         public:
             schema();

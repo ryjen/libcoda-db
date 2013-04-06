@@ -4,31 +4,31 @@ namespace arg3
 {
     namespace db
     {
-    	column::column() : m_p(NULL)
+    	column::column() : value_(NULL)
     	{
 
     	}
-        column::column(sqlite3_value *pValue) : m_p(pValue)
+        column::column(sqlite3_value *pValue) : value_(pValue)
         {
 
         }
 
-        column::column(const column &other) : m_p(other.m_p) {}
+        column::column(const column &other) : value_(other.value_) {}
 
         column &column::operator=(const column &other)  {
         	if(this != &other) {
-        		m_p = other.m_p;
+        		value_ = other.value_;
         	}
         	return *this;
         }
 
         bool column::is_valid() const {
-        	return m_p != NULL;
+        	return value_ != NULL;
         }
 
         void column::assert_value() const throw (no_such_column_exception)
         {
-        	if(m_p == NULL)
+        	if(value_ == NULL)
         	{
         		throw no_such_column_exception();
         	}
@@ -38,56 +38,63 @@ namespace arg3
         {
             assert_value();
 
-            return sqlite3_value_blob(m_p);
+            return sqlite3_value_blob(value_);
         }
 
         int column::blob_size() const
         {
             assert_value();
 
-            return sqlite3_value_bytes(m_p);
+            return sqlite3_value_bytes(value_);
         }
 
         int column::to_blob16() const
         {
             assert_value();
 
-            return sqlite3_value_bytes16(m_p);
+            return sqlite3_value_bytes16(value_);
         }
 
         double column::to_double() const
         {
             assert_value();
 
-            return sqlite3_value_double(m_p);
+            return sqlite3_value_double(value_);
         }
 
         int column::to_int() const
         {
             assert_value();
 
-            return sqlite3_value_int(m_p);
+            return sqlite3_value_int(value_);
+        }
+
+        bool column::to_bool() const
+        {
+            assert_value();
+
+            return sqlite3_value_int(value_);
         }
 
         sqlite3_int64 column::to_int64() const
         {
             assert_value();
 
-            return sqlite3_value_int64(m_p);
+            return sqlite3_value_int64(value_);
         }
 
         const unsigned char *column::to_text() const
         {
             assert_value();
 
-            return sqlite3_value_text(m_p);
+            return sqlite3_value_text(value_);
         }
 
         string column::to_string() const
         {
             assert_value();
 
-            const unsigned char *textValue = sqlite3_value_text(m_p);
+            const unsigned char *textValue = sqlite3_value_text(value_);
 
             if(textValue == NULL)
             	return string();
@@ -99,19 +106,19 @@ namespace arg3
         {
             assert_value();
 
-            return sqlite3_value_type(m_p);
+            return sqlite3_value_type(value_);
         }
 
         int column::numeric_type() const
         {
             assert_value();
 
-            return sqlite3_value_numeric_type(m_p);
+            return sqlite3_value_numeric_type(value_);
         }
 
         column::operator sqlite3_value *() const
         {
-            return m_p;
+            return value_;
         }
     }
 }

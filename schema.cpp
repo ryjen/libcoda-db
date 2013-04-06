@@ -10,16 +10,16 @@ namespace arg3
     {
         string column_definition::name() const
         {
-            return m_name;
+            return name_;
         }
         bool column_definition::pk() const
         {
-            return m_pk;
+            return pk_;
         }
 
         int column_definition::type() const
         {
-            return m_type;
+            return type_;
         }
 
         ostream &operator<<(ostream &os, const column_definition &def) {
@@ -35,51 +35,56 @@ namespace arg3
         }
 
         bool schema::is_valid() const {
-        	return m_columns.size() > 0;
+        	return columns_.size() > 0;
         }
 
         void schema::init(sqldb db, const string &tablename) 
         {
             assert(db.is_open());
 
+            // get table information
             auto rs = db.execute( format("pragma table_info({0})", tablename));
 
             for(auto &row : rs)
             {
 	    		column_definition def;
 
-	            def.m_name = row[1].to_string();
-	            def.m_pk = row[5].to_int() == 1;
+                // column name
+	            def.name_ = row["name"].to_string();
 
-	            string type = row[2].to_string();
+                // primary key check
+	            def.pk_ = row["pk"].to_bool();
+
+                // find type
+	            string type = row["type"].to_string();
 
 	            if(type.find("integer") != string::npos) {
-	            	def.m_type = SQLITE_INTEGER;
+	            	def.type_ = SQLITE_INTEGER;
 	            }
 	            else if(type.find("real") != string::npos) {
-	            	def.m_type = SQLITE_FLOAT;
+	            	def.type_ = SQLITE_FLOAT;
 	            }
 	            else if(type.find("blob") != string::npos) {
-	            	def.m_type = SQLITE_BLOB;
+	            	def.type_ = SQLITE_BLOB;
 	            }
 	            else {
-	            	def.m_type = SQLITE_TEXT;
+	            	def.type_ = SQLITE_TEXT;
 	            }
 
-	            m_columns.push_back(def);
+	            columns_.push_back(def);
             }
         }
 
         vector<column_definition> schema::columns() const
         {
-            return m_columns;
+            return columns_;
         }
 
         vector<string> schema::column_names() const
         {
         	vector<string> names;
 
-        	for(auto &c : m_columns) {
+        	for(auto &c : columns_) {
         		names.push_back(c.name());
         	}
         	return names;
@@ -89,15 +94,16 @@ namespace arg3
         {
         	vector<string> names;
 
-        	for(auto &c : m_columns) {
+        	for(auto &c : columns_) {
         		if(c.pk())
         			names.push_back(c.name());
         	}
+
         	return names;
         }
 
         column_definition schema::operator[](size_t index) const {
-        	return m_columns[index];
+        	return columns_[index];
         }
     };
 

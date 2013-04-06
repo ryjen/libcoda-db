@@ -11,11 +11,11 @@ namespace arg3
     namespace db
     {
 
-        sqldb::sqldb(const string &name) : m_db(NULL), m_fileName(name)
+        sqldb::sqldb(const string &name) : db_(NULL), filename_(name)
         {
         }
 
-        sqldb::sqldb(const sqldb &other) : m_db(other.m_db), m_fileName(other.m_fileName)
+        sqldb::sqldb(const sqldb &other) : db_(other.db_), filename_(other.filename_)
         {
 
         }
@@ -24,8 +24,8 @@ namespace arg3
         {
             if(this != &other)
             {
-                m_db = other.m_db;
-                m_fileName = other.m_fileName;
+                db_ = other.db_;
+                filename_ = other.filename_;
             }
 
             return *this;
@@ -35,33 +35,37 @@ namespace arg3
         {
         }
 
+        string sqldb::filename() const {
+            return filename_;
+        }
+
         void sqldb::open()
         {
 
-            if(m_db != NULL) return;
+            if(db_ != NULL) return;
 
-            if (sqlite3_open(m_fileName.c_str(), &m_db) != SQLITE_OK)
+            if (sqlite3_open(filename_.c_str(), &db_) != SQLITE_OK)
                 throw database_exception();
         }
 
         bool sqldb::is_open() const {
-            return m_db != NULL;
+            return db_ != NULL;
         }
 
         void sqldb::close()
         {
-            if(m_db == NULL) return;
+            if(db_ == NULL) return;
 
-            sqlite3_close(m_db);
-            m_db = NULL;
+            sqlite3_close(db_);
+            db_ = NULL;
         }
 
         string sqldb::last_error() const
         {
             ostringstream buf;
 
-            buf << sqlite3_errcode(m_db);
-            buf << ": " << sqlite3_errmsg(m_db);
+            buf << sqlite3_errcode(db_);
+            buf << ": " << sqlite3_errmsg(db_);
 
             return buf.str();
         }
@@ -70,7 +74,7 @@ namespace arg3
         {
             sqlite3_stmt *stmt;
 
-            if(sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK)
+            if(sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK)
                 throw database_exception();
 
             resultset set(stmt);

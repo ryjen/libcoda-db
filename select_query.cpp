@@ -12,27 +12,27 @@ namespace arg3
     {
         select_query::where_clause::where_clause() {}
 
-        select_query::where_clause::where_clause(const string &value) : m_value(value) {}
+        select_query::where_clause::where_clause(const string &value) : value_(value) {}
 
         string select_query::where_clause::to_string() const
         {
             ostringstream buf;
 
-            buf << m_value;
+            buf << value_;
 
-            if(m_and.size() > 0)
+            if(and_.size() > 0)
             {
                 buf << " AND ";
-                for(auto &w : m_and)
+                for(auto &w : and_)
                 {
                     buf << w.to_string();
                 }
             }
 
-            if(m_or.size() > 0)
+            if(or_.size() > 0)
             {
                 buf << " OR ";
-                for(auto &w : m_or)
+                for(auto &w : or_)
                 {
                     buf << w.to_string();
                 }
@@ -42,7 +42,7 @@ namespace arg3
 
         bool select_query::where_clause::empty() const
         {
-            return m_value.empty() && m_and.empty() && m_or.empty();
+            return value_.empty() && and_.empty() && or_.empty();
         }
 
         select_query::where_clause::operator string()
@@ -52,22 +52,22 @@ namespace arg3
 
         select_query::where_clause &select_query::where_clause::operator&&(const select_query::where_clause &value)
         {
-            m_and.push_back(value);
+            and_.push_back(value);
             return *this;
         }
         select_query::where_clause &select_query::where_clause::operator&&(const string &value)
         {
-            m_and.push_back(where_clause(value));
+            and_.push_back(where_clause(value));
             return *this;
         }
         select_query::where_clause &select_query::where_clause::operator||(const select_query::where_clause &value)
         {
-            m_or.push_back(value);
+            or_.push_back(value);
             return *this;
         }
         select_query::where_clause &select_query::where_clause::operator||(const string &value)
         {
-            m_or.push_back(where_clause(value));
+            or_.push_back(where_clause(value));
             return *this;
         }
         select_query::select_query(const sqldb &db, const string &tableName,
@@ -79,34 +79,34 @@ namespace arg3
 
         select_query & select_query::where(const select_query::where_clause &value)
         {
-            m_where = value;
+            where_ = value;
 
             return *this;
         }
 
         select_query & select_query::where(const string &value)
         {
-            m_where = where_clause(value);
+            where_ = where_clause(value);
 
             return *this;
         }
 
         select_query& select_query::limit(const string &value)
         {
-            m_limit = value;
+            limit_ = value;
 
             return *this;
         }
 
         select_query& select_query::orderBy(const string &value)
         {
-            m_orderBy = value;
+            orderBy_ = value;
             return *this;
         }
 
         select_query& select_query::groupBy(const string &value)
         {
-            m_groupBy = value;
+            groupBy_ = value;
             return *this;
         }
 
@@ -117,28 +117,28 @@ namespace arg3
 
             buf << "SELECT ";
 
-            buf << (m_columns.size() == 0 ? "*" : join(m_columns));
+            buf << (columns_.size() == 0 ? "*" : join(columns_));
 
-            buf << " FROM " << m_tableName;
+            buf << " FROM " << tableName_;
 
-            if (!m_where.empty())
+            if (!where_.empty())
             {
-                buf << " WHERE " << m_where.to_string();
+                buf << " WHERE " << where_.to_string();
             }
 
-            if (!m_orderBy.empty())
+            if (!orderBy_.empty())
             {
-                buf << " ORDER BY " << m_orderBy;
+                buf << " ORDER BY " << orderBy_;
             }
 
-            if (!m_limit.empty())
+            if (!limit_.empty())
             {
-                buf << " LIMIT " << m_limit;
+                buf << " LIMIT " << limit_;
             }
 
-            if (!m_groupBy.empty())
+            if (!groupBy_.empty())
             {
-                buf << " GROUP BY " << m_groupBy;
+                buf << " GROUP BY " << groupBy_;
             }
 
             return buf.str();
@@ -148,7 +148,7 @@ namespace arg3
         {
             prepare();
 
-            return resultset(m_stmt);
+            return resultset(stmt_);
 
         }
     }

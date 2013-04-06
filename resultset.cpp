@@ -7,7 +7,7 @@ namespace arg3
 {
     namespace db
     {
-        resultset::resultset(sqlite3_stmt *stmt) : m_stmt(stmt), m_status(-1)
+        resultset::resultset(sqlite3_stmt *stmt) : stmt_(stmt), status_(-1)
         {
 
         }
@@ -15,29 +15,44 @@ namespace arg3
         int resultset::step()
         {
 
-            m_status = sqlite3_step(m_stmt);
+            status_ = sqlite3_step(stmt_);
 
-            return m_status;
+            return status_;
         }
 
-        int resultset::status()
+        /*int resultset::status()
         {
-            if(m_status == -1)
+            if(status_ == -1)
                 step();
 
-            return m_status;
-        }
+            return status_;
+        }*/
 
         bool resultset::has_more() {
-            if(m_status == -1)
+            if(status_ == -1)
                 step();
 
-            return m_status == SQLITE_ROW;
+            return status_ == SQLITE_ROW;
+        }
+
+        bool resultset::is_valid() {
+            return has_more();
         }
         
+        row resultset::operator*() {
+            if(status_ == -1)
+                step();
+
+            return row(this);
+        }
+
+        bool resultset::next() {
+            return step() == SQLITE_ROW;
+        }
+
         resultset::iterator resultset::begin()
         {
-            sqlite3_reset(m_stmt);
+            sqlite3_reset(stmt_);
 
             if(step() == SQLITE_ROW)
                 return iterator(this, 0);
@@ -51,33 +66,33 @@ namespace arg3
         }
 
 
-        resultset_iterator::resultset_iterator(resultset *rset, int position) : m_rs(rset), m_pos(position), m_value(rset)
+        resultset_iterator::resultset_iterator(resultset *rset, int position) : rs_(rset), pos_(position), value_(rset)
         {
         }
 
         resultset_iterator::reference resultset_iterator::operator*()
         {
-            return m_value;
+            return value_;
         }
 
         resultset_iterator &resultset_iterator::operator++()
         {
-            if (m_rs == NULL)
+            if (rs_ == NULL)
                 return *this;
 
-            int res = m_rs->step();
+            int res = rs_->step();
 
-            m_pos++;
+            pos_++;
 
             switch (res)
             {
 
             case SQLITE_DONE:
-                m_rs = NULL;
-                m_pos = -1;
+                rs_ = NULL;
+                pos_ = -1;
                 break;
             case SQLITE_ROW:
-                m_value = row(m_rs);
+                value_ = row(rs_);
                 break;
             default:
                 throw database_exception();
@@ -118,7 +133,7 @@ namespace arg3
 
         bool resultset_iterator::operator==(const resultset_iterator &other) const
         {
-            return m_pos == other.m_pos;
+            return pos_ == other.pos_;
         }
 
         bool resultset_iterator::operator!=(const resultset_iterator &other) const
@@ -128,14 +143,14 @@ namespace arg3
 
         bool resultset_iterator::operator<(const resultset_iterator &other) const
         {
-            if (m_pos == -1 && other.m_pos == -1)
+            if (pos_ == -1 && other.pos_ == -1)
                 return false;
-            else if (m_pos == -1)
+            else if (pos_ == -1)
                 return false;
-            else if (other.m_pos == -1)
+            else if (other.pos_ == -1)
                 return true;
             else
-                return m_pos < other.m_pos;
+                return pos_ < other.pos_;
         }
 
         bool resultset_iterator::operator<=(const resultset_iterator &other) const

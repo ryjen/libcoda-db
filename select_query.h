@@ -19,9 +19,9 @@ namespace arg3
             class where_clause
             {
             private:
-                vector<where_clause> m_and;
-                vector<where_clause> m_or;
-                string m_value;
+                vector<where_clause> and_;
+                vector<where_clause> or_;
+                string value_;
 
             public:
                 where_clause();
@@ -40,10 +40,10 @@ namespace arg3
             };
             friend class resultset;
         private:
-            where_clause m_where;
-            string m_limit;
-            string m_orderBy;
-            string m_groupBy;
+            where_clause where_;
+            string limit_;
+            string orderBy_;
+            string groupBy_;
         public:
 
             select_query(const sqldb &db, const string &tableName, const vector<string> &columns);

@@ -17,33 +17,33 @@ namespace arg3
         class row_iterator : public std::iterator<std::random_access_iterator_tag, ValueType>
         {
         protected:
-            RowType *m_row;
-            int m_position;
+            RowType *row_;
+            int position_;
 
             ValueType get_value(int nPosition) {
 
             }
         public:
-            row_iterator() : m_row(NULL),
-                m_position(-1)
+            row_iterator() : row_(NULL),
+                position_(-1)
             {
             }
 
-            row_iterator(RowType *pRow, int nPosition) : m_row(pRow),
-                m_position(nPosition)
+            row_iterator(RowType *pRow, int nPosition) : row_(pRow),
+                position_(nPosition)
             {
             }
 
             ValueType operator*()
             {
-                return operator[](m_position);
+                return operator[](position_);
             }
 
             ValueType* operator->()
             {
                 static NonConst operator_pointer;
 
-                operator_pointer = operator[](m_position);
+                operator_pointer = operator[](position_);
 
                 return &operator_pointer;
             }
@@ -51,14 +51,14 @@ namespace arg3
             ValueType operator[](size_t nPosition)
             {
                
-                assert(m_row != NULL);
+                assert(row_ != NULL);
 
-               return m_row->operator[](nPosition);
+               return row_->operator[](nPosition);
             }
 
             row_iterator &operator++()
             {
-                ++m_position;
+                ++position_;
                 return *this;
             }
 
@@ -71,7 +71,7 @@ namespace arg3
 
             row_iterator &operator--()
             {
-                --m_position;
+                --position_;
                 return *this;
             }
 
@@ -85,32 +85,32 @@ namespace arg3
             row_iterator operator+(int n)
             {
                 row_iterator tmp(*this);
-                tmp.m_position += n;
+                tmp.position_ += n;
                 return tmp;
             }
 
             row_iterator &operator+=(int n)
             {
-                m_position += n;
+                position_ += n;
                 return *this;
             }
 
             row_iterator operator-(int n)
             {
                 row_iterator tmp(*this);
-                tmp.m_position -= n;
+                tmp.position_ -= n;
                 return tmp;
             }
 
             row_iterator &operator-=(int n)
             {
-                m_position -= n;
+                position_ -= n;
                 return *this;
             }
 
             bool operator==(const row_iterator &other) const
             {
-                return m_position == other.m_position;
+                return position_ == other.position_;
             }
 
             bool operator!=(const row_iterator &other) const
@@ -120,7 +120,7 @@ namespace arg3
 
             bool operator<(const row_iterator &other) const
             {
-                return m_position < other.m_position;
+                return position_ < other.position_;
             }
 
             bool operator<=(const row_iterator &other) const
@@ -140,12 +140,12 @@ namespace arg3
 
             int operator-(const row_iterator &other)
             {
-                return m_position - other.m_position;
+                return position_ - other.position_;
             }
 
             string name() const
             {
-                return m_row->column_name(m_position);
+                return row_->column_name(position_);
             }
         };
 
@@ -164,8 +164,8 @@ namespace arg3
             typedef std::reverse_iterator<const_iterator>                const_reverse_iterator;
             
         private:
-            resultset *m_results;
-            size_t m_size;
+            resultset *results_;
+            size_t size_;
 
             row(resultset *results);
 

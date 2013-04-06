@@ -21,17 +21,17 @@ namespace arg3
         {
             ostringstream buf;
 
-            buf << "REPLACE INTO " << m_tableName;
+            buf << "REPLACE INTO " << tableName_;
 
-            if (m_columns.size() > 0)
+            if (columns_.size() > 0)
             {
                 buf << "(";
 
-                buf << join(m_columns);
+                buf << join(columns_);
 
                 buf << ") VALUES (";
 
-                buf << join('?', m_columns.size());
+                buf << join('?', columns_.size());
 
                 buf << ")";
             }
@@ -47,18 +47,18 @@ namespace arg3
         {
             prepare();
 
-            int res = sqlite3_step(m_stmt);
+            int res = sqlite3_step(stmt_);
 
             if(!batch)
             {
-                if(sqlite3_finalize(m_stmt) != SQLITE_OK)
+                if(sqlite3_finalize(stmt_) != SQLITE_OK)
                     throw database_exception();
 
-                m_stmt = NULL;
+                stmt_ = NULL;
             }
             else
             {
-                if(sqlite3_reset(m_stmt) != SQLITE_OK)
+                if(sqlite3_reset(stmt_) != SQLITE_OK)
                     throw database_exception();
             }
 

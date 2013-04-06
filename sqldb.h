@@ -18,12 +18,13 @@ namespace arg3
     {
         class resultset;
         
+        // an instanceof a database
         class sqldb
         {
             friend class base_query;
         private:
-            sqlite3 *m_db;
-            string m_fileName;
+            sqlite3 *db_;
+            string filename_;
         public:
             sqldb(const string &name = "arg3.db");
             sqldb(const sqldb &other);
@@ -34,6 +35,8 @@ namespace arg3
 
             void open();
             void close();
+
+            string filename() const;
 
             resultset execute(const string &sql);
 

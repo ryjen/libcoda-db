@@ -17,9 +17,9 @@ namespace arg3
         class resultset_iterator : public std::iterator<std::input_iterator_tag, row>
         {
         private:
-            resultset *m_rs;
-            int m_pos;
-            row m_value;
+            resultset *rs_;
+            int pos_;
+            row value_;
         public:
 
             resultset_iterator(resultset* rs, int position);
@@ -59,24 +59,29 @@ namespace arg3
             friend class select_query;
             friend class row;
             friend class sqldb;
+            friend class resultset_iterator;
         public:
             typedef resultset_iterator iterator;
         private:
-            sqlite3_stmt *m_stmt;
+            sqlite3_stmt *stmt_;
 
             resultset(sqlite3_stmt *stmt);
 
-            int m_status;
+            int status_;
+
+            int step();
         public:
             iterator begin();
 
             iterator end();
 
-            int status();
+            bool is_valid();
 
             bool has_more();
 
-            int step();
+            row operator*();
+
+            bool next();
         };
     }
 
