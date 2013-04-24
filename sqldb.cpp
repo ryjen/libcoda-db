@@ -21,7 +21,7 @@ namespace arg3
 
         sqldb &sqldb::operator=(const sqldb &other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 db_ = other.db_;
                 filename_ = other.filename_;
@@ -47,7 +47,7 @@ namespace arg3
         void sqldb::open()
         {
 
-            if(db_ != NULL) return;
+            if (db_ != NULL) return;
 
             if (sqlite3_open(filename_.c_str(), &db_) != SQLITE_OK)
                 throw database_exception();
@@ -60,7 +60,7 @@ namespace arg3
 
         void sqldb::close()
         {
-            if(db_ == NULL) return;
+            if (db_ == NULL) return;
 
             sqlite3_close(db_);
             db_ = NULL;
@@ -80,7 +80,7 @@ namespace arg3
         {
             sqlite3_stmt *stmt;
 
-            if(sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK)
+            if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK)
                 throw database_exception();
 
             resultset set(stmt);

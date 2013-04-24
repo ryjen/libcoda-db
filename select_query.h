@@ -50,15 +50,15 @@ namespace arg3
 
             select_query(const sqldb &db, const string &tableName);
 
-            select_query &where(const where_clause& value);
+            select_query &where(const where_clause &value);
 
             select_query &where(const string &value);
 
-            select_query & limit(const string &value);
+            select_query &limit(const string &value);
 
-            select_query & orderBy(const string &value);
+            select_query &orderBy(const string &value);
 
-            select_query & groupBy(const string &value);
+            select_query &groupBy(const string &value);
 
             string to_string() const;
 

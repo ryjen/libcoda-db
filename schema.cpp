@@ -47,7 +47,7 @@ namespace arg3
             // get table information
             auto rs = db.execute( format("pragma table_info({0})", tablename));
 
-for(auto &row : rs)
+            for (auto & row : rs)
             {
                 column_definition def;
 
@@ -60,15 +60,15 @@ for(auto &row : rs)
                 // find type
                 string type = row["type"].to_string();
 
-                if(type.find("integer") != string::npos)
+                if (type.find("integer") != string::npos)
                 {
                     def.type_ = SQLITE_INTEGER;
                 }
-                else if(type.find("real") != string::npos)
+                else if (type.find("real") != string::npos)
                 {
                     def.type_ = SQLITE_FLOAT;
                 }
-                else if(type.find("blob") != string::npos)
+                else if (type.find("blob") != string::npos)
                 {
                     def.type_ = SQLITE_BLOB;
                 }
@@ -90,7 +90,7 @@ for(auto &row : rs)
         {
             vector<string> names;
 
-for(auto &c : columns_)
+            for (auto & c : columns_)
             {
                 names.push_back(c.name());
             }
@@ -101,9 +101,9 @@ for(auto &c : columns_)
         {
             vector<string> names;
 
-for(auto &c : columns_)
+            for (auto & c : columns_)
             {
-                if(c.pk())
+                if (c.pk())
                     names.push_back(c.name());
             }
 

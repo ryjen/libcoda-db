@@ -59,7 +59,7 @@ Context(select_query_test)
 
             Assert::That(lastName, Equals("Jenkins"));
         }
-        catch(const database_exception &e)
+        catch (const database_exception &e)
         {
             cout << testdb.last_error() << endl;
             throw e;

@@ -98,11 +98,11 @@ namespace arg3
         {
             assert(!name.empty());
 
-            for(size_t i = 0, size = sqlite3_column_count(results_->stmt_); i < size; i++)
+            for (size_t i = 0, size = sqlite3_column_count(results_->stmt_); i < size; i++)
             {
                 const char *col_name = sqlite3_column_name(results_->stmt_, i);
 
-                if(name == col_name)
+                if (name == col_name)
                 {
                     return column_value(i);
                 }

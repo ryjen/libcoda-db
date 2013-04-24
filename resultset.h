@@ -22,7 +22,7 @@ namespace arg3
             row value_;
         public:
 
-            resultset_iterator(resultset* rs, int position);
+            resultset_iterator(resultset *rs, int position);
 
             reference operator*();
 
@@ -32,7 +32,7 @@ namespace arg3
 
             const pointer operator->() const;
 
-            resultset_iterator& operator++();
+            resultset_iterator &operator++();
 
             resultset_iterator operator++(int);
 
@@ -40,9 +40,9 @@ namespace arg3
 
             resultset_iterator &operator+=(difference_type n);
 
-            bool operator==(const resultset_iterator& other) const;
+            bool operator==(const resultset_iterator &other) const;
 
-            bool operator!=(const resultset_iterator& other) const;
+            bool operator!=(const resultset_iterator &other) const;
 
             bool operator<(const resultset_iterator &other) const;
 

@@ -20,19 +20,19 @@ namespace arg3
 
             buf << value_;
 
-            if(and_.size() > 0)
+            if (and_.size() > 0)
             {
                 buf << " AND ";
-for(auto &w : and_)
+                for (auto & w : and_)
                 {
                     buf << w.to_string();
                 }
             }
 
-            if(or_.size() > 0)
+            if (or_.size() > 0)
             {
                 buf << " OR ";
-for(auto &w : or_)
+                for (auto & w : or_)
                 {
                     buf << w.to_string();
                 }
@@ -77,34 +77,34 @@ for(auto &w : or_)
         select_query::select_query(const sqldb &db, const string &tableName) : base_query(db, tableName)
         {}
 
-        select_query & select_query::where(const select_query::where_clause &value)
+        select_query &select_query::where(const select_query::where_clause &value)
         {
             where_ = value;
 
             return *this;
         }
 
-        select_query & select_query::where(const string &value)
+        select_query &select_query::where(const string &value)
         {
             where_ = where_clause(value);
 
             return *this;
         }
 
-        select_query& select_query::limit(const string &value)
+        select_query &select_query::limit(const string &value)
         {
             limit_ = value;
 
             return *this;
         }
 
-        select_query& select_query::orderBy(const string &value)
+        select_query &select_query::orderBy(const string &value)
         {
             orderBy_ = value;
             return *this;
         }
 
-        select_query& select_query::groupBy(const string &value)
+        select_query &select_query::groupBy(const string &value)
         {
             groupBy_ = value;
             return *this;

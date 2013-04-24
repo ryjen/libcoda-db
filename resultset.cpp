@@ -30,7 +30,7 @@ namespace arg3
 
         bool resultset::has_more()
         {
-            if(status_ == -1)
+            if (status_ == -1)
                 step();
 
             return status_ == SQLITE_ROW;
@@ -43,7 +43,7 @@ namespace arg3
 
         row resultset::operator*()
         {
-            if(status_ == -1)
+            if (status_ == -1)
                 step();
 
             return row(this);
@@ -58,7 +58,7 @@ namespace arg3
         {
             sqlite3_reset(stmt_);
 
-            if(step() == SQLITE_ROW)
+            if (step() == SQLITE_ROW)
                 return iterator(this, 0);
             else
                 return end();

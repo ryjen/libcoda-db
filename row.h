@@ -40,7 +40,7 @@ namespace arg3
                 return operator[](position_);
             }
 
-            ValueType* operator->()
+            ValueType *operator->()
             {
                 static NonConst operator_pointer;
 
