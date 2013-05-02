@@ -65,4 +65,4 @@ TODO
 licensing
 =========
 
-copyrighted under the Lesser GNU Public License
+under the Lesser GNU Public License
