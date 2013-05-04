@@ -50,6 +50,37 @@ namespace arg3
                 init(values);
             }
 
+            base_record(const base_record &other) : values_(other.values_), schema_(other.schema_)
+            {}
+
+            base_record(base_record &&other) : values_(std::move(other.values_)), schema_(std::move(other.schema_))
+            {}
+
+            virtual ~base_record()
+            {
+
+            }
+
+            base_record& operator=(const base_record &other)
+            {
+                if(this != &other)
+                {
+                    values_ = other.values_;
+                    schema_ = other.schema_;
+                }
+                return this;
+            }
+
+            base_record& operator=(base_record &&other)
+            {
+                if(this != &other)
+                {
+                    values_ = std::move(other.values_);
+                    schema_ = std::move(other.schema_);
+                }
+                return this;
+            }
+
             /*!
              * initializes with values from a database row
              */

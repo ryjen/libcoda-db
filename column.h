@@ -24,11 +24,17 @@ namespace arg3
         public:
             column();
 
+            virtual ~column();
+
             column(sqlite3_value *pValue);
 
             column(const column &other);
 
+            column(column &&other);
+
             column &operator=(const column &other);
+
+            column &operator=(column &&other);
 
             bool is_valid() const;
 

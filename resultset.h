@@ -24,6 +24,16 @@ namespace arg3
 
             resultset_iterator(resultset *rs, int position);
 
+            resultset_iterator(const resultset_iterator &other);
+
+            resultset_iterator(resultset_iterator &&other);
+
+            virtual ~resultset_iterator();
+
+            resultset_iterator& operator=(const resultset_iterator &other);
+
+            resultset_iterator& operator=(resultset_iterator &&other);
+
             reference operator*();
 
             const reference operator*() const;
@@ -71,6 +81,13 @@ namespace arg3
 
             int step();
         public:
+            resultset(const resultset &other);
+            resultset(resultset &&other);
+            virtual ~resultset();
+
+            resultset &operator=(const resultset &other);
+            resultset &operator=(resultset &&other);
+
             iterator begin();
 
             iterator end();

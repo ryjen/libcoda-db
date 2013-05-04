@@ -26,6 +26,12 @@ namespace arg3
             public:
                 where_clause();
                 explicit where_clause(const string &value);
+                where_clause(const where_clause &other);
+                where_clause(where_clause &&other);
+                where_clause &operator=(const where_clause &other);
+                where_clause &operator=(where_clause &&other);
+
+                virtual ~where_clause();
 
                 string to_string() const;
 
@@ -49,6 +55,16 @@ namespace arg3
             select_query(const sqldb &db, const string &tableName, const vector<string> &columns);
 
             select_query(const sqldb &db, const string &tableName);
+
+            select_query(const select_query &other);
+
+            select_query(select_query &&other);
+
+            virtual ~select_query();
+
+            select_query &operator=(const select_query &other);
+
+            select_query &operator=(select_query &&other);
 
             select_query &where(const where_clause &value);
 

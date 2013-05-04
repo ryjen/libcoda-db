@@ -30,9 +30,35 @@ namespace arg3
 
         schema::schema() {}
 
+        schema::~schema() {}
+
         schema::schema(sqldb db, const string &tablename)
         {
             init(db, tablename);
+        }
+
+        schema::schema(const schema &other) : columns_(other.columns_)
+        {}
+
+        schema::schema(schema &&other) : columns_(std::move(other.columns_))
+        {}
+
+        schema &schema::operator=(const schema &other)
+        {
+            if(this != &other)
+            {
+                columns_ = other.columns_;
+            }
+            return *this;
+        }
+
+        schema &schema::operator=(schema &&other)
+        {
+            if(this != &other)
+            {
+                columns_ = std::move(other.columns_);
+            }
+            return *this;
         }
 
         bool schema::is_valid() const

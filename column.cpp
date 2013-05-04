@@ -15,11 +15,24 @@ namespace arg3
 
         column::column(const column &other) : value_(other.value_) {}
 
+        column::column(column &&other) : value_(std::move(other.value_)) {}
+
+        column::~column() {}
+
         column &column::operator=(const column &other)
         {
             if (this != &other)
             {
                 value_ = other.value_;
+            }
+            return *this;
+        }
+
+        column &column::operator=(column &&other)
+        {
+            if (this != &other)
+            {
+                value_ = std::move(other.value_);
             }
             return *this;
         }

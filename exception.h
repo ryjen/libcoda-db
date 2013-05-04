@@ -24,6 +24,27 @@ namespace arg3
             string what_;
         public:
             illegal_state_exception(const string &what) : what_(what) {}
+            illegal_state_exception(const illegal_state_exception &e) : std::exception(e), what_(e.what_) {}
+            illegal_state_exception(illegal_state_exception &&e) : std::exception(std::move(e)), what_(std::move(e.what_)) {}
+            virtual ~illegal_state_exception() {}
+
+            illegal_state_exception &operator=(const illegal_state_exception &e)
+            {
+                if(this != &e) {
+                    std::exception::operator=(e);
+                    what_ = e.what_;
+                }
+                return *this;
+            }
+
+            illegal_state_exception &operator=(illegal_state_exception &&e)
+            {
+                if(this != &e) {
+                    std::exception::operator=(std::move(e));
+                    what_ = std::move(e.what_);
+                }
+                return *this;
+            }
 
             const char *what() const throw()
             {

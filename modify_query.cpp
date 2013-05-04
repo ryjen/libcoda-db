@@ -17,6 +17,26 @@ namespace arg3
         modify_query::modify_query(const sqldb &db, const string &tableName) : base_query(db, tableName)
         {}
 
+        modify_query::modify_query(const modify_query &other) : base_query(other)
+        {}
+
+        modify_query::modify_query(modify_query &&other) : base_query(std::move(other))
+        {}
+
+        modify_query::~modify_query() {}
+
+        modify_query &modify_query::operator=(const modify_query &other)
+        {
+            base_query::operator=(other);
+            return *this;
+        }
+
+        modify_query &modify_query::operator=(modify_query &&other)
+        {
+            base_query::operator=(std::move(other));
+            return *this;
+        }
+
         string modify_query::to_string() const
         {
             ostringstream buf;

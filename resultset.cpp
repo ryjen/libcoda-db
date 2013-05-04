@@ -12,6 +12,36 @@ namespace arg3
 
         }
 
+        resultset::resultset(const resultset &other) : stmt_(other.stmt_), status_(other.status_)
+        {}
+
+        resultset::resultset(resultset &&other) : stmt_(std::move(other.stmt_)), status_(other.status_)
+        {}
+
+        resultset::~resultset() {}
+
+        resultset &resultset::operator=(const resultset &other)
+        {
+            if(this != &other)
+            {
+                stmt_ = other.stmt_;
+                status_ = other.status_;
+            }
+
+            return *this;
+        }
+
+        resultset &resultset::operator=(resultset &&other)
+        {
+            if(this != &other)
+            {
+                stmt_ = std::move(other.stmt_);
+                status_ = other.status_;
+            }
+
+            return *this;
+        }
+
         int resultset::step()
         {
 
@@ -72,6 +102,37 @@ namespace arg3
 
         resultset_iterator::resultset_iterator(resultset *rset, int position) : rs_(rset), pos_(position), value_(rset)
         {
+        }
+
+        resultset_iterator::resultset_iterator(const resultset_iterator &other) : rs_(other.rs_), pos_(other.pos_), value_(other.value_)
+        {}
+
+        resultset_iterator::resultset_iterator(resultset_iterator &&other) : rs_(std::move(other.rs_)), pos_(other.pos_),
+            value_(std::move(other.value_))
+        {}
+
+        resultset_iterator::~resultset_iterator() {}
+
+        resultset_iterator &resultset_iterator::operator=(const resultset_iterator &other)
+        {
+            if(this != &other)
+            {
+                rs_ = other.rs_;
+                pos_ = other.pos_;
+                value_ = other.value_;
+            }
+            return *this;
+        }
+
+        resultset_iterator &resultset_iterator::operator=(resultset_iterator &&other)
+        {
+            if(this != &other)
+            {
+                rs_ = std::move(other.rs_);
+                pos_ = other.pos_;
+                value_ = std::move(other.value_);
+            }
+            return *this;
         }
 
         resultset_iterator::reference resultset_iterator::operator*()

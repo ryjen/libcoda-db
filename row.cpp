@@ -17,6 +17,34 @@ namespace arg3
             size_ = sqlite3_column_count(results_->stmt_);
         }
 
+        row::row(const row &other) : results_(other.results_), size_(other.size_)
+        {}
+
+        row::row(row &&other) : results_(std::move(other.results_)), size_(other.size_)
+        {}
+
+        row::~row() {}
+
+        row &row::operator=(const row &other)
+        {
+            if(this != &other)
+            {
+                results_ = other.results_;
+                size_ = other.size_;
+            }
+            return *this;
+        }
+
+        row &row::operator=(row &&other)
+        {
+            if(this != &other)
+            {
+                results_ = std::move(other.results_);
+                size_ = other.size_;
+            }
+            return *this;
+        }
+
         row::iterator row::begin()
         {
             return iterator(this, 0);

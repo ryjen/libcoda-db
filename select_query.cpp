@@ -14,6 +14,30 @@ namespace arg3
 
         select_query::where_clause::where_clause(const string &value) : value_(value) {}
 
+        select_query::where_clause::where_clause(const select_query::where_clause &other) : value_(other.value_) {}
+
+        select_query::where_clause::where_clause(select_query::where_clause &&other) : value_(std::move(other.value_)) {}
+
+        select_query::where_clause::~where_clause() {}
+
+        select_query::where_clause &select_query::where_clause::operator=(const select_query::where_clause &other)
+        {
+            if(this != &other)
+            {
+                value_ = other.value_;
+            }
+            return *this;
+        }
+
+        select_query::where_clause &select_query::where_clause::operator=(select_query::where_clause &&other)
+        {
+            if(this != &other)
+            {
+                value_ =std::move( other.value_ );
+            }
+            return *this;
+        }
+
         string select_query::where_clause::to_string() const
         {
             ostringstream buf;
@@ -76,6 +100,45 @@ namespace arg3
 
         select_query::select_query(const sqldb &db, const string &tableName) : base_query(db, tableName)
         {}
+
+        select_query::select_query(const select_query &other) : base_query(other), where_(other.where_),
+            limit_(other.limit_), orderBy_(other.orderBy_), groupBy_(other.groupBy_)
+        {
+        }
+
+        select_query::select_query(select_query &&other) : base_query(std::move(other)), where_(std::move(other.where_)),
+            limit_(std::move(other.limit_)), orderBy_(std::move(other.orderBy_)), groupBy_(std::move(other.groupBy_))
+        {
+        }
+
+        select_query::~select_query()
+        {}
+
+        select_query &select_query::operator=(const select_query &other)
+        {
+            if(this != &other)
+            {
+                base_query::operator=(other);
+                where_ = other.where_;
+                limit_ = other.limit_;
+                orderBy_ = other.orderBy_;
+                groupBy_ = other.groupBy_;
+            }
+            return *this;
+        }
+
+        select_query &select_query::operator=(select_query &&other)
+        {
+            if(this != &other)
+            {
+                base_query::operator=(std::move(other));
+                where_ = std::move(other.where_);
+                limit_ = std::move(other.limit_);
+                orderBy_ = std::move(other.orderBy_);
+                groupBy_ = std::move(other.groupBy_);
+            }
+            return *this;
+        }
 
         select_query &select_query::where(const select_query::where_clause &value)
         {

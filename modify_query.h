@@ -19,6 +19,16 @@ namespace arg3
 
             modify_query(const sqldb &db, const string &tableName);
 
+            modify_query(const modify_query &other);
+
+            modify_query(modify_query &&other);
+
+            virtual ~modify_query();
+
+            modify_query &operator=(const modify_query &other);
+
+            modify_query &operator=(modify_query &&other);
+
             string to_string() const;
 
             bool execute(bool batch = false);

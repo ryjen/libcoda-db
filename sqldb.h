@@ -28,7 +28,9 @@ namespace arg3
         public:
             sqldb(const string &name = "arg3.db");
             sqldb(const sqldb &other);
+            sqldb(sqldb &&other);
             sqldb &operator=(const sqldb &other);
+            sqldb &operator=(sqldb &&other);
             ~sqldb();
 
             bool is_open() const;

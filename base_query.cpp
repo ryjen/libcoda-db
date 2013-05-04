@@ -18,6 +18,40 @@ namespace arg3
         base_query::base_query(const sqldb &db, const string &tableName) : db_(db.db_), stmt_(NULL), tableName_(tableName)
         {}
 
+        base_query::base_query(const base_query &other) : db_(other.db_), stmt_(other.stmt_), 
+            tableName_(other.tableName_), columns_(other.columns_)
+        {}
+
+        base_query::base_query(base_query &&other) : db_(std::move(other.db_)), stmt_(std::move(other.stmt_)), 
+            tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))
+        {}
+
+        base_query::~base_query() {}
+
+        base_query &base_query::operator=(const base_query &other)
+        {
+            if(this != &other)
+            {
+                db_ = other.db_;
+                stmt_ = other.stmt_;
+                tableName_ = other.tableName_;
+                columns_ = other.columns_;
+            }
+            return *this;
+        }
+
+        base_query &base_query::operator=(base_query &&other)
+        {
+            if(this != &other)
+            {
+                db_ = std::move(other.db_);
+                stmt_ = std::move(other.stmt_);
+                tableName_ = std::move(other.tableName_);
+                columns_ = std::move(other.columns_);
+            }
+            return *this;
+        }
+
         void base_query::prepare()
         {
             if (stmt_ != NULL) return;

@@ -19,12 +19,28 @@ namespace arg3
 
         }
 
+        sqldb::sqldb(sqldb &&other) : db_(std::move(other.db_)), filename_(std::move(other.filename_))
+        {
+
+        }
+
         sqldb &sqldb::operator=(const sqldb &other)
         {
             if (this != &other)
             {
                 db_ = other.db_;
                 filename_ = other.filename_;
+            }
+
+            return *this;
+        }
+
+        sqldb &sqldb::operator=(sqldb &&other)
+        {
+            if (this != &other)
+            {
+                db_ = std::move(other.db_);
+                filename_ = std::move(other.filename_);
             }
 
             return *this;

@@ -35,6 +35,35 @@ namespace arg3
             {
             }
 
+            row_iterator(const row_iterator &other) : row_(other.row_), position_(other.position_)
+            {
+            }
+
+            row_iterator(row_iterator &&other) : row_(std::move(other.row_)), position_(other.position_)
+            {}
+
+            virtual ~row_iterator() {}
+
+            row_iterator &operator=(const row_iterator &other)
+            {
+                if(this != &other)
+                {
+                    row_ = other.row_;
+                    position_ = other.position_;
+                }
+                return this;
+            }
+
+            row_iterator &operator=(row_iterator &&other)
+            {
+                if(this != &other)
+                {
+                    row_ = std::move(other.row_);
+                    position_ = other.position_;
+                }
+                return this;
+            }
+
             ValueType operator*()
             {
                 return operator[](position_);
@@ -171,6 +200,14 @@ namespace arg3
             row(resultset *results);
 
         public:
+
+            virtual ~row();
+
+            row(const row &other);
+            row(row &&other);
+
+            row &operator=(const row &other);
+            row &operator=(row &&other);
 
             //Methods
             iterator begin();

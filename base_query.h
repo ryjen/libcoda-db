@@ -44,6 +44,16 @@ namespace arg3
              */
             base_query(const sqldb &db, const string &tableName);
 
+            base_query(const base_query &other);
+
+            base_query(base_query &&other);
+
+            virtual ~base_query();
+
+            base_query &operator=(const base_query &other);
+
+            base_query &operator=(base_query &&other);
+
             /*!
              * should return valid T-SQL
              */
