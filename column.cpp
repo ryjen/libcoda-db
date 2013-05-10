@@ -10,7 +10,6 @@ namespace arg3
         }
         column::column(sqlite3_value *pValue) : value_(pValue)
         {
-
         }
 
         column::column(const column &other) : value_(other.value_) {}
