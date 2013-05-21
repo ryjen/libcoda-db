@@ -68,7 +68,7 @@ namespace arg3
                     values_ = other.values_;
                     schema_ = other.schema_;
                 }
-                return this;
+                return *this;
             }
 
             base_record& operator=(base_record &&other)
@@ -78,7 +78,7 @@ namespace arg3
                     values_ = std::move(other.values_);
                     schema_ = std::move(other.schema_);
                 }
-                return this;
+                return *this;
             }
 
             /*!
@@ -128,7 +128,7 @@ namespace arg3
                 int index = 1;
 
                 // bind the object values
-                for (auto & column : schema().columns())
+for (auto & column : schema().columns())
                 {
                     auto value = values_[column.name()];
 
@@ -198,7 +198,7 @@ namespace arg3
 
                 vector<T> items;
 
-                for (auto & row : results)
+for (auto & row : results)
                 {
                     items.emplace_back(row);
                 }
@@ -213,7 +213,7 @@ namespace arg3
                 auto params = select_query::where_clause();
 
                 // find by primary keys
-                for (auto & pk : schema_.primary_keys())
+for (auto & pk : schema_.primary_keys())
                 {
                     params && (format("{0} = ?", pk));
                 }
@@ -223,7 +223,7 @@ namespace arg3
                 int index = 1;
 
                 // bind primary key values
-                for (auto & pk : schema_.primary_keys())
+for (auto & pk : schema_.primary_keys())
                 {
                     query.bind(index, values_[index - 1]);
                     index++;
@@ -252,7 +252,7 @@ namespace arg3
 
                 vector<T> items;
 
-                for (auto & row : results)
+for (auto & row : results)
                 {
                     items.emplace_back(row);
                 }
