@@ -80,6 +80,17 @@ namespace arg3
 
             resultset execute();
 
+            template<typename T>
+            T executeScalar() {
+                auto rs = execute();
+
+                auto row = rs.begin();
+
+                auto col = row->begin();
+
+                return *col;
+            }
+
         };
 
 

@@ -135,5 +135,25 @@ namespace arg3
         {
             return value_;
         }
+
+        column::operator string() const
+        {
+            return to_string();
+        }
+
+        column::operator int() const
+        {
+            return to_int();
+        }
+
+        column::operator sqlite3_int64() const
+        {
+            return to_int64();
+        }
+
+        column::operator double() const
+        {
+            return to_double();
+        }
     }
 }

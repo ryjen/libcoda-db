@@ -66,4 +66,19 @@ Context(select_query_test)
         }
     }
 
+    Spec(executeScalar)
+    {
+        vector<string> columns = { "first_name"};
+
+        auto query = select_query(&testdb, "users", columns);
+
+        query.where("first_name=?");
+
+        query.bind(1, "Bryan");
+
+        string value = query.executeScalar<string>();
+
+        Assert::That(value, Equals("Bryan"));
+    }
+
 };

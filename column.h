@@ -63,6 +63,14 @@ namespace arg3
             int numeric_type() const;
 
             operator sqlite3_value *() const;
+
+            operator string() const;
+
+            operator int() const;
+
+            operator sqlite3_int64() const;
+
+            operator double() const;
         };
 
     }
