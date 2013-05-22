@@ -2,12 +2,13 @@
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
 #include "resultset.h"
+#include "sqldb.h"
 
 namespace arg3
 {
     namespace db
     {
-        resultset::resultset(sqlite3_stmt *stmt) : stmt_(stmt), status_(-1)
+        resultset::resultset(sqldb *db, sqlite3_stmt *stmt) : stmt_(stmt), db_(db), status_(-1)
         {
 
         }
@@ -160,7 +161,7 @@ namespace arg3
                 value_ = row(rs_);
                 break;
             default:
-                throw database_exception();
+                throw database_exception(rs_->db_->lastError());
                 break;
             }
 

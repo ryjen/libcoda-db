@@ -38,6 +38,8 @@ namespace arg3
             void open();
             void close();
 
+            sqlite3_int64 lastInsertId() const;
+
             string filename() const;
             void setFilename(const string &value);
 

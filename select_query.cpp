@@ -211,7 +211,7 @@ namespace arg3
         {
             prepare();
 
-            return resultset(stmt_);
+            return resultset(db_, stmt_);
 
         }
     }

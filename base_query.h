@@ -85,6 +85,8 @@ namespace arg3
              */
             base_query &bind(size_t index, double value);
 
+            base_query &bind_null(size_t index);
+
             /*!
              * binds bytes to a parameterized query
              */

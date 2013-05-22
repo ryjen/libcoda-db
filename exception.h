@@ -15,6 +15,37 @@ namespace arg3
     {
         class database_exception : public std::exception
         {
+            string what_;
+
+        public:
+            database_exception(const string &what) : what_(what)
+            {}
+
+            const char *what() const throw() {
+                return what_.c_str();
+            }
+
+            database_exception(const database_exception &e) : std::exception(e), what_(e.what_) {}
+            database_exception(database_exception &&e) : std::exception(std::move(e)), what_(std::move(e.what_)) {}
+            virtual ~database_exception() {}
+
+            database_exception &operator=(const database_exception &e)
+            {
+                if(this != &e) {
+                    std::exception::operator=(e);
+                    what_ = e.what_;
+                }
+                return *this;
+            }
+
+            database_exception &operator=(database_exception &&e)
+            {
+                if(this != &e) {
+                    std::exception::operator=(std::move(e));
+                    what_ = std::move(e.what_);
+                }
+                return *this;
+            }
 
         };
 

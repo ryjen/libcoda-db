@@ -131,20 +131,27 @@ namespace arg3
                 {
                     auto value = values_[column.name()];
 
-                    switch (column.type())
+                    if(value.is_null())
                     {
-                    case SQLITE_TEXT:
-                        query.bind(index, value.to_string());
-                        break;
-                    case SQLITE_INTEGER:
-                        query.bind(index, value.to_llong());
-                        break;
-                    case SQLITE_FLOAT:
-                        query.bind(index, value.to_double());
-                        break;
-                    default:
-                        query.bind(index);
-                        break;
+                        query.bind_null(index);
+                    }
+                    else
+                    {
+                        switch (column.type())
+                        {
+                        case SQLITE_TEXT:
+                            query.bind(index, value.to_string());
+                            break;
+                        case SQLITE_INTEGER:
+                            query.bind(index, value.to_llong());
+                            break;
+                        case SQLITE_FLOAT:
+                            query.bind(index, value.to_double());
+                            break;
+                        default:
+                            query.bind(index);
+                            break;
+                        }
                     }
 
                     index++;
@@ -192,9 +199,9 @@ namespace arg3
              * looks up and returns all objects of a base_record type
              */
 
-            vector<T> findAll() const
+            vector<T> findAll()
             {
-                auto query = select_query(db(), tableName(), schema().columns());
+                auto query = select_query(db(), tableName(), schema().column_names());
 
                 auto results = query.execute();
 
@@ -202,15 +209,17 @@ namespace arg3
 
                 for (auto & row : results)
                 {
-                    items.emplace_back(row);
+                    T item;
+                    item.init(row);
+                    items.push_back(std::move(item));
                 }
 
                 return items;
             }
 
-            T findById() const
+            T findById()
             {
-                auto query = select_query(db(), tableName(), schema().columns());
+                auto query = select_query(db(), tableName(), schema().column_names());
 
                 auto params = select_query::where_clause();
 
@@ -242,7 +251,7 @@ namespace arg3
             }
 
             template<typename V>
-            vector<T> findBy(const string &name, const V &value) const
+            vector<T> findBy(const string &name, const V &value)
             {
                 auto query = select_query(db(), tableName(), schema().column_names());
 
@@ -256,7 +265,9 @@ namespace arg3
 
                 for (auto & row : results)
                 {
-                    items.emplace_back(row);
+                    T item;
+                    item.init(row);
+                    items.push_back(std::move(item));
                 }
 
                 return items;

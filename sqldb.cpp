@@ -66,7 +66,7 @@ namespace arg3
             if (db_ != NULL) return;
 
             if (sqlite3_open(filename_.c_str(), &db_) != SQLITE_OK)
-                throw database_exception();
+                throw database_exception(lastError());
         }
 
         bool sqldb::isOpen() const
@@ -92,14 +92,19 @@ namespace arg3
             return buf.str();
         }
 
+        sqlite3_int64 sqldb::lastInsertId() const {
+
+            return sqlite3_last_insert_rowid(db_);
+        }
+
         resultset sqldb::execute(const string &sql)
         {
             sqlite3_stmt *stmt;
 
             if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK)
-                throw database_exception();
+                throw database_exception(lastError());
 
-            resultset set(stmt);
+            resultset set(this, stmt);
 
             set.step();
 

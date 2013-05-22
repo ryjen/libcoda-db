@@ -13,6 +13,7 @@ namespace arg3
     namespace db
     {
         class resultset;
+        class sqldb;
 
         class resultset_iterator : public std::iterator<std::input_iterator_tag, row>
         {
@@ -75,7 +76,9 @@ namespace arg3
         private:
             sqlite3_stmt *stmt_;
 
-            resultset(sqlite3_stmt *stmt);
+            sqldb *db_;
+
+            resultset(sqldb *db, sqlite3_stmt *stmt);
 
             int status_;
 

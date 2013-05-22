@@ -62,7 +62,7 @@ namespace arg3
             string sql = to_string();
 
             if (sqlite3_prepare_v2(db_->db_, sql.c_str(), -1, &stmt_, NULL) != SQLITE_OK)
-                throw database_exception();
+                throw database_exception(db_->lastError());
         }
 
         base_query &base_query::bind(size_t index, const string &value, int len)
@@ -70,7 +70,7 @@ namespace arg3
             prepare();
 
             if (sqlite3_bind_text(stmt_, index, value.c_str(), len, SQLITE_TRANSIENT) != SQLITE_OK)
-                throw database_exception();
+                throw database_exception(db_->lastError());
             return *this;
         }
 
@@ -79,7 +79,7 @@ namespace arg3
             prepare();
 
             if (sqlite3_bind_int(stmt_, index, value) != SQLITE_OK)
-                throw database_exception();
+                throw database_exception(db_->lastError());
             return *this;
         }
 
@@ -88,7 +88,7 @@ namespace arg3
             prepare();
 
             if (sqlite3_bind_int64(stmt_, index, value) != SQLITE_OK)
-                throw database_exception();
+                throw database_exception(db_->lastError());
             return *this;
         }
 
@@ -97,7 +97,7 @@ namespace arg3
             prepare();
 
             if (sqlite3_bind_null(stmt_, index) != SQLITE_OK)
-                throw database_exception();
+                throw database_exception(db_->lastError());
             return *this;
         }
 
@@ -106,7 +106,17 @@ namespace arg3
             prepare();
 
             if (sqlite3_bind_double(stmt_, index, value) != SQLITE_OK)
-                throw database_exception();
+                throw database_exception(db_->lastError());
+            return *this;
+        }
+
+        base_query &base_query::bind_null(size_t index)
+        {
+            prepare();
+
+            if(sqlite3_bind_null(stmt_, index) != SQLITE_OK)
+                throw database_exception(db_->lastError());
+
             return *this;
         }
 
@@ -115,7 +125,7 @@ namespace arg3
             prepare();
 
             if (sqlite3_bind_blob(stmt_, index, data, size, pFree) != SQLITE_OK)
-                throw database_exception();
+                throw database_exception(db_->lastError());
             return *this;
         }
     }
