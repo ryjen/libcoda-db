@@ -31,19 +31,19 @@ namespace arg3
             sqldb(sqldb &&other);
             sqldb &operator=(const sqldb &other);
             sqldb &operator=(sqldb &&other);
-            ~sqldb();
+            virtual ~sqldb();
 
-            bool is_open() const;
+            bool isOpen() const;
 
             void open();
             void close();
 
-            string getFilename() const;
+            string filename() const;
             void setFilename(const string &value);
 
             resultset execute(const string &sql);
 
-            string last_error() const;
+            string lastError() const;
         };
     }
 }

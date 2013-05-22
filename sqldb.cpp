@@ -50,7 +50,7 @@ namespace arg3
         {
         }
 
-        string sqldb::getFilename() const
+        string sqldb::filename() const
         {
             return filename_;
         }
@@ -69,7 +69,7 @@ namespace arg3
                 throw database_exception();
         }
 
-        bool sqldb::is_open() const
+        bool sqldb::isOpen() const
         {
             return db_ != NULL;
         }
@@ -82,7 +82,7 @@ namespace arg3
             db_ = NULL;
         }
 
-        string sqldb::last_error() const
+        string sqldb::lastError() const
         {
             ostringstream buf;
 

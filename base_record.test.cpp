@@ -49,11 +49,21 @@ Context(base_record_test)
         }
         catch (const database_exception &e)
         {
-            cerr << "Error3: " << testdb.last_error() << endl;
+            cerr << "Error3: " << testdb.lastError() << endl;
             throw e;
         }
     }
 
+    Spec(no_column_test)
+    {
+        user user1;
+
+        auto val = user1.get("missing");
+
+        Assert::That(val, Equals(NULL));
+
+        Assert::That(val.to_string(), Equals(""));
+    }
     Spec(is_valid_test)
     {
         try

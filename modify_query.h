@@ -15,9 +15,9 @@ namespace arg3
         class modify_query : public base_query
         {
         public:
-            modify_query(const sqldb &db, const string &tableName, const vector<string> &columns);
+            modify_query(sqldb *db, const string &tableName, const vector<string> &columns);
 
-            modify_query(const sqldb &db, const string &tableName);
+            modify_query(sqldb *db, const string &tableName);
 
             modify_query(const modify_query &other);
 

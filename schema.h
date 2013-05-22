@@ -41,7 +41,7 @@ namespace arg3
 
             virtual ~schema();
 
-            schema(sqldb db, const string &tablename);
+            schema(sqldb *db, const string &tablename);
 
             schema(const schema &other);
 
@@ -50,7 +50,7 @@ namespace arg3
             schema &operator=(const schema &other);
             schema &operator=(schema &&other);
 
-            void init(sqldb db, const string &tablename);
+            void init(sqldb *db, const string &tablename);
 
             vector<column_definition> columns() const;
 

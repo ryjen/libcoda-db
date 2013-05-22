@@ -5,24 +5,25 @@
 #include "base_query.h"
 #include "exception.h"
 #include "sqldb.h"
+#include <cassert>
 
 namespace arg3
 {
     namespace db
     {
 
-        base_query::base_query(const sqldb &db, const string &tableName, const vector<string> &columns)
-            : db_(db.db_), stmt_(NULL), tableName_(tableName), columns_(columns)
+        base_query::base_query(sqldb *db, const string &tableName, const vector<string> &columns)
+            : db_(db), stmt_(NULL), tableName_(tableName), columns_(columns)
         {}
 
-        base_query::base_query(const sqldb &db, const string &tableName) : db_(db.db_), stmt_(NULL), tableName_(tableName)
+        base_query::base_query(sqldb *db, const string &tableName) : db_(db), stmt_(NULL), tableName_(tableName)
         {}
 
-        base_query::base_query(const base_query &other) : db_(other.db_), stmt_(other.stmt_), 
+        base_query::base_query(const base_query &other) : db_(other.db_), stmt_(other.stmt_),
             tableName_(other.tableName_), columns_(other.columns_)
         {}
 
-        base_query::base_query(base_query &&other) : db_(std::move(other.db_)), stmt_(std::move(other.stmt_)), 
+        base_query::base_query(base_query &&other) : db_(std::move(other.db_)), stmt_(std::move(other.stmt_)),
             tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))
         {}
 
@@ -54,11 +55,13 @@ namespace arg3
 
         void base_query::prepare()
         {
+            assert(db_ != NULL);
+
             if (stmt_ != NULL) return;
 
             string sql = to_string();
 
-            if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt_, NULL) != SQLITE_OK)
+            if (sqlite3_prepare_v2(db_->db_, sql.c_str(), -1, &stmt_, NULL) != SQLITE_OK)
                 throw database_exception();
         }
 

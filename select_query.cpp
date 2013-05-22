@@ -94,11 +94,11 @@ namespace arg3
             or_.push_back(where_clause(value));
             return *this;
         }
-        select_query::select_query(const sqldb &db, const string &tableName,
+        select_query::select_query(sqldb *db, const string &tableName,
                                    const vector<string> &columns) : base_query(db, tableName, columns)
         {}
 
-        select_query::select_query(const sqldb &db, const string &tableName) : base_query(db, tableName)
+        select_query::select_query(sqldb *db, const string &tableName) : base_query(db, tableName)
         {}
 
         select_query::select_query(const select_query &other) : base_query(other), where_(other.where_),

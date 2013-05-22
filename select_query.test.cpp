@@ -42,7 +42,7 @@ Context(select_query_test)
     {
         try
         {
-            auto query = select_query(testdb, "users");
+            auto query = select_query(&testdb, "users");
 
             query.where("first_name=? OR last_name=?");
 
@@ -61,7 +61,7 @@ Context(select_query_test)
         }
         catch (const database_exception &e)
         {
-            cout << testdb.last_error() << endl;
+            cout << testdb.lastError() << endl;
             throw e;
         }
     }

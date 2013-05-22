@@ -23,7 +23,8 @@ namespace arg3
         {
             friend class sqldb;
         protected:
-            sqlite3 *db_;
+            //sqlite3 *db_;
+            sqldb *db_;
             sqlite3_stmt *stmt_;
             string tableName_;
             vector<string> columns_;
@@ -36,13 +37,13 @@ namespace arg3
              * @param tableName the table to perform the query on
              * @param columns the columns to operate with
              */
-            base_query(const sqldb &db, const string &tableName, const vector<string> &columns);
+            base_query(sqldb *db, const string &tableName, const vector<string> &columns);
 
             /*!
              * @param db the database to perform the query on
              * @param tableName the table to perform the query on
              */
-            base_query(const sqldb &db, const string &tableName);
+            base_query(sqldb *db, const string &tableName);
 
             base_query(const base_query &other);
 

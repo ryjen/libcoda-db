@@ -52,9 +52,9 @@ namespace arg3
             string groupBy_;
         public:
 
-            select_query(const sqldb &db, const string &tableName, const vector<string> &columns);
+            select_query(sqldb *db, const string &tableName, const vector<string> &columns);
 
-            select_query(const sqldb &db, const string &tableName);
+            select_query(sqldb *db, const string &tableName);
 
             select_query(const select_query &other);
 

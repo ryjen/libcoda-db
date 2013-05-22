@@ -29,7 +29,6 @@ namespace arg3
 
             void assert_schema()
             {
-
                 if (!schema_.is_valid())
                     schema_.init(db(), tableName());
             }
@@ -105,7 +104,7 @@ namespace arg3
             /*!
              * should return the database for the record
              */
-            virtual sqldb db() const = 0;
+            virtual sqldb *db() const = 0;
 
             /*!
              * should return the table name for the record
@@ -128,7 +127,7 @@ namespace arg3
                 int index = 1;
 
                 // bind the object values
-for (auto & column : schema().columns())
+                for (auto & column : schema().columns())
                 {
                     auto value = values_[column.name()];
 
@@ -157,9 +156,12 @@ for (auto & column : schema().columns())
             /*!
              * gets a value specified by column name
              */
-            variant get(const string &name)
+            variant get(const string &name) const
             {
-                return values_[name];
+                if(!has(name))
+                    return "";
+
+                return values_.at(name);
             }
 
             /*!
@@ -167,7 +169,7 @@ for (auto & column : schema().columns())
              */
             bool has(const string &name) const
             {
-                return values_.find(name) != values_.end();
+                return values_.count(name) > 0;
             }
 
             /*!
@@ -198,7 +200,7 @@ for (auto & column : schema().columns())
 
                 vector<T> items;
 
-for (auto & row : results)
+                for (auto & row : results)
                 {
                     items.emplace_back(row);
                 }
@@ -213,7 +215,7 @@ for (auto & row : results)
                 auto params = select_query::where_clause();
 
                 // find by primary keys
-for (auto & pk : schema_.primary_keys())
+                for (auto & pk : schema().primary_keys())
                 {
                     params && (format("{0} = ?", pk));
                 }
@@ -223,7 +225,7 @@ for (auto & pk : schema_.primary_keys())
                 int index = 1;
 
                 // bind primary key values
-for (auto & pk : schema_.primary_keys())
+                for (auto & pk : schema().primary_keys())
                 {
                     query.bind(index, values_[index - 1]);
                     index++;
@@ -252,7 +254,7 @@ for (auto & pk : schema_.primary_keys())
 
                 vector<T> items;
 
-for (auto & row : results)
+                for (auto & row : results)
                 {
                     items.emplace_back(row);
                 }

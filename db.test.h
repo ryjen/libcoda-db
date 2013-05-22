@@ -19,7 +19,7 @@ public:
     void teardown()
     {
         close();
-        unlink(getFilename().c_str());
+        unlink(filename().c_str());
     }
 };
 
@@ -32,14 +32,13 @@ public:
 
     user(const arg3::db::row &values) : base_record(values) {}
 
-    string tableName() const
+    arg3::db::sqldb* db() const
     {
-        return "users";
+        return &testdb;
     }
 
-    arg3::db::sqldb db() const
-    {
-        return testdb;
+    string tableName() const {
+        return "users";
     }
 
     string to_string()

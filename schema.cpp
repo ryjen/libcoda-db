@@ -32,7 +32,7 @@ namespace arg3
 
         schema::~schema() {}
 
-        schema::schema(sqldb db, const string &tablename)
+        schema::schema(sqldb *db, const string &tablename)
         {
             init(db, tablename);
         }
@@ -66,12 +66,14 @@ namespace arg3
             return columns_.size() > 0;
         }
 
-        void schema::init(sqldb db, const string &tablename)
+        void schema::init(sqldb *db, const string &tablename)
         {
-            assert(db.is_open());
+            assert(db != NULL);
+
+            assert(db->isOpen());
 
             // get table information
-            auto rs = db.execute( format("pragma table_info({0})", tablename));
+            auto rs = db->execute( format("pragma table_info({0})", tablename));
 
             for (auto & row : rs)
             {
