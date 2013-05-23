@@ -81,4 +81,25 @@ Context(select_query_test)
         Assert::That(value, Equals("Bryan"));
     }
 
+
+    Spec(binding_test)
+    {
+        select_query query(&testdb, "users");
+
+        // sneaky, bind first, should be able to handle it
+        query.bind(1, "Bryan");
+
+        query.bind(2, "Jenkins");
+
+        query.where("first_name=? and last_name=?");
+
+        auto rs = query.execute();
+
+        Assert::That(rs.is_valid(), Equals(true));
+
+        auto u = rs.begin()->column_value("first_name");
+
+        Assert::That(u.to_string(), Equals("Bryan"));
+    }
+
 };

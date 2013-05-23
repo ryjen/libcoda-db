@@ -131,9 +131,10 @@ namespace arg3
                 {
                     auto value = values_[column.name()];
 
+                    // do an explicit null check
                     if(value.is_null())
                     {
-                        query.bind_null(index);
+                        query.bind(index);
                     }
                     else
                     {
@@ -148,6 +149,8 @@ namespace arg3
                         case SQLITE_FLOAT:
                             query.bind(index, value.to_double());
                             break;
+                        case SQLITE_BLOB:
+                            query.bind(index, value.to_pointer(), value.size());
                         default:
                             query.bind(index);
                             break;
@@ -166,7 +169,7 @@ namespace arg3
             variant get(const string &name) const
             {
                 if(!has(name))
-                    return "";
+                    return variant();
 
                 return values_.at(name);
             }

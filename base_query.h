@@ -8,6 +8,9 @@
 
 #include <sqlite3.h>
 #include "schema.h"
+#include <map>
+
+#include "../variant/variant.h"
 
 namespace arg3
 {
@@ -22,12 +25,36 @@ namespace arg3
         class base_query
         {
             friend class sqldb;
+
+            // internal wrapper for binding types to a sql statement
+            struct bind_type
+            {
+            public:
+                bind_type() : type(-1), size(0), freeFunc(0)
+                {}
+                bind_type(const string &v, int len ) : value(v), type(SQLITE_TEXT), size(len)
+                {}
+                bind_type(int v) : value(v), type(SQLITE_INTEGER), size(sizeof(int))
+                {}
+                bind_type(long long v) : value(v), type(SQLITE_INTEGER), size(sizeof(long long))
+                {}
+                bind_type(double v) : value(v), type(SQLITE_FLOAT), size(sizeof(double))
+                {}
+                bind_type(const void *p, size_t s, void (*func)(void*)) : value(p, s), type(SQLITE_BLOB), size(s), freeFunc(func)
+                {}
+
+                variant value;
+                int type;
+                int size;
+                void (*freeFunc)(void*);
+            };
+            //
+            size_t assert_binding_index(size_t index);
         protected:
-            //sqlite3 *db_;
             sqldb *db_;
             sqlite3_stmt *stmt_;
             string tableName_;
-
+            vector<bind_type> bindings_;
             void prepare();
         public:
 
@@ -77,12 +104,10 @@ namespace arg3
              */
             base_query &bind(size_t index, double value);
 
-            base_query &bind_null(size_t index);
-
             /*!
              * binds bytes to a parameterized query
              */
-            base_query &bind_bytes(size_t index, const void *data, size_t size, void(* pFree)(void *) = SQLITE_STATIC);
+            base_query &bind(size_t index, const void *data, size_t size, void(* pFree)(void *) = SQLITE_STATIC);
 
         };
 

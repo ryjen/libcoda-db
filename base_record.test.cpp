@@ -66,19 +66,12 @@ Context(base_record_test)
     }
     Spec(is_valid_test)
     {
-        try
-        {
-            user user1;
+        user user1;
 
-            user1.loadBy("id", 1432123);
+        Assert::That(user1.loadBy("id", 1432123), Equals(false));
 
-            Assert::That(user1.get("id").to_int(0) != 0, Equals(false));
-        }
-        catch (const exception &e)
-        {
-            cerr << "Error: " << e.what() << endl;
-            throw e;
-        }
+        Assert::That(user1.get("id").to_int(0), Equals(0));
+
     }
 
 };

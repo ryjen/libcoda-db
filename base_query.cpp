@@ -6,6 +6,7 @@
 #include "exception.h"
 #include "sqldb.h"
 #include <cassert>
+#include "../variant/variant.h"
 
 namespace arg3
 {
@@ -15,11 +16,11 @@ namespace arg3
         {}
 
         base_query::base_query(const base_query &other) : db_(other.db_), stmt_(other.stmt_),
-            tableName_(other.tableName_)
+            tableName_(other.tableName_), bindings_(other.bindings_)
         {}
 
         base_query::base_query(base_query &&other) : db_(std::move(other.db_)), stmt_(std::move(other.stmt_)),
-            tableName_(std::move(other.tableName_))
+            tableName_(std::move(other.tableName_)), bindings_(std::move(other.bindings_))
         {}
 
         base_query::~base_query() {}
@@ -31,6 +32,7 @@ namespace arg3
                 db_ = other.db_;
                 stmt_ = other.stmt_;
                 tableName_ = other.tableName_;
+                bindings_ = other.bindings_;
             }
             return *this;
         }
@@ -42,6 +44,7 @@ namespace arg3
                 db_ = std::move(other.db_);
                 stmt_ = std::move(other.stmt_);
                 tableName_ = std::move(other.tableName_);
+                bindings_ = std::move(other.bindings_);
             }
             return *this;
         }
@@ -56,69 +59,96 @@ namespace arg3
 
             if (sqlite3_prepare_v2(db_->db_, sql.c_str(), -1, &stmt_, NULL) != SQLITE_OK)
                 throw database_exception(db_->lastError());
+
+            for(size_t i = 1; i <= bindings_.size(); i++)
+            {
+                auto b = bindings_[i-1];
+
+                switch(b.type)
+                {
+                case SQLITE_TEXT:
+                {
+                    if (sqlite3_bind_text(stmt_, i, b.value.to_cstring(), b.size, SQLITE_TRANSIENT) != SQLITE_OK)
+                        throw database_exception(db_->lastError());
+                    break;
+                }
+                case SQLITE_INTEGER:
+                    if(b.size > sizeof(int))
+                    {
+                        if (sqlite3_bind_int64(stmt_, i, b.value.to_llong()) != SQLITE_OK)
+                            throw database_exception(db_->lastError());
+                    }
+                    else
+                    {
+                        if (sqlite3_bind_int(stmt_, i, b.value.to_int()) != SQLITE_OK)
+                            throw database_exception(db_->lastError());
+                    }
+                    break;
+                case SQLITE_FLOAT:
+                    if (sqlite3_bind_double(stmt_, i, b.value.to_double()) != SQLITE_OK)
+                        throw database_exception(db_->lastError());
+                    break;
+                case SQLITE_BLOB:
+                    // TODO: add free method handling
+                    if (sqlite3_bind_blob(stmt_, i, b.value.to_pointer(), b.size, b.freeFunc) != SQLITE_OK)
+                        throw database_exception(db_->lastError());
+                    break;
+                default:
+                    if(sqlite3_bind_null(stmt_, i) != SQLITE_OK)
+                        throw database_exception(db_->lastError());
+                    break;
+                }
+            }
+        }
+
+        size_t base_query::assert_binding_index(size_t index)
+        {
+            assert(index > 0);
+
+            bindings_.resize(std::max(index, bindings_.size()));
+
+            return index-1;
         }
 
         base_query &base_query::bind(size_t index, const string &value, int len)
         {
-            prepare();
+            bindings_[assert_binding_index(index)] = bind_type(value, len);
 
-            if (sqlite3_bind_text(stmt_, index, value.c_str(), len, SQLITE_TRANSIENT) != SQLITE_OK)
-                throw database_exception(db_->lastError());
             return *this;
         }
 
         base_query &base_query::bind(size_t index, int value)
         {
-            prepare();
+            bindings_[assert_binding_index(index)] = bind_type(value);
 
-            if (sqlite3_bind_int(stmt_, index, value) != SQLITE_OK)
-                throw database_exception(db_->lastError());
             return *this;
         }
 
         base_query &base_query::bind(size_t index, long long value)
         {
-            prepare();
+            bindings_[assert_binding_index(index)] = bind_type(value);
 
-            if (sqlite3_bind_int64(stmt_, index, value) != SQLITE_OK)
-                throw database_exception(db_->lastError());
             return *this;
         }
 
         base_query &base_query::bind(size_t index)
         {
-            prepare();
+            bindings_[assert_binding_index(index)]  = bind_type();
 
-            if (sqlite3_bind_null(stmt_, index) != SQLITE_OK)
-                throw database_exception(db_->lastError());
             return *this;
         }
 
         base_query &base_query::bind(size_t index, double value)
         {
-            prepare();
-
-            if (sqlite3_bind_double(stmt_, index, value) != SQLITE_OK)
-                throw database_exception(db_->lastError());
-            return *this;
-        }
-
-        base_query &base_query::bind_null(size_t index)
-        {
-            prepare();
-
-            if(sqlite3_bind_null(stmt_, index) != SQLITE_OK)
-                throw database_exception(db_->lastError());
+            bindings_[assert_binding_index(index)] = bind_type(value);
 
             return *this;
         }
 
-        base_query &base_query::bind_bytes(size_t index, const void *data, size_t size, void (*pFree)(void *))
+        base_query &base_query::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
         {
-            prepare();
+            bindings_[assert_binding_index(index)] = bind_type(data, size, pFree);
 
-            if (sqlite3_bind_blob(stmt_, index, data, size, pFree) != SQLITE_OK)
-                throw database_exception(db_->lastError());
             return *this;
         }
     }
