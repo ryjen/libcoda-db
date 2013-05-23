@@ -221,7 +221,7 @@ namespace arg3
             {
                 auto query = select_query(db(), tableName(), schema().column_names());
 
-                auto params = select_query::where_clause();
+                auto params = where_clause();
 
                 // find by primary keys
                 for (auto & pk : schema().primary_keys())

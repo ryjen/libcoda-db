@@ -11,16 +11,16 @@ namespace arg3
     namespace db
     {
         modify_query::modify_query(sqldb *db, const string &tableName,
-                                   const vector<string> &columns) : base_query(db, tableName, columns)
+                                   const vector<string> &columns) : base_query(db, tableName), columns_(columns)
         {}
 
         modify_query::modify_query(sqldb *db, const string &tableName) : base_query(db, tableName)
         {}
 
-        modify_query::modify_query(const modify_query &other) : base_query(other)
+        modify_query::modify_query(const modify_query &other) : base_query(other), columns_(other.columns_)
         {}
 
-        modify_query::modify_query(modify_query &&other) : base_query(std::move(other))
+        modify_query::modify_query(modify_query &&other) : base_query(std::move(other)), columns_(std::move(other.columns_))
         {}
 
         modify_query::~modify_query() {}
@@ -28,12 +28,15 @@ namespace arg3
         modify_query &modify_query::operator=(const modify_query &other)
         {
             base_query::operator=(other);
+            columns_ = other.columns_;
             return *this;
         }
 
         modify_query &modify_query::operator=(modify_query &&other)
         {
             base_query::operator=(std::move(other));
+            columns_ = std::move(other.columns_);
+
             return *this;
         }
 

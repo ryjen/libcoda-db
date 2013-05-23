@@ -97,6 +97,10 @@ namespace arg3
             return sqlite3_last_insert_rowid(db_);
         }
 
+        int sqldb::lastNumberOfChanges() const {
+            return sqlite3_changes(db_);
+        }
+
         resultset sqldb::execute(const string &sql)
         {
             sqlite3_stmt *stmt;

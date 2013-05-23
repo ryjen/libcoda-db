@@ -10,104 +10,21 @@ namespace arg3
 {
     namespace db
     {
-        select_query::where_clause::where_clause() {}
 
-        select_query::where_clause::where_clause(const string &value) : value_(value) {}
-
-        select_query::where_clause::where_clause(const select_query::where_clause &other) : value_(other.value_) {}
-
-        select_query::where_clause::where_clause(select_query::where_clause &&other) : value_(std::move(other.value_)) {}
-
-        select_query::where_clause::~where_clause() {}
-
-        select_query::where_clause &select_query::where_clause::operator=(const select_query::where_clause &other)
-        {
-            if(this != &other)
-            {
-                value_ = other.value_;
-            }
-            return *this;
-        }
-
-        select_query::where_clause &select_query::where_clause::operator=(select_query::where_clause &&other)
-        {
-            if(this != &other)
-            {
-                value_ =std::move( other.value_ );
-            }
-            return *this;
-        }
-
-        string select_query::where_clause::to_string() const
-        {
-            ostringstream buf;
-
-            buf << value_;
-
-            if (and_.size() > 0)
-            {
-                buf << " AND ";
-                for (auto & w : and_)
-                {
-                    buf << w.to_string();
-                }
-            }
-
-            if (or_.size() > 0)
-            {
-                buf << " OR ";
-                for (auto & w : or_)
-                {
-                    buf << w.to_string();
-                }
-            }
-            return buf.str();
-        }
-
-        bool select_query::where_clause::empty() const
-        {
-            return value_.empty() && and_.empty() && or_.empty();
-        }
-
-        select_query::where_clause::operator string()
-        {
-            return to_string();
-        }
-
-        select_query::where_clause &select_query::where_clause::operator&&(const select_query::where_clause &value)
-        {
-            and_.push_back(value);
-            return *this;
-        }
-        select_query::where_clause &select_query::where_clause::operator&&(const string &value)
-        {
-            and_.push_back(where_clause(value));
-            return *this;
-        }
-        select_query::where_clause &select_query::where_clause::operator||(const select_query::where_clause &value)
-        {
-            or_.push_back(value);
-            return *this;
-        }
-        select_query::where_clause &select_query::where_clause::operator||(const string &value)
-        {
-            or_.push_back(where_clause(value));
-            return *this;
-        }
         select_query::select_query(sqldb *db, const string &tableName,
-                                   const vector<string> &columns) : base_query(db, tableName, columns)
+                                   const vector<string> &columns) : base_query(db, tableName), columns_(columns)
         {}
 
         select_query::select_query(sqldb *db, const string &tableName) : base_query(db, tableName)
         {}
 
         select_query::select_query(const select_query &other) : base_query(other), where_(other.where_),
-            limit_(other.limit_), orderBy_(other.orderBy_), groupBy_(other.groupBy_)
+            limit_(other.limit_), orderBy_(other.orderBy_), groupBy_(other.groupBy_), columns_(other.columns_)
         {
         }
 
         select_query::select_query(select_query &&other) : base_query(std::move(other)), where_(std::move(other.where_)),
-            limit_(std::move(other.limit_)), orderBy_(std::move(other.orderBy_)), groupBy_(std::move(other.groupBy_))
+            limit_(std::move(other.limit_)), orderBy_(std::move(other.orderBy_)), groupBy_(std::move(other.groupBy_)), columns_(std::move(other.columns_))
         {
         }
 
@@ -123,6 +40,8 @@ namespace arg3
                 limit_ = other.limit_;
                 orderBy_ = other.orderBy_;
                 groupBy_ = other.groupBy_;
+
+                columns_ = other.columns_;
             }
             return *this;
         }
@@ -136,11 +55,13 @@ namespace arg3
                 limit_ = std::move(other.limit_);
                 orderBy_ = std::move(other.orderBy_);
                 groupBy_ = std::move(other.groupBy_);
+
+                columns_ = std::move(other.columns_);
             }
             return *this;
         }
 
-        select_query &select_query::where(const select_query::where_clause &value)
+        select_query &select_query::where(const where_clause &value)
         {
             where_ = value;
 

@@ -32,6 +32,8 @@ namespace arg3
             string to_string() const;
 
             bool execute(bool batch = false);
+        private:
+            vector<string> columns_;
         };
 
     }

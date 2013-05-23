@@ -40,6 +40,8 @@ namespace arg3
 
             sqlite3_int64 lastInsertId() const;
 
+            int lastNumberOfChanges() const;
+
             string filename() const;
             void setFilename(const string &value);
 

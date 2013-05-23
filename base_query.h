@@ -27,17 +27,9 @@ namespace arg3
             sqldb *db_;
             sqlite3_stmt *stmt_;
             string tableName_;
-            vector<string> columns_;
 
             void prepare();
         public:
-
-            /*!
-             * @param db the database to perform the query on
-             * @param tableName the table to perform the query on
-             * @param columns the columns to operate with
-             */
-            base_query(sqldb *db, const string &tableName, const vector<string> &columns);
 
             /*!
              * @param db the database to perform the query on

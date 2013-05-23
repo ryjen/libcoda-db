@@ -11,20 +11,15 @@ namespace arg3
 {
     namespace db
     {
-
-        base_query::base_query(sqldb *db, const string &tableName, const vector<string> &columns)
-            : db_(db), stmt_(NULL), tableName_(tableName), columns_(columns)
-        {}
-
         base_query::base_query(sqldb *db, const string &tableName) : db_(db), stmt_(NULL), tableName_(tableName)
         {}
 
         base_query::base_query(const base_query &other) : db_(other.db_), stmt_(other.stmt_),
-            tableName_(other.tableName_), columns_(other.columns_)
+            tableName_(other.tableName_)
         {}
 
         base_query::base_query(base_query &&other) : db_(std::move(other.db_)), stmt_(std::move(other.stmt_)),
-            tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))
+            tableName_(std::move(other.tableName_))
         {}
 
         base_query::~base_query() {}
@@ -36,7 +31,6 @@ namespace arg3
                 db_ = other.db_;
                 stmt_ = other.stmt_;
                 tableName_ = other.tableName_;
-                columns_ = other.columns_;
             }
             return *this;
         }
@@ -48,7 +42,6 @@ namespace arg3
                 db_ = std::move(other.db_);
                 stmt_ = std::move(other.stmt_);
                 tableName_ = std::move(other.tableName_);
-                columns_ = std::move(other.columns_);
             }
             return *this;
         }
