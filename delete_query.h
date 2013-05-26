@@ -30,15 +30,9 @@ namespace arg3
 
             delete_query &where(const string &value);
 
-            delete_query &limit(const string &value);
-
-            delete_query &orderBy(const string &value);
-
         private:
 
             where_clause where_;
-            string limit_;
-            string orderBy_;
         };
     }
 }
