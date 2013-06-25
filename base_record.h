@@ -87,7 +87,7 @@ namespace arg3
             {
                 for (auto v = values.begin(); v != values.end(); v++)
                 {
-                    values_[v.name()] = v->to_string();
+                    set(v.name(), v->to_string());
                 }
             }
 
@@ -185,7 +185,7 @@ namespace arg3
             /*!
              * sets a string for a column name
              */
-            void set(const string &name, const variant &value)
+            virtual void set(const string &name, const variant &value)
             {
                 values_[name] = value;
             }
@@ -202,25 +202,23 @@ namespace arg3
              * looks up and returns all objects of a base_record type
              */
 
-            vector<T> findAll()
+            vector<shared_ptr<T>> findAll()
             {
                 auto query = select_query(db(), tableName(), schema().column_names());
 
                 auto results = query.execute();
 
-                vector<T> items;
+                vector<shared_ptr<T>> items;
 
                 for (auto & row : results)
                 {
-                    T item;
-                    item.init(row);
-                    items.push_back(std::move(item));
+                    items.push_back(make_shared<T>(row));
                 }
 
                 return items;
             }
 
-            T findById()
+            shared_ptr<T> findById()
             {
                 auto query = select_query(db(), tableName(), schema().column_names());
 
@@ -248,13 +246,13 @@ namespace arg3
                 auto it = results.begin();
 
                 if (it != results.end())
-                    return *it;
+                    return make_shared<T>(*it);
 
                 throw record_not_found_exception();
             }
 
             template<typename V>
-            vector<T> findBy(const string &name, const V &value)
+            vector<shared_ptr<T>> findBy(const string &name, const V &value)
             {
                 auto query = select_query(db(), tableName(), schema().column_names());
 
@@ -264,13 +262,11 @@ namespace arg3
 
                 auto results = query.execute();
 
-                vector<T> items;
+                vector<shared_ptr<T>> items;
 
                 for (auto & row : results)
                 {
-                    T item;
-                    item.init(row);
-                    items.push_back(std::move(item));
+                    items.push_back(make_shared<T>(row));
                 }
 
                 return items;
