@@ -87,7 +87,7 @@ namespace arg3
             {
                 for (auto v = values.begin(); v != values.end(); v++)
                 {
-                    set(v.name(), v->to_string());
+                    set(v.name(), v->to_var());
                 }
             }
 
@@ -235,9 +235,11 @@ namespace arg3
                 int index = 1;
 
                 // bind primary key values
-                for (auto & pk : schema().primary_keys())
+                for (auto & c : schema().columns())
                 {
-                    query.bind(index, values_[index - 1]);
+                    if(!c.pk()) continue;
+
+                    query.bind(index, c.type(), values_[c.name()]);
                     index++;
                 }
 

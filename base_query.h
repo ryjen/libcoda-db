@@ -109,6 +109,7 @@ namespace arg3
              */
             base_query &bind(size_t index, const void *data, size_t size, void(* pFree)(void *) = SQLITE_STATIC);
 
+            base_query &bind(size_t index, int type, const variant &v);
         };
 
     }

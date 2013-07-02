@@ -151,5 +151,34 @@ namespace arg3
 
             return *this;
         }
+
+        base_query &base_query::bind(size_t index, int type, const variant &value) {
+
+            if(value.is_null())
+            {
+                bind(index);
+            }
+            else
+            {
+                switch (type)
+                {
+                case SQLITE_TEXT:
+                    bind(index, value.to_string());
+                    break;
+                case SQLITE_INTEGER:
+                    bind(index, value.to_llong());
+                    break;
+                case SQLITE_FLOAT:
+                    bind(index, value.to_double());
+                    break;
+                case SQLITE_BLOB:
+                    bind(index, value.to_pointer(), value.size());
+                default:
+                    bind(index);
+                    break;
+                }
+            }
+            return *this;
+        }
     }
 }

@@ -54,6 +54,22 @@ Context(base_record_test)
         }
     }
 
+    Spec(find_by)
+    {
+        user u1;
+
+        u1.set("first_name", "Bob");
+        u1.set("last_name", "Jenkins");
+
+        Assert::That(u1.save(), Equals(true));
+
+        auto res = user().findBy("first_name", "Bob");
+
+        Assert::That(res.size(), Equals(1));
+
+        Assert::That(res[0]->get("first_name").to_string(), Equals("Bob"));
+    }
+
     Spec(no_column_test)
     {
         user user1;

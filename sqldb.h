@@ -22,8 +22,9 @@ namespace arg3
         class sqldb
         {
             friend class base_query;
-        private:
+        protected:
             sqlite3 *db_;
+        private:
             string filename_;
         public:
             sqldb(const string &name = "arg3.db");

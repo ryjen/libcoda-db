@@ -8,6 +8,7 @@
 #include <string>
 #include <cassert>
 #include "exception.h"
+#include "../variant/variant.h"
 
 using namespace std;
 
@@ -57,6 +58,8 @@ namespace arg3
             string to_string() const;
 
             const wchar_t *to_text16() const;
+
+            variant to_var() const;
 
             int type() const;
 

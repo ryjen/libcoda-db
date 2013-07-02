@@ -5,10 +5,12 @@
 #include "base_record.h"
 #include <unistd.h>
 
+#define TESTDB "test.db"
+
 class testsqldb : public arg3::db::sqldb
 {
 public:
-    testsqldb() : sqldb("test.db") {}
+    testsqldb() : sqldb(TESTDB) {}
 
     void setup()
     {
@@ -20,6 +22,10 @@ public:
     {
         close();
         unlink(filename().c_str());
+    }
+
+    sqlite3 *rawDb() const {
+        return db_;
     }
 };
 

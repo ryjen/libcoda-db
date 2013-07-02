@@ -117,6 +117,24 @@ namespace arg3
             return reinterpret_cast<const char *>(textValue);
         }
 
+        variant column::to_var() const
+        {
+            assert_value();
+
+            switch(sqlite3_value_type(value_))
+            {
+            case SQLITE_INTEGER:
+                return variant(to_int64());
+            case SQLITE_TEXT:
+            default:
+                return variant(to_string());
+            case SQLITE_FLOAT:
+                return variant(to_double());
+            case SQLITE_BLOB:
+                return variant(to_blob(), blob_size());
+            }
+        }
+
         int column::type() const
         {
             assert_value();
