@@ -7,10 +7,9 @@
 #define _ARG3_DB_BASE_QUERY_H_
 
 #include <sqlite3.h>
-#include "schema.h"
 #include <map>
-
-#include "../variant/variant.h"
+#include "schema.h"
+#include "typedef.h"
 
 namespace arg3
 {
@@ -26,35 +25,13 @@ namespace arg3
         {
             friend class sqldb;
 
-            // internal wrapper for binding types to a sql statement
-            struct bind_type
-            {
-            public:
-                bind_type() : type(-1), size(0), freeFunc(0)
-                {}
-                bind_type(const string &v, int len ) : value(v), type(SQLITE_TEXT), size(len)
-                {}
-                bind_type(int v) : value(v), type(SQLITE_INTEGER), size(sizeof(int))
-                {}
-                bind_type(long long v) : value(v), type(SQLITE_INTEGER), size(sizeof(long long))
-                {}
-                bind_type(double v) : value(v), type(SQLITE_FLOAT), size(sizeof(double))
-                {}
-                bind_type(const void *p, size_t s, void (*func)(void*)) : value(p, s), type(SQLITE_BLOB), size(s), freeFunc(func)
-                {}
-
-                variant value;
-                int type;
-                int size;
-                void (*freeFunc)(void*);
-            };
             //
             size_t assert_binding_index(size_t index);
         protected:
             sqldb *db_;
             sqlite3_stmt *stmt_;
             string tableName_;
-            vector<bind_type> bindings_;
+            vector<sql_value> bindings_;
             void prepare();
         public:
 
@@ -109,7 +86,9 @@ namespace arg3
              */
             base_query &bind(size_t index, const void *data, size_t size, void(* pFree)(void *) = SQLITE_STATIC);
 
-            base_query &bind(size_t index, int type, const variant &v);
+            base_query &bind(size_t index, const sql_blob &value);
+
+            base_query &bind(size_t index, int type, const sql_value &v);
         };
 
     }

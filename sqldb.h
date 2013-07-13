@@ -8,7 +8,7 @@
 #include <sstream>
 #include <sqlite3.h>
 #include <type_traits>
-//#include "select_query.h"
+#include <boost/variant.hpp>
 
 using namespace std;
 

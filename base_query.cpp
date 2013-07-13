@@ -6,7 +6,6 @@
 #include "exception.h"
 #include "sqldb.h"
 #include <cassert>
-#include "../variant/variant.h"
 
 namespace arg3
 {
@@ -19,9 +18,12 @@ namespace arg3
             tableName_(other.tableName_), bindings_(other.bindings_)
         {}
 
-        base_query::base_query(base_query &&other) : db_(std::move(other.db_)), stmt_(std::move(other.stmt_)),
+        base_query::base_query(base_query &&other) : db_(other.db_), stmt_(other.stmt_),
             tableName_(std::move(other.tableName_)), bindings_(std::move(other.bindings_))
-        {}
+        {
+            other.db_ = NULL;
+            other.stmt_ = NULL;
+        }
 
         base_query::~base_query() {}
 
@@ -41,8 +43,10 @@ namespace arg3
         {
             if(this != &other)
             {
-                db_ = std::move(other.db_);
-                stmt_ = std::move(other.stmt_);
+                db_ = other.db_;
+                stmt_ = other.stmt_;
+                other.db_ = NULL;
+                other.stmt_ = NULL;
                 tableName_ = std::move(other.tableName_);
                 bindings_ = std::move(other.bindings_);
             }
@@ -64,39 +68,33 @@ namespace arg3
             {
                 auto b = bindings_[i-1];
 
-                switch(b.type)
-                {
-                case SQLITE_TEXT:
-                {
-                    if (sqlite3_bind_text(stmt_, i, b.value.to_cstring(), b.size, SQLITE_TRANSIENT) != SQLITE_OK)
-                        throw database_exception(db_->lastError());
-                    break;
+                if(b.type() == typeid(long)) {
+                    if (sqlite3_bind_int(stmt_, i, boost::get<long>(b)) != SQLITE_OK)
+                            throw database_exception(db_->lastError());
                 }
-                case SQLITE_INTEGER:
-                    if(b.size > sizeof(int))
-                    {
-                        if (sqlite3_bind_int64(stmt_, i, b.value.to_llong()) != SQLITE_OK)
+                else if(b.type() == typeid(int64_t)) {
+                    if (sqlite3_bind_int64(stmt_, i, boost::get<int64_t>(b)) != SQLITE_OK)
                             throw database_exception(db_->lastError());
-                    }
-                    else
-                    {
-                        if (sqlite3_bind_int(stmt_, i, b.value.to_int()) != SQLITE_OK)
-                            throw database_exception(db_->lastError());
-                    }
-                    break;
-                case SQLITE_FLOAT:
+                }
+                else if(b.type() == typeid(std::string)) {
+                     std::string temp = boost::get<std::string>(b);
+                     if (sqlite3_bind_text(stmt_, i, boost::get<std::string>, b.size, SQLITE_TRANSIENT) != SQLITE_OK)
+                        throw database_exception(db_->lastError());
+                }
+                else if(b.type() == typeid(double)) {
                     if (sqlite3_bind_double(stmt_, i, b.value.to_double()) != SQLITE_OK)
                         throw database_exception(db_->lastError());
-                    break;
-                case SQLITE_BLOB:
+                }
+                else if(b.type() == typeid(sql_blob)) {
+
                     // TODO: add free method handling
                     if (sqlite3_bind_blob(stmt_, i, b.value.to_pointer(), b.size, b.freeFunc) != SQLITE_OK)
                         throw database_exception(db_->lastError());
-                    break;
-                default:
+                }
+                else {
+
                     if(sqlite3_bind_null(stmt_, i) != SQLITE_OK)
                         throw database_exception(db_->lastError());
-                    break;
                 }
             }
         }
@@ -112,71 +110,74 @@ namespace arg3
 
         base_query &base_query::bind(size_t index, const string &value, int len)
         {
-            bindings_[assert_binding_index(index)] = bind_type(value, len);
+            bindings_[assert_binding_index(index)] = sql_value(len > 0 ? value.substr(0, len) : value);
 
             return *this;
         }
 
         base_query &base_query::bind(size_t index, int value)
         {
-            bindings_[assert_binding_index(index)] = bind_type(value);
+            bindings_[assert_binding_index(index)] = sql_value(value);
 
             return *this;
         }
 
         base_query &base_query::bind(size_t index, long long value)
         {
-            bindings_[assert_binding_index(index)] = bind_type(value);
+            bindings_[assert_binding_index(index)] = sql_value(value);
 
             return *this;
         }
 
         base_query &base_query::bind(size_t index)
         {
-            bindings_[assert_binding_index(index)]  = bind_type();
+            bindings_[assert_binding_index(index)]  = sql_value();
 
             return *this;
         }
 
         base_query &base_query::bind(size_t index, double value)
         {
-            bindings_[assert_binding_index(index)] = bind_type(value);
+            bindings_[assert_binding_index(index)] = sql_value(value);
 
             return *this;
         }
 
         base_query &base_query::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
         {
-            bindings_[assert_binding_index(index)] = bind_type(data, size, pFree);
+            bindings_[assert_binding_index(index)] = sql_value(sql_blob(data, size, pFree));
 
             return *this;
         }
 
-        base_query &base_query::bind(size_t index, int type, const variant &value) {
 
-            if(value.is_null())
-            {
-                bind(index);
+        base_query &base_query::bind(size_t index, const sql_blob &value)
+        {
+            bindings_[assert_binding_index(index)] = sql_value(value);
+
+            return *this;
+        }
+
+        base_query &base_query::bind(size_t index, int type, const sql_value &value) {
+
+            if(value.type() == typeid(std::string)) {
+                bind(index, value.get<std::string>());
+            }
+            else if(value.type() == typeid(int64_t)) {
+                bind(index, value.get<int64_t>());
+            }
+            else if(value.type() == typeid(double)) {
+                bind(index, value.get<double>());
+            }
+            else if(value.type() == typeid(sql_blob)) {
+                bind(index, value)
+            }
+            else if(value.type() == typeid(long)) {
+                bind(index, value.get<long>());
             }
             else
             {
-                switch (type)
-                {
-                case SQLITE_TEXT:
-                    bind(index, value.to_string());
-                    break;
-                case SQLITE_INTEGER:
-                    bind(index, value.to_llong());
-                    break;
-                case SQLITE_FLOAT:
-                    bind(index, value.to_double());
-                    break;
-                case SQLITE_BLOB:
-                    bind(index, value.to_pointer(), value.size());
-                default:
-                    bind(index);
-                    break;
-                }
+                bind(index);
             }
             return *this;
         }
