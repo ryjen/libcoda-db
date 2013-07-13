@@ -49,25 +49,11 @@ namespace arg3
             }
         }
 
-        const void *column::to_blob() const
+        sql_blob column::to_blob() const
         {
             assert_value();
 
-            return sqlite3_value_blob(value_);
-        }
-
-        int column::blob_size() const
-        {
-            assert_value();
-
-            return sqlite3_value_bytes(value_);
-        }
-
-        int column::to_blob16() const
-        {
-            assert_value();
-
-            return sqlite3_value_bytes16(value_);
+            return sql_blob(sqlite3_value_blob(value_), sqlite3_value_bytes(value_));
         }
 
         double column::to_double() const
@@ -117,21 +103,21 @@ namespace arg3
             return reinterpret_cast<const char *>(textValue);
         }
 
-        variant column::to_var() const
+        sql_value column::to_value() const
         {
             assert_value();
 
             switch(sqlite3_value_type(value_))
             {
             case SQLITE_INTEGER:
-                return variant(to_int64());
+                return sql_value(to_int64());
             case SQLITE_TEXT:
             default:
-                return variant(to_string());
+                return sql_value(to_string());
             case SQLITE_FLOAT:
-                return variant(to_double());
+                return sql_value(to_double());
             case SQLITE_BLOB:
-                return variant(to_blob(), blob_size());
+                return sql_value(to_blob());
             }
         }
 

@@ -8,10 +8,10 @@
 #include "sqldb.h"
 #include "select_query.h"
 #include "modify_query.h"
-#include "../variant/variant.h"
 #include "../format/format.h"
 #include "schema.h"
 #include <map>
+#include <memory>
 
 namespace arg3
 {
@@ -24,27 +24,35 @@ namespace arg3
         class base_record
         {
         private:
-            map<string, variant> values_;
-            schema schema_;
+            static map<string, std::shared_ptr<schema>> schema_cache_;
+            map<string, sql_value> values_;
+            std::shared_ptr<schema> schema_;
 
             void assert_schema()
             {
-                if (!schema_.is_valid())
-                    schema_.init(db(), tableName());
+                if (schema_ == nullptr)
+                {
+                    if(schema_cache_.count(tableName())) {
+                        schema_ = schema_cache_[tableName()];
+                    }
+                    else  {
+                        schema_cache_[tableName()] = schema_ = make_shared<db::schema>(db(), tableName());
+                    }
+                }
             }
 
         public:
             /*!
              * default constructor
              */
-            base_record()
+            base_record() : schema_(nullptr)
             {
             }
 
             /*!
              * construct with values from a database row
              */
-            base_record(const row &values)
+            base_record(const row &values) : schema_(nullptr)
             {
                 init(values);
             }
@@ -53,7 +61,9 @@ namespace arg3
             {}
 
             base_record(base_record &&other) : values_(std::move(other.values_)), schema_(std::move(other.schema_))
-            {}
+            {
+                other.schema_ = nullptr;
+            }
 
             virtual ~base_record()
             {
@@ -76,6 +86,7 @@ namespace arg3
                 {
                     values_ = std::move(other.values_);
                     schema_ = std::move(other.schema_);
+                    other.schema_ = nullptr;
                 }
                 return *this;
             }
@@ -87,13 +98,18 @@ namespace arg3
             {
                 for (auto v = values.begin(); v != values.end(); v++)
                 {
-                    set(v.name(), v->to_var());
+                    set(v.name(), v->to_value());
                 }
+            }
+
+            bool is_valid()
+            {
+                return schema().is_valid();
             }
 
             bool is_valid() const
             {
-                return schema_.is_valid();
+                return schema_ != nullptr && schema_->is_valid();
             }
 
             /*!
@@ -114,7 +130,7 @@ namespace arg3
             const schema &schema()
             {
                 assert_schema();
-                return schema_;
+                return *schema_;
             }
 
             /*!
@@ -131,31 +147,7 @@ namespace arg3
                 {
                     auto value = values_[column.name()];
 
-                    // do an explicit null check
-                    if(value.is_null())
-                    {
-                        query.bind(index);
-                    }
-                    else
-                    {
-                        switch (column.type())
-                        {
-                        case SQLITE_TEXT:
-                            query.bind(index, value.to_string());
-                            break;
-                        case SQLITE_INTEGER:
-                            query.bind(index, value.to_llong());
-                            break;
-                        case SQLITE_FLOAT:
-                            query.bind(index, value.to_double());
-                            break;
-                        case SQLITE_BLOB:
-                            query.bind(index, value.to_pointer(), value.size());
-                        default:
-                            query.bind(index);
-                            break;
-                        }
-                    }
+                    query.bind_value(index, value);
 
                     index++;
                 }
@@ -166,10 +158,10 @@ namespace arg3
             /*!
              * gets a value specified by column name
              */
-            variant get(const string &name) const
+            sql_value get(const string &name) const
             {
                 if(!has(name))
-                    return variant();
+                    return sql_value();
 
                 return values_.at(name);
             }
@@ -185,7 +177,7 @@ namespace arg3
             /*!
              * sets a string for a column name
              */
-            virtual void set(const string &name, const variant &value)
+            void set(const string &name, const sql_value &value)
             {
                 values_[name] = value;
             }
@@ -235,11 +227,9 @@ namespace arg3
                 int index = 1;
 
                 // bind primary key values
-                for (auto & c : schema().columns())
+                for (auto & c : schema().primary_keys())
                 {
-                    if(!c.pk()) continue;
-
-                    query.bind(index, c.type(), values_[c.name()]);
+                    query.bind_value(index, values_[c]);
                     index++;
                 }
 
@@ -248,7 +238,9 @@ namespace arg3
                 auto it = results.begin();
 
                 if (it != results.end())
+                {
                     return make_shared<T>(*it);
+                }
 
                 throw record_not_found_exception();
             }
@@ -293,7 +285,11 @@ namespace arg3
                 return true;
             }
         };
+
+        template <typename T>
+        map<string,shared_ptr<schema>> base_record<T>::schema_cache_;
     }
+
 }
 
 #endif

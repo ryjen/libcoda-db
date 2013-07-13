@@ -8,7 +8,7 @@
 #include <string>
 #include <cassert>
 #include "exception.h"
-#include "../variant/variant.h"
+#include "sql_value.h"
 
 using namespace std;
 
@@ -39,11 +39,7 @@ namespace arg3
 
             bool is_valid() const;
 
-            const void *to_blob() const;
-
-            int blob_size() const;
-
-            int to_blob16() const;
+            sql_blob to_blob() const;
 
             double to_double() const;
 
@@ -59,7 +55,7 @@ namespace arg3
 
             const wchar_t *to_text16() const;
 
-            variant to_var() const;
+            sql_value to_value() const;
 
             int type() const;
 

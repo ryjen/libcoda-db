@@ -8,7 +8,7 @@
 #include <sstream>
 #include <sqlite3.h>
 #include <type_traits>
-#include <boost/variant.hpp>
+#include "sql_value.h"
 
 using namespace std;
 
@@ -50,6 +50,7 @@ namespace arg3
 
             string lastError() const;
         };
+
     }
 }
 

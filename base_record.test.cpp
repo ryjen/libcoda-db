@@ -54,6 +54,32 @@ Context(base_record_test)
         }
     }
 
+    Spec(find_by_id)
+    {
+        try {
+            user u1;
+
+            u1.set("first_name", "test");
+            u1.set("last_name", "testing");
+
+            Assert::That(u1.save(), Equals(true));
+
+            u1.set("id", 1);
+
+            auto u2 = u1.findById();
+
+            Assert::That(u2->is_valid(), Equals(true));
+
+            Assert::That(u2->id(), Equals(u1.id()));
+        }
+        catch(const std::exception &e)
+        {
+            cerr << "Error3: " << e.what() << endl;
+            throw e;
+        }
+    }
+
+
     Spec(find_by)
     {
         user u1;
@@ -67,7 +93,8 @@ Context(base_record_test)
 
         Assert::That(res.size(), Equals(1));
 
-        Assert::That(res[0]->get("first_name").to_string(), Equals("Bob"));
+        Assert::That(res[0]->get("first_name"), Equals("Bob"));
+
     }
 
     Spec(no_column_test)
@@ -76,17 +103,16 @@ Context(base_record_test)
 
         auto val = user1.get("missing");
 
-        Assert::That(val, Equals(NULL));
-
-        Assert::That(val.to_string(), Equals(""));
+        Assert::That(val, Equals(sql_null));
     }
+
     Spec(is_valid_test)
     {
         user user1;
 
         Assert::That(user1.loadBy("id", 1432123), Equals(false));
 
-        Assert::That(user1.get("id").to_int(0), Equals(0));
+        Assert::That(user1.get("id"), Equals(sql_null));
 
     }
 

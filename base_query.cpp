@@ -11,6 +11,59 @@ namespace arg3
 {
     namespace db
     {
+        class query_binding_visitor
+        {
+            base_query *query_;
+            int index_;
+        public:
+            typedef void result_type;
+
+            query_binding_visitor(base_query *query, int index) : query_(query), index_(index)
+            {}
+
+            template<typename T>
+            void operator()(T value) const {
+                query_->bind(index_, value);
+            }
+        };
+
+        class sql_binding_visitor
+        {
+            sqldb *db_;
+            sqlite3_stmt *stmt_;
+            int index_;
+        public:
+            typedef void result_type;
+
+            sql_binding_visitor(sqldb *db, sqlite3_stmt *stmt, int index) : db_(db), stmt_(stmt), index_(index)
+            {}
+
+            void operator()(int value) const {
+                if(sqlite3_bind_int(stmt_, index_, value) != SQLITE_OK)
+                    throw binding_error(db_->lastError());
+            }
+            void operator()(int64_t value) const {
+                if(sqlite3_bind_int64(stmt_, index_, value) != SQLITE_OK)
+                    throw binding_error(db_->lastError());
+            }
+            void operator()(double value) const {
+                if(sqlite3_bind_double(stmt_, index_, value) != SQLITE_OK)
+                    throw binding_error(db_->lastError());
+            }
+            void operator()(std::string value) const {
+                if(sqlite3_bind_text(stmt_, index_, value.c_str(), value.size(), SQLITE_TRANSIENT) != SQLITE_OK)
+                    throw binding_error(db_->lastError());
+            }
+            void operator()(sql_blob value) const {
+                if(sqlite3_bind_blob(stmt_, index_, value.ptr(), value.size(), value.destructor()) != SQLITE_OK)
+                    throw binding_error(db_->lastError());
+            }
+            void operator()(sql_null_t value) const {
+                if(sqlite3_bind_null(stmt_, index_) != SQLITE_OK)
+                    throw binding_error(db_->lastError());
+            }
+        };
+
         base_query::base_query(sqldb *db, const string &tableName) : db_(db), stmt_(NULL), tableName_(tableName)
         {}
 
@@ -18,7 +71,7 @@ namespace arg3
             tableName_(other.tableName_), bindings_(other.bindings_)
         {}
 
-        base_query::base_query(base_query &&other) : db_(other.db_), stmt_(other.stmt_),
+        base_query::base_query(base_query &&other) : db_(std::move(other.db_)), stmt_(std::move(other.stmt_)),
             tableName_(std::move(other.tableName_)), bindings_(std::move(other.bindings_))
         {
             other.db_ = NULL;
@@ -66,36 +119,9 @@ namespace arg3
 
             for(size_t i = 1; i <= bindings_.size(); i++)
             {
-                auto b = bindings_[i-1];
+                auto value = bindings_[i-1];
 
-                if(b.type() == typeid(long)) {
-                    if (sqlite3_bind_int(stmt_, i, boost::get<long>(b)) != SQLITE_OK)
-                            throw database_exception(db_->lastError());
-                }
-                else if(b.type() == typeid(int64_t)) {
-                    if (sqlite3_bind_int64(stmt_, i, boost::get<int64_t>(b)) != SQLITE_OK)
-                            throw database_exception(db_->lastError());
-                }
-                else if(b.type() == typeid(std::string)) {
-                     std::string temp = boost::get<std::string>(b);
-                     if (sqlite3_bind_text(stmt_, i, boost::get<std::string>, b.size, SQLITE_TRANSIENT) != SQLITE_OK)
-                        throw database_exception(db_->lastError());
-                }
-                else if(b.type() == typeid(double)) {
-                    if (sqlite3_bind_double(stmt_, i, b.value.to_double()) != SQLITE_OK)
-                        throw database_exception(db_->lastError());
-                }
-                else if(b.type() == typeid(sql_blob)) {
-
-                    // TODO: add free method handling
-                    if (sqlite3_bind_blob(stmt_, i, b.value.to_pointer(), b.size, b.freeFunc) != SQLITE_OK)
-                        throw database_exception(db_->lastError());
-                }
-                else {
-
-                    if(sqlite3_bind_null(stmt_, i) != SQLITE_OK)
-                        throw database_exception(db_->lastError());
-                }
+                apply_visitor(sql_binding_visitor(db_, stmt_, i), value);
             }
         }
 
@@ -131,9 +157,14 @@ namespace arg3
 
         base_query &base_query::bind(size_t index)
         {
-            bindings_[assert_binding_index(index)]  = sql_value();
+            bindings_[assert_binding_index(index)]  = sql_null;
 
             return *this;
+        }
+
+        base_query &base_query::bind(size_t index, const sql_null_t &value)
+        {
+            return bind(index);
         }
 
         base_query &base_query::bind(size_t index, double value)
@@ -143,7 +174,7 @@ namespace arg3
             return *this;
         }
 
-        base_query &base_query::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
+        base_query &base_query::bind(size_t index, const void *data, size_t size, void (*pFree)(void*))
         {
             bindings_[assert_binding_index(index)] = sql_value(sql_blob(data, size, pFree));
 
@@ -158,27 +189,10 @@ namespace arg3
             return *this;
         }
 
-        base_query &base_query::bind(size_t index, int type, const sql_value &value) {
+        base_query &base_query::bind_value(size_t index, const sql_value &value) {
 
-            if(value.type() == typeid(std::string)) {
-                bind(index, value.get<std::string>());
-            }
-            else if(value.type() == typeid(int64_t)) {
-                bind(index, value.get<int64_t>());
-            }
-            else if(value.type() == typeid(double)) {
-                bind(index, value.get<double>());
-            }
-            else if(value.type() == typeid(sql_blob)) {
-                bind(index, value)
-            }
-            else if(value.type() == typeid(long)) {
-                bind(index, value.get<long>());
-            }
-            else
-            {
-                bind(index);
-            }
+            apply_visitor(query_binding_visitor(this, index), value);
+
             return *this;
         }
     }

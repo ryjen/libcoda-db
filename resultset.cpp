@@ -110,7 +110,9 @@ namespace arg3
 
         resultset_iterator::resultset_iterator(resultset_iterator &&other) : rs_(std::move(other.rs_)), pos_(other.pos_),
             value_(std::move(other.value_))
-        {}
+        {
+            other.rs_ = NULL;
+        }
 
         resultset_iterator::~resultset_iterator() {}
 
@@ -132,6 +134,7 @@ namespace arg3
                 rs_ = std::move(other.rs_);
                 pos_ = other.pos_;
                 value_ = std::move(other.value_);
+                other.rs_ = NULL;
             }
             return *this;
         }

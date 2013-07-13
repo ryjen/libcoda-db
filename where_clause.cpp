@@ -77,7 +77,10 @@ namespace arg3
         }
         where_clause &where_clause::operator&&(const string &value)
         {
-            and_.push_back(where_clause(value));
+            if(value_.empty())
+                value_ = value;
+            else
+                and_.push_back(where_clause(value));
             return *this;
         }
         where_clause &where_clause::operator||(const where_clause &value)
@@ -87,7 +90,10 @@ namespace arg3
         }
         where_clause &where_clause::operator||(const string &value)
         {
-            or_.push_back(where_clause(value));
+            if(value_.empty())
+                value_ = value;
+            else
+                or_.push_back(where_clause(value));
             return *this;
         }
     }

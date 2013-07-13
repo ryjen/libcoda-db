@@ -21,7 +21,9 @@ namespace arg3
         {}
 
         row::row(row &&other) : results_(std::move(other.results_)), size_(other.size_)
-        {}
+        {
+            other.results_ = NULL;
+        }
 
         row::~row() {}
 
@@ -41,6 +43,7 @@ namespace arg3
             {
                 results_ = std::move(other.results_);
                 size_ = other.size_;
+                other.results_ = NULL;
             }
             return *this;
         }

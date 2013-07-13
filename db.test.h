@@ -47,6 +47,11 @@ public:
         return "users";
     }
 
+    arg3::db::sql_value id() const {
+
+        return get("id");
+    }
+
     string to_string()
     {
         ostringstream buf;

@@ -9,7 +9,7 @@
 #include <sqlite3.h>
 #include <map>
 #include "schema.h"
-#include "typedef.h"
+#include "sql_value.h"
 
 namespace arg3
 {
@@ -88,7 +88,9 @@ namespace arg3
 
             base_query &bind(size_t index, const sql_blob &value);
 
-            base_query &bind(size_t index, int type, const sql_value &v);
+            base_query &bind(size_t index, const sql_null_t &value);
+
+            base_query &bind_value(size_t index, const sql_value &v);
         };
 
     }
