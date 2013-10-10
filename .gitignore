@@ -1,0 +1,8 @@
+obj
+bin
+Makefile
+*.a
+*.db
+*.make
+*.sublime-workspace
+reinstall.sh

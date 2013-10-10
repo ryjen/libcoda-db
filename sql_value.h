@@ -1,9 +1,9 @@
 #ifndef ARG3_DB_SQL_VALUE_H_
 #define ARG3_DB_SQL_VALUE_H_
 
-#include "variant.h"
 #include <iostream>
 #include <sqlite3.h>
+#include "variant.h"
 
 namespace arg3
 {

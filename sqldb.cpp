@@ -10,7 +10,7 @@ namespace arg3
 {
     namespace db
     {
-        ARG3_IMPLEMENT_EXCEPTION(database_exception, base_exception);
+        ARG3_IMPLEMENT_EXCEPTION(database_exception, std::exception);
 
         ARG3_IMPLEMENT_EXCEPTION(no_such_column_exception, database_exception);
 

@@ -94,6 +94,27 @@ namespace arg3
         };
 
     }
+
+
+    template<typename T>
+    string join(vector<T> list, const string &divider = ",")
+    {
+        ostringstream buf;
+
+        if (list.size() > 0)
+        {
+            ostream_iterator<T> it(buf, divider.c_str());
+
+            copy(list.begin(), list.end() - 1, it);
+
+            buf << *(list.end() - 1);
+        }
+
+        return buf.str();
+    }
+
+    string join(std::string::value_type c, size_t count, const string &delimiter = ",");
+
 }
 
 #endif

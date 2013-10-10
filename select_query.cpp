@@ -3,7 +3,6 @@
  */
 #include "base_record.h"
 #include "select_query.h"
-#include "../collections/collections.h"
 #include "base_record.h"
 
 namespace arg3

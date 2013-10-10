@@ -8,7 +8,6 @@
 #include "sqldb.h"
 #include "select_query.h"
 #include "modify_query.h"
-#include "../format/format.h"
 #include "schema.h"
 #include <map>
 #include <memory>
@@ -219,7 +218,7 @@ namespace arg3
                 // find by primary keys
                 for (auto & pk : schema().primary_keys())
                 {
-                    params && (format("{0} = ?", pk));
+                    params && (pk + " = ?");
                 }
 
                 query.where(params);
@@ -250,7 +249,7 @@ namespace arg3
             {
                 auto query = select_query(db(), tableName(), schema().column_names());
 
-                query.where(format("{0} = ?", name).str());
+                query.where(name + " = ?");
 
                 query.bind(1, value);
 
@@ -271,7 +270,7 @@ namespace arg3
             {
                 auto query = select_query(db(), tableName(), schema().column_names());
 
-                query.where(format("{0} = ? LIMIT 1", name).str());
+                query.where(name + " = ? LIMIT 1");
 
                 query.bind(1, value);
 

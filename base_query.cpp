@@ -196,4 +196,22 @@ namespace arg3
             return *this;
         }
     }
+
+    
+    string join(string::value_type value, string::size_type count, const string &delimiter)
+    {
+        ostringstream buf;
+
+        if (count > 0)
+        {
+            for (string::size_type i = 0; i < count - 1; i++)
+            {
+                buf.put(value);
+                buf.put(',');
+            }
+
+            buf.put(value);
+        }
+        return buf.str();
+    }
 }

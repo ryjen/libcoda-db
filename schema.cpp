@@ -1,5 +1,4 @@
 #include "schema.h"
-#include "../format/format.h"
 #include <cassert>
 #include "resultset.h"
 
@@ -73,7 +72,7 @@ namespace arg3
             assert(db->isOpen());
 
             // get table information
-            auto rs = db->execute( format("pragma table_info({0})", tablename));
+            auto rs = db->execute( "pragma table_info(" + tablename + ")" );
 
             for (auto & row : rs)
             {

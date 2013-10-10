@@ -3,8 +3,6 @@
  */
 #include "modify_query.h"
 #include "exception.h"
-#include "../collections/collections.h"
-#include "../string/string.h"
 
 namespace arg3
 {
