@@ -25,7 +25,7 @@ public:
         return testdb;
     }
 
-    string to_string()
+    string to_string() const
     {
         ostringstream buf;
 
@@ -59,10 +59,6 @@ and using the user object:
 TODO
 ====
 
-* BLOB support
+* -BLOB support-
 * More tests
 
-licensing
-=========
-
-under the Lesser GNU Public License
