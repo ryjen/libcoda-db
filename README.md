@@ -59,6 +59,5 @@ and using the user object:
 TODO
 ====
 
-* -BLOB support-
 * More tests
 
