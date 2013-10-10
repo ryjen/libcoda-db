@@ -55,13 +55,13 @@ Context(select_query_test)
 
             Assert::That(row != results.end(), Equals(true));
 
-            string lastName = row->column_value("last_name").to_string();
+            string lastName = row->column("last_name").to_string();
 
             Assert::That(lastName, Equals("Jenkins"));
         }
         catch (const database_exception &e)
         {
-            cout << testdb.lastError() << endl;
+            cout << testdb.last_error() << endl;
             throw e;
         }
     }
@@ -76,7 +76,7 @@ Context(select_query_test)
 
         query.bind(1, "Bryan");
 
-        string value = query.executeScalar<string>();
+        string value = query.execute_scalar<string>();
 
         Assert::That(value, Equals("Bryan"));
     }
@@ -97,7 +97,7 @@ Context(select_query_test)
 
         Assert::That(rs.is_valid(), Equals(true));
 
-        auto u = rs.begin()->column_value("first_name");
+        auto u = rs.begin()->column("first_name");
 
         Assert::That(u.to_string(), Equals("Bryan"));
     }

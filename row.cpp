@@ -110,22 +110,22 @@ namespace arg3
 
         column row::operator[](size_t nPosition) const
         {
-            return column_value(nPosition);
+            return column(nPosition);
         }
 
         column row::operator[](const string &name) const
         {
-            return column_value(name);
+            return column(name);
         }
 
-        column row::column_value(size_t nPosition) const
+        column row::column(size_t nPosition) const
         {
             assert(nPosition < size());
 
             return db::column( sqlite3_column_value(results_->stmt_, nPosition ) );
         }
 
-        column row::column_value(const string &name) const
+        column row::column(const string &name) const
         {
             assert(!name.empty());
 
@@ -135,10 +135,10 @@ namespace arg3
 
                 if (name == col_name)
                 {
-                    return column_value(i);
+                    return column(i);
                 }
             }
-            return column();
+            return arg3::db::column();
         }
 
         string row::column_name(size_t nPosition) const

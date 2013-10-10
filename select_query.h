@@ -48,16 +48,16 @@ namespace arg3
 
             select_query &limit(const string &value);
 
-            select_query &orderBy(const string &value);
+            select_query &order_by(const string &value);
 
-            select_query &groupBy(const string &value);
+            select_query &group_by(const string &value);
 
             string to_string() const;
 
             resultset execute();
 
             template<typename T>
-            T executeScalar() {
+            T execute_scalar() {
                 auto rs = execute();
 
                 auto row = rs.begin();

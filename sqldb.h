@@ -34,21 +34,21 @@ namespace arg3
             sqldb &operator=(sqldb &&other);
             virtual ~sqldb();
 
-            bool isOpen() const;
+            bool is_open() const;
 
             void open();
             void close();
 
-            sqlite3_int64 lastInsertId() const;
+            sqlite3_int64 last_insert_id() const;
 
-            int lastNumberOfChanges() const;
+            int last_number_of_changes() const;
 
             string filename() const;
-            void setFilename(const string &value);
+            void set_filename(const string &value);
 
             resultset execute(const string &sql);
 
-            string lastError() const;
+            string last_error() const;
         };
 
     }

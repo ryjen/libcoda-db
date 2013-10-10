@@ -69,7 +69,7 @@ namespace arg3
         {
             assert(db != NULL);
 
-            assert(db->isOpen());
+            assert(db->is_open());
 
             // get table information
             auto rs = db->execute( "pragma table_info(" + tablename + ")" );

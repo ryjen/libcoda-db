@@ -164,7 +164,7 @@ namespace arg3
                 value_ = row(rs_);
                 break;
             default:
-                throw database_exception(rs_->db_->lastError());
+                throw database_exception(rs_->db_->last_error());
                 break;
             }
 

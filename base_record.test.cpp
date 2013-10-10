@@ -33,7 +33,7 @@ Context(base_record_test)
 
             Assert::That(user1.save(), Equals(true));
 
-            user1.loadBy("id", 1); // load values back up from db
+            user1.refresh(); // load values back up from db
 
             Assert::That(user1.get("first_name"), Equals("Ryan"));
 
@@ -42,14 +42,14 @@ Context(base_record_test)
 
             Assert::That(user1.save(), Equals(true));
 
-            user1.loadBy("id", 1); // load values back up from db
+            user1.refresh(); // load values back up from db
 
             Assert::That(user1.get("first_name"), Equals("Bryan"));
 
         }
         catch (const database_exception &e)
         {
-            cerr << "Error3: " << testdb.lastError() << endl;
+            cerr << "Error3: " << testdb.last_error() << endl;
             throw e;
         }
     }
@@ -66,7 +66,7 @@ Context(base_record_test)
 
             u1.set("id", 1);
 
-            auto u2 = u1.findById();
+            auto u2 = u1.find_by_id();
 
             Assert::That(u2->is_valid(), Equals(true));
 
@@ -89,7 +89,7 @@ Context(base_record_test)
 
         Assert::That(u1.save(), Equals(true));
 
-        auto res = user().findBy("first_name", "Bob");
+        auto res = user().find_by("first_name", "Bob");
 
         Assert::That(res.size(), Equals(1));
 
@@ -109,10 +109,9 @@ Context(base_record_test)
     Spec(is_valid_test)
     {
         user user1;
+        user1.set("id", 14323432);
 
-        Assert::That(user1.loadBy("id", 1432123), Equals(false));
-
-        Assert::That(user1.get("id"), Equals(sql_null));
+        Assert::That(user1.refresh(), Equals(false));
 
     }
 

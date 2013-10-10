@@ -39,7 +39,7 @@ Context(column_test)
         Assert::That(u1.save(), Equals(true));
 
         if (sqlite3_prepare_v2(testdb.rawDb(), "select * from users", -1, &stmt, NULL) != SQLITE_OK)
-            throw database_exception(testdb.lastError());
+            throw database_exception(testdb.last_error());
 
 
         sqlite3_step(stmt);

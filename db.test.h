@@ -43,7 +43,7 @@ public:
         return &testdb;
     }
 
-    string tableName() const {
+    string table_name() const {
         return "users";
     }
 

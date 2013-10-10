@@ -240,9 +240,9 @@ namespace arg3
 
             string column_name(size_t nPosition) const;
 
-            column column_value(size_t nPosition) const;
+            arg3::db::column column(size_t nPosition) const;
 
-            column column_value(const string &name) const;
+            arg3::db::column column(const string &name) const;
 
             size_t size() const;
 

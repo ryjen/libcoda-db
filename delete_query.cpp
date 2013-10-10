@@ -76,14 +76,14 @@ namespace arg3
             if (!batch)
             {
                 if (sqlite3_finalize(stmt_) != SQLITE_OK)
-                    throw database_exception(db_->lastError());
+                    throw database_exception(db_->last_error());
 
                 stmt_ = NULL;
             }
             else
             {
                 if (sqlite3_reset(stmt_) != SQLITE_OK)
-                    throw database_exception(db_->lastError());
+                    throw database_exception(db_->last_error());
             }
 
             return res == SQLITE_DONE;

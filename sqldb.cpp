@@ -63,7 +63,7 @@ namespace arg3
             return filename_;
         }
 
-        void sqldb::setFilename(const string &value)
+        void sqldb::set_filename(const string &value)
         {
             filename_ = value;
         }
@@ -74,10 +74,10 @@ namespace arg3
             if (db_ != NULL) return;
 
             if (sqlite3_open(filename_.c_str(), &db_) != SQLITE_OK)
-                throw database_exception(lastError());
+                throw database_exception(last_error());
         }
 
-        bool sqldb::isOpen() const
+        bool sqldb::is_open() const
         {
             return db_ != NULL;
         }
@@ -90,7 +90,7 @@ namespace arg3
             db_ = NULL;
         }
 
-        string sqldb::lastError() const
+        string sqldb::last_error() const
         {
             ostringstream buf;
 
@@ -100,12 +100,12 @@ namespace arg3
             return buf.str();
         }
 
-        sqlite3_int64 sqldb::lastInsertId() const {
+        sqlite3_int64 sqldb::last_insert_id() const {
 
             return sqlite3_last_insert_rowid(db_);
         }
 
-        int sqldb::lastNumberOfChanges() const {
+        int sqldb::last_number_of_changes() const {
             return sqlite3_changes(db_);
         }
 
@@ -114,7 +114,7 @@ namespace arg3
             sqlite3_stmt *stmt;
 
             if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK)
-                throw database_exception(lastError());
+                throw database_exception(last_error());
 
             resultset set(this, stmt);
 

@@ -40,27 +40,27 @@ namespace arg3
 
             void operator()(int value) const {
                 if(sqlite3_bind_int(stmt_, index_, value) != SQLITE_OK)
-                    throw binding_error(db_->lastError());
+                    throw binding_error(db_->last_error());
             }
             void operator()(int64_t value) const {
                 if(sqlite3_bind_int64(stmt_, index_, value) != SQLITE_OK)
-                    throw binding_error(db_->lastError());
+                    throw binding_error(db_->last_error());
             }
             void operator()(double value) const {
                 if(sqlite3_bind_double(stmt_, index_, value) != SQLITE_OK)
-                    throw binding_error(db_->lastError());
+                    throw binding_error(db_->last_error());
             }
             void operator()(std::string value) const {
                 if(sqlite3_bind_text(stmt_, index_, value.c_str(), value.size(), SQLITE_TRANSIENT) != SQLITE_OK)
-                    throw binding_error(db_->lastError());
+                    throw binding_error(db_->last_error());
             }
             void operator()(sql_blob value) const {
                 if(sqlite3_bind_blob(stmt_, index_, value.ptr(), value.size(), value.destructor()) != SQLITE_OK)
-                    throw binding_error(db_->lastError());
+                    throw binding_error(db_->last_error());
             }
             void operator()(sql_null_t value) const {
                 if(sqlite3_bind_null(stmt_, index_) != SQLITE_OK)
-                    throw binding_error(db_->lastError());
+                    throw binding_error(db_->last_error());
             }
         };
 
@@ -115,7 +115,7 @@ namespace arg3
             string sql = to_string();
 
             if (sqlite3_prepare_v2(db_->db_, sql.c_str(), -1, &stmt_, NULL) != SQLITE_OK)
-                throw database_exception(db_->lastError());
+                throw database_exception(db_->last_error());
 
             for(size_t i = 1; i <= bindings_.size(); i++)
             {
@@ -197,7 +197,7 @@ namespace arg3
         }
     }
 
-    
+
     string join(string::value_type value, string::size_type count, const string &delimiter)
     {
         ostringstream buf;

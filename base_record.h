@@ -31,11 +31,11 @@ namespace arg3
             {
                 if (schema_ == nullptr)
                 {
-                    if(schema_cache_.count(tableName())) {
-                        schema_ = schema_cache_[tableName()];
+                    if(schema_cache_.count(table_name())) {
+                        schema_ = schema_cache_[table_name()];
                     }
                     else  {
-                        schema_cache_[tableName()] = schema_ = make_shared<db::schema>(db(), tableName());
+                        schema_cache_[table_name()] = schema_ = make_shared<db::schema>(db(), table_name());
                     }
                 }
             }
@@ -124,7 +124,7 @@ namespace arg3
             /*!
              * should return the table name for the record
              */
-            virtual string tableName() const = 0;
+            virtual string table_name() const = 0;
 
             const schema &schema()
             {
@@ -137,7 +137,7 @@ namespace arg3
              */
             bool save()
             {
-                modify_query query(db(), tableName(), schema().column_names());
+                modify_query query(db(), table_name(), schema().column_names());
 
                 int index = 1;
 
@@ -193,9 +193,9 @@ namespace arg3
              * looks up and returns all objects of a base_record type
              */
 
-            vector<shared_ptr<T>> findAll()
+            vector<shared_ptr<T>> find_all()
             {
-                auto query = select_query(db(), tableName(), schema().column_names());
+                auto query = select_query(db(), table_name(), schema().column_names());
 
                 auto results = query.execute();
 
@@ -209,9 +209,9 @@ namespace arg3
                 return items;
             }
 
-            shared_ptr<T> findById()
+            shared_ptr<T> find_by_id()
             {
-                auto query = select_query(db(), tableName(), schema().column_names());
+                auto query = select_query(db(), table_name(), schema().column_names());
 
                 auto params = where_clause();
 
@@ -245,9 +245,9 @@ namespace arg3
             }
 
             template<typename V>
-            vector<shared_ptr<T>> findBy(const string &name, const V &value)
+            vector<shared_ptr<T>> find_by(const string &name, const V &value)
             {
-                auto query = select_query(db(), tableName(), schema().column_names());
+                auto query = select_query(db(), table_name(), schema().column_names());
 
                 query.where(name + " = ?");
 
@@ -265,14 +265,30 @@ namespace arg3
                 return items;
             }
 
-            template<typename V>
-            bool loadBy(const string &name, const V &value)
+            bool refresh()
             {
-                auto query = select_query(db(), tableName(), schema().column_names());
+                auto query = select_query(db(), table_name(), schema().column_names());
 
-                query.where(name + " = ? LIMIT 1");
+                auto params = where_clause();
 
-                query.bind(1, value);
+                // find by primary keys
+                for (auto & pk : schema().primary_keys())
+                {
+                    params && (pk + " = ?");
+                }
+
+                query.where(params);
+
+                query.limit("1");
+
+                int index = 1;
+
+                // bind primary key values
+                for (auto & c : schema().primary_keys())
+                {
+                    query.bind_value(index, values_[c]);
+                    index++;
+                }
 
                 auto result = query.execute();
 

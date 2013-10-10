@@ -49,6 +49,6 @@ Context(delete_query_test)
 
         Assert::That(query.execute(), Equals(true));
 
-        Assert::That(testdb.lastNumberOfChanges(), Equals(1));
+        Assert::That(testdb.last_number_of_changes(), Equals(1));
     }
 };

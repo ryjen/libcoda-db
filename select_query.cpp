@@ -81,13 +81,13 @@ namespace arg3
             return *this;
         }
 
-        select_query &select_query::orderBy(const string &value)
+        select_query &select_query::order_by(const string &value)
         {
             orderBy_ = value;
             return *this;
         }
 
-        select_query &select_query::groupBy(const string &value)
+        select_query &select_query::group_by(const string &value)
         {
             groupBy_ = value;
             return *this;
