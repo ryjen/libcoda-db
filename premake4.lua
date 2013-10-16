@@ -79,7 +79,9 @@ solution "arg3"
     configurations { "debug", "release" }
     language "C++"
 
-    buildoptions { "-std=c++11", "-stdlib=libc++", "-Wall", "-Werror", "-Ivendor"}
+    buildoptions { "-std=c++11", "-stdlib=libc++", "-Wall", "-Werror" }
+
+    includedirs { "vendor" }
 
     linkoptions { "-stdlib=libc++" }
 
