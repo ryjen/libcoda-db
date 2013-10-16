@@ -119,8 +119,7 @@ solution "arg3"
     project "arg3test"
         kind "ConsoleApp"
         files {
-            "**.test.cpp",
-            "arg3db.test.cpp"
+            "**.test.cpp"
         }
 
         links { "sqlite3", "arg3db" }

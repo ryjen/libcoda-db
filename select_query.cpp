@@ -32,7 +32,7 @@ namespace arg3
 
         select_query &select_query::operator=(const select_query &other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 base_query::operator=(other);
                 where_ = other.where_;
@@ -45,9 +45,9 @@ namespace arg3
             return *this;
         }
 
-        select_query &select_query::operator=(select_query &&other)
+        select_query &select_query::operator=(select_query && other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 base_query::operator=(std::move(other));
                 where_ = std::move(other.where_);
@@ -100,7 +100,7 @@ namespace arg3
 
             buf << "SELECT ";
 
-            buf << (columns_.size() == 0 ? "*" : join(columns_));
+            buf << (columns_.size() == 0 ? "*" : join_csv(columns_));
 
             buf << " FROM " << tableName_;
 

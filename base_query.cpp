@@ -22,7 +22,8 @@ namespace arg3
             {}
 
             template<typename T>
-            void operator()(T value) const {
+            void operator()(T value) const
+            {
                 query_->bind(index_, value);
             }
         };
@@ -38,28 +39,34 @@ namespace arg3
             sql_binding_visitor(sqldb *db, sqlite3_stmt *stmt, int index) : db_(db), stmt_(stmt), index_(index)
             {}
 
-            void operator()(int value) const {
-                if(sqlite3_bind_int(stmt_, index_, value) != SQLITE_OK)
+            void operator()(int value) const
+            {
+                if (sqlite3_bind_int(stmt_, index_, value) != SQLITE_OK)
                     throw binding_error(db_->last_error());
             }
-            void operator()(int64_t value) const {
-                if(sqlite3_bind_int64(stmt_, index_, value) != SQLITE_OK)
+            void operator()(int64_t value) const
+            {
+                if (sqlite3_bind_int64(stmt_, index_, value) != SQLITE_OK)
                     throw binding_error(db_->last_error());
             }
-            void operator()(double value) const {
-                if(sqlite3_bind_double(stmt_, index_, value) != SQLITE_OK)
+            void operator()(double value) const
+            {
+                if (sqlite3_bind_double(stmt_, index_, value) != SQLITE_OK)
                     throw binding_error(db_->last_error());
             }
-            void operator()(std::string value) const {
-                if(sqlite3_bind_text(stmt_, index_, value.c_str(), value.size(), SQLITE_TRANSIENT) != SQLITE_OK)
+            void operator()(std::string value) const
+            {
+                if (sqlite3_bind_text(stmt_, index_, value.c_str(), value.size(), SQLITE_TRANSIENT) != SQLITE_OK)
                     throw binding_error(db_->last_error());
             }
-            void operator()(sql_blob value) const {
-                if(sqlite3_bind_blob(stmt_, index_, value.ptr(), value.size(), value.destructor()) != SQLITE_OK)
+            void operator()(sql_blob value) const
+            {
+                if (sqlite3_bind_blob(stmt_, index_, value.ptr(), value.size(), value.destructor()) != SQLITE_OK)
                     throw binding_error(db_->last_error());
             }
-            void operator()(sql_null_t value) const {
-                if(sqlite3_bind_null(stmt_, index_) != SQLITE_OK)
+            void operator()(sql_null_t value) const
+            {
+                if (sqlite3_bind_null(stmt_, index_) != SQLITE_OK)
                     throw binding_error(db_->last_error());
             }
         };
@@ -82,7 +89,7 @@ namespace arg3
 
         base_query &base_query::operator=(const base_query &other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 db_ = other.db_;
                 stmt_ = other.stmt_;
@@ -92,9 +99,9 @@ namespace arg3
             return *this;
         }
 
-        base_query &base_query::operator=(base_query &&other)
+        base_query &base_query::operator=(base_query && other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 db_ = other.db_;
                 stmt_ = other.stmt_;
@@ -117,9 +124,9 @@ namespace arg3
             if (sqlite3_prepare_v2(db_->db_, sql.c_str(), -1, &stmt_, NULL) != SQLITE_OK)
                 throw database_exception(db_->last_error());
 
-            for(size_t i = 1; i <= bindings_.size(); i++)
+            for (size_t i = 1; i <= bindings_.size(); i++)
             {
-                auto value = bindings_[i-1];
+                auto value = bindings_[i - 1];
 
                 apply_visitor(sql_binding_visitor(db_, stmt_, i), value);
             }
@@ -131,7 +138,7 @@ namespace arg3
 
             bindings_.resize(std::max(index, bindings_.size()));
 
-            return index-1;
+            return index - 1;
         }
 
         base_query &base_query::bind(size_t index, const string &value, int len)
@@ -174,7 +181,7 @@ namespace arg3
             return *this;
         }
 
-        base_query &base_query::bind(size_t index, const void *data, size_t size, void (*pFree)(void*))
+        base_query &base_query::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
         {
             bindings_[assert_binding_index(index)] = sql_value(sql_blob(data, size, pFree));
 
@@ -189,7 +196,8 @@ namespace arg3
             return *this;
         }
 
-        base_query &base_query::bind_value(size_t index, const sql_value &value) {
+        base_query &base_query::bind_value(size_t index, const sql_value &value)
+        {
 
             apply_visitor(query_binding_visitor(this, index), value);
 
@@ -198,7 +206,7 @@ namespace arg3
     }
 
 
-    string join(string::value_type value, string::size_type count, const string &delimiter)
+    string join_csv(string::value_type value, string::size_type count)
     {
         ostringstream buf;
 

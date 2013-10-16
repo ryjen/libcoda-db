@@ -30,7 +30,7 @@ namespace arg3
             return *this;
         }
 
-        modify_query &modify_query::operator=(modify_query &&other)
+        modify_query &modify_query::operator=(modify_query && other)
         {
             base_query::operator=(std::move(other));
             columns_ = std::move(other.columns_);
@@ -48,11 +48,11 @@ namespace arg3
             {
                 buf << "(";
 
-                buf << join(columns_);
+                buf << join_csv(columns_);
 
                 buf << ") VALUES (";
 
-                buf << join('?', columns_.size());
+                buf << join_csv('?', columns_.size());
 
                 buf << ")";
             }

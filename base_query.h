@@ -49,7 +49,7 @@ namespace arg3
 
             base_query &operator=(const base_query &other);
 
-            base_query &operator=(base_query &&other);
+            base_query &operator=(base_query && other);
 
             /*!
              * should return valid T-SQL
@@ -97,13 +97,13 @@ namespace arg3
 
 
     template<typename T>
-    string join(vector<T> list, const string &divider = ",")
+    string join_csv(vector<T> list)
     {
         ostringstream buf;
 
         if (list.size() > 0)
         {
-            ostream_iterator<T> it(buf, divider.c_str());
+            ostream_iterator<T> it(buf, ",");
 
             copy(list.begin(), list.end() - 1, it);
 
@@ -113,7 +113,7 @@ namespace arg3
         return buf.str();
     }
 
-    string join(std::string::value_type c, size_t count, const string &delimiter = ",");
+    string join_csv(std::string::value_type c, size_t count);
 
 }
 
