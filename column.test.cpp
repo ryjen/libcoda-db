@@ -32,7 +32,7 @@ Context(column_test)
     {
         sqlite3_stmt *stmt;
 
-        user u1;
+        user u1(1);
         u1.set("first_name", "Bob");
         u1.set("last_name", "Jenkins");
 
@@ -41,10 +41,9 @@ Context(column_test)
         if (sqlite3_prepare_v2(testdb.rawDb(), "select * from users", -1, &stmt, NULL) != SQLITE_OK)
             throw database_exception(testdb.last_error());
 
-
         sqlite3_step(stmt);
 
-        sqlite3_value * value = sqlite3_column_value(stmt, 1 );
+        sqlite3_value *value = sqlite3_column_value(stmt, 1 );
 
         column c(value);
 

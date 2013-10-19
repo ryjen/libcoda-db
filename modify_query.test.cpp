@@ -9,19 +9,24 @@ using namespace std;
 
 using namespace arg3::db;
 
-Context(delete_query_test)
+Context(modify_query_test)
 {
     static void SetUpContext()
     {
         testdb.setup();
 
-        user user1(1);
+        user user1;
+
+        user1.set_id(1);
         user1.set("first_name", "Bryan");
         user1.set("last_name", "Jenkins");
 
         user1.save();
 
-        user user2(3);
+
+        user user2;
+
+        user2.set_id(3);
 
         user2.set("first_name", "Bob");
         user2.set("last_name", "Smith");
@@ -34,16 +39,18 @@ Context(delete_query_test)
         testdb.teardown();
     }
 
-    Spec(delete_test)
+    Spec(modify_test)
     {
-        delete_query query(&testdb, "users");
+        modify_query query(&testdb, "users", { "id", "first_name", "last_name" });
 
-        query.where("first_name=?");
-
-        query.bind(1, "Bob");
+        query.bind(1, 1);
+        query.bind(2, "blah");
+        query.bind(3, "bleh");
 
         Assert::That(query.execute(), Equals(true));
 
-        Assert::That(testdb.last_number_of_changes(), Equals(1));
-    }
+        user u1(1);
+
+        Assert::That(u1.refresh(), Equals(true));
+    };
 };

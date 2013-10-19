@@ -114,14 +114,14 @@ solution "arg3"
         }
 
         links { "sqlite3", "arg3db" }
-       
+
         configuration "Debug"
         postbuildcommands {
-          "bin/debug/arg3test"
+         "bin/debug/arg3test"
         }
         configuration "Release"
         postbuildcommands {
-          "bin/release/arg3test"
+         "bin/release/arg3test"
         }
 
 

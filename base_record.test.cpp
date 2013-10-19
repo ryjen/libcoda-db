@@ -26,8 +26,6 @@ Context(base_record_test)
         try
         {
             user user1;
-
-            user1.set("id", 1);
             user1.set("first_name", "Ryan");
             user1.set("last_name", "Jennings");
 
@@ -56,23 +54,21 @@ Context(base_record_test)
 
     Spec(find_by_id)
     {
-        try {
+        try
+        {
             user u1;
-
             u1.set("first_name", "test");
             u1.set("last_name", "testing");
 
             Assert::That(u1.save(), Equals(true));
 
-            u1.set("id", 1);
-
-            auto u2 = u1.find_by_id();
+            auto u2 = user().find_by_id(1);
 
             Assert::That(u2->is_valid(), Equals(true));
 
-            Assert::That(u2->id(), Equals(u1.id()));
+            Assert::That(u2->id(), Equals(1));
         }
-        catch(const std::exception &e)
+        catch (const std::exception &e)
         {
             cerr << "Error3: " << e.what() << endl;
             throw e;
@@ -108,11 +104,9 @@ Context(base_record_test)
 
     Spec(is_valid_test)
     {
-        user user1;
-        user1.set("id", 14323432);
+        user user1(14323432);
 
         Assert::That(user1.refresh(), Equals(false));
 
     }
-
 };

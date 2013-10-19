@@ -30,7 +30,7 @@ Context(schema_test)
 
         Assert::That(keys.size(), Equals(1));
 
-        Assert::That(keys[0], Equals("id"));
+        Assert::That(keys[0], Equals(record_schema::ID_COLUMN_NAME));
     }
 
 };

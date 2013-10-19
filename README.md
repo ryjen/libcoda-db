@@ -4,6 +4,11 @@ libarg3db
 
 a sqlite3 wrapper / active record (ish) implementation
 
+Records
+=======
+
+base_record.h provides a ORM type functionality.  Records look for an id column based on the table name.
+
 a sample model object:
 ```c++
 sqldb testdb("test.db");
@@ -11,25 +16,21 @@ sqldb testdb("test.db");
 class user : public base_record
 {
 public:
-    user() {}
+    /* default constructor */
+    user() : base_record(&testdb, "users") {}
 
-    user(const row &values) : base_record(values) {}
+    /* required query constructor */
+    user(const row &values) : base_record(&testdb, "users", values) {}
 
-    string tableName() const
-    {
-        return "users";
-    }
+    /* id constructor */
+    user(long id) : base_record(&testdb, "users", id) {}
 
-    sqldb db() const
-    {
-        return testdb;
-    }
-
+    /* utility method showing how to get columns */
     string to_string() const
     {
         ostringstream buf;
 
-        buf << get("id") << ": " << get("first_name") << " " << get("last_name");
+        buf << id() << ": " << get("first_name") << " " << get("last_name");
 
         return buf.str();
     }
@@ -39,7 +40,8 @@ public:
 
 and using the user object:
 ```c++
- 	auto results = user().findAll();
+    /* get all users */
+ 	auto results = user().find_all();
 
     for (auto &obj : results)
     {
@@ -53,7 +55,32 @@ and using the user object:
 
     if(!obj.save())
     	cout << obj.db().last_error() << endl;
-    	
+
+```
+
+
+Queries: Select and Modify
+==========================
+
+```c++
+sqldb testdb("test.db");
+
+/* upsert a user */
+modify_query query(testdb, "users", { "id", "first_name", "last_name" });
+
+query.bind(1, 1234).bind(2, "happy").bind(3, "gilmour");
+
+if(!query.execute())
+    cout << testdb.last_error() << endl;
+
+/* select some users */
+select_query query(testdb, "users");
+
+query.where("last_name = ?");
+
+query.bind(1, "Jenkins");
+
+auto results = query.execute();
 ```
 
 TODO

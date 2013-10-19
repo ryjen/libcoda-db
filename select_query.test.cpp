@@ -16,7 +16,7 @@ Context(select_query_test)
 
         user user1;
 
-        user1.set("id", 1);
+        user1.set_id(1);
         user1.set("first_name", "Bryan");
         user1.set("last_name", "Jenkins");
 
@@ -25,7 +25,7 @@ Context(select_query_test)
 
         user user2;
 
-        user2.set("id", 3);
+        user2.set_id(3);
 
         user2.set("first_name", "Bob");
         user2.set("last_name", "Smith");
