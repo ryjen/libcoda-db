@@ -9,6 +9,7 @@
 #include <sqlite3.h>
 #include <type_traits>
 #include "sql_value.h"
+#include "schema_factory.h"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ namespace arg3
             sqldb(const sqldb &other);
             sqldb(sqldb &&other);
             sqldb &operator=(const sqldb &other);
-            sqldb &operator=(sqldb &&other);
+            sqldb &operator=(sqldb && other);
             virtual ~sqldb();
 
             bool is_open() const;
@@ -49,8 +50,9 @@ namespace arg3
             resultset execute(const string &sql);
 
             string last_error() const;
-        };
 
+            schema_factory &schemas();
+        };
     }
 }
 

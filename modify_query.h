@@ -19,6 +19,8 @@ namespace arg3
 
             modify_query(sqldb *db, const string &tableName);
 
+            modify_query(const schema &schema);
+
             modify_query(const modify_query &other);
 
             modify_query(modify_query &&other);
@@ -27,7 +29,7 @@ namespace arg3
 
             modify_query &operator=(const modify_query &other);
 
-            modify_query &operator=(modify_query &&other);
+            modify_query &operator=(modify_query && other);
 
             string to_string() const;
 

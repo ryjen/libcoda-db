@@ -8,6 +8,7 @@
 
 #include <sqlite3.h>
 #include <map>
+#include <sstream>
 #include "schema.h"
 #include "sql_value.h"
 

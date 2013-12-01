@@ -5,65 +5,66 @@
 #ifndef _ARG3_DB_BASE_RECORD_H_
 #define _ARG3_DB_BASE_RECORD_H_
 
-#include "sqldb.h"
 #include "select_query.h"
 #include "modify_query.h"
-#include "record_schema.h"
+#include "schema.h"
 #include <memory>
 
 namespace arg3
 {
     namespace db
     {
-        class sqldb;
+        class record_db;
         class row;
 
         template<typename T>
         class base_record
         {
         private:
+            std::shared_ptr<schema> schema_;
             map<string, sql_value> values_;
-            sqldb *db_;
-            string tableName_;
-
-            /*void assert_schema()
-            {
-                if (schema_ == nullptr)
-                {
-                    schema_ = record_schema::get(db(), table_name());
-                }
-            }*/
+            string idColumnName_;
         public:
-            /*!
-             * default constructor
-             */
-            base_record(sqldb *db, const string &tableName) : db_(db), tableName_(tableName)
+
+            base_record(sqldb *db, const string &tablename, const string &idColumnName) : schema_(db->schemas().get(tablename)), idColumnName_(idColumnName)
             {
+                assert(schema_ != NULL);
             }
 
-            base_record(sqldb *db, const string &tableName, const string &value) : db_(db), tableName_(tableName)
+            base_record(std::shared_ptr<schema> schema, const string &columnName) : schema_(schema), idColumnName_(columnName)
             {
-                set(record_schema::ID_COLUMN_NAME, value);
+                assert(schema_ != NULL);
             }
 
             template<typename V>
-            base_record(sqldb *db, const string &tableName, V value) : db_(db), tableName_(tableName)
+            base_record(std::shared_ptr<schema> schema, const string &columnName, V value) : base_record(schema, columnName)
             {
-                set(record_schema::ID_COLUMN_NAME, to_string(value));
+                set(idColumnName_, to_string(value));
+            }
+
+            template<typename V>
+            base_record(sqldb *db, const string &tableName, const string &columnName, V value) : base_record(db, tableName, columnName)
+            {
+                set(idColumnName_, to_string(value));
             }
 
             /*!
              * construct with values from a database row
              */
-            base_record(sqldb *db, const string &tableName, const row &values) : db_(db), tableName_(tableName)
+            base_record(std::shared_ptr<schema> schema, const string &columnName, const row &values) : base_record(schema, columnName)
             {
                 init(values);
             }
 
-            base_record(const base_record &other) : db_(other.db_), tableName_(other.tableName_), values_(other.values_)
+            base_record(sqldb *db, const string &tableName, const string &columnName, const row &values) : base_record(db, tableName, columnName)
+            {
+                init(values);
+            }
+
+            base_record(const base_record &other) : schema_(other.schema_), values_(other.values_), idColumnName_(other.idColumnName_)
             {}
 
-            base_record(base_record &&other) : db_(other.db_), tableName_(std::move(other.tableName_)), values_(std::move(other.values_))
+            base_record(base_record &&other) : schema_(other.schema_), values_(std::move(other.values_)), idColumnName_(std::move(other.idColumnName_))
             {
             }
 
@@ -74,12 +75,12 @@ namespace arg3
 
             void set_id(const sql_value &value)
             {
-                set(record_schema::ID_COLUMN_NAME, value);
+                set(idColumnName_, value);
             }
 
             sql_value id() const
             {
-                return get(record_schema::ID_COLUMN_NAME);
+                return get(idColumnName_);
             }
 
             base_record &operator=(const base_record &other)
@@ -87,8 +88,8 @@ namespace arg3
                 if (this != &other)
                 {
                     values_ = other.values_;
-                    db_ = other.db_;
-                    tableName_ = other.tableName_;
+                    schema_ = other.schema_;
+                    idColumnName_ = other.idColumnName_;
                 }
                 return *this;
             }
@@ -98,8 +99,10 @@ namespace arg3
                 if (this != &other)
                 {
                     values_ = std::move(other.values_);
-                    db_ = other.db_;
-                    tableName_ = std::move(other.tableName_);
+                    schema_ = std::move(other.schema_);
+                    idColumnName_ = std::move(other.idColumnName_);
+
+                    other.schema_ = NULL;
                 }
                 return *this;
             }
@@ -120,32 +123,14 @@ namespace arg3
                 return schema().is_valid();
             }
 
-            /*!
-             * sub classes should define the table schema here
-             */
-            //virtual column_definition columns() const = 0;
-
-            /*!
-             * should return the database for the record
-             */
-            sqldb *db() const
-            {
-                return db_;
-            }
-
-            /*!
-             * should return the table name for the record
-             */
-            string table_name() const
-            {
-                return tableName_;
-            }
-
-            const record_schema &schema() const
+            const schema &schema() const
             {
                 //assert_schema();
 
-                return *record_schema::get(db_, tableName_);
+                //return *record_schema::get(db_, tableName_);
+
+                assert(schema_ != NULL);
+                return *schema_;
             }
 
             /*!
@@ -153,7 +138,7 @@ namespace arg3
              */
             bool save()
             {
-                modify_query query(db(), table_name(), schema().column_names());
+                modify_query query(schema());
 
                 int index = 1;
 
@@ -211,7 +196,7 @@ namespace arg3
 
             vector<shared_ptr<T>> find_all()
             {
-                auto query = select_query(db(), table_name(), schema().column_names());
+                auto query = select_query(schema());
 
                 auto results = query.execute();
 
@@ -229,26 +214,10 @@ namespace arg3
             template<typename V>
             shared_ptr<T> find_by_id(V value)
             {
-                auto query = select_query(db(), table_name(), schema().column_names());
+                auto query = select_query(schema());
 
-                /*auto params = where_clause();
+                query.where(idColumnName_ + " = ?");
 
-                // find by primary keys
-                for (auto & pk : schema().primary_keys())
-                {
-                    params  &&(pk + " = ?");
-                }*/
-
-                query.where(string(record_schema::ID_COLUMN_NAME) + " = ?");
-
-                /*int index = 1;
-
-                // bind primary key values
-                for (auto & c : schema().primary_keys())
-                {
-                    query.bind_value(index, values_[c]);
-                    index++;
-                }*/
                 query.bind_value(1, value);
 
                 auto results = query.execute();
@@ -266,7 +235,7 @@ namespace arg3
             template<typename V>
             vector<shared_ptr<T>> find_by(const string &name, const V &value)
             {
-                auto query = select_query(db(), table_name(), schema().column_names());
+                auto query = select_query(schema());
 
                 query.where(name + " = ?");
 
@@ -287,30 +256,11 @@ namespace arg3
 
             bool refresh()
             {
-                auto query = select_query(db(), table_name(), schema().column_names());
+                auto query = select_query(schema());
 
-                /*auto params = where_clause();
-
-                // find by primary keys
-                for (auto & pk : schema().primary_keys())
-                {
-                    params  &&(pk + " = ?");
-                }
-
-                query.where(params);*/
-
-                query.where(string(record_schema::ID_COLUMN_NAME) + " = ?");
+                query.where(idColumnName_ + " = ?");
 
                 query.limit("1");
-
-                /*int index = 1;
-
-                // bind primary key values
-                for (auto & c : schema().primary_keys())
-                {
-                    query.bind_value(index, values_[c]);
-                    index++;
-                }*/
 
                 query.bind_value(1, id());
 

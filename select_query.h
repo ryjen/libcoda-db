@@ -32,6 +32,8 @@ namespace arg3
 
             select_query(sqldb *db, const string &tableName);
 
+            select_query(const schema &schema);
+
             select_query(const select_query &other);
 
             select_query(select_query &&other);
@@ -40,7 +42,7 @@ namespace arg3
 
             select_query &operator=(const select_query &other);
 
-            select_query &operator=(select_query &&other);
+            select_query &operator=(select_query && other);
 
             select_query &where(const where_clause &value);
 
@@ -57,7 +59,8 @@ namespace arg3
             resultset execute();
 
             template<typename T>
-            T execute_scalar() {
+            T execute_scalar()
+            {
                 auto rs = execute();
 
                 auto row = rs.begin();

@@ -22,7 +22,7 @@ public:
     {
         close();
         unlink(filename().c_str());
-        arg3::db::record_schema::clear("users");
+        schemas().clear("users");
     }
 
     sqlite3 *rawDb() const
@@ -36,11 +36,11 @@ extern testsqldb testdb;
 class user : public arg3::db::base_record<user>
 {
 public:
-    user() : base_record(&testdb, "users") {}
+    user() : base_record(&testdb, "users", "id") {}
 
-    user(const arg3::db::row &values) : base_record(&testdb, "users", values) {}
+    user(const arg3::db::row &values) : base_record(&testdb, "users", "id", values) {}
 
-    user(long long id) : base_record(&testdb, "users", id) {}
+    user(long long id) : base_record(&testdb, "users", "id", id) {}
 
     string to_string()
     {

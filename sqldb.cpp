@@ -43,7 +43,7 @@ namespace arg3
             return *this;
         }
 
-        sqldb &sqldb::operator=(sqldb &&other)
+        sqldb &sqldb::operator=(sqldb && other)
         {
             if (this != &other)
             {
@@ -61,6 +61,14 @@ namespace arg3
         string sqldb::filename() const
         {
             return filename_;
+        }
+
+        schema_factory &sqldb::schemas()
+        {
+
+            static schema_factory schema_factory_(this);
+
+            return schema_factory_;
         }
 
         void sqldb::set_filename(const string &value)
@@ -100,12 +108,14 @@ namespace arg3
             return buf.str();
         }
 
-        sqlite3_int64 sqldb::last_insert_id() const {
+        sqlite3_int64 sqldb::last_insert_id() const
+        {
 
             return sqlite3_last_insert_rowid(db_);
         }
 
-        int sqldb::last_number_of_changes() const {
+        int sqldb::last_number_of_changes() const
+        {
             return sqlite3_changes(db_);
         }
 

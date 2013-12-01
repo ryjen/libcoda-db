@@ -1,5 +1,6 @@
 #include "delete_query.h"
 #include "exception.h"
+#include "sqldb.h"
 
 namespace arg3
 {
@@ -21,7 +22,7 @@ namespace arg3
 
         delete_query &delete_query::operator=(const delete_query &other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 base_query::operator=(other);
                 where_ = other.where_;
@@ -29,9 +30,9 @@ namespace arg3
             return *this;
         }
 
-        delete_query &delete_query::operator=(delete_query &&other)
+        delete_query &delete_query::operator=(delete_query && other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 base_query::operator=(std::move(other));
                 where_ = std::move(other.where_);

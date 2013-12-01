@@ -15,6 +15,9 @@ namespace arg3
         modify_query::modify_query(sqldb *db, const string &tableName) : base_query(db, tableName)
         {}
 
+        modify_query::modify_query(const schema &schema) : modify_query(schema.db(), schema.table_name(), schema.column_names())
+        {}
+
         modify_query::modify_query(const modify_query &other) : base_query(other), columns_(other.columns_)
         {}
 

@@ -15,15 +15,17 @@ sqldb testdb("test.db");
 
 class user : public base_record
 {
+    static constexpr const char *ID_COLUMN = "id";
+    static constexpr const char *TABLE_NAME = "users";
 public:
     /* default constructor */
-    user() : base_record(&testdb, "users") {}
+    user() : base_record(&testdb, TABLE_NAME, ID_COLUMN) {}
 
     /* required query constructor */
-    user(const row &values) : base_record(&testdb, "users", values) {}
+    user(const row &values) : base_record(&testdb, TABLE_NAME, ID_COLUMN, values) {}
 
     /* id constructor */
-    user(long id) : base_record(&testdb, "users", id) {}
+    user(long id) : base_record(&testdb, TABLE_NAME, ID_COLUMN, id) {}
 
     /* utility method showing how to get columns */
     string to_string() const
@@ -66,7 +68,7 @@ Queries: Select and Modify
 sqldb testdb("test.db");
 
 /* upsert a user */
-modify_query query(testdb, "users", { "id", "first_name", "last_name" });
+modify_query query(&testdb, "users", { "id", "first_name", "last_name" });
 
 query.bind(1, 1234).bind(2, "happy").bind(3, "gilmour");
 

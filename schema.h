@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include "sqldb.h"
 
 using namespace std;
 
@@ -12,6 +11,8 @@ namespace arg3
 
     namespace db
     {
+        class sqldb;
+
         // definition of a column
         class column_definition
         {
@@ -34,10 +35,11 @@ namespace arg3
         class schema
         {
         private:
+            sqldb *db_;
+            string tableName_;
             vector<column_definition> columns_;
-
         public:
-            schema();
+            schema(const string &tablename);
 
             virtual ~schema();
 
@@ -48,7 +50,7 @@ namespace arg3
             schema &operator=(const schema &other);
             schema &operator=(schema && other);
 
-            virtual void init(sqldb *db, const string &tablename);
+            virtual void init(sqldb *db);
 
             vector<column_definition> columns() const;
 
@@ -56,12 +58,15 @@ namespace arg3
 
             vector<string> primary_keys() const;
 
+            string table_name() const;
+
             column_definition operator[](size_t index) const;
 
             bool is_valid() const;
+
+            sqldb *db() const;
         };
     }
-
 }
 
 #endif

@@ -1,5 +1,6 @@
 #include "schema.h"
 #include <cassert>
+#include  "sqldb.h"
 #include "resultset.h"
 
 namespace arg3
@@ -27,14 +28,14 @@ namespace arg3
             return os;
         }
 
-        schema::schema() {}
+        schema::schema(const string &tablename) : tableName_(tablename) {}
 
         schema::~schema() {}
 
-        schema::schema(const schema &other) : columns_(other.columns_)
+        schema::schema(const schema &other) : db_(other.db_), tableName_(other.tableName_), columns_(other.columns_)
         {}
 
-        schema::schema(schema &&other) : columns_(std::move(other.columns_))
+        schema::schema(schema &&other) : db_(std::move(other.db_)), tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))
         {}
 
         schema &schema::operator=(const schema &other)
@@ -42,6 +43,8 @@ namespace arg3
             if (this != &other)
             {
                 columns_ = other.columns_;
+                db_ = other.db_;
+                tableName_ = other.tableName_;
             }
             return *this;
         }
@@ -51,6 +54,8 @@ namespace arg3
             if (this != &other)
             {
                 columns_ = std::move(other.columns_);
+                db_ = std::move(other.db_);
+                tableName_ = std::move(other.tableName_);
             }
             return *this;
         }
@@ -60,14 +65,18 @@ namespace arg3
             return columns_.size() > 0;
         }
 
-        void schema::init(sqldb *db, const string &tablename)
+        void schema::init(sqldb *db)
         {
             assert(db != NULL);
 
             assert(db->is_open());
 
+            assert(!tableName_.empty());
+
+            db_ = db;
+
             // get table information
-            auto rs = db->execute( "pragma table_info(" + tablename + ")" );
+            auto rs = db->execute( "pragma table_info(" + tableName_ + ")" );
 
             for (auto & row : rs)
             {
@@ -130,6 +139,16 @@ namespace arg3
             }
 
             return names;
+        }
+
+        string schema::table_name() const
+        {
+            return tableName_;
+        }
+
+        sqldb *schema::db() const
+        {
+            return db_;
         }
 
         column_definition schema::operator[](size_t index) const
