@@ -31,9 +31,9 @@ namespace arg3
 
             virtual ~resultset_iterator();
 
-            resultset_iterator& operator=(const resultset_iterator &other);
+            resultset_iterator &operator=(const resultset_iterator &other);
 
-            resultset_iterator& operator=(resultset_iterator &&other);
+            resultset_iterator &operator=(resultset_iterator && other);
 
             reference operator*();
 
@@ -89,7 +89,7 @@ namespace arg3
             virtual ~resultset();
 
             resultset &operator=(const resultset &other);
-            resultset &operator=(resultset &&other);
+            resultset &operator=(resultset && other);
 
             iterator begin();
 

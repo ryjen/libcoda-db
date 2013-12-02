@@ -23,7 +23,7 @@ namespace arg3
             where_clause(const where_clause &other);
             where_clause(where_clause &&other);
             where_clause &operator=(const where_clause &other);
-            where_clause &operator=(where_clause &&other);
+            where_clause &operator=(where_clause && other);
 
             virtual ~where_clause();
 

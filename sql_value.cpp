@@ -10,13 +10,16 @@ namespace arg3
         sql_blob::sql_blob(const void *ptr, size_t size, sql_blob::cleanup_method cleanup) : p_(ptr), s_(size), destruct_(cleanup)
         {}
 
-        const void *sql_blob::ptr() const {
+        const void *sql_blob::ptr() const
+        {
             return p_;
         }
-        size_t sql_blob::size() const {
+        size_t sql_blob::size() const
+        {
             return s_;
         }
-        sql_blob::cleanup_method sql_blob::destructor() const {
+        sql_blob::cleanup_method sql_blob::destructor() const
+        {
             return destruct_;
         }
 
@@ -49,7 +52,8 @@ namespace arg3
                 out_ << value;
             }
 
-            void operator()(sql_blob value) const {
+            void operator()(sql_blob value) const
+            {
 
             }
 

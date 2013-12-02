@@ -23,7 +23,7 @@ namespace arg3
 
         resultset &resultset::operator=(const resultset &other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 stmt_ = other.stmt_;
                 status_ = other.status_;
@@ -32,9 +32,9 @@ namespace arg3
             return *this;
         }
 
-        resultset &resultset::operator=(resultset &&other)
+        resultset &resultset::operator=(resultset && other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 stmt_ = std::move(other.stmt_);
                 status_ = other.status_;
@@ -118,7 +118,7 @@ namespace arg3
 
         resultset_iterator &resultset_iterator::operator=(const resultset_iterator &other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 rs_ = other.rs_;
                 pos_ = other.pos_;
@@ -127,9 +127,9 @@ namespace arg3
             return *this;
         }
 
-        resultset_iterator &resultset_iterator::operator=(resultset_iterator &&other)
+        resultset_iterator &resultset_iterator::operator=(resultset_iterator && other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 rs_ = std::move(other.rs_);
                 pos_ = other.pos_;

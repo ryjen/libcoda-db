@@ -5,23 +5,23 @@
 #define _ARG3_DB_EXCEPTION_H_
 
 #define ARG3_DECLARE_EXCEPTION(CLASS, BASE) \
-class CLASS: public BASE \
-{ \
-private: std::string what_; std::string context_; \
-public: \
-    CLASS(const std::string &what); \
-    CLASS(const std::string &what, const std::string &context); \
-    CLASS(); \
-    virtual const char * what() const noexcept; \
-    virtual const char *context() const; \
-}
+    class CLASS: public BASE \
+    { \
+    private: std::string what_; std::string context_; \
+    public: \
+        CLASS(const std::string &what); \
+        CLASS(const std::string &what, const std::string &context); \
+        CLASS(); \
+        virtual const char * what() const noexcept; \
+        virtual const char *context() const; \
+    }
 
 #define ARG3_IMPLEMENT_EXCEPTION(CLASS, BASE) \
-CLASS::CLASS(const std::string &what) : BASE(), what_(what) {} \
-CLASS::CLASS(const std::string &what, const std::string &context) : BASE(), what_(what), context_(context) {} \
-CLASS::CLASS() {} \
-const char *CLASS::what() const noexcept { return what_.c_str(); } \
-const char *CLASS::context() const { return context_.c_str(); }
+    CLASS::CLASS(const std::string &what) : BASE(), what_(what) {} \
+    CLASS::CLASS(const std::string &what, const std::string &context) : BASE(), what_(what), context_(context) {} \
+    CLASS::CLASS() {} \
+    const char *CLASS::what() const noexcept { return what_.c_str(); } \
+    const char *CLASS::context() const { return context_.c_str(); }
 
 
 #include <string>

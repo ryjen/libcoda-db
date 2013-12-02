@@ -29,7 +29,7 @@ namespace arg3
 
         row &row::operator=(const row &other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 results_ = other.results_;
                 size_ = other.size_;
@@ -37,9 +37,9 @@ namespace arg3
             return *this;
         }
 
-        row &row::operator=(row &&other)
+        row &row::operator=(row && other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 results_ = std::move(other.results_);
                 size_ = other.size_;

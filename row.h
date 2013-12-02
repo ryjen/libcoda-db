@@ -46,7 +46,7 @@ namespace arg3
 
             row_iterator &operator=(const row_iterator &other)
             {
-                if(this != &other)
+                if (this != &other)
                 {
                     row_ = other.row_;
                     position_ = other.position_;
@@ -54,9 +54,9 @@ namespace arg3
                 return this;
             }
 
-            row_iterator &operator=(row_iterator &&other)
+            row_iterator &operator=(row_iterator && other)
             {
-                if(this != &other)
+                if (this != &other)
                 {
                     row_ = std::move(other.row_);
                     position_ = other.position_;
@@ -207,7 +207,7 @@ namespace arg3
             row(row &&other);
 
             row &operator=(const row &other);
-            row &operator=(row &&other);
+            row &operator=(row && other);
 
             //Methods
             iterator begin();

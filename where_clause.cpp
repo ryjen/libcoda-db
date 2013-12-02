@@ -18,18 +18,18 @@ namespace arg3
 
         where_clause &where_clause::operator=(const where_clause &other)
         {
-            if(this != &other)
+            if (this != &other)
             {
                 value_ = other.value_;
             }
             return *this;
         }
 
-        where_clause &where_clause::operator=(where_clause &&other)
+        where_clause &where_clause::operator=(where_clause && other)
         {
-            if(this != &other)
+            if (this != &other)
             {
-                value_ =std::move( other.value_ );
+                value_ = std::move( other.value_ );
             }
             return *this;
         }
@@ -77,7 +77,7 @@ namespace arg3
         }
         where_clause &where_clause::operator&&(const string &value)
         {
-            if(value_.empty())
+            if (value_.empty())
                 value_ = value;
             else
                 and_.push_back(where_clause(value));
@@ -90,7 +90,7 @@ namespace arg3
         }
         where_clause &where_clause::operator||(const string &value)
         {
-            if(value_.empty())
+            if (value_.empty())
                 value_ = value;
             else
                 or_.push_back(where_clause(value));

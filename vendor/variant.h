@@ -71,7 +71,7 @@ namespace thenewcpp
                  typename std::enable_if<std::is_convertible<U, T>::value, U>::type
                  >
         recursive_wrapper(
-            const U& u)
+            const U &u)
             : m_t(new T(u))
         {
         }
@@ -82,27 +82,27 @@ namespace thenewcpp
                  typename Dummy =
                  typename std::enable_if<std::is_convertible<U, T>::value, U>::type
                  >
-        recursive_wrapper(U&& u)
+        recursive_wrapper(U && u)
             : m_t(new T(std::forward<U>(u))) { }
 
-        recursive_wrapper(const recursive_wrapper& rhs)
+        recursive_wrapper(const recursive_wrapper &rhs)
             : m_t(new T(rhs.get())) { }
 
-        recursive_wrapper(recursive_wrapper&& rhs)
+        recursive_wrapper(recursive_wrapper &&rhs)
             : m_t(rhs.m_t)
         {
             rhs.m_t = nullptr;
         }
 
-        recursive_wrapper&
-        operator=(const recursive_wrapper& rhs)
+        recursive_wrapper &
+        operator=(const recursive_wrapper &rhs)
         {
             assign(rhs.get());
             return *this;
         }
 
-        recursive_wrapper&
-        operator=(recursive_wrapper&& rhs)
+        recursive_wrapper &
+        operator=(recursive_wrapper && rhs)
         {
             delete m_t;
             m_t = rhs.m_t;
@@ -110,33 +110,35 @@ namespace thenewcpp
             return *this;
         }
 
-        recursive_wrapper&
-        operator=(const T& t)
+        recursive_wrapper &
+        operator=(const T &t)
         {
             assign(t);
             return *this;
         }
 
-        recursive_wrapper&
-        operator=(T&& t)
+        recursive_wrapper &
+        operator=(T && t)
         {
             assign(std::move(t));
             return *this;
         }
 
-        T& get() {
+        T &get()
+        {
             return *m_t;
         }
-        const T& get() const {
+        const T &get() const
+        {
             return *m_t;
         }
 
     private:
-        T* m_t;
+        T *m_t;
 
         template <typename U>
         void
-        assign(U&& u)
+        assign(U &&u)
         {
             *m_t = std::forward<U>(u);
         }
@@ -148,22 +150,22 @@ namespace thenewcpp
     namespace detail
     {
         template <typename T, typename Internal>
-        T&
-        get_value(T& t, const Internal&)
+        T &
+        get_value(T &t, const Internal &)
         {
             return t;
         }
 
         template <typename T>
-        T&
-        get_value(recursive_wrapper<T>& t, const false_&)
+        T &
+        get_value(recursive_wrapper<T> &t, const false_ &)
         {
             return t.get();
         }
 
         template <typename T>
-        const T&
-        get_value(const recursive_wrapper<T>& t, const false_&)
+        const T &
+        get_value(const recursive_wrapper<T> &t, const false_ &)
         {
             return t.get();
         }
@@ -178,20 +180,20 @@ namespace thenewcpp
              typename... Args
              >
     typename Visitor::result_type
-    visitor_caller(Internal&& internal,
-                   Storage&& storage, Visitor&& visitor, Args&&... args)
+    visitor_caller(Internal &&internal,
+                   Storage &&storage, Visitor &&visitor, Args &&... args)
     {
         typedef typename std::conditional
         <
-        std::is_const<
-        typename std::remove_extent<
-        typename std::remove_reference<Storage>::type>::type
+        std::is_const <
+        typename std::remove_extent <
+        typename std::remove_reference<Storage>::type >::type
         >::value,
         const T,
         T
         >::type ConstType;
 
-        return visitor(detail::get_value(*reinterpret_cast<ConstType*>(storage),
+        return visitor(detail::get_value(*reinterpret_cast<ConstType *>(storage),
                                          internal), std::forward<Args>(args)...);
     }
 
@@ -213,20 +215,20 @@ namespace thenewcpp
             typename Visitor::result_type
             operator()
             (
-                Internal&& internal,
+                Internal &&internal,
                 size_t which,
-                VoidPtrCV&& storage,
-                Visitor& visitor,
-                Args&&... args
+                VoidPtrCV &&storage,
+                Visitor &visitor,
+                Args &&... args
             )
             {
                 typedef typename Visitor::result_type (*whichCaller)
-                (Internal&&, VoidPtrCV&&, Visitor&&, Args&&...);
+                (Internal && , VoidPtrCV && , Visitor && , Args && ...);
 
                 static whichCaller callers[sizeof...(AllTypes)] =
                 {
-                    &visitor_caller<Internal&&, AllTypes,
-                    VoidPtrCV&&, Visitor, Args&&...>...
+                    &visitor_caller < Internal&&, AllTypes,
+                    VoidPtrCV&&, Visitor, Args&&... > ...
                 }
                 ;
 
@@ -267,59 +269,59 @@ namespace thenewcpp
         {
             typedef void result_type;
 
-            constructor(Variant& self)
+            constructor(Variant &self)
                 : m_self(self)
             {
             }
 
             template <typename T>
             void
-            operator()(const T& rhs) const
+            operator()(const T &rhs) const
             {
                 m_self.construct(rhs);
             }
 
         private:
-            Variant& m_self;
+            Variant &m_self;
         };
 
         struct move_constructor
         {
             typedef void result_type;
 
-            move_constructor(Variant& self)
+            move_constructor(Variant &self)
                 : m_self(self)
             {
             }
 
             template <typename T>
             void
-            operator()(T& rhs) const
+            operator()(T &rhs) const
             {
                 m_self.construct(std::move(rhs));
             }
 
         private:
-            Variant& m_self;
+            Variant &m_self;
         };
 
         struct assigner
         {
             typedef void result_type;
 
-            assigner(Variant& self, int rhs_which)
+            assigner(Variant &self, int rhs_which)
                 : m_self(self), m_rhs_which(rhs_which)
             {
             }
 
             template <typename Rhs>
             void
-            operator()(const Rhs& rhs) const
+            operator()(const Rhs &rhs) const
             {
                 if (m_self.which() == m_rhs_which)
                 {
                     //the types are the same, so just assign into the lhs
-                    *reinterpret_cast<Rhs*>(m_self.address()) = rhs;
+                    *reinterpret_cast<Rhs *>(m_self.address()) = rhs;
                 }
                 else
                 {
@@ -330,7 +332,7 @@ namespace thenewcpp
             }
 
         private:
-            Variant& m_self;
+            Variant &m_self;
             int m_rhs_which;
         };
 
@@ -338,20 +340,20 @@ namespace thenewcpp
         {
             typedef void result_type;
 
-            move_assigner(Variant& self, int rhs_which)
+            move_assigner(Variant &self, int rhs_which)
                 : m_self(self), m_rhs_which(rhs_which)
             {
             }
 
             template <typename Rhs>
             void
-            operator()(Rhs& rhs) const
+            operator()(Rhs &rhs) const
             {
                 typedef typename std::remove_const<Rhs>::type RhsNoConst;
                 if (m_self.which() == m_rhs_which)
                 {
                     //the types are the same, so just assign into the lhs
-                    *reinterpret_cast<RhsNoConst*>(m_self.address()) = std::move(rhs);
+                    *reinterpret_cast<RhsNoConst *>(m_self.address()) = std::move(rhs);
                 }
                 else
                 {
@@ -361,7 +363,7 @@ namespace thenewcpp
             }
 
         private:
-            Variant& m_self;
+            Variant &m_self;
             int m_rhs_which;
         };
 
@@ -371,7 +373,7 @@ namespace thenewcpp
 
             template <typename T>
             void
-            operator()(T& t) const
+            operator()(T &t) const
             {
                 t.~T();
             }
@@ -382,20 +384,20 @@ namespace thenewcpp
 
         template <size_t Which, typename Current, typename... MyTypes>
         struct initialiser<Which, Current, MyTypes...>
-                : public initialiser<Which+1, MyTypes...>
+                : public initialiser < Which + 1, MyTypes... >
         {
-            typedef initialiser<Which+1, MyTypes...> base;
+            typedef initialiser < Which + 1, MyTypes... > base;
             using base::initialise;
 
             static void
-            initialise(Variant& v, Current&& current)
+            initialise(Variant &v, Current&& current)
             {
                 v.construct(std::forward<Current>(current));
                 v.indicate_which(Which);
             }
 
             static void
-            initialise(Variant& v, const Current& current)
+            initialise(Variant &v, const Current &current)
             {
                 v.construct(current);
                 v.indicate_which(Which);
@@ -442,7 +444,7 @@ namespace thenewcpp
                  T
                  >::type
                  >
-        Variant(T&& t)
+        Variant(T && t)
         {
             static_assert(
                 !std::is_same<Variant<First, Types...>&, T>::value,
@@ -453,21 +455,21 @@ namespace thenewcpp
             initialiser<0, First, Types...>::initialise(*this, std::forward<T>(t));
         }
 
-        Variant(const Variant& rhs)
+        Variant(const Variant &rhs)
         {
             constructor c(*this);
             rhs.apply_visitor_internal(c);
             indicate_which(rhs.which());
         }
 
-        Variant(Variant&& rhs)
+        Variant(Variant &&rhs)
         {
             move_constructor mc(*this);
             rhs.apply_visitor_internal(mc);
             indicate_which(rhs.which());
         }
 
-        Variant& operator=(const Variant& rhs)
+        Variant &operator=(const Variant &rhs)
         {
             if (this != &rhs)
             {
@@ -478,7 +480,7 @@ namespace thenewcpp
             return *this;
         }
 
-        Variant& operator=(Variant&& rhs)
+        Variant &operator=(Variant && rhs)
         {
             if (this != &rhs)
             {
@@ -489,13 +491,14 @@ namespace thenewcpp
             return *this;
         }
 
-        int which() const {
+        int which() const
+        {
             return m_which;
         }
 
         template <typename Internal, typename Visitor, typename... Args>
         typename Visitor::result_type
-        apply_visitor(Visitor& visitor, Args&&... args)
+        apply_visitor(Visitor &visitor, Args &&... args)
         {
             return do_visit<First, Types...>()(Internal(), m_which, m_storage,
                                                visitor, std::forward<Args>(args)...);
@@ -503,7 +506,7 @@ namespace thenewcpp
 
         template <typename Internal, typename Visitor, typename... Args>
         typename Visitor::result_type
-        apply_visitor(Visitor& visitor, Args&&... args) const
+        apply_visitor(Visitor &visitor, Args &&... args) const
         {
             return do_visit<First, Types...>()(Internal(), m_which, m_storage,
                                                visitor, std::forward<Args>(args)...);
@@ -522,29 +525,32 @@ namespace thenewcpp
 
         int m_which;
 
-        static std::function<void(void*)> m_handlers[1 + sizeof...(Types)];
+        static std::function<void(void *)> m_handlers[1 + sizeof...(Types)];
 
-        void indicate_which(int which) {
+        void indicate_which(int which)
+        {
             m_which = which;
         }
 
-        void* address() {
+        void *address()
+        {
             return m_storage;
         }
-        const void* address() const {
+        const void *address() const
+        {
             return m_storage;
         }
 
         template <typename Visitor>
         typename Visitor::result_type
-        apply_visitor_internal(Visitor& visitor)
+        apply_visitor_internal(Visitor &visitor)
         {
             return apply_visitor<true_, Visitor>(visitor);
         }
 
         template <typename Visitor>
         typename Visitor::result_type
-        apply_visitor_internal(Visitor& visitor) const
+        apply_visitor_internal(Visitor &visitor) const
         {
             return apply_visitor<true_, Visitor>(visitor);
         }
@@ -558,7 +564,7 @@ namespace thenewcpp
 
         template <typename T>
         void
-        construct(T&& t)
+        construct(T &&t)
         {
             typedef typename std::remove_reference<T>::type type;
             new(m_storage) type(std::forward<T>(t));
@@ -567,7 +573,7 @@ namespace thenewcpp
 
     struct bad_get : public std::exception
     {
-        virtual const char* what() const throw()
+        virtual const char *what() const throw()
         {
             return "bad_get";
         }
@@ -576,17 +582,17 @@ namespace thenewcpp
     template <typename T>
     struct get_visitor
     {
-        typedef T* result_type;
+        typedef T *result_type;
 
         result_type
-        operator()(T& val) const
+        operator()(T &val) const
         {
             return &val;
         }
 
         template <typename U>
         result_type
-        operator()(const U& u) const
+        operator()(const U &u) const
         {
             return nullptr;
         }
@@ -594,7 +600,7 @@ namespace thenewcpp
 
     template <typename Visitor, typename Visitable, typename... Args>
     typename Visitor::result_type
-    apply_visitor(Visitor& visitor, Visitable& visitable, Args&&... args)
+    apply_visitor(Visitor &visitor, Visitable &visitable, Args &&... args)
     {
         return visitable.template apply_visitor<false_>
                (visitor, std::forward<Args>(args)...);
@@ -602,32 +608,33 @@ namespace thenewcpp
 
     template <typename Visitor, typename Visitable, typename... Args>
     typename Visitor::result_type
-    apply_visitor(const Visitor& visitor, Visitable& visitable, Args&&... args)
+    apply_visitor(const Visitor &visitor, Visitable &visitable, Args &&... args)
     {
         return visitable.template apply_visitor<false_>
                (visitor, std::forward<Args>(args)...);
     }
 
     template <typename T, typename First, typename... Types>
-    T*
-    get(Variant<First, Types...>* var)
+    T *
+    get(Variant<First, Types...> *var)
     {
         return apply_visitor(get_visitor<T>(), *var);
     }
 
     template <typename T, typename First, typename... Types>
-    const T*
-    get(const Variant<First, Types...>* var)
+    const T *
+    get(const Variant<First, Types...> *var)
     {
         return apply_visitor(get_visitor<const T>(), *var);
     }
 
     template <typename T, typename First, typename... Types>
-    T&
-    get (Variant<First, Types...>& var)
+    T &
+    get (Variant<First, Types...> &var)
     {
-        T* t = apply_visitor(get_visitor<T>(), var);
-        if (t == nullptr) {
+        T *t = apply_visitor(get_visitor<T>(), var);
+        if (t == nullptr)
+        {
             throw bad_get();
         }
 
@@ -635,11 +642,12 @@ namespace thenewcpp
     }
 
     template <typename T, typename First, typename... Types>
-    const T&
-    get (const Variant<First, Types...>& var)
+    const T &
+    get (const Variant<First, Types...> &var)
     {
-        const T* t = apply_visitor(get_visitor<const T>(), var);
-        if (t == nullptr) {
+        const T *t = apply_visitor(get_visitor<const T>(), var);
+        if (t == nullptr)
+        {
             throw bad_get();
         }
 
