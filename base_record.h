@@ -123,6 +123,11 @@ namespace arg3
                 return schema()->is_valid();
             }
 
+            string id_column_name() const
+            {
+                return idColumnName_;
+            }
+
             shared_ptr<schema> schema() const
             {
                 //assert_schema();
