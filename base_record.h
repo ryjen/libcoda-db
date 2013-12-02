@@ -7,6 +7,7 @@
 
 #include "select_query.h"
 #include "modify_query.h"
+#include "delete_query.h"
 #include "schema.h"
 #include <memory>
 
@@ -292,8 +293,6 @@ namespace arg3
                 auto query = delete_query(schema());
 
                 query.where(idColumnName_ + " = ?");
-
-                query.limit("1");
 
                 query.bind_value(1, id());
 

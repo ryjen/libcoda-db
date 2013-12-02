@@ -169,6 +169,12 @@ namespace arg3
                 return other.to_string() == to_string();
             }
 
+            /* faster check */
+            bool operator==(const sql_null_t &other) const
+            {
+                return apply_visitor(sql_exists_visitor<sql_null_t>(), value_);
+            }
+
             template<typename T>
             bool operator==(const T &other) const
             {
