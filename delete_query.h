@@ -6,11 +6,14 @@
 
 namespace arg3
 {
-    namespace db {
+    namespace db
+    {
         class delete_query : public base_query
         {
         public:
             delete_query(sqldb *db, const string &tableName);
+
+            delete_query(shared_ptr<schema> schema);
 
             delete_query(const delete_query &other);
 
@@ -20,7 +23,7 @@ namespace arg3
 
             delete_query &operator=(const delete_query &other);
 
-            delete_query &operator=(delete_query &&other);
+            delete_query &operator=(delete_query && other);
 
             string to_string() const;
 

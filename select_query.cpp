@@ -22,7 +22,7 @@ namespace arg3
         {
         }
 
-        select_query::select_query(const schema &schema) : select_query(schema.db(), schema.table_name(), schema.column_names())
+        select_query::select_query(shared_ptr<schema> schema) : select_query(schema->db(), schema->table_name(), schema->column_names())
         {}
 
         select_query::select_query(select_query &&other) : base_query(std::move(other)), where_(std::move(other.where_)),

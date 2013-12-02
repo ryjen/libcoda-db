@@ -26,7 +26,7 @@ Context(schema_test)
     {
         user u;
 
-        auto keys = u.schema().primary_keys();
+        auto keys = u.schema()->primary_keys();
 
         Assert::That(keys.size(), Equals(1));
 

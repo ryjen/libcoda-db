@@ -42,6 +42,8 @@ namespace arg3
              */
             base_query(sqldb *db, const string &tableName);
 
+            base_query(shared_ptr<schema> schema);
+
             base_query(const base_query &other);
 
             base_query(base_query &&other);

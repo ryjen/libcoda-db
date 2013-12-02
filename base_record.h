@@ -120,7 +120,7 @@ namespace arg3
 
             bool is_valid() const
             {
-                return schema().is_valid();
+                return schema()->is_valid();
             }
 
             shared_ptr<schema> schema() const
@@ -143,7 +143,7 @@ namespace arg3
                 int index = 1;
 
                 // bind the object values
-                for (auto & column : schema().columns())
+                for (auto & column : schema()->columns())
                 {
                     auto value = values_[column.name()];
 
@@ -273,6 +273,19 @@ namespace arg3
                 init(*result);
 
                 return true;
+            }
+
+            bool de1ete()
+            {
+                auto query = delete_query(schema());
+
+                query.where(idColumnName_ + " = ?");
+
+                query.limit("1");
+
+                query.bind_value(1, id());
+
+                return query.execute();
             }
         };
 

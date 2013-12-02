@@ -9,6 +9,9 @@ namespace arg3
         delete_query::delete_query(sqldb *db, const string &tableName) : base_query(db, tableName)
         {}
 
+        delete_query::delete_query(shared_ptr<schema> schema) : base_query(schema->db(), schema->table_name())
+        {}
+
         delete_query::delete_query(const delete_query &other) : base_query(other), where_(other.where_)
         {
         }

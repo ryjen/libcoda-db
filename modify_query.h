@@ -19,7 +19,7 @@ namespace arg3
 
             modify_query(sqldb *db, const string &tableName);
 
-            modify_query(const schema &schema);
+            modify_query(shared_ptr<schema> schema);
 
             modify_query(const modify_query &other);
 

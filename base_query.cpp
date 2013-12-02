@@ -74,6 +74,9 @@ namespace arg3
         base_query::base_query(sqldb *db, const string &tableName) : db_(db), stmt_(NULL), tableName_(tableName)
         {}
 
+        base_query::base_query(shared_ptr<schema> schema) : db_(schema->db()), stmt_(NULL), tableName_(schema->table_name())
+        {}
+
         base_query::base_query(const base_query &other) : db_(other.db_), stmt_(other.stmt_),
             tableName_(other.tableName_), bindings_(other.bindings_)
         {}
