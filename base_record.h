@@ -40,12 +40,14 @@ namespace arg3
             base_record(std::shared_ptr<schema> schema, const string &columnName, V value) : base_record(schema, columnName)
             {
                 set(idColumnName_, to_string(value));
+                refresh();
             }
 
             template<typename V>
             base_record(sqldb *db, const string &tableName, const string &columnName, V value) : base_record(db, tableName, columnName)
             {
                 set(idColumnName_, to_string(value));
+                refresh();
             }
 
             /*!
@@ -262,13 +264,18 @@ namespace arg3
 
             bool refresh()
             {
+                return refresh_by(idColumnName_);
+            }
+
+            bool refresh_by(const string &name)
+            {
                 auto query = select_query(schema());
 
-                query.where(idColumnName_ + " = ?");
+                query.where(name + " = ?");
 
                 query.limit("1");
 
-                query.bind_value(1, id());
+                query.bind_value(1, get(name));
 
                 auto result = query.execute();
 
