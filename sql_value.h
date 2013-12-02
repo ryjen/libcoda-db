@@ -164,6 +164,11 @@ namespace arg3
                 apply_visitor(query_binding_visitor(query, index), value_);
             }
 
+            bool operator==(const sql_value &other) const
+            {
+                return other.to_string() == to_string();
+            }
+
             template<typename T>
             bool operator==(const T &other) const
             {

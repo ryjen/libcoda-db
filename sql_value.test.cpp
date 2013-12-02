@@ -17,6 +17,12 @@ Context(sql_value_test)
         Assert::That(v, Equals(1234));
 
         Assert::That(v, Equals("1234"));
+
+        sql_value a = "1234";
+
+        sql_value b = 1234;
+
+        Assert::That(a, Equals(b));
     }
 
 };
