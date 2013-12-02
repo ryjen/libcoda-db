@@ -18,16 +18,16 @@ namespace arg3
 
         ARG3_IMPLEMENT_EXCEPTION(binding_error, database_exception);
 
-        sqldb::sqldb(const string &name) : db_(NULL), filename_(name)
+        sqldb::sqldb(const string &name) : db_(NULL), filename_(name), schema_factory_(this)
         {
         }
 
-        sqldb::sqldb(const sqldb &other) : db_(other.db_), filename_(other.filename_)
+        sqldb::sqldb(const sqldb &other) : db_(other.db_), filename_(other.filename_), schema_factory_(other.schema_factory_)
         {
 
         }
 
-        sqldb::sqldb(sqldb &&other) : db_(std::move(other.db_)), filename_(std::move(other.filename_))
+        sqldb::sqldb(sqldb &&other) : db_(std::move(other.db_)), filename_(std::move(other.filename_)), schema_factory_(std::move(other.schema_factory_))
         {
 
         }
@@ -38,6 +38,7 @@ namespace arg3
             {
                 db_ = other.db_;
                 filename_ = other.filename_;
+                schema_factory_ = other.schema_factory_;
             }
 
             return *this;
@@ -49,6 +50,7 @@ namespace arg3
             {
                 db_ = std::move(other.db_);
                 filename_ = std::move(other.filename_);
+                schema_factory_ = std::move(other.schema_factory_);
             }
 
             return *this;
@@ -63,12 +65,9 @@ namespace arg3
             return filename_;
         }
 
-        schema_factory &sqldb::schemas()
+        schema_factory *sqldb::schemas()
         {
-
-            static schema_factory schema_factory_(this);
-
-            return schema_factory_;
+            return &schema_factory_;
         }
 
         void sqldb::set_filename(const string &value)

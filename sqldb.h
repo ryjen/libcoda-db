@@ -27,6 +27,7 @@ namespace arg3
             sqlite3 *db_;
         private:
             string filename_;
+            schema_factory schema_factory_;
         public:
             sqldb(const string &name = "arg3.db");
             sqldb(const sqldb &other);
@@ -51,7 +52,7 @@ namespace arg3
 
             string last_error() const;
 
-            schema_factory &schemas();
+            schema_factory *schemas();
         };
     }
 }

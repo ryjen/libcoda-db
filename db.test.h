@@ -22,7 +22,7 @@ public:
     {
         close();
         unlink(filename().c_str());
-        schemas().clear("users");
+        schemas()->clear("users");
     }
 
     sqlite3 *rawDb() const

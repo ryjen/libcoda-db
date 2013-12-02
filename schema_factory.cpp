@@ -73,6 +73,8 @@ namespace arg3
 
         void schema_factory::unregister(schema *p)
         {
+            if (p == NULL) return;
+
             auto id = p->table_name();
             schema_cache_.erase(id);
             delete p;

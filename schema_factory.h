@@ -23,10 +23,6 @@ namespace arg3
 
             shared_ptr<schema> create(const string &tableName);
 
-            schema_factory(const schema_factory &other);
-
-            schema_factory &operator=(const schema_factory &other);
-
         public:
             schema_factory(sqldb *db);
 
@@ -34,6 +30,9 @@ namespace arg3
 
             schema_factory &operator=(schema_factory && other);
 
+            schema_factory(const schema_factory &other);
+
+            schema_factory &operator=(const schema_factory &other);
             std::shared_ptr<schema> get(const string &tableName);
 
             void unregister(schema *p);

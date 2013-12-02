@@ -27,7 +27,7 @@ namespace arg3
             string idColumnName_;
         public:
 
-            base_record(sqldb *db, const string &tablename, const string &idColumnName) : schema_(db->schemas().get(tablename)), idColumnName_(idColumnName)
+            base_record(sqldb *db, const string &tablename, const string &idColumnName) : schema_(db->schemas()->get(tablename)), idColumnName_(idColumnName)
             {
                 assert(schema_ != nullptr);
             }
