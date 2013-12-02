@@ -28,12 +28,12 @@ namespace arg3
 
             base_record(sqldb *db, const string &tablename, const string &idColumnName) : schema_(db->schemas().get(tablename)), idColumnName_(idColumnName)
             {
-                assert(schema_ != NULL);
+                assert(schema_ != nullptr);
             }
 
             base_record(std::shared_ptr<schema> schema, const string &columnName) : schema_(schema), idColumnName_(columnName)
             {
-                assert(schema_ != NULL);
+                assert(schema_ != nullptr);
             }
 
             template<typename V>
@@ -102,7 +102,7 @@ namespace arg3
                     schema_ = std::move(other.schema_);
                     idColumnName_ = std::move(other.idColumnName_);
 
-                    other.schema_ = NULL;
+                    other.schema_ = nullptr;
                 }
                 return *this;
             }
@@ -123,14 +123,14 @@ namespace arg3
                 return schema().is_valid();
             }
 
-            const schema &schema() const
+            shared_ptr<schema> schema() const
             {
                 //assert_schema();
 
                 //return *record_schema::get(db_, tableName_);
 
-                assert(schema_ != NULL);
-                return *schema_;
+                assert(schema_ != nullptr);
+                return schema_;
             }
 
             /*!
@@ -153,6 +153,7 @@ namespace arg3
                 }
 
                 return query.execute();
+
             }
 
             /*!
