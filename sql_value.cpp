@@ -1,5 +1,31 @@
 #include "sql_value.h"
+#include "base_query.h"
+#include "sqldb.h"
+#include "exception.h"
 #include <sstream>
+
+namespace std
+{
+    string to_string(const arg3::db::sql_value &value)
+    {
+        return value.to_string();
+    }
+
+    string to_string(const arg3::db::sql_null_t &value)
+    {
+        return "NULL";
+    }
+
+    string to_string(const arg3::db::sql_blob &value)
+    {
+        return value.to_string();
+    }
+
+    string to_string(const std::string &value)
+    {
+        return value;
+    }
+}
 
 namespace arg3
 {
@@ -18,54 +44,123 @@ namespace arg3
         {
             return s_;
         }
+
+        string sql_blob::to_string() const
+        {
+            ostringstream os;
+            os << p_;
+            return os.str();
+        }
+
+        bool sql_blob::operator==(const sql_blob &other) const
+        {
+            return p_ == other.p_ && s_ == other.s_;
+        }
+
         sql_blob::cleanup_method sql_blob::destructor() const
         {
             return destruct_;
         }
 
-        class ostream_sql_value_visitor
+        sql_binding_visitor::sql_binding_visitor(sqldb *db, sqlite3_stmt *stmt, int index) : db_(db), stmt_(stmt), index_(index)
+        {}
+
+        void sql_binding_visitor::operator()(int value) const
         {
-            std::ostream &out_;
-        public:
-            typedef void result_type;
+            if (sqlite3_bind_int(stmt_, index_, value) != SQLITE_OK)
+                throw binding_error(db_->last_error());
+        }
+        void sql_binding_visitor::operator()(int64_t value) const
+        {
+            if (sqlite3_bind_int64(stmt_, index_, value) != SQLITE_OK)
+                throw binding_error(db_->last_error());
+        }
+        void sql_binding_visitor::operator()(double value) const
+        {
+            if (sqlite3_bind_double(stmt_, index_, value) != SQLITE_OK)
+                throw binding_error(db_->last_error());
+        }
+        void sql_binding_visitor::operator()(const std::string &value) const
+        {
+            if (sqlite3_bind_text(stmt_, index_, value.c_str(), value.size(), SQLITE_TRANSIENT) != SQLITE_OK)
+                throw binding_error(db_->last_error());
+        }
+        void sql_binding_visitor::operator()(const sql_blob &value) const
+        {
+            if (sqlite3_bind_blob(stmt_, index_, value.ptr(), value.size(), value.destructor()) != SQLITE_OK)
+                throw binding_error(db_->last_error());
+        }
+        void sql_binding_visitor::operator()(const sql_null_t &value) const
+        {
+            if (sqlite3_bind_null(stmt_, index_) != SQLITE_OK)
+                throw binding_error(db_->last_error());
+        }
 
-            ostream_sql_value_visitor(std::ostream &out) : out_(out)
-            {}
 
-            void operator()(int value) const
-            {
-                out_ << value;
-            }
+        query_binding_visitor::query_binding_visitor(base_query *query, int index) : query_(query), index_(index)
+        {}
 
-            void operator()(int64_t value) const
-            {
-                out_ << value;
-            }
+        void query_binding_visitor::operator()(int value) const
+        {
+            query_->bind(index_, value);
+        }
+        void query_binding_visitor::operator()(int64_t value) const
+        {
+            query_->bind(index_, value);
+        }
+        void query_binding_visitor::operator()(double value) const
+        {
+            query_->bind(index_, value);
+        }
+        void query_binding_visitor::operator()(const std::string &value) const
+        {
+            query_->bind(index_, value);
+        }
+        void query_binding_visitor::operator()(const sql_blob &value) const
+        {
+            query_->bind(index_, value);
+        }
+        void query_binding_visitor::operator()(const sql_null_t &value) const
+        {
+            query_->bind(index_, value);
+        }
+        string sql_value::to_string() const
+        {
+            ostringstream os;
+            apply_visitor(arg3::db::ostream_sql_value_visitor(os), value_);
+            return os.str();
+        }
+        sql_value::operator std::string() const
+        {
+            return to_string();
+        }
 
-            void operator()(double value) const
-            {
-                out_ << value;
-            }
+        sql_value::operator int() const
+        {
+            return std::stod(to_string());
+        }
 
-            void operator()(std::string value) const
-            {
-                out_ << value;
-            }
+        sql_value::operator int64_t() const
+        {
+            return std::stoll(to_string());
+        }
 
-            void operator()(sql_blob value) const
-            {
+        sql_value::operator double() const
+        {
+            return std::stod(to_string());
+        }
 
-            }
+        sql_value::operator sql_blob() const
+        {
+            if (!apply_visitor(sql_exists_visitor<sql_blob>(), value_))
+                return sql_blob(NULL, 0);
 
-            void operator()(sql_null_t value) const
-            {
-                out_ << "NULL";
-            }
-        };
+            return thenewcpp::get<sql_blob>(value_);
+        }
 
         std::ostream &operator<<(std::ostream &out, const sql_value &value)
         {
-            apply_visitor(ostream_sql_value_visitor(out), value);
+            apply_visitor(ostream_sql_value_visitor(out), value.value_);
 
             return out;
         }
@@ -76,15 +171,5 @@ namespace arg3
 
             return out;
         }
-    }
-}
-
-namespace std
-{
-    string to_string(const arg3::db::sql_value &value)
-    {
-        ostringstream os;
-        apply_visitor(arg3::db::ostream_sql_value_visitor(os), value);
-        return os.str();
     }
 }
