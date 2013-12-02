@@ -42,6 +42,21 @@ public:
 
     user(long long id) : base_record(&testdb, "users", "id", id) {}
 
+    user(const user &other) : base_record(other) {}
+
+    user(user &&other) : base_record(other) {}
+
+    user &operator=(const user &other)
+    {
+        base_record<user>::operator=(other);
+        return *this;
+    }
+
+    user &operator=(user && other)
+    {
+        base_record<user>::operator=(other);
+        return *this;
+    }
     string to_string()
     {
         ostringstream buf;

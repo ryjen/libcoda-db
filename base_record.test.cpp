@@ -8,26 +8,6 @@ using namespace std;
 
 using namespace arg3::db;
 
-
-class ref_type : public base_record<ref_type>
-{
-public:
-    ref_type() : base_record(&testdb, "users", "id") {}
-
-    ref_type(const arg3::db::row &values) : base_record(&testdb, "users", "id", values) {}
-
-    ref_type(long long id) : base_record(&testdb, "users", "id", id) {}
-
-    string to_string()
-    {
-        ostringstream buf;
-
-        buf << id() << ": " << get("first_name") << " " << get("last_name");
-
-        return buf.str();
-    }
-};
-
 Context(base_record_test)
 {
     static void SetUpContext()
@@ -67,7 +47,7 @@ Context(base_record_test)
         }
         catch (const database_exception &e)
         {
-            cerr << "Error3: " << testdb.last_error() << endl;
+            cerr << "Error1: " << testdb.last_error() << endl;
             throw e;
         }
     }
@@ -77,6 +57,7 @@ Context(base_record_test)
         try
         {
             user u1;
+
             u1.set("first_name", "test");
             u1.set("last_name", "testing");
 
@@ -90,7 +71,7 @@ Context(base_record_test)
         }
         catch (const std::exception &e)
         {
-            cerr << "Error3: " << e.what() << endl;
+            cerr << "Error2: " << e.what() << endl;
             throw e;
         }
     }

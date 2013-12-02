@@ -12,7 +12,7 @@ namespace arg3
         class sql_blob
         {
         public:
-            typedef void (*cleanup_method)(void*);
+            typedef void (*cleanup_method)(void *);
         private:
             const void *p_;
             size_t s_;
@@ -26,7 +26,7 @@ namespace arg3
             cleanup_method destructor() const;
         };
 
-        typedef struct  {} sql_null_t;
+        typedef struct {} sql_null_t;
 
         extern const sql_null_t sql_null;
 
@@ -49,25 +49,78 @@ namespace arg3
 {
     namespace db
     {
-        template<typename T>
-        class sql_value_equality
+        inline bool operator==(const sql_null_t &a, const sql_null_t &b)
         {
-        private:
-            const T & value_;
+            return true;
+        }
+        template<typename T>
+        class sql_equality_visitor
+        {
+            T other;
         public:
             typedef bool result_type;
-            bool operator()( T other ) const
-            {
-                return std::to_string(other) == std::to_string(value_);
-            }
 
-            sql_value_equality( const T& value ) : value_(value) {}
+            sql_equality_visitor(T value) : other(value)
+            {}
+
+            bool operator()(T value) const
+            {
+                return value == other;
+            }
+            template<typename U>
+            bool operator()(U value) const
+            {
+                return std::to_string(value) == std::to_string(other);
+            }
         };
 
-        template<typename T>
-        inline bool operator==(const sql_value &value, const T &other)
+        inline bool operator==(const sql_value &value, const std::string &other)
         {
-            return thenewcpp::apply_visitor(sql_value_equality<T>(other), value);
+            return thenewcpp::apply_visitor(sql_equality_visitor<std::string>(other), value);
+        }
+
+        inline bool operator==(const std::string &other, const sql_value &value)
+        {
+            return thenewcpp::apply_visitor(sql_equality_visitor<std::string>(other), value);
+        }
+
+        inline bool operator==(const sql_value &value, int other)
+        {
+            return thenewcpp::apply_visitor(sql_equality_visitor<int>(other), value);
+        }
+
+        inline bool operator==(int other, const sql_value &value)
+        {
+            return thenewcpp::apply_visitor(sql_equality_visitor<int>(other), value);
+        }
+
+        inline bool operator==(const sql_value &value, int64_t other)
+        {
+            return thenewcpp::apply_visitor(sql_equality_visitor<int64_t>(other), value);
+        }
+
+        inline bool operator==(int64_t other, const sql_value &value)
+        {
+            return thenewcpp::apply_visitor(sql_equality_visitor<int64_t>(other), value);
+        }
+
+        inline bool operator==(const sql_value &value, double other)
+        {
+            return thenewcpp::apply_visitor(sql_equality_visitor<double>(other), value);
+        }
+
+        inline bool operator==(double other, const sql_value &value)
+        {
+            return thenewcpp::apply_visitor(sql_equality_visitor<double>(other), value);
+        }
+
+        inline bool operator==(const sql_value &value, sql_null_t other)
+        {
+            return thenewcpp::apply_visitor(sql_equality_visitor<sql_null_t>(other), value);
+        }
+        inline bool operator==(sql_null_t other, const sql_value &value)
+        {
+            return thenewcpp::apply_visitor(sql_equality_visitor<sql_null_t>(other), value);
         }
     }
 }
