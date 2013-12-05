@@ -1,6 +1,7 @@
 #include <igloo/igloo.h>
 #include "base_record.h"
 #include "db.test.h"
+#include "sqlite3_column.h"
 
 using namespace igloo;
 

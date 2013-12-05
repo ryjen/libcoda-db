@@ -59,8 +59,12 @@ namespace arg3
 
             return sqlite3_value_double(value_);
         }
+        bool sqlite3_column::to_bool() const
+        {
+            assert_value();
 
-
+            return sqlite3_value_int(value_);
+        }
         int sqlite3_column::to_int() const
         {
             assert_value();

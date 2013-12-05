@@ -107,7 +107,7 @@ solution "arg3"
 
     linkoptions { "-stdlib=libc++" }
 
-    includedirs { "vendor" }
+    includedirs { "vendor", "sqlite3" }
 
     configuration "Debug"
         flags "Symbols"

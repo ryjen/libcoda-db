@@ -93,6 +93,4 @@ namespace arg3
     }
 }
 
-#include "sqlite3/sqlite3_column.h"
-
 #endif

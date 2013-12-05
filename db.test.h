@@ -4,6 +4,7 @@
 #include "sqldb.h"
 #include "base_record.h"
 #include <unistd.h>
+#include "sqlite3_db.h"
 
 #define TESTDB "test.db"
 

@@ -59,12 +59,6 @@ namespace arg3
             return impl_->to_int();
         }
 
-        bool sqlite3_column::to_bool() const
-        {
-            assert_value();
-
-            return sqlite3_value_int(value_);
-        }
         bool column::to_bool() const
         {
             return impl_->to_bool();

@@ -1,5 +1,6 @@
 #include "sqlite3_db.h"
 #include "sqlite3_statement.h"
+#include "sqlite3_resultset.h"
 
 namespace arg3
 {

@@ -1,4 +1,5 @@
 #include "sqlite3_row.h"
+#include "sqlite3_column.h"
 
 namespace arg3
 {
