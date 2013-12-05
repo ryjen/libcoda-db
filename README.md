@@ -7,7 +7,7 @@ a sqlite3 wrapper / active record (ish) implementation
 Building
 ========
 
-```
+```bash
 brew install premake
 
 premake4 gmake
@@ -22,12 +22,12 @@ base_record.h provides a ORM type functionality.  Records look for an id column 
 
 a sample model object:
 ```c++
-sqldb testdb("test.db");
+sqlite3_db testdb("test.db");
 
 class user : public base_record
 {
-    static constexpr const char *ID_COLUMN = "id";
-    static constexpr const char *TABLE_NAME = "users";
+    constexpr static const char *ID_COLUMN = "id";
+    constexpr static const char *TABLE_NAME = "users";
 public:
     /* default constructor */
     user() : base_record(&testdb, TABLE_NAME, ID_COLUMN) {}
