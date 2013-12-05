@@ -7,10 +7,10 @@
 
 #define TESTDB "test.db"
 
-class testsqldb : public arg3::db::sqldb
+class testsqldb : public arg3::db::sqlite3_db
 {
 public:
-    testsqldb() : sqldb(TESTDB) {}
+    testsqldb() : sqlite3_db(TESTDB) {}
 
     void setup()
     {
@@ -21,7 +21,7 @@ public:
     void teardown()
     {
         close();
-        unlink(filename().c_str());
+        unlink(connection_string().c_str());
         schemas()->clear("users");
     }
 

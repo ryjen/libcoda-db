@@ -144,7 +144,7 @@ solution "arg3"
 
         configuration "Debug"
         postbuildcommands {
-         "bin/debug/arg3test"
+         --"bin/debug/arg3test"
         }
         configuration "Release"
         postbuildcommands {

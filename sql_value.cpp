@@ -62,68 +62,34 @@ namespace arg3
             return destruct_;
         }
 
-        sql_binding_visitor::sql_binding_visitor(sqldb *db, sqlite3_stmt *stmt, int index) : db_(db), stmt_(stmt), index_(index)
+        sql_binding_visitor::sql_binding_visitor(bindable *obj, int index) : obj_(obj), index_(index)
         {}
 
         void sql_binding_visitor::operator()(int value) const
         {
-            if (sqlite3_bind_int(stmt_, index_, value) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            obj_->bind(index_, value);
         }
         void sql_binding_visitor::operator()(int64_t value) const
         {
-            if (sqlite3_bind_int64(stmt_, index_, value) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            obj_->bind(index_, value);
         }
         void sql_binding_visitor::operator()(double value) const
         {
-            if (sqlite3_bind_double(stmt_, index_, value) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            obj_->bind(index_, value);
         }
         void sql_binding_visitor::operator()(const std::string &value) const
         {
-            if (sqlite3_bind_text(stmt_, index_, value.c_str(), value.size(), SQLITE_TRANSIENT) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            obj_->bind(index_, value);
         }
         void sql_binding_visitor::operator()(const sql_blob &value) const
         {
-            if (sqlite3_bind_blob(stmt_, index_, value.ptr(), value.size(), value.destructor()) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            obj_->bind(index_, value);
         }
         void sql_binding_visitor::operator()(const sql_null_t &value) const
         {
-            if (sqlite3_bind_null(stmt_, index_) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            obj_->bind(index_, value);
         }
 
-
-        query_binding_visitor::query_binding_visitor(base_query *query, int index) : query_(query), index_(index)
-        {}
-
-        void query_binding_visitor::operator()(int value) const
-        {
-            query_->bind(index_, value);
-        }
-        void query_binding_visitor::operator()(int64_t value) const
-        {
-            query_->bind(index_, value);
-        }
-        void query_binding_visitor::operator()(double value) const
-        {
-            query_->bind(index_, value);
-        }
-        void query_binding_visitor::operator()(const std::string &value) const
-        {
-            query_->bind(index_, value);
-        }
-        void query_binding_visitor::operator()(const sql_blob &value) const
-        {
-            query_->bind(index_, value);
-        }
-        void query_binding_visitor::operator()(const sql_null_t &value) const
-        {
-            query_->bind(index_, value);
-        }
         string sql_value::to_string() const
         {
             ostringstream os;

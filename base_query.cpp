@@ -12,10 +12,10 @@ namespace arg3
     namespace db
     {
 
-        base_query::base_query(sqldb *db, const string &tableName) : db_(db), stmt_(NULL), tableName_(tableName)
+        base_query::base_query(sqldb *db, const string &tableName) : db_(db), stmt_(nullptr), tableName_(tableName)
         {}
 
-        base_query::base_query(shared_ptr<schema> schema) : db_(schema->db()), stmt_(NULL), tableName_(schema->table_name())
+        base_query::base_query(shared_ptr<schema> schema) : db_(schema->db()), stmt_(nullptr), tableName_(schema->table_name())
         {}
 
         base_query::base_query(const base_query &other) : db_(other.db_), stmt_(other.stmt_),
@@ -26,7 +26,7 @@ namespace arg3
             tableName_(std::move(other.tableName_)), bindings_(std::move(other.bindings_))
         {
             other.db_ = NULL;
-            other.stmt_ = NULL;
+            other.stmt_ = nullptr;
         }
 
         base_query::~base_query() {}
@@ -50,7 +50,7 @@ namespace arg3
                 db_ = other.db_;
                 stmt_ = other.stmt_;
                 other.db_ = NULL;
-                other.stmt_ = NULL;
+                other.stmt_ = nullptr;
                 tableName_ = std::move(other.tableName_);
                 bindings_ = std::move(other.bindings_);
             }
@@ -61,18 +61,20 @@ namespace arg3
         {
             assert(db_ != NULL);
 
-            if (stmt_ != NULL) return;
+            if (stmt_ != nullptr && stmt_->is_valid()) return;
 
             string sql = to_string();
 
-            if (sqlite3_prepare_v2(db_->db_, sql.c_str(), -1, &stmt_, NULL) != SQLITE_OK)
-                throw database_exception(db_->last_error());
+            if (stmt_ == nullptr)
+                stmt_ = db_->create_statement();
+
+            stmt_->prepare(sql);
 
             for (size_t i = 1; i <= bindings_.size(); i++)
             {
                 auto value = bindings_[i - 1];
 
-                value.bind(db_, stmt_, i);
+                value.bind(stmt_.get(), i);
 
             }
         }

@@ -8,20 +8,20 @@ namespace arg3
 {
     namespace db
     {
-        resultset::resultset(sqldb *db, sqlite3_stmt *stmt) : stmt_(stmt), db_(db), status_(-1)
+        sqlite3_resultset::sqlite3_resultset(sqlite3_db *db, sqlite3_stmt *stmt) : stmt_(stmt), db_(db), status_(-1)
         {
 
         }
 
-        resultset::resultset(const resultset &other) : stmt_(other.stmt_), status_(other.status_)
+        sqlite3_resultset::sqlite3_resultset(const sqlite3_resultset &other) : stmt_(other.stmt_), status_(other.status_)
         {}
 
-        resultset::resultset(resultset &&other) : stmt_(std::move(other.stmt_)), status_(other.status_)
+        sqlite3_resultset::sqlite3_resultset(sqlite3_resultset &&other) : stmt_(std::move(other.stmt_)), status_(other.status_)
         {}
 
-        resultset::~resultset() {}
+        sqlite3_resultset::~sqlite3_resultset() {}
 
-        resultset &resultset::operator=(const resultset &other)
+        sqlite3_resultset &sqlite3_resultset::operator=(const sqlite3_resultset &other)
         {
             if (this != &other)
             {
@@ -32,7 +32,7 @@ namespace arg3
             return *this;
         }
 
-        resultset &resultset::operator=(resultset && other)
+        sqlite3_resultset &sqlite3_resultset::operator=(sqlite3_resultset && other)
         {
             if (this != &other)
             {
@@ -43,65 +43,107 @@ namespace arg3
             return *this;
         }
 
-        int resultset::step()
+        resultset::resultset(shared_ptr<resultset_impl> impl) : impl_(impl)
+        {}
+
+        resultset::~resultset()
+        {}
+
+        resultset::resultset(const resultset &other) : impl_(other.impl_)
         {
 
-            status_ = sqlite3_step(stmt_);
-
-            return status_;
+        }
+        resultset::resultset(resultset &&other) : impl_(std::move(other.impl_))
+        {
+            other.impl_ = nullptr;
         }
 
-        /*int resultset::status()
+        resultset &resultset::operator=(const resultset &other)
         {
-            if(status_ == -1)
-                step();
-
-            return status_;
-        }*/
-
-        bool resultset::has_more()
-        {
-            if (status_ == -1)
-                step();
-
-            return status_ == SQLITE_ROW;
+            if (this != &other)
+            {
+                impl_ = other.impl_;
+            }
+            return *this;
         }
 
-        bool resultset::is_valid()
+        resultset &resultset::operator=(resultset && other)
         {
-            return has_more();
+            if (this != &other)
+            {
+                impl_ = std::move(other.impl_);
+                other.impl_ = nullptr;
+            }
+            return *this;
         }
-
         row resultset::operator*()
         {
-            if (status_ == -1)
-                step();
+            return impl_->current_row();
+        }
 
-            return row(this);
+        bool resultset::is_valid() const
+        {
+            return impl_->is_valid();
+        }
+
+        bool sqlite3_resultset::is_valid() const
+        {
+            return stmt_ != NULL;
+        }
+
+        row resultset::current_row()
+        {
+            return impl_->current_row();
+        }
+
+        row sqlite3_resultset::current_row()
+        {
+            return row(make_shared<sqlite3_row>(db_, stmt_));
         }
 
         bool resultset::next()
         {
-            return step() == SQLITE_ROW;
+            return impl_->next();
+        }
+
+        bool sqlite3_resultset::next()
+        {
+            if (status_ == SQLITE_DONE)
+                return false;
+
+            status_ = sqlite3_step(stmt_);
+
+            return status_ == SQLITE_ROW || status_ == SQLITE_DONE;
+        }
+
+        void resultset::reset()
+        {
+            impl_->reset();
+        }
+
+        void sqlite3_resultset::reset()
+        {
+            if (sqlite3_reset(stmt_) != SQLITE_OK)
+                throw database_exception(db_->last_error());
         }
 
         resultset::iterator resultset::begin()
         {
-            sqlite3_reset(stmt_);
+            impl_->reset();
 
-            if (step() == SQLITE_ROW)
-                return iterator(this, 0);
+            if (impl_->next())
+                return iterator(impl_, 0);
             else
                 return end();
         }
 
         resultset::iterator resultset::end()
         {
-            return iterator(this, -1);
+            return iterator(impl_, -1);
         }
 
 
-        resultset_iterator::resultset_iterator(resultset *rset, int position) : rs_(rset), pos_(position), value_(rset)
+        resultset_iterator::resultset_iterator(shared_ptr<resultset_impl> rset, int position) : rs_(rset), pos_(position), value_(rset->current_row())
         {
         }
 
@@ -111,7 +153,7 @@ namespace arg3
         resultset_iterator::resultset_iterator(resultset_iterator &&other) : rs_(std::move(other.rs_)), pos_(other.pos_),
             value_(std::move(other.value_))
         {
-            other.rs_ = NULL;
+            other.rs_ = nullptr;
         }
 
         resultset_iterator::~resultset_iterator() {}
@@ -134,7 +176,7 @@ namespace arg3
                 rs_ = std::move(other.rs_);
                 pos_ = other.pos_;
                 value_ = std::move(other.value_);
-                other.rs_ = NULL;
+                other.rs_ = nullptr;
             }
             return *this;
         }
@@ -146,26 +188,20 @@ namespace arg3
 
         resultset_iterator &resultset_iterator::operator++()
         {
-            if (rs_ == NULL)
+            if (rs_ == nullptr)
                 return *this;
 
-            int res = rs_->step();
+            bool res = rs_->next();
 
-            pos_++;
-
-            switch (res)
+            if (res)
             {
-
-            case SQLITE_DONE:
-                rs_ = NULL;
+                pos_++;
+                value_ = rs_->current_row();
+            }
+            else
+            {
+                rs_ = nullptr;
                 pos_ = -1;
-                break;
-            case SQLITE_ROW:
-                value_ = row(rs_);
-                break;
-            default:
-                throw database_exception(rs_->db_->last_error());
-                break;
             }
 
             return *this;

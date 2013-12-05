@@ -11,6 +11,7 @@ namespace arg3
     {
         class sqldb;
         class base_query;
+        class bindable;
 
         class sql_blob
         {
@@ -32,6 +33,7 @@ namespace arg3
         typedef struct {} sql_null_t;
 
         extern const sql_null_t sql_null;
+
     }
 }
 
@@ -71,30 +73,12 @@ namespace arg3
 
         class sql_binding_visitor
         {
-            sqldb *db_;
-            sqlite3_stmt *stmt_;
+            bindable *obj_;
             int index_;
         public:
             typedef void result_type;
 
-            sql_binding_visitor(sqldb *db, sqlite3_stmt *stmt, int index);
-
-            void operator()(int value) const;
-            void operator()(int64_t value) const;
-            void operator()(double value) const;
-            void operator()(const std::string &value) const;
-            void operator()(const sql_blob &value) const;
-            void operator()(const sql_null_t &value) const;
-        };
-
-        class query_binding_visitor
-        {
-            base_query *query_;
-            int index_;
-        public:
-            typedef void result_type;
-
-            query_binding_visitor(base_query *query, int index);
+            sql_binding_visitor(bindable *obj, int index);
 
             void operator()(int value) const;
             void operator()(int64_t value) const;
@@ -154,14 +138,9 @@ namespace arg3
 
             std::string to_string() const;
 
-            void bind(sqldb *db, sqlite3_stmt *stmt, int index) const
+            void bind(bindable *obj, int index) const
             {
-                apply_visitor(sql_binding_visitor(db, stmt, index), value_);
-            }
-
-            void bind(base_query *query, int index) const
-            {
-                apply_visitor(query_binding_visitor(query, index), value_);
+                apply_visitor(sql_binding_visitor(obj, index), value_);
             }
 
             bool operator==(const sql_value &other) const

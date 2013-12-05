@@ -134,7 +134,7 @@ namespace arg3
         {
             prepare();
 
-            return resultset(db_, stmt_);
+            return stmt_->results();
 
         }
     }

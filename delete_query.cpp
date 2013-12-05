@@ -75,22 +75,19 @@ namespace arg3
         {
             prepare();
 
-            int res = sqlite3_step(stmt_);
+            bool res = stmt_->result();
 
             if (!batch)
             {
-                if (sqlite3_finalize(stmt_) != SQLITE_OK)
-                    throw database_exception(db_->last_error());
-
-                stmt_ = NULL;
+                stmt_->finish();
+                stmt_ = nullptr;
             }
             else
             {
-                if (sqlite3_reset(stmt_) != SQLITE_OK)
-                    throw database_exception(db_->last_error());
+                stmt_->reset();
             }
 
-            return res == SQLITE_DONE;
+            return res;
         }
     }
 }

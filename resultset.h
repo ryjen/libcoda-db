@@ -13,17 +13,38 @@ namespace arg3
     namespace db
     {
         class resultset;
-        class sqldb;
+        class sqlite3_db;
+
+        class resultset_impl
+        {
+        protected:
+            resultset_impl() = default;
+        public:
+            resultset_impl(const resultset_impl &other) = default;
+            resultset_impl(resultset_impl &&other) = default;
+            virtual ~resultset_impl() = default;
+
+            resultset_impl &operator=(const resultset_impl &other) = default;
+            resultset_impl &operator=(resultset_impl && other) = default;
+
+            virtual bool is_valid() const = 0;
+
+            virtual bool next() = 0;
+
+            virtual row current_row() = 0;
+
+            virtual void reset() = 0;
+        };
 
         class resultset_iterator : public std::iterator<std::input_iterator_tag, row>
         {
         private:
-            resultset *rs_;
+            shared_ptr<resultset_impl> rs_;
             int pos_;
             row value_;
         public:
 
-            resultset_iterator(resultset *rs, int position);
+            resultset_iterator(shared_ptr<resultset_impl> rs, int position);
 
             resultset_iterator(const resultset_iterator &other);
 
@@ -67,23 +88,12 @@ namespace arg3
 
         class resultset
         {
-            friend class select_query;
-            friend class row;
-            friend class sqldb;
-            friend class resultset_iterator;
-        public:
-            typedef resultset_iterator iterator;
         private:
-            sqlite3_stmt *stmt_;
-
-            sqldb *db_;
-
-            resultset(sqldb *db, sqlite3_stmt *stmt);
-
-            int status_;
-
-            int step();
+            shared_ptr<resultset_impl> impl_;
         public:
+
+            resultset(shared_ptr<resultset_impl> impl);
+
             resultset(const resultset &other);
             resultset(resultset &&other);
             virtual ~resultset();
@@ -91,15 +101,51 @@ namespace arg3
             resultset &operator=(const resultset &other);
             resultset &operator=(resultset && other);
 
+            typedef resultset_iterator iterator;
+
+            bool is_valid() const;
+
             iterator begin();
 
             iterator end();
 
-            bool is_valid();
+            row current_row();
 
-            bool has_more();
+            bool next();
 
             row operator*();
+
+            void reset();
+        };
+
+        class sqlite3_resultset : public resultset_impl
+        {
+            friend class select_query;
+            friend class row;
+            friend class sqldb;
+            friend class resultset_iterator;
+        private:
+            sqlite3_stmt *stmt_;
+
+            sqlite3_db *db_;
+
+            int status_;
+
+        public:
+            sqlite3_resultset(sqlite3_db *db, sqlite3_stmt *stmt);
+
+            sqlite3_resultset(const sqlite3_resultset &other);
+            sqlite3_resultset(sqlite3_resultset &&other);
+            virtual ~sqlite3_resultset();
+
+            sqlite3_resultset &operator=(const sqlite3_resultset &other);
+            sqlite3_resultset &operator=(sqlite3_resultset && other);
+
+            bool is_valid() const;
+
+            row current_row();
+
+            void reset();
 
             bool next();
         };

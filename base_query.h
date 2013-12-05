@@ -11,6 +11,7 @@
 #include <sstream>
 #include "schema.h"
 #include "sql_value.h"
+#include "statement.h"
 
 namespace arg3
 {
@@ -22,7 +23,7 @@ namespace arg3
          * abstract class
          * override to implement a query
          */
-        class base_query
+        class base_query : public bindable
         {
             friend class sqldb;
 
@@ -30,7 +31,7 @@ namespace arg3
             size_t assert_binding_index(size_t index);
         protected:
             sqldb *db_;
-            sqlite3_stmt *stmt_;
+            shared_ptr<statement> stmt_;
             string tableName_;
             vector<sql_value> bindings_;
             void prepare();

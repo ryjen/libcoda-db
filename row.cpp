@@ -8,42 +8,78 @@ namespace arg3
 {
     namespace db
     {
-        row::row(resultset *results) : results_(results)
-        {
-            assert(results_ != NULL);
-
-            assert(results_->stmt_ != NULL);
-
-            size_ = sqlite3_column_count(results_->stmt_);
-        }
-
-        row::row(const row &other) : results_(other.results_), size_(other.size_)
+        row::row(shared_ptr<row_impl> impl) : impl_(impl)
         {}
 
-        row::row(row &&other) : results_(std::move(other.results_)), size_(other.size_)
+        row::row(const row &other) : impl_(other.impl_)
+        {}
+
+        row::row(row &&other) : impl_(std::move(other.impl_))
         {
-            other.results_ = NULL;
+            other.impl_ = nullptr;
         }
 
-        row::~row() {}
+        row::~row()
+        {}
 
         row &row::operator=(const row &other)
         {
             if (this != &other)
             {
-                results_ = other.results_;
+                impl_ = other.impl_;
+            }
+            return *this;
+        }
+        row &row::operator=(row && other)
+        {
+            if (this != &other)
+            {
+                impl_ = std::move(other.impl_);
+                other.impl_ = nullptr;
+            }
+            return *this;
+        }
+
+        sqlite3_row::sqlite3_row(sqlite3_db *db, sqlite3_stmt *stmt) : row_impl(), stmt_(stmt), db_(db)
+        {
+            assert(db_ != NULL);
+
+            assert(stmt_ != NULL);
+
+            size_ = sqlite3_column_count(stmt_);
+        }
+
+        sqlite3_row::sqlite3_row(const sqlite3_row &other) : row_impl(other), stmt_(other.stmt_), db_(other.db_), size_(other.size_)
+        {}
+
+        sqlite3_row::sqlite3_row(sqlite3_row &&other) : row_impl(other), stmt_(other.stmt_), db_(other.db_), size_(other.size_)
+        {
+            other.stmt_ = NULL;
+            other.db_ = NULL;
+        }
+
+        sqlite3_row::~sqlite3_row() {}
+
+        sqlite3_row &sqlite3_row::operator=(const sqlite3_row &other)
+        {
+            if (this != &other)
+            {
+                stmt_ = other.stmt_;
+                db_ = other.db_;
                 size_ = other.size_;
             }
             return *this;
         }
 
-        row &row::operator=(row && other)
+        sqlite3_row &sqlite3_row::operator=(sqlite3_row && other)
         {
             if (this != &other)
             {
-                results_ = std::move(other.results_);
+                stmt_ = other.stmt_;
+                db_ = other.db_;
                 size_ = other.size_;
-                other.results_ = NULL;
+                other.stmt_ = NULL;
+                other.db_ = NULL;
             }
             return *this;
         }
@@ -118,20 +154,41 @@ namespace arg3
             return column(name);
         }
 
-        column row::column(size_t nPosition) const
+
+        string row::column_name(size_t nPosition) const
+        {
+            return impl_->column_name(nPosition);
+        }
+
+        arg3::db::column row::column(size_t nPosition) const
+        {
+            return impl_->column(nPosition);
+        }
+
+        arg3::db::column row::column(const string &name) const
+        {
+            return impl_->column(name);
+        }
+
+        size_t row::size() const
+        {
+            return impl_->size();
+        }
+
+        column sqlite3_row::column(size_t nPosition) const
         {
             assert(nPosition < size());
 
-            return db::column( sqlite3_column_value(results_->stmt_, nPosition ) );
+            return db::column( sqlite3_column_value(stmt_, nPosition ) );
         }
 
-        column row::column(const string &name) const
+        column sqlite3_row::column(const string &name) const
         {
             assert(!name.empty());
 
-            for (size_t i = 0, size = sqlite3_column_count(results_->stmt_); i < size; i++)
+            for (size_t i = 0, size = sqlite3_column_count(stmt_); i < size; i++)
             {
-                const char *col_name = sqlite3_column_name(results_->stmt_, i);
+                const char *col_name = sqlite3_column_name(stmt_, i);
 
                 if (name == col_name)
                 {
@@ -141,14 +198,14 @@ namespace arg3
             return arg3::db::column();
         }
 
-        string row::column_name(size_t nPosition) const
+        string sqlite3_row::column_name(size_t nPosition) const
         {
             assert(nPosition < size());
 
-            return sqlite3_column_name(results_->stmt_, nPosition);
+            return sqlite3_column_name(stmt_, nPosition);
         }
 
-        size_t row::size() const
+        size_t sqlite3_row::size() const
         {
             return size_;
         }

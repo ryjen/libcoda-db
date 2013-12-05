@@ -182,29 +182,42 @@ namespace arg3
 
         class resultset;
 
+        class row_impl
+        {
+        public:
+            row_impl() = default;
+            row_impl(const row_impl &other) = default;
+            row_impl(row_impl &&other) = default;
+            row_impl &operator=(const row_impl &other) = default;
+            row_impl &operator=(row_impl && other) = default;
+            virtual ~row_impl() = default;
+
+            virtual string column_name(size_t nPosition) const = 0;
+
+            virtual arg3::db::column column(size_t nPosition) const = 0;
+
+            virtual arg3::db::column column(const string &name) const = 0;
+
+            virtual size_t size() const = 0;
+
+        };
+
         class row
         {
-            friend class resultset_iterator;
-            friend class resultset;
+        private:
+            shared_ptr<row_impl> impl_;
+
         public:
             //Typedefs
-            typedef row_iterator<column, column, row>               iterator;
-            typedef row_iterator<const column, column, const row>   const_iterator;
-            typedef std::reverse_iterator<iterator>                      reverse_iterator;
-            typedef std::reverse_iterator<const_iterator>                const_reverse_iterator;
+            typedef row_iterator<column, column, row> iterator;
+            typedef row_iterator<const column, column, const row> const_iterator;
+            typedef std::reverse_iterator<iterator> reverse_iterator;
+            typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-        private:
-            resultset *results_;
-            size_t size_;
-
-            row(resultset *results);
-
-        public:
-
-            virtual ~row();
-
+            row(shared_ptr<row_impl> impl);
             row(const row &other);
             row(row &&other);
+            virtual ~row();
 
             row &operator=(const row &other);
             row &operator=(row && other);
@@ -247,6 +260,29 @@ namespace arg3
             size_t size() const;
 
             bool empty() const;
+        };
+
+        class sqlite3_db;
+
+        class sqlite3_row : public row_impl
+        {
+            friend class sqlite3_resultset;
+        private:
+            sqlite3_stmt *stmt_;
+            sqlite3_db *db_;
+            size_t size_;
+        public:
+            sqlite3_row(sqlite3_db *db, sqlite3_stmt *stmt);
+            virtual ~sqlite3_row();
+            sqlite3_row(const sqlite3_row &other);
+            sqlite3_row(sqlite3_row &&other);
+            sqlite3_row &operator=(const sqlite3_row &other);
+            sqlite3_row &operator=(sqlite3_row && other);
+
+            string column_name(size_t nPosition) const;
+            arg3::db::column column(size_t nPosition) const;
+            arg3::db::column column(const string &name) const;
+            size_t size() const;
         };
     }
 }
