@@ -10,7 +10,7 @@ Building
 ```bash
 brew install premake
 
-premake4 gmake
+premake4 gmake/vs2010
 
 make
 ```
@@ -18,9 +18,8 @@ make
 Records
 =======
 
-base_record.h provides a ORM type functionality.  Records look for an id column based on the table name.
-
-a sample model object:
+User Record
+===========
 ```c++
 sqlite3_db testdb("test.db");
 
@@ -32,7 +31,7 @@ public:
     /* default constructor */
     user() : base_record(&testdb, TABLE_NAME, ID_COLUMN) {}
 
-    /* required query constructor */
+    /* results constructor */
     user(const row &values) : base_record(&testdb, TABLE_NAME, ID_COLUMN, values) {}
 
     /* id constructor */
@@ -47,11 +46,11 @@ public:
 
         return buf.str();
     }
-
 };
 ```
 
-and using the user object:
+Query records
+=============
 ```c++
     /* get all users */
  	auto results = user().find_all();
@@ -60,24 +59,35 @@ and using the user object:
     {
         cout << "Loaded " << obj.to_string() << endl;
     }
-
+````
+Save a record
+=============
+```c++
+    /* save a user */
     user obj;
 
-    obj.set("first_name", "Jim");
-    obj.set("last_name", "Bob");
+    obj.set("first_name", "John");
+    obj.set("last_name", "Doe");
 
     if(!obj.save())
-    	cout << obj.db().last_error() << endl;
-
+    	cout << testdb.last_error() << endl;
 ```
 
-
-Queries: Select and Modify
-==========================
-
+Delete a record
+===============
 ```c++
-sqldb testdb("test.db");
+    user obj(1); // id constructor
 
+    if(!obj.de1ete())
+        cout << testdb.last_error() << endl;
+```
+
+Basic Queries
+=============
+
+Modify Queries
+==============
+```c++
 /* upsert a user */
 modify_query query(&testdb, "users", { "id", "first_name", "last_name" });
 
@@ -85,7 +95,11 @@ query.bind(1, 1234).bind(2, "happy").bind(3, "gilmour");
 
 if(!query.execute())
     cout << testdb.last_error() << endl;
+```
 
+Select Query
+============
+```c++
 /* select some users */
 select_query query(testdb, "users");
 
@@ -94,6 +108,8 @@ query.where("last_name = ?");
 query.bind(1, "Jenkins");
 
 auto results = query.execute();
+
+user jenkins(*results);
 ```
 
 TODO
