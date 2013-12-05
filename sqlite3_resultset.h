@@ -1,7 +1,7 @@
 #ifndef ARG3_DB_SQLITE_RESULTSET_H_
 #define ARG3_DB_SQLITE_RESULTSET_H_
 
-#include "../resultset.h"
+#include "resultset.h"
 
 namespace arg3
 {

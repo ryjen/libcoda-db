@@ -1,13 +1,12 @@
 #ifndef ARG3_DB_SQLITE_SQLDB_H_
 #define ARG3_DB_SQLITE_SQLDB_H_
 
-#include "../sqldb.h"
+#include "sqldb.h"
 
 namespace arg3
 {
     namespace db
     {
-
         // an instanceof a database
         class sqlite3_db : public sqldb
         {

@@ -1,7 +1,7 @@
 #ifndef ARG3_DB_SQLITE_STATEMENT_H_
 #define ARG3_DB_SQLITE_STATEMENT_H_
 
-#include "../statement.h"
+#include "statement.h"
 
 namespace arg3
 {

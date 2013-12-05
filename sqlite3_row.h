@@ -1,7 +1,7 @@
 #ifndef ARG3_DB_SQLITE_ROW_H_
 #define ARG3_DB_SQLITE_ROW_H_
 
-#include "../row.h"
+#include "row.h"
 
 namespace arg3
 {

@@ -1,7 +1,7 @@
 #ifndef ARG3_DB_SQLITE_COLUMN_H_
 #define ARG3_DB_SQLITE_COLUMN_H_
 
-#include "../column.h"
+#include "column.h"
 
 namespace arg3
 {
