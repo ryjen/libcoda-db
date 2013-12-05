@@ -8,99 +8,97 @@ namespace arg3
 {
     namespace db
     {
-
-        sqlite3_statement::sqlite3_statement(sqlite3_db *db) : db_(db), stmt_(NULL)
+        statement::statement(shared_ptr<statement_impl> impl) : impl_(impl)
         {}
 
-        void sqlite3_statement::prepare(const string &sql)
-        {
-            if (stmt_ != NULL) return;
+        statement::statement(const statement &other) : impl_(other.impl_)
+        {}
 
-            if (sqlite3_prepare_v2(db_->db_, sql.c_str(), -1, &stmt_, NULL) != SQLITE_OK)
-                throw database_exception(db_->last_error());
+        statement::statement(statement &&other) : impl_(std::move(other.impl_))
+        {
+            other.impl_ = nullptr;
         }
-
-        bool sqlite3_statement::is_valid() const
+        statement &statement::operator=(const statement &other)
         {
-            return stmt_ != NULL;
-        }
-
-        sqlite3_statement &sqlite3_statement::bind(size_t index, int value)
-        {
-
-            if (sqlite3_bind_int(stmt_, index, value) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            if (this != &other)
+            {
+                impl_ = other.impl_;
+            }
             return *this;
         }
-        sqlite3_statement &sqlite3_statement::bind(size_t index, int64_t value)
+        statement &statement::operator=(statement && other)
         {
-            if (sqlite3_bind_int64(stmt_, index, value) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            if (this != &other)
+            {
+                impl_ = std::move(other.impl_);
+                other.impl_ = nullptr;
+            }
             return *this;
         }
-        sqlite3_statement &sqlite3_statement::bind(size_t index, double value)
+        void statement::prepare(const std::string &sql)
         {
-            if (sqlite3_bind_double(stmt_, index, value) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            impl_->prepare(sql);
+        }
+        void statement::finish()
+        {
+            impl_->finish();
+        }
+        void statement::reset()
+        {
+            impl_->reset();
+        }
+        bool statement::is_valid() const
+        {
+            return impl_->is_valid();
+        }
+        resultset statement::results()
+        {
+            return impl_->results();
+        }
+        bool statement::result()
+        {
+            return impl_->result();
+        }
+
+        statement &statement::bind(size_t index, int value)
+        {
+            impl_->bind(index, value);
             return *this;
         }
-        sqlite3_statement &sqlite3_statement::bind(size_t index, const std::string &value, int len)
+        statement &statement::bind(size_t index, int64_t value)
         {
-            if (sqlite3_bind_text(stmt_, index, value.c_str(), len, SQLITE_TRANSIENT) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            impl_->bind(index, value);
             return *this;
         }
-        sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_blob &value)
+        statement &statement::bind(size_t index, double value)
         {
-            if (sqlite3_bind_blob(stmt_, index, value.ptr(), value.size(), value.destructor()) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            impl_->bind(index, value);
             return *this;
         }
-        sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_null_t &value)
+        statement &statement::bind(size_t index, const std::string &value, int len)
         {
-            if (sqlite3_bind_null(stmt_, index) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            impl_->bind(index, value, len);
             return *this;
         }
-
-        sqlite3_statement &sqlite3_statement::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
+        statement &statement::bind(size_t index, const sql_blob &value)
         {
-
-            if (sqlite3_bind_blob(stmt_, index, data, size, pFree) != SQLITE_OK)
-                throw binding_error(db_->last_error());
+            impl_->bind(index, value);
             return *this;
         }
-
-        sqlite3_statement &sqlite3_statement::bind_value(size_t index, const sql_value &value)
+        statement &statement::bind(size_t index, const sql_null_t &value)
         {
-
-            value.bind(this, index);
-
+            impl_->bind(index, value);
             return *this;
         }
-
-        resultset sqlite3_statement::results()
+        statement &statement::bind_value(size_t index, const sql_value &value)
         {
-            return resultset(make_shared<sqlite3_resultset>(db_, stmt_));
+            impl_->bind_value(index, value);
+            return *this;
         }
-
-        bool sqlite3_statement::result()
+        statement &statement::bind(size_t index, const void *data, size_t size, void(* pFree)(void *))
         {
-            return sqlite3_step(stmt_) == SQLITE_DONE;
-        }
-
-        void sqlite3_statement::finish()
-        {
-            if (sqlite3_finalize(stmt_) != SQLITE_OK)
-                throw database_exception(db_->last_error());
-
-            stmt_ = NULL;
-        }
-
-        void sqlite3_statement::reset()
-        {
-            if (sqlite3_reset(stmt_) != SQLITE_OK)
-                throw database_exception(db_->last_error());
+            impl_->bind(index, data, size, pFree);
+            return *this;
         }
     }
 }

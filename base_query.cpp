@@ -7,6 +7,13 @@
 #include "sqldb.h"
 #include <cassert>
 
+namespace std
+{
+    string to_string(const arg3::db::base_query &query)
+    {
+        return query.to_string();
+    }
+}
 namespace arg3
 {
     namespace db
@@ -64,6 +71,8 @@ namespace arg3
             if (stmt_ != nullptr && stmt_->is_valid()) return;
 
             string sql = to_string();
+
+            db_->log(sqldb::VERBOSE, sql);
 
             if (stmt_ == nullptr)
                 stmt_ = db_->create_statement();

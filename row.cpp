@@ -40,58 +40,14 @@ namespace arg3
             return *this;
         }
 
-        sqlite3_row::sqlite3_row(sqlite3_db *db, sqlite3_stmt *stmt) : row_impl(), stmt_(stmt), db_(db)
-        {
-            assert(db_ != NULL);
-
-            assert(stmt_ != NULL);
-
-            size_ = sqlite3_column_count(stmt_);
-        }
-
-        sqlite3_row::sqlite3_row(const sqlite3_row &other) : row_impl(other), stmt_(other.stmt_), db_(other.db_), size_(other.size_)
-        {}
-
-        sqlite3_row::sqlite3_row(sqlite3_row &&other) : row_impl(other), stmt_(other.stmt_), db_(other.db_), size_(other.size_)
-        {
-            other.stmt_ = NULL;
-            other.db_ = NULL;
-        }
-
-        sqlite3_row::~sqlite3_row() {}
-
-        sqlite3_row &sqlite3_row::operator=(const sqlite3_row &other)
-        {
-            if (this != &other)
-            {
-                stmt_ = other.stmt_;
-                db_ = other.db_;
-                size_ = other.size_;
-            }
-            return *this;
-        }
-
-        sqlite3_row &sqlite3_row::operator=(sqlite3_row && other)
-        {
-            if (this != &other)
-            {
-                stmt_ = other.stmt_;
-                db_ = other.db_;
-                size_ = other.size_;
-                other.stmt_ = NULL;
-                other.db_ = NULL;
-            }
-            return *this;
-        }
-
         row::iterator row::begin()
         {
-            return iterator(this, 0);
+            return iterator(impl_, 0);
         }
 
         row::const_iterator row::begin() const
         {
-            return const_iterator(this, 0);
+            return const_iterator(impl_, 0);
         }
 
         row::const_iterator row::cbegin() const
@@ -101,12 +57,12 @@ namespace arg3
 
         row::iterator row::end()
         {
-            return iterator(this, size());
+            return iterator(impl_, size());
         }
 
         row::const_iterator row::end() const
         {
-            return const_iterator(this, size());
+            return const_iterator(impl_, size());
         }
 
         row::const_iterator row::cend() const
@@ -173,41 +129,6 @@ namespace arg3
         size_t row::size() const
         {
             return impl_->size();
-        }
-
-        column sqlite3_row::column(size_t nPosition) const
-        {
-            assert(nPosition < size());
-
-            return db::column( sqlite3_column_value(stmt_, nPosition ) );
-        }
-
-        column sqlite3_row::column(const string &name) const
-        {
-            assert(!name.empty());
-
-            for (size_t i = 0, size = sqlite3_column_count(stmt_); i < size; i++)
-            {
-                const char *col_name = sqlite3_column_name(stmt_, i);
-
-                if (name == col_name)
-                {
-                    return column(i);
-                }
-            }
-            return arg3::db::column();
-        }
-
-        string sqlite3_row::column_name(size_t nPosition) const
-        {
-            assert(nPosition < size());
-
-            return sqlite3_column_name(stmt_, nPosition);
-        }
-
-        size_t sqlite3_row::size() const
-        {
-            return size_;
         }
 
         bool row::empty() const

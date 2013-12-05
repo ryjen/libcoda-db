@@ -8,17 +8,15 @@ namespace arg3
 {
     namespace db
     {
-        class sqlite3_db;
-
-        class statement : public bindable
+        class statement_impl : public bindable
         {
         public:
-            statement() = default;
-            statement(const statement &other) = default;
-            statement(statement &&other) = default;
-            statement &operator=(const statement &other) = default;
-            statement &operator=(statement && other) = default;
-            virtual ~statement() = default;
+            statement_impl() = default;
+            statement_impl(const statement_impl &other) = default;
+            statement_impl(statement_impl &&other) = default;
+            statement_impl &operator=(const statement_impl &other) = default;
+            statement_impl &operator=(statement_impl && other) = default;
+            virtual ~statement_impl() = default;
             virtual void prepare(const std::string &sql) = 0;
             virtual void finish() = 0;
             virtual void reset() = 0;
@@ -27,32 +25,31 @@ namespace arg3
             virtual bool result() = 0;
         };
 
-        class sqlite3_statement : public statement
+        class statement : public bindable
         {
         private:
-            sqlite3_db *db_;
-            sqlite3_stmt *stmt_;
+            shared_ptr<statement_impl> impl_;
         public:
-            sqlite3_statement(sqlite3_db *db);
-            sqlite3_statement(const sqlite3_statement &other) = default;
-            sqlite3_statement(sqlite3_statement &&other) = default;
-            sqlite3_statement &operator=(const sqlite3_statement &other) = default;
-            sqlite3_statement &operator=(sqlite3_statement && other) = default;
-            virtual ~sqlite3_statement() = default;
+            statement(shared_ptr<statement_impl> impl);
+            statement(const statement &other);
+            statement(statement &&other);
+            virtual ~statement() = default;
+            statement &operator=(const statement &other);
+            statement &operator=(statement && other);
             void prepare(const std::string &sql);
+            void finish();
+            void reset();
             bool is_valid() const;
             resultset results();
             bool result();
-            void finish();
-            void reset();
-            sqlite3_statement &bind(size_t index, int value);
-            sqlite3_statement &bind(size_t index, int64_t value);
-            sqlite3_statement &bind(size_t index, double value);
-            sqlite3_statement &bind(size_t index, const std::string &value, int len = -1);
-            sqlite3_statement &bind(size_t index, const sql_blob &value);
-            sqlite3_statement &bind(size_t index, const sql_null_t &value);
-            sqlite3_statement &bind_value(size_t index, const sql_value &v);
-            sqlite3_statement &bind(size_t index, const void *data, size_t size, void(* pFree)(void *) = SQLITE_STATIC);
+            statement &bind(size_t index, int value);
+            statement &bind(size_t index, int64_t value);
+            statement &bind(size_t index, double value);
+            statement &bind(size_t index, const std::string &value, int len = -1);
+            statement &bind(size_t index, const sql_blob &value);
+            statement &bind(size_t index, const sql_null_t &value);
+            statement &bind_value(size_t index, const sql_value &v);
+            statement &bind(size_t index, const void *data, size_t size, void(* pFree)(void *) = SQLITE_STATIC);
         };
     }
 }

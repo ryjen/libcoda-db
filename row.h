@@ -12,25 +12,39 @@ namespace arg3
 {
     namespace db
     {
+        class row_impl
+        {
+        public:
+            row_impl() = default;
+            row_impl(const row_impl &other) = default;
+            row_impl(row_impl &&other) = default;
+            row_impl &operator=(const row_impl &other) = default;
+            row_impl &operator=(row_impl && other) = default;
+            virtual ~row_impl() = default;
+
+            virtual string column_name(size_t nPosition) const = 0;
+
+            virtual arg3::db::column column(size_t nPosition) const = 0;
+
+            virtual arg3::db::column column(const string &name) const = 0;
+
+            virtual size_t size() const = 0;
+
+        };
 
         template<class ValueType, class NonConst, class RowType>
         class row_iterator : public std::iterator<std::random_access_iterator_tag, ValueType>
         {
         protected:
-            RowType *row_;
+            shared_ptr<RowType> row_;
             int position_;
-
-            ValueType get_value(int nPosition)
-            {
-
-            }
         public:
             row_iterator() : row_(NULL),
                 position_(-1)
             {
             }
 
-            row_iterator(RowType *pRow, int nPosition) : row_(pRow),
+            row_iterator(shared_ptr<RowType> pRow, int nPosition) : row_(pRow),
                 position_(nPosition)
             {
             }
@@ -40,7 +54,9 @@ namespace arg3
             }
 
             row_iterator(row_iterator &&other) : row_(std::move(other.row_)), position_(other.position_)
-            {}
+            {
+                other.row_ = nullptr;
+            }
 
             virtual ~row_iterator() {}
 
@@ -60,6 +76,7 @@ namespace arg3
                 {
                     row_ = std::move(other.row_);
                     position_ = other.position_;
+                    other.row_ = nullptr;
                 }
                 return this;
             }
@@ -83,7 +100,7 @@ namespace arg3
 
                 assert(row_ != NULL);
 
-                return row_->operator[](nPosition);
+                return row_->column(nPosition);
             }
 
             row_iterator &operator++()
@@ -179,29 +196,6 @@ namespace arg3
             }
         };
 
-
-        class resultset;
-
-        class row_impl
-        {
-        public:
-            row_impl() = default;
-            row_impl(const row_impl &other) = default;
-            row_impl(row_impl &&other) = default;
-            row_impl &operator=(const row_impl &other) = default;
-            row_impl &operator=(row_impl && other) = default;
-            virtual ~row_impl() = default;
-
-            virtual string column_name(size_t nPosition) const = 0;
-
-            virtual arg3::db::column column(size_t nPosition) const = 0;
-
-            virtual arg3::db::column column(const string &name) const = 0;
-
-            virtual size_t size() const = 0;
-
-        };
-
         class row
         {
         private:
@@ -209,8 +203,8 @@ namespace arg3
 
         public:
             //Typedefs
-            typedef row_iterator<column, column, row> iterator;
-            typedef row_iterator<const column, column, const row> const_iterator;
+            typedef row_iterator<column, column, row_impl> iterator;
+            typedef row_iterator<const column, column, const row_impl> const_iterator;
             typedef std::reverse_iterator<iterator> reverse_iterator;
             typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -262,29 +256,9 @@ namespace arg3
             bool empty() const;
         };
 
-        class sqlite3_db;
-
-        class sqlite3_row : public row_impl
-        {
-            friend class sqlite3_resultset;
-        private:
-            sqlite3_stmt *stmt_;
-            sqlite3_db *db_;
-            size_t size_;
-        public:
-            sqlite3_row(sqlite3_db *db, sqlite3_stmt *stmt);
-            virtual ~sqlite3_row();
-            sqlite3_row(const sqlite3_row &other);
-            sqlite3_row(sqlite3_row &&other);
-            sqlite3_row &operator=(const sqlite3_row &other);
-            sqlite3_row &operator=(sqlite3_row && other);
-
-            string column_name(size_t nPosition) const;
-            arg3::db::column column(size_t nPosition) const;
-            arg3::db::column column(const string &name) const;
-            size_t size() const;
-        };
     }
 }
+
+#include "sqlite3/sqlite3_row.h"
 
 #endif

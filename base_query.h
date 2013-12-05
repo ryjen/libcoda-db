@@ -121,4 +121,10 @@ namespace arg3
 
 }
 
+
+namespace std
+{
+    string to_string(const arg3::db::base_query &query);
+}
+
 #endif

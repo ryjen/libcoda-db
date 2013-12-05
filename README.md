@@ -4,6 +4,17 @@ libarg3db
 
 a sqlite3 wrapper / active record (ish) implementation
 
+Building
+========
+
+```
+brew install premake
+
+premake4 gmake
+
+make
+```
+
 Records
 =======
 

@@ -10,7 +10,10 @@
 class testsqldb : public arg3::db::sqlite3_db
 {
 public:
-    testsqldb() : sqlite3_db(TESTDB) {}
+    testsqldb() : sqlite3_db(TESTDB)
+    {
+        set_log_level(VERBOSE);
+    }
 
     void setup()
     {

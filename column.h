@@ -16,18 +16,42 @@ namespace arg3
 {
     namespace db
     {
+        class column_impl
+        {
+        public:
+
+            virtual bool is_valid() const = 0;
+
+            virtual sql_blob to_blob() const = 0;
+
+            virtual double to_double() const = 0;
+
+            virtual int to_int() const = 0;
+
+            virtual bool to_bool() const = 0;
+
+            virtual sqlite3_int64 to_int64() const = 0;
+
+            virtual const unsigned char *to_text() const = 0;
+
+            virtual string to_string() const = 0;
+
+            virtual const wchar_t *to_text16() const = 0;
+
+            virtual sql_value to_value() const = 0;
+
+        };
+
         class column
         {
-        protected:
-            sqlite3_value *value_;
-
-            void assert_value() const throw (no_such_column_exception);
-        public:
+            template<class A, class B, class C> friend class row_iterator;
+        private:
+            shared_ptr<column_impl> impl_;
             column();
+        public:
+            column(shared_ptr<column_impl> impl);
 
-            virtual ~column();
-
-            column(sqlite3_value *pValue);
+            virtual ~column() = default;
 
             column(const column &other);
 
@@ -35,7 +59,7 @@ namespace arg3
 
             column &operator=(const column &other);
 
-            column &operator=(column &&other);
+            column &operator=(column && other);
 
             bool is_valid() const;
 
@@ -57,12 +81,6 @@ namespace arg3
 
             sql_value to_value() const;
 
-            int type() const;
-
-            int numeric_type() const;
-
-            operator sqlite3_value *() const;
-
             operator string() const;
 
             operator int() const;
@@ -74,5 +92,7 @@ namespace arg3
 
     }
 }
+
+#include "sqlite3/sqlite3_column.h"
 
 #endif

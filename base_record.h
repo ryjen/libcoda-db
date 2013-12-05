@@ -40,14 +40,14 @@ namespace arg3
             template<typename V>
             base_record(std::shared_ptr<schema> schema, const string &columnName, V value) : base_record(schema, columnName)
             {
-                set(idColumnName_, to_string(value));
+                set(idColumnName_, value);
                 refresh();
             }
 
             template<typename V>
             base_record(sqldb *db, const string &tableName, const string &columnName, V value) : base_record(db, tableName, columnName)
             {
-                set(idColumnName_, to_string(value));
+                set(idColumnName_, value);
                 refresh();
             }
 
@@ -280,7 +280,7 @@ namespace arg3
 
                 auto result = query.execute();
 
-                if (!result.is_valid())
+                if (!result.next())
                     return false;
 
                 init(*result);

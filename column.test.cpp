@@ -21,13 +21,6 @@ Context(column_test)
         testdb.teardown();
     }
 
-    Spec(defaultConstructor)
-    {
-        column c;
-
-        Assert::That(c.is_valid(), Equals(false));
-    }
-
     Spec(sqliteValueConstructor)
     {
         sqlite3_stmt *stmt;
@@ -45,13 +38,13 @@ Context(column_test)
 
         sqlite3_value *value = sqlite3_column_value(stmt, 1 );
 
-        column c(value);
+        sqlite3_column c(value);
 
         Assert::That(c.to_string(), Equals("Bob"));
 
         value = sqlite3_column_value(stmt, 0);
 
-        c = column(value);
+        c = sqlite3_column(value);
 
         Assert::That(c.type(), Equals(SQLITE_INTEGER));
     }

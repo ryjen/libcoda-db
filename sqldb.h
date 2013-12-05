@@ -23,7 +23,11 @@ namespace arg3
         class sqldb
         {
         public:
-            sqldb() = default;
+            typedef enum
+            {
+                NONE, INFO, DEBUG, VERBOSE
+            } LogLevel;
+            sqldb();
             sqldb(const sqldb &other) = default;
             sqldb(sqldb &&other) = default;
             sqldb &operator=(const sqldb &other) = default;
@@ -49,47 +53,17 @@ namespace arg3
             virtual schema_factory *schemas() = 0;
 
             virtual shared_ptr<statement> create_statement() = 0;
-        };
 
-        // an instanceof a database
-        class sqlite3_db : public sqldb
-        {
-            friend class base_query;
-            friend class sqlite3_statement;
-        protected:
-            sqlite3 *db_;
+            void set_log_level(LogLevel level);
+
+            void log(LogLevel level, const string &message);
         private:
-            string filename_;
-            schema_factory schema_factory_;
-        public:
-            sqlite3_db(const string &name = "arg3.db");
-            sqlite3_db(const sqlite3_db &other);
-            sqlite3_db(sqlite3_db &&other);
-            sqlite3_db &operator=(const sqlite3_db &other);
-            sqlite3_db &operator=(sqlite3_db && other);
-            virtual ~sqlite3_db();
-
-            bool is_open() const;
-
-            void open();
-            void close();
-
-            long long last_insert_id() const;
-
-            int last_number_of_changes() const;
-
-            string connection_string() const;
-            void set_connection_string(const string &value);
-
-            resultset execute(const string &sql);
-
-            string last_error() const;
-
-            schema_factory *schemas();
-
-            shared_ptr<statement> create_statement();
+            LogLevel logLevel_;
         };
+
     }
 }
+
+#include "sqlite3/sqlite3_db.h"
 
 #endif

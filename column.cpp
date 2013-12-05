@@ -4,140 +4,95 @@ namespace arg3
 {
     namespace db
     {
-        column::column() : value_(NULL)
+        column::column()
+        {}
+
+        column::column(shared_ptr<column_impl> impl) : impl_(impl)
         {
 
         }
-        column::column(sqlite3_value *pValue) : value_(pValue)
+
+        column::column(const column &other) : impl_(other.impl_)
+        {}
+
+        column::column(column &&other) : impl_(std::move(other.impl_))
         {
+            other.impl_ = nullptr;
         }
-
-        column::column(const column &other) : value_(other.value_) {}
-
-        column::column(column &&other) : value_(std::move(other.value_)) {}
-
-        column::~column() {}
 
         column &column::operator=(const column &other)
         {
             if (this != &other)
             {
-                value_ = other.value_;
+                impl_ = other.impl_;
             }
             return *this;
         }
 
-        column &column::operator=(column &&other)
+        column &column::operator=(column && other)
         {
             if (this != &other)
             {
-                value_ = std::move(other.value_);
+                impl_ = std::move(other.impl_);
+                other.impl_ = nullptr;
             }
             return *this;
         }
 
         bool column::is_valid() const
         {
-            return value_ != NULL;
-        }
-
-        void column::assert_value() const throw (no_such_column_exception)
-        {
-            if (value_ == NULL)
-            {
-                throw no_such_column_exception();
-            }
+            return impl_->is_valid();
         }
 
         sql_blob column::to_blob() const
         {
-            assert_value();
-
-            return sql_blob(sqlite3_value_blob(value_), sqlite3_value_bytes(value_));
+            return impl_->to_blob();
         }
 
         double column::to_double() const
         {
-            assert_value();
-
-            return sqlite3_value_double(value_);
+            return impl_->to_double();
         }
 
         int column::to_int() const
         {
+            return impl_->to_int();
+        }
+
+        bool sqlite3_column::to_bool() const
+        {
             assert_value();
 
             return sqlite3_value_int(value_);
         }
-
         bool column::to_bool() const
         {
-            assert_value();
-
-            return sqlite3_value_int(value_);
+            return impl_->to_bool();
         }
 
-        sqlite3_int64 column::to_int64() const
+        int64_t column::to_int64() const
         {
-            assert_value();
+            return impl_->to_int64();
+        }
 
-            return sqlite3_value_int64(value_);
+        const wchar_t *column::to_text16() const
+        {
+            return impl_->to_text16();
         }
 
         const unsigned char *column::to_text() const
         {
-            assert_value();
-
-            return sqlite3_value_text(value_);
+            return impl_->to_text();
         }
 
         string column::to_string() const
         {
-            assert_value();
-
-            const unsigned char *textValue = sqlite3_value_text(value_);
-
-            if (textValue == NULL)
-                return string();
-
-            return reinterpret_cast<const char *>(textValue);
+            return impl_->to_string();
         }
 
         sql_value column::to_value() const
         {
-            assert_value();
-
-            switch(sqlite3_value_type(value_))
-            {
-            case SQLITE_INTEGER:
-                return sql_value(to_int64());
-            case SQLITE_TEXT:
-            default:
-                return sql_value(to_string());
-            case SQLITE_FLOAT:
-                return sql_value(to_double());
-            case SQLITE_BLOB:
-                return sql_value(to_blob());
-            }
-        }
-
-        int column::type() const
-        {
-            assert_value();
-
-            return sqlite3_value_type(value_);
-        }
-
-        int column::numeric_type() const
-        {
-            assert_value();
-
-            return sqlite3_value_numeric_type(value_);
-        }
-
-        column::operator sqlite3_value *() const
-        {
-            return value_;
+            return impl_->to_value();
         }
 
         column::operator string() const

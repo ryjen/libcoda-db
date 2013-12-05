@@ -8,40 +8,6 @@ namespace arg3
 {
     namespace db
     {
-        sqlite3_resultset::sqlite3_resultset(sqlite3_db *db, sqlite3_stmt *stmt) : stmt_(stmt), db_(db), status_(-1)
-        {
-
-        }
-
-        sqlite3_resultset::sqlite3_resultset(const sqlite3_resultset &other) : stmt_(other.stmt_), status_(other.status_)
-        {}
-
-        sqlite3_resultset::sqlite3_resultset(sqlite3_resultset &&other) : stmt_(std::move(other.stmt_)), status_(other.status_)
-        {}
-
-        sqlite3_resultset::~sqlite3_resultset() {}
-
-        sqlite3_resultset &sqlite3_resultset::operator=(const sqlite3_resultset &other)
-        {
-            if (this != &other)
-            {
-                stmt_ = other.stmt_;
-                status_ = other.status_;
-            }
-
-            return *this;
-        }
-
-        sqlite3_resultset &sqlite3_resultset::operator=(sqlite3_resultset && other)
-        {
-            if (this != &other)
-            {
-                stmt_ = std::move(other.stmt_);
-                status_ = other.status_;
-            }
-
-            return *this;
-        }
 
         resultset::resultset(shared_ptr<resultset_impl> impl) : impl_(impl)
         {}
@@ -86,19 +52,9 @@ namespace arg3
             return impl_->is_valid();
         }
 
-        bool sqlite3_resultset::is_valid() const
-        {
-            return stmt_ != NULL;
-        }
-
         row resultset::current_row()
         {
             return impl_->current_row();
-        }
-
-        row sqlite3_resultset::current_row()
-        {
-            return row(make_shared<sqlite3_row>(db_, stmt_));
         }
 
         bool resultset::next()
@@ -106,25 +62,10 @@ namespace arg3
             return impl_->next();
         }
 
-        bool sqlite3_resultset::next()
-        {
-            if (status_ == SQLITE_DONE)
-                return false;
-
-            status_ = sqlite3_step(stmt_);
-
-            return status_ == SQLITE_ROW || status_ == SQLITE_DONE;
-        }
 
         void resultset::reset()
         {
             impl_->reset();
-        }
-
-        void sqlite3_resultset::reset()
-        {
-            if (sqlite3_reset(stmt_) != SQLITE_OK)
-                throw database_exception(db_->last_error());
         }
 
         resultset::iterator resultset::begin()
