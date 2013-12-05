@@ -19,7 +19,7 @@ Records
 =======
 
 User Record
-===========
+-----------
 ```c++
 sqlite3_db testdb("test.db");
 
@@ -50,7 +50,7 @@ public:
 ```
 
 Query records
-=============
+-------------
 ```c++
     /* get all users */
  	auto results = user().find_all();
@@ -61,7 +61,7 @@ Query records
     }
 ````
 Save a record
-=============
+-------------
 ```c++
     /* save a user */
     user obj;
@@ -74,7 +74,7 @@ Save a record
 ```
 
 Delete a record
-===============
+---------------
 ```c++
     user obj(1); // id constructor
 
@@ -85,8 +85,8 @@ Delete a record
 Basic Queries
 =============
 
-Modify Queries
-==============
+Modify Query
+--------------
 ```c++
 /* upsert a user */
 modify_query query(&testdb, "users", { "id", "first_name", "last_name" });
@@ -98,7 +98,7 @@ if(!query.execute())
 ```
 
 Select Query
-============
+------------
 ```c++
 /* select some users */
 select_query query(testdb, "users");
