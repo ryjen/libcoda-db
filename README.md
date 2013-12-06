@@ -15,6 +15,26 @@ premake4 gmake/vs2010
 make
 ```
 
+Model
+=====
+<pre>
+/* database specific */
+<b>sqldb</b>                                 - implementation of a specific database
+  |- <b>statement</b>                        - implementation of a prepared statement
+        |- <b>resultset</b>                  - results of a statement
+              |- <b>row</b>                  - an entry of a table
+                   |- <b>column</b>          - a value continer
+
+/* implementations based on above*/
+<b>schema</b>                                - a definition of a table
+<b>schema_factory</b>                        - cached schemas
+<b>base_record</b>                           - the active record (ish) implementation
+<b>select_query</b>                          - builds select queries
+<b>modify_query</b>                          - builds update/insert queries
+<b>delete_query</b>                          - builds delete queries
+<b>sql_value</b>                             - storage and conversion for basic sql types
+</pre>
+
 Records
 =======
 
