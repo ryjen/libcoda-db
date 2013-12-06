@@ -12,6 +12,9 @@ namespace arg3
 {
     namespace db
     {
+        /*!
+         * Implementation spefic interface for a row
+         */
         class row_impl
         {
         public:
@@ -32,6 +35,9 @@ namespace arg3
 
         };
 
+        /*!
+         * iterator for columns in a row
+         */
         template<class ValueType, class NonConst, class RowType>
         class row_iterator : public std::iterator<std::random_access_iterator_tag, ValueType>
         {
@@ -196,6 +202,10 @@ namespace arg3
             }
         };
 
+        /*!
+         * represent a row in a table
+         * implementation is specific to a type of database
+         */
         class row
         {
         private:

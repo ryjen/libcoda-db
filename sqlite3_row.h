@@ -10,6 +10,9 @@ namespace arg3
 
         class sqlite3_db;
 
+        /*!
+         *  a sqlite specific implementation of a row
+         */
         class sqlite3_row : public row_impl
         {
             friend class sqlite3_resultset;

@@ -8,23 +8,9 @@ namespace arg3
 
     namespace db
     {
-        string column_definition::name() const
-        {
-            return name_;
-        }
-        bool column_definition::pk() const
-        {
-            return pk_;
-        }
-
-        int column_definition::type() const
-        {
-            return type_;
-        }
-
         ostream &operator<<(ostream &os, const column_definition &def)
         {
-            os << def.name();
+            os << def.name;
             return os;
         }
 
@@ -83,29 +69,29 @@ namespace arg3
                 column_definition def;
 
                 // column name
-                def.name_ = row["name"].to_string();
+                def.name = row["name"].to_string();
 
                 // primary key check
-                def.pk_ = row["pk"].to_bool();
+                def.pk = row["pk"].to_bool();
 
                 // find type
                 string type = row["type"].to_string();
 
                 if (type.find("integer") != string::npos)
                 {
-                    def.type_ = SQLITE_INTEGER;
+                    def.type = SQLITE_INTEGER;
                 }
                 else if (type.find("real") != string::npos)
                 {
-                    def.type_ = SQLITE_FLOAT;
+                    def.type = SQLITE_FLOAT;
                 }
                 else if (type.find("blob") != string::npos)
                 {
-                    def.type_ = SQLITE_BLOB;
+                    def.type = SQLITE_BLOB;
                 }
                 else
                 {
-                    def.type_ = SQLITE_TEXT;
+                    def.type = SQLITE_TEXT;
                 }
 
                 columns_.push_back(def);
@@ -123,7 +109,7 @@ namespace arg3
 
             for (auto & c : columns_)
             {
-                names.push_back(c.name());
+                names.push_back(c.name);
             }
             return names;
         }
@@ -134,8 +120,8 @@ namespace arg3
 
             for (auto & c : columns_)
             {
-                if (c.pk())
-                    names.push_back(c.name());
+                if (c.pk)
+                    names.push_back(c.name);
             }
 
             return names;

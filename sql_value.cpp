@@ -96,6 +96,16 @@ namespace arg3
             apply_visitor(arg3::db::ostream_sql_value_visitor(os), value_);
             return os.str();
         }
+
+        void sql_value::bind(bindable *obj, int index) const
+        {
+            apply_visitor(sql_binding_visitor(obj, index), value_);
+        }
+        bool sql_value::operator==(const sql_null_t &other) const
+        {
+            return apply_visitor(sql_exists_visitor<sql_null_t>(), value_);
+        }
+
         sql_value::operator std::string() const
         {
             return to_string();

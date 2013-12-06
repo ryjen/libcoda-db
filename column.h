@@ -16,6 +16,9 @@ namespace arg3
 {
     namespace db
     {
+        /*!
+         * an interface for a database specific implementation of a column
+         */
         class column_impl
         {
         public:
@@ -42,6 +45,9 @@ namespace arg3
 
         };
 
+        /*!
+         * a column holds a value for a row
+         */
         class column
         {
             template<class A, class B, class C> friend class row_iterator;

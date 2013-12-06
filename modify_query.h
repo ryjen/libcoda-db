@@ -11,7 +11,9 @@ namespace arg3
 {
     namespace db
     {
-
+        /*!
+         * a query to modify a table in some what (update or insert)
+         */
         class modify_query : public base_query
         {
         public:

@@ -7,7 +7,9 @@ namespace arg3
 {
     namespace db
     {
-        // an instanceof a database
+        /*!
+         * a sqlite specific implementation of a database
+         */
         class sqlite3_db : public sqldb
         {
             friend class base_query;

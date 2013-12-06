@@ -8,6 +8,9 @@ namespace arg3
 {
     namespace db
     {
+        /*!
+         * a query to delete from a table
+         */
         class delete_query : public base_query
         {
         public:

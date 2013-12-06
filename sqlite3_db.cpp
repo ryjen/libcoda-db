@@ -123,7 +123,7 @@ namespace arg3
 
         shared_ptr<statement> sqlite3_db::create_statement()
         {
-            return make_shared<statement>(make_shared<sqlite3_statement>(this));
+            return make_shared<sqlite3_statement>(this);
         }
     }
 }

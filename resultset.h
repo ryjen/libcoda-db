@@ -15,6 +15,9 @@ namespace arg3
         class resultset;
         class sqlite3_db;
 
+        /*!
+         * an interface for a database specific set of results for a query
+         */
         class resultset_impl
         {
         protected:
@@ -36,6 +39,9 @@ namespace arg3
             virtual void reset() = 0;
         };
 
+        /*!
+         * an iterator for a rows in a set of results
+         */
         class resultset_iterator : public std::iterator<std::input_iterator_tag, row>
         {
         private:
@@ -86,6 +92,9 @@ namespace arg3
 
         };
 
+        /*!
+         * the results (a set of rows) for a query
+         */
         class resultset
         {
         private:

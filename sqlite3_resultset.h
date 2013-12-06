@@ -8,6 +8,9 @@ namespace arg3
     namespace db
     {
 
+        /*!
+         * a sqlite specific implmentation of a result set
+         */
         class sqlite3_resultset : public resultset_impl
         {
             friend class select_query;

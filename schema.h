@@ -13,25 +13,22 @@ namespace arg3
     {
         class sqldb;
 
-        // definition of a column
-        class column_definition
+        /*!
+         * Definition of a column in a schema
+         */
+        struct column_definition
         {
-            friend class schema;
-        private:
-            string name_;
-            bool pk_;
-            int type_;
-        public:
-            string name() const;
-
-            bool pk() const;
-
-            int type() const;
+            string name;
+            bool pk;
+            int type;
         };
 
         ostream &operator<<(ostream &os, const column_definition &def);
 
-        // definition of a table
+        /*!
+         * Schema is a definition of a table in a database
+         * Allows for quick access to column names and other information
+         */
         class schema
         {
         private:

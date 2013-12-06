@@ -8,6 +8,9 @@ namespace arg3
     namespace db
     {
 
+        /*!
+         * a sqlite specific implementation of a column
+         */
         class sqlite3_column : public column_impl
         {
         private:

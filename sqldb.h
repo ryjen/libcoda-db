@@ -20,6 +20,9 @@ namespace arg3
     {
         class resultset;
 
+        /*!
+         *  a base class for a specific implementation of a database
+         */
         class sqldb
         {
         public:
@@ -27,6 +30,7 @@ namespace arg3
             {
                 NONE, INFO, DEBUG, VERBOSE
             } LogLevel;
+
             sqldb();
             sqldb(const sqldb &other) = default;
             sqldb(sqldb &&other) = default;

@@ -14,6 +14,11 @@ namespace arg3
     {
         class sqldb;
 
+        /*!
+         *  Schema factory handles caching of table schemas.
+         *  Caching the schemas reduces the amount of db reads when working
+         *  with records.
+         */
         class schema_factory
         {
         private:

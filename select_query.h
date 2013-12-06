@@ -14,6 +14,9 @@ namespace arg3
     {
         class sqldb;
 
+        /*!
+         * a query to select values from a table
+         */
         class select_query : public base_query
         {
         public:

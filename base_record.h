@@ -153,7 +153,7 @@ namespace arg3
                 // bind the object values
                 for (auto & column : schema()->columns())
                 {
-                    auto value = values_[column.name()];
+                    auto value = values_[column.name];
 
                     query.bind_value(index, value);
 

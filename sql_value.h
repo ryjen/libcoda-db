@@ -13,6 +13,9 @@ namespace arg3
         class base_query;
         class bindable;
 
+        /*!
+         * a wrapper for a blob sql type
+         */
         class sql_blob
         {
         public:
@@ -30,27 +33,95 @@ namespace arg3
             bool operator==(const sql_blob &other) const;
         };
 
+        /*!
+         * a quick and dirty representation of a sql null type
+         */
         typedef struct {} sql_null_t;
 
+        /*!
+         * the instance of a null type
+         * use this to check for sql null values
+         */
         extern const sql_null_t sql_null;
 
+        /*!
+         * a class to store and convert between the fundamental sql data types
+         */
+        class sql_value
+        {
+            friend std::ostream &operator<<(std::ostream &out, const sql_value &value);
+            friend bool operator==(const std::string &other, const sql_value &value);
+            friend bool operator==(int other, const sql_value &value);
+            friend bool operator==(int64_t other, const sql_value &value);
+            friend bool operator==(double other, const sql_value &value);
+            friend bool operator==(const sql_null_t &other, const sql_value &value);
+            friend bool operator==(const sql_blob &other, const sql_value &value);
+        private:
+            // nifty variable template class
+            thenewcpp::Variant<sql_null_t, int, int64_t, double, std::string, sql_blob> value_;
+        public:
+            sql_value() : value_(sql_null) {}
+
+            template<typename T>
+            sql_value(const T &value) : value_(value) {}
+
+            operator std::string() const;
+
+            operator int() const;
+
+            operator int64_t() const;
+
+            operator double() const;
+
+            operator sql_blob() const;
+
+            std::string to_string() const;
+
+            void bind(bindable *obj, int index) const;
+
+            bool operator==(const sql_value &other) const
+            {
+                return other.to_string() == to_string();
+            }
+
+            /* faster check */
+            bool operator==(const sql_null_t &other) const;
+
+            template<typename T>
+            bool operator==(const T &other) const;
+        };
+
+        std::ostream &operator<<(std::ostream &out, const sql_value &value);
+
+        std::ostream &operator<<(std::ostream &out, const sql_null_t &value);
+
+        inline bool operator==(const sql_null_t &a, const sql_null_t &b)
+        {
+            return true;
+        }
     }
 }
 
+
 namespace std
 {
+    /*
+     * some standard to_string functions
+     */
     string to_string(const arg3::db::sql_null_t &value);
     string to_string(const arg3::db::sql_blob &value);
     string to_string(const std::string &value);
+    string to_string(const arg3::db::sql_value &value);
 }
+
 
 namespace arg3
 {
-
     namespace db
     {
-        //typedef thenewcpp::Variant<sql_null_t, int, int64_t, double, std::string, sql_blob> sql_value;
-
+        /*!
+         * visits a sql_value checking for the right type
+         */
         template<typename T>
         class sql_exists_visitor
         {
@@ -71,6 +142,9 @@ namespace arg3
             }
         };
 
+        /*!
+         * visits a sql value to bind another value
+         */
         class sql_binding_visitor
         {
             bindable *obj_;
@@ -88,6 +162,9 @@ namespace arg3
             void operator()(const sql_null_t &value) const;
         };
 
+        /*!
+         * visits a sql value to test equality with another value
+         */
         template<typename T>
         class sql_equality_visitor
         {
@@ -109,67 +186,9 @@ namespace arg3
             }
         };
 
-        class sql_value
-        {
-            friend std::ostream &operator<<(std::ostream &out, const sql_value &value);
-            friend bool operator==(const std::string &other, const sql_value &value);
-            friend bool operator==(int other, const sql_value &value);
-            friend bool operator==(int64_t other, const sql_value &value);
-            friend bool operator==(double other, const sql_value &value);
-            friend bool operator==(const sql_null_t &other, const sql_value &value);
-            friend bool operator==(const sql_blob &other, const sql_value &value);
-        private:
-            thenewcpp::Variant<sql_null_t, int, int64_t, double, std::string, sql_blob> value_;
-        public:
-            sql_value() : value_(sql_null) {}
-
-            template<typename T>
-            sql_value(const T &value) : value_(value) {}
-
-            operator std::string() const;
-
-            operator int() const;
-
-            operator int64_t() const;
-
-            operator double() const;
-
-            operator sql_blob() const;
-
-            std::string to_string() const;
-
-            void bind(bindable *obj, int index) const
-            {
-                apply_visitor(sql_binding_visitor(obj, index), value_);
-            }
-
-            bool operator==(const sql_value &other) const
-            {
-                return other.to_string() == to_string();
-            }
-
-            /* faster check */
-            bool operator==(const sql_null_t &other) const
-            {
-                return apply_visitor(sql_exists_visitor<sql_null_t>(), value_);
-            }
-
-            template<typename T>
-            bool operator==(const T &other) const
-            {
-                return thenewcpp::apply_visitor(sql_equality_visitor<T>(other), value_);
-            }
-        };
-
-        std::ostream &operator<<(std::ostream &out, const sql_value &value);
-
-        std::ostream &operator<<(std::ostream &out, const sql_null_t &value);
-
-        inline bool operator==(const sql_null_t &a, const sql_null_t &b)
-        {
-            return true;
-        }
-
+        /*!
+         * visits a sql value to output to a stream
+         */
         class ostream_sql_value_visitor
         {
             std::ostream &out_;
@@ -185,20 +204,6 @@ namespace arg3
                 out_ << value;
             }
         };
-
-    }
-
-}
-
-namespace std
-{
-    string to_string(const arg3::db::sql_value &value);
-}
-
-namespace arg3
-{
-    namespace db
-    {
         inline bool operator==(const std::string &other, const sql_value &value)
         {
             return thenewcpp::apply_visitor(sql_equality_visitor<std::string>(other), value.value_);
@@ -228,6 +233,14 @@ namespace arg3
         {
             return thenewcpp::apply_visitor(sql_equality_visitor<sql_blob>(other), value.value_);
         }
+
+        template<typename T>
+        bool sql_value::operator==(const T &other) const
+        {
+            return thenewcpp::apply_visitor(sql_equality_visitor<T>(other), value_);
+        }
     }
+
 }
+
 #endif

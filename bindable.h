@@ -7,6 +7,9 @@ namespace arg3
 {
     namespace db
     {
+        /*!
+         * represents something that can have a sql value binded to it
+         */
         class bindable
         {
         public:

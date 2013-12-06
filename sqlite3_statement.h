@@ -10,7 +10,10 @@ namespace arg3
 
         class sqlite3_db;
 
-        class sqlite3_statement : public statement_impl
+        /*!
+         * a sqlite specific implementation of a statement
+         */
+        class sqlite3_statement : public statement
         {
         private:
             sqlite3_db *db_;
