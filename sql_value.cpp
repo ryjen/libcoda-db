@@ -103,17 +103,38 @@ namespace arg3
 
         sql_value::operator int() const
         {
-            return std::stod(to_string());
+            try
+            {
+                return std::stoi(to_string());
+            }
+            catch (const std::exception &e)
+            {
+                return 0;
+            }
         }
 
         sql_value::operator int64_t() const
         {
-            return std::stoll(to_string());
+            try
+            {
+                return std::stoll(to_string());
+            }
+            catch (const std::exception &e)
+            {
+                return 0;
+            }
         }
 
         sql_value::operator double() const
         {
-            return std::stod(to_string());
+            try
+            {
+                return std::stod(to_string());
+            }
+            catch (const std::exception &e)
+            {
+                return 0;
+            }
         }
 
         sql_value::operator sql_blob() const
