@@ -43,7 +43,7 @@ User Record
 ```c++
 sqlite3_db testdb("test.db");
 
-class user : public base_record
+class user : public base_record<user>
 {
     constexpr static const char *ID_COLUMN = "id";
     constexpr static const char *TABLE_NAME = "users";
