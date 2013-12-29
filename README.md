@@ -19,13 +19,13 @@ Model
 =====
 <pre>
 /* database specific */
-<b>sqldb</b>                                 - implementation of a specific database
-  |- <b>statement</b>                        - implementation of a prepared statement
+<b>sqldb</b>                                 - interface for a specific database
+  |- <b>statement</b>                        - interface for a prepared statement
         |- <b>resultset</b>                  - results of a statement
-              |- <b>row</b>                  - an entry of a table
-                   |- <b>column</b>          - a value continer
+              |- <b>row</b>                  - an single result
+                   |- <b>column</b>          - a field in a row containing a value
 
-/* implementations based on above*/
+/* implementations using the above*/
 <b>schema</b>                                - a definition of a table
 <b>schema_factory</b>                        - cached schemas
 <b>base_record</b>                           - the active record (ish) implementation
@@ -42,11 +42,12 @@ User Record
 -----------
 ```c++
 sqlite3_db testdb("test.db");
+//mysql_db testdb("database", "user", "password", "localhost", 3306);
 
 class user : public base_record<user>
 {
-    constexpr static const char *ID_COLUMN = "id";
-    constexpr static const char *TABLE_NAME = "users";
+    constexpr static const char *const ID_COLUMN = "id";
+    constexpr static const char *const TABLE_NAME = "users";
 public:
     /* default constructor */
     user() : base_record(&testdb, TABLE_NAME, ID_COLUMN) {}
@@ -75,9 +76,16 @@ Query records
     /* get all users */
  	auto results = user().find_all();
 
-    for (auto &obj : results)
+    for (auto &user : results)
     {
-        cout << "Loaded " << obj.to_string() << endl;
+        cout << "User: " << user.to_string() << endl;
+    }
+
+    results = user().find_by("first_name", "Joe");
+
+    for (auto &user : results)
+    {
+        cout << "Found user: " << user.to_string() << endl;
     }
 ````
 Save a record
@@ -121,7 +129,7 @@ Select Query
 ------------
 ```c++
 /* select some users */
-select_query query(testdb, "users");
+select_query query(&testdb, "users");
 
 query.where("last_name = ?");
 
@@ -129,11 +137,17 @@ query.bind(1, "Jenkins");
 
 auto results = query.execute();
 
-user jenkins(*results);
+for(auto &row: results)
+{
+    string fName = row["first_name"];
+    ...
+}
 ```
 
 TODO
 ====
 
 * More tests
+* More database implementations
+
 
