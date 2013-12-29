@@ -9,6 +9,8 @@ Building
 
 *OSX:*
 
+[Download](http://brew.sh) and install homebrew.
+
 ```bash
 brew install premake
 
@@ -19,11 +21,9 @@ make
 
 *Windows:*
 
-[Download](http://industriousone.com/premake/download) premake
-
-run <code>premake4 vs2010</code>
-
-Open the generated project file in Visual Studio.
+- [Download](http://industriousone.com/premake/download) premake.
+- run <code>premake4 vs2010</code>.
+- Open the generated project file in Visual Studio.
 
 
 Model
