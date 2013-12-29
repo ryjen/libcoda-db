@@ -26,6 +26,8 @@ namespace arg3
             virtual bool is_valid() const = 0;
             virtual resultset results() = 0;
             virtual bool result() = 0;
+            virtual int last_number_of_changes() = 0;
+            virtual string last_error() = 0;
         };
     }
 }

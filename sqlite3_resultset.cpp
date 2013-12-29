@@ -24,26 +24,20 @@ namespace arg3
 
         sqlite3_resultset &sqlite3_resultset::operator=(const sqlite3_resultset &other)
         {
-            if (this != &other)
-            {
-                stmt_ = other.stmt_;
-                db_ = other.db_;
-                status_ = other.status_;
-            }
+            stmt_ = other.stmt_;
+            db_ = other.db_;
+            status_ = other.status_;
 
             return *this;
         }
 
         sqlite3_resultset &sqlite3_resultset::operator=(sqlite3_resultset && other)
         {
-            if (this != &other)
-            {
-                stmt_ = other.stmt_;
-                db_ = other.db_;
-                status_ = other.status_;
-                other.db_ = NULL;
-                other.stmt_ = NULL;
-            }
+            stmt_ = other.stmt_;
+            db_ = other.db_;
+            status_ = other.status_;
+            other.db_ = NULL;
+            other.stmt_ = NULL;
 
             return *this;
         }
@@ -51,6 +45,11 @@ namespace arg3
         bool sqlite3_resultset::is_valid() const
         {
             return stmt_ != NULL;
+        }
+
+        size_t sqlite3_resultset::column_count() const
+        {
+            return sqlite3_column_count(stmt_);
         }
 
         bool sqlite3_resultset::next()

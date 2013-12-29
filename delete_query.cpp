@@ -25,21 +25,17 @@ namespace arg3
 
         delete_query &delete_query::operator=(const delete_query &other)
         {
-            if (this != &other)
-            {
-                base_query::operator=(other);
-                where_ = other.where_;
-            }
+            base_query::operator=(other);
+            where_ = other.where_;
+
             return *this;
         }
 
         delete_query &delete_query::operator=(delete_query && other)
         {
-            if (this != &other)
-            {
-                base_query::operator=(std::move(other));
-                where_ = std::move(other.where_);
-            }
+            base_query::operator=(std::move(other));
+            where_ = std::move(other.where_);
+
             return *this;
         }
 
@@ -71,11 +67,11 @@ namespace arg3
             return buf.str();
         }
 
-        bool delete_query::execute(bool batch)
+        int delete_query::execute(bool batch)
         {
             prepare();
 
-            bool res = stmt_->result();
+            int res = stmt_->result() ? stmt_->last_number_of_changes() : 0;
 
             if (!batch)
             {

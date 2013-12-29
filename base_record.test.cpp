@@ -12,13 +12,13 @@ Context(base_record_test)
 {
     static void SetUpContext()
     {
-        testdb.setup();
+        setup_testdb();
 
     }
 
     static void TearDownContext()
     {
-        testdb.teardown();
+        teardown_testdb();
     }
 
     Spec(save_test)
@@ -30,6 +30,8 @@ Context(base_record_test)
             user1.set("last_name", "Jennings");
 
             Assert::That(user1.save(), Equals(true));
+
+            user1.set_id(testdb->last_insert_id());
 
             user1.refresh(); // load values back up from db
 
@@ -47,7 +49,7 @@ Context(base_record_test)
         }
         catch (const database_exception &e)
         {
-            cerr << "Error1: " << testdb.last_error() << endl;
+            cerr << "Error1: " << testdb->last_error() << endl;
             throw e;
         }
     }
@@ -63,11 +65,13 @@ Context(base_record_test)
 
             Assert::That(u1.save(), Equals(true));
 
-            auto u2 = user().find_by_id(1);
+            auto lastId = testdb->last_insert_id();
+
+            auto u2 = user().find_by_id(lastId);
 
             Assert::That(u2->is_valid(), Equals(true));
 
-            Assert::That(u2->id(), Equals(1));
+            Assert::That(u2->id(), Equals(lastId));
         }
         catch (const std::exception &e)
         {

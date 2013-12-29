@@ -18,11 +18,9 @@ namespace arg3
 
         schema_factory &schema_factory::operator=(const schema_factory &other)
         {
-            if (this != &other)
-            {
-                schema_cache_ = other.schema_cache_;
-                db_ = other.db_;
-            }
+            schema_cache_ = other.schema_cache_;
+            db_ = other.db_;
+
             return *this;
         }
 
@@ -42,13 +40,11 @@ namespace arg3
 
         schema_factory &schema_factory::operator=(schema_factory && other)
         {
-            if (this != &other)
-            {
-                schema_cache_ = std::move(other.schema_cache_);
-                db_ = std::move(other.db_);
+            schema_cache_ = std::move(other.schema_cache_);
+            db_ = std::move(other.db_);
 
-                other.db_ = NULL;
-            }
+            other.db_ = NULL;
+
             return *this;
         }
 

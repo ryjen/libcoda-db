@@ -12,7 +12,7 @@ Context(select_query_test)
 {
     static void SetUpContext()
     {
-        testdb.setup();
+        setup_testdb();
 
         user user1;
 
@@ -35,15 +35,15 @@ Context(select_query_test)
 
     static void TearDownContext()
     {
-        testdb.teardown();
+        teardown_testdb();
     }
 
     Spec(where_test)
     {
+        auto query = select_query(testdb, "users");
+
         try
         {
-            auto query = select_query(&testdb, "users");
-
             query.where("first_name=? OR last_name=?");
 
             query.bind(1, "Bryan");
@@ -61,7 +61,7 @@ Context(select_query_test)
         }
         catch (const database_exception &e)
         {
-            cout << testdb.last_error() << endl;
+            cout << query.last_error() << endl;
             throw e;
         }
     }
@@ -70,7 +70,7 @@ Context(select_query_test)
     {
         vector<string> columns = { "first_name"};
 
-        auto query = select_query(&testdb, "users", columns);
+        auto query = select_query(testdb, "users", columns);
 
         query.where("first_name=?");
 
@@ -84,7 +84,7 @@ Context(select_query_test)
 
     Spec(binding_test)
     {
-        select_query query(&testdb, "users");
+        select_query query(testdb, "users");
 
         // sneaky, bind first, should be able to handle it
         query.bind(1, "Bryan");

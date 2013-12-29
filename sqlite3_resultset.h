@@ -8,6 +8,8 @@ namespace arg3
     namespace db
     {
 
+        class sqlite3_db;
+
         /*!
          * a sqlite specific implmentation of a result set
          */
@@ -41,6 +43,8 @@ namespace arg3
             void reset();
 
             bool next();
+
+            size_t column_count() const;
         };
     }
 }

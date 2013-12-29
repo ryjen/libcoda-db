@@ -35,7 +35,7 @@ namespace arg3
 
             bool to_bool() const;
 
-            sqlite3_int64 to_int64() const;
+            int64_t to_int64() const;
 
             const unsigned char *to_text() const;
 
@@ -47,10 +47,9 @@ namespace arg3
 
             int type() const;
 
-            int numeric_type() const;
-
             operator sqlite3_value *() const;
 
+            int numeric_type() const;
         };
 
     }

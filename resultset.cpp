@@ -26,20 +26,16 @@ namespace arg3
 
         resultset &resultset::operator=(const resultset &other)
         {
-            if (this != &other)
-            {
-                impl_ = other.impl_;
-            }
+            impl_ = other.impl_;
+
             return *this;
         }
 
         resultset &resultset::operator=(resultset && other)
         {
-            if (this != &other)
-            {
-                impl_ = std::move(other.impl_);
-                other.impl_ = nullptr;
-            }
+            impl_ = std::move(other.impl_);
+            other.impl_ = nullptr;
+
             return *this;
         }
         row resultset::operator*()
@@ -66,6 +62,11 @@ namespace arg3
         void resultset::reset()
         {
             impl_->reset();
+        }
+
+        size_t resultset::column_count() const
+        {
+            return impl_->column_count();
         }
 
         resultset::iterator resultset::begin()
@@ -101,24 +102,20 @@ namespace arg3
 
         resultset_iterator &resultset_iterator::operator=(const resultset_iterator &other)
         {
-            if (this != &other)
-            {
-                rs_ = other.rs_;
-                pos_ = other.pos_;
-                value_ = other.value_;
-            }
+            rs_ = other.rs_;
+            pos_ = other.pos_;
+            value_ = other.value_;
+
             return *this;
         }
 
         resultset_iterator &resultset_iterator::operator=(resultset_iterator && other)
         {
-            if (this != &other)
-            {
-                rs_ = std::move(other.rs_);
-                pos_ = other.pos_;
-                value_ = std::move(other.value_);
-                other.rs_ = nullptr;
-            }
+            rs_ = std::move(other.rs_);
+            pos_ = other.pos_;
+            value_ = std::move(other.value_);
+            other.rs_ = nullptr;
+
             return *this;
         }
 

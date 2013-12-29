@@ -23,9 +23,18 @@ namespace arg3
             return stmt_ != NULL;
         }
 
+        int sqlite3_statement::last_number_of_changes()
+        {
+            return db_->last_number_of_changes();
+        }
+
+        string sqlite3_statement::last_error()
+        {
+            return db_->last_error();
+        }
+
         sqlite3_statement &sqlite3_statement::bind(size_t index, int value)
         {
-
             if (sqlite3_bind_int(stmt_, index, value) != SQLITE_OK)
                 throw binding_error(db_->last_error());
             return *this;
@@ -63,7 +72,6 @@ namespace arg3
 
         sqlite3_statement &sqlite3_statement::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
         {
-
             if (sqlite3_bind_blob(stmt_, index, data, size, pFree) != SQLITE_OK)
                 throw binding_error(db_->last_error());
             return *this;
@@ -71,9 +79,7 @@ namespace arg3
 
         sqlite3_statement &sqlite3_statement::bind_value(size_t index, const sql_value &value)
         {
-
             value.bind(this, index);
-
             return *this;
         }
 

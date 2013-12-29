@@ -26,23 +26,19 @@ namespace arg3
 
         schema &schema::operator=(const schema &other)
         {
-            if (this != &other)
-            {
-                columns_ = other.columns_;
-                db_ = other.db_;
-                tableName_ = other.tableName_;
-            }
+            columns_ = other.columns_;
+            db_ = other.db_;
+            tableName_ = other.tableName_;
+
             return *this;
         }
 
         schema &schema::operator=(schema && other)
         {
-            if (this != &other)
-            {
-                columns_ = std::move(other.columns_);
-                db_ = std::move(other.db_);
-                tableName_ = std::move(other.tableName_);
-            }
+            columns_ = std::move(other.columns_);
+            db_ = std::move(other.db_);
+            tableName_ = std::move(other.tableName_);
+
             return *this;
         }
 
@@ -61,41 +57,8 @@ namespace arg3
 
             db_ = db;
 
-            // get table information
-            auto rs = db->execute( "pragma table_info(" + tableName_ + ")" );
+            db_->query_schema(tableName_, columns_);
 
-            for (auto & row : rs)
-            {
-                column_definition def;
-
-                // column name
-                def.name = row["name"].to_string();
-
-                // primary key check
-                def.pk = row["pk"].to_bool();
-
-                // find type
-                string type = row["type"].to_string();
-
-                if (type.find("integer") != string::npos)
-                {
-                    def.type = SQLITE_INTEGER;
-                }
-                else if (type.find("real") != string::npos)
-                {
-                    def.type = SQLITE_FLOAT;
-                }
-                else if (type.find("blob") != string::npos)
-                {
-                    def.type = SQLITE_BLOB;
-                }
-                else
-                {
-                    def.type = SQLITE_TEXT;
-                }
-
-                columns_.push_back(def);
-            }
         }
 
         vector<column_definition> schema::columns() const

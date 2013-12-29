@@ -1,9 +1,15 @@
 
 #include <igloo/igloo.h>
+#include "db.test.h"
 
 using namespace igloo;
 
-int main()
+int main(int argc, const char *argv[])
 {
-    return TestRunner::RunAllTests();
+#ifdef TEST_SQLITE
+    testdb = &testdb1;
+#else
+    testdb = &testdb2;
+#endif
+    return TestRunner::RunAllTests(argc, argv);
 }

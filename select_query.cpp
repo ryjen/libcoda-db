@@ -35,31 +35,27 @@ namespace arg3
 
         select_query &select_query::operator=(const select_query &other)
         {
-            if (this != &other)
-            {
-                base_query::operator=(other);
-                where_ = other.where_;
-                limit_ = other.limit_;
-                orderBy_ = other.orderBy_;
-                groupBy_ = other.groupBy_;
+            base_query::operator=(other);
+            where_ = other.where_;
+            limit_ = other.limit_;
+            orderBy_ = other.orderBy_;
+            groupBy_ = other.groupBy_;
 
-                columns_ = other.columns_;
-            }
+            columns_ = other.columns_;
+
             return *this;
         }
 
         select_query &select_query::operator=(select_query && other)
         {
-            if (this != &other)
-            {
-                base_query::operator=(std::move(other));
-                where_ = std::move(other.where_);
-                limit_ = std::move(other.limit_);
-                orderBy_ = std::move(other.orderBy_);
-                groupBy_ = std::move(other.groupBy_);
+            base_query::operator=(std::move(other));
+            where_ = std::move(other.where_);
+            limit_ = std::move(other.limit_);
+            orderBy_ = std::move(other.orderBy_);
+            groupBy_ = std::move(other.groupBy_);
 
-                columns_ = std::move(other.columns_);
-            }
+            columns_ = std::move(other.columns_);
+
             return *this;
         }
 

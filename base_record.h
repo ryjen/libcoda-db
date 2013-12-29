@@ -88,25 +88,21 @@ namespace arg3
 
             base_record &operator=(const base_record &other)
             {
-                if (this != &other)
-                {
-                    values_ = other.values_;
-                    schema_ = other.schema_;
-                    idColumnName_ = other.idColumnName_;
-                }
+                values_ = other.values_;
+                schema_ = other.schema_;
+                idColumnName_ = other.idColumnName_;
+
                 return *this;
             }
 
             base_record &operator=(base_record && other)
             {
-                if (this != &other)
-                {
-                    values_ = std::move(other.values_);
-                    schema_ = std::move(other.schema_);
-                    idColumnName_ = std::move(other.idColumnName_);
+                values_ = std::move(other.values_);
+                schema_ = std::move(other.schema_);
+                idColumnName_ = std::move(other.idColumnName_);
 
-                    other.schema_ = nullptr;
-                }
+                other.schema_ = nullptr;
+
                 return *this;
             }
 
@@ -153,7 +149,7 @@ namespace arg3
                 // bind the object values
                 for (auto & column : schema()->columns())
                 {
-                    auto value = values_[column.name];
+                    auto value = get(column.name);
 
                     query.bind_value(index, value);
 
@@ -180,7 +176,8 @@ namespace arg3
              */
             bool has(const string &name) const
             {
-                return values_.count(name) > 0;
+
+                return values_.size() > 0 && values_.count(name) > 0;
             }
 
             /*!

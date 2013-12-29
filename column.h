@@ -33,13 +33,9 @@ namespace arg3
 
             virtual bool to_bool() const = 0;
 
-            virtual sqlite3_int64 to_int64() const = 0;
-
-            virtual const unsigned char *to_text() const = 0;
+            virtual int64_t to_int64() const = 0;
 
             virtual string to_string() const = 0;
-
-            virtual const wchar_t *to_text16() const = 0;
 
             virtual sql_value to_value() const = 0;
 
@@ -77,13 +73,9 @@ namespace arg3
 
             bool to_bool() const;
 
-            sqlite3_int64 to_int64() const;
-
-            const unsigned char *to_text() const;
+            int64_t to_int64() const;
 
             string to_string() const;
-
-            const wchar_t *to_text16() const;
 
             sql_value to_value() const;
 
@@ -91,7 +83,7 @@ namespace arg3
 
             operator int() const;
 
-            operator sqlite3_int64() const;
+            operator int64_t() const;
 
             operator double() const;
         };

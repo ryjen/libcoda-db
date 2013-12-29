@@ -31,6 +31,8 @@ namespace arg3
             bool result();
             void finish();
             void reset();
+            int last_number_of_changes();
+            string last_error();
             sqlite3_statement &bind(size_t index, int value);
             sqlite3_statement &bind(size_t index, int64_t value);
             sqlite3_statement &bind(size_t index, double value);

@@ -24,19 +24,15 @@ namespace arg3
 
         row &row::operator=(const row &other)
         {
-            if (this != &other)
-            {
-                impl_ = other.impl_;
-            }
+            impl_ = other.impl_;
+
             return *this;
         }
         row &row::operator=(row && other)
         {
-            if (this != &other)
-            {
-                impl_ = std::move(other.impl_);
-                other.impl_ = nullptr;
-            }
+            impl_ = std::move(other.impl_);
+            other.impl_ = nullptr;
+
             return *this;
         }
 

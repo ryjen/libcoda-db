@@ -12,13 +12,13 @@ Context(schema_test)
 {
     static void SetUpContext()
     {
-        testdb.setup();
+        setup_testdb();
 
     }
 
     static void TearDownContext()
     {
-        testdb.teardown();
+        teardown_testdb();
     }
 
 

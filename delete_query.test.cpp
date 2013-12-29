@@ -13,15 +13,15 @@ Context(delete_query_test)
 {
     static void SetUpContext()
     {
-        testdb.setup();
+        setup_testdb();
 
-        user user1(1);
+        user user1;
         user1.set("first_name", "Bryan");
         user1.set("last_name", "Jenkins");
 
         user1.save();
 
-        user user2(3);
+        user user2;
 
         user2.set("first_name", "Bob");
         user2.set("last_name", "Smith");
@@ -31,19 +31,19 @@ Context(delete_query_test)
 
     static void TearDownContext()
     {
-        testdb.teardown();
+        teardown_testdb();
     }
 
     Spec(delete_test)
     {
-        delete_query query(&testdb, "users");
+        delete_query query(testdb, "users");
 
-        query.where("first_name=?");
+        query.where("first_name = ?");
 
         query.bind(1, "Bob");
 
-        Assert::That(query.execute(), Equals(true));
+        Assert::That(query.execute(), Equals(1));
 
-        Assert::That(testdb.last_number_of_changes(), Equals(1));
+        //Assert::That(query.last_number_of_changes(), Equals(1));
     }
 };

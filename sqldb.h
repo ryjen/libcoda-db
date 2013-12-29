@@ -43,6 +43,8 @@ namespace arg3
             virtual void open() = 0;
             virtual void close() = 0;
 
+            virtual void query_schema(const string &tablename, std::vector<column_definition> &columns) = 0;
+
             virtual long long last_insert_id() const = 0;
 
             virtual int last_number_of_changes() const = 0;

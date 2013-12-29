@@ -18,19 +18,14 @@ namespace arg3
 
         where_clause &where_clause::operator=(const where_clause &other)
         {
-            if (this != &other)
-            {
-                value_ = other.value_;
-            }
+            value_ = other.value_;
+
             return *this;
         }
 
         where_clause &where_clause::operator=(where_clause && other)
         {
-            if (this != &other)
-            {
-                value_ = std::move( other.value_ );
-            }
+            value_ = std::move( other.value_ );
             return *this;
         }
 

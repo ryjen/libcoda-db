@@ -22,20 +22,16 @@ namespace arg3
 
         column &column::operator=(const column &other)
         {
-            if (this != &other)
-            {
-                impl_ = other.impl_;
-            }
+            impl_ = other.impl_;
+
             return *this;
         }
 
         column &column::operator=(column && other)
         {
-            if (this != &other)
-            {
-                impl_ = std::move(other.impl_);
-                other.impl_ = nullptr;
-            }
+            impl_ = std::move(other.impl_);
+            other.impl_ = nullptr;
+
             return *this;
         }
 
@@ -69,16 +65,6 @@ namespace arg3
             return impl_->to_int64();
         }
 
-        const wchar_t *column::to_text16() const
-        {
-            return impl_->to_text16();
-        }
-
-        const unsigned char *column::to_text() const
-        {
-            return impl_->to_text();
-        }
-
         string column::to_string() const
         {
             return impl_->to_string();
@@ -99,7 +85,7 @@ namespace arg3
             return to_int();
         }
 
-        column::operator sqlite3_int64() const
+        column::operator int64_t() const
         {
             return to_int64();
         }

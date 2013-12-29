@@ -95,6 +95,11 @@ namespace arg3
             base_query &bind(size_t index, const sql_null_t &value);
 
             base_query &bind_value(size_t index, const sql_value &v);
+
+            string last_error();
+
+            int last_number_of_changes();
+
         };
 
     }

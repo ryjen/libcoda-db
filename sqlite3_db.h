@@ -36,6 +36,8 @@ namespace arg3
 
             int last_number_of_changes() const;
 
+            void query_schema(const string &tableName, std::vector<column_definition> &columns);
+
             string connection_string() const;
             void set_connection_string(const string &value);
 

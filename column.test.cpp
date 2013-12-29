@@ -13,27 +13,36 @@ Context(column_test)
 {
     static void SetUpContext()
     {
-        testdb.setup();
+        setup_testdb();
 
     }
 
     static void TearDownContext()
     {
-        testdb.teardown();
+        teardown_testdb();
     }
 
     Spec(sqliteValueConstructor)
     {
+
         sqlite3_stmt *stmt;
 
-        user u1(1);
-        u1.set("first_name", "Bob");
-        u1.set("last_name", "Jenkins");
+        try
+        {
+            user u1(&testdb1);
+            u1.set("first_name", "Bob");
+            u1.set("last_name", "Jenkins");
 
-        Assert::That(u1.save(), Equals(true));
+            Assert::That(u1.save(), Equals(true));
+        }
+        catch (const std::exception &e)
+        {
+            cerr << "Error3: " << e.what() << endl;
+            throw e;
+        }
 
-        if (sqlite3_prepare_v2(testdb.rawDb(), "select * from users", -1, &stmt, NULL) != SQLITE_OK)
-            throw database_exception(testdb.last_error());
+        if (sqlite3_prepare_v2(testdb1.rawDb(), "select * from users", -1, &stmt, NULL) != SQLITE_OK)
+            throw database_exception(testdb1.last_error());
 
         sqlite3_step(stmt);
 
@@ -48,5 +57,6 @@ Context(column_test)
         c = sqlite3_column(value);
 
         Assert::That(c.type(), Equals(SQLITE_INTEGER));
+
     }
 };

@@ -33,6 +33,7 @@ namespace arg3
             tableName_(std::move(other.tableName_)), bindings_(std::move(other.bindings_))
         {
             other.db_ = NULL;
+            printf("bah\n");
             other.stmt_ = nullptr;
         }
 
@@ -40,27 +41,24 @@ namespace arg3
 
         base_query &base_query::operator=(const base_query &other)
         {
-            if (this != &other)
-            {
-                db_ = other.db_;
-                stmt_ = other.stmt_;
-                tableName_ = other.tableName_;
-                bindings_ = other.bindings_;
-            }
+            db_ = other.db_;
+            stmt_ = other.stmt_;
+            tableName_ = other.tableName_;
+            bindings_ = other.bindings_;
+
             return *this;
         }
 
         base_query &base_query::operator=(base_query && other)
         {
-            if (this != &other)
-            {
-                db_ = other.db_;
-                stmt_ = other.stmt_;
-                other.db_ = NULL;
-                other.stmt_ = nullptr;
-                tableName_ = std::move(other.tableName_);
-                bindings_ = std::move(other.bindings_);
-            }
+            db_ = other.db_;
+            stmt_ = other.stmt_;
+            other.db_ = NULL;
+            printf("bah2\n");
+            other.stmt_ = nullptr;
+            tableName_ = std::move(other.tableName_);
+            bindings_ = std::move(other.bindings_);
+
             return *this;
         }
 
@@ -84,7 +82,6 @@ namespace arg3
                 auto value = bindings_[i - 1];
 
                 value.bind(stmt_.get(), i);
-
             }
         }
 
@@ -154,10 +151,24 @@ namespace arg3
 
         base_query &base_query::bind_value(size_t index, const sql_value &value)
         {
-
             value.bind(this, index);
 
             return *this;
+        }
+
+
+        int base_query::last_number_of_changes()
+        {
+            if (stmt_ == nullptr) return 0;
+
+            return stmt_->last_number_of_changes();
+        }
+
+        string base_query::last_error()
+        {
+            if ( stmt_ == nullptr) return string();
+
+            return stmt_->last_error();
         }
     }
 

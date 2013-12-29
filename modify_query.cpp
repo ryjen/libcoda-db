@@ -67,11 +67,11 @@ namespace arg3
             return buf.str();
         }
 
-        bool modify_query::execute(bool batch)
+        int modify_query::execute(bool batch)
         {
             prepare();
 
-            bool res = stmt_->result();
+            int res = stmt_->result() ? stmt_->last_number_of_changes() : 0;
 
             if (!batch)
             {

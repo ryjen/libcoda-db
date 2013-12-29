@@ -13,7 +13,6 @@ namespace arg3
     namespace db
     {
         class resultset;
-        class sqlite3_db;
 
         /*!
          * an interface for a database specific set of results for a query
@@ -37,6 +36,8 @@ namespace arg3
             virtual row current_row() = 0;
 
             virtual void reset() = 0;
+
+            virtual size_t column_count() const = 0;
         };
 
         /*!
@@ -125,6 +126,8 @@ namespace arg3
             row operator*();
 
             void reset();
+
+            size_t column_count() const;
         };
 
     }

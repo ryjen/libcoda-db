@@ -132,7 +132,7 @@ solution "arg3"
                 "**.test.cpp"
             }
 
-    project "arg3test"
+    project "sqlitetest"
         kind "ConsoleApp"
         files {
             "**.test.cpp"
@@ -140,15 +140,39 @@ solution "arg3"
 
         includedirs { "vendor" }
 
-        links { "arg3"..package, "sqlite3" }
+        links { "arg3"..package, "sqlite3", "mysql" }
+          
+        buildoptions { "-DTEST_SQLITE" }
 
         configuration "Debug"
+
         postbuildcommands {
-         "bin/debug/arg3test"
+          "bin/debug/sqlitetest"
         }
         configuration "Release"
         postbuildcommands {
-         "bin/release/arg3test"
+         "bin/release/sqlitetest"
         }
 
+    project "mysqltest"
+        kind "ConsoleApp"
+        files {
+            "**.test.cpp"
+        }
+
+        includedirs { "vendor" }
+
+        links { "arg3"..package, "sqlite3", "mysql" }
+          
+        buildoptions { "-DTEST_MYSQL" }
+
+        configuration "Debug"
+
+        postbuildcommands {
+          "bin/debug/mysqltest"
+        }
+        configuration "Release"
+        postbuildcommands {
+         "bin/release/mysqltest"
+        }
 

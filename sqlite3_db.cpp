@@ -23,30 +23,63 @@ namespace arg3
 
         sqlite3_db &sqlite3_db::operator=(const sqlite3_db &other)
         {
-            if (this != &other)
-            {
-                db_ = other.db_;
-                filename_ = other.filename_;
-                schema_factory_ = other.schema_factory_;
-            }
+            db_ = other.db_;
+            filename_ = other.filename_;
+            schema_factory_ = other.schema_factory_;
 
             return *this;
         }
 
         sqlite3_db &sqlite3_db::operator=(sqlite3_db && other)
         {
-            if (this != &other)
-            {
-                db_ = std::move(other.db_);
-                filename_ = std::move(other.filename_);
-                schema_factory_ = std::move(other.schema_factory_);
-            }
+            db_ = std::move(other.db_);
+            filename_ = std::move(other.filename_);
+            schema_factory_ = std::move(other.schema_factory_);
 
             return *this;
         }
 
         sqlite3_db::~sqlite3_db()
         {
+            close();
+        }
+
+        void sqlite3_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
+        {
+            auto rs = execute( "pragma table_info(" + tableName + ")" );
+
+            for (auto & row : rs)
+            {
+                column_definition def;
+
+                // column name
+                def.name = row["name"].to_string();
+
+                // primary key check
+                def.pk = row["pk"].to_bool();
+
+                // find type
+                string type = row["type"].to_string();
+
+                if (type.find("integer") != string::npos)
+                {
+                    def.type = SQLITE_INTEGER;
+                }
+                else if (type.find("real") != string::npos)
+                {
+                    def.type = SQLITE_FLOAT;
+                }
+                else if (type.find("blob") != string::npos)
+                {
+                    def.type = SQLITE_BLOB;
+                }
+                else
+                {
+                    def.type = SQLITE_TEXT;
+                }
+
+                columns.push_back(def);
+            }
         }
 
         string sqlite3_db::connection_string() const

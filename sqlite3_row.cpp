@@ -28,25 +28,21 @@ namespace arg3
 
         sqlite3_row &sqlite3_row::operator=(const sqlite3_row &other)
         {
-            if (this != &other)
-            {
-                stmt_ = other.stmt_;
-                db_ = other.db_;
-                size_ = other.size_;
-            }
+            stmt_ = other.stmt_;
+            db_ = other.db_;
+            size_ = other.size_;
+
             return *this;
         }
 
         sqlite3_row &sqlite3_row::operator=(sqlite3_row && other)
         {
-            if (this != &other)
-            {
-                stmt_ = other.stmt_;
-                db_ = other.db_;
-                size_ = other.size_;
-                other.stmt_ = NULL;
-                other.db_ = NULL;
-            }
+            stmt_ = other.stmt_;
+            db_ = other.db_;
+            size_ = other.size_;
+            other.stmt_ = NULL;
+            other.db_ = NULL;
+
             return *this;
         }
 

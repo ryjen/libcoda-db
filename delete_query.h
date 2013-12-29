@@ -30,12 +30,11 @@ namespace arg3
 
             string to_string() const;
 
-            bool execute(bool batch = false);
+            int execute(bool batch = false);
 
             delete_query &where(const where_clause &value);
 
             delete_query &where(const string &value);
-
         private:
 
             where_clause where_;

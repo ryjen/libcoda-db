@@ -13,7 +13,7 @@ Context(modify_query_test)
 {
     static void SetUpContext()
     {
-        testdb.setup();
+        setup_testdb();
 
         user user1;
 
@@ -36,18 +36,18 @@ Context(modify_query_test)
 
     static void TearDownContext()
     {
-        testdb.teardown();
+        teardown_testdb();
     }
 
     Spec(modify_test)
     {
-        modify_query query(&testdb, "users", { "id", "first_name", "last_name" });
+        modify_query query(testdb, "users", { "id", "first_name", "last_name" });
 
         query.bind(1, 1);
         query.bind(2, "blah");
         query.bind(3, "bleh");
 
-        Assert::That(query.execute(), Equals(true));
+        Assert::That(query.execute() > 0, Equals(true));
 
         user u1(1);
 

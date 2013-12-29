@@ -5,15 +5,15 @@
 #include "base_record.h"
 #include <unistd.h>
 #include "sqlite3_db.h"
+#include "mysql_db.h"
 
 #define TESTDB "test.db"
 
-class testsqldb : public arg3::db::sqlite3_db
+class testsqlite3db : public arg3::db::sqlite3_db
 {
 public:
-    testsqldb() : sqlite3_db(TESTDB)
+    testsqlite3db() : sqlite3_db(TESTDB)
     {
-        set_log_level(VERBOSE);
     }
 
     void setup()
@@ -29,22 +29,54 @@ public:
         schemas()->clear("users");
     }
 
-    sqlite3 *rawDb() const
+    sqlite3 *rawDb()
     {
         return db_;
     }
 };
 
-extern testsqldb testdb;
+class testmysqldb : public arg3::db::mysql_db
+{
+public:
+    testmysqldb() : mysql_db("test")
+    {
+    }
+
+    void setup()
+    {
+        open();
+        execute("create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45))");
+    }
+
+    void teardown()
+    {
+        execute("delete from users");
+        close();
+        schemas()->clear("users");
+    }
+
+    MYSQL *rawDb()
+    {
+        return db_;
+    }
+};
+
+extern void setup_testdb();
+extern void teardown_testdb();
+
+extern testsqlite3db testdb1;
+extern testmysqldb testdb2;
+
+extern arg3::db::sqldb *testdb;
 
 class user : public arg3::db::base_record<user>
 {
 public:
-    user() : base_record(&testdb, "users", "id") {}
+    user(arg3::db::sqldb *db = testdb) : base_record(db, "users", "id") {}
 
-    user(const arg3::db::row &values) : base_record(&testdb, "users", "id", values) {}
+    user(const arg3::db::row &values, arg3::db::sqldb *db = testdb) : base_record(db, "users", "id", values) {}
 
-    user(long long id) : base_record(&testdb, "users", "id", id) {}
+    user(long long id,  arg3::db::sqldb *db = testdb) : base_record(db, "users", "id", id) {}
 
     user(const user &other) : base_record(other) {}
 
