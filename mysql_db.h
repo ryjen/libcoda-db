@@ -16,9 +16,8 @@ namespace arg3
             friend class base_query;
             friend class mysql_statement;
             friend class mysql_resultset;
-        protected:
-            MYSQL *db_;
         private:
+            MYSQL *db_;
             string dbName_;
             string user_;
             string password_;
@@ -34,21 +33,18 @@ namespace arg3
             virtual ~mysql_db();
 
             bool is_open() const;
-
             void open();
             void close();
             void query_schema(const string &tablename, std::vector<column_definition> &columns);
 
             long long last_insert_id() const;
-
             int last_number_of_changes() const;
+            string last_error() const;
 
             string connection_string() const;
             void set_connection_string(const string &value);
 
             resultset execute(const string &sql);
-
-            string last_error() const;
 
             schema_factory *schemas();
 

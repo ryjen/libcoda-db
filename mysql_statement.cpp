@@ -79,16 +79,20 @@ namespace arg3
 
         mysql_statement::~mysql_statement()
         {
-            if (refcount_ && *refcount_ > 0)
+            if (refcount_)
             {
-                (*refcount_)--;
+                if (*refcount_ > 0)
+                {
+                    (*refcount_)--;
 
-                if (*refcount_ != 0)
-                    return;
+                    if (*refcount_ != 0)
+                        return;
+                }
 
                 delete refcount_;
                 refcount_ = NULL;
             }
+
             finish();
         }
 

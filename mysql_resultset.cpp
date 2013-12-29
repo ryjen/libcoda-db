@@ -28,17 +28,20 @@ namespace arg3
 
         mysql_resultset::~mysql_resultset()
         {
-            if (refcount_ && *refcount_)
+            if (refcount_)
             {
-                (*refcount_)--;
+                if (*refcount_ > 0)
+                {
+                    (*refcount_)--;
 
-                if (*refcount_ != 0)
-                    return;
+                    if (*refcount_ != 0)
+                        return;
+                }
 
                 delete refcount_;
                 refcount_ = NULL;
-
             }
+
             if (res_ != NULL)
             {
                 mysql_free_result(res_);
@@ -139,13 +142,16 @@ namespace arg3
 
         mysql_stmt_resultset::~mysql_stmt_resultset()
         {
-            if (refcount_ && *refcount_ > 0)
+            if (refcount_)
             {
-                (*refcount_)--;
-
-                if (*refcount_ != 0)
+                if (*refcount_ > 0)
                 {
-                    return;
+                    (*refcount_)--;
+
+                    if (*refcount_ != 0)
+                    {
+                        return;
+                    }
                 }
 
                 delete refcount_;
