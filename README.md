@@ -29,7 +29,7 @@ make
 Model
 =====
 <pre>
-/* database specific */
+/* database interfaces */
 <b>sqldb</b>                                 - interface for a specific database
   |- <b>statement</b>                        - interface for a prepared statement
         |- <b>resultset</b>                  - results of a statement
