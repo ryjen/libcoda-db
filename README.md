@@ -60,10 +60,10 @@ Records
 Base Record
 -----------
 ```c++
-sqlite3_db testdb("test.db");
-//mysql_db testdb("database", "user", "password", "localhost", 3306);
+arg3::db::sqlite3_db testdb("test.db");
+//arg3::db::mysql_db testdb("database", "user", "password", "localhost", 3306);
 
-class user : public base_record<user>
+class user : public arg3::db::base_record<user>
 {
     constexpr static const char *const ID_COLUMN = "id";
     constexpr static const char *const TABLE_NAME = "users";
@@ -136,7 +136,7 @@ Modify Query
 --------------
 ```c++
 /* upsert a user */
-modify_query query(&testdb, "users", { "id", "first_name", "last_name" });
+arg3::db::modify_query query(&testdb, "users", { "id", "first_name", "last_name" });
 
 query.bind(1, 1234).bind(2, "happy").bind(3, "gilmour");
 
@@ -149,7 +149,7 @@ Select Query
 ------------
 ```c++
 /* select some users */
-select_query query(&testdb, "users");
+arg3::db::select_query query(&testdb, "users");
 
 query.where("last_name = ?");
 
