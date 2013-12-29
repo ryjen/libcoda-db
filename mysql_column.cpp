@@ -60,7 +60,10 @@ namespace arg3
 
             auto lengths = mysql_fetch_lengths(res_);
 
-            return sql_blob(value_[index_], lengths[index_]);
+            void *buf = calloc(1, lengths[index_]);
+            memcpy(buf, value_[index_], lengths[index_]);
+
+            return sql_blob(buf, lengths[index_], free);
         }
 
         double mysql_column::to_double() const
@@ -181,7 +184,10 @@ namespace arg3
         {
             assert_value();
 
-            return sql_blob(value_->buffer, *value_->length);
+            void *buf = calloc(1, *value_->length);
+            memcpy(buf, value_->buffer, *value_->length);
+
+            return sql_blob(buf, *value_->length, free);
         }
 
         double mysql_stmt_column::to_double() const

@@ -66,6 +66,9 @@ namespace arg3
             {
                 auto rs = execute();
 
+                if (rs.begin() == rs.end())
+                    return T();
+
                 auto row = rs.begin();
 
                 auto col = row->begin();

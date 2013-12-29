@@ -46,7 +46,7 @@ namespace arg3
         {
             assert_value();
 
-            return sql_blob(sqlite3_value_blob(value_), sqlite3_value_bytes(value_));
+            return sql_blob(sqlite3_value_blob(value_), sqlite3_value_bytes(value_), SQLITE_STATIC);
         }
 
         double sqlite3_column::to_double() const

@@ -25,7 +25,7 @@ namespace arg3
             size_t s_;
             cleanup_method destruct_;
         public:
-            sql_blob(const void *ptr, size_t size, cleanup_method cleanup = SQLITE_STATIC);
+            sql_blob(const void *ptr, size_t size, cleanup_method cleanup);
             const void *ptr() const;
             size_t size() const;
             cleanup_method destructor() const;

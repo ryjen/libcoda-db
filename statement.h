@@ -14,12 +14,6 @@ namespace arg3
         class statement : public bindable
         {
         public:
-            statement() = default;
-            statement(const statement &other) = default;
-            statement(statement &&other) = default;
-            virtual ~statement() = default;
-            statement &operator=(const statement &other) = default;
-            statement &operator=(statement && other) = default;
             virtual void prepare(const std::string &sql) = 0;
             virtual void finish() = 0;
             virtual void reset() = 0;

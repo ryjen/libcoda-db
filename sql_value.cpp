@@ -150,7 +150,7 @@ namespace arg3
         sql_value::operator sql_blob() const
         {
             if (!apply_visitor(sql_exists_visitor<sql_blob>(), value_))
-                return sql_blob(NULL, 0);
+                return sql_blob(NULL, 0, NULL);
 
             return thenewcpp::get<sql_blob>(value_);
         }

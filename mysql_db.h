@@ -16,8 +16,9 @@ namespace arg3
             friend class base_query;
             friend class mysql_statement;
             friend class mysql_resultset;
-        private:
+        protected:
             MYSQL *db_;
+        private:
             string dbName_;
             string user_;
             string password_;

@@ -33,7 +33,6 @@ namespace arg3
             tableName_(std::move(other.tableName_)), bindings_(std::move(other.bindings_))
         {
             other.db_ = NULL;
-            printf("bah\n");
             other.stmt_ = nullptr;
         }
 
@@ -54,7 +53,6 @@ namespace arg3
             db_ = other.db_;
             stmt_ = other.stmt_;
             other.db_ = NULL;
-            printf("bah2\n");
             other.stmt_ = nullptr;
             tableName_ = std::move(other.tableName_);
             bindings_ = std::move(other.bindings_);
