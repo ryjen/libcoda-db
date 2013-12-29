@@ -29,7 +29,7 @@ make
 Coding Style
 ============
 
-- method names are all lower case with underscores separating words
+- class/struct/method names are all lower case with underscores separating words
 - non public members are camel case with and underscore at end of the name
 - macros, enums and constants are all upper case with underscores seperating words
 - braces on a new line
