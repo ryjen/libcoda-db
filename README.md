@@ -7,13 +7,24 @@ a sqlite3 wrapper / active record (ish) implementation
 Building
 ========
 
+*OSX:*
+
 ```bash
 brew install premake
 
-premake4 gmake/vs2010
+premake4 gmake
 
 make
 ```
+
+*Windows:*
+
+[Download](http://industriousone.com/premake/download) premake
+
+run <code>premake4 vs2010</code>
+
+Open the generated project file in Visual Studio.
+
 
 Model
 =====
