@@ -2,7 +2,7 @@
 libarg3db
 =========
 
-a sqlite3 wrapper / active record (ish) implementation
+a sqlite3 and mysql wrapper / active record (ish) implementation
 
 Building
 ========
