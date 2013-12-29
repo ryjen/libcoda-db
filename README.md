@@ -49,7 +49,7 @@ Model
 Records
 =======
 
-User Record
+Base Record
 -----------
 ```c++
 sqlite3_db testdb("test.db");
