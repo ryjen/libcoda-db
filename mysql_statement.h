@@ -13,7 +13,7 @@ namespace arg3
         class mysql_db;
 
         /*!
-         * a sqlite specific implementation of a statement
+         * a mysql specific implementation of a statement
          */
         class mysql_statement : public statement
         {

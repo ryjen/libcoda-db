@@ -9,7 +9,9 @@ namespace arg3
     namespace db
     {
         row::row(shared_ptr<row_impl> impl) : impl_(impl)
-        {}
+        {
+            assert(impl_ != nullptr);
+        }
 
         row::row(const row &other) : impl_(other.impl_)
         {}

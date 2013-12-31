@@ -153,7 +153,6 @@ namespace arg3
 
         long long mysql_db::last_insert_id() const
         {
-
             return mysql_insert_id(db_);
         }
 

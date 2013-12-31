@@ -9,7 +9,7 @@ namespace arg3
     namespace db
     {
         /*!
-         * a sqlite specific implementation of a database
+         * a mysql specific implementation of a database
          */
         class mysql_db : public sqldb
         {

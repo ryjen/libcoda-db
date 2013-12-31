@@ -12,7 +12,7 @@ namespace arg3
         class mysql_db;
 
         /*!
-         *  a sqlite specific implementation of a row
+         *  a mysql specific implementation of a row
          */
         class mysql_row : public row_impl
         {
@@ -36,6 +36,9 @@ namespace arg3
             size_t size() const;
         };
 
+        /*!
+         *  a mysql specific implementation of a row using prepared statements
+         */
         class mysql_stmt_row : public row_impl
         {
             friend class mysql_stmt_resultset;

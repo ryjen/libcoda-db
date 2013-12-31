@@ -8,6 +8,8 @@ namespace arg3
 
         mysql_column::mysql_column(MYSQL_RES *res, MYSQL_ROW pValue, size_t index) : value_(pValue), res_(res), index_(index)
         {
+            assert(value_ != NULL);
+            assert(res_ != NULL);
         }
 
         mysql_column::mysql_column(const mysql_column &other) : value_(other.value_), res_(other.res_), index_(other.index_) {}
@@ -46,18 +48,8 @@ namespace arg3
             return value_ != NULL;
         }
 
-        void mysql_column::assert_value() const throw (no_such_column_exception)
-        {
-            if (value_ == NULL)
-            {
-                throw no_such_column_exception();
-            }
-        }
-
         sql_blob mysql_column::to_blob() const
         {
-            assert_value();
-
             auto lengths = mysql_fetch_lengths(res_);
 
             void *buf = calloc(1, lengths[index_]);
@@ -68,34 +60,24 @@ namespace arg3
 
         double mysql_column::to_double() const
         {
-            assert_value();
-
             return std::stod(value_[index_]);
         }
         bool mysql_column::to_bool() const
         {
-            assert_value();
-
             return std::stoi(value_[index_]) != 0;
         }
         int mysql_column::to_int() const
         {
-            assert_value();
-
             return std::stoi(value_[index_]);
         }
 
         int64_t mysql_column::to_int64() const
         {
-            assert_value();
-
             return std::stoll(value_[index_]);
         }
 
         sql_value mysql_column::to_value() const
         {
-            assert_value();
-
             auto field = mysql_fetch_field_direct(res_, index_);
 
             switch (field->type)
@@ -118,8 +100,6 @@ namespace arg3
 
         int mysql_column::type() const
         {
-            assert_value();
-
             auto field = mysql_fetch_field_direct(res_, index_);
 
             return field->type;
@@ -127,8 +107,6 @@ namespace arg3
 
         string mysql_column::to_string() const
         {
-            assert_value();
-
             auto textValue = value_[index_];
 
             if (textValue == NULL)
@@ -142,6 +120,7 @@ namespace arg3
 
         mysql_stmt_column::mysql_stmt_column(MYSQL_BIND *pValue) : value_(pValue)
         {
+            assert(value_ != NULL);
         }
 
         mysql_stmt_column::mysql_stmt_column(const mysql_stmt_column &other) : value_(other.value_) {}
@@ -172,18 +151,8 @@ namespace arg3
             return value_ != NULL;
         }
 
-        void mysql_stmt_column::assert_value() const throw (no_such_column_exception)
-        {
-            if (value_ == NULL)
-            {
-                throw no_such_column_exception();
-            }
-        }
-
         sql_blob mysql_stmt_column::to_blob() const
         {
-            assert_value();
-
             void *buf = calloc(1, *value_->length);
             memcpy(buf, value_->buffer, *value_->length);
 
@@ -192,34 +161,24 @@ namespace arg3
 
         double mysql_stmt_column::to_double() const
         {
-            assert_value();
-
             return *static_cast<double *>(value_->buffer);
         }
         bool mysql_stmt_column::to_bool() const
         {
-            assert_value();
-
             return value_->buffer != NULL && *static_cast<int *>(value_->buffer) != 0;
         }
         int mysql_stmt_column::to_int() const
         {
-            assert_value();
-
             return *static_cast<int *>(value_->buffer);
         }
 
         int64_t mysql_stmt_column::to_int64() const
         {
-            assert_value();
-
             return *static_cast<int64_t *>(value_->buffer);
         }
 
         sql_value mysql_stmt_column::to_value() const
         {
-            assert_value();
-
             switch (value_->buffer_type)
             {
             case MYSQL_TYPE_TINY:
@@ -240,8 +199,6 @@ namespace arg3
 
         int mysql_stmt_column::type() const
         {
-            assert_value();
-
             return value_->buffer_type;
         }
 

@@ -9,10 +9,10 @@
 
 #define TESTDB "test.db"
 
-class testsqlite3db : public arg3::db::sqlite3_db
+class test_sqlite3_db : public arg3::db::sqlite3_db
 {
 public:
-    testsqlite3db() : sqlite3_db(TESTDB)
+    test_sqlite3_db() : sqlite3_db(TESTDB)
     {
     }
 
@@ -35,10 +35,10 @@ public:
     }
 };
 
-class testmysqldb : public arg3::db::mysql_db
+class test_mysql_db : public arg3::db::mysql_db
 {
 public:
-    testmysqldb() : mysql_db("test")
+    test_mysql_db() : mysql_db("test")
     {
     }
 
@@ -64,8 +64,8 @@ public:
 extern void setup_testdb();
 extern void teardown_testdb();
 
-extern testsqlite3db testdb1;
-extern testmysqldb testdb2;
+extern test_sqlite3_db testdb1;
+extern test_mysql_db testdb2;
 
 extern arg3::db::sqldb *testdb;
 

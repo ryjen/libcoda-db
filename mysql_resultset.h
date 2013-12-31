@@ -12,7 +12,7 @@ namespace arg3
         class mysql_db;
 
         /*!
-         * a sqlite specific implmentation of a result set
+         * a mysql specific implementation of a result set
          */
         class mysql_resultset : public resultset_impl
         {
@@ -36,16 +36,15 @@ namespace arg3
             mysql_resultset &operator=(mysql_resultset && other);
 
             bool is_valid() const;
-
             row current_row();
-
             void reset();
-
             bool next();
-
             size_t column_count() const;
         };
 
+        /*!
+         * a mysql specific implementation of a result set using prepared statements
+         */
         class mysql_stmt_resultset : public resultset_impl
         {
             friend class select_query;
@@ -60,7 +59,7 @@ namespace arg3
             size_t columnCount_;
             unsigned *refcount_;
             int status_;
-            void get_results();
+            void prepare_results();
         public:
             mysql_stmt_resultset(mysql_db *db, MYSQL_STMT *stmt);
 

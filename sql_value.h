@@ -84,7 +84,6 @@ namespace arg3
                 return other.to_string() == to_string();
             }
 
-            /* faster check */
             bool operator==(const sql_null_t &other) const;
 
             template<typename T>
@@ -110,7 +109,7 @@ namespace std
      */
     string to_string(const arg3::db::sql_null_t &value);
     string to_string(const arg3::db::sql_blob &value);
-    string to_string(const std::string &value);
+    string to_string(const std::string &value); // yep
     string to_string(const arg3::db::sql_value &value);
 }
 

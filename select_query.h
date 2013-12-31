@@ -27,7 +27,6 @@ namespace arg3
             string limit_;
             string orderBy_;
             string groupBy_;
-
             vector<string> columns_;
         public:
 
@@ -61,6 +60,9 @@ namespace arg3
 
             resultset execute();
 
+            /*!
+             * return the first column in the first row of the result set
+             */
             template<typename T>
             T execute_scalar()
             {

@@ -1,6 +1,4 @@
-/*!
- * @copyright ryan jennings (arg3.com), 2013 under LGPL
- */
+
 #ifndef _ARG3_DB_ROW_H_
 #define _ARG3_DB_ROW_H_
 
@@ -212,7 +210,6 @@ namespace arg3
             shared_ptr<row_impl> impl_;
 
         public:
-            //Typedefs
             typedef row_iterator<column, column, row_impl> iterator;
             typedef row_iterator<const column, column, const row_impl> const_iterator;
             typedef std::reverse_iterator<iterator> reverse_iterator;

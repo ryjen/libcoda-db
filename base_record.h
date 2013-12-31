@@ -18,6 +18,9 @@ namespace arg3
         class record_db;
         class row;
 
+        /*!
+         * an active-record (ish) pattern
+         */
         template<typename T>
         class base_record
         {
@@ -27,23 +30,43 @@ namespace arg3
             string idColumnName_;
         public:
 
+            /*!
+             * @param db the database the record uses
+             * @param tablename the table in the database to use
+             * @param idColumnName the name of the id column in the table
+             */
             base_record(sqldb *db, const string &tablename, const string &idColumnName) : schema_(db->schemas()->get(tablename)), idColumnName_(idColumnName)
             {
                 assert(schema_ != nullptr);
             }
 
+            /*!
+             * @param schema the schema to operate on
+             * @param columnName the name of the id column in the schema
+             */
             base_record(std::shared_ptr<schema> schema, const string &columnName) : schema_(schema), idColumnName_(columnName)
             {
                 assert(schema_ != nullptr);
             }
 
+            /*!
+             * @param schema the schema to operate on
+             * @param columnName the name of the column the id column in the schema
+             * @param value the value of the id column
+             */
             template<typename V>
             base_record(std::shared_ptr<schema> schema, const string &columnName, V value) : base_record(schema, columnName)
             {
                 set(idColumnName_, value);
-                refresh();
+                refresh(); // load up from database
             }
 
+            /*!
+             * @param db the database to operate on
+             * @param tableName the name of the table in the database
+             * @param columnName the name of the id column in the table
+             * @param value the value of the id column
+             */
             template<typename V>
             base_record(sqldb *db, const string &tableName, const string &columnName, V value) : base_record(db, tableName, columnName)
             {
@@ -59,14 +82,23 @@ namespace arg3
                 init(values);
             }
 
+            /*!
+             * construct with values from a database row
+             */
             base_record(sqldb *db, const string &tableName, const string &columnName, const row &values) : base_record(db, tableName, columnName)
             {
                 init(values);
             }
 
+            /*!
+             * copy constructor
+             */
             base_record(const base_record &other) : schema_(other.schema_), values_(other.values_), idColumnName_(other.idColumnName_)
             {}
 
+            /*!
+             * move constructor
+             */
             base_record(base_record &&other) : schema_(other.schema_), values_(std::move(other.values_)), idColumnName_(std::move(other.idColumnName_))
             {
             }
@@ -76,16 +108,9 @@ namespace arg3
 
             }
 
-            void set_id(const sql_value &value)
-            {
-                set(idColumnName_, value);
-            }
-
-            sql_value id() const
-            {
-                return get(idColumnName_);
-            }
-
+            /*!
+             * assignment operator
+             */
             base_record &operator=(const base_record &other)
             {
                 values_ = other.values_;
@@ -95,6 +120,9 @@ namespace arg3
                 return *this;
             }
 
+            /*!
+             * move assignment operator
+             */
             base_record &operator=(base_record && other)
             {
                 values_ = std::move(other.values_);
@@ -104,6 +132,22 @@ namespace arg3
                 other.schema_ = nullptr;
 
                 return *this;
+            }
+
+            /*!
+             * sets the id column of the record
+             */
+            void set_id(const sql_value &value)
+            {
+                set(idColumnName_, value);
+            }
+
+            /*!
+             * returns the value of the id column in the record
+             */
+            sql_value id() const
+            {
+                return get(idColumnName_);
             }
 
             /*!
@@ -117,23 +161,27 @@ namespace arg3
                 }
             }
 
+            /*!
+             * check if the record internals are valid
+             */
             bool is_valid() const
             {
                 return schema()->is_valid();
             }
 
+            /*!
+             * returns the name of the id column for this record
+             */
             string id_column_name() const
             {
                 return idColumnName_;
             }
 
+            /*!
+             * returns the schema for this record
+             */
             shared_ptr<schema> schema() const
             {
-                //assert_schema();
-
-                //return *record_schema::get(db_, tableName_);
-
-                assert(schema_ != nullptr);
                 return schema_;
             }
 
@@ -146,7 +194,7 @@ namespace arg3
 
                 int index = 1;
 
-                // bind the object values
+                // bind the column values
                 for (auto & column : schema()->columns())
                 {
                     auto value = get(column.name);
@@ -217,6 +265,9 @@ namespace arg3
                 return items;
             }
 
+            /*!
+             * finds a single record by its id column
+             */
             template<typename V>
             shared_ptr<T> find_by_id(V value)
             {
@@ -238,6 +289,9 @@ namespace arg3
                 throw record_not_found_exception();
             }
 
+            /*!
+             * find records by a column and its value
+             */
             template<typename V>
             vector<shared_ptr<T>> find_by(const string &name, const V &value)
             {
@@ -260,11 +314,17 @@ namespace arg3
                 return items;
             }
 
+            /*!
+             * refreshes from the database
+             */
             bool refresh()
             {
                 return refresh_by(idColumnName_);
             }
 
+            /*!
+             * refreshes by a column name
+             */
             bool refresh_by(const string &name)
             {
                 auto query = select_query(schema());
@@ -285,6 +345,9 @@ namespace arg3
                 return true;
             }
 
+            /*!
+             * deletes this record from the database
+             */
             bool de1ete()
             {
                 auto query = delete_query(schema());

@@ -10,7 +10,7 @@ namespace arg3
     {
 
         /*!
-         * a sqlite specific implementation of a column
+         * a mysql specific implementation of a column
          */
         class mysql_column : public column_impl
         {
@@ -18,7 +18,6 @@ namespace arg3
             MYSQL_ROW value_;
             MYSQL_RES *res_;
             size_t index_;
-            void assert_value() const throw (no_such_column_exception);
         public:
 
             mysql_column(MYSQL_RES *res, MYSQL_ROW pValue, size_t index);
@@ -48,11 +47,13 @@ namespace arg3
 
         };
 
+        /*!
+         * a mysql specific version of a column using prepared statements
+         */
         class mysql_stmt_column : public column_impl
         {
         private:
             MYSQL_BIND *value_;
-            void assert_value() const throw (no_such_column_exception);
         public:
 
             mysql_stmt_column(MYSQL_BIND *pValue);

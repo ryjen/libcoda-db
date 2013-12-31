@@ -10,7 +10,9 @@ namespace arg3
     {
 
         resultset::resultset(shared_ptr<resultset_impl> impl) : impl_(impl)
-        {}
+        {
+            assert(impl_ != nullptr);
+        }
 
         resultset::~resultset()
         {}

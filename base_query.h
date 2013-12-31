@@ -26,8 +26,12 @@ namespace arg3
         class base_query : public bindable
         {
             friend class sqldb;
-
-            //
+            /*!
+            * ensures that the binding storage array is large enough
+            * @param index the parameter index for binding
+            * @returns the zero-based index suitable for the storage array
+            * @throws invalid_argument if there is no specifier for the argument
+            */
             size_t assert_binding_index(size_t index);
         protected:
             sqldb *db_;
@@ -43,16 +47,31 @@ namespace arg3
              */
             base_query(sqldb *db, const string &tableName);
 
+            /*!
+             * @param schema the schema to perform a query on
+             */
             base_query(shared_ptr<schema> schema);
 
+            /*!
+             * @param other the other query to copy from
+             */
             base_query(const base_query &other);
 
+            /*!
+             * @param other the query being moved
+             */
             base_query(base_query &&other);
 
             virtual ~base_query();
 
+            /*!
+             * @param other the other query being copied from
+             */
             base_query &operator=(const base_query &other);
 
+            /*!
+             * @param other the query being moved
+             */
             base_query &operator=(base_query && other);
 
             /*!
@@ -90,14 +109,29 @@ namespace arg3
              */
             base_query &bind(size_t index, const void *data, size_t size, void(* pFree)(void *) = SQLITE_STATIC);
 
+            /*!
+             * binds a sql_blob type to a parameterized query
+             */
             base_query &bind(size_t index, const sql_blob &value);
 
+            /*!
+             * binds a null type to a parameterized query
+             */
             base_query &bind(size_t index, const sql_null_t &value);
 
+            /*!
+             * binds an arbitrary sql value to a parameterized query
+             */
             base_query &bind_value(size_t index, const sql_value &v);
 
+            /*!
+             * returns the last error the query encountered, if any
+             */
             string last_error();
 
+            /*!
+             * returns the number of affected rows by the query after execution
+             */
             int last_number_of_changes();
 
         };
@@ -105,6 +139,9 @@ namespace arg3
     }
 
 
+    /*!
+     * utility method used in creating sql
+     */
     template<typename T>
     string join_csv(vector<T> list)
     {
@@ -122,6 +159,9 @@ namespace arg3
         return buf.str();
     }
 
+    /*!
+     * utility method used in creating sql
+     */
     string join_csv(std::string::value_type c, size_t count);
 
 }
@@ -129,6 +169,9 @@ namespace arg3
 
 namespace std
 {
+    /*!
+     * returns a string representation of a query
+     */
     string to_string(const arg3::db::base_query &query);
 }
 

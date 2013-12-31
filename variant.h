@@ -412,6 +412,7 @@ namespace thenewcpp
         };
 
     public:
+        // Added - RJ
         constexpr static size_t Size = sizeof...(Types) + 1;
         Variant()
         {

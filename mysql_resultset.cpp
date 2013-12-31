@@ -10,7 +10,7 @@ namespace arg3
 
         mysql_resultset::mysql_resultset(mysql_db *db, MYSQL_RES *res) : res_(res), row_(NULL), db_(db), refcount_(new unsigned(0))
         {
-
+            assert(res_ != NULL);
         }
 
         mysql_resultset::mysql_resultset(const mysql_resultset &other) : res_(other.res_), row_(other.row_), db_(other.db_), refcount_(other.refcount_)
@@ -97,8 +97,7 @@ namespace arg3
 
         void mysql_resultset::reset()
         {
-            if (res_ != NULL)
-                mysql_data_seek(res_, 0);
+            mysql_data_seek(res_, 0);
         }
 
         row mysql_resultset::current_row()
@@ -119,6 +118,8 @@ namespace arg3
         mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, MYSQL_STMT *stmt) : stmt_(stmt), metadata_(NULL), db_(db),
             bindings_(NULL), columnCount_(0), refcount_(new unsigned(0)), status_(-1)
         {
+            assert(stmt_ != NULL);
+            assert(db_ != NULL);
         }
 
         mysql_stmt_resultset::mysql_stmt_resultset(const mysql_stmt_resultset &other) : stmt_(other.stmt_), metadata_(other.metadata_),
@@ -150,6 +151,7 @@ namespace arg3
 
                     if (*refcount_ != 0)
                     {
+                        // don't free anything yet if we have more than one copy reference
                         return;
                     }
                 }
@@ -221,7 +223,7 @@ namespace arg3
             return *this;
         }
 
-        void mysql_stmt_resultset::get_results()
+        void mysql_stmt_resultset::prepare_results()
         {
             if (stmt_ == NULL || bindings_ != NULL || status_ != -1)
                 return;
@@ -231,6 +233,7 @@ namespace arg3
                 throw database_exception(last_stmt_error(stmt_));
             }
 
+            // get information about the results
             metadata_ = mysql_stmt_result_metadata(stmt_);
 
             if (metadata_ == NULL)
@@ -244,6 +247,7 @@ namespace arg3
 
             for (auto i = 0; i < columnCount_; i++)
             {
+                // get the right field types for mysql_stmt_bind_result()
                 switch (fields[i].type)
                 {
                 case MYSQL_TYPE_INT24:
@@ -317,41 +321,10 @@ namespace arg3
 
         void mysql_stmt_resultset::reset()
         {
+            if (stmt_ == NULL) return;
 
-        }
-
-        void print_binding(MYSQL_BIND *field)
-        {
-            switch (field->buffer_type)
-            {
-            case MYSQL_TYPE_TINY:
-            case MYSQL_TYPE_SHORT:
-            case MYSQL_TYPE_LONG:
-                printf("int %d", *((int *) field->buffer));
-                break;
-            case MYSQL_TYPE_LONGLONG:
-                printf("int64 %lld", *((int64_t *) field->buffer));
-                break;
-            case MYSQL_TYPE_FLOAT:
-            case MYSQL_TYPE_DOUBLE:
-                printf("float %f", *((double *) field->buffer));
-                break;
-            case MYSQL_TYPE_TIME:
-            case MYSQL_TYPE_DATE:
-            case MYSQL_TYPE_DATETIME:
-            case  MYSQL_TYPE_TIMESTAMP:
-                printf("time %ld", *((time_t *) field->buffer));
-                break;
-            case MYSQL_TYPE_STRING:
-                printf("string %s", (char *) field->buffer);
-                break;
-            case MYSQL_TYPE_NULL:
-                printf("null");
-            default:
-                printf("%p", field->buffer);
-                break;
-            }
-            printf(" (%ld)\n", field->length ? *field->length : field->buffer_length);
+            if (mysql_stmt_reset(stmt_))
+                throw database_exception(last_stmt_error(stmt_));
         }
 
         row mysql_stmt_resultset::current_row()

@@ -10,6 +10,10 @@ namespace arg3
 {
     namespace db
     {
+        /*!
+         * a utility class aimed at making logic where statements
+         * ex. where_clause("a = b") || "c == d" && "e == f";
+         */
         class where_clause
         {
         private:
@@ -41,7 +45,7 @@ namespace arg3
 
 
 
-        inline where_clause Q(const char *str)
+        inline where_clause where(const string &str)
         {
             return where_clause(str);
         }
