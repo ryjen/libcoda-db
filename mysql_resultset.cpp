@@ -10,7 +10,7 @@ namespace arg3
 
         mysql_resultset::mysql_resultset(mysql_db *db, MYSQL_RES *res) : res_(res), row_(NULL), db_(db), refcount_(new unsigned(0))
         {
-            assert(res_ != NULL);
+            //assert(res_ != NULL);
         }
 
         mysql_resultset::mysql_resultset(const mysql_resultset &other) : res_(other.res_), row_(other.row_), db_(other.db_), refcount_(other.refcount_)
@@ -299,7 +299,7 @@ namespace arg3
 
             if (status_ == -1)
             {
-                get_results();
+                prepare_results();
 
                 if (status_ == -1)
                     return false;

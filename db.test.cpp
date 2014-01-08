@@ -13,17 +13,25 @@ using namespace std;
 
 using namespace arg3::db;
 
-testsqlite3db testdb1;
-testmysqldb testdb2;
+test_sqlite3_db testdb1;
+test_mysql_db testdb2;
 
+#ifdef TEST_MYSQL
+sqldb *testdb = &testdb2;
+#else
 sqldb *testdb = &testdb1;
+#endif
 
 void setup_testdb()
 {
     try
     {
+#ifdef TEST_SQLITE
         testdb1.setup();
+#endif
+#ifdef TEST_MYSQL
         testdb2.setup();
+#endif
     }
     catch (const std::exception &e)
     {
@@ -34,8 +42,12 @@ void setup_testdb()
 
 void teardown_testdb()
 {
+#ifdef TEST_SQLITE
     testdb1.teardown();
+#endif
+#ifdef TEST_MYSQL
     testdb2.teardown();
+#endif
 }
 
 Context(sqldb_test)

@@ -24,7 +24,7 @@ Context(column_test)
 
     Spec(sqliteValueConstructor)
     {
-
+#if TEST_SQLITE
         sqlite3_stmt *stmt;
 
         try
@@ -57,6 +57,6 @@ Context(column_test)
         c = sqlite3_column(value);
 
         Assert::That(c.type(), Equals(SQLITE_INTEGER));
-
+#endif
     }
 };

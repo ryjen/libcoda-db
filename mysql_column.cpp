@@ -204,8 +204,6 @@ namespace arg3
 
         string mysql_stmt_column::to_string() const
         {
-            assert_value();
-
             if (value_->is_null && *value_->is_null)
                 return string();
 

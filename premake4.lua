@@ -140,7 +140,7 @@ solution "arg3"
 
         includedirs { "vendor" }
 
-        links { "arg3"..package, "sqlite3", "mysql" }
+        links { "arg3"..package, "sqlite3", "mysqlclient" }
           
         buildoptions { "-DTEST_SQLITE" }
 
@@ -162,7 +162,7 @@ solution "arg3"
 
         includedirs { "vendor" }
 
-        links { "arg3"..package, "sqlite3", "mysql" }
+        links { "arg3"..package, "sqlite3", "mysqlclient" }
           
         buildoptions { "-DTEST_MYSQL" }
 
