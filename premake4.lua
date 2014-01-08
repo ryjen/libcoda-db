@@ -65,6 +65,7 @@ newoption {
    trigger     = "prefix",
    description = "Specify prefix for installs"
 }
+
 newaction {
     trigger   = "release",
     description = "builds a release",
@@ -101,78 +102,98 @@ end
 
 solution "arg3"
     configurations { "debug", "release" }
+
     language "C++"
 
     buildoptions { "-std=c++11", "-stdlib=libc++", "-Wall", "-Werror"}
 
     linkoptions { "-stdlib=libc++" }
 
-    includedirs { "vendor" }
+    includedirs { "vendor", "thenewcpp" }
 
     configuration "Debug"
         flags "Symbols"
         targetdir "bin/debug"
         buildoptions { "-g -DARG3_DEBUG" }
+
     configuration "release"
         targetdir "bin/release"
         buildoptions { "-O" }
 
     project ("arg3"..package)
 
-      if not _OPTIONS["shared"] then
+        if not _OPTIONS["shared"] then
           kind "StaticLib"
-      else
-            kind "SharedLib"
-       end
-            files {
-                "**.cpp",
-                "**.h"
-            }
-            excludes {
-                "**.test.cpp"
-            }
+        else
+          kind "SharedLib"
+        end
+
+        files {
+            "**.cpp",
+            "**.h"
+        }
+        excludes {
+            "**.test.cpp",
+            "thenewcpp/**"
+        }
 
     project "sqlitetest"
+
         kind "ConsoleApp"
+
         files {
             "**.test.cpp"
         }
 
-        includedirs { "vendor" }
+        links {
+          "arg3"..package,
+          "sqlite3",
+          "mysqlclient"
+        }
 
-        links { "arg3"..package, "sqlite3", "mysqlclient" }
-          
-        buildoptions { "-DTEST_SQLITE" }
+        buildoptions {
+          "-DTEST_SQLITE"
+        }
 
         configuration "Debug"
 
-        postbuildcommands {
-          "bin/debug/sqlitetest"
-        }
+          postbuildcommands {
+            "bin/debug/sqlitetest"
+          }
+
         configuration "Release"
-        postbuildcommands {
-         "bin/release/sqlitetest"
-        }
+
+          postbuildcommands {
+           "bin/release/sqlitetest"
+          }
 
     project "mysqltest"
+
         kind "ConsoleApp"
+
         files {
             "**.test.cpp"
         }
 
-        includedirs { "vendor" }
+        links {
+          "arg3"..package,
+          "sqlite3",
+          "mysqlclient"
+        }
 
-        links { "arg3"..package, "sqlite3", "mysqlclient" }
-          
-        buildoptions { "-DTEST_MYSQL" }
+        buildoptions {
+          "-DTEST_MYSQL"
+        }
 
         configuration "Debug"
 
-        postbuildcommands {
-          "bin/debug/mysqltest"
-        }
+          postbuildcommands {
+            "bin/debug/mysqltest"
+          }
+
         configuration "Release"
-        postbuildcommands {
-         "bin/release/mysqltest"
-        }
+
+          postbuildcommands {
+           "bin/release/mysqltest"
+          }
 
