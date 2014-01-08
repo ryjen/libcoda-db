@@ -6,3 +6,5 @@ Makefile
 *.make
 *.sublime-workspace
 reinstall.sh
+.deps
+config.h.in~

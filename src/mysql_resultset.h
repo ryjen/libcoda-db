@@ -1,6 +1,11 @@
 #ifndef ARG3_DB_MYSQL_RESULTSET_H_
 #define ARG3_DB_MYSQL_RESULTSET_H_
 
+#include "config.h"
+
+
+#ifdef HAVE_LIBMYSQLCLIENT
+
 #include <mysql/mysql.h>
 #include "resultset.h"
 
@@ -82,5 +87,7 @@ namespace arg3
         };
     }
 }
+
+#endif
 
 #endif

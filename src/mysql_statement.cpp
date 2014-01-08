@@ -1,3 +1,8 @@
+#include "config.h"
+
+
+#ifdef HAVE_LIBMYSQLCLIENT
+
 #include "mysql_statement.h"
 #include "mysql_db.h"
 #include "mysql_resultset.h"
@@ -285,3 +290,5 @@ namespace arg3
         }
     }
 }
+
+#endif

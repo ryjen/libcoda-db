@@ -1,3 +1,7 @@
+#include "config.h"
+
+#ifdef HAVE_LIBMYSQLCLIENT
+
 #include <string>
 #include "mysql_column.h"
 
@@ -216,3 +220,5 @@ namespace arg3
         }
     }
 }
+
+#endif

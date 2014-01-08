@@ -1,3 +1,7 @@
+#include "config.h"
+
+#ifdef HAVE_LIBSQLITE3
+
 #include "sqlite3_column.h"
 
 namespace arg3
@@ -139,3 +143,5 @@ namespace arg3
 
     }
 }
+
+#endif

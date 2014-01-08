@@ -1,6 +1,10 @@
 #ifndef ARG3_DB_SQLITE_COLUMN_H_
 #define ARG3_DB_SQLITE_COLUMN_H_
 
+#include "config.h"
+
+#ifdef HAVE_LIBSQLITE3
+
 #include "column.h"
 
 namespace arg3
@@ -54,5 +58,7 @@ namespace arg3
 
     }
 }
+
+#endif
 
 #endif

@@ -1,6 +1,10 @@
 #ifndef ARG3_DB_MYSQL_STATEMENT_H_
 #define ARG3_DB_MYSQL_STATEMENT_H_
 
+#include "config.h"
+
+#ifdef HAVE_LIBMYSQLCLIENT
+
 #include <mysql/mysql.h>
 
 #include "statement.h"
@@ -51,5 +55,7 @@ namespace arg3
         };
     }
 }
+
+#endif
 
 #endif

@@ -1,6 +1,10 @@
 #ifndef ARG3_DB_SQLITE_SQLDB_H_
 #define ARG3_DB_SQLITE_SQLDB_H_
 
+#include "config.h"
+
+#ifdef HAVE_LIBSQLITE3
+
 #include "sqldb.h"
 
 namespace arg3
@@ -51,5 +55,7 @@ namespace arg3
         };
     }
 }
+
+#endif
 
 #endif
