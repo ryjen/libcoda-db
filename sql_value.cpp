@@ -152,7 +152,7 @@ namespace arg3
             if (!apply_visitor(sql_exists_visitor<sql_blob>(), value_))
                 return sql_blob(NULL, 0, NULL);
 
-            return thenewcpp::get<sql_blob>(value_);
+            return Juice::get<sql_blob>(value_);
         }
 
         std::ostream &operator<<(std::ostream &out, const sql_value &value)

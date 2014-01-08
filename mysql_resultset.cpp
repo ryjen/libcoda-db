@@ -325,6 +325,8 @@ namespace arg3
 
             if (mysql_stmt_reset(stmt_))
                 throw database_exception(last_stmt_error(stmt_));
+
+            status_ = -1;
         }
 
         row mysql_stmt_resultset::current_row()

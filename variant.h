@@ -1,6 +1,8 @@
 /* A tagged union variant class.
    Copyright (C) 2013 Jarryd Beck
 
+This file is part of Juice.
+
 Distributed under the Boost Software License, Version 1.0
 
 Permission is hereby granted, free of charge, to any person or organization
@@ -33,16 +35,8 @@ do so, all subject to the following:
  * boost::variant, but replaces it with C++11 features.
  */
 
-/*
- * Original source:
- * http://thenewcpp.wordpress.com/2012/02/15/variadic-templates-part-3-or-how-i-wrote-a-variant-class/
- *
- * Modifications by Ryan Jennings (arg3.com)
- * 07-12-2013: added Variant::Size constant
- */
-
-#ifndef VARIANT_HPP_INCLUDED
-#define VARIANT_HPP_INCLUDED
+#ifndef JUICE_VARIANT_HPP_INCLUDED
+#define JUICE_VARIANT_HPP_INCLUDED
 
 #include <cassert>
 #include <functional>
@@ -52,8 +46,13 @@ do so, all subject to the following:
 
 #include "mpl.h"
 
-namespace thenewcpp
+namespace Juice
 {
+    namespace MPL
+    {
+        struct true_ {};
+        struct false_ {};
+    }
 
     template <typename T>
     class recursive_wrapper
@@ -124,6 +123,12 @@ namespace thenewcpp
             return *this;
         }
 
+        bool
+        operator==(const recursive_wrapper &rhs) const
+        {
+            return *m_t == *rhs.m_t;
+        }
+
         T &get()
         {
             return *m_t;
@@ -144,9 +149,6 @@ namespace thenewcpp
         }
     };
 
-    struct true_ {};
-    struct false_ {};
-
     namespace detail
     {
         template <typename T, typename Internal>
@@ -158,14 +160,14 @@ namespace thenewcpp
 
         template <typename T>
         T &
-        get_value(recursive_wrapper<T> &t, const false_ &)
+        get_value(recursive_wrapper<T> &t, const MPL::false_ &)
         {
             return t.get();
         }
 
         template <typename T>
         const T &
-        get_value(const recursive_wrapper<T> &t, const false_ &)
+        get_value(const recursive_wrapper<T> &t, const MPL::false_ &)
         {
             return t.get();
         }
@@ -186,8 +188,9 @@ namespace thenewcpp
         typedef typename std::conditional
         <
         std::is_const <
-        typename std::remove_extent <
-        typename std::remove_reference<Storage>::type >::type
+        typename std::remove_pointer <
+        typename std::remove_reference<Storage>::type
+        >::type
         >::value,
         const T,
         T
@@ -367,6 +370,26 @@ namespace thenewcpp
             int m_rhs_which;
         };
 
+        struct equality
+        {
+            typedef bool result_type;
+
+            equality(const Variant &self)
+                : m_self(self)
+            {
+            }
+
+            template <typename Rhs>
+            bool
+            operator()(Rhs &rhs) const
+            {
+                return *reinterpret_cast<Rhs *>(m_self.address()) == rhs;
+            }
+
+        private:
+            const Variant &m_self;
+        };
+
         struct destroyer
         {
             typedef void result_type;
@@ -412,8 +435,7 @@ namespace thenewcpp
         };
 
     public:
-        // Added - RJ
-        constexpr static size_t Size = sizeof...(Types) + 1;
+
         Variant()
         {
             //try to construct First
@@ -492,6 +514,18 @@ namespace thenewcpp
             return *this;
         }
 
+        bool
+        operator==(const Variant &rhs) const
+        {
+            if (which() != rhs.which())
+            {
+                return false;
+            }
+
+            equality eq(*this);
+            return rhs.apply_visitor_internal(eq);
+        }
+
         int which() const
         {
             return m_which;
@@ -501,7 +535,7 @@ namespace thenewcpp
         typename Visitor::result_type
         apply_visitor(Visitor &visitor, Args &&... args)
         {
-            return do_visit<First, Types...>()(Internal(), m_which, m_storage,
+            return do_visit<First, Types...>()(Internal(), m_which, &m_storage,
                                                visitor, std::forward<Args>(args)...);
         }
 
@@ -509,20 +543,15 @@ namespace thenewcpp
         typename Visitor::result_type
         apply_visitor(Visitor &visitor, Args &&... args) const
         {
-            return do_visit<First, Types...>()(Internal(), m_which, m_storage,
+            return do_visit<First, Types...>()(Internal(), m_which, &m_storage,
                                                visitor, std::forward<Args>(args)...);
         }
 
     private:
 
-        //TODO implement with alignas when it is implemented in gcc
-        //alignas(max<Alignof, First, Types...>::value) char[m_size];
-        union
-        {
-            char m_storage[m_size]; //max of size + alignof for each of Types...
-            //the type with the max alignment
-            typename max<Alignof, First, Types...>::type m_align;
-        };
+        typename
+        std::aligned_storage<m_size, max<Alignof, First, Types...>::value>::type
+        m_storage;
 
         int m_which;
 
@@ -535,25 +564,25 @@ namespace thenewcpp
 
         void *address()
         {
-            return m_storage;
+            return &m_storage;
         }
         const void *address() const
         {
-            return m_storage;
+            return &m_storage;
         }
 
         template <typename Visitor>
         typename Visitor::result_type
         apply_visitor_internal(Visitor &visitor)
         {
-            return apply_visitor<true_, Visitor>(visitor);
+            return apply_visitor<MPL::true_, Visitor>(visitor);
         }
 
         template <typename Visitor>
         typename Visitor::result_type
         apply_visitor_internal(Visitor &visitor) const
         {
-            return apply_visitor<true_, Visitor>(visitor);
+            return apply_visitor<MPL::true_, Visitor>(visitor);
         }
 
         void
@@ -568,7 +597,7 @@ namespace thenewcpp
         construct(T &&t)
         {
             typedef typename std::remove_reference<T>::type type;
-            new(m_storage) type(std::forward<T>(t));
+            new(&m_storage) type(std::forward<T>(t));
         }
     };
 
@@ -603,7 +632,7 @@ namespace thenewcpp
     typename Visitor::result_type
     apply_visitor(Visitor &visitor, Visitable &visitable, Args &&... args)
     {
-        return visitable.template apply_visitor<false_>
+        return visitable.template apply_visitor<MPL::false_>
                (visitor, std::forward<Args>(args)...);
     }
 
@@ -611,7 +640,7 @@ namespace thenewcpp
     typename Visitor::result_type
     apply_visitor(const Visitor &visitor, Visitable &visitable, Args &&... args)
     {
-        return visitable.template apply_visitor<false_>
+        return visitable.template apply_visitor<MPL::false_>
                (visitor, std::forward<Args>(args)...);
     }
 
@@ -653,6 +682,37 @@ namespace thenewcpp
         }
 
         return *t;
+    }
+
+    struct visitor_applier
+    {
+        template <typename Visitor, typename Visitable, typename... Args>
+        auto
+        operator()(Visitor &&visitor, Visitable &&visitable, Args &&... args)
+        -> decltype
+        (
+            apply_visitor
+            (
+                std::forward<Visitor>(visitor),
+                std::forward<Visitable>(visitable),
+                std::forward<Args>(args)...
+            )
+        )
+        {
+            return apply_visitor
+                   (
+                       std::forward<Visitor>(visitor),
+                       std::forward<Visitable>(visitable),
+                       std::forward<Args>(args)...
+                   );
+        }
+    };
+
+    template <typename T, typename V>
+    bool
+    variant_is_type(const V &v)
+    {
+        return get<T>(&v) != nullptr;
     }
 
 }

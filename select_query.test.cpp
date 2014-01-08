@@ -76,9 +76,16 @@ Context(select_query_test)
 
         query.bind(1, "Bryan");
 
-        string value = query.execute_scalar<string>();
+        try
+        {
+            string value = query.execute_scalar<string>();
 
-        Assert::That(value, Equals("Bryan"));
+            Assert::That(value, Equals("Bryan"));
+        }
+        catch (const std::exception &e)
+        {
+            cout << e.what() << endl;
+        }
     }
 
 

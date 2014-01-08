@@ -1,6 +1,8 @@
 /* Meta-programming utility.
    Copyright (C) 2013 Jarryd Beck
 
+This file is part of Juice.
+
 Distributed under the Boost Software License, Version 1.0
 
 Permission is hereby granted, free of charge, to any person or organization
@@ -27,18 +29,15 @@ do so, all subject to the following:
 
 */
 
-/*
- * http://thenewcpp.wordpress.com/2012/02/15/variadic-templates-part-3-or-how-i-wrote-a-variant-class/
- */
-
-#ifndef MPL_UTIL_HPP_INCLUDED
-#define MPL_UTIL_HPP_INCLUDED
+#ifndef JUICE_MPL_HPP_INCLUDED
+#define JUICE_MPL_HPP_INCLUDED
 
 #include <type_traits>
 #include <cstdlib>
 
-namespace thenewcpp
+namespace Juice
 {
+
     namespace detail
     {
         template

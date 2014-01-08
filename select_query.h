@@ -68,7 +68,7 @@ namespace arg3
             {
                 auto rs = execute();
 
-                if (rs.begin() == rs.end())
+                if (!rs.is_valid() || rs.begin() == rs.end())
                     return T();
 
                 auto row = rs.begin();

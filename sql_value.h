@@ -58,7 +58,7 @@ namespace arg3
             friend bool operator==(const sql_blob &other, const sql_value &value);
         private:
             // nifty variable template class
-            thenewcpp::Variant<sql_null_t, int, int64_t, double, std::string, sql_blob> value_;
+            Juice::Variant<sql_null_t, int, int64_t, double, std::string, sql_blob> value_;
         public:
             sql_value() : value_(sql_null) {}
 
@@ -205,38 +205,38 @@ namespace arg3
         };
         inline bool operator==(const std::string &other, const sql_value &value)
         {
-            return thenewcpp::apply_visitor(sql_equality_visitor<std::string>(other), value.value_);
+            return Juice::apply_visitor(sql_equality_visitor<std::string>(other), value.value_);
         }
 
         inline bool operator==(int other, const sql_value &value)
         {
-            return thenewcpp::apply_visitor(sql_equality_visitor<int>(other), value.value_);
+            return Juice::apply_visitor(sql_equality_visitor<int>(other), value.value_);
         }
 
         inline bool operator==(int64_t other, const sql_value &value)
         {
-            return thenewcpp::apply_visitor(sql_equality_visitor<int64_t>(other), value.value_);
+            return Juice::apply_visitor(sql_equality_visitor<int64_t>(other), value.value_);
         }
 
         inline bool operator==(double other, const sql_value &value)
         {
-            return thenewcpp::apply_visitor(sql_equality_visitor<double>(other), value.value_);
+            return Juice::apply_visitor(sql_equality_visitor<double>(other), value.value_);
         }
 
         inline bool operator==(const sql_null_t &other, const sql_value &value)
         {
-            return thenewcpp::apply_visitor(sql_equality_visitor<sql_null_t>(other), value.value_);
+            return Juice::apply_visitor(sql_equality_visitor<sql_null_t>(other), value.value_);
         }
 
         inline bool operator==(const sql_blob &other, const sql_value &value)
         {
-            return thenewcpp::apply_visitor(sql_equality_visitor<sql_blob>(other), value.value_);
+            return Juice::apply_visitor(sql_equality_visitor<sql_blob>(other), value.value_);
         }
 
         template<typename T>
         bool sql_value::operator==(const T &other) const
         {
-            return thenewcpp::apply_visitor(sql_equality_visitor<T>(other), value_);
+            return Juice::apply_visitor(sql_equality_visitor<T>(other), value_);
         }
     }
 
