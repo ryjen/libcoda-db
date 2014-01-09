@@ -8,3 +8,11 @@ Makefile
 reinstall.sh
 .deps
 config.h.in~
+*.o
+.libs
+stamp-h1
+*.lo
+*.log
+*.cache
+libtool
+*.la

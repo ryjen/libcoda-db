@@ -4,6 +4,8 @@ SOURCES = arg3.test.cpp base_record.test.cpp column.test.cpp db.test.cpp delete_
 
 AM_CPPFLAGS = -std=c++11 -stdlib=libc++ -Ivendor -Wall -Werror
 
+pkginclude_HEADERS = db.test.h
+
 noinst_PROGRAMS = arg3mysql_test arg3sqlite_test
 
 arg3mysql_test_SOURCES = $(SOURCES)
