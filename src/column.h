@@ -23,6 +23,10 @@ namespace arg3
         {
         public:
 
+            column_impl() = default;
+            column_impl(const column_impl &other) = default;
+            column_impl &operator=(const column_impl &other) = default;
+
             virtual bool is_valid() const = 0;
 
             virtual sql_blob to_blob() const = 0;
@@ -55,11 +59,11 @@ namespace arg3
 
             virtual ~column() = default;
 
-            column(const column &other);
+            column(const column &other) = default;
 
             column(column &&other);
 
-            column &operator=(const column &other);
+            column &operator=(const column &other) = default;
 
             column &operator=(column && other);
 

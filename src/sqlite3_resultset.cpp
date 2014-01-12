@@ -11,8 +11,8 @@ namespace arg3
 
         }
 
-        sqlite3_resultset::sqlite3_resultset(const sqlite3_resultset &other) : stmt_(other.stmt_), db_(other.db_), status_(other.status_)
-        {}
+        //sqlite3_resultset::sqlite3_resultset(const sqlite3_resultset &other) : stmt_(other.stmt_), db_(other.db_), status_(other.status_)
+        //{}
 
         sqlite3_resultset::sqlite3_resultset(sqlite3_resultset &&other) : stmt_(other.stmt_), db_(other.db_), status_(other.status_)
         {
@@ -22,14 +22,14 @@ namespace arg3
 
         sqlite3_resultset::~sqlite3_resultset() {}
 
-        sqlite3_resultset &sqlite3_resultset::operator=(const sqlite3_resultset &other)
+        /*sqlite3_resultset &sqlite3_resultset::operator=(const sqlite3_resultset &other)
         {
             stmt_ = other.stmt_;
             db_ = other.db_;
             status_ = other.status_;
 
             return *this;
-        }
+        }*/
 
         sqlite3_resultset &sqlite3_resultset::operator=(sqlite3_resultset && other)
         {

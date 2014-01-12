@@ -20,11 +20,11 @@ namespace arg3
         protected:
             resultset_impl() = default;
         public:
-            resultset_impl(const resultset_impl &other) = default;
+            resultset_impl(const resultset_impl &other) = delete;
             resultset_impl(resultset_impl &&other) = default;
             virtual ~resultset_impl() = default;
 
-            resultset_impl &operator=(const resultset_impl &other) = default;
+            resultset_impl &operator=(const resultset_impl &other) = delete;
             resultset_impl &operator=(resultset_impl && other) = default;
 
             virtual bool is_valid() const = 0;
@@ -102,11 +102,11 @@ namespace arg3
 
             resultset(shared_ptr<resultset_impl> impl);
 
-            resultset(const resultset &other);
+            resultset(const resultset &other) = delete;
             resultset(resultset &&other);
             virtual ~resultset();
 
-            resultset &operator=(const resultset &other);
+            resultset &operator=(const resultset &other) = delete;
             resultset &operator=(resultset && other);
 
             typedef resultset_iterator iterator;

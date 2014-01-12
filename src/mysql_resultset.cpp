@@ -13,27 +13,28 @@ namespace arg3
     namespace db
     {
 
-        mysql_resultset::mysql_resultset(mysql_db *db, MYSQL_RES *res) : res_(res), row_(NULL), db_(db), refcount_(new unsigned(0))
+        mysql_resultset::mysql_resultset(mysql_db *db, MYSQL_RES *res) : res_(res), row_(NULL), db_(db)//, refcount_(new unsigned(0))
         {
             //assert(res_ != NULL);
         }
 
+        /*
         mysql_resultset::mysql_resultset(const mysql_resultset &other) : res_(other.res_), row_(other.row_), db_(other.db_), refcount_(other.refcount_)
         {
             (*refcount_)++;
-        }
+        }*/
 
-        mysql_resultset::mysql_resultset(mysql_resultset &&other) : res_(other.res_), row_(other.row_), db_(other.db_), refcount_(other.refcount_)
+        mysql_resultset::mysql_resultset(mysql_resultset &&other) : res_(other.res_), row_(other.row_), db_(other.db_)//, refcount_(other.refcount_)
         {
             other.db_ = NULL;
             other.res_ = NULL;
             other.row_ = NULL;
-            other.refcount_ = NULL;
+            //other.refcount_ = NULL;
         }
 
         mysql_resultset::~mysql_resultset()
         {
-            if (refcount_)
+            /*if (refcount_)
             {
                 if (*refcount_ > 0)
                 {
@@ -45,7 +46,7 @@ namespace arg3
 
                 delete refcount_;
                 refcount_ = NULL;
-            }
+            }*/
 
             if (res_ != NULL)
             {
@@ -54,7 +55,7 @@ namespace arg3
             }
         }
 
-        mysql_resultset &mysql_resultset::operator=(const mysql_resultset &other)
+        /*mysql_resultset &mysql_resultset::operator=(const mysql_resultset &other)
         {
             res_ = other.res_;
             db_ = other.db_;
@@ -62,18 +63,18 @@ namespace arg3
             refcount_ = other.refcount_;
             (*refcount_)++;
             return *this;
-        }
+        }*/
 
         mysql_resultset &mysql_resultset::operator=(mysql_resultset && other)
         {
             res_ = other.res_;
             db_ = other.db_;
             row_ = other.row_;
-            refcount_ = other.refcount_;
+            //refcount_ = other.refcount_;
             other.db_ = NULL;
             other.res_ = NULL;
             other.row_ = NULL;
-            other.refcount_ = NULL;
+            //other.refcount_ = NULL;
 
             return *this;
         }
@@ -121,34 +122,34 @@ namespace arg3
         extern string last_stmt_error(MYSQL_STMT *stmt);
 
         mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, MYSQL_STMT *stmt) : stmt_(stmt), metadata_(NULL), db_(db),
-            bindings_(NULL), columnCount_(0), refcount_(new unsigned(0)), status_(-1)
+            bindings_(NULL), columnCount_(0)/*, refcount_(new unsigned(0))*/, status_(-1)
         {
             assert(stmt_ != NULL);
             assert(db_ != NULL);
         }
 
-        mysql_stmt_resultset::mysql_stmt_resultset(const mysql_stmt_resultset &other) : stmt_(other.stmt_), metadata_(other.metadata_),
+        /*mysql_stmt_resultset::mysql_stmt_resultset(const mysql_stmt_resultset &other) : stmt_(other.stmt_), metadata_(other.metadata_),
             db_(other.db_),
             bindings_(other.bindings_), columnCount_(other.columnCount_), refcount_(other.refcount_), status_(other.status_)
         {
             (*refcount_)++;
 
-        }
+        }*/
 
         mysql_stmt_resultset::mysql_stmt_resultset(mysql_stmt_resultset &&other) : stmt_(other.stmt_), metadata_(other.metadata_),
             db_(other.db_),
-            bindings_(other.bindings_), columnCount_(other.columnCount_), refcount_(other.refcount_), status_(other.status_)
+            bindings_(other.bindings_), columnCount_(other.columnCount_), /*refcount_(other.refcount_),*/ status_(other.status_)
         {
             other.db_ = NULL;
             other.stmt_ = NULL;
             other.bindings_ = NULL;
             other.metadata_ = NULL;
-            other.refcount_ = NULL;
+            //other.refcount_ = NULL;
         }
 
         mysql_stmt_resultset::~mysql_stmt_resultset()
         {
-            if (refcount_)
+            /*if (refcount_)
             {
                 if (*refcount_ > 0)
                 {
@@ -163,7 +164,7 @@ namespace arg3
 
                 delete refcount_;
                 refcount_ = NULL;
-            }
+            }*/
 
             if (bindings_)
             {
@@ -196,7 +197,7 @@ namespace arg3
             }
         }
 
-        mysql_stmt_resultset &mysql_stmt_resultset::operator=(const mysql_stmt_resultset &other)
+        /*mysql_stmt_resultset &mysql_stmt_resultset::operator=(const mysql_stmt_resultset &other)
         {
             stmt_ = other.stmt_;
             db_ = other.db_;
@@ -209,7 +210,7 @@ namespace arg3
             (*refcount_)++;
 
             return *this;
-        }
+        }*/
 
         mysql_stmt_resultset &mysql_stmt_resultset::operator=(mysql_stmt_resultset && other)
         {
@@ -218,12 +219,12 @@ namespace arg3
             metadata_ = other.metadata_;
             bindings_ = other.bindings_;
             columnCount_ = other.columnCount_;
-            refcount_ = other.refcount_;
+            //refcount_ = other.refcount_;
             status_ = other.status_;
             other.db_ = NULL;
             other.bindings_ = NULL;
             other.metadata_ = NULL;
-            other.refcount_ = NULL;
+            //other.refcount_ = NULL;
 
             return *this;
         }

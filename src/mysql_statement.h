@@ -26,14 +26,14 @@ namespace arg3
             MYSQL_BIND *bindings_;
             MYSQL_STMT *stmt_;
             size_t bindingSize_;
-            unsigned *refcount_;
+            //unsigned *refcount_;
             void reallocate_bindings(size_t index);
             void bind_params();
         public:
             mysql_statement(mysql_db *db);
-            mysql_statement(const mysql_statement &other);
+            mysql_statement(const mysql_statement &other) = delete;
             mysql_statement(mysql_statement &&other);
-            mysql_statement &operator=(const mysql_statement &other);
+            mysql_statement &operator=(const mysql_statement &other) = delete;
             mysql_statement &operator=(mysql_statement && other);
             virtual ~mysql_statement();
             void prepare(const std::string &sql);

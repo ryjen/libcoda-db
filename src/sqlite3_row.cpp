@@ -15,10 +15,10 @@ namespace arg3
             size_ = sqlite3_column_count(stmt_);
         }
 
-        sqlite3_row::sqlite3_row(const sqlite3_row &other) : row_impl(other), stmt_(other.stmt_), db_(other.db_), size_(other.size_)
-        {}
+        /*sqlite3_row::sqlite3_row(const sqlite3_row &other) : row_impl(other), stmt_(other.stmt_), db_(other.db_), size_(other.size_)
+        {}*/
 
-        sqlite3_row::sqlite3_row(sqlite3_row &&other) : row_impl(other), stmt_(other.stmt_), db_(other.db_), size_(other.size_)
+        sqlite3_row::sqlite3_row(sqlite3_row &&other) : row_impl(std::move(other)), stmt_(other.stmt_), db_(other.db_), size_(other.size_)
         {
             other.stmt_ = NULL;
             other.db_ = NULL;
@@ -26,14 +26,14 @@ namespace arg3
 
         sqlite3_row::~sqlite3_row() {}
 
-        sqlite3_row &sqlite3_row::operator=(const sqlite3_row &other)
+        /*sqlite3_row &sqlite3_row::operator=(const sqlite3_row &other)
         {
             stmt_ = other.stmt_;
             db_ = other.db_;
             size_ = other.size_;
 
             return *this;
-        }
+        }*/
 
         sqlite3_row &sqlite3_row::operator=(sqlite3_row && other)
         {

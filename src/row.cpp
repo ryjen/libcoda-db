@@ -30,6 +30,7 @@ namespace arg3
 
             return *this;
         }
+
         row &row::operator=(row && other)
         {
             impl_ = std::move(other.impl_);

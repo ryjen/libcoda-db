@@ -20,9 +20,9 @@ namespace arg3
             sqlite3_stmt *stmt_;
         public:
             sqlite3_statement(sqlite3_db *db);
-            sqlite3_statement(const sqlite3_statement &other) = default;
+            sqlite3_statement(const sqlite3_statement &other) = delete;
             sqlite3_statement(sqlite3_statement &&other) = default;
-            sqlite3_statement &operator=(const sqlite3_statement &other) = default;
+            sqlite3_statement &operator=(const sqlite3_statement &other) = delete;
             sqlite3_statement &operator=(sqlite3_statement && other) = default;
             virtual ~sqlite3_statement() = default;
             void prepare(const std::string &sql);

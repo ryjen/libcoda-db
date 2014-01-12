@@ -23,10 +23,10 @@ namespace arg3
         public:
 
             sqlite3_column(sqlite3_value *pValue);
-            sqlite3_column(const sqlite3_column &other);
+            sqlite3_column(const sqlite3_column &other) = delete;
             sqlite3_column(sqlite3_column &&other);
             virtual ~sqlite3_column();
-            sqlite3_column &operator=(const sqlite3_column &other);
+            sqlite3_column &operator=(const sqlite3_column &other) = delete;
             sqlite3_column &operator=(sqlite3_column && other);
 
             bool is_valid() const;

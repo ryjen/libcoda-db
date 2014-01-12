@@ -23,9 +23,9 @@ namespace arg3
         public:
             sqlite3_row(sqlite3_db *db, sqlite3_stmt *stmt);
             virtual ~sqlite3_row();
-            sqlite3_row(const sqlite3_row &other);
+            sqlite3_row(const sqlite3_row &other) = delete;
             sqlite3_row(sqlite3_row &&other);
-            sqlite3_row &operator=(const sqlite3_row &other);
+            sqlite3_row &operator=(const sqlite3_row &other) = delete;
             sqlite3_row &operator=(sqlite3_row && other);
 
             string column_name(size_t nPosition) const;

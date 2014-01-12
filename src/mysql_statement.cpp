@@ -33,28 +33,29 @@ namespace arg3
             return buf.str();
         }
 
-        mysql_statement::mysql_statement(mysql_db *db) : db_(db), bindings_(NULL), stmt_(NULL), bindingSize_(0), refcount_(new unsigned(0))
+        mysql_statement::mysql_statement(mysql_db *db) : db_(db), bindings_(NULL), stmt_(NULL), bindingSize_(0)//, refcount_(new unsigned(0))
         {}
 
 
-        mysql_statement::mysql_statement(const mysql_statement &other) : db_(other.db_), bindings_(other.bindings_),
+        /*mysql_statement::mysql_statement(const mysql_statement &other) : db_(other.db_), bindings_(other.bindings_),
             stmt_(other.stmt_), bindingSize_(other.bindingSize_), refcount_(other.refcount_)
         {
             (*refcount_)++;
-        }
+        }*/
+
         mysql_statement::mysql_statement(mysql_statement &&other)
         {
             db_ = other.db_;
             bindings_ = other.bindings_;
             stmt_ = other.stmt_;
             bindingSize_ = other.bindingSize_;
-            refcount_ = other.refcount_;
+            //refcount_ = other.refcount_;
             other.db_ = NULL;
             other.bindings_ = NULL;
             other.stmt_ = NULL;
-            other.refcount_ = NULL;
+            //other.refcount_ = NULL;
         }
-        mysql_statement &mysql_statement::operator=(const mysql_statement &other)
+        /*mysql_statement &mysql_statement::operator=(const mysql_statement &other)
         {
             db_ = other.db_;
             bindings_ = other.bindings_;
@@ -65,26 +66,26 @@ namespace arg3
             (*refcount_)++;
 
             return *this;
-        }
+        }*/
         mysql_statement &mysql_statement::operator=(mysql_statement && other)
         {
             db_ = other.db_;
             bindings_ = other.bindings_;
             stmt_ = other.stmt_;
             bindingSize_ = other.bindingSize_;
-            refcount_ = other.refcount_;
+            //refcount_ = other.refcount_;
 
             other.db_ = NULL;
             other.bindings_ = NULL;
             other.stmt_ = NULL;
-            other.refcount_ = NULL;
+            //other.refcount_ = NULL;
 
             return *this;
         }
 
         mysql_statement::~mysql_statement()
         {
-            if (refcount_)
+            /*if (refcount_)
             {
                 if (*refcount_ > 0)
                 {
@@ -96,7 +97,7 @@ namespace arg3
 
                 delete refcount_;
                 refcount_ = NULL;
-            }
+            }*/
 
             finish();
         }

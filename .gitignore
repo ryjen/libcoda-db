@@ -16,3 +16,7 @@ stamp-h1
 *.cache
 libtool
 *.la
+*.status
+config.h
+arg3mysql_test
+arg3sqlite_test

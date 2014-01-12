@@ -29,11 +29,11 @@ namespace arg3
         public:
             sqlite3_resultset(sqlite3_db *db, sqlite3_stmt *stmt);
 
-            sqlite3_resultset(const sqlite3_resultset &other);
+            sqlite3_resultset(const sqlite3_resultset &other) = delete;
             sqlite3_resultset(sqlite3_resultset &&other);
             virtual ~sqlite3_resultset();
 
-            sqlite3_resultset &operator=(const sqlite3_resultset &other);
+            sqlite3_resultset &operator=(const sqlite3_resultset &other) = delete;
             sqlite3_resultset &operator=(sqlite3_resultset && other);
 
             bool is_valid() const;

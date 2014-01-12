@@ -29,15 +29,15 @@ namespace arg3
             MYSQL_RES *res_;
             MYSQL_ROW row_;
             mysql_db *db_;
-            unsigned *refcount_;
+            //unsigned *refcount_;
         public:
             mysql_resultset(mysql_db *db, MYSQL_RES *res);
 
-            mysql_resultset(const mysql_resultset &other);
+            mysql_resultset(const mysql_resultset &other) = delete;
             mysql_resultset(mysql_resultset &&other);
             virtual ~mysql_resultset();
 
-            mysql_resultset &operator=(const mysql_resultset &other);
+            mysql_resultset &operator=(const mysql_resultset &other) = delete;
             mysql_resultset &operator=(mysql_resultset && other);
 
             bool is_valid() const;
@@ -62,17 +62,17 @@ namespace arg3
             mysql_db *db_;
             MYSQL_BIND *bindings_;
             size_t columnCount_;
-            unsigned *refcount_;
+            //unsigned *refcount_;
             int status_;
             void prepare_results();
         public:
             mysql_stmt_resultset(mysql_db *db, MYSQL_STMT *stmt);
 
-            mysql_stmt_resultset(const mysql_stmt_resultset &other);
+            mysql_stmt_resultset(const mysql_stmt_resultset &other) = delete;
             mysql_stmt_resultset(mysql_stmt_resultset &&other);
             virtual ~mysql_stmt_resultset();
 
-            mysql_stmt_resultset &operator=(const mysql_stmt_resultset &other);
+            mysql_stmt_resultset &operator=(const mysql_stmt_resultset &other) = delete;
             mysql_stmt_resultset &operator=(mysql_stmt_resultset && other);
 
             bool is_valid() const;

@@ -23,7 +23,7 @@ namespace arg3
         mysql_row::mysql_row(const mysql_row &other) : row_impl(other), row_(other.row_), res_(other.res_), db_(other.db_), size_(other.size_)
         {}
 
-        mysql_row::mysql_row(mysql_row &&other) : row_impl(other), row_(other.row_), res_(other.res_), db_(other.db_), size_(other.size_)
+        mysql_row::mysql_row(mysql_row &&other) : row_impl(std::move(other)), row_(other.row_), res_(other.res_), db_(other.db_), size_(other.size_)
         {
             other.row_ = NULL;
             other.db_ = NULL;
@@ -110,7 +110,7 @@ namespace arg3
         mysql_stmt_row::mysql_stmt_row(const mysql_stmt_row &other) : row_impl(other), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_)
         {}
 
-        mysql_stmt_row::mysql_stmt_row(mysql_stmt_row &&other) : row_impl(other), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_)
+        mysql_stmt_row::mysql_stmt_row(mysql_stmt_row &&other) : row_impl(std::move(other)), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_)
         {
             other.fields_ = NULL;
             other.db_ = NULL;
