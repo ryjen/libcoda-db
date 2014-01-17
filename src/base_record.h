@@ -20,7 +20,7 @@ namespace arg3
 
 
         template<typename T>
-        inline vector<T> find_all(shared_ptr<schema> schema)
+        inline vector<shared_ptr<T>> find_all(shared_ptr<schema> schema)
         {
             select_query query(schema);
 
