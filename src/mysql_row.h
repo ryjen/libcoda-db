@@ -38,6 +38,7 @@ namespace arg3
             arg3::db::column column(size_t nPosition) const;
             arg3::db::column column(const string &name) const;
             size_t size() const;
+            bool is_valid() const;
         };
 
         /*!
@@ -63,6 +64,7 @@ namespace arg3
             arg3::db::column column(size_t nPosition) const;
             arg3::db::column column(const string &name) const;
             size_t size() const;
+            bool is_valid() const;
         };
     }
 }

@@ -51,6 +51,7 @@ public:
     void teardown()
     {
         execute("delete from users");
+        execute("ALTER TABLE users AUTO_INCREMENT = 1");
         close();
         schemas()->clear("users");
     }
@@ -80,7 +81,11 @@ public:
 
     user(const user &other) : base_record(other) {}
 
-    user(user &&other) : base_record(other) {}
+    user(user &&other) : base_record(std::move(other)) {}
+
+    ~user()
+    {
+    }
 
     user &operator=(const user &other)
     {
@@ -90,7 +95,7 @@ public:
 
     user &operator=(user && other)
     {
-        base_record<user>::operator=(other);
+        base_record<user>::operator=(std::move(other));
         return *this;
     }
     string to_string()

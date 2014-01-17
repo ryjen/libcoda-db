@@ -19,3 +19,8 @@ arg3sqlite_test_SOURCES = $(SOURCES)
 arg3sqlite_test_CPPFLAGS = -DTEST_SQLITE $(AM_CPPFLAGS)
 
 arg3sqlite_test_LDADD = ../src/libarg3db-0.5.la
+
+
+all-local: arg3mysql_test$(EXEEXT) arg3sqlite_test$(EXEEXT)
+	./arg3mysql_test
+	./arg3sqlite_test

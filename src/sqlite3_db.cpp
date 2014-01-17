@@ -136,7 +136,6 @@ namespace arg3
 
         long long sqlite3_db::last_insert_id() const
         {
-
             return sqlite3_last_insert_rowid(db_);
         }
 

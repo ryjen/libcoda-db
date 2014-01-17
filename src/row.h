@@ -31,6 +31,8 @@ namespace arg3
 
             virtual size_t size() const = 0;
 
+            virtual bool is_valid() const = 0;
+
         };
 
         /*!
@@ -261,6 +263,8 @@ namespace arg3
             size_t size() const;
 
             bool empty() const;
+
+            bool is_valid() const;
         };
 
     }

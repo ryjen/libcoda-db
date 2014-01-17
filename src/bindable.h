@@ -18,7 +18,7 @@ namespace arg3
             virtual bindable &bind(size_t index, double value) = 0;
             virtual bindable &bind(size_t index, const std::string &value, int len = -1) = 0;
             virtual bindable &bind(size_t index, const sql_blob &value) = 0;
-            virtual bindable &bind(size_t index, const sql_null_t &value) = 0;
+            virtual bindable &bind(size_t index, const sql_null_type &value) = 0;
             virtual bindable &bind(size_t index, const void *data, size_t size, void(* pFree)(void *)) = 0;
             virtual bindable &bind_value(size_t index, const sql_value &v) = 0;
         };

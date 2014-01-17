@@ -77,7 +77,7 @@ namespace arg3
 
             for (size_t i = 1; i <= bindings_.size(); i++)
             {
-                auto value = bindings_[i - 1];
+                auto &value = bindings_[i - 1];
 
                 value.bind(stmt_.get(), i);
             }
@@ -87,28 +87,31 @@ namespace arg3
         {
             assert(index > 0);
 
-            bindings_.resize(std::max(index, bindings_.size()));
+            if (index > bindings_.size())
+            {
+                bindings_.resize(index);
+            }
 
             return index - 1;
         }
 
         base_query &base_query::bind(size_t index, const string &value, int len)
         {
-            bindings_[assert_binding_index(index)] = sql_value(len > 0 ? value.substr(0, len) : value);
+            bindings_[assert_binding_index(index)] = len > 0 ? value.substr(0, len) : value;
 
             return *this;
         }
 
         base_query &base_query::bind(size_t index, int value)
         {
-            bindings_[assert_binding_index(index)] = sql_value(value);
+            bindings_[assert_binding_index(index)] = value;
 
             return *this;
         }
 
         base_query &base_query::bind(size_t index, long long value)
         {
-            bindings_[assert_binding_index(index)] = sql_value(value);
+            bindings_[assert_binding_index(index)] = value;
 
             return *this;
         }
@@ -120,21 +123,21 @@ namespace arg3
             return *this;
         }
 
-        base_query &base_query::bind(size_t index, const sql_null_t &value)
+        base_query &base_query::bind(size_t index, const sql_null_type &value)
         {
             return bind(index);
         }
 
         base_query &base_query::bind(size_t index, double value)
         {
-            bindings_[assert_binding_index(index)] = sql_value(value);
+            bindings_[assert_binding_index(index)] = value;
 
             return *this;
         }
 
         base_query &base_query::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
         {
-            bindings_[assert_binding_index(index)] = sql_value(sql_blob(data, size, pFree));
+            bindings_[assert_binding_index(index)] = sql_blob(data, size, pFree);
 
             return *this;
         }
@@ -142,7 +145,7 @@ namespace arg3
 
         base_query &base_query::bind(size_t index, const sql_blob &value)
         {
-            bindings_[assert_binding_index(index)] = sql_value(value);
+            bindings_[assert_binding_index(index)] = value;
 
             return *this;
         }

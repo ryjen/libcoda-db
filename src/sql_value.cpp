@@ -11,7 +11,7 @@ namespace std
         return value.to_string();
     }
 
-    string to_string(const arg3::db::sql_null_t &value)
+    string to_string(const arg3::db::sql_null_type &value)
     {
         return "NULL";
     }
@@ -31,10 +31,50 @@ namespace arg3
 {
     namespace db
     {
-        const sql_null_t sql_null = sql_null_t();
+        const sql_null_type sql_null_type::instance;
 
-        sql_blob::sql_blob(const void *ptr, size_t size, sql_blob::cleanup_method cleanup) : p_(ptr), s_(size), destruct_(cleanup)
+        const sql_null_type sql_null = sql_null_type::instance;
+
+        sql_blob::sql_blob(const void *ptr, size_t size, sql_blob::cleanup_method cleanup) : p_(ptr), s_(size), destruct_(cleanup), references_(new unsigned(0))
         {}
+
+        sql_blob::sql_blob(const sql_blob &other)
+        {
+            copy(other);
+        }
+        sql_blob &sql_blob::operator=(const sql_blob &other)
+        {
+            copy(other);
+            return *this;
+        }
+
+        sql_blob::~sql_blob()
+        {
+            if (references_ && *references_ == 0)
+            {
+                if (p_ != NULL && destruct_ != NULL)
+                {
+                    destruct_(const_cast<void *>(p_));
+                    p_ = NULL;
+                }
+                delete references_;
+                references_ = NULL;
+            }
+            else if (references_)
+            {
+                (*references_)--;
+            }
+        }
+
+        void sql_blob::copy(const sql_blob &other)
+        {
+            p_ = other.p_;
+            s_ = other.s_;
+            destruct_ = other.destruct_;
+            references_ = other.references_;
+            if (references_)
+                (*references_)++;
+        }
 
         const void *sql_blob::ptr() const
         {
@@ -63,7 +103,9 @@ namespace arg3
         }
 
         sql_binding_visitor::sql_binding_visitor(bindable *obj, int index) : obj_(obj), index_(index)
-        {}
+        {
+            assert(obj_ != NULL);
+        }
 
         void sql_binding_visitor::operator()(int value) const
         {
@@ -85,9 +127,41 @@ namespace arg3
         {
             obj_->bind(index_, value);
         }
-        void sql_binding_visitor::operator()(const sql_null_t &value) const
+        void sql_binding_visitor::operator()(const sql_null_type &value) const
         {
             obj_->bind(index_, value);
+        }
+
+        sql_value::sql_value()  : value_(sql_null)
+        {
+        }
+
+        sql_value::sql_value(const sql_value &other) : value_(other.value_)
+        {
+        }
+
+        sql_value::sql_value(const sql_value &&other) : value_(other.value_)
+        {
+        }
+        sql_value &sql_value::operator=(const sql_value &other)
+        {
+            value_ = other.value_;
+            return *this;
+        }
+
+        sql_value &sql_value::operator=(const sql_value && other)
+        {
+            value_ = std::move(other.value_);
+            return *this;
+        }
+
+        sql_value::~sql_value()
+        {
+        }
+
+        bool sql_value::operator==(const sql_value &other) const
+        {
+            return other.to_string() == to_string();
         }
 
         string sql_value::to_string() const
@@ -101,9 +175,9 @@ namespace arg3
         {
             apply_visitor(sql_binding_visitor(obj, index), value_);
         }
-        bool sql_value::operator==(const sql_null_t &other) const
+        bool sql_value::operator==(const sql_null_type &other) const
         {
-            return apply_visitor(sql_exists_visitor<sql_null_t>(), value_);
+            return apply_visitor(sql_exists_visitor<sql_null_type>(), value_);
         }
 
         sql_value::operator std::string() const
@@ -162,7 +236,7 @@ namespace arg3
             return out;
         }
 
-        std::ostream &operator<<(std::ostream &out, const sql_null_t &value)
+        std::ostream &operator<<(std::ostream &out, const sql_null_type &value)
         {
             out << "NULL";
 

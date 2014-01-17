@@ -17,6 +17,8 @@ namespace arg3
 
             assert(row_ != NULL);
 
+            assert(res_ != NULL);
+
             size_ = mysql_num_fields(res);
         }
 
@@ -59,12 +61,16 @@ namespace arg3
         {
             assert(nPosition < size());
 
-            return db::column(make_shared<mysql_column>( res_, row_, nPosition ) );
+            assert(is_valid());
+
+            return db::column( make_shared<mysql_column>( res_, row_, nPosition ) );
         }
 
         column mysql_row::column(const string &name) const
         {
             assert(!name.empty());
+
+            assert(res_ != NULL);
 
             for (size_t i = 0; i < size_; i++)
             {
@@ -82,6 +88,8 @@ namespace arg3
         {
             assert(nPosition < size());
 
+            assert(res_ != NULL);
+
             auto field = mysql_fetch_field_direct(res_, nPosition);
 
             return field->name;
@@ -90,6 +98,11 @@ namespace arg3
         size_t mysql_row::size() const
         {
             return size_;
+        }
+
+        bool mysql_row::is_valid() const
+        {
+            return res_ != NULL && row_ != NULL;
         }
 
 
@@ -104,7 +117,8 @@ namespace arg3
 
             assert(fields_ != NULL);
 
-            size_ = mysql_num_fields(metadata_);
+            if (metadata_ != NULL)
+                size_ = mysql_num_fields(metadata_);
         }
 
         mysql_stmt_row::mysql_stmt_row(const mysql_stmt_row &other) : row_impl(other), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_)
@@ -146,12 +160,16 @@ namespace arg3
         {
             assert(nPosition < size());
 
+            assert(fields_ != NULL);
+
             return db::column(make_shared<mysql_stmt_column>( &fields_[nPosition] ) );
         }
 
         column mysql_stmt_row::column(const string &name) const
         {
             assert(!name.empty());
+
+            assert(metadata_ != NULL);
 
             for (size_t i = 0; i < size_; i++)
             {
@@ -169,6 +187,8 @@ namespace arg3
         {
             assert(nPosition < size());
 
+            assert(metadata_ != NULL);
+
             auto field = mysql_fetch_field_direct(metadata_, nPosition);
 
             return field->name;
@@ -177,6 +197,11 @@ namespace arg3
         size_t mysql_stmt_row::size() const
         {
             return size_;
+        }
+
+        bool mysql_stmt_row::is_valid() const
+        {
+            return fields_ != NULL && metadata_ != NULL;
         }
     }
 }

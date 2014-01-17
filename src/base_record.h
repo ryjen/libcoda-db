@@ -18,6 +18,56 @@ namespace arg3
         class record_db;
         class row;
 
+
+        template<typename T>
+        inline vector<T> find_all(shared_ptr<schema> schema)
+        {
+            select_query query(schema);
+
+            auto results = query.execute();
+
+            /* convert sql rows to objects */
+            vector<shared_ptr<T>> items;
+
+            if (!results.is_valid())
+                return items;
+
+            for (auto & row : results)
+            {
+                if (row.is_valid())
+                    items.push_back(make_shared<T>(row));
+            }
+
+            return items;
+        }
+
+        template<typename T, typename V>
+        inline vector<shared_ptr<T>> find_by(shared_ptr<schema> schema, const string &name, const V &value)
+        {
+            select_query query(schema);
+
+            query.where(name + " = ?");
+
+            query.bind(1, value);
+
+            auto results = query.execute();
+
+            /* convert sql rows to objects */
+            vector<shared_ptr<T>> items;
+
+            if (!results.is_valid())
+                return items;
+
+            for (auto & row : results)
+            {
+                if (row.is_valid())
+                    items.push_back(make_shared<T>(row));
+            }
+
+            return items;
+        }
+
+
         /*!
          * an active-record (ish) pattern
          */
@@ -26,7 +76,7 @@ namespace arg3
         {
         private:
             std::shared_ptr<schema> schema_;
-            map<string, sql_value> values_;
+            std::unordered_map<string, sql_value> values_;
             string idColumnName_;
         public:
 
@@ -99,13 +149,13 @@ namespace arg3
             /*!
              * move constructor
              */
-            base_record(base_record &&other) : schema_(other.schema_), values_(std::move(other.values_)), idColumnName_(std::move(other.idColumnName_))
+            base_record(base_record &&other) : schema_(std::move(other.schema_)), values_(std::move(other.values_)), idColumnName_(std::move(other.idColumnName_))
             {
+                other.schema_ = nullptr;
             }
 
             virtual ~base_record()
             {
-
             }
 
             /*!
@@ -155,9 +205,11 @@ namespace arg3
              */
             void init(const row &values)
             {
+                if (!values.is_valid()) return;
+
                 for (auto v = values.begin(); v != values.end(); v++)
                 {
-                    set(v.name(), (*v).to_value());
+                    set(v.name(), v->to_value());
                 }
             }
 
@@ -205,8 +257,8 @@ namespace arg3
                 }
 
                 return query.execute();
-
             }
+
 
             /*!
              * gets a value specified by column name
@@ -214,7 +266,9 @@ namespace arg3
             sql_value get(const string &name) const
             {
                 if (!has(name))
-                    return sql_value();
+                {
+                    return sql_null;
+                }
 
                 return values_.at(name);
             }
@@ -224,7 +278,6 @@ namespace arg3
              */
             bool has(const string &name) const
             {
-
                 return values_.size() > 0 && values_.count(name) > 0;
             }
 
@@ -250,19 +303,7 @@ namespace arg3
 
             vector<shared_ptr<T>> find_all()
             {
-                auto query = select_query(schema());
-
-                auto results = query.execute();
-
-                /* convert sql rows to objects */
-                vector<shared_ptr<T>> items;
-
-                for (auto & row : results)
-                {
-                    items.push_back(make_shared<T>(row));
-                }
-
-                return items;
+                return arg3::db::find_all<T>(schema());
             }
 
             /*!
@@ -271,7 +312,7 @@ namespace arg3
             template<typename V>
             shared_ptr<T> find_by_id(V value)
             {
-                auto query = select_query(schema());
+                select_query query(schema());
 
                 query.where(idColumnName_ + " = ?");
 
@@ -295,23 +336,7 @@ namespace arg3
             template<typename V>
             vector<shared_ptr<T>> find_by(const string &name, const V &value)
             {
-                auto query = select_query(schema());
-
-                query.where(name + " = ?");
-
-                query.bind(1, value);
-
-                auto results = query.execute();
-
-                /* convert sql rows to objects */
-                vector<shared_ptr<T>> items;
-
-                for (auto & row : results)
-                {
-                    items.push_back(make_shared<T>(row));
-                }
-
-                return items;
+                return arg3::db::find_by<T, V>(schema(), name, value);
             }
 
             /*!
@@ -327,7 +352,7 @@ namespace arg3
              */
             bool refresh_by(const string &name)
             {
-                auto query = select_query(schema());
+                select_query query(schema());
 
                 query.where(name + " = ?");
 
@@ -350,7 +375,7 @@ namespace arg3
              */
             bool de1ete()
             {
-                auto query = delete_query(schema());
+                delete_query query(schema());
 
                 query.where(idColumnName_ + " = ?");
 
@@ -359,6 +384,7 @@ namespace arg3
                 return query.execute();
             }
         };
+
 
     }
 

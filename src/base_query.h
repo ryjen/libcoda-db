@@ -107,7 +107,7 @@ namespace arg3
             /*!
              * binds bytes to a parameterized query
              */
-            base_query &bind(size_t index, const void *data, size_t size, void(* pFree)(void *) = SQLITE_STATIC);
+            base_query &bind(size_t index, const void *data, size_t size, void(* pFree)(void *));
 
             /*!
              * binds a sql_blob type to a parameterized query
@@ -117,7 +117,7 @@ namespace arg3
             /*!
              * binds a null type to a parameterized query
              */
-            base_query &bind(size_t index, const sql_null_t &value);
+            base_query &bind(size_t index, const sql_null_type &value);
 
             /*!
              * binds an arbitrary sql value to a parameterized query

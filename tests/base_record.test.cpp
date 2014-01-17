@@ -42,7 +42,7 @@ Context(base_record_test)
 
             Assert::That(user1.save(), Equals(true));
 
-            user1.refresh(); // load values back up from db
+            Assert::That(user1.refresh(), Equals(true)); // load values back up from db
 
             Assert::That(user1.get("first_name"), Equals("Bryan"));
 
@@ -84,17 +84,16 @@ Context(base_record_test)
     {
         user u1;
 
-        u1.set("first_name", "Bob");
+        u1.set("first_name", "John");
         u1.set("last_name", "Jenkins");
 
         Assert::That(u1.save(), Equals(true));
 
-        auto res = user().find_by("first_name", "Bob");
+        auto res = u1.find_by("first_name", "John");
 
-        Assert::That(res.size(), Equals(1));
+        Assert::That(res.size() > 0, Equals(true));
 
-        Assert::That(res[0]->get("first_name"), Equals("Bob"));
-
+        Assert::That(res[0]->get("first_name"), Equals("John"));
     }
 
     Spec(refresh_by)

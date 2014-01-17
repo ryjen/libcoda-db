@@ -59,11 +59,11 @@ namespace arg3
 
             virtual ~column() = default;
 
-            column(const column &other) = default;
+            column(const column &other);
 
             column(column &&other);
 
-            column &operator=(const column &other) = default;
+            column &operator=(const column &other);
 
             column &operator=(column && other);
 

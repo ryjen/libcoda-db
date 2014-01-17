@@ -22,7 +22,8 @@ namespace arg3
         }
 
         row::~row()
-        {}
+        {
+        }
 
         row &row::operator=(const row &other)
         {
@@ -133,6 +134,11 @@ namespace arg3
         bool row::empty() const
         {
             return size() == 0;
+        }
+
+        bool row::is_valid() const
+        {
+            return impl_->is_valid();
         }
     }
 }

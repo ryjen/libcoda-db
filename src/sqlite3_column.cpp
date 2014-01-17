@@ -13,18 +13,9 @@ namespace arg3
         {
         }
 
-        //sqlite3_column::sqlite3_column(const sqlite3_column &other) : value_(other.value_) {}
-
         sqlite3_column::sqlite3_column(sqlite3_column &&other) : value_(std::move(other.value_)) {}
 
         sqlite3_column::~sqlite3_column() {}
-
-        /*sqlite3_column &sqlite3_column::operator=(const sqlite3_column &other)
-        {
-            value_ = other.value_;
-
-            return *this;
-        }*/
 
         sqlite3_column &sqlite3_column::operator=(sqlite3_column && other)
         {
@@ -50,7 +41,7 @@ namespace arg3
         {
             assert_value();
 
-            return sql_blob(sqlite3_value_blob(value_), sqlite3_value_bytes(value_), SQLITE_STATIC);
+            return sql_blob(sqlite3_value_blob(value_), sqlite3_value_bytes(value_), NULL);
         }
 
         double sqlite3_column::to_double() const

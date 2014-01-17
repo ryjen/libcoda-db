@@ -22,12 +22,11 @@ namespace arg3
         class schema_factory
         {
         private:
-            std::unordered_map<string, std::weak_ptr<schema>> schema_cache_;
+            std::unordered_map<string, std::shared_ptr<schema>> schema_cache_;
 
             sqldb *db_;
 
             shared_ptr<schema> create(const string &tableName);
-
         public:
             schema_factory(sqldb *db);
 
@@ -39,8 +38,6 @@ namespace arg3
 
             schema_factory &operator=(const schema_factory &other);
             std::shared_ptr<schema> get(const string &tableName);
-
-            void unregister(schema *p);
 
             void clear(const string &tablename);
         };

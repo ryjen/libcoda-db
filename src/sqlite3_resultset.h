@@ -21,14 +21,10 @@ namespace arg3
             friend class resultset_iterator;
         private:
             sqlite3_stmt *stmt_;
-
             sqlite3_db *db_;
-
             int status_;
-
         public:
             sqlite3_resultset(sqlite3_db *db, sqlite3_stmt *stmt);
-
             sqlite3_resultset(const sqlite3_resultset &other) = delete;
             sqlite3_resultset(sqlite3_resultset &&other);
             virtual ~sqlite3_resultset();

@@ -10,7 +10,7 @@ namespace arg3
 
         shared_ptr<schema> schema_factory::create(const string &tableName)
         {
-            shared_ptr<schema> p(new schema(tableName), std::bind(&schema_factory::unregister, this, std::placeholders::_1));
+            shared_ptr<schema> p = make_shared<schema>(tableName);
             schema_cache_[tableName] = p;
             p->init(db_);
             return p;
@@ -35,13 +35,13 @@ namespace arg3
             assert(db != NULL);
         }
 
-        schema_factory::schema_factory(schema_factory &&other) : schema_cache_(std::move(other.schema_cache_)), db_(std::move(other.db_))
+        schema_factory::schema_factory(schema_factory &&other) : schema_cache_(std::move(other.schema_cache_)), db_(other.db_)
         {}
 
         schema_factory &schema_factory::operator=(schema_factory && other)
         {
             schema_cache_ = std::move(other.schema_cache_);
-            db_ = std::move(other.db_);
+            db_ = other.db_;
 
             other.db_ = NULL;
 
@@ -57,23 +57,8 @@ namespace arg3
             }
             else
             {
-                shared_ptr<schema> p = i->second.lock();
-                if (p == nullptr)
-                {
-                    p = create(tableName);
-                }
-
-                return p;
+                return i->second;
             }
-        }
-
-        void schema_factory::unregister(schema *p)
-        {
-            if (p == NULL) return;
-
-            auto id = p->table_name();
-            schema_cache_.erase(id);
-            delete p;
         }
 
         void schema_factory::clear(const string &tablename)

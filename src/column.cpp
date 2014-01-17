@@ -12,20 +12,20 @@ namespace arg3
 
         }
 
-        /*column::column(const column &other) : impl_(other.impl_)
-        {}*/
+        column::column(const column &other) : impl_(other.impl_)
+        {}
 
         column::column(column &&other) : impl_(std::move(other.impl_))
         {
             other.impl_ = nullptr;
         }
 
-        /*column &column::operator=(const column &other)
+        column &column::operator=(const column &other)
         {
             impl_ = other.impl_;
 
             return *this;
-        }*/
+        }
 
         column &column::operator=(column && other)
         {

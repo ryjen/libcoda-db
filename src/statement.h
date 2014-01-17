@@ -22,6 +22,7 @@ namespace arg3
             virtual bool result() = 0;
             virtual int last_number_of_changes() = 0;
             virtual string last_error() = 0;
+            virtual long long last_insert_id() = 0;
         };
     }
 }

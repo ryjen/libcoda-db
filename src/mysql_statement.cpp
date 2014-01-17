@@ -25,6 +25,9 @@ namespace arg3
 
         string last_stmt_error(MYSQL_STMT *stmt)
         {
+
+            if (!stmt) return "invalid";
+
             ostringstream buf;
 
             buf << mysql_stmt_errno(stmt);
@@ -33,15 +36,8 @@ namespace arg3
             return buf.str();
         }
 
-        mysql_statement::mysql_statement(mysql_db *db) : db_(db), bindings_(NULL), stmt_(NULL), bindingSize_(0)//, refcount_(new unsigned(0))
+        mysql_statement::mysql_statement(mysql_db *db) : db_(db), bindings_(NULL), stmt_(NULL), bindingSize_(0)
         {}
-
-
-        /*mysql_statement::mysql_statement(const mysql_statement &other) : db_(other.db_), bindings_(other.bindings_),
-            stmt_(other.stmt_), bindingSize_(other.bindingSize_), refcount_(other.refcount_)
-        {
-            (*refcount_)++;
-        }*/
 
         mysql_statement::mysql_statement(mysql_statement &&other)
         {
@@ -49,62 +45,33 @@ namespace arg3
             bindings_ = other.bindings_;
             stmt_ = other.stmt_;
             bindingSize_ = other.bindingSize_;
-            //refcount_ = other.refcount_;
             other.db_ = NULL;
             other.bindings_ = NULL;
             other.stmt_ = NULL;
-            //other.refcount_ = NULL;
         }
-        /*mysql_statement &mysql_statement::operator=(const mysql_statement &other)
-        {
-            db_ = other.db_;
-            bindings_ = other.bindings_;
-            stmt_ = other.stmt_;
-            bindingSize_ = other.bindingSize_;
-            refcount_ = other.refcount_;
 
-            (*refcount_)++;
-
-            return *this;
-        }*/
         mysql_statement &mysql_statement::operator=(mysql_statement && other)
         {
             db_ = other.db_;
             bindings_ = other.bindings_;
             stmt_ = other.stmt_;
             bindingSize_ = other.bindingSize_;
-            //refcount_ = other.refcount_;
 
             other.db_ = NULL;
             other.bindings_ = NULL;
             other.stmt_ = NULL;
-            //other.refcount_ = NULL;
 
             return *this;
         }
 
         mysql_statement::~mysql_statement()
         {
-            /*if (refcount_)
-            {
-                if (*refcount_ > 0)
-                {
-                    (*refcount_)--;
-
-                    if (*refcount_ != 0)
-                        return;
-                }
-
-                delete refcount_;
-                refcount_ = NULL;
-            }*/
-
             finish();
         }
 
         void mysql_statement::prepare(const string &sql)
         {
-            if (stmt_ != NULL || !db_->is_open()) return;
+            if (stmt_ != NULL || db_ == NULL || !db_->is_open()) return;
 
             stmt_ = mysql_stmt_init(db_->db_);
 
@@ -121,7 +88,7 @@ namespace arg3
         {
             assert(index > 0);
 
-            if (index < bindingSize_)
+            if (index <= bindingSize_)
                 return;
 
             // dynamic array of parameter values
@@ -132,12 +99,12 @@ namespace arg3
             else
             {
                 bindings_ = static_cast<MYSQL_BIND *>(realloc(bindings_, sizeof(MYSQL_BIND) * (index)));
-            }
 
-            // make sure new values are initialized
-            for (size_t i = bindingSize_; i < index; i++)
-            {
-                memset(&bindings_[i], 0, sizeof(MYSQL_BIND));
+                // make sure new values are initialized
+                for (size_t i = bindingSize_; i < index; i++)
+                {
+                    memset(&bindings_[i], 0, sizeof(MYSQL_BIND));
+                }
             }
 
             bindingSize_ = index;
@@ -193,7 +160,7 @@ namespace arg3
 
             return *this;
         }
-        mysql_statement &mysql_statement::bind(size_t index, const sql_null_t &value)
+        mysql_statement &mysql_statement::bind(size_t index, const sql_null_type &value)
         {
             reallocate_bindings(index);
             bindings_[index].buffer_type = MYSQL_TYPE_NULL;
@@ -225,7 +192,7 @@ namespace arg3
             if (bindings_)
             {
                 if (mysql_stmt_bind_param(stmt_, bindings_))
-                    throw database_exception(db_->last_error());
+                    throw database_exception(last_error());
             }
         }
 
@@ -254,7 +221,7 @@ namespace arg3
 
         string mysql_statement::last_error()
         {
-            return std::move(last_stmt_error(stmt_));
+            return last_stmt_error(stmt_);
         }
 
         void mysql_statement::finish()
@@ -286,8 +253,15 @@ namespace arg3
 
         void mysql_statement::reset()
         {
-            if (mysql_stmt_reset(stmt_))
-                throw database_exception(db_->last_error());
+            if (!stmt_ || mysql_stmt_reset(stmt_))
+                throw database_exception(last_error());
+        }
+
+        long long mysql_statement::last_insert_id()
+        {
+            if (stmt_ == NULL) return 0;
+
+            return mysql_stmt_insert_id(stmt_);
         }
     }
 }

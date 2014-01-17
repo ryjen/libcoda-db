@@ -18,7 +18,7 @@ namespace arg3
 
         mysql_column::mysql_column(const mysql_column &other) : value_(other.value_), res_(other.res_), index_(other.index_) {}
 
-        mysql_column::mysql_column(mysql_column &&other) : value_(std::move(other.value_)), res_(other.res_), index_(other.index_)
+        mysql_column::mysql_column(mysql_column &&other) : value_(other.value_), res_(other.res_), index_(other.index_)
         {
             other.value_ = NULL;
             other.res_ = NULL;
@@ -37,7 +37,7 @@ namespace arg3
 
         mysql_column &mysql_column::operator=(mysql_column && other)
         {
-            value_ = std::move(other.value_);
+            value_ = other.value_;
             index_ = other.index_;
             res_ = other.res_;
 
@@ -54,6 +54,8 @@ namespace arg3
 
         sql_blob mysql_column::to_blob() const
         {
+            assert(res_ != NULL && value_ != NULL);
+
             auto lengths = mysql_fetch_lengths(res_);
 
             void *buf = calloc(1, lengths[index_]);
@@ -104,6 +106,8 @@ namespace arg3
 
         int mysql_column::type() const
         {
+            assert(res_ != NULL);
+
             auto field = mysql_fetch_field_direct(res_, index_);
 
             return field->type;
@@ -111,6 +115,8 @@ namespace arg3
 
         string mysql_column::to_string() const
         {
+            assert(value_ != NULL);
+
             auto textValue = value_[index_];
 
             if (textValue == NULL)
@@ -129,7 +135,7 @@ namespace arg3
 
         mysql_stmt_column::mysql_stmt_column(const mysql_stmt_column &other) : value_(other.value_) {}
 
-        mysql_stmt_column::mysql_stmt_column(mysql_stmt_column &&other) : value_(std::move(other.value_))
+        mysql_stmt_column::mysql_stmt_column(mysql_stmt_column &&other) : value_(other.value_)
         {
             other.value_ = NULL;
         }
@@ -145,7 +151,7 @@ namespace arg3
 
         mysql_stmt_column &mysql_stmt_column::operator=(mysql_stmt_column && other)
         {
-            value_ = std::move(other.value_);
+            value_ = other.value_;
             other.value_ = NULL;
             return *this;
         }
@@ -165,6 +171,7 @@ namespace arg3
 
         double mysql_stmt_column::to_double() const
         {
+            assert(value_->buffer != NULL);
             return *static_cast<double *>(value_->buffer);
         }
         bool mysql_stmt_column::to_bool() const
@@ -173,11 +180,13 @@ namespace arg3
         }
         int mysql_stmt_column::to_int() const
         {
+            assert(value_->buffer != NULL);
             return *static_cast<int *>(value_->buffer);
         }
 
         int64_t mysql_stmt_column::to_int64() const
         {
+            assert(value_->buffer != NULL);
             return *static_cast<int64_t *>(value_->buffer);
         }
 
@@ -210,6 +219,8 @@ namespace arg3
         {
             if (value_->is_null && *value_->is_null)
                 return string();
+
+            assert(value_->buffer != NULL);
 
             auto textValue = static_cast<char *>(value_->buffer);
 

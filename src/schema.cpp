@@ -16,7 +16,9 @@ namespace arg3
 
         schema::schema(const string &tablename) : tableName_(tablename) {}
 
-        schema::~schema() {}
+        schema::~schema()
+        {
+        }
 
         schema::schema(const schema &other) : db_(other.db_), tableName_(other.tableName_), columns_(other.columns_)
         {}

@@ -147,6 +147,8 @@ namespace arg3
 
         string mysql_db::last_error() const
         {
+            assert(db_ != NULL);
+
             ostringstream buf;
 
             buf << mysql_errno(db_);
@@ -157,22 +159,33 @@ namespace arg3
 
         long long mysql_db::last_insert_id() const
         {
+            assert(db_ != NULL);
+
             return mysql_insert_id(db_);
         }
 
         int mysql_db::last_number_of_changes() const
         {
+            assert(db_ != NULL);
+
             return mysql_affected_rows(db_);
         }
 
         resultset mysql_db::execute(const string &sql)
         {
+            assert(db_ != NULL);
+
             MYSQL_RES *res;
 
             if (mysql_real_query(db_, sql.c_str(), sql.length()))
                 throw database_exception(last_error());
 
             res = mysql_use_result(db_);
+
+            if (res == NULL && mysql_field_count(db_) != 0)
+            {
+                throw database_exception(last_error());
+            }
 
             resultset set(make_shared<mysql_resultset>(this, res));
 

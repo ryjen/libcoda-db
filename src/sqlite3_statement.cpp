@@ -63,7 +63,7 @@ namespace arg3
                 throw binding_error(db_->last_error());
             return *this;
         }
-        sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_null_t &value)
+        sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_null_type &value)
         {
             if (sqlite3_bind_null(stmt_, index) != SQLITE_OK)
                 throw binding_error(db_->last_error());
@@ -105,6 +105,11 @@ namespace arg3
         {
             if (sqlite3_reset(stmt_) != SQLITE_OK)
                 throw database_exception(db_->last_error());
+        }
+
+        long long sqlite3_statement::last_insert_id()
+        {
+            return db_->last_insert_id();
         }
     }
 }

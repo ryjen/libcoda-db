@@ -26,7 +26,6 @@ namespace arg3
             MYSQL_BIND *bindings_;
             MYSQL_STMT *stmt_;
             size_t bindingSize_;
-            //unsigned *refcount_;
             void reallocate_bindings(size_t index);
             void bind_params();
         public:
@@ -43,15 +42,16 @@ namespace arg3
             void finish();
             void reset();
             int last_number_of_changes();
+            long long last_insert_id();
             string last_error();
             mysql_statement &bind(size_t index, int value);
             mysql_statement &bind(size_t index, int64_t value);
             mysql_statement &bind(size_t index, double value);
             mysql_statement &bind(size_t index, const std::string &value, int len = -1);
             mysql_statement &bind(size_t index, const sql_blob &value);
-            mysql_statement &bind(size_t index, const sql_null_t &value);
+            mysql_statement &bind(size_t index, const sql_null_type &value);
             mysql_statement &bind_value(size_t index, const sql_value &v);
-            mysql_statement &bind(size_t index, const void *data, size_t size, void(* pFree)(void *) = SQLITE_STATIC);
+            mysql_statement &bind(size_t index, const void *data, size_t size, void(* pFree)(void *));
         };
     }
 }

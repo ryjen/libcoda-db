@@ -15,24 +15,13 @@ namespace arg3
         }
 
         resultset::~resultset()
-        {}
-
-        /*resultset::resultset(const resultset &other) : impl_(other.impl_)
         {
-
-        }*/
+        }
 
         resultset::resultset(resultset &&other) : impl_(std::move(other.impl_))
         {
             other.impl_ = nullptr;
         }
-
-        /*resultset &resultset::operator=(const resultset &other)
-        {
-            impl_ = other.impl_;
-
-            return *this;
-        }*/
 
         resultset &resultset::operator=(resultset && other)
         {
@@ -92,9 +81,6 @@ namespace arg3
         {
         }
 
-        /*resultset_iterator::resultset_iterator(const resultset_iterator &other) : rs_(other.rs_), pos_(other.pos_), value_(other.value_)
-        {}*/
-
         resultset_iterator::resultset_iterator(resultset_iterator &&other) : rs_(std::move(other.rs_)), pos_(other.pos_),
             value_(std::move(other.value_))
         {
@@ -102,15 +88,6 @@ namespace arg3
         }
 
         resultset_iterator::~resultset_iterator() {}
-
-        /*resultset_iterator &resultset_iterator::operator=(const resultset_iterator &other)
-        {
-            rs_ = other.rs_;
-            pos_ = other.pos_;
-            value_ = other.value_;
-
-            return *this;
-        }*/
 
         resultset_iterator &resultset_iterator::operator=(resultset_iterator && other)
         {
@@ -129,7 +106,7 @@ namespace arg3
 
         resultset_iterator &resultset_iterator::operator++()
         {
-            if (rs_ == nullptr)
+            if (pos_ == -1)
                 return *this;
 
             bool res = rs_->next();
@@ -141,7 +118,6 @@ namespace arg3
             }
             else
             {
-                rs_ = nullptr;
                 pos_ = -1;
             }
 

@@ -23,7 +23,7 @@ Context(delete_query_test)
 
         user user2;
 
-        user2.set("first_name", "Bob");
+        user2.set("first_name", "Mark");
         user2.set("last_name", "Smith");
 
         user2.save();
@@ -40,7 +40,7 @@ Context(delete_query_test)
 
         query.where("first_name = ?");
 
-        query.bind(1, "Bob");
+        query.bind(1, "Mark");
 
         Assert::That(query.execute(), Equals(1));
 

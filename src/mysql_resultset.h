@@ -62,7 +62,6 @@ namespace arg3
             mysql_db *db_;
             MYSQL_BIND *bindings_;
             size_t columnCount_;
-            //unsigned *refcount_;
             int status_;
             void prepare_results();
         public:
