@@ -67,12 +67,20 @@ namespace arg3
             return buf.str();
         }
 
-        int modify_query::execute(bool batch)
+        int modify_query::execute(long long *insertId, bool batch)
         {
             prepare();
 
-            int res = stmt_->result() ? stmt_->last_number_of_changes() : 0;
+            bool success = stmt_->result();
 
+            int res = 0;
+
+            if (success)
+            {
+                res = stmt_->last_number_of_changes();
+                if (insertId)
+                    *insertId = stmt_->last_insert_id();
+            }
             if (!batch)
             {
                 stmt_->finish();

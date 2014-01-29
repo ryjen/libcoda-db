@@ -35,7 +35,7 @@ namespace arg3
 
             string to_string() const;
 
-            int execute(bool batch = false);
+            int execute(long long *insertId = NULL, bool batch = false);
         private:
             vector<string> columns_;
         };

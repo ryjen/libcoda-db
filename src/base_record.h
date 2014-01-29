@@ -240,7 +240,7 @@ namespace arg3
             /*!
              * saves this instance
              */
-            bool save()
+            bool save(long long *insertId = NULL)
             {
                 modify_query query(schema());
 
@@ -256,7 +256,7 @@ namespace arg3
                     index++;
                 }
 
-                return query.execute();
+                return query.execute(insertId);
             }
 
 
