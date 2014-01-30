@@ -29,7 +29,6 @@ namespace arg3
             MYSQL_RES *res_;
             MYSQL_ROW row_;
             mysql_db *db_;
-            //unsigned *refcount_;
         public:
             mysql_resultset(mysql_db *db, MYSQL_RES *res);
 
