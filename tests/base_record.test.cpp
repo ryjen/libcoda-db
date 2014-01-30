@@ -29,9 +29,12 @@ Context(base_record_test)
             user1.set("first_name", "Ryan");
             user1.set("last_name", "Jennings");
 
-            Assert::That(user1.save(), Equals(true));
 
-            user1.set_id(testdb->last_insert_id());
+            long long insertId = 0;
+
+            Assert::That(user1.save(&insertId), Equals(true));
+
+            user1.set_id(insertId);
 
             user1.refresh(); // load values back up from db
 
@@ -78,6 +81,26 @@ Context(base_record_test)
             cerr << "Error2: " << e.what() << endl;
             throw e;
         }
+    }
+
+    Spec(find_all)
+    {
+        user u1;
+        u1.set("first_name", "Barry");
+        u1.set("last_name", "White");
+
+        Assert::That(u1.save(), Equals(true));
+
+        user u2;
+
+        u2.set("first_name", "Bono");
+        u2.set("last_name", "Bono");
+
+        Assert::That(u2.save(), Equals(true));
+
+        auto results = user().find_all();
+
+        Assert::That(results.size(), Equals(2));
     }
 
     Spec(find_by)

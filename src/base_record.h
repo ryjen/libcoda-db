@@ -35,20 +35,24 @@ namespace arg3
             for (auto & row : results)
             {
                 if (row.is_valid())
-                    items.push_back(make_shared<T>(row));
+                {
+                    auto record = make_shared<T>();
+                    record->init(row);
+                    items.push_back(record);
+                }
             }
 
             return items;
         }
 
-        template<typename T, typename V>
-        inline vector<shared_ptr<T>> find_by(shared_ptr<schema> schema, const string &name, const V &value)
+        template<typename T>
+        inline vector<shared_ptr<T>> find_by(shared_ptr<schema> schema, const string &name, const sql_value &value)
         {
             select_query query(schema);
 
             query.where(name + " = ?");
 
-            query.bind(1, value);
+            query.bind_value(1, value);
 
             auto results = query.execute();
 
@@ -61,7 +65,11 @@ namespace arg3
             for (auto & row : results)
             {
                 if (row.is_valid())
-                    items.push_back(make_shared<T>(row));
+                {
+                    auto record = make_shared<T>();
+                    record->init(row);
+                    items.push_back(record);
+                }
             }
 
             return items;
@@ -211,7 +219,12 @@ namespace arg3
                 {
                     set(v.name(), v->to_value());
                 }
+
+                on_record_init();
             }
+
+            virtual void on_record_init()
+            {}
 
             /*!
              * check if the record internals are valid
@@ -309,8 +322,7 @@ namespace arg3
             /*!
              * finds a single record by its id column
              */
-            template<typename V>
-            shared_ptr<T> find_by_id(V value)
+            shared_ptr<T> find_by_id(const sql_value &value)
             {
                 select_query query(schema());
 
@@ -333,10 +345,9 @@ namespace arg3
             /*!
              * find records by a column and its value
              */
-            template<typename V>
-            vector<shared_ptr<T>> find_by(const string &name, const V &value)
+            vector<shared_ptr<T>> find_by(const string &name, const sql_value &value)
             {
-                return arg3::db::find_by<T, V>(schema(), name, value);
+                return arg3::db::find_by<T>(schema(), name, value);
             }
 
             /*!
