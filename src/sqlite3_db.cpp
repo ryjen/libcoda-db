@@ -104,10 +104,14 @@ namespace arg3
 
         void sqlite3_db::open()
         {
+            open(SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_URI);
+        }
 
+        void sqlite3_db::open(int flags)
+        {
             if (db_ != NULL) return;
 
-            if (sqlite3_open(filename_.c_str(), &db_) != SQLITE_OK)
+            if (sqlite3_open_v2(filename_.c_str(), &db_, flags, NULL) != SQLITE_OK)
                 throw database_exception(last_error());
         }
 

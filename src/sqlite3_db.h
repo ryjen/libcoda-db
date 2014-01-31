@@ -33,7 +33,10 @@ namespace arg3
 
             bool is_open() const;
 
+            void open(int flags);
+
             void open();
+
             void close();
 
             long long last_insert_id() const;

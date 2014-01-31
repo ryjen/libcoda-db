@@ -20,12 +20,15 @@ namespace arg3
     {
         class resultset;
 
+        shared_ptr<sqldb> get_db_from_uri(const string &uri);
+
         /*!
          *  a base class for a specific implementation of a database
          */
         class sqldb
         {
         public:
+
             typedef enum
             {
                 NONE, INFO, DEBUG, VERBOSE
