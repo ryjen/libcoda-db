@@ -20,6 +20,22 @@ namespace arg3
     {
         class resultset;
 
+        struct uri
+        {
+        public:
+            uri(const std::string &url)
+            {
+                parse(url);
+            }
+            void parse(const std::string &url);
+            std::string protocol, user, password, host, path, query, value;
+            operator std::string() const
+            {
+                return value;
+            }
+        };
+
+
         shared_ptr<sqldb> get_db_from_uri(const string &uri);
 
         /*!

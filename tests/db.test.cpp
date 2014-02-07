@@ -63,5 +63,23 @@ Context(sqldb_test)
         teardown_testdb();
     }
 
+    Spec(can_parse_uri)
+    {
+        try
+        {
+            auto db = get_db_from_uri("file://test.db");
+
+            Assert::That(dynamic_cast<sqlite3_db *>(db.get()) != NULL, Equals(true));
+        }
+        catch (const std::exception &e)
+        {
+            cerr << e.what() << endl;
+            throw e;
+        }
+
+        // auto db2 = get_db_from_uri("mysql://user@localhost/dbname");
+
+        //Assert::That(dynamic_cast<mysql_db *>(db2.get()) != NULL, Equals(true));
+    }
 };
 
