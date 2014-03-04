@@ -9,9 +9,15 @@ AM_INIT_AUTOMAKE
 LT_INIT
 
 # Checks for programs.
-AC_PROG_CXX
+AC_PROG_CXX([clang++ g++])
 AC_PROG_CC
 AC_PROG_MAKE_SET
+
+if test "x$CXX" = "xclang++"; then
+	AC_SUBST([AM_CPPFLAGS], ["-std=c++11 -stdlib=libc++ -Wall -Werror"])
+else
+	AC_SUBST([AM_CPPFLAGS], ["-std=c++0x -Wall -Werror"])
+fi
 
 # Checks for libraries.
 AC_CHECK_LIB(sqlite3, sqlite3_open)

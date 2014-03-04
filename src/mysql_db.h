@@ -5,7 +5,7 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include <mysql/mysql.h>
+#include <mysql.h>
 #include "sqldb.h"
 
 namespace arg3

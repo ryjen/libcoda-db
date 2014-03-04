@@ -211,6 +211,7 @@ CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
+AM_CPPFLAGS = -std=c++11 -stdlib=libc++ -Ivendor -Wall -Werror
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
@@ -331,7 +332,6 @@ top_srcdir = @top_srcdir@
 SOURCES = arg3.test.cpp base_record.test.cpp column.test.cpp db.test.cpp delete_query.test.cpp modify_query.test.cpp \
 	schema.test.cpp select_query.test.cpp sql_value.test.cpp 
 
-AM_CPPFLAGS = -std=c++11 -stdlib=libc++ -Ivendor -Wall -Werror
 pkginclude_HEADERS = db.test.h
 arg3mysql_test_SOURCES = $(SOURCES)
 arg3mysql_test_CPPFLAGS = -DTEST_MYSQL $(AM_CPPFLAGS)
