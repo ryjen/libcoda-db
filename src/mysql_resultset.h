@@ -6,7 +6,7 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include <mysql.h>
+#include <mysql/mysql.h>
 #include "resultset.h"
 
 namespace arg3

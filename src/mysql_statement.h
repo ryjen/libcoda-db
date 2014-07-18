@@ -5,7 +5,7 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include <mysql.h>
+#include <mysql/mysql.h>
 
 #include "statement.h"
 
