@@ -4,7 +4,7 @@ libarg3db
 
 a sqlite3 and mysql wrapper / active record (ish) implementation
 
-(View Testing Code Coverage)[http://htmlpreview.github.com/?https://github.com/c0der78/arg3db/blob/master/coverage/index.html]
+[View Testing Code Coverage](http://htmlpreview.github.com/?https://github.com/c0der78/arg3db/blob/master/coverage/index.html)
 
 Building
 ========
