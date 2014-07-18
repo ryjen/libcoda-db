@@ -8,6 +8,10 @@ AC_CONFIG_HEADERS([src/config.h])
 AM_INIT_AUTOMAKE
 LT_INIT
 
+: ${CXXFLAGS=""}
+
+AC_CONFIG_MACRO_DIR([m4])
+
 # Checks for programs.
 AC_PROG_CXX([clang++ g++])
 AC_PROG_CC
@@ -18,6 +22,12 @@ if test "x$CXX" = "xclang++"; then
 else
 	AC_SUBST([AM_CPPFLAGS], ["-std=c++0x -Wall -Werror"])
 fi
+
+m4_include([m4/gcov.m4])
+AC_TDD_GCOV
+AC_SUBST(COVERAGE_CFLAGS)
+AC_SUBST(COVERAGE_CXXFLAGS)
+AC_SUBST(COVERAGE_LDFLAGS)
 
 # Checks for libraries.
 AC_CHECK_LIB(sqlite3, sqlite3_open)
