@@ -1,0 +1,342 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - Code Coverage - /Users/ryan/devel/arg3/libarg3/src/db/src/sql_value.h</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">Users/ryan/devel/arg3/libarg3/src/db/src</a> - sql_value.h<span style="font-size: 80%;"> (source / <a href="sql_value.h.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">Code Coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryMed">75.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2014-07-18</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntry">34</td>
+            <td class="headerCovTableEntryLo">41.2 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+</td>
+            <td></td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #ifndef ARG3_DB_SQL_VALUE_H_</a>
+<span class="lineNum">       2 </span>            : #define ARG3_DB_SQL_VALUE_H_
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : #include &quot;variant.h&quot;
+<span class="lineNum">       5 </span>            : #include &lt;iostream&gt;
+<span class="lineNum">       6 </span>            : #include &lt;sqlite3.h&gt;
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : namespace arg3
+<span class="lineNum">       9 </span>            : {
+<span class="lineNum">      10 </span>            :     namespace db
+<span class="lineNum">      11 </span>            :     {
+<span class="lineNum">      12 </span>            :         class sqldb;
+<span class="lineNum">      13 </span>            :         class base_query;
+<span class="lineNum">      14 </span>            :         class bindable;
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :         /*!
+<span class="lineNum">      17 </span>            :          * a wrapper for a blob sql type
+<span class="lineNum">      18 </span>            :          */
+<span class="lineNum">      19 </span>            :         class sql_blob
+<span class="lineNum">      20 </span>            :         {
+<span class="lineNum">      21 </span>            :         public:
+<span class="lineNum">      22 </span>            :             typedef void (*cleanup_method)(void *);
+<span class="lineNum">      23 </span>            :         private:
+<span class="lineNum">      24 </span>            :             const void *p_;
+<span class="lineNum">      25 </span>            :             size_t s_;
+<span class="lineNum">      26 </span>            :             cleanup_method destruct_;
+<span class="lineNum">      27 </span>            :             unsigned *references_;
+<span class="lineNum">      28 </span>            :             void copy(const sql_blob &amp;other);
+<span class="lineNum">      29 </span>            :         public:
+<span class="lineNum">      30 </span>            :             sql_blob(const void *ptr, size_t size, cleanup_method cleanup);
+<span class="lineNum">      31 </span>            :             sql_blob(const sql_blob &amp;other);
+<span class="lineNum">      32 </span>            :             sql_blob &amp;operator=(const sql_blob &amp;other);
+<span class="lineNum">      33 </span>            :             ~sql_blob();
+<span class="lineNum">      34 </span>            :             const void *ptr() const;
+<span class="lineNum">      35 </span>            :             size_t size() const;
+<span class="lineNum">      36 </span>            :             cleanup_method destructor() const;
+<span class="lineNum">      37 </span>            :             std::string to_string() const;
+<span class="lineNum">      38 </span>            :             bool operator==(const sql_blob &amp;other) const;
+<span class="lineNum">      39 </span>            :         };
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            :         /*!
+<span class="lineNum">      42 </span>            :          * a quick and dirty representation of a sql null type
+<span class="lineNum">      43 </span>            :          */
+<span class="lineNum">      44 </span>            :         class sql_null_type
+<span class="lineNum">      45 </span>            :         {
+<span class="lineNum">      46 </span>            :         public:
+<a name="47"><span class="lineNum">      47 </span>            :             static const sql_null_type instance;</a>
+<span class="lineNum">      48 </span>            :         private:
+<span class="lineNum">      49 </span><span class="lineCov">         12 :             sql_null_type() {}</span>
+<span class="lineNum">      50 </span>            :         };
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            :         /*!
+<span class="lineNum">      53 </span>            :          * the instance of a null type
+<span class="lineNum">      54 </span>            :          * use this to check for sql null values
+<span class="lineNum">      55 </span>            :          */
+<span class="lineNum">      56 </span>            :         extern const sql_null_type sql_null;
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            :         /*!
+<span class="lineNum">      59 </span>            :          * a class to store and convert between the fundamental sql data types
+<span class="lineNum">      60 </span>            :          */
+<span class="lineNum">      61 </span>            :         class sql_value
+<span class="lineNum">      62 </span>            :         {
+<span class="lineNum">      63 </span>            :             friend std::ostream &amp;operator&lt;&lt;(std::ostream &amp;out, const sql_value &amp;value);
+<span class="lineNum">      64 </span>            :             friend bool operator==(const std::string &amp;other, const sql_value &amp;value);
+<span class="lineNum">      65 </span>            :             friend bool operator==(int other, const sql_value &amp;value);
+<span class="lineNum">      66 </span>            :             friend bool operator==(int64_t other, const sql_value &amp;value);
+<span class="lineNum">      67 </span>            :             friend bool operator==(double other, const sql_value &amp;value);
+<span class="lineNum">      68 </span>            :             friend bool operator==(const sql_null_type &amp;other, const sql_value &amp;value);
+<span class="lineNum">      69 </span>            :             friend bool operator==(const sql_blob &amp;other, const sql_value &amp;value);
+<span class="lineNum">      70 </span>            :         private:
+<span class="lineNum">      71 </span>            :             // nifty variable template class
+<span class="lineNum">      72 </span>            :             Juice::Variant&lt;sql_null_type, int, int64_t, double, std::string, sql_blob&gt; value_;
+<span class="lineNum">      73 </span>            :         public:
+<span class="lineNum">      74 </span>            :             sql_value();
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span>            :             sql_value(const sql_value &amp;other);
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            :             sql_value(const sql_value &amp;&amp;other);
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            :             sql_value &amp;operator=(const sql_value &amp;other);
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span>            :             sql_value &amp;operator=(const sql_value &amp;&amp; other);
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span>            :             ~sql_value();
+<a name="85"><span class="lineNum">      85 </span>            : </a>
+<span class="lineNum">      86 </span>            :             template&lt;typename T&gt;
+<span class="lineNum">      87 </span>            :             sql_value(const T &amp;value) : value_(value)
+<span class="lineNum">      88 </span><span class="lineCov">        513 :             {</span>
+<span class="lineNum">      89 </span><span class="lineCov">       1026 :             }</span>
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span>            :             operator std::string() const;
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span>            :             operator int() const;
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span>            :             operator int64_t() const;
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span>            :             operator double() const;
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span>            :             operator sql_blob() const;
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span>            :             std::string to_string() const;
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span>            :             void bind(bindable *obj, int index) const;
+<span class="lineNum">     104 </span>            : 
+<span class="lineNum">     105 </span>            :             bool operator==(const sql_value &amp;other) const;
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span>            :             bool operator==(const sql_null_type &amp;other) const;
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            :             template&lt;typename T&gt;
+<span class="lineNum">     110 </span>            :             bool operator==(const T &amp;other) const;
+<span class="lineNum">     111 </span>            :         };
+<span class="lineNum">     112 </span>            : 
+<span class="lineNum">     113 </span>            :         std::ostream &amp;operator&lt;&lt;(std::ostream &amp;out, const sql_value &amp;value);
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span>            :         std::ostream &amp;operator&lt;&lt;(std::ostream &amp;out, const sql_null_type &amp;value);
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span>            :         inline bool operator==(const sql_null_type &amp;a, const sql_null_type &amp;b)
+<span class="lineNum">     118 </span>            :         {
+<span class="lineNum">     119 </span>            :             return true;
+<span class="lineNum">     120 </span>            :         }
+<span class="lineNum">     121 </span>            :     }
+<span class="lineNum">     122 </span>            : }
+<span class="lineNum">     123 </span>            : 
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span>            : namespace std
+<span class="lineNum">     126 </span>            : {
+<span class="lineNum">     127 </span>            :     /*
+<span class="lineNum">     128 </span>            :      * some standard to_string functions
+<span class="lineNum">     129 </span>            :      */
+<span class="lineNum">     130 </span>            :     string to_string(const arg3::db::sql_null_type &amp;value);
+<span class="lineNum">     131 </span>            :     string to_string(const arg3::db::sql_blob &amp;value);
+<span class="lineNum">     132 </span>            :     string to_string(const std::string &amp;value); // yep
+<span class="lineNum">     133 </span>            :     string to_string(const arg3::db::sql_value &amp;value);
+<span class="lineNum">     134 </span>            : }
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span>            : namespace arg3
+<span class="lineNum">     138 </span>            : {
+<span class="lineNum">     139 </span>            :     namespace db
+<span class="lineNum">     140 </span>            :     {
+<span class="lineNum">     141 </span>            :         /*!
+<span class="lineNum">     142 </span>            :          * visits a sql_value checking for the right type
+<span class="lineNum">     143 </span>            :          */
+<span class="lineNum">     144 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">     145 </span>            :         class sql_exists_visitor// : public boost::static_visitor&lt;bool&gt;
+<span class="lineNum">     146 </span>            :         {
+<a name="147"><span class="lineNum">     147 </span>            :         public:</a>
+<span class="lineNum">     148 </span>            :             typedef bool result_type;
+<span class="lineNum">     149 </span>            :             bool operator()(const T &amp;value) const
+<span class="lineNum">     150 </span>            :             {
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :                 return true;</span>
+<a name="152"><span class="lineNum">     152 </span>            :             }</a>
+<span class="lineNum">     153 </span>            :             template&lt;typename U&gt;
+<span class="lineNum">     154 </span>            :             bool operator()(const U &amp;value) const
+<span class="lineNum">     155 </span>            :             {
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :                 return false;</span>
+<span class="lineNum">     157 </span>            :             }
+<span class="lineNum">     158 </span>            :         };
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span>            :         /*!
+<span class="lineNum">     161 </span>            :          * visits a sql value to bind another value
+<span class="lineNum">     162 </span>            :          */
+<span class="lineNum">     163 </span>            :         class sql_binding_visitor// : public boost::static_visitor&lt;void&gt;
+<span class="lineNum">     164 </span>            :         {
+<span class="lineNum">     165 </span>            :             bindable *obj_;
+<span class="lineNum">     166 </span>            :             int index_;
+<span class="lineNum">     167 </span>            :         public:
+<span class="lineNum">     168 </span>            :             typedef void result_type;
+<span class="lineNum">     169 </span>            :             sql_binding_visitor(bindable *obj, int index);
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span>            :             void operator()(int value) const;
+<span class="lineNum">     172 </span>            :             void operator()(int64_t value) const;
+<span class="lineNum">     173 </span>            :             void operator()(double value) const;
+<span class="lineNum">     174 </span>            :             void operator()(const std::string &amp;value) const;
+<span class="lineNum">     175 </span>            :             void operator()(const sql_blob &amp;value) const;
+<span class="lineNum">     176 </span>            :             void operator()(const sql_null_type &amp;value) const;
+<span class="lineNum">     177 </span>            :         };
+<span class="lineNum">     178 </span>            : 
+<span class="lineNum">     179 </span>            :         /*!
+<span class="lineNum">     180 </span>            :          * visits a sql value to test equality with another value
+<span class="lineNum">     181 </span>            :          */
+<span class="lineNum">     182 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">     183 </span>            :         class sql_equality_visitor// : public boost::static_visitor&lt;bool&gt;
+<span class="lineNum">     184 </span>            :         {
+<span class="lineNum">     185 </span>            :             T other;
+<span class="lineNum">     186 </span>            :         public:
+<span class="lineNum">     187 </span>            :             typedef bool result_type;
+<span class="lineNum">     188 </span>            :             sql_equality_visitor(const T &amp;value) : other(value)
+<span class="lineNum">     189 </span>            :             {}
+<span class="lineNum">     190 </span>            : 
+<span class="lineNum">     191 </span>            :             bool operator()(const T &amp;value) const
+<span class="lineNum">     192 </span>            :             {
+<span class="lineNum">     193 </span>            :                 return value == other;
+<span class="lineNum">     194 </span>            :             }
+<span class="lineNum">     195 </span>            :             template&lt;typename U&gt;
+<span class="lineNum">     196 </span>            :             bool operator()(const U &amp;value) const
+<span class="lineNum">     197 </span>            :             {
+<span class="lineNum">     198 </span>            :                 return std::to_string(value) == std::to_string(other);
+<span class="lineNum">     199 </span>            :             }
+<span class="lineNum">     200 </span>            :         };
+<span class="lineNum">     201 </span>            : 
+<span class="lineNum">     202 </span>            :         /*!
+<span class="lineNum">     203 </span>            :          * visits a sql value to output to a stream
+<span class="lineNum">     204 </span>            :          */
+<span class="lineNum">     205 </span>            :         class ostream_sql_value_visitor// : public boost::static_visitor&lt;void&gt;
+<span class="lineNum">     206 </span>            :         {
+<span class="lineNum">     207 </span>            :             std::ostream &amp;out_;
+<a name="208"><span class="lineNum">     208 </span>            :         public:</a>
+<span class="lineNum">     209 </span>            :             typedef void result_type;
+<span class="lineNum">     210 </span>            :             ostream_sql_value_visitor(std::ostream &amp;out) : out_(out)
+<span class="lineNum">     211 </span><span class="lineCov">         24 :             {}</span>
+<a name="212"><span class="lineNum">     212 </span>            : </a>
+<span class="lineNum">     213 </span>            :             template&lt;typename T&gt;
+<span class="lineNum">     214 </span>            :             void operator()(const T &amp;value) const
+<span class="lineNum">     215 </span>            :             {
+<span class="lineNum">     216 </span><span class="lineCov">         12 :                 out_ &lt;&lt; value;</span>
+<span class="lineNum">     217 </span><span class="lineCov">         12 :             }</span>
+<span class="lineNum">     218 </span>            :         };
+<span class="lineNum">     219 </span>            :         inline bool operator==(const std::string &amp;other, const sql_value &amp;value)
+<span class="lineNum">     220 </span>            :         {
+<span class="lineNum">     221 </span>            :             return Juice::apply_visitor(sql_equality_visitor&lt;std::string&gt;(other), value.value_);
+<span class="lineNum">     222 </span>            :         }
+<span class="lineNum">     223 </span>            : 
+<span class="lineNum">     224 </span>            :         inline bool operator==(int other, const sql_value &amp;value)
+<span class="lineNum">     225 </span>            :         {
+<span class="lineNum">     226 </span>            :             return Juice::apply_visitor(sql_equality_visitor&lt;int&gt;(other), value.value_);
+<span class="lineNum">     227 </span>            :         }
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span>            :         inline bool operator==(int64_t other, const sql_value &amp;value)
+<span class="lineNum">     230 </span>            :         {
+<span class="lineNum">     231 </span>            :             return Juice::apply_visitor(sql_equality_visitor&lt;int64_t&gt;(other), value.value_);
+<span class="lineNum">     232 </span>            :         }
+<span class="lineNum">     233 </span>            : 
+<span class="lineNum">     234 </span>            :         inline bool operator==(double other, const sql_value &amp;value)
+<span class="lineNum">     235 </span>            :         {
+<span class="lineNum">     236 </span>            :             return Juice::apply_visitor(sql_equality_visitor&lt;double&gt;(other), value.value_);
+<span class="lineNum">     237 </span>            :         }
+<span class="lineNum">     238 </span>            : 
+<span class="lineNum">     239 </span>            :         inline bool operator==(const sql_null_type &amp;other, const sql_value &amp;value)
+<span class="lineNum">     240 </span>            :         {
+<span class="lineNum">     241 </span>            :             return Juice::apply_visitor(sql_equality_visitor&lt;sql_null_type&gt;(other), value.value_);
+<span class="lineNum">     242 </span>            :         }
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span>            :         inline bool operator==(const sql_blob &amp;other, const sql_value &amp;value)
+<span class="lineNum">     245 </span>            :         {
+<span class="lineNum">     246 </span>            :             return Juice::apply_visitor(sql_equality_visitor&lt;sql_blob&gt;(other), value.value_);
+<span class="lineNum">     247 </span>            :         }
+<span class="lineNum">     248 </span>            : 
+<span class="lineNum">     249 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">     250 </span>            :         bool sql_value::operator==(const T &amp;other) const
+<span class="lineNum">     251 </span>            :         {
+<span class="lineNum">     252 </span>            :             return Juice::apply_visitor(sql_equality_visitor&lt;T&gt;(other), value_);
+<span class="lineNum">     253 </span>            :         }
+<span class="lineNum">     254 </span>            :     }
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span>            : }
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span>            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

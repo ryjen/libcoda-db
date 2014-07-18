@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - Code Coverage - /Users/ryan/devel/arg3/libarg3/src/db/src/exception.h</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">Users/ryan/devel/arg3/libarg3/src/db/src</a> - exception.h<span style="font-size: 80%;"> (source / <a href="exception.h.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">Code Coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2014-07-18</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+</td>
+            <td></td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*!</a>
+<span class="lineNum">       2 </span>            :  * @copyright ryan jennings (arg3.com), 2013 under LGPL
+<span class="lineNum">       3 </span>            :  */
+<span class="lineNum">       4 </span>            : #ifndef _ARG3_DB_EXCEPTION_H_
+<span class="lineNum">       5 </span>            : #define _ARG3_DB_EXCEPTION_H_
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            : #define ARG3_DECLARE_EXCEPTION(CLASS, BASE) \
+<span class="lineNum">       8 </span>            :     class CLASS: public BASE \
+<span class="lineNum">       9 </span>            :     { \
+<span class="lineNum">      10 </span>            :     private: std::string what_; std::string context_; \
+<span class="lineNum">      11 </span>            :     public: \
+<span class="lineNum">      12 </span>            :         CLASS(const std::string &amp;what); \
+<span class="lineNum">      13 </span>            :         CLASS(const std::string &amp;what, const std::string &amp;context); \
+<span class="lineNum">      14 </span>            :         CLASS(); \
+<span class="lineNum">      15 </span>            :         virtual const char * what() const noexcept; \
+<span class="lineNum">      16 </span>            :         virtual const char *context() const; \
+<span class="lineNum">      17 </span>            :     }
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            : #define ARG3_IMPLEMENT_EXCEPTION(CLASS, BASE) \
+<span class="lineNum">      20 </span>            :     CLASS::CLASS(const std::string &amp;what) : BASE(), what_(what) {} \
+<span class="lineNum">      21 </span>            :     CLASS::CLASS(const std::string &amp;what, const std::string &amp;context) : BASE(), what_(what), context_(context) {} \
+<span class="lineNum">      22 </span>            :     CLASS::CLASS() {} \
+<span class="lineNum">      23 </span>            :     const char *CLASS::what() const noexcept { return what_.c_str(); } \
+<span class="lineNum">      24 </span>            :     const char *CLASS::context() const { return context_.c_str(); }
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span>            : #include &lt;string&gt;
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : using namespace std;
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : namespace arg3
+<span class="lineNum">      32 </span>            : {
+<a name="33"><span class="lineNum">      33 </span>            :     namespace db</a>
+<span class="lineNum">      34 </span>            :     {
+<a name="35"><span class="lineNum">      35 </span><span class="lineNoCov">          0 :         ARG3_DECLARE_EXCEPTION(database_exception, std::exception);</span></a>
+<span class="lineNum">      36 </span>            : 
+<a name="37"><span class="lineNum">      37 </span><span class="lineNoCov">          0 :         ARG3_DECLARE_EXCEPTION(no_such_column_exception, database_exception);</span></a>
+<span class="lineNum">      38 </span>            : 
+<a name="39"><span class="lineNum">      39 </span><span class="lineNoCov">          0 :         ARG3_DECLARE_EXCEPTION(record_not_found_exception, database_exception);</span></a>
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :         ARG3_DECLARE_EXCEPTION(binding_error, database_exception);</span>
+<span class="lineNum">      42 </span>            :     }
+<span class="lineNum">      43 </span>            : }
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
