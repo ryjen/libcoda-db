@@ -21,3 +21,4 @@ config.h
 arg3mysql_test
 arg3sqlite_test
 *.gcno
+coverage.info
