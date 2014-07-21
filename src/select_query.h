@@ -60,6 +60,10 @@ namespace arg3
 
             resultset execute();
 
+            int count();
+
+            void reset();
+
             /*!
              * return the first column in the first row of the result set
              */

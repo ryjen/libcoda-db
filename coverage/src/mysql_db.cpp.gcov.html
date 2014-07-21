@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-19</td>
+            <td class="headerValue">2014-07-21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">10</td>
@@ -203,7 +203,7 @@
 <span class="lineNum">     133 </span>            : 
 <span class="lineNum">     134 </span>            :         bool mysql_db::is_open() const
 <span class="lineNum">     135 </span>            :         {
-<span class="lineNum">     136 </span><span class="lineCov">         53 :             return db_ != NULL;</span>
+<span class="lineNum">     136 </span><span class="lineCov">         56 :             return db_ != NULL;</span>
 <a name="137"><span class="lineNum">     137 </span>            :         }</a>
 <span class="lineNum">     138 </span>            : 
 <span class="lineNum">     139 </span>            :         void mysql_db::close()
@@ -264,7 +264,7 @@
 <span class="lineNum">     194 </span>            : 
 <span class="lineNum">     195 </span>            :         shared_ptr&lt;statement&gt; mysql_db::create_statement()
 <span class="lineNum">     196 </span>            :         {
-<span class="lineNum">     197 </span><span class="lineCov">         28 :             return make_shared&lt;mysql_statement&gt;(this);</span>
+<span class="lineNum">     197 </span><span class="lineCov">         31 :             return make_shared&lt;mysql_statement&gt;(this);</span>
 <span class="lineNum">     198 </span>            :         }
 <span class="lineNum">     199 </span>            :     }
 <span class="lineNum">     200 </span>            : }

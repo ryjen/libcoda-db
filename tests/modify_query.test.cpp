@@ -39,6 +39,43 @@ Context(modify_query_test)
         teardown_testdb();
     }
 
+    Spec(constructor)
+    {
+        modify_query query(testdb, "users");
+
+        Assert::That(to_string(query), Equals("REPLACE INTO users DEFAULT VALUES"));
+
+        modify_query other(query);
+
+        Assert::That(to_string(query), Equals(to_string(other)));
+
+        modify_query moved(std::move(query));
+
+        Assert::That(query.is_valid(), Equals(false));
+
+        Assert::That(to_string(moved), Equals(to_string(other)));
+
+    }
+
+    Spec(assignment)
+    {
+        modify_query query(testdb, "users");
+
+        modify_query other(testdb, "other_users");
+
+        other = query;
+
+        Assert::That(to_string(query), Equals(to_string(other)));
+
+        modify_query moved(testdb, "moved_users");
+
+        moved = std::move(query);
+
+        Assert::That(query.is_valid(), Equals(false));
+
+        Assert::That(to_string(moved), Equals(to_string(other)));
+    }
+
     Spec(modify_test)
     {
         modify_query query(testdb, "users", { "id", "first_name", "last_name" });
@@ -53,4 +90,32 @@ Context(modify_query_test)
 
         Assert::That(u1.refresh(), Equals(true));
     };
+
+    Spec(batch_test)
+    {
+        modify_query query(testdb, "users", { "id", "first_name", "last_name" });
+
+        for (int i = 0; i < 3; i++)
+        {
+            char buf[100] = {0};
+
+            query.bind(1, i + 5);
+
+            snprintf(buf, sizeof(buf) - 1, "firstName%d", i + 1);
+
+            query.bind(2, buf);
+
+            snprintf(buf, sizeof(buf) - 1, "lastName%d", i + 1);
+
+            query.bind(3, buf);
+
+            query.execute(NULL, true);
+        }
+
+        select_query select(testdb, "users");
+
+        int count = select.count();
+
+        Assert::That(count, Equals(3));
+    }
 };

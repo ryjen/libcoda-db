@@ -38,6 +38,35 @@ Context(select_query_test)
         teardown_testdb();
     }
 
+    Spec(copy_move)
+    {
+        select_query query(testdb, "users", { "id" });
+
+        select_query other(query);
+
+        Assert::That(to_string(query), Equals(to_string(other)));
+
+        select_query moved(std::move(query));
+
+        Assert::That(query.is_valid(), Equals(false));
+
+        Assert::That(to_string(moved), Equals(to_string(other)));
+
+        select_query other2(testdb, "other_users");
+
+        other2 = other;
+
+        Assert::That(to_string(other), Equals(to_string(other2)));
+
+        select_query moved2(testdb, "moved_users");
+
+        moved2 = std::move(other2);
+
+        Assert::That(other2.is_valid(), Equals(false));
+
+        Assert::That(to_string(moved2), Equals(to_string(other)));
+    }
+
     Spec(where_test)
     {
         auto query = select_query(testdb, "users");
@@ -58,6 +87,24 @@ Context(select_query_test)
             string lastName = row->column("last_name").to_string();
 
             Assert::That(lastName, Equals("Jenkins"));
+
+            query.reset();
+
+            where_clause w("last_name = ?");
+
+            query.where(w);
+
+            query.bind(1, "Smith");
+
+            results = query.execute();
+
+            row = results.begin();
+
+            Assert::That(row != results.end(), Equals(true));
+
+            lastName = row->column("last_name").to_string();
+
+            Assert::That(lastName, Equals("Smith"));
         }
         catch (const database_exception &e)
         {

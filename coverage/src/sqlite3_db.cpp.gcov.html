@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-19</td>
+            <td class="headerValue">2014-07-21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">15</td>
@@ -215,7 +215,7 @@
 <span class="lineNum">     145 </span>            : 
 <span class="lineNum">     146 </span>            :         int sqlite3_db::last_number_of_changes() const
 <span class="lineNum">     147 </span>            :         {
-<span class="lineNum">     148 </span><span class="lineCov">         16 :             return sqlite3_changes(db_);</span>
+<span class="lineNum">     148 </span><span class="lineCov">         19 :             return sqlite3_changes(db_);</span>
 <a name="149"><span class="lineNum">     149 </span>            :         }</a>
 <span class="lineNum">     150 </span>            : 
 <span class="lineNum">     151 </span>            :         resultset sqlite3_db::execute(const string &amp;sql)
@@ -234,7 +234,7 @@
 <span class="lineNum">     164 </span>            : 
 <span class="lineNum">     165 </span>            :         shared_ptr&lt;statement&gt; sqlite3_db::create_statement()
 <span class="lineNum">     166 </span>            :         {
-<span class="lineNum">     167 </span><span class="lineCov">         29 :             return make_shared&lt;sqlite3_statement&gt;(this);</span>
+<span class="lineNum">     167 </span><span class="lineCov">         32 :             return make_shared&lt;sqlite3_statement&gt;(this);</span>
 <span class="lineNum">     168 </span>            :         }
 <span class="lineNum">     169 </span>            :     }
 <span class="lineNum">     170 </span>            : }

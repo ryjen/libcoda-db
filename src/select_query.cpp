@@ -126,12 +126,36 @@ namespace arg3
             return buf.str();
         }
 
+        int select_query::count()
+        {
+            auto cols(columns_);
+
+            columns_ = { "count(*)" };
+
+            prepare();
+
+            int value = execute_scalar<int>();
+
+            columns_ = cols;
+
+            return value;
+        }
+
         resultset select_query::execute()
         {
             prepare();
 
             return stmt_->results();
 
+        }
+
+        void select_query::reset()
+        {
+            base_query::reset();
+            where_.reset();
+            limit_.clear();
+            orderBy_.clear();
+            groupBy_.clear();
         }
     }
 }

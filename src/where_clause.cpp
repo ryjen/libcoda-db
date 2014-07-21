@@ -91,5 +91,12 @@ namespace arg3
                 or_.push_back(where_clause(value));
             return *this;
         }
+
+        void where_clause::reset()
+        {
+            value_.clear();
+            and_.clear();
+            or_.clear();
+        }
     }
 }

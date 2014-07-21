@@ -171,6 +171,17 @@ namespace arg3
 
             return stmt_->last_error();
         }
+
+        bool base_query::is_valid() const
+        {
+            return db_ != NULL && stmt_ != nullptr;
+        }
+
+        void base_query::reset()
+        {
+            bindings_.clear();
+            stmt_ = nullptr;
+        }
     }
 
 

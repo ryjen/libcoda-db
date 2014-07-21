@@ -64,6 +64,8 @@ namespace arg3
 
             virtual ~base_query();
 
+            virtual void reset();
+
             /*!
              * @param other the other query being copied from
              */
@@ -134,6 +136,7 @@ namespace arg3
              */
             int last_number_of_changes();
 
+            bool is_valid() const;
         };
 
     }

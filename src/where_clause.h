@@ -41,6 +41,8 @@ namespace arg3
             where_clause &operator||(const string &value);
 
             bool empty() const;
+
+            void reset();
         };
 
 
