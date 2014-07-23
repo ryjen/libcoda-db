@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-21</td>
+            <td class="headerValue">2014-07-22</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -136,119 +136,123 @@
 <span class="lineNum">      66 </span>            : 
 <span class="lineNum">      67 </span>            :             virtual void reset();
 <span class="lineNum">      68 </span>            : 
-<span class="lineNum">      69 </span>            :             /*!
-<span class="lineNum">      70 </span>            :              * @param other the other query being copied from
-<span class="lineNum">      71 </span>            :              */
-<span class="lineNum">      72 </span>            :             base_query &amp;operator=(const base_query &amp;other);
-<span class="lineNum">      73 </span>            : 
-<span class="lineNum">      74 </span>            :             /*!
-<span class="lineNum">      75 </span>            :              * @param other the query being moved
-<span class="lineNum">      76 </span>            :              */
-<span class="lineNum">      77 </span>            :             base_query &amp;operator=(base_query &amp;&amp; other);
-<span class="lineNum">      78 </span>            : 
-<span class="lineNum">      79 </span>            :             /*!
-<span class="lineNum">      80 </span>            :              * should return valid T-SQL
-<span class="lineNum">      81 </span>            :              */
-<span class="lineNum">      82 </span>            :             virtual string to_string() const = 0;
-<span class="lineNum">      83 </span>            : 
-<span class="lineNum">      84 </span>            :             /*!
-<span class="lineNum">      85 </span>            :              * binds a string to a parameterized query
-<span class="lineNum">      86 </span>            :              */
-<span class="lineNum">      87 </span>            :             base_query &amp;bind(size_t index, const string &amp;value, int len = -1);
-<span class="lineNum">      88 </span>            : 
-<span class="lineNum">      89 </span>            :             /*!
-<span class="lineNum">      90 </span>            :              * binds an integer to a parameterized query
-<span class="lineNum">      91 </span>            :              */
-<span class="lineNum">      92 </span>            :             base_query &amp;bind(size_t index, int value);
-<span class="lineNum">      93 </span>            : 
-<span class="lineNum">      94 </span>            :             /*!
-<span class="lineNum">      95 </span>            :              * binds a 64 bit integer to a parameterized query
-<span class="lineNum">      96 </span>            :              */
-<span class="lineNum">      97 </span>            :             base_query &amp;bind(size_t index, long long value);
-<span class="lineNum">      98 </span>            : 
-<span class="lineNum">      99 </span>            :             /*!
-<span class="lineNum">     100 </span>            :              * binds a null value
-<span class="lineNum">     101 </span>            :              */
-<span class="lineNum">     102 </span>            :             base_query &amp;bind(size_t index);
-<span class="lineNum">     103 </span>            : 
-<span class="lineNum">     104 </span>            :             /*!
-<span class="lineNum">     105 </span>            :              * binds a double to a parameterized query
-<span class="lineNum">     106 </span>            :              */
-<span class="lineNum">     107 </span>            :             base_query &amp;bind(size_t index, double value);
-<span class="lineNum">     108 </span>            : 
-<span class="lineNum">     109 </span>            :             /*!
-<span class="lineNum">     110 </span>            :              * binds bytes to a parameterized query
-<span class="lineNum">     111 </span>            :              */
-<span class="lineNum">     112 </span>            :             base_query &amp;bind(size_t index, const void *data, size_t size, void(* pFree)(void *));
-<span class="lineNum">     113 </span>            : 
-<span class="lineNum">     114 </span>            :             /*!
-<span class="lineNum">     115 </span>            :              * binds a sql_blob type to a parameterized query
-<span class="lineNum">     116 </span>            :              */
-<span class="lineNum">     117 </span>            :             base_query &amp;bind(size_t index, const sql_blob &amp;value);
-<span class="lineNum">     118 </span>            : 
-<span class="lineNum">     119 </span>            :             /*!
-<span class="lineNum">     120 </span>            :              * binds a null type to a parameterized query
-<span class="lineNum">     121 </span>            :              */
-<span class="lineNum">     122 </span>            :             base_query &amp;bind(size_t index, const sql_null_type &amp;value);
-<span class="lineNum">     123 </span>            : 
-<span class="lineNum">     124 </span>            :             /*!
-<span class="lineNum">     125 </span>            :              * binds an arbitrary sql value to a parameterized query
-<span class="lineNum">     126 </span>            :              */
-<span class="lineNum">     127 </span>            :             base_query &amp;bind_value(size_t index, const sql_value &amp;v);
-<span class="lineNum">     128 </span>            : 
-<span class="lineNum">     129 </span>            :             /*!
-<span class="lineNum">     130 </span>            :              * returns the last error the query encountered, if any
-<span class="lineNum">     131 </span>            :              */
-<span class="lineNum">     132 </span>            :             string last_error();
-<span class="lineNum">     133 </span>            : 
-<span class="lineNum">     134 </span>            :             /*!
-<span class="lineNum">     135 </span>            :              * returns the number of affected rows by the query after execution
-<span class="lineNum">     136 </span>            :              */
-<span class="lineNum">     137 </span>            :             int last_number_of_changes();
-<span class="lineNum">     138 </span>            : 
-<span class="lineNum">     139 </span>            :             bool is_valid() const;
-<span class="lineNum">     140 </span>            :         };
-<span class="lineNum">     141 </span>            : 
-<span class="lineNum">     142 </span>            :     }
-<span class="lineNum">     143 </span>            : 
-<span class="lineNum">     144 </span>            : 
-<span class="lineNum">     145 </span>            :     /*!
-<span class="lineNum">     146 </span>            :      * utility method used in creating sql
-<a name="147"><span class="lineNum">     147 </span>            :      */</a>
-<span class="lineNum">     148 </span>            :     template&lt;typename T&gt;
-<span class="lineNum">     149 </span>            :     string join_csv(vector&lt;T&gt; list)
-<span class="lineNum">     150 </span>            :     {
-<span class="lineNum">     151 </span><span class="lineCov">         71 :         ostringstream buf;</span>
-<span class="lineNum">     152 </span>            : 
-<span class="lineNum">     153 </span><span class="lineCov">         71 :         if (list.size() &gt; 0)</span>
-<span class="lineNum">     154 </span>            :         {
-<span class="lineNum">     155 </span><span class="lineCov">         71 :             ostream_iterator&lt;T&gt; it(buf, &quot;,&quot;);</span>
+<span class="lineNum">      69 </span>            :             sqldb *db() const;
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span>            :             std::string tablename() const;
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span>            :             /*!
+<span class="lineNum">      74 </span>            :              * @param other the other query being copied from
+<span class="lineNum">      75 </span>            :              */
+<span class="lineNum">      76 </span>            :             base_query &amp;operator=(const base_query &amp;other);
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            :             /*!
+<span class="lineNum">      79 </span>            :              * @param other the query being moved
+<span class="lineNum">      80 </span>            :              */
+<span class="lineNum">      81 </span>            :             base_query &amp;operator=(base_query &amp;&amp; other);
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span>            :             /*!
+<span class="lineNum">      84 </span>            :              * should return valid T-SQL
+<span class="lineNum">      85 </span>            :              */
+<span class="lineNum">      86 </span>            :             virtual string to_string() const = 0;
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span>            :             /*!
+<span class="lineNum">      89 </span>            :              * binds a string to a parameterized query
+<span class="lineNum">      90 </span>            :              */
+<span class="lineNum">      91 </span>            :             base_query &amp;bind(size_t index, const string &amp;value, int len = -1);
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span>            :             /*!
+<span class="lineNum">      94 </span>            :              * binds an integer to a parameterized query
+<span class="lineNum">      95 </span>            :              */
+<span class="lineNum">      96 </span>            :             base_query &amp;bind(size_t index, int value);
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            :             /*!
+<span class="lineNum">      99 </span>            :              * binds a 64 bit integer to a parameterized query
+<span class="lineNum">     100 </span>            :              */
+<span class="lineNum">     101 </span>            :             base_query &amp;bind(size_t index, long long value);
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span>            :             /*!
+<span class="lineNum">     104 </span>            :              * binds a null value
+<span class="lineNum">     105 </span>            :              */
+<span class="lineNum">     106 </span>            :             base_query &amp;bind(size_t index);
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span>            :             /*!
+<span class="lineNum">     109 </span>            :              * binds a double to a parameterized query
+<span class="lineNum">     110 </span>            :              */
+<span class="lineNum">     111 </span>            :             base_query &amp;bind(size_t index, double value);
+<span class="lineNum">     112 </span>            : 
+<span class="lineNum">     113 </span>            :             /*!
+<span class="lineNum">     114 </span>            :              * binds bytes to a parameterized query
+<span class="lineNum">     115 </span>            :              */
+<span class="lineNum">     116 </span>            :             base_query &amp;bind(size_t index, const void *data, size_t size, void(* pFree)(void *));
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span>            :             /*!
+<span class="lineNum">     119 </span>            :              * binds a sql_blob type to a parameterized query
+<span class="lineNum">     120 </span>            :              */
+<span class="lineNum">     121 </span>            :             base_query &amp;bind(size_t index, const sql_blob &amp;value);
+<span class="lineNum">     122 </span>            : 
+<span class="lineNum">     123 </span>            :             /*!
+<span class="lineNum">     124 </span>            :              * binds a null type to a parameterized query
+<span class="lineNum">     125 </span>            :              */
+<span class="lineNum">     126 </span>            :             base_query &amp;bind(size_t index, const sql_null_type &amp;value);
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span>            :             /*!
+<span class="lineNum">     129 </span>            :              * binds an arbitrary sql value to a parameterized query
+<span class="lineNum">     130 </span>            :              */
+<span class="lineNum">     131 </span>            :             base_query &amp;bind_value(size_t index, const sql_value &amp;v);
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            :             /*!
+<span class="lineNum">     134 </span>            :              * returns the last error the query encountered, if any
+<span class="lineNum">     135 </span>            :              */
+<span class="lineNum">     136 </span>            :             string last_error();
+<span class="lineNum">     137 </span>            : 
+<span class="lineNum">     138 </span>            :             /*!
+<span class="lineNum">     139 </span>            :              * returns the number of affected rows by the query after execution
+<span class="lineNum">     140 </span>            :              */
+<span class="lineNum">     141 </span>            :             int last_number_of_changes();
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span>            :             bool is_valid() const;
+<span class="lineNum">     144 </span>            :         };
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span>            :     }
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span>            : 
+<span class="lineNum">     149 </span>            :     /*!
+<span class="lineNum">     150 </span>            :      * utility method used in creating sql
+<a name="151"><span class="lineNum">     151 </span>            :      */</a>
+<span class="lineNum">     152 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     153 </span>            :     string join_csv(vector&lt;T&gt; list)
+<span class="lineNum">     154 </span>            :     {
+<span class="lineNum">     155 </span><span class="lineCov">         71 :         ostringstream buf;</span>
 <span class="lineNum">     156 </span>            : 
-<span class="lineNum">     157 </span><span class="lineCov">        142 :             copy(list.begin(), list.end() - 1, it);</span>
-<span class="lineNum">     158 </span>            : 
-<span class="lineNum">     159 </span><span class="lineCov">         71 :             buf &lt;&lt; *(list.end() - 1);</span>
-<span class="lineNum">     160 </span><span class="lineCov">         71 :         }</span>
-<span class="lineNum">     161 </span>            : 
-<span class="lineNum">     162 </span><span class="lineCov">         71 :         return buf.str();</span>
-<span class="lineNum">     163 </span><span class="lineCov">         71 :     }</span>
-<span class="lineNum">     164 </span>            : 
-<span class="lineNum">     165 </span>            :     /*!
-<span class="lineNum">     166 </span>            :      * utility method used in creating sql
-<span class="lineNum">     167 </span>            :      */
-<span class="lineNum">     168 </span>            :     string join_csv(std::string::value_type c, size_t count);
-<span class="lineNum">     169 </span>            : 
-<span class="lineNum">     170 </span>            : }
-<span class="lineNum">     171 </span>            : 
-<span class="lineNum">     172 </span>            : 
-<span class="lineNum">     173 </span>            : namespace std
-<span class="lineNum">     174 </span>            : {
-<span class="lineNum">     175 </span>            :     /*!
-<span class="lineNum">     176 </span>            :      * returns a string representation of a query
-<span class="lineNum">     177 </span>            :      */
-<span class="lineNum">     178 </span>            :     string to_string(const arg3::db::base_query &amp;query);
-<span class="lineNum">     179 </span>            : }
-<span class="lineNum">     180 </span>            : 
-<span class="lineNum">     181 </span>            : #endif
+<span class="lineNum">     157 </span><span class="lineCov">         71 :         if (list.size() &gt; 0)</span>
+<span class="lineNum">     158 </span>            :         {
+<span class="lineNum">     159 </span><span class="lineCov">         71 :             ostream_iterator&lt;T&gt; it(buf, &quot;,&quot;);</span>
+<span class="lineNum">     160 </span>            : 
+<span class="lineNum">     161 </span><span class="lineCov">        142 :             copy(list.begin(), list.end() - 1, it);</span>
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span><span class="lineCov">         71 :             buf &lt;&lt; *(list.end() - 1);</span>
+<span class="lineNum">     164 </span><span class="lineCov">         71 :         }</span>
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span><span class="lineCov">         71 :         return buf.str();</span>
+<span class="lineNum">     167 </span><span class="lineCov">         71 :     }</span>
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span>            :     /*!
+<span class="lineNum">     170 </span>            :      * utility method used in creating sql
+<span class="lineNum">     171 </span>            :      */
+<span class="lineNum">     172 </span>            :     string join_csv(std::string::value_type c, size_t count);
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span>            : }
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span>            : namespace std
+<span class="lineNum">     178 </span>            : {
+<span class="lineNum">     179 </span>            :     /*!
+<span class="lineNum">     180 </span>            :      * returns a string representation of a query
+<span class="lineNum">     181 </span>            :      */
+<span class="lineNum">     182 </span>            :     string to_string(const arg3::db::base_query &amp;query);
+<span class="lineNum">     183 </span>            : }
+<span class="lineNum">     184 </span>            : 
+<span class="lineNum">     185 </span>            : #endif
 </pre>
       </td>
     </tr>

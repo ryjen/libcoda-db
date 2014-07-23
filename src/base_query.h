@@ -66,6 +66,10 @@ namespace arg3
 
             virtual void reset();
 
+            sqldb *db() const;
+
+            std::string tablename() const;
+
             /*!
              * @param other the other query being copied from
              */

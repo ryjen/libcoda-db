@@ -42,6 +42,14 @@ namespace arg3
 
             virtual ~select_query();
 
+            vector<string> columns() const;
+
+            string limit() const;
+
+            string order_by() const;
+
+            string group_by() const;
+
             select_query &operator=(const select_query &other);
 
             select_query &operator=(select_query && other);

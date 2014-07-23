@@ -22,7 +22,7 @@ namespace arg3
         {
         }
 
-        select_query::select_query(shared_ptr<schema> schema) : select_query(schema->db(), schema->table_name(), schema->column_names())
+        select_query::select_query(shared_ptr<schema> schema) : base_query(schema), columns_(schema->column_names())
         {}
 
         select_query::select_query(select_query &&other) : base_query(std::move(other)), where_(std::move(other.where_)),
@@ -57,6 +57,26 @@ namespace arg3
             columns_ = std::move(other.columns_);
 
             return *this;
+        }
+
+        vector<string> select_query::columns() const
+        {
+            return columns_;
+        }
+
+        string select_query::limit() const
+        {
+            return limit_;
+        }
+
+        string select_query::group_by() const
+        {
+            return groupBy_;
+        }
+
+        string select_query::order_by() const
+        {
+            return orderBy_;
         }
 
         select_query &select_query::where(const where_clause &value)

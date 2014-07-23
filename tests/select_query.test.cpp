@@ -38,6 +38,23 @@ Context(select_query_test)
         teardown_testdb();
     }
 
+    Spec(other)
+    {
+        select_query query(testdb, "users");
+
+        Assert::That(query.db(), Equals(testdb));
+
+        Assert::That(query.tablename(), Equals("users"));
+    }
+    Spec(schema_constructor)
+    {
+        schema_factory factory(testdb);
+
+        select_query query(factory.get("users"));
+
+        Assert::That(query.columns().size(), Equals(3));
+    }
+
     Spec(copy_move)
     {
         select_query query(testdb, "users", { "id" });

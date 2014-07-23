@@ -60,6 +60,16 @@ namespace arg3
             return *this;
         }
 
+        sqldb *base_query::db() const
+        {
+            return db_;
+        }
+
+        std::string base_query::tablename() const
+        {
+            return tableName_;
+        }
+
         void base_query::prepare()
         {
             assert(db_ != NULL);

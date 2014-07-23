@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-21</td>
+            <td class="headerValue">2014-07-22</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">15</td>
@@ -76,7 +76,7 @@
 <span class="lineNum">       6 </span>            : {
 <a name="7"><span class="lineNum">       7 </span>            :     namespace db</a>
 <span class="lineNum">       8 </span>            :     {
-<a name="9"><span class="lineNum">       9 </span><span class="lineCov">         72 :         where_clause::where_clause() {}</span></a>
+<a name="9"><span class="lineNum">       9 </span><span class="lineCov">         80 :         where_clause::where_clause() {}</span></a>
 <span class="lineNum">      10 </span>            : 
 <a name="11"><span class="lineNum">      11 </span><span class="lineCov">         84 :         where_clause::where_clause(const string &amp;value) : value_(value) {}</span></a>
 <span class="lineNum">      12 </span>            : 
@@ -84,7 +84,7 @@
 <span class="lineNum">      14 </span>            : 
 <a name="15"><span class="lineNum">      15 </span><span class="lineCov">          4 :         where_clause::where_clause(where_clause &amp;&amp;other) : value_(std::move(other.value_)) {}</span></a>
 <span class="lineNum">      16 </span>            : 
-<a name="17"><span class="lineNum">      17 </span><span class="lineCov">        136 :         where_clause::~where_clause() {}</span></a>
+<a name="17"><span class="lineNum">      17 </span><span class="lineCov">        144 :         where_clause::~where_clause() {}</span></a>
 <span class="lineNum">      18 </span>            : 
 <span class="lineNum">      19 </span>            :         where_clause &amp;where_clause::operator=(const where_clause &amp;other)
 <span class="lineNum">      20 </span>            :         {

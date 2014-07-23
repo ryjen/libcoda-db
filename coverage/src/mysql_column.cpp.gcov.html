@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-21</td>
+            <td class="headerValue">2014-07-22</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">13</td>
@@ -81,10 +81,10 @@
 <a name="11"><span class="lineNum">      11 </span>            :     {</a>
 <span class="lineNum">      12 </span>            : 
 <span class="lineNum">      13 </span>            :         mysql_column::mysql_column(MYSQL_RES *res, MYSQL_ROW pValue, size_t index) : value_(pValue), res_(res), index_(index)
-<span class="lineNum">      14 </span><span class="lineCov">         45 :         {</span>
-<span class="lineNum">      15 </span><span class="lineCov">         90 :             assert(value_ != NULL);</span>
-<span class="lineNum">      16 </span><span class="lineCov">         90 :             assert(res_ != NULL);</span>
-<a name="17"><span class="lineNum">      17 </span><span class="lineCov">         90 :         }</span></a>
+<span class="lineNum">      14 </span><span class="lineCov">         54 :         {</span>
+<span class="lineNum">      15 </span><span class="lineCov">        108 :             assert(value_ != NULL);</span>
+<span class="lineNum">      16 </span><span class="lineCov">        108 :             assert(res_ != NULL);</span>
+<a name="17"><span class="lineNum">      17 </span><span class="lineCov">        108 :         }</span></a>
 <span class="lineNum">      18 </span>            : 
 <a name="19"><span class="lineNum">      19 </span><span class="lineNoCov">          0 :         mysql_column::mysql_column(const mysql_column &amp;other) : value_(other.value_), res_(other.res_), index_(other.index_) {}</span></a>
 <span class="lineNum">      20 </span>            : 
@@ -94,7 +94,7 @@
 <span class="lineNum">      24 </span><span class="lineNoCov">          0 :             other.res_ = NULL;</span>
 <a name="25"><span class="lineNum">      25 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      26 </span>            : 
-<a name="27"><span class="lineNum">      27 </span><span class="lineCov">         90 :         mysql_column::~mysql_column() {}</span></a>
+<a name="27"><span class="lineNum">      27 </span><span class="lineCov">        108 :         mysql_column::~mysql_column() {}</span></a>
 <span class="lineNum">      28 </span>            : 
 <span class="lineNum">      29 </span>            :         mysql_column &amp;mysql_column::operator=(const mysql_column &amp;other)
 <span class="lineNum">      30 </span>            :         {
@@ -185,15 +185,15 @@
 <span class="lineNum">     115 </span>            : 
 <span class="lineNum">     116 </span>            :         string mysql_column::to_string() const
 <span class="lineNum">     117 </span>            :         {
-<span class="lineNum">     118 </span><span class="lineCov">         90 :             assert(value_ != NULL);</span>
+<span class="lineNum">     118 </span><span class="lineCov">        108 :             assert(value_ != NULL);</span>
 <span class="lineNum">     119 </span>            : 
-<span class="lineNum">     120 </span><span class="lineCov">         45 :             auto textValue = value_[index_];</span>
+<span class="lineNum">     120 </span><span class="lineCov">         54 :             auto textValue = value_[index_];</span>
 <span class="lineNum">     121 </span>            : 
-<span class="lineNum">     122 </span><span class="lineCov">         45 :             if (textValue == NULL)</span>
+<span class="lineNum">     122 </span><span class="lineCov">         54 :             if (textValue == NULL)</span>
 <span class="lineNum">     123 </span><span class="lineNoCov">          0 :                 return string();</span>
 <span class="lineNum">     124 </span>            : 
-<span class="lineNum">     125 </span><span class="lineCov">         45 :             return textValue;</span>
-<span class="lineNum">     126 </span><span class="lineCov">         45 :         }</span>
+<span class="lineNum">     125 </span><span class="lineCov">         54 :             return textValue;</span>
+<span class="lineNum">     126 </span><span class="lineCov">         54 :         }</span>
 <span class="lineNum">     127 </span>            : 
 <span class="lineNum">     128 </span>            : 
 <a name="129"><span class="lineNum">     129 </span>            :         /* statement version */</a>

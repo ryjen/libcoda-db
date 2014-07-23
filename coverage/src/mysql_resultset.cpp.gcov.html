@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-21</td>
+            <td class="headerValue">2014-07-22</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">16</td>
@@ -84,9 +84,9 @@
 <a name="14"><span class="lineNum">      14 </span>            :     {</a>
 <span class="lineNum">      15 </span>            : 
 <span class="lineNum">      16 </span>            :         mysql_resultset::mysql_resultset(mysql_db *db, MYSQL_RES *res) : res_(res), row_(NULL), db_(db)
-<span class="lineNum">      17 </span><span class="lineCov">         26 :         {</span>
+<span class="lineNum">      17 </span><span class="lineCov">         27 :         {</span>
 <span class="lineNum">      18 </span>            :             //assert(res_ != NULL);
-<a name="19"><span class="lineNum">      19 </span><span class="lineCov">         52 :         }</span></a>
+<a name="19"><span class="lineNum">      19 </span><span class="lineCov">         54 :         }</span></a>
 <span class="lineNum">      20 </span>            : 
 <span class="lineNum">      21 </span>            :         mysql_resultset::mysql_resultset(mysql_resultset &amp;&amp;other) : res_(other.res_), row_(other.row_), db_(other.db_)
 <span class="lineNum">      22 </span><span class="lineNoCov">          0 :         {</span>
@@ -96,13 +96,13 @@
 <a name="26"><span class="lineNum">      26 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      27 </span>            : 
 <span class="lineNum">      28 </span>            :         mysql_resultset::~mysql_resultset()
-<span class="lineNum">      29 </span><span class="lineCov">         52 :         {</span>
-<span class="lineNum">      30 </span><span class="lineCov">         26 :             if (res_ != NULL)</span>
+<span class="lineNum">      29 </span><span class="lineCov">         54 :         {</span>
+<span class="lineNum">      30 </span><span class="lineCov">         27 :             if (res_ != NULL)</span>
 <span class="lineNum">      31 </span>            :             {
 <span class="lineNum">      32 </span><span class="lineNoCov">          0 :                 mysql_free_result(res_);</span>
 <span class="lineNum">      33 </span><span class="lineNoCov">          0 :                 res_ = NULL;</span>
 <span class="lineNum">      34 </span><span class="lineNoCov">          0 :             }</span>
-<a name="35"><span class="lineNum">      35 </span><span class="lineCov">         52 :         }</span></a>
+<a name="35"><span class="lineNum">      35 </span><span class="lineCov">         54 :         }</span></a>
 <span class="lineNum">      36 </span>            : 
 <span class="lineNum">      37 </span>            :         mysql_resultset &amp;mysql_resultset::operator=(mysql_resultset &amp;&amp; other)
 <span class="lineNum">      38 </span>            :         {
@@ -123,31 +123,31 @@
 <span class="lineNum">      53 </span>            : 
 <span class="lineNum">      54 </span>            :         bool mysql_resultset::next()
 <span class="lineNum">      55 </span>            :         {
-<span class="lineNum">      56 </span><span class="lineCov">         40 :             assert(db_ != NULL);</span>
+<span class="lineNum">      56 </span><span class="lineCov">         48 :             assert(db_ != NULL);</span>
 <span class="lineNum">      57 </span>            : 
-<span class="lineNum">      58 </span><span class="lineCov">         40 :             if (res_ == NULL || !db_-&gt;is_open())</span>
+<span class="lineNum">      58 </span><span class="lineCov">         48 :             if (res_ == NULL || !db_-&gt;is_open())</span>
 <span class="lineNum">      59 </span><span class="lineNoCov">          0 :                 return false;</span>
 <span class="lineNum">      60 </span>            : 
-<span class="lineNum">      61 </span><span class="lineCov">         20 :             bool value = (row_ = mysql_fetch_row(res_)) != NULL;</span>
+<span class="lineNum">      61 </span><span class="lineCov">         24 :             bool value = (row_ = mysql_fetch_row(res_)) != NULL;</span>
 <span class="lineNum">      62 </span>            : 
-<span class="lineNum">      63 </span><span class="lineCov">         25 :             if (!value &amp;&amp; !mysql_more_results(db_-&gt;db_))</span>
+<span class="lineNum">      63 </span><span class="lineCov">         30 :             if (!value &amp;&amp; !mysql_more_results(db_-&gt;db_))</span>
 <span class="lineNum">      64 </span>            :             {
-<span class="lineNum">      65 </span><span class="lineCov">          5 :                 mysql_free_result(res_);</span>
-<span class="lineNum">      66 </span><span class="lineCov">          5 :                 if ((res_ = mysql_use_result(db_-&gt;db_)) != NULL)</span>
+<span class="lineNum">      65 </span><span class="lineCov">          6 :                 mysql_free_result(res_);</span>
+<span class="lineNum">      66 </span><span class="lineCov">          6 :                 if ((res_ = mysql_use_result(db_-&gt;db_)) != NULL)</span>
 <span class="lineNum">      67 </span><span class="lineNoCov">          0 :                     value = (row_ = mysql_fetch_row(res_)) != NULL;</span>
-<span class="lineNum">      68 </span><span class="lineCov">          5 :             }</span>
+<span class="lineNum">      68 </span><span class="lineCov">          6 :             }</span>
 <span class="lineNum">      69 </span>            : 
-<span class="lineNum">      70 </span><span class="lineCov">         20 :             return value;</span>
-<a name="71"><span class="lineNum">      71 </span><span class="lineCov">         20 :         }</span></a>
+<span class="lineNum">      70 </span><span class="lineCov">         24 :             return value;</span>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">         24 :         }</span></a>
 <span class="lineNum">      72 </span>            : 
 <span class="lineNum">      73 </span>            :         void mysql_resultset::reset()
 <span class="lineNum">      74 </span>            :         {
-<span class="lineNum">      75 </span><span class="lineCov">          5 :             mysql_data_seek(res_, 0);</span>
-<a name="76"><span class="lineNum">      76 </span><span class="lineCov">          5 :         }</span></a>
+<span class="lineNum">      75 </span><span class="lineCov">          6 :             mysql_data_seek(res_, 0);</span>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">          6 :         }</span></a>
 <span class="lineNum">      77 </span>            : 
 <span class="lineNum">      78 </span>            :         row mysql_resultset::current_row()
 <span class="lineNum">      79 </span>            :         {
-<span class="lineNum">      80 </span><span class="lineCov">         40 :             return row(make_shared&lt;mysql_row&gt;(db_, res_, row_));</span>
+<span class="lineNum">      80 </span><span class="lineCov">         48 :             return row(make_shared&lt;mysql_row&gt;(db_, res_, row_));</span>
 <a name="81"><span class="lineNum">      81 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      82 </span>            : 
 <span class="lineNum">      83 </span>            :         size_t mysql_resultset::column_count() const
