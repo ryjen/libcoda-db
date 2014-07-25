@@ -57,10 +57,11 @@ namespace arg3
         class mysql_stmt_column : public column_impl
         {
         private:
-            MYSQL_BIND *value_;
+            MYSQL_BIND value_;
+            void copy_value(const MYSQL_BIND &other);
         public:
 
-            mysql_stmt_column(MYSQL_BIND *pValue);
+            mysql_stmt_column(const MYSQL_BIND &pValue);
             mysql_stmt_column(const mysql_stmt_column &other);
             mysql_stmt_column(mysql_stmt_column &&other);
             virtual ~mysql_stmt_column();

@@ -13,13 +13,13 @@ namespace arg3
         {
         }
 
-        sqlite3_column::sqlite3_column(sqlite3_column &&other) : value_(std::move(other.value_)) {}
+        sqlite3_column::sqlite3_column(sqlite3_column &&other) : value_(other.value_) {}
 
         sqlite3_column::~sqlite3_column() {}
 
         sqlite3_column &sqlite3_column::operator=(sqlite3_column && other)
         {
-            value_ = std::move(other.value_);
+            value_ = other.value_;
 
             return *this;
         }

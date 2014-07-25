@@ -46,6 +46,26 @@ namespace arg3
             size_t column_count() const;
         };
 
+        class mysql_bindings
+        {
+        private:
+            MYSQL_BIND *value_;
+            size_t size_;
+            void copy_value(MYSQL_BIND *other, size_t size);
+        public:
+            mysql_bindings();
+            mysql_bindings(size_t size);
+            mysql_bindings(MYSQL_BIND *value, size_t size);
+            mysql_bindings(MYSQL_FIELD *fields, size_t size);
+            mysql_bindings(const mysql_bindings &other);
+            mysql_bindings(mysql_bindings &&other);
+            mysql_bindings &operator=(const mysql_bindings &other);
+            mysql_bindings &operator=(mysql_bindings && other);
+            virtual ~mysql_bindings();
+
+            void bind_result(MYSQL_STMT *stmt);
+        };
+
         /*!
          * a mysql specific implementation of a result set using prepared statements
          */

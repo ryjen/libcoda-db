@@ -91,7 +91,7 @@ namespace arg3
         extern string last_stmt_error(MYSQL_STMT *stmt);
 
         mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, MYSQL_STMT *stmt) : stmt_(stmt), metadata_(NULL), db_(db),
-            bindings_(NULL), columnCount_(0), status_(-1)
+            bindings_(), columnCount_(0), status_(-1)
         {
             assert(stmt_ != NULL);
             assert(db_ != NULL);
@@ -274,6 +274,158 @@ namespace arg3
         {
             assert(stmt_ != NULL);
             return mysql_stmt_field_count(stmt_);
+        }
+
+
+        mysql_bindings::mysql_bindings() : value_(NULL), size_(0) {}
+
+        mysql_bindings::mysql_bindings(size_t size) : size_(size)
+        {
+            value_ = (MYSQL_BIND *) calloc(size, sizeof(MYSQL_BIND));
+        }
+
+        mysql_bindings::mysql_bindings(MYSQL_BIND *values, size_t size) : value_(values), size_(size)
+        {
+
+        }
+        mysql_bindings::mysql_bindings(MYSQL_FIELD *fields, size_t size)
+        {
+            for (auto i = 0; i < size; i++)
+            {
+                // get the right field types for mysql_stmt_bind_result()
+                switch (fields[i].type)
+                {
+                case MYSQL_TYPE_INT24:
+                    value_[i].buffer_type = MYSQL_TYPE_LONGLONG;
+                    break;
+                case MYSQL_TYPE_DECIMAL:
+                case MYSQL_TYPE_NEWDECIMAL:
+                    value_[i].buffer_type = MYSQL_TYPE_DOUBLE;
+                    break;
+                case MYSQL_TYPE_BIT:
+                    value_[i].buffer_type = MYSQL_TYPE_TINY;
+                    break;
+                case MYSQL_TYPE_YEAR:
+                    break;
+                case MYSQL_TYPE_VAR_STRING:
+                    value_[i].buffer_type = MYSQL_TYPE_STRING;
+                    break;
+                case MYSQL_TYPE_SET:
+                case MYSQL_TYPE_ENUM:
+                case MYSQL_TYPE_GEOMETRY:
+                    break;
+                default:
+                    value_[i].buffer_type = fields[i].type;
+                    break;
+                }
+                value_[i].is_null = (my_bool *) calloc(1, sizeof(my_bool));
+                value_[i].is_unsigned = 0;
+                value_[i].error = 0;
+                value_[i].buffer_length = fields[i].length;
+                value_[i].length = (size_t *) calloc(1, sizeof(size_t));
+                value_[i].buffer = calloc(1, fields[i].length);
+            }
+        }
+
+        void mysql_bindings::copy_value(MYSQL_BIND *others, size_t size)
+        {
+            value_ = (MYSQL_BIND *) calloc(size, sizeof(MYSQL_BIND));
+
+            for (int i = 0; i < size; i++)
+            {
+                MYSQL_BIND *other = &others[i];
+                MYSQL_BIND *value = &value_[i];
+
+                if (other->length)
+                {
+                    value->length = (unsigned long *) calloc(1, sizeof(unsigned long));
+                    memmove(value->length, other->length, sizeof(unsigned long));
+
+                    if (other->buffer)
+                    {
+                        value->buffer = calloc(1, *other->length);
+                        memmove(value->buffer, other->buffer, *other->length);
+                    }
+                }
+
+                if (other->is_null)
+                {
+                    value->is_null = (my_bool * ) calloc(1, sizeof(my_bool));
+                    memmove(value->is_null, other->is_null, sizeof(my_bool));
+                }
+
+                if (other->error)
+                {
+                    value->error = (my_bool *) calloc(1, sizeof(my_bool));
+                    memmove(value->error, other->error, sizeof(my_bool));
+                }
+
+                value_->buffer_type = other->buffer_type;
+                value_->buffer_length = other->buffer_length;
+                value_->is_unsigned = other->is_unsigned;
+            }
+        }
+
+        mysql_bindings::mysql_bindings(const mysql_bindings &other)
+        {
+            copy_value(other.value_, other.size_);
+        }
+        mysql_bindings::mysql_bindings(mysql_bindings && other)
+        {
+            value_ = other.value_;
+            size_ = other.size_;
+            other.value_ = NULL;
+            other.size_ = 0;
+        }
+        mysql_bindings &mysql_bindings::operator=(const mysql_bindings &other)
+        {
+            copy_value(other.value_, other.size_);
+            return *this;
+        }
+
+        mysql_bindings &mysql_bindings::operator=(mysql_bindings && other)
+        {
+            value_ = other.value_;
+            size_ = other.size_;
+            other.value_ = NULL;
+            other.size_ = 0;
+            return *this;
+        }
+        mysql_bindings::~mysql_bindings()
+        {
+            if (value_)
+            {
+                for (int i = 0; i < size_; i++)
+                {
+                    if (value_[i].buffer)
+                    {
+                        free(value_[i].buffer);
+                        value_[i].buffer = NULL;
+                    }
+                    if (value_[i].length)
+                    {
+                        free(value_[i].length);
+                        value_[i].length = NULL;
+                    }
+                    if (value_[i].is_null)
+                    {
+                        free(value_[i].is_null);
+                        value_[i].is_null = NULL;
+                    }
+                }
+                free(value_);
+                value_ = NULL;
+            }
+            size_ = 0;
+        }
+
+        void mysql_bindings::bind_result(MYSQL_STMT *stmt)
+        {
+
+            if (mysql_stmt_bind_result(stmt, value_) != 0)
+            {
+                throw database_exception(last_stmt_error(stmt));
+            }
         }
     }
 }

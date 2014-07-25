@@ -162,7 +162,7 @@ namespace arg3
 
             assert(fields_ != NULL);
 
-            return db::column(make_shared<mysql_stmt_column>( &fields_[nPosition] ) );
+            return db::column(make_shared<mysql_stmt_column>( fields_[nPosition] ) );
         }
 
         column mysql_stmt_row::column(const string &name) const

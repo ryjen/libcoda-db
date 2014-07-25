@@ -41,14 +41,14 @@ Context(column_test)
 
         Assert::That(other.is_valid(), Equals(true));
 
-        //Assert::That(other.to_string(), Equals(col.to_string()));
+        Assert::That(other.to_string(), Equals(col.to_string()));
     }
 
     Spec(move_assignment)
     {
         auto col = get_user_column("first_name");
 
-        //auto val = col.to_string();
+        auto val = col.to_string();
 
         column other = get_user_column("last_name");
 
@@ -58,7 +58,7 @@ Context(column_test)
 
         Assert::That(other.is_valid(), Equals(true));
 
-        //Assert::That(other.to_string(), Equals(val));
+        Assert::That(other.to_string(), Equals(val));
     }
 
     Spec(sqliteValueConstructor)
