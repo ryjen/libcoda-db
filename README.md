@@ -9,7 +9,7 @@ a sqlite3 and mysql wrapper / active record (ish) implementation
 Building
 ========
 
-Requires [autotools](http://en.wikipedia.org/wiki/GNU_build_system).
+I use [autotools](http://en.wikipedia.org/wiki/GNU_build_system).
 
 ```bash
 ./configure --prefix=/usr/local
