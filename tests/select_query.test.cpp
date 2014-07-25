@@ -52,7 +52,7 @@ Context(select_query_test)
 
         select_query query(factory.get("users"));
 
-        Assert::That(query.columns().size(), Equals(3));
+        Assert::That(query.columns().size(), Equals(5));
     }
 
     Spec(copy_move)

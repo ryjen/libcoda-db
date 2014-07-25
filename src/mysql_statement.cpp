@@ -163,7 +163,7 @@ namespace arg3
         mysql_statement &mysql_statement::bind(size_t index, const sql_null_type &value)
         {
             reallocate_bindings(index);
-            bindings_[index].buffer_type = MYSQL_TYPE_NULL;
+            bindings_[index - 1].buffer_type = MYSQL_TYPE_NULL;
 
             return *this;
         }
@@ -207,7 +207,7 @@ namespace arg3
         {
             bind_params();
 
-            if (mysql_stmt_execute(stmt_))
+            if (!stmt_ || mysql_stmt_execute(stmt_))
             {
                 return false;
             }

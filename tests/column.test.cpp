@@ -22,6 +22,45 @@ Context(column_test)
         teardown_testdb();
     }
 
+    column get_user_column(const string & name)
+    {
+        select_query q(testdb, "users");
+
+        auto rs = q.execute();
+
+        auto row = rs.begin();
+
+        return row->column(name);
+    }
+
+    Spec(copy_constructor)
+    {
+        auto col = get_user_column("first_name");
+
+        column other(col);
+
+        Assert::That(other.is_valid(), Equals(true));
+
+        //Assert::That(other.to_string(), Equals(col.to_string()));
+    }
+
+    Spec(move_assignment)
+    {
+        auto col = get_user_column("first_name");
+
+        //auto val = col.to_string();
+
+        column other = get_user_column("last_name");
+
+        other = std::move(col);
+
+        Assert::That(col.is_valid(), Equals(false));
+
+        Assert::That(other.is_valid(), Equals(true));
+
+        //Assert::That(other.to_string(), Equals(val));
+    }
+
     Spec(sqliteValueConstructor)
     {
 #if TEST_SQLITE

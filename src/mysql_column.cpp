@@ -163,31 +163,46 @@ namespace arg3
 
         sql_blob mysql_stmt_column::to_blob() const
         {
-            void *buf = calloc(1, *value_->length);
-            memcpy(buf, value_->buffer, *value_->length);
+            if (value_->length)
+            {
+                void *buf = calloc(1, *value_->length);
+                memcpy(buf, value_->buffer, *value_->length);
 
-            return sql_blob(buf, *value_->length, free);
+                return sql_blob(buf, *value_->length, free);
+            }
+
+            return sql_blob(NULL, 0, NULL);
         }
 
         double mysql_stmt_column::to_double() const
         {
             assert(value_->buffer != NULL);
-            return *static_cast<double *>(value_->buffer);
+            double *value = static_cast<double *>(value_->buffer);
+
+            return value == NULL ? 0 : *value;
         }
         bool mysql_stmt_column::to_bool() const
         {
-            return value_->buffer != NULL && *static_cast<int *>(value_->buffer) != 0;
+            assert(value_->buffer != NULL);
+
+            int *value = static_cast<int *>(value_->buffer);
+
+            return value != NULL && *value;
         }
         int mysql_stmt_column::to_int() const
         {
             assert(value_->buffer != NULL);
-            return *static_cast<int *>(value_->buffer);
+            int *value = static_cast<int *>(value_->buffer);
+
+            return value == NULL ? 0 : *value;
         }
 
         int64_t mysql_stmt_column::to_int64() const
         {
             assert(value_->buffer != NULL);
-            return *static_cast<int64_t *>(value_->buffer);
+            int64_t *value = static_cast<int64_t *>(value_->buffer);
+
+            return value == NULL ? 0 : *value;
         }
 
         sql_value mysql_stmt_column::to_value() const

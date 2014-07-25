@@ -25,7 +25,10 @@ namespace arg3
 
             column_impl() = default;
             column_impl(const column_impl &other) = default;
+            column_impl(column_impl &&other) = default;
             column_impl &operator=(const column_impl &other) = default;
+            column_impl &operator=(column_impl && other) = default;
+            virtual ~column_impl() = default;
 
             virtual bool is_valid() const = 0;
 

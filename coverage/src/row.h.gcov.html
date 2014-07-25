@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-22</td>
+            <td class="headerValue">2014-07-24</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">10</td>
@@ -86,12 +86,12 @@
 <span class="lineNum">      16 </span>            :         class row_impl
 <a name="17"><span class="lineNum">      17 </span>            :         {</a>
 <a name="18"><span class="lineNum">      18 </span>            :         public:</a>
-<a name="19"><span class="lineNum">      19 </span><span class="lineCov">         98 :             row_impl() = default;</span></a>
+<a name="19"><span class="lineNum">      19 </span><span class="lineCov">        130 :             row_impl() = default;</span></a>
 <span class="lineNum">      20 </span><span class="lineNoCov">          0 :             row_impl(const row_impl &amp;other) = default;</span>
 <span class="lineNum">      21 </span><span class="lineNoCov">          0 :             row_impl(row_impl &amp;&amp;other) = default;</span>
 <a name="22"><span class="lineNum">      22 </span>            :             row_impl &amp;operator=(const row_impl &amp;other) = default;</a>
 <span class="lineNum">      23 </span>            :             row_impl &amp;operator=(row_impl &amp;&amp; other) = default;
-<span class="lineNum">      24 </span><span class="lineCov">         98 :             virtual ~row_impl() = default;</span>
+<span class="lineNum">      24 </span><span class="lineCov">        130 :             virtual ~row_impl() = default;</span>
 <span class="lineNum">      25 </span>            : 
 <span class="lineNum">      26 </span>            :             virtual string column_name(size_t nPosition) const = 0;
 <span class="lineNum">      27 </span>            : 
@@ -122,8 +122,8 @@
 <span class="lineNum">      52 </span>            : 
 <span class="lineNum">      53 </span>            :             row_iterator(shared_ptr&lt;RowType&gt; pRow, int nPosition) : row_(pRow),
 <span class="lineNum">      54 </span>            :                 position_(nPosition)
-<span class="lineNum">      55 </span><span class="lineCov">         94 :             {</span>
-<a name="56"><span class="lineNum">      56 </span><span class="lineCov">        188 :             }</span></a>
+<span class="lineNum">      55 </span><span class="lineCov">        130 :             {</span>
+<a name="56"><span class="lineNum">      56 </span><span class="lineCov">        260 :             }</span></a>
 <span class="lineNum">      57 </span>            : 
 <span class="lineNum">      58 </span>            :             row_iterator(const row_iterator &amp;other) : row_(other.row_), position_(other.position_)
 <span class="lineNum">      59 </span><span class="lineNoCov">          0 :             {</span>

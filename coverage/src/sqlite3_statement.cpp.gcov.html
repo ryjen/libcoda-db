@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-22</td>
+            <td class="headerValue">2014-07-24</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">14</td>
@@ -78,15 +78,15 @@
 <a name="8"><span class="lineNum">       8 </span>            :     {</a>
 <span class="lineNum">       9 </span>            : 
 <span class="lineNum">      10 </span>            :         sqlite3_statement::sqlite3_statement(sqlite3_db *db) : db_(db), stmt_(NULL)
-<a name="11"><span class="lineNum">      11 </span><span class="lineCov">         64 :         {}</span></a>
+<a name="11"><span class="lineNum">      11 </span><span class="lineCov">         70 :         {}</span></a>
 <span class="lineNum">      12 </span>            : 
 <span class="lineNum">      13 </span>            :         void sqlite3_statement::prepare(const string &amp;sql)
 <span class="lineNum">      14 </span>            :         {
-<span class="lineNum">      15 </span><span class="lineCov">         32 :             if (stmt_ != NULL) return;</span>
+<span class="lineNum">      15 </span><span class="lineCov">         35 :             if (stmt_ != NULL) return;</span>
 <span class="lineNum">      16 </span>            : 
-<span class="lineNum">      17 </span><span class="lineCov">         32 :             if (sqlite3_prepare_v2(db_-&gt;db_, sql.c_str(), -1, &amp;stmt_, NULL) != SQLITE_OK)</span>
+<span class="lineNum">      17 </span><span class="lineCov">         35 :             if (sqlite3_prepare_v2(db_-&gt;db_, sql.c_str(), -1, &amp;stmt_, NULL) != SQLITE_OK)</span>
 <span class="lineNum">      18 </span><span class="lineNoCov">          0 :                 throw database_exception(db_-&gt;last_error());</span>
-<a name="19"><span class="lineNum">      19 </span><span class="lineCov">         32 :         }</span></a>
+<a name="19"><span class="lineNum">      19 </span><span class="lineCov">         35 :         }</span></a>
 <span class="lineNum">      20 </span>            : 
 <span class="lineNum">      21 </span>            :         bool sqlite3_statement::is_valid() const
 <span class="lineNum">      22 </span>            :         {
@@ -123,9 +123,9 @@
 <span class="lineNum">      53 </span><span class="lineNoCov">          0 :         }</span>
 <span class="lineNum">      54 </span>            :         sqlite3_statement &amp;sqlite3_statement::bind(size_t index, const std::string &amp;value, int len)
 <span class="lineNum">      55 </span>            :         {
-<span class="lineNum">      56 </span><span class="lineCov">         41 :             if (sqlite3_bind_text(stmt_, index, value.c_str(), len, SQLITE_TRANSIENT) != SQLITE_OK)</span>
+<span class="lineNum">      56 </span><span class="lineCov">         43 :             if (sqlite3_bind_text(stmt_, index, value.c_str(), len, SQLITE_TRANSIENT) != SQLITE_OK)</span>
 <span class="lineNum">      57 </span><span class="lineNoCov">          0 :                 throw binding_error(db_-&gt;last_error());</span>
-<a name="58"><span class="lineNum">      58 </span><span class="lineCov">         41 :             return *this;</span></a>
+<a name="58"><span class="lineNum">      58 </span><span class="lineCov">         43 :             return *this;</span></a>
 <span class="lineNum">      59 </span><span class="lineNoCov">          0 :         }</span>
 <span class="lineNum">      60 </span>            :         sqlite3_statement &amp;sqlite3_statement::bind(size_t index, const sql_blob &amp;value)
 <span class="lineNum">      61 </span>            :         {
@@ -135,9 +135,9 @@
 <span class="lineNum">      65 </span><span class="lineNoCov">          0 :         }</span>
 <span class="lineNum">      66 </span>            :         sqlite3_statement &amp;sqlite3_statement::bind(size_t index, const sql_null_type &amp;value)
 <span class="lineNum">      67 </span>            :         {
-<span class="lineNum">      68 </span><span class="lineCov">          9 :             if (sqlite3_bind_null(stmt_, index) != SQLITE_OK)</span>
+<span class="lineNum">      68 </span><span class="lineCov">         35 :             if (sqlite3_bind_null(stmt_, index) != SQLITE_OK)</span>
 <span class="lineNum">      69 </span><span class="lineNoCov">          0 :                 throw binding_error(db_-&gt;last_error());</span>
-<span class="lineNum">      70 </span><span class="lineCov">          9 :             return *this;</span>
+<span class="lineNum">      70 </span><span class="lineCov">         35 :             return *this;</span>
 <a name="71"><span class="lineNum">      71 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      72 </span>            : 
 <span class="lineNum">      73 </span>            :         sqlite3_statement &amp;sqlite3_statement::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
@@ -155,7 +155,7 @@
 <span class="lineNum">      85 </span>            : 
 <span class="lineNum">      86 </span>            :         resultset sqlite3_statement::results()
 <span class="lineNum">      87 </span>            :         {
-<span class="lineNum">      88 </span><span class="lineCov">         30 :             return resultset(make_shared&lt;sqlite3_resultset&gt;(db_, stmt_));</span>
+<span class="lineNum">      88 </span><span class="lineCov">         36 :             return resultset(make_shared&lt;sqlite3_resultset&gt;(db_, stmt_));</span>
 <a name="89"><span class="lineNum">      89 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      90 </span>            : 
 <span class="lineNum">      91 </span>            :         bool sqlite3_statement::result()

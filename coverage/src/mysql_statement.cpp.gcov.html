@@ -31,18 +31,18 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">72</td>
+            <td class="headerCovTableEntry">83</td>
             <td class="headerCovTableEntry">123</td>
-            <td class="headerCovTableEntryLo">58.5 %</td>
+            <td class="headerCovTableEntryLo">67.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-22</td>
+            <td class="headerValue">2014-07-24</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntry">23</td>
             <td class="headerCovTableEntry">33</td>
-            <td class="headerCovTableEntryLo">60.6 %</td>
+            <td class="headerCovTableEntryLo">69.7 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -86,11 +86,11 @@
 <span class="lineNum">      16 </span>            :         template&lt;typename T&gt;
 <span class="lineNum">      17 </span>            :         void *to_ptr(T value)
 <span class="lineNum">      18 </span>            :         {
-<span class="lineNum">      19 </span><span class="lineCov">         14 :             T *ptr = (T *) calloc(1, sizeof(T));</span>
+<span class="lineNum">      19 </span><span class="lineCov">         15 :             T *ptr = (T *) calloc(1, sizeof(T));</span>
 <span class="lineNum">      20 </span>            : 
-<span class="lineNum">      21 </span><span class="lineCov">         14 :             *ptr = value;</span>
+<span class="lineNum">      21 </span><span class="lineCov">         15 :             *ptr = value;</span>
 <span class="lineNum">      22 </span>            : 
-<span class="lineNum">      23 </span><span class="lineCov">         14 :             return ptr;</span>
+<span class="lineNum">      23 </span><span class="lineCov">         15 :             return ptr;</span>
 <a name="24"><span class="lineNum">      24 </span>            :         }</a>
 <span class="lineNum">      25 </span>            : 
 <span class="lineNum">      26 </span>            :         string last_stmt_error(MYSQL_STMT *stmt)
@@ -107,7 +107,7 @@
 <a name="37"><span class="lineNum">      37 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      38 </span>            : 
 <span class="lineNum">      39 </span>            :         mysql_statement::mysql_statement(mysql_db *db) : db_(db), bindings_(NULL), stmt_(NULL), bindingSize_(0)
-<a name="40"><span class="lineNum">      40 </span><span class="lineCov">         62 :         {}</span></a>
+<a name="40"><span class="lineNum">      40 </span><span class="lineCov">         68 :         {}</span></a>
 <span class="lineNum">      41 </span>            : 
 <span class="lineNum">      42 </span>            :         mysql_statement::mysql_statement(mysql_statement &amp;&amp;other)
 <span class="lineNum">      43 </span><span class="lineNoCov">          0 :         {</span>
@@ -135,19 +135,19 @@
 <a name="65"><span class="lineNum">      65 </span>            :         }</a>
 <span class="lineNum">      66 </span>            : 
 <span class="lineNum">      67 </span>            :         mysql_statement::~mysql_statement()
-<span class="lineNum">      68 </span><span class="lineCov">         62 :         {</span>
-<span class="lineNum">      69 </span><span class="lineCov">         31 :             finish();</span>
-<a name="70"><span class="lineNum">      70 </span><span class="lineCov">         62 :         }</span></a>
+<span class="lineNum">      68 </span><span class="lineCov">         68 :         {</span>
+<span class="lineNum">      69 </span><span class="lineCov">         34 :             finish();</span>
+<a name="70"><span class="lineNum">      70 </span><span class="lineCov">         68 :         }</span></a>
 <span class="lineNum">      71 </span>            : 
 <span class="lineNum">      72 </span>            :         void mysql_statement::prepare(const string &amp;sql)
 <span class="lineNum">      73 </span>            :         {
-<span class="lineNum">      74 </span><span class="lineCov">         93 :             if (stmt_ != NULL || db_ == NULL || !db_-&gt;is_open()) return;</span>
+<span class="lineNum">      74 </span><span class="lineCov">        102 :             if (stmt_ != NULL || db_ == NULL || !db_-&gt;is_open()) return;</span>
 <span class="lineNum">      75 </span>            : 
-<span class="lineNum">      76 </span><span class="lineCov">         31 :             stmt_ = mysql_stmt_init(db_-&gt;db_);</span>
+<span class="lineNum">      76 </span><span class="lineCov">         34 :             stmt_ = mysql_stmt_init(db_-&gt;db_);</span>
 <span class="lineNum">      77 </span>            : 
-<span class="lineNum">      78 </span><span class="lineCov">         31 :             if (mysql_stmt_prepare(stmt_, sql.c_str(), sql.length()))</span>
+<span class="lineNum">      78 </span><span class="lineCov">         34 :             if (mysql_stmt_prepare(stmt_, sql.c_str(), sql.length()))</span>
 <span class="lineNum">      79 </span><span class="lineNoCov">          0 :                 throw database_exception(db_-&gt;last_error());</span>
-<a name="80"><span class="lineNum">      80 </span><span class="lineCov">         31 :         }</span></a>
+<a name="80"><span class="lineNum">      80 </span><span class="lineCov">         34 :         }</span></a>
 <span class="lineNum">      81 </span>            : 
 <span class="lineNum">      82 </span>            :         bool mysql_statement::is_valid() const
 <span class="lineNum">      83 </span>            :         {
@@ -156,29 +156,29 @@
 <span class="lineNum">      86 </span>            : 
 <span class="lineNum">      87 </span>            :         void mysql_statement::reallocate_bindings(size_t index)
 <span class="lineNum">      88 </span>            :         {
-<span class="lineNum">      89 </span><span class="lineCov">        122 :             assert(index &gt; 0);</span>
+<span class="lineNum">      89 </span><span class="lineCov">        174 :             assert(index &gt; 0);</span>
 <span class="lineNum">      90 </span>            : 
-<span class="lineNum">      91 </span><span class="lineCov">         61 :             if (index &lt;= bindingSize_)</span>
+<span class="lineNum">      91 </span><span class="lineCov">         87 :             if (index &lt;= bindingSize_)</span>
 <span class="lineNum">      92 </span><span class="lineNoCov">          0 :                 return;</span>
 <span class="lineNum">      93 </span>            : 
 <span class="lineNum">      94 </span>            :             // dynamic array of parameter values
-<span class="lineNum">      95 </span><span class="lineCov">         61 :             if (bindings_ == NULL)</span>
+<span class="lineNum">      95 </span><span class="lineCov">         87 :             if (bindings_ == NULL)</span>
 <span class="lineNum">      96 </span>            :             {
 <span class="lineNum">      97 </span><span class="lineCov">         29 :                 bindings_ = static_cast&lt;MYSQL_BIND *&gt;(calloc(index, sizeof(MYSQL_BIND)));</span>
 <span class="lineNum">      98 </span><span class="lineCov">         29 :             }</span>
 <span class="lineNum">      99 </span>            :             else
 <span class="lineNum">     100 </span>            :             {
-<span class="lineNum">     101 </span><span class="lineCov">         32 :                 bindings_ = static_cast&lt;MYSQL_BIND *&gt;(realloc(bindings_, sizeof(MYSQL_BIND) * (index)));</span>
+<span class="lineNum">     101 </span><span class="lineCov">         58 :                 bindings_ = static_cast&lt;MYSQL_BIND *&gt;(realloc(bindings_, sizeof(MYSQL_BIND) * (index)));</span>
 <span class="lineNum">     102 </span>            : 
 <span class="lineNum">     103 </span>            :                 // make sure new values are initialized
-<span class="lineNum">     104 </span><span class="lineCov">        128 :                 for (size_t i = bindingSize_; i &lt; index; i++)</span>
+<span class="lineNum">     104 </span><span class="lineCov">        232 :                 for (size_t i = bindingSize_; i &lt; index; i++)</span>
 <span class="lineNum">     105 </span>            :                 {
-<span class="lineNum">     106 </span><span class="lineCov">         32 :                     memset(&amp;bindings_[i], 0, sizeof(MYSQL_BIND));</span>
-<span class="lineNum">     107 </span><span class="lineCov">         32 :                 }</span>
+<span class="lineNum">     106 </span><span class="lineCov">         58 :                     memset(&amp;bindings_[i], 0, sizeof(MYSQL_BIND));</span>
+<span class="lineNum">     107 </span><span class="lineCov">         58 :                 }</span>
 <span class="lineNum">     108 </span>            :             }
 <span class="lineNum">     109 </span>            : 
-<span class="lineNum">     110 </span><span class="lineCov">         61 :             bindingSize_ = index;</span>
-<span class="lineNum">     111 </span><span class="lineCov">        122 :         }</span>
+<span class="lineNum">     110 </span><span class="lineCov">         87 :             bindingSize_ = index;</span>
+<span class="lineNum">     111 </span><span class="lineCov">        174 :         }</span>
 <span class="lineNum">     112 </span>            : 
 <span class="lineNum">     113 </span>            :         /**
 <span class="lineNum">     114 </span>            :          * binding methods ensure the dynamic array is sized properly and store the value as a memory pointer
@@ -203,11 +203,11 @@
 <span class="lineNum">     133 </span>            :         }
 <span class="lineNum">     134 </span>            :         mysql_statement &amp;mysql_statement::bind(size_t index, double value)
 <span class="lineNum">     135 </span>            :         {
-<span class="lineNum">     136 </span><span class="lineNoCov">          0 :             reallocate_bindings(index);</span>
-<span class="lineNum">     137 </span><span class="lineNoCov">          0 :             bindings_[index - 1].buffer_type = MYSQL_TYPE_DOUBLE;</span>
-<span class="lineNum">     138 </span><span class="lineNoCov">          0 :             bindings_[index - 1].buffer = to_ptr(value);</span>
+<span class="lineNum">     136 </span><span class="lineCov">          1 :             reallocate_bindings(index);</span>
+<span class="lineNum">     137 </span><span class="lineCov">          1 :             bindings_[index - 1].buffer_type = MYSQL_TYPE_DOUBLE;</span>
+<span class="lineNum">     138 </span><span class="lineCov">          1 :             bindings_[index - 1].buffer = to_ptr(value);</span>
 <span class="lineNum">     139 </span>            : 
-<a name="140"><span class="lineNum">     140 </span><span class="lineNoCov">          0 :             return *this;</span></a>
+<a name="140"><span class="lineNum">     140 </span><span class="lineCov">          1 :             return *this;</span></a>
 <span class="lineNum">     141 </span>            :         }
 <span class="lineNum">     142 </span>            :         mysql_statement &amp;mysql_statement::bind(size_t index, const std::string &amp;value, int len)
 <span class="lineNum">     143 </span>            :         {
@@ -221,21 +221,21 @@
 <span class="lineNum">     151 </span>            :         }
 <span class="lineNum">     152 </span>            :         mysql_statement &amp;mysql_statement::bind(size_t index, const sql_blob &amp;value)
 <span class="lineNum">     153 </span>            :         {
-<span class="lineNum">     154 </span><span class="lineNoCov">          0 :             reallocate_bindings(index);</span>
-<span class="lineNum">     155 </span><span class="lineNoCov">          0 :             bindings_[index - 1].buffer_type = MYSQL_TYPE_BLOB;</span>
-<span class="lineNum">     156 </span><span class="lineNoCov">          0 :             void *ptr = calloc(1, value.size());</span>
-<span class="lineNum">     157 </span><span class="lineNoCov">          0 :             memcpy(ptr, value.ptr(), value.size());</span>
-<span class="lineNum">     158 </span><span class="lineNoCov">          0 :             bindings_[index - 1].buffer = ptr;</span>
-<span class="lineNum">     159 </span><span class="lineNoCov">          0 :             bindings_[index - 1].buffer_length = value.size();</span>
+<span class="lineNum">     154 </span><span class="lineCov">          1 :             reallocate_bindings(index);</span>
+<span class="lineNum">     155 </span><span class="lineCov">          1 :             bindings_[index - 1].buffer_type = MYSQL_TYPE_BLOB;</span>
+<span class="lineNum">     156 </span><span class="lineCov">          1 :             void *ptr = calloc(1, value.size());</span>
+<span class="lineNum">     157 </span><span class="lineCov">          1 :             memcpy(ptr, value.ptr(), value.size());</span>
+<span class="lineNum">     158 </span><span class="lineCov">          1 :             bindings_[index - 1].buffer = ptr;</span>
+<span class="lineNum">     159 </span><span class="lineCov">          1 :             bindings_[index - 1].buffer_length = value.size();</span>
 <span class="lineNum">     160 </span>            : 
-<a name="161"><span class="lineNum">     161 </span><span class="lineNoCov">          0 :             return *this;</span></a>
+<a name="161"><span class="lineNum">     161 </span><span class="lineCov">          1 :             return *this;</span></a>
 <span class="lineNum">     162 </span>            :         }
 <span class="lineNum">     163 </span>            :         mysql_statement &amp;mysql_statement::bind(size_t index, const sql_null_type &amp;value)
 <span class="lineNum">     164 </span>            :         {
-<span class="lineNum">     165 </span><span class="lineCov">          8 :             reallocate_bindings(index);</span>
-<span class="lineNum">     166 </span><span class="lineCov">          8 :             bindings_[index].buffer_type = MYSQL_TYPE_NULL;</span>
+<span class="lineNum">     165 </span><span class="lineCov">         32 :             reallocate_bindings(index);</span>
+<span class="lineNum">     166 </span><span class="lineCov">         32 :             bindings_[index - 1].buffer_type = MYSQL_TYPE_NULL;</span>
 <span class="lineNum">     167 </span>            : 
-<span class="lineNum">     168 </span><span class="lineCov">          8 :             return *this;</span>
+<span class="lineNum">     168 </span><span class="lineCov">         32 :             return *this;</span>
 <a name="169"><span class="lineNum">     169 </span>            :         }</a>
 <span class="lineNum">     170 </span>            : 
 <span class="lineNum">     171 </span>            :         mysql_statement &amp;mysql_statement::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
@@ -259,25 +259,25 @@
 <span class="lineNum">     189 </span>            : 
 <span class="lineNum">     190 </span>            :         void mysql_statement::bind_params()
 <span class="lineNum">     191 </span>            :         {
-<span class="lineNum">     192 </span><span class="lineCov">         33 :             if (bindings_)</span>
+<span class="lineNum">     192 </span><span class="lineCov">         36 :             if (bindings_)</span>
 <span class="lineNum">     193 </span>            :             {
 <span class="lineNum">     194 </span><span class="lineCov">         31 :                 if (mysql_stmt_bind_param(stmt_, bindings_))</span>
 <span class="lineNum">     195 </span><span class="lineNoCov">          0 :                     throw database_exception(last_error());</span>
 <span class="lineNum">     196 </span><span class="lineCov">         31 :             }</span>
-<a name="197"><span class="lineNum">     197 </span><span class="lineCov">         33 :         }</span></a>
+<a name="197"><span class="lineNum">     197 </span><span class="lineCov">         36 :         }</span></a>
 <span class="lineNum">     198 </span>            : 
 <span class="lineNum">     199 </span>            :         resultset mysql_statement::results()
 <span class="lineNum">     200 </span>            :         {
-<span class="lineNum">     201 </span><span class="lineCov">         15 :             bind_params();</span>
+<span class="lineNum">     201 </span><span class="lineCov">         18 :             bind_params();</span>
 <span class="lineNum">     202 </span>            : 
-<span class="lineNum">     203 </span><span class="lineCov">         30 :             return resultset(make_shared&lt;mysql_stmt_resultset&gt;(db_, stmt_));</span>
+<span class="lineNum">     203 </span><span class="lineCov">         36 :             return resultset(make_shared&lt;mysql_stmt_resultset&gt;(db_, stmt_));</span>
 <a name="204"><span class="lineNum">     204 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">     205 </span>            : 
 <span class="lineNum">     206 </span>            :         bool mysql_statement::result()
 <span class="lineNum">     207 </span>            :         {
 <span class="lineNum">     208 </span><span class="lineCov">         18 :             bind_params();</span>
 <span class="lineNum">     209 </span>            : 
-<span class="lineNum">     210 </span><span class="lineCov">         18 :             if (mysql_stmt_execute(stmt_))</span>
+<span class="lineNum">     210 </span><span class="lineCov">         36 :             if (!stmt_ || mysql_stmt_execute(stmt_))</span>
 <span class="lineNum">     211 </span>            :             {
 <span class="lineNum">     212 </span><span class="lineNoCov">          0 :                 return false;</span>
 <span class="lineNum">     213 </span>            :             }
@@ -296,30 +296,30 @@
 <span class="lineNum">     226 </span>            : 
 <span class="lineNum">     227 </span>            :         void mysql_statement::finish()
 <span class="lineNum">     228 </span>            :         {
-<span class="lineNum">     229 </span><span class="lineCov">         46 :             if (bindings_)</span>
+<span class="lineNum">     229 </span><span class="lineCov">         49 :             if (bindings_)</span>
 <span class="lineNum">     230 </span>            :             {
-<span class="lineNum">     231 </span><span class="lineCov">        180 :                 for (size_t i = 0; i &lt; bindingSize_; i++)</span>
+<span class="lineNum">     231 </span><span class="lineCov">        232 :                 for (size_t i = 0; i &lt; bindingSize_; i++)</span>
 <span class="lineNum">     232 </span>            :                 {
-<span class="lineNum">     233 </span><span class="lineCov">         61 :                     if (bindings_[i].buffer)</span>
+<span class="lineNum">     233 </span><span class="lineCov">         87 :                     if (bindings_[i].buffer)</span>
 <span class="lineNum">     234 </span>            :                     {
-<span class="lineNum">     235 </span><span class="lineCov">         53 :                         free(bindings_[i].buffer);</span>
-<span class="lineNum">     236 </span><span class="lineCov">         53 :                         bindings_[i].buffer = NULL;</span>
-<span class="lineNum">     237 </span><span class="lineCov">         53 :                     }</span>
-<span class="lineNum">     238 </span><span class="lineCov">         61 :                 }</span>
+<span class="lineNum">     235 </span><span class="lineCov">         55 :                         free(bindings_[i].buffer);</span>
+<span class="lineNum">     236 </span><span class="lineCov">         55 :                         bindings_[i].buffer = NULL;</span>
+<span class="lineNum">     237 </span><span class="lineCov">         55 :                     }</span>
+<span class="lineNum">     238 </span><span class="lineCov">         87 :                 }</span>
 <span class="lineNum">     239 </span><span class="lineCov">         29 :                 free(bindings_);</span>
 <span class="lineNum">     240 </span><span class="lineCov">         29 :                 bindings_ = NULL;</span>
 <span class="lineNum">     241 </span><span class="lineCov">         29 :             }</span>
 <span class="lineNum">     242 </span>            : 
-<span class="lineNum">     243 </span><span class="lineCov">         46 :             if (stmt_ != NULL)</span>
+<span class="lineNum">     243 </span><span class="lineCov">         49 :             if (stmt_ != NULL)</span>
 <span class="lineNum">     244 </span>            :             {
-<span class="lineNum">     245 </span><span class="lineCov">         31 :                 mysql_stmt_free_result(stmt_);</span>
+<span class="lineNum">     245 </span><span class="lineCov">         34 :                 mysql_stmt_free_result(stmt_);</span>
 <span class="lineNum">     246 </span>            : 
-<span class="lineNum">     247 </span><span class="lineCov">         31 :                 mysql_stmt_close(stmt_);</span>
+<span class="lineNum">     247 </span><span class="lineCov">         34 :                 mysql_stmt_close(stmt_);</span>
 <span class="lineNum">     248 </span>            : 
-<span class="lineNum">     249 </span><span class="lineCov">         31 :                 stmt_ = NULL;</span>
-<span class="lineNum">     250 </span><span class="lineCov">         31 :             }</span>
+<span class="lineNum">     249 </span><span class="lineCov">         34 :                 stmt_ = NULL;</span>
+<span class="lineNum">     250 </span><span class="lineCov">         34 :             }</span>
 <span class="lineNum">     251 </span>            : 
-<a name="252"><span class="lineNum">     252 </span><span class="lineCov">         46 :         }</span></a>
+<a name="252"><span class="lineNum">     252 </span><span class="lineCov">         49 :         }</span></a>
 <span class="lineNum">     253 </span>            : 
 <span class="lineNum">     254 </span>            :         void mysql_statement::reset()
 <span class="lineNum">     255 </span>            :         {

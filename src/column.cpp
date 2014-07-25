@@ -9,7 +9,7 @@ namespace arg3
 
         column::column(shared_ptr<column_impl> impl) : impl_(impl)
         {
-
+            assert(impl_ != nullptr);
         }
 
         column::column(const column &other) : impl_(other.impl_)
@@ -37,41 +37,57 @@ namespace arg3
 
         bool column::is_valid() const
         {
+            if (impl_ == nullptr) return false;
+
             return impl_->is_valid();
         }
 
         sql_blob column::to_blob() const
         {
+            assert(impl_ != nullptr);
+
             return impl_->to_blob();
         }
 
         double column::to_double() const
         {
+            assert(impl_ != nullptr);
+
             return impl_->to_double();
         }
 
         int column::to_int() const
         {
+            assert(impl_ != nullptr);
+
             return impl_->to_int();
         }
 
         bool column::to_bool() const
         {
+            assert(impl_ != nullptr);
+
             return impl_->to_bool();
         }
 
         int64_t column::to_int64() const
         {
+            assert(impl_ != nullptr);
+
             return impl_->to_int64();
         }
 
         string column::to_string() const
         {
+            assert(impl_ != nullptr);
+
             return impl_->to_string();
         }
 
         sql_value column::to_value() const
         {
+            assert(impl_ != nullptr);
+
             return impl_->to_value();
         }
 

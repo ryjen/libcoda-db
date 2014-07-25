@@ -19,7 +19,7 @@ public:
     void setup()
     {
         open();
-        execute("create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45))");
+        execute("create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45), dval real, data blob)");
     }
 
     void teardown()
@@ -45,13 +45,12 @@ public:
     void setup()
     {
         open();
-        execute("create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45))");
+        execute("create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45), dval real, data blob)");
     }
 
     void teardown()
     {
-        execute("delete from users");
-        execute("ALTER TABLE users AUTO_INCREMENT = 1");
+        execute("drop table users");
         close();
         schemas()->clear("users");
     }
