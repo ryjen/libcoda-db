@@ -35,6 +35,7 @@ namespace arg3
             delete_query &where(const where_clause &value);
 
             delete_query &where(const string &value);
+
         private:
 
             where_clause where_;

@@ -50,6 +50,32 @@ void teardown_testdb()
 #endif
 }
 
+void test_sqlite3_db::setup()
+{
+    open();
+    execute("create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45), dval real, data blob)");
+}
+
+void test_sqlite3_db::teardown()
+{
+    close();
+    unlink(connection_string().c_str());
+    schemas()->clear("users");
+}
+
+void test_mysql_db::setup()
+{
+    open();
+    execute("create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45), dval real, data blob)");
+}
+
+void test_mysql_db::teardown()
+{
+    execute("drop table users");
+    close();
+    schemas()->clear("users");
+}
+
 Context(sqldb_test)
 {
     static void SetUpContext()
@@ -76,10 +102,6 @@ Context(sqldb_test)
             cerr << e.what() << endl;
             throw e;
         }
-
-        // auto db2 = get_db_from_uri("mysql://user@localhost/dbname");
-
-        //Assert::That(dynamic_cast<mysql_db *>(db2.get()) != NULL, Equals(true));
     }
 };
 

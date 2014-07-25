@@ -80,7 +80,7 @@ namespace arg3
             }
             else
             {
-                stmt_->reset();
+                reset();
             }
 
             return res;

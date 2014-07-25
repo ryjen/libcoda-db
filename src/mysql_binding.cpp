@@ -14,6 +14,17 @@ namespace arg3
     {
 
 
+        // small util method to make a c pointer for a type
+        template<typename T>
+        void *to_ptr(T value)
+        {
+            T *ptr = (T *) calloc(1, sizeof(T));
+
+            *ptr = value;
+
+            return ptr;
+        }
+
         extern string last_stmt_error(MYSQL_STMT *stmt);
 
         mysql_binding::mysql_binding() : value_(NULL), size_(0) {}
@@ -73,32 +84,35 @@ namespace arg3
             }
         }
 
+        void mysql_binding::clear_value(size_t i)
+        {
+            assert(i < size_);
+
+            if (value_[i].buffer)
+            {
+                free(value_[i].buffer);
+            }
+            if (value_[i].length)
+            {
+                free(value_[i].length);
+            }
+            if (value_[i].is_null)
+            {
+                free(value_[i].is_null);
+            }
+            if (value_[i].error)
+            {
+                free(value_[i].error);
+            }
+            memset(&value_[i], 0, sizeof(value_[i]));
+        }
         void mysql_binding::clear_value()
         {
             if (value_)
             {
                 for (int i = 0; i < size_; i++)
                 {
-                    if (value_[i].buffer)
-                    {
-                        free(value_[i].buffer);
-                        value_[i].buffer = NULL;
-                    }
-                    if (value_[i].length)
-                    {
-                        free(value_[i].length);
-                        value_[i].length = NULL;
-                    }
-                    if (value_[i].is_null)
-                    {
-                        free(value_[i].is_null);
-                        value_[i].is_null = NULL;
-                    }
-                    if (value_[i].error)
-                    {
-                        free(value_[i].error);
-                        value_[i].error = NULL;
-                    }
+                    clear_value(i);
                 }
                 free(value_);
                 value_ = NULL;
@@ -187,7 +201,7 @@ namespace arg3
             return make_shared<mysql_binding>(value_[index]);
         }
 
-        void mysql_binding::bind_result(MYSQL_STMT *stmt)
+        void mysql_binding::bind_result(MYSQL_STMT *stmt) const
         {
             if (mysql_stmt_bind_result(stmt, value_) != 0)
             {
@@ -286,6 +300,132 @@ namespace arg3
 
             return textValue;
         }
+
+
+
+        void mysql_binding::reallocate_value(size_t index)
+        {
+            assert(index > 0);
+
+            if (index <= size_)
+            {
+                clear_value(index - 1);
+                return;
+            }
+
+            // dynamic array of parameter values
+            if (value_ == NULL)
+            {
+                value_ = static_cast<MYSQL_BIND *>(calloc(index, sizeof(MYSQL_BIND)));
+            }
+            else
+            {
+                value_ = static_cast<MYSQL_BIND *>(realloc(value_, sizeof(MYSQL_BIND) * (index)));
+
+                // make sure new values are initialized
+                for (size_t i = size_; i < index; i++)
+                {
+                    memset(&value_[i], 0, sizeof(MYSQL_BIND));
+                }
+            }
+
+            size_ = index;
+        }
+
+        /**
+         * binding methods ensure the dynamic array is sized properly and store the value as a memory pointer
+         */
+
+        mysql_binding &mysql_binding::bind(size_t index, int value)
+        {
+            reallocate_value(index);
+
+            value_[index - 1].buffer_type = MYSQL_TYPE_LONG;
+            value_[index - 1].buffer = to_ptr(value);
+
+            return *this;
+        }
+        mysql_binding &mysql_binding::bind(size_t index, int64_t value)
+        {
+            reallocate_value(index);
+            value_[index - 1].buffer_type = MYSQL_TYPE_LONGLONG;
+            value_[index - 1].buffer = to_ptr(value);
+
+            return *this;
+        }
+        mysql_binding &mysql_binding::bind(size_t index, double value)
+        {
+            reallocate_value(index);
+            value_[index - 1].buffer_type = MYSQL_TYPE_DOUBLE;
+            value_[index - 1].buffer = to_ptr(value);
+
+            return *this;
+        }
+        mysql_binding &mysql_binding::bind(size_t index, const std::string &value, int len)
+        {
+            reallocate_value(index);
+            value_[index - 1].buffer_type = MYSQL_TYPE_STRING;
+            auto size = len == -1 ? value.size() : len;
+            value_[index - 1].buffer = strdup(value.c_str());
+            value_[index - 1].buffer_length = size;
+
+            return *this;
+        }
+        mysql_binding &mysql_binding::bind(size_t index, const sql_blob &value)
+        {
+            reallocate_value(index);
+            value_[index - 1].buffer_type = MYSQL_TYPE_BLOB;
+            void *ptr = calloc(1, value.size());
+            memcpy(ptr, value.ptr(), value.size());
+            value_[index - 1].buffer = ptr;
+            value_[index - 1].buffer_length = value.size();
+
+            return *this;
+        }
+        mysql_binding &mysql_binding::bind(size_t index, const sql_null_type &value)
+        {
+            reallocate_value(index);
+            value_[index - 1].buffer_type = MYSQL_TYPE_NULL;
+
+            return *this;
+        }
+
+        mysql_binding &mysql_binding::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
+        {
+
+            reallocate_value(index);
+            value_[index - 1].buffer_type = MYSQL_TYPE_BLOB;
+            void *ptr = calloc(1, size);
+            memcpy(ptr, data, size);
+            value_[index - 1].buffer = ptr;
+            value_[index - 1].buffer_length = size;
+
+            return *this;
+        }
+
+        mysql_binding &mysql_binding::bind_value(size_t index, const sql_value &value)
+        {
+            value.bind_to(this, index);
+            return *this;
+        }
+
+        void mysql_binding::bind_params(MYSQL_STMT *stmt) const
+        {
+            if (mysql_stmt_bind_param(stmt, value_))
+                throw database_exception(last_stmt_error(stmt));
+
+        }
+
+        size_t mysql_binding::size() const
+        {
+            return size_;
+        }
+
+        void mysql_binding::reset()
+        {
+            clear_value();
+        }
+
     }
 }
 

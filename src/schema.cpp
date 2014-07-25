@@ -14,7 +14,7 @@ namespace arg3
             return os;
         }
 
-        schema::schema(const string &tablename) : tableName_(tablename) {}
+        schema::schema(sqldb *db, const string &tablename) : db_(db), tableName_(tablename) {}
 
         schema::~schema()
         {
@@ -49,18 +49,15 @@ namespace arg3
             return columns_.size() > 0;
         }
 
-        void schema::init(sqldb *db)
+        void schema::init()
         {
-            assert(db != NULL);
+            assert(db_ != NULL);
 
-            assert(db->is_open());
+            assert(db_->is_open());
 
             assert(!tableName_.empty());
 
-            db_ = db;
-
             db_->query_schema(tableName_, columns_);
-
         }
 
         vector<column_definition> schema::columns() const

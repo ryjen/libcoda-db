@@ -18,11 +18,12 @@ namespace arg3
         class sqlite3_column : public column_impl
         {
         private:
-            sqlite3_value *value_;
+            sqlite3_stmt *stmt_;
+            int column_;
             void assert_value() const throw (no_such_column_exception);
         public:
 
-            sqlite3_column(sqlite3_value *pValue);
+            sqlite3_column(sqlite3_stmt *stmt, int column);
             sqlite3_column(const sqlite3_column &other) = delete;
             sqlite3_column(sqlite3_column &&other);
             virtual ~sqlite3_column();
@@ -50,10 +51,6 @@ namespace arg3
             sql_value to_value() const;
 
             int type() const;
-
-            operator sqlite3_value *() const;
-
-            int numeric_type() const;
         };
 
     }

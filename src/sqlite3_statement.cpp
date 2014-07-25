@@ -59,7 +59,7 @@ namespace arg3
         }
         sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_blob &value)
         {
-            if (sqlite3_bind_blob(stmt_, index, value.ptr(), value.size(), value.destructor()) != SQLITE_OK)
+            if (sqlite3_bind_blob(stmt_, index, value.ptr(), value.size(), value.destructor() != NULL ? SQLITE_TRANSIENT : SQLITE_STATIC) != SQLITE_OK)
                 throw binding_error(db_->last_error());
             return *this;
         }
@@ -79,7 +79,7 @@ namespace arg3
 
         sqlite3_statement &sqlite3_statement::bind_value(size_t index, const sql_value &value)
         {
-            value.bind(this, index);
+            value.bind_to(this, index);
             return *this;
         }
 

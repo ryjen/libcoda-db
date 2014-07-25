@@ -172,10 +172,7 @@ namespace arg3
         void select_query::reset()
         {
             base_query::reset();
-            where_.reset();
-            limit_.clear();
-            orderBy_.clear();
-            groupBy_.clear();
+            stmt_ = nullptr;
         }
     }
 }

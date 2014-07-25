@@ -55,6 +55,8 @@ namespace arg3
 
             shared_ptr<statement> create_statement();
         };
+
+        extern string last_stmt_error(MYSQL_STMT *stmt);
     }
 }
 

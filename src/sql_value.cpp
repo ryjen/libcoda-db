@@ -35,12 +35,19 @@ namespace arg3
 
         const sql_null_type sql_null = sql_null_type::instance;
 
-        sql_blob::sql_blob(const void *ptr, size_t size, sql_blob::cleanup_method cleanup) : p_(ptr), s_(size), destruct_(cleanup), references_(new unsigned(0))
+        sql_blob::sql_blob(const void *ptr, size_t size, sql_blob::cleanup_method cleanup) : p_(ptr), s_(size), destruct_(cleanup)
         {}
 
-        sql_blob::sql_blob(const sql_blob &other)
+        sql_blob::sql_blob(const sql_blob &other) : p_(NULL), destruct_(NULL)
         {
             copy(other);
+        }
+
+        sql_blob::sql_blob(sql_blob &&other) : p_(other.p_), s_(other.s_), destruct_(other.destruct_)
+        {
+            other.p_ = NULL;
+            other.s_ = 0;
+            other.destruct_ = NULL;
         }
         sql_blob &sql_blob::operator=(const sql_blob &other)
         {
@@ -48,32 +55,44 @@ namespace arg3
             return *this;
         }
 
-        sql_blob::~sql_blob()
-        {
-            if (references_ && *references_ == 0)
-            {
-                if (p_ != NULL && destruct_ != NULL)
-                {
-                    destruct_(const_cast<void *>(p_));
-                    p_ = NULL;
-                }
-                delete references_;
-                references_ = NULL;
-            }
-            else if (references_)
-            {
-                (*references_)--;
-            }
-        }
-
-        void sql_blob::copy(const sql_blob &other)
+        sql_blob &sql_blob::operator=(sql_blob && other)
         {
             p_ = other.p_;
             s_ = other.s_;
             destruct_ = other.destruct_;
-            references_ = other.references_;
-            if (references_)
-                (*references_)++;
+
+            other.p_ = NULL;
+            other.s_ = 0;
+            other.destruct_ = NULL;
+
+            return *this;
+        }
+
+        void sql_blob::clear()
+        {
+            if (p_ != NULL && destruct_ != NULL)
+            {
+                destruct_(const_cast<void *>(p_));
+                p_ = NULL;
+            }
+        }
+
+        sql_blob::~sql_blob()
+        {
+            clear();
+        }
+
+        void sql_blob::copy(const sql_blob &other)
+        {
+            clear();
+            if (other.s_ > 0)
+            {
+                void *buf = calloc(1, other.s_);
+                memcpy(buf, other.p_, other.s_);
+                p_ = buf;
+            }
+            s_ = other.s_;
+            destruct_ = other.destruct_;
         }
 
         const void *sql_blob::ptr() const
@@ -171,7 +190,7 @@ namespace arg3
             return os.str();
         }
 
-        void sql_value::bind(bindable *obj, int index) const
+        void sql_value::bind_to(bindable *obj, int index) const
         {
             apply_visitor(sql_binding_visitor(obj, index), value_);
         }

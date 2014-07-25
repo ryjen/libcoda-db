@@ -109,13 +109,13 @@ Context(modify_query_test)
 
             query.bind(3, buf);
 
-            query.execute(NULL, true);
+            Assert::That(query.execute(NULL, true), Equals(1));
         }
 
         select_query select(testdb, "users");
 
         int count = select.count();
 
-        Assert::That(count, Equals(3));
+        Assert::That(count, Equals(5));
     }
 };

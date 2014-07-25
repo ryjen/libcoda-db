@@ -11,6 +11,19 @@ namespace arg3
     namespace db
     {
 
+        string last_stmt_error(MYSQL_STMT *stmt)
+        {
+
+            if (!stmt) return "invalid";
+
+            ostringstream buf;
+
+            buf << mysql_stmt_errno(stmt);
+            buf << ": " << mysql_stmt_error(stmt);
+
+            return buf.str();
+        }
+
         mysql_db::mysql_db(const string &dbName, const string &user, const string &password, const string &host, int port) : sqldb(), db_(NULL),
             dbName_(dbName), user_(user), password_(password), host_(host), port_(port), schema_factory_(this)
         {

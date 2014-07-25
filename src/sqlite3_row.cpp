@@ -39,7 +39,7 @@ namespace arg3
         {
             assert(nPosition < size());
 
-            return db::column(make_shared<sqlite3_column>( sqlite3_column_value(stmt_, nPosition ) ) );
+            return db::column(make_shared<sqlite3_column>( stmt_, nPosition ) );
         }
 
         column sqlite3_row::column(const string &name) const

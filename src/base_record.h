@@ -247,6 +247,9 @@ namespace arg3
              */
             shared_ptr<schema> schema() const
             {
+                if (!schema_->is_valid())
+                    schema_->init();
+
                 return schema_;
             }
 
@@ -269,7 +272,16 @@ namespace arg3
                     index++;
                 }
 
-                return query.execute(insertId);
+                long long id;
+
+                bool rval = query.execute(&id);
+
+                if (insertId)
+                    *insertId = id;
+
+                set(idColumnName_, id);
+
+                return rval;
             }
 
 

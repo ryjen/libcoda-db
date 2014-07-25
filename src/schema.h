@@ -36,7 +36,7 @@ namespace arg3
             string tableName_;
             vector<column_definition> columns_;
         public:
-            schema(const string &tablename);
+            schema(sqldb *db, const string &tablename);
 
             virtual ~schema();
 
@@ -47,7 +47,7 @@ namespace arg3
             schema &operator=(const schema &other);
             schema &operator=(schema && other);
 
-            virtual void init(sqldb *db);
+            virtual void init();
 
             vector<column_definition> columns() const;
 

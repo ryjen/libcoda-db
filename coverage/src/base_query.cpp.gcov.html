@@ -31,13 +31,13 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">73</td>
-            <td class="headerCovTableEntry">89</td>
-            <td class="headerCovTableEntryMed">82.0 %</td>
+            <td class="headerCovTableEntry">72</td>
+            <td class="headerCovTableEntry">88</td>
+            <td class="headerCovTableEntryMed">81.8 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-24</td>
+            <td class="headerValue">2014-07-25</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">23</td>
@@ -90,7 +90,7 @@
 <a name="20"><span class="lineNum">      20 </span>            :     {</a>
 <span class="lineNum">      21 </span>            : 
 <span class="lineNum">      22 </span>            :         base_query::base_query(sqldb *db, const string &amp;tableName) : db_(db), stmt_(nullptr), tableName_(tableName)
-<a name="23"><span class="lineNum">      23 </span><span class="lineCov">        126 :         {}</span></a>
+<a name="23"><span class="lineNum">      23 </span><span class="lineCov">        296 :         {}</span></a>
 <span class="lineNum">      24 </span>            : 
 <span class="lineNum">      25 </span><span class="lineCov">         44 :         base_query::base_query(shared_ptr&lt;schema&gt; schema) : db_(schema-&gt;db()), stmt_(nullptr), tableName_(schema-&gt;table_name())</span>
 <a name="26"><span class="lineNum">      26 </span><span class="lineCov">         44 :         {}</span></a>
@@ -99,35 +99,35 @@
 <span class="lineNum">      29 </span>            :             tableName_(other.tableName_), bindings_(other.bindings_)
 <a name="30"><span class="lineNum">      30 </span><span class="lineCov">         12 :         {}</span></a>
 <span class="lineNum">      31 </span>            : 
-<span class="lineNum">      32 </span><span class="lineCov">         12 :         base_query::base_query(base_query &amp;&amp;other) : db_(std::move(other.db_)), stmt_(std::move(other.stmt_)),</span>
-<span class="lineNum">      33 </span><span class="lineCov">          8 :             tableName_(std::move(other.tableName_)), bindings_(std::move(other.bindings_))</span>
-<span class="lineNum">      34 </span><span class="lineCov">          4 :         {</span>
-<span class="lineNum">      35 </span><span class="lineCov">          4 :             other.db_ = NULL;</span>
-<span class="lineNum">      36 </span><span class="lineCov">          4 :             other.stmt_ = nullptr;</span>
-<a name="37"><span class="lineNum">      37 </span><span class="lineCov">          4 :         }</span></a>
+<span class="lineNum">      32 </span><span class="lineCov">          6 :         base_query::base_query(base_query &amp;&amp;other) : db_(other.db_), stmt_(std::move(other.stmt_)),</span>
+<span class="lineNum">      33 </span><span class="lineCov">         12 :             tableName_(std::move(other.tableName_)), bindings_(std::move(other.bindings_))</span>
+<span class="lineNum">      34 </span><span class="lineCov">         24 :         {</span>
+<span class="lineNum">      35 </span><span class="lineCov">          6 :             other.db_ = NULL;</span>
+<span class="lineNum">      36 </span><span class="lineCov">          6 :             other.stmt_ = nullptr;</span>
+<a name="37"><span class="lineNum">      37 </span><span class="lineCov">          6 :         }</span></a>
 <span class="lineNum">      38 </span>            : 
-<a name="39"><span class="lineNum">      39 </span><span class="lineCov">         93 :         base_query::~base_query() {}</span></a>
+<a name="39"><span class="lineNum">      39 </span><span class="lineCov">        180 :         base_query::~base_query() {}</span></a>
 <span class="lineNum">      40 </span>            : 
 <span class="lineNum">      41 </span>            :         base_query &amp;base_query::operator=(const base_query &amp;other)
 <span class="lineNum">      42 </span>            :         {
-<span class="lineNum">      43 </span><span class="lineCov">          4 :             db_ = other.db_;</span>
-<span class="lineNum">      44 </span><span class="lineCov">          4 :             stmt_ = other.stmt_;</span>
-<span class="lineNum">      45 </span><span class="lineCov">          4 :             tableName_ = other.tableName_;</span>
-<span class="lineNum">      46 </span><span class="lineCov">          4 :             bindings_ = other.bindings_;</span>
+<span class="lineNum">      43 </span><span class="lineCov">          6 :             db_ = other.db_;</span>
+<span class="lineNum">      44 </span><span class="lineCov">          6 :             stmt_ = other.stmt_;</span>
+<span class="lineNum">      45 </span><span class="lineCov">          6 :             tableName_ = other.tableName_;</span>
+<span class="lineNum">      46 </span><span class="lineCov">          6 :             bindings_ = other.bindings_;</span>
 <span class="lineNum">      47 </span>            : 
-<span class="lineNum">      48 </span><span class="lineCov">          4 :             return *this;</span>
+<span class="lineNum">      48 </span><span class="lineCov">          6 :             return *this;</span>
 <a name="49"><span class="lineNum">      49 </span>            :         }</a>
 <span class="lineNum">      50 </span>            : 
 <span class="lineNum">      51 </span>            :         base_query &amp;base_query::operator=(base_query &amp;&amp; other)
 <span class="lineNum">      52 </span>            :         {
-<span class="lineNum">      53 </span><span class="lineCov">          4 :             db_ = other.db_;</span>
-<span class="lineNum">      54 </span><span class="lineCov">          4 :             stmt_ = other.stmt_;</span>
-<span class="lineNum">      55 </span><span class="lineCov">          4 :             other.db_ = NULL;</span>
-<span class="lineNum">      56 </span><span class="lineCov">          4 :             other.stmt_ = nullptr;</span>
-<span class="lineNum">      57 </span><span class="lineCov">          4 :             tableName_ = std::move(other.tableName_);</span>
-<span class="lineNum">      58 </span><span class="lineCov">          4 :             bindings_ = std::move(other.bindings_);</span>
+<span class="lineNum">      53 </span><span class="lineCov">          6 :             db_ = other.db_;</span>
+<span class="lineNum">      54 </span><span class="lineCov">          6 :             stmt_ = std::move(other.stmt_);</span>
+<span class="lineNum">      55 </span><span class="lineCov">          6 :             other.db_ = NULL;</span>
+<span class="lineNum">      56 </span><span class="lineCov">          6 :             other.stmt_ = nullptr;</span>
+<span class="lineNum">      57 </span><span class="lineCov">          6 :             tableName_ = std::move(other.tableName_);</span>
+<span class="lineNum">      58 </span><span class="lineCov">          6 :             bindings_ = std::move(other.bindings_);</span>
 <span class="lineNum">      59 </span>            : 
-<span class="lineNum">      60 </span><span class="lineCov">          4 :             return *this;</span>
+<span class="lineNum">      60 </span><span class="lineCov">          6 :             return *this;</span>
 <a name="61"><span class="lineNum">      61 </span>            :         }</a>
 <span class="lineNum">      62 </span>            : 
 <span class="lineNum">      63 </span>            :         sqldb *base_query::db() const
@@ -137,49 +137,49 @@
 <span class="lineNum">      67 </span>            : 
 <span class="lineNum">      68 </span>            :         std::string base_query::tablename() const
 <span class="lineNum">      69 </span>            :         {
-<span class="lineNum">      70 </span><span class="lineCov">          2 :             return tableName_;</span>
+<span class="lineNum">      70 </span><span class="lineCov">          8 :             return tableName_;</span>
 <a name="71"><span class="lineNum">      71 </span>            :         }</a>
 <span class="lineNum">      72 </span>            : 
 <span class="lineNum">      73 </span>            :         void base_query::prepare()
 <span class="lineNum">      74 </span>            :         {
-<span class="lineNum">      75 </span><span class="lineCov">        150 :             assert(db_ != NULL);</span>
+<span class="lineNum">      75 </span><span class="lineCov">        304 :             assert(db_ != NULL);</span>
 <span class="lineNum">      76 </span>            : 
-<span class="lineNum">      77 </span><span class="lineCov">         87 :             if (stmt_ != nullptr &amp;&amp; stmt_-&gt;is_valid()) return;</span>
+<span class="lineNum">      77 </span><span class="lineCov">        156 :             if (stmt_ != nullptr &amp;&amp; stmt_-&gt;is_valid()) return;</span>
 <span class="lineNum">      78 </span>            : 
-<span class="lineNum">      79 </span><span class="lineCov">         69 :             string sql = to_string();</span>
+<span class="lineNum">      79 </span><span class="lineCov">        150 :             string sql = to_string();</span>
 <span class="lineNum">      80 </span>            : 
-<span class="lineNum">      81 </span><span class="lineCov">         69 :             db_-&gt;log(sqldb::VERBOSE, sql);</span>
+<span class="lineNum">      81 </span><span class="lineCov">        150 :             db_-&gt;log(sqldb::VERBOSE, sql);</span>
 <span class="lineNum">      82 </span>            : 
-<span class="lineNum">      83 </span><span class="lineCov">         69 :             if (stmt_ == nullptr)</span>
-<span class="lineNum">      84 </span><span class="lineCov">        138 :                 stmt_ = db_-&gt;create_statement();</span>
+<span class="lineNum">      83 </span><span class="lineCov">        150 :             if (stmt_ == nullptr)</span>
+<span class="lineNum">      84 </span><span class="lineCov">        300 :                 stmt_ = db_-&gt;create_statement();</span>
 <span class="lineNum">      85 </span>            : 
-<span class="lineNum">      86 </span><span class="lineCov">         69 :             stmt_-&gt;prepare(sql);</span>
+<span class="lineNum">      86 </span><span class="lineCov">        150 :             stmt_-&gt;prepare(sql);</span>
 <span class="lineNum">      87 </span>            : 
-<span class="lineNum">      88 </span><span class="lineCov">        496 :             for (size_t i = 1; i &lt;= bindings_.size(); i++)</span>
+<span class="lineNum">      88 </span><span class="lineCov">       1104 :             for (size_t i = 1; i &lt;= bindings_.size(); i++)</span>
 <span class="lineNum">      89 </span>            :             {
-<span class="lineNum">      90 </span><span class="lineCov">        358 :                 auto &amp;value = bindings_[i - 1];</span>
+<span class="lineNum">      90 </span><span class="lineCov">        804 :                 auto &amp;value = bindings_[i - 1];</span>
 <span class="lineNum">      91 </span>            : 
-<span class="lineNum">      92 </span><span class="lineCov">        179 :                 value.bind(stmt_.get(), i);</span>
-<span class="lineNum">      93 </span><span class="lineCov">        179 :             }</span>
-<a name="94"><span class="lineNum">      94 </span><span class="lineCov">        144 :         }</span></a>
+<span class="lineNum">      92 </span><span class="lineCov">        402 :                 value.bind_to(stmt_.get(), i);</span>
+<span class="lineNum">      93 </span><span class="lineCov">        402 :             }</span>
+<a name="94"><span class="lineNum">      94 </span><span class="lineCov">        302 :         }</span></a>
 <span class="lineNum">      95 </span>            : 
 <span class="lineNum">      96 </span>            :         size_t base_query::assert_binding_index(size_t index)
 <span class="lineNum">      97 </span>            :         {
-<span class="lineNum">      98 </span><span class="lineCov">        382 :             assert(index &gt; 0);</span>
+<span class="lineNum">      98 </span><span class="lineCov">        816 :             assert(index &gt; 0);</span>
 <span class="lineNum">      99 </span>            : 
-<span class="lineNum">     100 </span><span class="lineCov">        191 :             if (index &gt; bindings_.size())</span>
+<span class="lineNum">     100 </span><span class="lineCov">        408 :             if (index &gt; bindings_.size())</span>
 <span class="lineNum">     101 </span>            :             {
-<span class="lineNum">     102 </span><span class="lineCov">        179 :                 bindings_.resize(index);</span>
-<span class="lineNum">     103 </span><span class="lineCov">        179 :             }</span>
+<span class="lineNum">     102 </span><span class="lineCov">        408 :                 bindings_.resize(index);</span>
+<span class="lineNum">     103 </span><span class="lineCov">        408 :             }</span>
 <span class="lineNum">     104 </span>            : 
-<span class="lineNum">     105 </span><span class="lineCov">        191 :             return index - 1;</span>
+<span class="lineNum">     105 </span><span class="lineCov">        408 :             return index - 1;</span>
 <a name="106"><span class="lineNum">     106 </span>            :         }</a>
 <span class="lineNum">     107 </span>            : 
 <span class="lineNum">     108 </span>            :         base_query &amp;base_query::bind(size_t index, const string &amp;value, int len)
 <span class="lineNum">     109 </span>            :         {
-<span class="lineNum">     110 </span><span class="lineCov">        450 :             bindings_[assert_binding_index(index)] = len &gt; 0 ? value.substr(0, len) : value;</span>
+<span class="lineNum">     110 </span><span class="lineCov">        860 :             bindings_[assert_binding_index(index)] = len &gt; 0 ? value.substr(0, len) : value;</span>
 <span class="lineNum">     111 </span>            : 
-<span class="lineNum">     112 </span><span class="lineCov">         90 :             return *this;</span>
+<span class="lineNum">     112 </span><span class="lineCov">        172 :             return *this;</span>
 <a name="113"><span class="lineNum">     113 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">     114 </span>            : 
 <span class="lineNum">     115 </span>            :         base_query &amp;base_query::bind(size_t index, int value)
@@ -191,28 +191,28 @@
 <a name="121"><span class="lineNum">     121 </span>            : </a>
 <span class="lineNum">     122 </span>            :         base_query &amp;base_query::bind(size_t index, long long value)
 <span class="lineNum">     123 </span><span class="lineNoCov">          0 :         {</span>
-<span class="lineNum">     124 </span><span class="lineCov">         32 :             bindings_[assert_binding_index(index)] = value;</span>
+<span class="lineNum">     124 </span><span class="lineCov">         92 :             bindings_[assert_binding_index(index)] = value;</span>
 <span class="lineNum">     125 </span>            : 
-<span class="lineNum">     126 </span><span class="lineCov">         16 :             return *this;</span>
+<span class="lineNum">     126 </span><span class="lineCov">         46 :             return *this;</span>
 <a name="127"><span class="lineNum">     127 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">     128 </span>            : 
 <span class="lineNum">     129 </span>            :         base_query &amp;base_query::bind(size_t index)
 <span class="lineNum">     130 </span>            :         {
-<span class="lineNum">     131 </span><span class="lineCov">        134 :             bindings_[assert_binding_index(index)]  = sql_null;</span>
+<span class="lineNum">     131 </span><span class="lineCov">        300 :             bindings_[assert_binding_index(index)]  = sql_null;</span>
 <span class="lineNum">     132 </span>            : 
-<span class="lineNum">     133 </span><span class="lineCov">         67 :             return *this;</span>
+<span class="lineNum">     133 </span><span class="lineCov">        150 :             return *this;</span>
 <a name="134"><span class="lineNum">     134 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">     135 </span>            : 
 <span class="lineNum">     136 </span>            :         base_query &amp;base_query::bind(size_t index, const sql_null_type &amp;value)
 <span class="lineNum">     137 </span>            :         {
-<span class="lineNum">     138 </span><span class="lineCov">         67 :             return bind(index);</span>
+<span class="lineNum">     138 </span><span class="lineCov">        150 :             return bind(index);</span>
 <a name="139"><span class="lineNum">     139 </span>            :         }</a>
 <span class="lineNum">     140 </span>            : 
 <span class="lineNum">     141 </span>            :         base_query &amp;base_query::bind(size_t index, double value)
 <span class="lineNum">     142 </span>            :         {
-<span class="lineNum">     143 </span><span class="lineCov">          2 :             bindings_[assert_binding_index(index)] = value;</span>
+<span class="lineNum">     143 </span><span class="lineCov">         26 :             bindings_[assert_binding_index(index)] = value;</span>
 <span class="lineNum">     144 </span>            : 
-<span class="lineNum">     145 </span><span class="lineCov">          1 :             return *this;</span>
+<span class="lineNum">     145 </span><span class="lineCov">         13 :             return *this;</span>
 <a name="146"><span class="lineNum">     146 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">     147 </span>            : 
 <span class="lineNum">     148 </span>            :         base_query &amp;base_query::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
@@ -225,16 +225,16 @@
 <span class="lineNum">     155 </span>            : 
 <span class="lineNum">     156 </span>            :         base_query &amp;base_query::bind(size_t index, const sql_blob &amp;value)
 <span class="lineNum">     157 </span>            :         {
-<span class="lineNum">     158 </span><span class="lineCov">          2 :             bindings_[assert_binding_index(index)] = value;</span>
+<span class="lineNum">     158 </span><span class="lineCov">         22 :             bindings_[assert_binding_index(index)] = value;</span>
 <span class="lineNum">     159 </span>            : 
-<span class="lineNum">     160 </span><span class="lineCov">          1 :             return *this;</span>
+<span class="lineNum">     160 </span><span class="lineCov">         11 :             return *this;</span>
 <a name="161"><span class="lineNum">     161 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">     162 </span>            : 
 <span class="lineNum">     163 </span>            :         base_query &amp;base_query::bind_value(size_t index, const sql_value &amp;value)
 <span class="lineNum">     164 </span>            :         {
-<span class="lineNum">     165 </span><span class="lineCov">        153 :             value.bind(this, index);</span>
+<span class="lineNum">     165 </span><span class="lineCov">        358 :             value.bind_to(this, index);</span>
 <span class="lineNum">     166 </span>            : 
-<span class="lineNum">     167 </span><span class="lineCov">        153 :             return *this;</span>
+<span class="lineNum">     167 </span><span class="lineCov">        358 :             return *this;</span>
 <span class="lineNum">     168 </span>            :         }
 <a name="169"><span class="lineNum">     169 </span>            : </a>
 <span class="lineNum">     170 </span>            : 
@@ -254,33 +254,33 @@
 <span class="lineNum">     184 </span>            : 
 <span class="lineNum">     185 </span>            :         bool base_query::is_valid() const
 <span class="lineNum">     186 </span>            :         {
-<span class="lineNum">     187 </span><span class="lineCov">          8 :             return db_ != NULL &amp;&amp; stmt_ != nullptr;</span>
-<a name="188"><span class="lineNum">     188 </span><span class="lineCov">          8 :         }</span></a>
+<span class="lineNum">     187 </span><span class="lineCov">         20 :             return db_ != NULL;</span>
+<a name="188"><span class="lineNum">     188 </span>            :         }</a>
 <span class="lineNum">     189 </span>            : 
 <span class="lineNum">     190 </span>            :         void base_query::reset()
 <span class="lineNum">     191 </span>            :         {
-<span class="lineNum">     192 </span><span class="lineCov">          2 :             bindings_.clear();</span>
-<span class="lineNum">     193 </span><span class="lineCov">          2 :             stmt_ = nullptr;</span>
-<span class="lineNum">     194 </span><span class="lineCov">          2 :         }</span>
+<span class="lineNum">     192 </span><span class="lineCov">         10 :             bindings_.clear();</span>
+<span class="lineNum">     193 </span><span class="lineCov">         10 :             stmt_ = nullptr;</span>
+<span class="lineNum">     194 </span><span class="lineCov">         10 :         }</span>
 <span class="lineNum">     195 </span>            :     }
 <a name="196"><span class="lineNum">     196 </span>            : </a>
 <span class="lineNum">     197 </span>            : 
 <span class="lineNum">     198 </span>            :     string join_csv(string::value_type value, string::size_type count)
 <span class="lineNum">     199 </span>            :     {
-<span class="lineNum">     200 </span><span class="lineCov">         31 :         ostringstream buf;</span>
+<span class="lineNum">     200 </span><span class="lineCov">         70 :         ostringstream buf;</span>
 <span class="lineNum">     201 </span>            : 
-<span class="lineNum">     202 </span><span class="lineCov">         31 :         if (count &gt; 0)</span>
+<span class="lineNum">     202 </span><span class="lineCov">         70 :         if (count &gt; 0)</span>
 <span class="lineNum">     203 </span>            :         {
-<span class="lineNum">     204 </span><span class="lineCov">        294 :             for (string::size_type i = 0; i &lt; count - 1; i++)</span>
+<span class="lineNum">     204 </span><span class="lineCov">        668 :             for (string::size_type i = 0; i &lt; count - 1; i++)</span>
 <span class="lineNum">     205 </span>            :             {
-<span class="lineNum">     206 </span><span class="lineCov">        116 :                 buf.put(value);</span>
-<span class="lineNum">     207 </span><span class="lineCov">        116 :                 buf.put(',');</span>
-<span class="lineNum">     208 </span><span class="lineCov">        116 :             }</span>
+<span class="lineNum">     206 </span><span class="lineCov">        264 :                 buf.put(value);</span>
+<span class="lineNum">     207 </span><span class="lineCov">        264 :                 buf.put(',');</span>
+<span class="lineNum">     208 </span><span class="lineCov">        264 :             }</span>
 <span class="lineNum">     209 </span>            : 
-<span class="lineNum">     210 </span><span class="lineCov">         31 :             buf.put(value);</span>
-<span class="lineNum">     211 </span><span class="lineCov">         31 :         }</span>
-<span class="lineNum">     212 </span><span class="lineCov">         31 :         return buf.str();</span>
-<span class="lineNum">     213 </span><span class="lineCov">         31 :     }</span>
+<span class="lineNum">     210 </span><span class="lineCov">         70 :             buf.put(value);</span>
+<span class="lineNum">     211 </span><span class="lineCov">         70 :         }</span>
+<span class="lineNum">     212 </span><span class="lineCov">         70 :         return buf.str();</span>
+<span class="lineNum">     213 </span><span class="lineCov">         70 :     }</span>
 <span class="lineNum">     214 </span>            : }
 </pre>
       </td>

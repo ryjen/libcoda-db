@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-24</td>
+            <td class="headerValue">2014-07-25</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">4</td>
@@ -93,12 +93,12 @@
 <span class="lineNum">      23 </span>            :         {
 <a name="24"><span class="lineNum">      24 </span>            :         public:</a>
 <span class="lineNum">      25 </span>            : 
-<span class="lineNum">      26 </span><span class="lineCov">        303 :             column_impl() = default;</span>
+<span class="lineNum">      26 </span><span class="lineCov">        292 :             column_impl() = default;</span>
 <span class="lineNum">      27 </span>            :             column_impl(const column_impl &amp;other) = default;
 <span class="lineNum">      28 </span>            :             column_impl(column_impl &amp;&amp;other) = default;
 <a name="29"><span class="lineNum">      29 </span>            :             column_impl &amp;operator=(const column_impl &amp;other) = default;</a>
 <span class="lineNum">      30 </span>            :             column_impl &amp;operator=(column_impl &amp;&amp; other) = default;
-<span class="lineNum">      31 </span><span class="lineCov">        303 :             virtual ~column_impl() = default;</span>
+<span class="lineNum">      31 </span><span class="lineCov">        292 :             virtual ~column_impl() = default;</span>
 <span class="lineNum">      32 </span>            : 
 <span class="lineNum">      33 </span>            :             virtual bool is_valid() const = 0;
 <span class="lineNum">      34 </span>            : 
@@ -130,7 +130,7 @@
 <span class="lineNum">      60 </span>            :         public:
 <a name="61"><span class="lineNum">      61 </span>            :             column(shared_ptr&lt;column_impl&gt; impl);</a>
 <span class="lineNum">      62 </span>            : 
-<span class="lineNum">      63 </span><span class="lineCov">        394 :             virtual ~column() = default;</span>
+<span class="lineNum">      63 </span><span class="lineCov">        364 :             virtual ~column() = default;</span>
 <span class="lineNum">      64 </span>            : 
 <span class="lineNum">      65 </span>            :             column(const column &amp;other);
 <span class="lineNum">      66 </span>            : 

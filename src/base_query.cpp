@@ -29,7 +29,7 @@ namespace arg3
             tableName_(other.tableName_), bindings_(other.bindings_)
         {}
 
-        base_query::base_query(base_query &&other) : db_(std::move(other.db_)), stmt_(std::move(other.stmt_)),
+        base_query::base_query(base_query &&other) : db_(other.db_), stmt_(std::move(other.stmt_)),
             tableName_(std::move(other.tableName_)), bindings_(std::move(other.bindings_))
         {
             other.db_ = NULL;
@@ -51,7 +51,7 @@ namespace arg3
         base_query &base_query::operator=(base_query && other)
         {
             db_ = other.db_;
-            stmt_ = other.stmt_;
+            stmt_ = std::move(other.stmt_);
             other.db_ = NULL;
             other.stmt_ = nullptr;
             tableName_ = std::move(other.tableName_);
@@ -89,7 +89,7 @@ namespace arg3
             {
                 auto &value = bindings_[i - 1];
 
-                value.bind(stmt_.get(), i);
+                value.bind_to(stmt_.get(), i);
             }
         }
 
@@ -162,7 +162,7 @@ namespace arg3
 
         base_query &base_query::bind_value(size_t index, const sql_value &value)
         {
-            value.bind(this, index);
+            value.bind_to(this, index);
 
             return *this;
         }
@@ -184,7 +184,7 @@ namespace arg3
 
         bool base_query::is_valid() const
         {
-            return db_ != NULL && stmt_ != nullptr;
+            return db_ != NULL;
         }
 
         void base_query::reset()

@@ -6,6 +6,7 @@
 #ifdef HAVE_LIBMYSQLCLIENT
 
 #include "sql_value.h"
+#include "bindable.h"
 #include <mysql/mysql.h>
 #include <string>
 
@@ -16,7 +17,7 @@ namespace arg3
         class sql_value;
         class sql_blob;
 
-        class mysql_binding
+        class mysql_binding : public bindable
         {
             friend class mysql_column;
         private:
@@ -24,6 +25,8 @@ namespace arg3
             size_t size_;
             void copy_value(const MYSQL_BIND *other, size_t size);
             void clear_value();
+            void clear_value(size_t index);
+            void reallocate_value(size_t index);
         public:
             mysql_binding();
             mysql_binding(size_t size);
@@ -36,7 +39,9 @@ namespace arg3
             mysql_binding &operator=(mysql_binding && other);
             virtual ~mysql_binding();
 
-            void bind_result(MYSQL_STMT *stmt);
+            void bind_result(MYSQL_STMT *stmt) const;
+
+            size_t size() const;
 
             std::shared_ptr<mysql_binding> get(size_t index) const;
 
@@ -55,6 +60,19 @@ namespace arg3
             sql_value to_value(size_t index) const;
 
             int type(size_t index) const;
+
+            mysql_binding &bind(size_t index, int value);
+            mysql_binding &bind(size_t index, int64_t value);
+            mysql_binding &bind(size_t index, double value);
+            mysql_binding &bind(size_t index, const std::string &value, int len = -1);
+            mysql_binding &bind(size_t index, const sql_blob &value);
+            mysql_binding &bind(size_t index, const sql_null_type &value);
+            mysql_binding &bind_value(size_t index, const sql_value &v);
+            mysql_binding &bind(size_t index, const void *data, size_t size, void(* pFree)(void *));
+
+            void bind_params(MYSQL_STMT *stmt) const;
+
+            void reset();
         };
 
     }

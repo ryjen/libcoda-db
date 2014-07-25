@@ -31,18 +31,18 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">21</td>
+            <td class="headerCovTableEntry">27</td>
             <td class="headerCovTableEntry">81</td>
-            <td class="headerCovTableEntryLo">25.9 %</td>
+            <td class="headerCovTableEntryLo">33.3 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-24</td>
+            <td class="headerValue">2014-07-25</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntry">16</td>
             <td class="headerCovTableEntry">40</td>
-            <td class="headerCovTableEntryLo">32.5 %</td>
+            <td class="headerCovTableEntryLo">40.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -200,8 +200,8 @@
 <a name="130"><span class="lineNum">     130 </span>            :         /* statement version */</a>
 <span class="lineNum">     131 </span>            : 
 <span class="lineNum">     132 </span>            :         mysql_stmt_column::mysql_stmt_column(shared_ptr&lt;mysql_binding&gt; value) : value_(value)
-<span class="lineNum">     133 </span><span class="lineCov">         53 :         {</span>
-<a name="134"><span class="lineNum">     134 </span><span class="lineCov">        106 :         }</span></a>
+<span class="lineNum">     133 </span><span class="lineCov">         56 :         {</span>
+<a name="134"><span class="lineNum">     134 </span><span class="lineCov">        112 :         }</span></a>
 <span class="lineNum">     135 </span>            : 
 <span class="lineNum">     136 </span>            :         mysql_stmt_column::mysql_stmt_column(const mysql_stmt_column &amp;other) : value_(other.value_)
 <span class="lineNum">     137 </span><span class="lineNoCov">          0 :         {</span>
@@ -213,9 +213,9 @@
 <a name="143"><span class="lineNum">     143 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">     144 </span>            : 
 <span class="lineNum">     145 </span>            :         mysql_stmt_column::~mysql_stmt_column()
-<span class="lineNum">     146 </span><span class="lineCov">        106 :         {</span>
+<span class="lineNum">     146 </span><span class="lineCov">        112 :         {</span>
 <span class="lineNum">     147 </span>            : 
-<a name="148"><span class="lineNum">     148 </span><span class="lineCov">        106 :         }</span></a>
+<a name="148"><span class="lineNum">     148 </span><span class="lineCov">        112 :         }</span></a>
 <span class="lineNum">     149 </span>            : 
 <span class="lineNum">     150 </span>            :         mysql_stmt_column &amp;mysql_stmt_column::operator=(const mysql_stmt_column &amp;other)
 <span class="lineNum">     151 </span>            :         {
@@ -233,21 +233,21 @@
 <span class="lineNum">     163 </span>            : 
 <span class="lineNum">     164 </span>            :         bool mysql_stmt_column::is_valid() const
 <span class="lineNum">     165 </span>            :         {
-<span class="lineNum">     166 </span><span class="lineCov">          2 :             return value_ != nullptr;</span>
+<span class="lineNum">     166 </span><span class="lineCov">          3 :             return value_ != nullptr;</span>
 <a name="167"><span class="lineNum">     167 </span>            :         }</a>
 <span class="lineNum">     168 </span>            : 
 <span class="lineNum">     169 </span>            :         sql_blob mysql_stmt_column::to_blob() const
 <span class="lineNum">     170 </span>            :         {
-<span class="lineNum">     171 </span><span class="lineNoCov">          0 :             assert(value_ != nullptr);</span>
+<span class="lineNum">     171 </span><span class="lineCov">          2 :             assert(value_ != nullptr);</span>
 <span class="lineNum">     172 </span>            : 
-<span class="lineNum">     173 </span><span class="lineNoCov">          0 :             return value_-&gt;to_blob(0);</span>
+<span class="lineNum">     173 </span><span class="lineCov">          1 :             return value_-&gt;to_blob(0);</span>
 <a name="174"><span class="lineNum">     174 </span>            :         }</a>
 <span class="lineNum">     175 </span>            : 
 <span class="lineNum">     176 </span>            :         double mysql_stmt_column::to_double() const
 <span class="lineNum">     177 </span>            :         {
-<span class="lineNum">     178 </span><span class="lineNoCov">          0 :             assert(value_ != nullptr);</span>
+<span class="lineNum">     178 </span><span class="lineCov">          4 :             assert(value_ != nullptr);</span>
 <span class="lineNum">     179 </span>            : 
-<a name="180"><span class="lineNum">     180 </span><span class="lineNoCov">          0 :             return value_-&gt;to_double(0);</span></a>
+<a name="180"><span class="lineNum">     180 </span><span class="lineCov">          2 :             return value_-&gt;to_double(0);</span></a>
 <span class="lineNum">     181 </span>            :         }
 <span class="lineNum">     182 </span>            :         bool mysql_stmt_column::to_bool() const
 <span class="lineNum">     183 </span>            :         {
@@ -264,9 +264,9 @@
 <span class="lineNum">     194 </span>            : 
 <span class="lineNum">     195 </span>            :         int64_t mysql_stmt_column::to_int64() const
 <span class="lineNum">     196 </span>            :         {
-<span class="lineNum">     197 </span><span class="lineNoCov">          0 :             assert(value_ != nullptr);</span>
+<span class="lineNum">     197 </span><span class="lineCov">          4 :             assert(value_ != nullptr);</span>
 <span class="lineNum">     198 </span>            : 
-<span class="lineNum">     199 </span><span class="lineNoCov">          0 :             return value_-&gt;to_int64(0);</span>
+<span class="lineNum">     199 </span><span class="lineCov">          2 :             return value_-&gt;to_int64(0);</span>
 <a name="200"><span class="lineNum">     200 </span>            :         }</a>
 <span class="lineNum">     201 </span>            : 
 <span class="lineNum">     202 </span>            :         sql_value mysql_stmt_column::to_value() const
@@ -285,9 +285,9 @@
 <span class="lineNum">     215 </span>            : 
 <span class="lineNum">     216 </span>            :         string mysql_stmt_column::to_string() const
 <span class="lineNum">     217 </span>            :         {
-<span class="lineNum">     218 </span><span class="lineCov">         16 :             assert(value_ != nullptr);</span>
+<span class="lineNum">     218 </span><span class="lineCov">         18 :             assert(value_ != nullptr);</span>
 <span class="lineNum">     219 </span>            : 
-<span class="lineNum">     220 </span><span class="lineCov">          8 :             return value_-&gt;to_string(0);</span>
+<span class="lineNum">     220 </span><span class="lineCov">          9 :             return value_-&gt;to_string(0);</span>
 <span class="lineNum">     221 </span>            :         }
 <span class="lineNum">     222 </span>            :     }
 <span class="lineNum">     223 </span>            : }

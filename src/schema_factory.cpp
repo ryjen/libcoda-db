@@ -10,9 +10,8 @@ namespace arg3
 
         shared_ptr<schema> schema_factory::create(const string &tableName)
         {
-            shared_ptr<schema> p = make_shared<schema>(tableName);
+            shared_ptr<schema> p = make_shared<schema>(db_, tableName);
             schema_cache_[tableName] = p;
-            p->init(db_);
             return p;
         }
 

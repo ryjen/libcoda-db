@@ -16,18 +16,9 @@ public:
     {
     }
 
-    void setup()
-    {
-        open();
-        execute("create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45), dval real, data blob)");
-    }
+    void setup();
 
-    void teardown()
-    {
-        close();
-        unlink(connection_string().c_str());
-        schemas()->clear("users");
-    }
+    void teardown();
 
     sqlite3 *rawDb()
     {
@@ -42,18 +33,9 @@ public:
     {
     }
 
-    void setup()
-    {
-        open();
-        execute("create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45), dval real, data blob)");
-    }
+    void setup();
 
-    void teardown()
-    {
-        execute("drop table users");
-        close();
-        schemas()->clear("users");
-    }
+    void teardown();
 
     MYSQL *rawDb()
     {

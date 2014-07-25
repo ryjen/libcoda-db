@@ -24,13 +24,15 @@ namespace arg3
             const void *p_;
             size_t s_;
             cleanup_method destruct_;
-            unsigned *references_;
             void copy(const sql_blob &other);
+            void clear();
         public:
             sql_blob(const void *ptr, size_t size, cleanup_method cleanup);
             sql_blob(const sql_blob &other);
+            sql_blob(sql_blob &&other);
             sql_blob &operator=(const sql_blob &other);
-            ~sql_blob();
+            sql_blob &operator=(sql_blob && other);
+            virtual ~sql_blob();
             const void *ptr() const;
             size_t size() const;
             cleanup_method destructor() const;
@@ -100,7 +102,7 @@ namespace arg3
 
             std::string to_string() const;
 
-            void bind(bindable *obj, int index) const;
+            void bind_to(bindable *obj, int index) const;
 
             bool operator==(const sql_value &other) const;
 
