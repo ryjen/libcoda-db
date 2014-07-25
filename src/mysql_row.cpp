@@ -5,6 +5,7 @@
 
 #include "mysql_row.h"
 #include "mysql_column.h"
+#include "mysql_binding.h"
 
 namespace arg3
 {
@@ -108,14 +109,14 @@ namespace arg3
 
         /* statement version */
 
-        mysql_stmt_row::mysql_stmt_row(mysql_db *db, MYSQL_RES *metadata, MYSQL_BIND *fields) : row_impl(), fields_(fields), metadata_(metadata),
+        mysql_stmt_row::mysql_stmt_row(mysql_db *db, MYSQL_RES *metadata, shared_ptr<mysql_binding> fields) : row_impl(), fields_(fields), metadata_(metadata),
             db_(db)
         {
             assert(db_ != NULL);
 
             assert(metadata_ != NULL);
 
-            assert(fields_ != NULL);
+            assert(fields_ != nullptr);
 
             if (metadata_ != NULL)
                 size_ = mysql_num_fields(metadata_);
@@ -126,7 +127,7 @@ namespace arg3
 
         mysql_stmt_row::mysql_stmt_row(mysql_stmt_row &&other) : row_impl(std::move(other)), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_)
         {
-            other.fields_ = NULL;
+            other.fields_ = nullptr;
             other.db_ = NULL;
             other.metadata_ = NULL;
         }
@@ -149,7 +150,7 @@ namespace arg3
             metadata_ = other.metadata_;
             db_ = other.db_;
             size_ = other.size_;
-            other.fields_ = NULL;
+            other.fields_ = nullptr;
             other.db_ = NULL;
             other.metadata_ = NULL;
 
@@ -162,7 +163,7 @@ namespace arg3
 
             assert(fields_ != NULL);
 
-            return db::column(make_shared<mysql_stmt_column>( fields_[nPosition] ) );
+            return db::column(make_shared<mysql_stmt_column>( fields_->get(nPosition) ) );
         }
 
         column mysql_stmt_row::column(const string &name) const

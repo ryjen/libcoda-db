@@ -125,7 +125,8 @@ libarg3db_0_5_la_LIBADD =
 am_libarg3db_0_5_la_OBJECTS = libarg3db_0_5_la-base_query.lo \
 	libarg3db_0_5_la-column.lo libarg3db_0_5_la-delete_query.lo \
 	libarg3db_0_5_la-modify_query.lo \
-	libarg3db_0_5_la-mysql_column.lo libarg3db_0_5_la-mysql_db.lo \
+	libarg3db_0_5_la-mysql_column.lo \
+	libarg3db_0_5_la-mysql_binding.lo libarg3db_0_5_la-mysql_db.lo \
 	libarg3db_0_5_la-mysql_resultset.lo \
 	libarg3db_0_5_la-mysql_row.lo \
 	libarg3db_0_5_la-mysql_statement.lo \
@@ -337,14 +338,14 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libarg3db-0.5.la
-libarg3db_0_5_la_SOURCES = base_query.cpp column.cpp delete_query.cpp modify_query.cpp mysql_column.cpp mysql_db.cpp \
+libarg3db_0_5_la_SOURCES = base_query.cpp column.cpp delete_query.cpp modify_query.cpp mysql_column.cpp mysql_binding.cpp mysql_db.cpp \
 	mysql_resultset.cpp mysql_row.cpp mysql_statement.cpp resultset.cpp row.cpp schema.cpp schema_factory.cpp select_query.cpp \
 	sql_value.cpp sqldb.cpp sqlite3_column.cpp sqlite3_db.cpp sqlite3_resultset.cpp sqlite3_row.cpp sqlite3_statement.cpp \
 	where_clause.cpp
 
 libarg3db_0_5_la_CXXFLAGS = $(LIBARG3DB_0_5_LA_CXXFLAGS) $(COVERAGE_CFLAGS)
 pkginclude_HEADERS = base_query.h base_record.h bindable.h column.h config.h delete_query.h exception.h modify_query.h mpl.h \
-	mysql_column.h mysql_db.h mysql_resultset.h mysql_row.h mysql_statement.h resultset.h row.h schema.h schema_factory.h \
+	mysql_binding.h mysql_column.h mysql_db.h mysql_resultset.h mysql_row.h mysql_statement.h resultset.h row.h schema.h schema_factory.h \
 	select_query.h sql_value.h sqldb.h sqlite3_column.h sqlite3_db.h sqlite3_resultset.h sqlite3_row.h sqlite3_statement.h \
 	statement.h variant.h where_clause.h
 
@@ -447,6 +448,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_0_5_la-column.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_0_5_la-delete_query.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_0_5_la-modify_query.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_0_5_la-mysql_binding.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_0_5_la-mysql_column.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_0_5_la-mysql_db.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_0_5_la-mysql_resultset.Plo@am__quote@
@@ -521,6 +523,13 @@ libarg3db_0_5_la-mysql_column.lo: mysql_column.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mysql_column.cpp' object='libarg3db_0_5_la-mysql_column.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libarg3db_0_5_la_CXXFLAGS) $(CXXFLAGS) -c -o libarg3db_0_5_la-mysql_column.lo `test -f 'mysql_column.cpp' || echo '$(srcdir)/'`mysql_column.cpp
+
+libarg3db_0_5_la-mysql_binding.lo: mysql_binding.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libarg3db_0_5_la_CXXFLAGS) $(CXXFLAGS) -MT libarg3db_0_5_la-mysql_binding.lo -MD -MP -MF $(DEPDIR)/libarg3db_0_5_la-mysql_binding.Tpo -c -o libarg3db_0_5_la-mysql_binding.lo `test -f 'mysql_binding.cpp' || echo '$(srcdir)/'`mysql_binding.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libarg3db_0_5_la-mysql_binding.Tpo $(DEPDIR)/libarg3db_0_5_la-mysql_binding.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mysql_binding.cpp' object='libarg3db_0_5_la-mysql_binding.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libarg3db_0_5_la_CXXFLAGS) $(CXXFLAGS) -c -o libarg3db_0_5_la-mysql_binding.lo `test -f 'mysql_binding.cpp' || echo '$(srcdir)/'`mysql_binding.cpp
 
 libarg3db_0_5_la-mysql_db.lo: mysql_db.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libarg3db_0_5_la_CXXFLAGS) $(CXXFLAGS) -MT libarg3db_0_5_la-mysql_db.lo -MD -MP -MF $(DEPDIR)/libarg3db_0_5_la-mysql_db.Tpo -c -o libarg3db_0_5_la-mysql_db.lo `test -f 'mysql_db.cpp' || echo '$(srcdir)/'`mysql_db.cpp

@@ -12,6 +12,7 @@ namespace arg3
 {
     namespace db
     {
+        class mysql_binding;
 
         /*!
          * a mysql specific implementation of a column
@@ -57,11 +58,10 @@ namespace arg3
         class mysql_stmt_column : public column_impl
         {
         private:
-            MYSQL_BIND value_;
-            void copy_value(const MYSQL_BIND &other);
+            shared_ptr<mysql_binding> value_;
         public:
 
-            mysql_stmt_column(const MYSQL_BIND &pValue);
+            mysql_stmt_column(shared_ptr<mysql_binding> value);
             mysql_stmt_column(const mysql_stmt_column &other);
             mysql_stmt_column(mysql_stmt_column &&other);
             virtual ~mysql_stmt_column();

@@ -14,6 +14,7 @@ namespace arg3
     {
 
         class mysql_db;
+        class mysql_binding;
 
         /*!
          *  a mysql specific implementation of a row
@@ -48,12 +49,12 @@ namespace arg3
         {
             friend class mysql_stmt_resultset;
         private:
-            MYSQL_BIND *fields_;
+            shared_ptr<mysql_binding> fields_;
             MYSQL_RES *metadata_;
             mysql_db *db_;
             size_t size_;
         public:
-            mysql_stmt_row(mysql_db *db, MYSQL_RES *metadata, MYSQL_BIND *fields);
+            mysql_stmt_row(mysql_db *db, MYSQL_RES *metadata, shared_ptr<mysql_binding> fields);
             virtual ~mysql_stmt_row();
             mysql_stmt_row(const mysql_stmt_row &other);
             mysql_stmt_row(mysql_stmt_row &&other);
