@@ -131,7 +131,7 @@ arg3::db::modify_query query(&testdb, "users", { "id", "first_name", "last_name"
 
 query.bind(1, 1234).bind(2, "happy").bind(3, "gilmour");
 
-/* saves user { "id": 1, "first_name": "happy", "last_name": "gilmour" } */
+/* saves user { "id": 1234, "first_name": "happy", "last_name": "gilmour" } */
 if(!query.execute())
     cout << testdb.last_error() << endl;
 ```
