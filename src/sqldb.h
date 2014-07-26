@@ -47,8 +47,15 @@ namespace arg3
 
             typedef enum
             {
+                CACHE_RESULTSETS, CACHE_ROWS, CACHE_COLUMNS
+            }
+            CacheLevel;
+
+            typedef enum
+            {
                 NONE, INFO, DEBUG, VERBOSE
-            } LogLevel;
+            }
+            LogLevel;
 
             sqldb();
             sqldb(const sqldb &other) = default;
@@ -81,9 +88,14 @@ namespace arg3
 
             void set_log_level(LogLevel level);
 
+            CacheLevel cache_level() const;
+
+            void set_cache_level(CacheLevel level);
+
             void log(LogLevel level, const string &message);
         private:
             LogLevel logLevel_;
+            CacheLevel cacheLevel_;
         };
 
     }

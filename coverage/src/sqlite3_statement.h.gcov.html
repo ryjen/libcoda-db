@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-25</td>
+            <td class="headerValue">2014-07-26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">2</td>
@@ -94,7 +94,7 @@
 <span class="lineNum">      24 </span>            :             sqlite3_statement(sqlite3_statement &amp;&amp;other) = default;
 <a name="25"><span class="lineNum">      25 </span>            :             sqlite3_statement &amp;operator=(const sqlite3_statement &amp;other) = delete;</a>
 <span class="lineNum">      26 </span>            :             sqlite3_statement &amp;operator=(sqlite3_statement &amp;&amp; other) = default;
-<span class="lineNum">      27 </span><span class="lineCov">        150 :             virtual ~sqlite3_statement() = default;</span>
+<span class="lineNum">      27 </span><span class="lineCov">        178 :             virtual ~sqlite3_statement() = default;</span>
 <span class="lineNum">      28 </span>            :             void prepare(const std::string &amp;sql);
 <span class="lineNum">      29 </span>            :             bool is_valid() const;
 <span class="lineNum">      30 </span>            :             resultset results();

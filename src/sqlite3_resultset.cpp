@@ -35,7 +35,7 @@ namespace arg3
             return stmt_ != NULL;
         }
 
-        size_t sqlite3_resultset::column_count() const
+        size_t sqlite3_resultset::size() const
         {
             return sqlite3_column_count(stmt_);
         }
@@ -57,7 +57,66 @@ namespace arg3
 
         row sqlite3_resultset::current_row()
         {
-            return row(make_shared<sqlite3_row>(db_, stmt_));
+            if (db_->cache_level() == sqldb::CACHE_ROWS)
+                return row(make_shared<sqlite3_cached_row>(db_, stmt_));
+            else
+                return row(make_shared<sqlite3_row>(db_, stmt_));
+        }
+
+        /* cached version */
+
+        sqlite3_cached_resultset::sqlite3_cached_resultset(sqlite3_db *db, sqlite3_stmt *stmt) : db_(db), currentRow_(0)
+        {
+
+            int status = sqlite3_step(stmt);
+
+            while (status == SQLITE_ROW)
+            {
+                rows_.push_back(make_shared<sqlite3_cached_row>(db, stmt));
+
+                status = sqlite3_step(stmt);
+            }
+        }
+
+        sqlite3_cached_resultset::sqlite3_cached_resultset(sqlite3_cached_resultset &&other) : db_(other.db_), rows_(other.rows_), currentRow_(other.currentRow_)
+        {
+            other.db_ = NULL;
+        }
+
+        sqlite3_cached_resultset::~sqlite3_cached_resultset() {}
+
+        sqlite3_cached_resultset &sqlite3_cached_resultset::operator=(sqlite3_cached_resultset && other)
+        {
+            db_ = other.db_;
+            rows_ = other.rows_;
+            currentRow_ = other.currentRow_;
+            other.db_ = NULL;
+
+            return *this;
+        }
+
+        bool sqlite3_cached_resultset::is_valid() const
+        {
+            return db_ != NULL;
+        }
+
+        size_t sqlite3_cached_resultset::size() const
+        {
+            return rows_.size();
+        }
+
+        bool sqlite3_cached_resultset::next()
+        {
+            return ++currentRow_ < rows_.size();
+        }
+        void sqlite3_cached_resultset::reset()
+        {
+            currentRow_ = 0;
+        }
+
+        row sqlite3_cached_resultset::current_row()
+        {
+            return row(rows_[currentRow_]);
         }
 
     }

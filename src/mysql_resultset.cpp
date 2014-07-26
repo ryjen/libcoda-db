@@ -80,10 +80,13 @@ namespace arg3
 
         row mysql_resultset::current_row()
         {
-            return row(make_shared<mysql_row>(db_, res_, row_));
+            if (db_->cache_level() == sqldb::CACHE_ROWS)
+                return row(make_shared<mysql_cached_row>(res_, row_));
+            else
+                return row(make_shared<mysql_row>(db_, res_, row_));
         }
 
-        size_t mysql_resultset::column_count() const
+        size_t mysql_resultset::size() const
         {
             return mysql_num_fields(res_);
         }
@@ -92,7 +95,7 @@ namespace arg3
         /* Statement version */
 
         mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, MYSQL_STMT *stmt) : stmt_(stmt), metadata_(NULL), db_(db),
-            bindings_(nullptr), columnCount_(0), status_(-1)
+            bindings_(nullptr), status_(-1)
         {
             assert(stmt_ != NULL);
             assert(db_ != NULL);
@@ -100,7 +103,7 @@ namespace arg3
 
         mysql_stmt_resultset::mysql_stmt_resultset(mysql_stmt_resultset &&other) : stmt_(other.stmt_), metadata_(other.metadata_),
             db_(other.db_),
-            bindings_(other.bindings_), columnCount_(other.columnCount_), status_(other.status_)
+            bindings_(other.bindings_), status_(other.status_)
         {
             other.db_ = NULL;
             other.stmt_ = NULL;
@@ -123,7 +126,6 @@ namespace arg3
             db_ = other.db_;
             metadata_ = other.metadata_;
             bindings_ = other.bindings_;
-            columnCount_ = other.columnCount_;
             status_ = other.status_;
             other.db_ = NULL;
             other.bindings_ = NULL;
@@ -148,11 +150,11 @@ namespace arg3
             if (metadata_ == NULL)
                 throw database_exception("No result data found.");
 
-            columnCount_ = mysql_num_fields(metadata_);
+            int size = mysql_num_fields(metadata_);
 
             auto fields = mysql_fetch_fields(metadata_);
 
-            bindings_ = make_shared<mysql_binding>(fields, columnCount_);
+            bindings_ = make_shared<mysql_binding>(fields, size);
 
             bindings_->bind_result(stmt_);
         }
@@ -205,15 +207,118 @@ namespace arg3
             assert(metadata_ != NULL);
             assert(bindings_ != nullptr);
 
-            return row(make_shared<mysql_stmt_row>(db_, metadata_, bindings_ ));
+            if (db_->cache_level() == sqldb::CACHE_ROWS)
+                return row(make_shared<mysql_cached_row>(metadata_, bindings_));
+            else
+                return row(make_shared<mysql_stmt_row>(db_, metadata_, bindings_ ));
         }
 
-        size_t mysql_stmt_resultset::column_count() const
+        size_t mysql_stmt_resultset::size() const
         {
             assert(stmt_ != NULL);
             return mysql_stmt_field_count(stmt_);
         }
 
+
+        /* cached version */
+
+
+        mysql_cached_resultset::mysql_cached_resultset(MYSQL_STMT *stmt) : currentRow_(0)
+        {
+            assert(stmt != NULL);
+
+            if (mysql_stmt_execute(stmt))
+            {
+                throw database_exception(last_stmt_error(stmt));
+            }
+
+            // get information about the results
+            MYSQL_RES *metadata_ = mysql_stmt_result_metadata(stmt);
+
+            if (metadata_ == NULL)
+                throw database_exception("No result data found.");
+
+            int size_ = mysql_num_fields(metadata_);
+
+            auto fields = mysql_fetch_fields(metadata_);
+
+            mysql_binding bindings(fields, size_);
+
+            for (int i = 0; i < size_; i++)
+            {
+                rows_.push_back(make_shared<mysql_cached_row>(metadata_, bindings.get(i)));
+            }
+
+
+        }
+        mysql_cached_resultset::mysql_cached_resultset(mysql_db *db, MYSQL_RES *res) : currentRow_(0)
+        {
+            MYSQL_ROW row = mysql_fetch_row(res);
+
+            if (row != NULL)
+            {
+                rows_.push_back(make_shared<mysql_cached_row>(res, row));
+
+                while (mysql_more_results(db->db_) && (row = mysql_fetch_row(res)) != NULL)
+                {
+                    rows_.push_back(make_shared<mysql_cached_row>(res, row));
+                }
+            }
+            else
+            {
+                while ((res = mysql_use_result(db->db_)) != NULL && (row = mysql_fetch_row(res)))
+                {
+                    rows_.push_back(make_shared<mysql_cached_row>(res, row));
+                }
+            }
+        }
+        mysql_cached_resultset::mysql_cached_resultset(mysql_cached_resultset &&other) : rows_(std::move(other.rows_))
+        {
+            other.rows_.clear();
+        }
+
+        mysql_cached_resultset::~mysql_cached_resultset()
+        {
+        }
+
+        mysql_cached_resultset &mysql_cached_resultset::operator=(mysql_cached_resultset && other)
+        {
+            rows_ = std::move(other.rows_);
+
+            return *this;
+        }
+
+        bool mysql_cached_resultset::is_valid() const
+        {
+            return true;
+        }
+
+        bool mysql_cached_resultset::next()
+        {
+            if (rows_.empty())
+            {
+                return false;
+            }
+
+
+            return ++currentRow_ < rows_.size();
+
+        }
+
+        void mysql_cached_resultset::reset()
+        {
+            currentRow_ = 0;
+        }
+
+        row mysql_cached_resultset::current_row()
+        {
+            return row(rows_[currentRow_]);
+        }
+
+        size_t mysql_cached_resultset::size() const
+        {
+            return rows_.size();
+        }
     }
 }
 

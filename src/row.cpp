@@ -113,22 +113,25 @@ namespace arg3
 
         string row::column_name(size_t nPosition) const
         {
+            assert(impl_ != nullptr);
             return impl_->column_name(nPosition);
         }
 
         arg3::db::column row::column(size_t nPosition) const
         {
+            assert(impl_ != nullptr);
             return impl_->column(nPosition);
         }
 
         arg3::db::column row::column(const string &name) const
         {
+            assert(impl_ != nullptr);
             return impl_->column(name);
         }
 
         size_t row::size() const
         {
-            return impl_->size();
+            return impl_ == nullptr ? 0 : impl_->size();
         }
 
         bool row::empty() const
@@ -138,7 +141,7 @@ namespace arg3
 
         bool row::is_valid() const
         {
-            return impl_->is_valid();
+            return impl_ != nullptr && impl_->is_valid();
         }
     }
 }

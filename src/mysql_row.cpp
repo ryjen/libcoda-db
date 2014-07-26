@@ -6,6 +6,7 @@
 #include "mysql_row.h"
 #include "mysql_column.h"
 #include "mysql_binding.h"
+#include "mysql_db.h"
 
 namespace arg3
 {
@@ -64,7 +65,10 @@ namespace arg3
 
             assert(is_valid());
 
-            return db::column( make_shared<mysql_column>( res_, row_, nPosition ) );
+            if (db_->cache_level() == sqldb::CACHE_COLUMNS)
+                return db::column(make_shared<mysql_cached_column>(res_, row_, nPosition));
+            else
+                return db::column( make_shared<mysql_column>( res_, row_, nPosition ) );
         }
 
         column mysql_row::column(const string &name) const
@@ -108,6 +112,7 @@ namespace arg3
 
 
         /* statement version */
+
 
         mysql_stmt_row::mysql_stmt_row(mysql_db *db, MYSQL_RES *metadata, shared_ptr<mysql_binding> fields) : row_impl(), fields_(fields), metadata_(metadata),
             db_(db)
@@ -163,7 +168,10 @@ namespace arg3
 
             assert(fields_ != NULL);
 
-            return db::column(make_shared<mysql_stmt_column>( fields_->get(nPosition) ) );
+            if (db_->cache_level() == sqldb::CACHE_COLUMNS)
+                return db::column(make_shared<mysql_cached_column>(column_name(nPosition), fields_->get(nPosition)));
+            else
+                return db::column(make_shared<mysql_stmt_column>( column_name(nPosition), fields_->get(nPosition) ) );
         }
 
         column mysql_stmt_row::column(const string &name) const
@@ -203,6 +211,74 @@ namespace arg3
         bool mysql_stmt_row::is_valid() const
         {
             return fields_ != NULL && metadata_ != NULL;
+        }
+
+        /* cached version */
+
+        mysql_cached_row::mysql_cached_row(MYSQL_RES *metadata, shared_ptr<mysql_binding> fields)
+        {
+            assert(metadata != NULL);
+
+            assert(fields != nullptr);
+
+            int size = mysql_num_fields(metadata);
+
+            for (size_t i = 0; i < size; i++)
+            {
+                auto field = mysql_fetch_field_direct(metadata, i);
+
+                columns_.push_back(make_shared<mysql_cached_column>(field->name, fields->get(i)));
+            }
+        }
+
+        mysql_cached_row::mysql_cached_row(MYSQL_RES *res, MYSQL_ROW row)
+        {
+            assert(row != NULL);
+
+            assert(res != NULL);
+
+            int size = mysql_num_fields(res);
+
+            for (size_t i = 0; i < size; i++)
+            {
+                columns_.push_back(make_shared<mysql_cached_column>(res, row, i));
+            }
+        }
+
+        column mysql_cached_row::column(size_t nPosition) const
+        {
+            assert(nPosition < size());
+
+            return arg3::db::column(columns_[nPosition]);
+        }
+
+        column mysql_cached_row::column(const string &name) const
+        {
+            assert(!name.empty());
+
+            for (int i = 0; i < columns_.size(); i++)
+            {
+                if (name == column_name(i))
+                    return column(i);
+            }
+            throw database_exception("unknown column '" + name + "'");
+        }
+
+        string mysql_cached_row::column_name(size_t nPosition) const
+        {
+            assert(nPosition < size());
+
+            return columns_[nPosition]->name();
+        }
+
+        size_t mysql_cached_row::size() const
+        {
+            return columns_.size();
+        }
+
+        bool mysql_cached_row::is_valid() const
+        {
+            return true;
         }
     }
 }

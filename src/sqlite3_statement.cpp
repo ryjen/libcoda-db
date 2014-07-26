@@ -85,7 +85,10 @@ namespace arg3
 
         resultset sqlite3_statement::results()
         {
-            return resultset(make_shared<sqlite3_resultset>(db_, stmt_));
+            if (db_->cache_level() == sqldb::CACHE_RESULTSETS)
+                return resultset(make_shared<sqlite3_cached_resultset>(db_, stmt_));
+            else
+                return resultset(make_shared<sqlite3_resultset>(db_, stmt_));
         }
 
         bool sqlite3_statement::result()

@@ -2,6 +2,7 @@
 #define ARG3_DB_SQLITE_RESULTSET_H_
 
 #include "resultset.h"
+#include <vector>
 
 namespace arg3
 {
@@ -40,7 +41,37 @@ namespace arg3
 
             bool next();
 
-            size_t column_count() const;
+            size_t size() const;
+        };
+
+        class sqlite3_cached_resultset : public resultset_impl
+        {
+            friend class select_query;
+            friend class row;
+            friend class sqldb;
+            friend class resultset_iterator;
+        private:
+            sqlite3_db *db_;
+            vector<shared_ptr<row_impl>> rows_;
+            int currentRow_;
+        public:
+            sqlite3_cached_resultset(sqlite3_db *db, sqlite3_stmt *stmt);
+            sqlite3_cached_resultset(const sqlite3_cached_resultset &other) = delete;
+            sqlite3_cached_resultset(sqlite3_cached_resultset &&other);
+            virtual ~sqlite3_cached_resultset();
+
+            sqlite3_cached_resultset &operator=(const sqlite3_cached_resultset &other) = delete;
+            sqlite3_cached_resultset &operator=(sqlite3_cached_resultset && other);
+
+            bool is_valid() const;
+
+            row current_row();
+
+            void reset();
+
+            bool next();
+
+            size_t size() const;
         };
     }
 }

@@ -31,13 +31,13 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">38</td>
-            <td class="headerCovTableEntry">63</td>
-            <td class="headerCovTableEntryLo">60.3 %</td>
+            <td class="headerCovTableEntry">40</td>
+            <td class="headerCovTableEntry">65</td>
+            <td class="headerCovTableEntryLo">61.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-25</td>
+            <td class="headerValue">2014-07-26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">17</td>
@@ -83,7 +83,7 @@
 <a name="13"><span class="lineNum">      13 </span>            :     {</a>
 <span class="lineNum">      14 </span>            : 
 <span class="lineNum">      15 </span>            :         mysql_statement::mysql_statement(mysql_db *db) : db_(db), bindings_(), stmt_(NULL)
-<a name="16"><span class="lineNum">      16 </span><span class="lineCov">        150 :         {}</span></a>
+<a name="16"><span class="lineNum">      16 </span><span class="lineCov">        178 :         {}</span></a>
 <span class="lineNum">      17 </span>            : 
 <span class="lineNum">      18 </span>            :         mysql_statement::mysql_statement(mysql_statement &amp;&amp;other)
 <span class="lineNum">      19 </span><span class="lineNoCov">          0 :         {</span>
@@ -107,19 +107,19 @@
 <a name="37"><span class="lineNum">      37 </span>            :         }</a>
 <span class="lineNum">      38 </span>            : 
 <span class="lineNum">      39 </span>            :         mysql_statement::~mysql_statement()
-<span class="lineNum">      40 </span><span class="lineCov">        150 :         {</span>
-<span class="lineNum">      41 </span><span class="lineCov">         75 :             finish();</span>
-<a name="42"><span class="lineNum">      42 </span><span class="lineCov">        150 :         }</span></a>
+<span class="lineNum">      40 </span><span class="lineCov">        178 :         {</span>
+<span class="lineNum">      41 </span><span class="lineCov">         89 :             finish();</span>
+<a name="42"><span class="lineNum">      42 </span><span class="lineCov">        178 :         }</span></a>
 <span class="lineNum">      43 </span>            : 
 <span class="lineNum">      44 </span>            :         void mysql_statement::prepare(const string &amp;sql)
 <span class="lineNum">      45 </span>            :         {
-<span class="lineNum">      46 </span><span class="lineCov">        225 :             if (stmt_ != NULL || db_ == NULL || !db_-&gt;is_open()) return;</span>
+<span class="lineNum">      46 </span><span class="lineCov">        267 :             if (stmt_ != NULL || db_ == NULL || !db_-&gt;is_open()) return;</span>
 <span class="lineNum">      47 </span>            : 
-<span class="lineNum">      48 </span><span class="lineCov">         75 :             stmt_ = mysql_stmt_init(db_-&gt;db_);</span>
+<span class="lineNum">      48 </span><span class="lineCov">         89 :             stmt_ = mysql_stmt_init(db_-&gt;db_);</span>
 <span class="lineNum">      49 </span>            : 
-<span class="lineNum">      50 </span><span class="lineCov">         75 :             if (mysql_stmt_prepare(stmt_, sql.c_str(), sql.length()))</span>
+<span class="lineNum">      50 </span><span class="lineCov">         89 :             if (mysql_stmt_prepare(stmt_, sql.c_str(), sql.length()))</span>
 <span class="lineNum">      51 </span><span class="lineNoCov">          0 :                 throw database_exception(db_-&gt;last_error());</span>
-<a name="52"><span class="lineNum">      52 </span><span class="lineCov">         75 :         }</span></a>
+<a name="52"><span class="lineNum">      52 </span><span class="lineCov">         89 :         }</span></a>
 <span class="lineNum">      53 </span>            : 
 <span class="lineNum">      54 </span>            :         bool mysql_statement::is_valid() const
 <span class="lineNum">      55 </span>            :         {
@@ -138,9 +138,9 @@
 <span class="lineNum">      68 </span>            :         }
 <span class="lineNum">      69 </span>            :         mysql_statement &amp;mysql_statement::bind(size_t index, int64_t value)
 <span class="lineNum">      70 </span>            :         {
-<span class="lineNum">      71 </span><span class="lineCov">         23 :             bindings_.bind(index, value);</span>
+<span class="lineNum">      71 </span><span class="lineCov">         29 :             bindings_.bind(index, value);</span>
 <span class="lineNum">      72 </span>            : 
-<a name="73"><span class="lineNum">      73 </span><span class="lineCov">         23 :             return *this;</span></a>
+<a name="73"><span class="lineNum">      73 </span><span class="lineCov">         29 :             return *this;</span></a>
 <span class="lineNum">      74 </span>            :         }
 <span class="lineNum">      75 </span>            :         mysql_statement &amp;mysql_statement::bind(size_t index, double value)
 <span class="lineNum">      76 </span>            :         {
@@ -149,8 +149,8 @@
 <span class="lineNum">      79 </span>            :         }
 <span class="lineNum">      80 </span>            :         mysql_statement &amp;mysql_statement::bind(size_t index, const std::string &amp;value, int len)
 <span class="lineNum">      81 </span>            :         {
-<span class="lineNum">      82 </span><span class="lineCov">         82 :             bindings_.bind(index, value, len);</span>
-<a name="83"><span class="lineNum">      83 </span><span class="lineCov">         82 :             return *this;</span></a>
+<span class="lineNum">      82 </span><span class="lineCov">         94 :             bindings_.bind(index, value, len);</span>
+<a name="83"><span class="lineNum">      83 </span><span class="lineCov">         94 :             return *this;</span></a>
 <span class="lineNum">      84 </span>            :         }
 <span class="lineNum">      85 </span>            :         mysql_statement &amp;mysql_statement::bind(size_t index, const sql_blob &amp;value)
 <span class="lineNum">      86 </span>            :         {
@@ -160,9 +160,9 @@
 <span class="lineNum">      90 </span>            :         }
 <span class="lineNum">      91 </span>            :         mysql_statement &amp;mysql_statement::bind(size_t index, const sql_null_type &amp;value)
 <span class="lineNum">      92 </span>            :         {
-<span class="lineNum">      93 </span><span class="lineCov">         75 :             bindings_.bind(index, value);</span>
+<span class="lineNum">      93 </span><span class="lineCov">         93 :             bindings_.bind(index, value);</span>
 <span class="lineNum">      94 </span>            : 
-<span class="lineNum">      95 </span><span class="lineCov">         75 :             return *this;</span>
+<span class="lineNum">      95 </span><span class="lineCov">         93 :             return *this;</span>
 <a name="96"><span class="lineNum">      96 </span>            :         }</a>
 <span class="lineNum">      97 </span>            : 
 <span class="lineNum">      98 </span>            :         mysql_statement &amp;mysql_statement::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
@@ -180,65 +180,68 @@
 <span class="lineNum">     110 </span>            : 
 <span class="lineNum">     111 </span>            :         resultset mysql_statement::results()
 <span class="lineNum">     112 </span>            :         {
-<span class="lineNum">     113 </span><span class="lineCov">         21 :             bindings_.bind_params(stmt_);</span>
+<span class="lineNum">     113 </span><span class="lineCov">         23 :             bindings_.bind_params(stmt_);</span>
 <span class="lineNum">     114 </span>            : 
-<span class="lineNum">     115 </span><span class="lineCov">         42 :             return resultset(make_shared&lt;mysql_stmt_resultset&gt;(db_, stmt_));</span>
-<a name="116"><span class="lineNum">     116 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     117 </span>            : 
-<span class="lineNum">     118 </span>            :         bool mysql_statement::result()
-<span class="lineNum">     119 </span>            :         {
-<span class="lineNum">     120 </span><span class="lineCov">         54 :             bindings_.bind_params(stmt_);</span>
-<span class="lineNum">     121 </span>            : 
-<span class="lineNum">     122 </span><span class="lineCov">        108 :             if (!stmt_ || mysql_stmt_execute(stmt_))</span>
-<span class="lineNum">     123 </span>            :             {
-<span class="lineNum">     124 </span><span class="lineNoCov">          0 :                 return false;</span>
-<span class="lineNum">     125 </span>            :             }
-<span class="lineNum">     126 </span><span class="lineCov">         54 :             return true;</span>
-<a name="127"><span class="lineNum">     127 </span><span class="lineCov">         54 :         }</span></a>
-<span class="lineNum">     128 </span>            : 
-<span class="lineNum">     129 </span>            :         int mysql_statement::last_number_of_changes()
-<span class="lineNum">     130 </span>            :         {
-<span class="lineNum">     131 </span><span class="lineCov">         54 :             return mysql_stmt_affected_rows(stmt_);</span>
-<a name="132"><span class="lineNum">     132 </span>            :         }</a>
-<span class="lineNum">     133 </span>            : 
-<span class="lineNum">     134 </span>            :         string mysql_statement::last_error()
-<span class="lineNum">     135 </span>            :         {
-<span class="lineNum">     136 </span><span class="lineNoCov">          0 :             return last_stmt_error(stmt_);</span>
-<a name="137"><span class="lineNum">     137 </span>            :         }</a>
-<span class="lineNum">     138 </span>            : 
-<span class="lineNum">     139 </span>            :         void mysql_statement::finish()
-<span class="lineNum">     140 </span>            :         {
-<span class="lineNum">     141 </span><span class="lineCov">        125 :             bindings_.reset();</span>
-<span class="lineNum">     142 </span>            : 
-<span class="lineNum">     143 </span><span class="lineCov">        125 :             if (stmt_ != NULL)</span>
-<span class="lineNum">     144 </span>            :             {
-<span class="lineNum">     145 </span><span class="lineCov">         75 :                 mysql_stmt_free_result(stmt_);</span>
-<span class="lineNum">     146 </span>            : 
-<span class="lineNum">     147 </span><span class="lineCov">         75 :                 mysql_stmt_close(stmt_);</span>
-<span class="lineNum">     148 </span>            : 
-<span class="lineNum">     149 </span><span class="lineCov">         75 :                 stmt_ = NULL;</span>
-<span class="lineNum">     150 </span><span class="lineCov">         75 :             }</span>
+<span class="lineNum">     115 </span><span class="lineCov">         23 :             if (db_-&gt;cache_level() == sqldb::CACHE_RESULTSETS)</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :                 return resultset(make_shared&lt;mysql_cached_resultset&gt;(stmt_));</span>
+<span class="lineNum">     117 </span>            :             else
+<span class="lineNum">     118 </span><span class="lineCov">         46 :                 return resultset(make_shared&lt;mysql_stmt_resultset&gt;(db_, stmt_));</span>
+<a name="119"><span class="lineNum">     119 </span><span class="lineCov">         23 :         }</span></a>
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            :         bool mysql_statement::result()
+<span class="lineNum">     122 </span>            :         {
+<span class="lineNum">     123 </span><span class="lineCov">         66 :             bindings_.bind_params(stmt_);</span>
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span><span class="lineCov">        132 :             if (!stmt_ || mysql_stmt_execute(stmt_))</span>
+<span class="lineNum">     126 </span>            :             {
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :                 return false;</span>
+<span class="lineNum">     128 </span>            :             }
+<span class="lineNum">     129 </span><span class="lineCov">         66 :             return true;</span>
+<a name="130"><span class="lineNum">     130 </span><span class="lineCov">         66 :         }</span></a>
+<span class="lineNum">     131 </span>            : 
+<span class="lineNum">     132 </span>            :         int mysql_statement::last_number_of_changes()
+<span class="lineNum">     133 </span>            :         {
+<span class="lineNum">     134 </span><span class="lineCov">         66 :             return mysql_stmt_affected_rows(stmt_);</span>
+<a name="135"><span class="lineNum">     135 </span>            :         }</a>
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span>            :         string mysql_statement::last_error()
+<span class="lineNum">     138 </span>            :         {
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :             return last_stmt_error(stmt_);</span>
+<a name="140"><span class="lineNum">     140 </span>            :         }</a>
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span>            :         void mysql_statement::finish()
+<span class="lineNum">     143 </span>            :         {
+<span class="lineNum">     144 </span><span class="lineCov">        151 :             bindings_.reset();</span>
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span><span class="lineCov">        151 :             if (stmt_ != NULL)</span>
+<span class="lineNum">     147 </span>            :             {
+<span class="lineNum">     148 </span><span class="lineCov">         89 :                 mysql_stmt_free_result(stmt_);</span>
+<span class="lineNum">     149 </span>            : 
+<span class="lineNum">     150 </span><span class="lineCov">         89 :                 mysql_stmt_close(stmt_);</span>
 <span class="lineNum">     151 </span>            : 
-<a name="152"><span class="lineNum">     152 </span><span class="lineCov">        125 :         }</span></a>
-<span class="lineNum">     153 </span>            : 
-<span class="lineNum">     154 </span>            :         void mysql_statement::reset()
-<span class="lineNum">     155 </span>            :         {
-<span class="lineNum">     156 </span><span class="lineNoCov">          0 :             bindings_.reset();</span>
-<span class="lineNum">     157 </span>            : 
-<span class="lineNum">     158 </span><span class="lineNoCov">          0 :             if (!stmt_ || mysql_stmt_reset(stmt_))</span>
-<span class="lineNum">     159 </span><span class="lineNoCov">          0 :                 throw database_exception(last_error());</span>
-<a name="160"><span class="lineNum">     160 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     161 </span>            : 
-<span class="lineNum">     162 </span>            :         long long mysql_statement::last_insert_id()
-<span class="lineNum">     163 </span>            :         {
-<span class="lineNum">     164 </span><span class="lineCov">         31 :             if (stmt_ == NULL) return 0;</span>
-<span class="lineNum">     165 </span>            : 
-<span class="lineNum">     166 </span><span class="lineCov">         31 :             return mysql_stmt_insert_id(stmt_);</span>
-<span class="lineNum">     167 </span><span class="lineCov">         31 :         }</span>
-<span class="lineNum">     168 </span>            :     }
-<span class="lineNum">     169 </span>            : }
-<span class="lineNum">     170 </span>            : 
-<span class="lineNum">     171 </span>            : #endif
+<span class="lineNum">     152 </span><span class="lineCov">         89 :                 stmt_ = NULL;</span>
+<span class="lineNum">     153 </span><span class="lineCov">         89 :             }</span>
+<span class="lineNum">     154 </span>            : 
+<a name="155"><span class="lineNum">     155 </span><span class="lineCov">        151 :         }</span></a>
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span>            :         void mysql_statement::reset()
+<span class="lineNum">     158 </span>            :         {
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :             bindings_.reset();</span>
+<span class="lineNum">     160 </span>            : 
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :             if (!stmt_ || mysql_stmt_reset(stmt_))</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :                 throw database_exception(last_error());</span>
+<a name="163"><span class="lineNum">     163 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     164 </span>            : 
+<span class="lineNum">     165 </span>            :         long long mysql_statement::last_insert_id()
+<span class="lineNum">     166 </span>            :         {
+<span class="lineNum">     167 </span><span class="lineCov">         37 :             if (stmt_ == NULL) return 0;</span>
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span><span class="lineCov">         37 :             return mysql_stmt_insert_id(stmt_);</span>
+<span class="lineNum">     170 </span><span class="lineCov">         37 :         }</span>
+<span class="lineNum">     171 </span>            :     }
+<span class="lineNum">     172 </span>            : }
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span>            : #endif
 </pre>
       </td>
     </tr>

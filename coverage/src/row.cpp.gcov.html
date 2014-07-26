@@ -31,18 +31,18 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">15</td>
-            <td class="headerCovTableEntry">43</td>
-            <td class="headerCovTableEntryLo">34.9 %</td>
+            <td class="headerCovTableEntry">26</td>
+            <td class="headerCovTableEntry">47</td>
+            <td class="headerCovTableEntryLo">55.3 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-25</td>
+            <td class="headerValue">2014-07-26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntry">20</td>
             <td class="headerCovTableEntry">31</td>
-            <td class="headerCovTableEntryLo">38.7 %</td>
+            <td class="headerCovTableEntryLo">64.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -79,21 +79,21 @@
 <a name="9"><span class="lineNum">       9 </span>            :     namespace db</a>
 <span class="lineNum">      10 </span>            :     {
 <span class="lineNum">      11 </span>            :         row::row(shared_ptr&lt;row_impl&gt; impl) : impl_(impl)
-<span class="lineNum">      12 </span><span class="lineCov">        130 :         {</span>
-<span class="lineNum">      13 </span><span class="lineCov">        260 :             assert(impl_ != nullptr);</span>
-<a name="14"><span class="lineNum">      14 </span><span class="lineCov">        260 :         }</span></a>
+<span class="lineNum">      12 </span><span class="lineCov">        146 :         {</span>
+<span class="lineNum">      13 </span><span class="lineCov">        292 :             assert(impl_ != nullptr);</span>
+<a name="14"><span class="lineNum">      14 </span><span class="lineCov">        292 :         }</span></a>
 <span class="lineNum">      15 </span>            : 
 <span class="lineNum">      16 </span>            :         row::row(const row &amp;other) : impl_(other.impl_)
-<a name="17"><span class="lineNum">      17 </span><span class="lineNoCov">          0 :         {}</span></a>
+<a name="17"><span class="lineNum">      17 </span><span class="lineCov">          8 :         {}</span></a>
 <span class="lineNum">      18 </span>            : 
-<span class="lineNum">      19 </span><span class="lineNoCov">          0 :         row::row(row &amp;&amp;other) : impl_(std::move(other.impl_))</span>
-<span class="lineNum">      20 </span><span class="lineNoCov">          0 :         {</span>
-<span class="lineNum">      21 </span><span class="lineNoCov">          0 :             other.impl_ = nullptr;</span>
-<a name="22"><span class="lineNum">      22 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">      19 </span><span class="lineCov">          2 :         row::row(row &amp;&amp;other) : impl_(std::move(other.impl_))</span>
+<span class="lineNum">      20 </span><span class="lineCov">          4 :         {</span>
+<span class="lineNum">      21 </span><span class="lineCov">          2 :             other.impl_ = nullptr;</span>
+<a name="22"><span class="lineNum">      22 </span><span class="lineCov">          4 :         }</span></a>
 <span class="lineNum">      23 </span>            : 
 <span class="lineNum">      24 </span>            :         row::~row()
-<span class="lineNum">      25 </span><span class="lineCov">        260 :         {</span>
-<a name="26"><span class="lineNum">      26 </span><span class="lineCov">        260 :         }</span></a>
+<span class="lineNum">      25 </span><span class="lineCov">        304 :         {</span>
+<a name="26"><span class="lineNum">      26 </span><span class="lineCov">        304 :         }</span></a>
 <span class="lineNum">      27 </span>            : 
 <span class="lineNum">      28 </span>            :         row &amp;row::operator=(const row &amp;other)
 <span class="lineNum">      29 </span>            :         {
@@ -104,40 +104,40 @@
 <span class="lineNum">      34 </span>            : 
 <span class="lineNum">      35 </span>            :         row &amp;row::operator=(row &amp;&amp; other)
 <span class="lineNum">      36 </span>            :         {
-<span class="lineNum">      37 </span><span class="lineCov">         52 :             impl_ = std::move(other.impl_);</span>
-<span class="lineNum">      38 </span><span class="lineCov">         52 :             other.impl_ = nullptr;</span>
+<span class="lineNum">      37 </span><span class="lineCov">         60 :             impl_ = std::move(other.impl_);</span>
+<span class="lineNum">      38 </span><span class="lineCov">         60 :             other.impl_ = nullptr;</span>
 <span class="lineNum">      39 </span>            : 
-<span class="lineNum">      40 </span><span class="lineCov">         52 :             return *this;</span>
+<span class="lineNum">      40 </span><span class="lineCov">         60 :             return *this;</span>
 <a name="41"><span class="lineNum">      41 </span>            :         }</a>
 <span class="lineNum">      42 </span>            : 
 <span class="lineNum">      43 </span>            :         row::iterator row::begin()
 <span class="lineNum">      44 </span>            :         {
-<span class="lineNum">      45 </span><span class="lineCov">          8 :             return iterator(impl_, 0);</span>
+<span class="lineNum">      45 </span><span class="lineCov">         12 :             return iterator(impl_, 0);</span>
 <a name="46"><span class="lineNum">      46 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      47 </span>            : 
 <span class="lineNum">      48 </span>            :         row::const_iterator row::begin() const
 <span class="lineNum">      49 </span>            :         {
-<span class="lineNum">      50 </span><span class="lineCov">         36 :             return const_iterator(impl_, 0);</span>
+<span class="lineNum">      50 </span><span class="lineCov">         40 :             return const_iterator(impl_, 0);</span>
 <a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      52 </span>            : 
 <span class="lineNum">      53 </span>            :         row::const_iterator row::cbegin() const
 <span class="lineNum">      54 </span>            :         {
-<span class="lineNum">      55 </span><span class="lineNoCov">          0 :             return begin();</span>
+<span class="lineNum">      55 </span><span class="lineCov">          2 :             return begin();</span>
 <a name="56"><span class="lineNum">      56 </span>            :         }</a>
 <span class="lineNum">      57 </span>            : 
 <span class="lineNum">      58 </span>            :         row::iterator row::end()
 <span class="lineNum">      59 </span>            :         {
-<span class="lineNum">      60 </span><span class="lineNoCov">          0 :             return iterator(impl_, size());</span>
+<span class="lineNum">      60 </span><span class="lineCov">          6 :             return iterator(impl_, size());</span>
 <a name="61"><span class="lineNum">      61 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      62 </span>            : 
 <span class="lineNum">      63 </span>            :         row::const_iterator row::end() const
 <span class="lineNum">      64 </span>            :         {
-<span class="lineNum">      65 </span><span class="lineCov">        324 :             return const_iterator(impl_, size());</span>
+<span class="lineNum">      65 </span><span class="lineCov">        354 :             return const_iterator(impl_, size());</span>
 <a name="66"><span class="lineNum">      66 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      67 </span>            : 
 <span class="lineNum">      68 </span>            :         row::const_iterator row::cend() const
 <span class="lineNum">      69 </span>            :         {
-<span class="lineNum">      70 </span><span class="lineNoCov">          0 :             return end();</span>
+<span class="lineNum">      70 </span><span class="lineCov">         10 :             return end();</span>
 <a name="71"><span class="lineNum">      71 </span>            :         }</a>
 <span class="lineNum">      72 </span>            : 
 <span class="lineNum">      73 </span>            :         row::reverse_iterator row::rbegin()
@@ -177,41 +177,44 @@
 <span class="lineNum">     107 </span>            : 
 <span class="lineNum">     108 </span>            :         column row::operator[](const string &amp;name) const
 <span class="lineNum">     109 </span>            :         {
-<span class="lineNum">     110 </span><span class="lineCov">        180 :             return column(name);</span>
+<span class="lineNum">     110 </span><span class="lineCov">        210 :             return column(name);</span>
 <span class="lineNum">     111 </span>            :         }
 <a name="112"><span class="lineNum">     112 </span>            : </a>
 <span class="lineNum">     113 </span>            : 
 <span class="lineNum">     114 </span>            :         string row::column_name(size_t nPosition) const
 <span class="lineNum">     115 </span>            :         {
-<span class="lineNum">     116 </span><span class="lineNoCov">          0 :             return impl_-&gt;column_name(nPosition);</span>
-<a name="117"><span class="lineNum">     117 </span>            :         }</a>
-<span class="lineNum">     118 </span>            : 
-<span class="lineNum">     119 </span>            :         arg3::db::column row::column(size_t nPosition) const
-<span class="lineNum">     120 </span>            :         {
-<span class="lineNum">     121 </span><span class="lineNoCov">          0 :             return impl_-&gt;column(nPosition);</span>
-<a name="122"><span class="lineNum">     122 </span>            :         }</a>
-<span class="lineNum">     123 </span>            : 
-<span class="lineNum">     124 </span>            :         arg3::db::column row::column(const string &amp;name) const
-<span class="lineNum">     125 </span>            :         {
-<span class="lineNum">     126 </span><span class="lineCov">        198 :             return impl_-&gt;column(name);</span>
-<a name="127"><span class="lineNum">     127 </span>            :         }</a>
-<span class="lineNum">     128 </span>            : 
-<span class="lineNum">     129 </span>            :         size_t row::size() const
-<span class="lineNum">     130 </span>            :         {
-<span class="lineNum">     131 </span><span class="lineCov">        108 :             return impl_-&gt;size();</span>
-<a name="132"><span class="lineNum">     132 </span>            :         }</a>
-<span class="lineNum">     133 </span>            : 
-<span class="lineNum">     134 </span>            :         bool row::empty() const
-<span class="lineNum">     135 </span>            :         {
-<span class="lineNum">     136 </span><span class="lineNoCov">          0 :             return size() == 0;</span>
-<a name="137"><span class="lineNum">     137 </span>            :         }</a>
-<span class="lineNum">     138 </span>            : 
-<span class="lineNum">     139 </span>            :         bool row::is_valid() const
-<span class="lineNum">     140 </span>            :         {
-<span class="lineNum">     141 </span><span class="lineCov">         24 :             return impl_-&gt;is_valid();</span>
-<span class="lineNum">     142 </span>            :         }
-<span class="lineNum">     143 </span>            :     }
-<span class="lineNum">     144 </span>            : }
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :             return impl_-&gt;column_name(nPosition);</span>
+<a name="118"><span class="lineNum">     118 </span>            :         }</a>
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span>            :         arg3::db::column row::column(size_t nPosition) const
+<span class="lineNum">     121 </span>            :         {
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :             return impl_-&gt;column(nPosition);</span>
+<a name="124"><span class="lineNum">     124 </span>            :         }</a>
+<span class="lineNum">     125 </span>            : 
+<span class="lineNum">     126 </span>            :         arg3::db::column row::column(const string &amp;name) const
+<span class="lineNum">     127 </span>            :         {
+<span class="lineNum">     128 </span><span class="lineCov">        456 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">     129 </span><span class="lineCov">        228 :             return impl_-&gt;column(name);</span>
+<a name="130"><span class="lineNum">     130 </span>            :         }</a>
+<span class="lineNum">     131 </span>            : 
+<span class="lineNum">     132 </span>            :         size_t row::size() const
+<span class="lineNum">     133 </span>            :         {
+<span class="lineNum">     134 </span><span class="lineCov">        366 :             return impl_ == nullptr ? 0 : impl_-&gt;size();</span>
+<a name="135"><span class="lineNum">     135 </span>            :         }</a>
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span>            :         bool row::empty() const
+<span class="lineNum">     138 </span>            :         {
+<span class="lineNum">     139 </span><span class="lineCov">          2 :             return size() == 0;</span>
+<a name="140"><span class="lineNum">     140 </span>            :         }</a>
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span>            :         bool row::is_valid() const
+<span class="lineNum">     143 </span>            :         {
+<span class="lineNum">     144 </span><span class="lineCov">         52 :             return impl_ != nullptr &amp;&amp; impl_-&gt;is_valid();</span>
+<span class="lineNum">     145 </span><span class="lineCov">         26 :         }</span>
+<span class="lineNum">     146 </span>            :     }
+<span class="lineNum">     147 </span>            : }
 </pre>
       </td>
     </tr>

@@ -31,18 +31,18 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">19</td>
-            <td class="headerCovTableEntry">32</td>
-            <td class="headerCovTableEntryLo">59.4 %</td>
+            <td class="headerCovTableEntry">21</td>
+            <td class="headerCovTableEntry">64</td>
+            <td class="headerCovTableEntryLo">32.8 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-25</td>
+            <td class="headerValue">2014-07-26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">9</td>
-            <td class="headerCovTableEntry">13</td>
-            <td class="headerCovTableEntryLo">69.2 %</td>
+            <td class="headerCovTableEntry">26</td>
+            <td class="headerCovTableEntryLo">34.6 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -70,83 +70,156 @@
 <pre class="source">
 <a name="1"><span class="lineNum">       1 </span>            : #include &quot;sqlite3_row.h&quot;</a>
 <span class="lineNum">       2 </span>            : #include &quot;sqlite3_column.h&quot;
-<span class="lineNum">       3 </span>            : 
-<span class="lineNum">       4 </span>            : namespace arg3
-<span class="lineNum">       5 </span>            : {
-<span class="lineNum">       6 </span>            :     namespace db
-<a name="7"><span class="lineNum">       7 </span>            :     {</a>
-<span class="lineNum">       8 </span>            : 
-<span class="lineNum">       9 </span>            :         sqlite3_row::sqlite3_row(sqlite3_db *db, sqlite3_stmt *stmt) : row_impl(), stmt_(stmt), db_(db)
-<span class="lineNum">      10 </span><span class="lineCov">         65 :         {</span>
-<span class="lineNum">      11 </span><span class="lineCov">        130 :             assert(db_ != NULL);</span>
-<span class="lineNum">      12 </span>            : 
-<span class="lineNum">      13 </span><span class="lineCov">        130 :             assert(stmt_ != NULL);</span>
-<span class="lineNum">      14 </span>            : 
-<span class="lineNum">      15 </span><span class="lineCov">        130 :             size_ = sqlite3_column_count(stmt_);</span>
-<a name="16"><span class="lineNum">      16 </span><span class="lineCov">        130 :         }</span></a>
-<span class="lineNum">      17 </span>            : 
-<span class="lineNum">      18 </span><span class="lineNoCov">          0 :         sqlite3_row::sqlite3_row(sqlite3_row &amp;&amp;other) : row_impl(std::move(other)), stmt_(other.stmt_), db_(other.db_), size_(other.size_)</span>
-<span class="lineNum">      19 </span><span class="lineNoCov">          0 :         {</span>
-<span class="lineNum">      20 </span><span class="lineNoCov">          0 :             other.stmt_ = NULL;</span>
-<span class="lineNum">      21 </span><span class="lineNoCov">          0 :             other.db_ = NULL;</span>
-<a name="22"><span class="lineNum">      22 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">      23 </span>            : 
-<span class="lineNum">      24 </span><span class="lineCov">        130 :         sqlite3_row::~sqlite3_row() {}</span>
-<a name="25"><span class="lineNum">      25 </span>            : </a>
-<span class="lineNum">      26 </span>            : 
-<span class="lineNum">      27 </span>            :         sqlite3_row &amp;sqlite3_row::operator=(sqlite3_row &amp;&amp; other)
-<span class="lineNum">      28 </span>            :         {
-<span class="lineNum">      29 </span><span class="lineNoCov">          0 :             stmt_ = other.stmt_;</span>
-<span class="lineNum">      30 </span><span class="lineNoCov">          0 :             db_ = other.db_;</span>
-<span class="lineNum">      31 </span><span class="lineNoCov">          0 :             size_ = other.size_;</span>
-<span class="lineNum">      32 </span><span class="lineNoCov">          0 :             other.stmt_ = NULL;</span>
-<span class="lineNum">      33 </span><span class="lineNoCov">          0 :             other.db_ = NULL;</span>
-<span class="lineNum">      34 </span>            : 
-<span class="lineNum">      35 </span><span class="lineNoCov">          0 :             return *this;</span>
-<a name="36"><span class="lineNum">      36 </span>            :         }</a>
-<span class="lineNum">      37 </span>            : 
-<span class="lineNum">      38 </span>            :         column sqlite3_row::column(size_t nPosition) const
-<span class="lineNum">      39 </span>            :         {
-<span class="lineNum">      40 </span><span class="lineCov">        292 :             assert(nPosition &lt; size());</span>
-<span class="lineNum">      41 </span>            : 
-<span class="lineNum">      42 </span><span class="lineCov">        292 :             return db::column(make_shared&lt;sqlite3_column&gt;( stmt_, nPosition ) );</span>
-<a name="43"><span class="lineNum">      43 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">      44 </span>            : 
-<span class="lineNum">      45 </span>            :         column sqlite3_row::column(const string &amp;name) const
-<span class="lineNum">      46 </span>            :         {
-<span class="lineNum">      47 </span><span class="lineCov">        198 :             assert(!name.empty());</span>
+<span class="lineNum">       3 </span>            : #include &quot;sqlite3_db.h&quot;
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            : namespace arg3
+<span class="lineNum">       6 </span>            : {
+<span class="lineNum">       7 </span>            :     namespace db
+<a name="8"><span class="lineNum">       8 </span>            :     {</a>
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :         sqlite3_row::sqlite3_row(sqlite3_db *db, sqlite3_stmt *stmt) : row_impl(), stmt_(stmt), db_(db)
+<span class="lineNum">      11 </span><span class="lineNoCov">          0 :         {</span>
+<span class="lineNum">      12 </span><span class="lineNoCov">          0 :             assert(db_ != NULL);</span>
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span><span class="lineNoCov">          0 :             assert(stmt_ != NULL);</span>
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span><span class="lineNoCov">          0 :             size_ = sqlite3_column_count(stmt_);</span>
+<a name="17"><span class="lineNum">      17 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span><span class="lineNoCov">          0 :         sqlite3_row::sqlite3_row(sqlite3_row &amp;&amp;other) : row_impl(std::move(other)), stmt_(other.stmt_), db_(other.db_), size_(other.size_)</span>
+<span class="lineNum">      20 </span><span class="lineNoCov">          0 :         {</span>
+<span class="lineNum">      21 </span><span class="lineNoCov">          0 :             other.stmt_ = NULL;</span>
+<span class="lineNum">      22 </span><span class="lineNoCov">          0 :             other.db_ = NULL;</span>
+<a name="23"><span class="lineNum">      23 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :         sqlite3_row::~sqlite3_row() {}</span>
+<a name="26"><span class="lineNum">      26 </span>            : </a>
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            :         sqlite3_row &amp;sqlite3_row::operator=(sqlite3_row &amp;&amp; other)
+<span class="lineNum">      29 </span>            :         {
+<span class="lineNum">      30 </span><span class="lineNoCov">          0 :             stmt_ = other.stmt_;</span>
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 :             db_ = other.db_;</span>
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :             size_ = other.size_;</span>
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :             other.stmt_ = NULL;</span>
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 :             other.db_ = NULL;</span>
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :             return *this;</span>
+<a name="37"><span class="lineNum">      37 </span>            :         }</a>
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            :         column sqlite3_row::column(size_t nPosition) const
+<span class="lineNum">      40 </span>            :         {
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :             assert(nPosition &lt; size());</span>
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :             if (db_-&gt;cache_level() == sqldb::CACHE_COLUMNS)</span>
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :                 return db::column(make_shared&lt;sqlite3_cached_column&gt;(stmt_, nPosition));</span>
+<span class="lineNum">      45 </span>            :             else
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :                 return db::column(make_shared&lt;sqlite3_column&gt;(stmt_, nPosition ) );</span>
+<a name="47"><span class="lineNum">      47 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      48 </span>            : 
-<span class="lineNum">      49 </span><span class="lineCov">        710 :             for (size_t i = 0; i &lt; size_; i++)</span>
-<span class="lineNum">      50 </span>            :             {
-<span class="lineNum">      51 </span><span class="lineCov">        355 :                 const char *col_name = sqlite3_column_name(stmt_, i);</span>
+<span class="lineNum">      49 </span>            :         column sqlite3_row::column(const string &amp;name) const
+<span class="lineNum">      50 </span>            :         {
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :             assert(!name.empty());</span>
 <span class="lineNum">      52 </span>            : 
-<span class="lineNum">      53 </span><span class="lineCov">        355 :                 if (name == col_name)</span>
-<span class="lineNum">      54 </span>            :                 {
-<span class="lineNum">      55 </span><span class="lineCov">         99 :                     return column(i);</span>
-<span class="lineNum">      56 </span>            :                 }
-<span class="lineNum">      57 </span><span class="lineCov">        256 :             }</span>
-<span class="lineNum">      58 </span><span class="lineNoCov">          0 :             throw database_exception(&quot;unknown column '&quot; + name + &quot;'&quot;);</span>
-<a name="59"><span class="lineNum">      59 </span><span class="lineCov">         99 :         }</span></a>
-<span class="lineNum">      60 </span>            : 
-<span class="lineNum">      61 </span>            :         string sqlite3_row::column_name(size_t nPosition) const
-<span class="lineNum">      62 </span>            :         {
-<span class="lineNum">      63 </span><span class="lineCov">         90 :             assert(nPosition &lt; size());</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :             for (size_t i = 0; i &lt; size_; i++)</span>
+<span class="lineNum">      54 </span>            :             {
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :                 const char *col_name = sqlite3_column_name(stmt_, i);</span>
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :                 if (name == col_name)</span>
+<span class="lineNum">      58 </span>            :                 {
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :                     return column(i);</span>
+<span class="lineNum">      60 </span>            :                 }
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :             throw database_exception(&quot;unknown column '&quot; + name + &quot;'&quot;);</span>
+<a name="63"><span class="lineNum">      63 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      64 </span>            : 
-<span class="lineNum">      65 </span><span class="lineCov">         45 :             return sqlite3_column_name(stmt_, nPosition);</span>
-<a name="66"><span class="lineNum">      66 </span>            :         }</a>
-<span class="lineNum">      67 </span>            : 
-<span class="lineNum">      68 </span>            :         size_t sqlite3_row::size() const
-<span class="lineNum">      69 </span>            :         {
-<span class="lineNum">      70 </span><span class="lineCov">        245 :             return size_;</span>
-<a name="71"><span class="lineNum">      71 </span>            :         }</a>
-<span class="lineNum">      72 </span>            : 
-<span class="lineNum">      73 </span>            :         bool sqlite3_row::is_valid() const
-<span class="lineNum">      74 </span>            :         {
-<span class="lineNum">      75 </span><span class="lineCov">         12 :             return stmt_ !=  NULL;</span>
-<span class="lineNum">      76 </span>            :         }
-<span class="lineNum">      77 </span>            : 
-<span class="lineNum">      78 </span>            :     }
-<span class="lineNum">      79 </span>            : }
+<span class="lineNum">      65 </span>            :         string sqlite3_row::column_name(size_t nPosition) const
+<span class="lineNum">      66 </span>            :         {
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :             assert(nPosition &lt; size());</span>
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :             return sqlite3_column_name(stmt_, nPosition);</span>
+<a name="70"><span class="lineNum">      70 </span>            :         }</a>
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span>            :         size_t sqlite3_row::size() const
+<span class="lineNum">      73 </span>            :         {
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :             return size_;</span>
+<a name="75"><span class="lineNum">      75 </span>            :         }</a>
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span>            :         bool sqlite3_row::is_valid() const
+<span class="lineNum">      78 </span>            :         {
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :             return stmt_ !=  NULL;</span>
+<span class="lineNum">      80 </span>            :         }
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span>            :         /* cached version */
+<a name="84"><span class="lineNum">      84 </span>            : </a>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span>            :         sqlite3_cached_row::sqlite3_cached_row(sqlite3_db *db, sqlite3_stmt *stmt)
+<span class="lineNum">      87 </span><span class="lineCov">         73 :         {</span>
+<span class="lineNum">      88 </span><span class="lineCov">        146 :             assert(db != NULL);</span>
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span><span class="lineCov">        146 :             assert(stmt != NULL);</span>
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span><span class="lineCov">        146 :             int size = sqlite3_column_count(stmt);</span>
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span><span class="lineCov">        912 :             for (int i = 0; i &lt; size; i++)</span>
+<span class="lineNum">      95 </span>            :             {
+<span class="lineNum">      96 </span><span class="lineCov">       1149 :                 columns_.push_back(make_shared&lt;sqlite3_cached_column&gt;(stmt, i));</span>
+<a name="97"><span class="lineNum">      97 </span><span class="lineCov">        383 :             }</span></a>
+<span class="lineNum">      98 </span><span class="lineCov">        146 :         }</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         sqlite3_cached_row::sqlite3_cached_row(sqlite3_cached_row &amp;&amp;other) : columns_(std::move(other.columns_))</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         {</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :             other.columns_.clear();</span>
+<a name="102"><span class="lineNum">     102 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     103 </span>            : 
+<a name="104"><span class="lineNum">     104 </span><span class="lineCov">        146 :         sqlite3_cached_row::~sqlite3_cached_row() {}</span></a>
+<span class="lineNum">     105 </span>            : 
+<span class="lineNum">     106 </span>            :         sqlite3_cached_row &amp;sqlite3_cached_row::operator=(sqlite3_cached_row &amp;&amp; other)
+<span class="lineNum">     107 </span>            :         {
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :             columns_ = other.columns_;</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :             other.columns_.clear();</span>
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :             return *this;</span>
+<a name="112"><span class="lineNum">     112 </span>            :         }</a>
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span>            :         column sqlite3_cached_row::column(size_t nPosition) const
+<span class="lineNum">     115 </span>            :         {
+<span class="lineNum">     116 </span><span class="lineCov">        340 :             assert(nPosition &lt; size());</span>
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span><span class="lineCov">        340 :             return db::column( columns_[nPosition] );</span>
+<a name="119"><span class="lineNum">     119 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            :         column sqlite3_cached_row::column(const string &amp;name) const
+<span class="lineNum">     122 </span>            :         {
+<span class="lineNum">     123 </span><span class="lineCov">        228 :             assert(!name.empty());</span>
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span><span class="lineCov">        820 :             for (size_t i = 0; i &lt; columns_.size(); i++)</span>
+<span class="lineNum">     126 </span>            :             {
+<span class="lineNum">     127 </span><span class="lineCov">        410 :                 if (name == column_name(i))</span>
+<span class="lineNum">     128 </span>            :                 {
+<span class="lineNum">     129 </span><span class="lineCov">        114 :                     return column(i);</span>
+<span class="lineNum">     130 </span>            :                 }
+<span class="lineNum">     131 </span><span class="lineCov">        296 :             }</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :             throw database_exception(&quot;unknown column '&quot; + name + &quot;'&quot;);</span>
+<a name="133"><span class="lineNum">     133 </span><span class="lineCov">        114 :         }</span></a>
+<span class="lineNum">     134 </span>            : 
+<span class="lineNum">     135 </span>            :         string sqlite3_cached_row::column_name(size_t nPosition) const
+<span class="lineNum">     136 </span>            :         {
+<span class="lineNum">     137 </span><span class="lineCov">        912 :             assert(nPosition &lt; size());</span>
+<span class="lineNum">     138 </span>            : 
+<span class="lineNum">     139 </span><span class="lineCov">        456 :             return columns_[nPosition]-&gt;name();</span>
+<a name="140"><span class="lineNum">     140 </span>            :         }</a>
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span>            :         size_t sqlite3_cached_row::size() const
+<span class="lineNum">     143 </span>            :         {
+<span class="lineNum">     144 </span><span class="lineCov">        743 :             return columns_.size();</span>
+<a name="145"><span class="lineNum">     145 </span>            :         }</a>
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span>            :         bool sqlite3_cached_row::is_valid() const
+<span class="lineNum">     148 </span>            :         {
+<span class="lineNum">     149 </span><span class="lineCov">         13 :             return columns_.size() &gt; 0;</span>
+<span class="lineNum">     150 </span>            :         }
+<span class="lineNum">     151 </span>            :     }
+<span class="lineNum">     152 </span>            : }
 </pre>
       </td>
     </tr>

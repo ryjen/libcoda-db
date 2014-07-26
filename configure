@@ -16278,8 +16278,8 @@ $as_echo "$glib_cv_lcov_version" >&6; }
 
 
   # Add the special gcc flags
-  COVERAGE_CFLAGS="--coverage"
-  COVERAGE_CXXFLAGS="--coverage"
+  COVERAGE_CFLAGS="--coverage -fno-inline"
+  COVERAGE_CXXFLAGS="--coverage -fno-inline"
   COVERAGE_LDFLAGS="-lgcov"
 
 fi

@@ -46,6 +46,8 @@ namespace arg3
 
             virtual sql_value to_value() const = 0;
 
+            virtual string name() const = 0;
+
         };
 
         /*!
@@ -93,6 +95,8 @@ namespace arg3
             operator int64_t() const;
 
             operator double() const;
+
+            string name() const;
         };
 
     }

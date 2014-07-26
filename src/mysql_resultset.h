@@ -7,6 +7,7 @@
 
 #include <mysql/mysql.h>
 #include "resultset.h"
+#include <vector>
 
 namespace arg3
 {
@@ -43,7 +44,7 @@ namespace arg3
             row current_row();
             void reset();
             bool next();
-            size_t column_count() const;
+            size_t size() const;
         };
 
         /*!
@@ -60,7 +61,6 @@ namespace arg3
             MYSQL_RES *metadata_;
             mysql_db *db_;
             shared_ptr<mysql_binding> bindings_;
-            size_t columnCount_;
             int status_;
             void prepare_results();
         public:
@@ -81,7 +81,38 @@ namespace arg3
 
             bool next();
 
-            size_t column_count() const;
+            size_t size() const;
+        };
+
+        class mysql_cached_resultset : public resultset_impl
+        {
+            friend class select_query;
+            friend class row;
+            friend class sqldb;
+            friend class resultset_iterator;
+        private:
+            vector<shared_ptr<row_impl>> rows_;
+            int currentRow_;
+        public:
+            mysql_cached_resultset(MYSQL_STMT *stmt);
+            mysql_cached_resultset(mysql_db *db, MYSQL_RES *res);
+
+            mysql_cached_resultset(const mysql_cached_resultset &other) = delete;
+            mysql_cached_resultset(mysql_cached_resultset &&other);
+            virtual ~mysql_cached_resultset();
+
+            mysql_cached_resultset &operator=(const mysql_cached_resultset &other) = delete;
+            mysql_cached_resultset &operator=(mysql_cached_resultset && other);
+
+            bool is_valid() const;
+
+            row current_row();
+
+            void reset();
+
+            bool next();
+
+            size_t size() const;
         };
     }
 }

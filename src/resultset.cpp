@@ -56,9 +56,9 @@ namespace arg3
             impl_->reset();
         }
 
-        size_t resultset::column_count() const
+        size_t resultset::size() const
         {
-            return impl_->column_count();
+            return impl_->size();
         }
 
         resultset::iterator resultset::begin()

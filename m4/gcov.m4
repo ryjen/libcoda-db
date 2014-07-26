@@ -84,8 +84,8 @@ AC_DEFUN([AC_TDD_GCOV],
   changequote([,])
 
   # Add the special gcc flags
-  COVERAGE_CFLAGS="--coverage"
-  COVERAGE_CXXFLAGS="--coverage"	
+  COVERAGE_CFLAGS="--coverage -fno-inline"
+  COVERAGE_CXXFLAGS="--coverage -fno-inline"	
   COVERAGE_LDFLAGS="-lgcov"
 
 fi

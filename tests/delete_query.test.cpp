@@ -57,6 +57,19 @@ Context(delete_query_test)
         //Assert::That(query.last_number_of_changes(), Equals(1));
     }
 
+    Spec(copy_constructor)
+    {
+        delete_query query(testdb, "users");
+
+        query.where("first_name = ?");
+
+        query.bind(1, "Mark");
+
+        delete_query other(query);
+
+        Assert::That(other.to_string(), Equals(query.to_string()));
+    }
+
     Spec(move_constructor)
     {
         delete_query query(testdb, "users");
