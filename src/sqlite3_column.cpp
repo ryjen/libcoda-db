@@ -9,11 +9,14 @@ namespace arg3
     namespace db
     {
 
-        sqlite3_column::sqlite3_column(sqlite3_stmt *stmt, int column) : stmt_(stmt), column_(column)
+        sqlite3_column::sqlite3_column(shared_ptr<sqlite3_stmt> stmt, int column) : stmt_(stmt), column_(column)
         {
         }
 
-        sqlite3_column::sqlite3_column(sqlite3_column &&other) : stmt_(other.stmt_), column_(other.column_) {}
+        sqlite3_column::sqlite3_column(sqlite3_column &&other) : stmt_(other.stmt_), column_(other.column_)
+        {
+            other.stmt_ = nullptr;
+        }
 
         sqlite3_column::~sqlite3_column() {}
 
@@ -21,17 +24,19 @@ namespace arg3
         {
             stmt_ = other.stmt_;
 
+            other.stmt_ = nullptr;
+
             return *this;
         }
 
         bool sqlite3_column::is_valid() const
         {
-            return stmt_ != NULL;
+            return stmt_ != nullptr && stmt_;
         }
 
         void sqlite3_column::assert_value() const throw (no_such_column_exception)
         {
-            if (stmt_ == NULL)
+            if (!is_valid())
             {
                 throw no_such_column_exception();
             }
@@ -41,53 +46,53 @@ namespace arg3
         {
             assert_value();
 
-            return sql_blob(sqlite3_column_blob(stmt_, column_), sqlite3_column_bytes(stmt_, column_), NULL);
+            return sql_blob(sqlite3_column_blob(stmt_.get(), column_), sqlite3_column_bytes(stmt_.get(), column_), NULL);
         }
 
         double sqlite3_column::to_double() const
         {
             assert_value();
 
-            return sqlite3_column_double(stmt_, column_);
+            return sqlite3_column_double(stmt_.get(), column_);
         }
         bool sqlite3_column::to_bool() const
         {
             assert_value();
 
-            return sqlite3_column_int(stmt_, column_);
+            return sqlite3_column_int(stmt_.get(), column_);
         }
         int sqlite3_column::to_int() const
         {
             assert_value();
 
-            return sqlite3_column_int(stmt_, column_);
+            return sqlite3_column_int(stmt_.get(), column_);
         }
 
         int64_t sqlite3_column::to_int64() const
         {
             assert_value();
 
-            return sqlite3_column_int64(stmt_, column_);
+            return sqlite3_column_int64(stmt_.get(), column_);
         }
 
         const unsigned char *sqlite3_column::to_text() const
         {
             assert_value();
 
-            return sqlite3_column_text(stmt_, column_);
+            return sqlite3_column_text(stmt_.get(), column_);
         }
 
         const wchar_t *sqlite3_column::to_text16() const
         {
             assert_value();
-            return static_cast<const wchar_t *>(sqlite3_column_text16(stmt_, column_));
+            return static_cast<const wchar_t *>(sqlite3_column_text16(stmt_.get(), column_));
         }
 
         sql_value sqlite3_column::to_value() const
         {
             assert_value();
 
-            switch (sqlite3_column_type(stmt_, column_))
+            switch (sqlite3_column_type(stmt_.get(), column_))
             {
             case SQLITE_INTEGER:
                 return sql_value(to_int64());
@@ -105,14 +110,14 @@ namespace arg3
         {
             assert_value();
 
-            return sqlite3_column_type(stmt_, column_);
+            return sqlite3_column_type(stmt_.get(), column_);
         }
 
         string sqlite3_column::to_string() const
         {
             assert_value();
 
-            const unsigned char *textValue = sqlite3_column_text(stmt_, column_);
+            const unsigned char *textValue = sqlite3_column_text(stmt_.get(), column_);
 
             if (textValue == NULL)
                 return string();
@@ -122,35 +127,35 @@ namespace arg3
 
         string sqlite3_column::name() const
         {
-            return sqlite3_column_name(stmt_, column_);
+            return sqlite3_column_name(stmt_.get(), column_);
         }
 
 
         /* cached version */
 
-        sqlite3_cached_column::sqlite3_cached_column(sqlite3_stmt *stmt, int column)
+        sqlite3_cached_column::sqlite3_cached_column(shared_ptr<sqlite3_stmt> stmt, int column)
         {
-            name_ = sqlite3_column_name(stmt, column);
-            type_ = sqlite3_column_type(stmt, column);
+            name_ = sqlite3_column_name(stmt.get(), column);
+            type_ = sqlite3_column_type(stmt.get(), column);
 
-            switch (sqlite3_column_type(stmt, column))
+            switch (sqlite3_column_type(stmt.get(), column))
             {
             case SQLITE_INTEGER:
-                value_ = sqlite3_column_int64(stmt, column);
+                value_ = sqlite3_column_int64(stmt.get(), column);
                 break;
             case SQLITE_TEXT:
             default:
             {
-                const unsigned char *textValue = sqlite3_column_text(stmt, column);
+                const unsigned char *textValue = sqlite3_column_text(stmt.get(), column);
                 if (textValue != NULL)
                     value_ = std::string(reinterpret_cast<const char *>(textValue));
                 break;
             }
             case SQLITE_FLOAT:
-                value_ = sqlite3_column_double(stmt, column);
+                value_ = sqlite3_column_double(stmt.get(), column);
                 break;
             case SQLITE_BLOB:
-                value_ = sql_blob(sqlite3_column_blob(stmt, column), sqlite3_column_bytes(stmt, column), NULL);
+                value_ = sql_blob(sqlite3_column_blob(stmt.get(), column), sqlite3_column_bytes(stmt.get(), column), NULL);
                 break;
             }
         }

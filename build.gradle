@@ -1,0 +1,122 @@
+
+apply plugin: 'cpp'
+
+libraries {
+	arg3db {
+		source sources.arg3db
+
+		targetFlavors("coverage", "sqlite", "mysql")
+	}
+}
+
+executables {
+    main {
+		source sources.main
+
+	    targetFlavors("sqlite", "mysql")
+
+		binaries.all {
+			if(flavor == flavors.mysql) {
+				cppCompiler.define "TEST_MYSQL"
+			} else if(flavor == flavors.sqlite) {
+				cppCompiler.define "TEST_SQLITE"
+			}
+		}
+    }
+}
+
+sources {
+    main {
+        cpp {
+            lib libraries.arg3db
+        }
+    }
+
+	arg3db {
+
+        cpp {
+			source {
+				srcDir "src"
+				include "**/*.cpp"
+			}
+	        exportedHeaders {
+	            srcDir "src"
+	            include "**/*.h"
+	        }
+	    }
+	}
+}
+
+model {
+    buildTypes {
+        debug
+        release
+    }
+    toolChains {
+        clang(Clang)
+        visualCpp(VisualCpp)
+        gcc(Gcc)
+    }
+    flavors {
+	    mysql
+	    sqlite
+	    coverage
+    }
+}
+
+binaries.all {
+    if (toolChain in Gcc || toolChain in Clang) {
+    	if(buildType == buildTypes.debug) {
+        	cppCompiler.args "-g"
+        } else {
+    		cppCompiler.args "-O2"
+    	}
+    	if(flavor == flavors.coverage) {
+    		cppCompiler.args "--coverage"
+    		linker.args "--coverage"
+    	}
+
+	    if (toolChain in Clang) {
+	    	cppCompiler.args "-std=c++11", "-stdlib=libc++", "-Wall", "-Werror"
+	    } else if (toolChain in Gcc) {
+	    	cppCompiler.args "-std=c++0x", "-Wall", "-Werror"
+	    }
+	    linker.args "-lsqlite3", "-lmysqlclient"
+    }
+    else if (toolChain in VisualCpp && buildType == buildTypes.debug) {
+        cppCompiler.args '/Zi'
+        cppCompiler.define 'DEBUG'
+        linker.args '/DEBUG'
+    }
+}
+
+task buildAllExecutables {
+    dependsOn binaries.withType(ExecutableBinary).matching {
+        it.buildable
+    }
+}
+
+task cleanGcda(type:Exec) {
+	commandLine "find", "src", "-name", "'*.gcda'", "-delete"
+
+}
+
+task cleanCoverage(type:Exec) {
+	dependsOn cleanGcda
+
+	commandLine 'lcov', "--directory", "src", "-z"
+	commandLine 'rm', "-rf", "coverage.info"
+	
+}
+
+task generateCoverageHtml(type:Exec) {
+	
+	commandLine "lcov", "--directory", "src", "--capture", "--output-file", "coverage.info", "--no-checksum", "--compat-libtool", "--gcov-tool", "/usr/local/bin/gcov-4.2", "--no-external"
+	commandLine "genhtml", "--output-directory", "coverage", "--title", "'Code Coverage'", "--legend", "--show-details", "coverage.info"
+	
+}
+
+task coverageHtml(type:Exec) {
+	dependsOn cleanGcda
+}
+

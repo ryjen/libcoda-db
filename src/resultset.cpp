@@ -81,6 +81,10 @@ namespace arg3
         {
         }
 
+        resultset_iterator::resultset_iterator(const resultset_iterator &other) : rs_(other.rs_), pos_(other.pos_), value_(other.value_)
+        {}
+
+
         resultset_iterator::resultset_iterator(resultset_iterator &&other) : rs_(std::move(other.rs_)), pos_(other.pos_),
             value_(std::move(other.value_))
         {

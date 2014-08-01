@@ -17,14 +17,14 @@ namespace arg3
         {
         private:
             sqlite3_db *db_;
-            sqlite3_stmt *stmt_;
+            shared_ptr<sqlite3_stmt> stmt_;
         public:
             sqlite3_statement(sqlite3_db *db);
             sqlite3_statement(const sqlite3_statement &other) = delete;
-            sqlite3_statement(sqlite3_statement &&other) = default;
+            sqlite3_statement(sqlite3_statement &&other);
             sqlite3_statement &operator=(const sqlite3_statement &other) = delete;
-            sqlite3_statement &operator=(sqlite3_statement && other) = default;
-            virtual ~sqlite3_statement() = default;
+            sqlite3_statement &operator=(sqlite3_statement && other);
+            virtual ~sqlite3_statement();
             void prepare(const std::string &sql);
             bool is_valid() const;
             resultset results();
@@ -42,6 +42,12 @@ namespace arg3
             sqlite3_statement &bind(size_t index, const sql_null_type &value);
             sqlite3_statement &bind_value(size_t index, const sql_value &v);
             sqlite3_statement &bind(size_t index, const void *data, size_t size, void(* pFree)(void *));
+        };
+
+        struct sqlite3_stmt_delete
+        {
+            void operator()(sqlite3_stmt *p) const;
+
         };
     }
 }

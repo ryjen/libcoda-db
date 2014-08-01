@@ -155,12 +155,8 @@ namespace arg3
             if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK)
                 throw database_exception(last_error());
 
-            shared_ptr<resultset_impl> impl;
-
-            if (cache_level() == CACHE_RESULTSETS)
-                impl = make_shared<sqlite3_cached_resultset>(this, stmt);
-            else
-                impl = make_shared<sqlite3_resultset>(this, stmt);
+            shared_ptr<resultset_impl> impl =
+                make_shared<sqlite3_resultset>(this, shared_ptr<sqlite3_stmt>(stmt, sqlite3_stmt_delete()));
 
             resultset set(impl);
 

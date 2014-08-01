@@ -6,7 +6,7 @@ namespace arg3
 {
     namespace db
     {
-        sqlite3_resultset::sqlite3_resultset(sqlite3_db *db, sqlite3_stmt *stmt) : stmt_(stmt), db_(db), status_(-1)
+        sqlite3_resultset::sqlite3_resultset(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt) : stmt_(stmt), db_(db), status_(-1)
         {
 
         }
@@ -14,7 +14,7 @@ namespace arg3
         sqlite3_resultset::sqlite3_resultset(sqlite3_resultset &&other) : stmt_(other.stmt_), db_(other.db_), status_(other.status_)
         {
             other.db_ = NULL;
-            other.stmt_ = NULL;
+            other.stmt_ = nullptr;
         }
 
         sqlite3_resultset::~sqlite3_resultset() {}
@@ -25,56 +25,57 @@ namespace arg3
             db_ = other.db_;
             status_ = other.status_;
             other.db_ = NULL;
-            other.stmt_ = NULL;
+            other.stmt_ = nullptr;
 
             return *this;
         }
 
         bool sqlite3_resultset::is_valid() const
         {
-            return stmt_ != NULL;
+            return stmt_ != nullptr && stmt_;
         }
 
         size_t sqlite3_resultset::size() const
         {
-            return sqlite3_column_count(stmt_);
+            return sqlite3_column_count(stmt_.get());
         }
 
         bool sqlite3_resultset::next()
         {
+            if (!is_valid())
+                return false;
+
             if (status_ == SQLITE_DONE)
                 return false;
 
-            status_ = sqlite3_step(stmt_);
+            status_ = sqlite3_step(stmt_.get());
 
             return status_ == SQLITE_ROW;
         }
+
         void sqlite3_resultset::reset()
         {
-            if (sqlite3_reset(stmt_) != SQLITE_OK)
+            if (sqlite3_reset(stmt_.get()) != SQLITE_OK)
                 throw database_exception(db_->last_error());
         }
 
         row sqlite3_resultset::current_row()
         {
-            if (db_->cache_level() == sqldb::CACHE_ROWS)
-                return row(make_shared<sqlite3_cached_row>(db_, stmt_));
-            else
-                return row(make_shared<sqlite3_row>(db_, stmt_));
+            return row(make_shared<sqlite3_row>(db_, stmt_));
         }
 
         /* cached version */
 
-        sqlite3_cached_resultset::sqlite3_cached_resultset(sqlite3_db *db, sqlite3_stmt *stmt) : db_(db), currentRow_(0)
+        sqlite3_cached_resultset::sqlite3_cached_resultset(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt) : db_(db), currentRow_(0)
         {
 
-            int status = sqlite3_step(stmt);
+            int status = sqlite3_step(stmt.get());
 
             while (status == SQLITE_ROW)
             {
                 rows_.push_back(make_shared<sqlite3_cached_row>(db, stmt));
 
-                status = sqlite3_step(stmt);
+                status = sqlite3_step(stmt.get());
             }
         }
 

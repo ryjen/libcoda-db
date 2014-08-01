@@ -65,10 +65,7 @@ namespace arg3
 
             assert(is_valid());
 
-            if (db_->cache_level() == sqldb::CACHE_COLUMNS)
-                return db::column(make_shared<mysql_cached_column>(res_, row_, nPosition));
-            else
-                return db::column( make_shared<mysql_column>( res_, row_, nPosition ) );
+            return db::column( make_shared<mysql_column>( res_, row_, nPosition ) );
         }
 
         column mysql_row::column(const string &name) const
@@ -168,10 +165,7 @@ namespace arg3
 
             assert(fields_ != NULL);
 
-            if (db_->cache_level() == sqldb::CACHE_COLUMNS)
-                return db::column(make_shared<mysql_cached_column>(column_name(nPosition), fields_->get(nPosition)));
-            else
-                return db::column(make_shared<mysql_stmt_column>( column_name(nPosition), fields_->get(nPosition) ) );
+            return db::column(make_shared<mysql_stmt_column>( column_name(nPosition), fields_->get(nPosition) ) );
         }
 
         column mysql_stmt_row::column(const string &name) const

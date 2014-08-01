@@ -21,11 +21,11 @@ namespace arg3
         {
             friend class sqlite3_resultset;
         private:
-            sqlite3_stmt *stmt_;
+            shared_ptr<sqlite3_stmt> stmt_;
             sqlite3_db *db_;
             size_t size_;
         public:
-            sqlite3_row(sqlite3_db *db, sqlite3_stmt *stmt);
+            sqlite3_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt);
             virtual ~sqlite3_row();
             sqlite3_row(const sqlite3_row &other) = delete;
             sqlite3_row(sqlite3_row &&other);
@@ -45,7 +45,7 @@ namespace arg3
         private:
             vector<shared_ptr<sqlite3_cached_column>> columns_;
         public:
-            sqlite3_cached_row(sqlite3_db *db, sqlite3_stmt *stmt);
+            sqlite3_cached_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt);
             virtual ~sqlite3_cached_row();
             sqlite3_cached_row(const sqlite3_cached_row &other) = delete;
             sqlite3_cached_row(sqlite3_cached_row &&other);

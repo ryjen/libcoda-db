@@ -200,11 +200,7 @@ namespace arg3
                 throw database_exception(last_error());
             }
 
-            if (cache_level() == CACHE_RESULTSETS)
-                return resultset(make_shared<mysql_cached_resultset>(this, res));
-            else
-                return resultset(make_shared<mysql_resultset>(this, res));
-
+            return resultset(make_shared<mysql_resultset>(this, res));
         }
 
         shared_ptr<statement> mysql_db::create_statement()

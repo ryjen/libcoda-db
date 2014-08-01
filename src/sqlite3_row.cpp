@@ -7,18 +7,18 @@ namespace arg3
     namespace db
     {
 
-        sqlite3_row::sqlite3_row(sqlite3_db *db, sqlite3_stmt *stmt) : row_impl(), stmt_(stmt), db_(db)
+        sqlite3_row::sqlite3_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt) : row_impl(), stmt_(stmt), db_(db)
         {
             assert(db_ != NULL);
 
-            assert(stmt_ != NULL);
+            assert(stmt_ != nullptr);
 
-            size_ = sqlite3_column_count(stmt_);
+            size_ = sqlite3_column_count(stmt_.get());
         }
 
         sqlite3_row::sqlite3_row(sqlite3_row &&other) : row_impl(std::move(other)), stmt_(other.stmt_), db_(other.db_), size_(other.size_)
         {
-            other.stmt_ = NULL;
+            other.stmt_ = nullptr;
             other.db_ = NULL;
         }
 
@@ -30,7 +30,7 @@ namespace arg3
             stmt_ = other.stmt_;
             db_ = other.db_;
             size_ = other.size_;
-            other.stmt_ = NULL;
+            other.stmt_ = nullptr;
             other.db_ = NULL;
 
             return *this;
@@ -40,10 +40,7 @@ namespace arg3
         {
             assert(nPosition < size());
 
-            if (db_->cache_level() == sqldb::CACHE_COLUMNS)
-                return db::column(make_shared<sqlite3_cached_column>(stmt_, nPosition));
-            else
-                return db::column(make_shared<sqlite3_column>(stmt_, nPosition ) );
+            return db::column(make_shared<sqlite3_column>(stmt_, nPosition ) );
         }
 
         column sqlite3_row::column(const string &name) const
@@ -52,7 +49,7 @@ namespace arg3
 
             for (size_t i = 0; i < size_; i++)
             {
-                const char *col_name = sqlite3_column_name(stmt_, i);
+                const char *col_name = sqlite3_column_name(stmt_.get(), i);
 
                 if (name == col_name)
                 {
@@ -66,7 +63,7 @@ namespace arg3
         {
             assert(nPosition < size());
 
-            return sqlite3_column_name(stmt_, nPosition);
+            return sqlite3_column_name(stmt_.get(), nPosition);
         }
 
         size_t sqlite3_row::size() const
@@ -76,20 +73,20 @@ namespace arg3
 
         bool sqlite3_row::is_valid() const
         {
-            return stmt_ !=  NULL;
+            return stmt_ !=  nullptr && stmt_;
         }
 
 
         /* cached version */
 
 
-        sqlite3_cached_row::sqlite3_cached_row(sqlite3_db *db, sqlite3_stmt *stmt)
+        sqlite3_cached_row::sqlite3_cached_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt)
         {
             assert(db != NULL);
 
-            assert(stmt != NULL);
+            assert(stmt != nullptr);
 
-            int size = sqlite3_column_count(stmt);
+            int size = sqlite3_column_count(stmt.get());
 
             for (int i = 0; i < size; i++)
             {
