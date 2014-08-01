@@ -12,7 +12,7 @@ namespace arg3
     namespace db
     {
 
-        mysql_statement::mysql_statement(mysql_db *db) : db_(db), bindings_(), stmt_(NULL)
+        mysql_statement::mysql_statement(mysql_db *db) : db_(db), stmt_(NULL)
         {}
 
         mysql_statement::mysql_statement(mysql_statement &&other)
@@ -43,8 +43,15 @@ namespace arg3
 
         void mysql_statement::prepare(const string &sql)
         {
-            if (stmt_ != NULL || db_ == NULL || !db_->is_open()) return;
+            if (db_ == NULL || !db_->is_open())
+            {
+                throw database_exception("database is not open");
+            }
 
+            if (stmt_ != NULL)
+            {
+                return;
+            }
             stmt_ = mysql_stmt_init(db_->db_);
 
             if (mysql_stmt_prepare(stmt_, sql.c_str(), sql.length()))

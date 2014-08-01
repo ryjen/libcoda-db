@@ -12,6 +12,11 @@ namespace arg3
 
         void sqlite3_statement::prepare(const string &sql)
         {
+            if (!db_ || !db_->db_)
+            {
+                throw database_exception("database not open");
+            }
+
             if (stmt_ != NULL) return;
 
             if (sqlite3_prepare_v2(db_->db_, sql.c_str(), -1, &stmt_, NULL) != SQLITE_OK)
