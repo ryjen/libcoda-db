@@ -25,7 +25,7 @@ namespace arg3
         private:
             mysql_db *db_;
             mysql_binding bindings_;
-            MYSQL_STMT *stmt_;
+            shared_ptr<MYSQL_STMT> stmt_;
         public:
             mysql_statement(mysql_db *db);
             mysql_statement(const mysql_statement &other) = delete;

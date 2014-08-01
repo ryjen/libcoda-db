@@ -204,6 +204,18 @@ namespace arg3
             return to_string();
         }
 
+        sql_value::operator bool() const
+        {
+            try
+            {
+                return std::stoi(to_string()) != 0;
+            }
+            catch (const std::exception &e)
+            {
+                return false;
+            }
+        }
+
         sql_value::operator int() const
         {
             try
@@ -258,6 +270,12 @@ namespace arg3
         std::ostream &operator<<(std::ostream &out, const sql_null_type &value)
         {
             out << "NULL";
+
+            return out;
+        }
+        std::ostream &operator<<(std::ostream &out, const sql_blob &value)
+        {
+            out << value.p_;
 
             return out;
         }

@@ -99,6 +99,8 @@ am__objects_1 = arg3mysql_test-arg3.test.$(OBJEXT) \
 	arg3mysql_test-db.test.$(OBJEXT) \
 	arg3mysql_test-delete_query.test.$(OBJEXT) \
 	arg3mysql_test-modify_query.test.$(OBJEXT) \
+	arg3mysql_test-resultset.test.$(OBJEXT) \
+	arg3mysql_test-row.test.$(OBJEXT) \
 	arg3mysql_test-schema.test.$(OBJEXT) \
 	arg3mysql_test-select_query.test.$(OBJEXT) \
 	arg3mysql_test-sql_value.test.$(OBJEXT)
@@ -115,6 +117,8 @@ am__objects_2 = arg3sqlite_test-arg3.test.$(OBJEXT) \
 	arg3sqlite_test-db.test.$(OBJEXT) \
 	arg3sqlite_test-delete_query.test.$(OBJEXT) \
 	arg3sqlite_test-modify_query.test.$(OBJEXT) \
+	arg3sqlite_test-resultset.test.$(OBJEXT) \
+	arg3sqlite_test-row.test.$(OBJEXT) \
 	arg3sqlite_test-schema.test.$(OBJEXT) \
 	arg3sqlite_test-select_query.test.$(OBJEXT) \
 	arg3sqlite_test-sql_value.test.$(OBJEXT)
@@ -337,7 +341,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SOURCES = arg3.test.cpp base_record.test.cpp column.test.cpp db.test.cpp delete_query.test.cpp modify_query.test.cpp \
-	schema.test.cpp select_query.test.cpp sql_value.test.cpp 
+	resultset.test.cpp row.test.cpp schema.test.cpp select_query.test.cpp sql_value.test.cpp 
 
 pkginclude_HEADERS = db.test.h
 arg3mysql_test_SOURCES = $(SOURCES)
@@ -410,6 +414,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-db.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-delete_query.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-modify_query.test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-resultset.test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-row.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-schema.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-select_query.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-sql_value.test.Po@am__quote@
@@ -419,6 +425,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-db.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-delete_query.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-modify_query.test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-resultset.test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-row.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-schema.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-select_query.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-sql_value.test.Po@am__quote@
@@ -527,6 +535,34 @@ arg3mysql_test-modify_query.test.obj: modify_query.test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='modify_query.test.cpp' object='arg3mysql_test-modify_query.test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_test-modify_query.test.obj `if test -f 'modify_query.test.cpp'; then $(CYGPATH_W) 'modify_query.test.cpp'; else $(CYGPATH_W) '$(srcdir)/modify_query.test.cpp'; fi`
+
+arg3mysql_test-resultset.test.o: resultset.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_test-resultset.test.o -MD -MP -MF $(DEPDIR)/arg3mysql_test-resultset.test.Tpo -c -o arg3mysql_test-resultset.test.o `test -f 'resultset.test.cpp' || echo '$(srcdir)/'`resultset.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_test-resultset.test.Tpo $(DEPDIR)/arg3mysql_test-resultset.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='resultset.test.cpp' object='arg3mysql_test-resultset.test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_test-resultset.test.o `test -f 'resultset.test.cpp' || echo '$(srcdir)/'`resultset.test.cpp
+
+arg3mysql_test-resultset.test.obj: resultset.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_test-resultset.test.obj -MD -MP -MF $(DEPDIR)/arg3mysql_test-resultset.test.Tpo -c -o arg3mysql_test-resultset.test.obj `if test -f 'resultset.test.cpp'; then $(CYGPATH_W) 'resultset.test.cpp'; else $(CYGPATH_W) '$(srcdir)/resultset.test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_test-resultset.test.Tpo $(DEPDIR)/arg3mysql_test-resultset.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='resultset.test.cpp' object='arg3mysql_test-resultset.test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_test-resultset.test.obj `if test -f 'resultset.test.cpp'; then $(CYGPATH_W) 'resultset.test.cpp'; else $(CYGPATH_W) '$(srcdir)/resultset.test.cpp'; fi`
+
+arg3mysql_test-row.test.o: row.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_test-row.test.o -MD -MP -MF $(DEPDIR)/arg3mysql_test-row.test.Tpo -c -o arg3mysql_test-row.test.o `test -f 'row.test.cpp' || echo '$(srcdir)/'`row.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_test-row.test.Tpo $(DEPDIR)/arg3mysql_test-row.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='row.test.cpp' object='arg3mysql_test-row.test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_test-row.test.o `test -f 'row.test.cpp' || echo '$(srcdir)/'`row.test.cpp
+
+arg3mysql_test-row.test.obj: row.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_test-row.test.obj -MD -MP -MF $(DEPDIR)/arg3mysql_test-row.test.Tpo -c -o arg3mysql_test-row.test.obj `if test -f 'row.test.cpp'; then $(CYGPATH_W) 'row.test.cpp'; else $(CYGPATH_W) '$(srcdir)/row.test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_test-row.test.Tpo $(DEPDIR)/arg3mysql_test-row.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='row.test.cpp' object='arg3mysql_test-row.test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_test-row.test.obj `if test -f 'row.test.cpp'; then $(CYGPATH_W) 'row.test.cpp'; else $(CYGPATH_W) '$(srcdir)/row.test.cpp'; fi`
 
 arg3mysql_test-schema.test.o: schema.test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_test-schema.test.o -MD -MP -MF $(DEPDIR)/arg3mysql_test-schema.test.Tpo -c -o arg3mysql_test-schema.test.o `test -f 'schema.test.cpp' || echo '$(srcdir)/'`schema.test.cpp
@@ -653,6 +689,34 @@ arg3sqlite_test-modify_query.test.obj: modify_query.test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='modify_query.test.cpp' object='arg3sqlite_test-modify_query.test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_test-modify_query.test.obj `if test -f 'modify_query.test.cpp'; then $(CYGPATH_W) 'modify_query.test.cpp'; else $(CYGPATH_W) '$(srcdir)/modify_query.test.cpp'; fi`
+
+arg3sqlite_test-resultset.test.o: resultset.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_test-resultset.test.o -MD -MP -MF $(DEPDIR)/arg3sqlite_test-resultset.test.Tpo -c -o arg3sqlite_test-resultset.test.o `test -f 'resultset.test.cpp' || echo '$(srcdir)/'`resultset.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_test-resultset.test.Tpo $(DEPDIR)/arg3sqlite_test-resultset.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='resultset.test.cpp' object='arg3sqlite_test-resultset.test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_test-resultset.test.o `test -f 'resultset.test.cpp' || echo '$(srcdir)/'`resultset.test.cpp
+
+arg3sqlite_test-resultset.test.obj: resultset.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_test-resultset.test.obj -MD -MP -MF $(DEPDIR)/arg3sqlite_test-resultset.test.Tpo -c -o arg3sqlite_test-resultset.test.obj `if test -f 'resultset.test.cpp'; then $(CYGPATH_W) 'resultset.test.cpp'; else $(CYGPATH_W) '$(srcdir)/resultset.test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_test-resultset.test.Tpo $(DEPDIR)/arg3sqlite_test-resultset.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='resultset.test.cpp' object='arg3sqlite_test-resultset.test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_test-resultset.test.obj `if test -f 'resultset.test.cpp'; then $(CYGPATH_W) 'resultset.test.cpp'; else $(CYGPATH_W) '$(srcdir)/resultset.test.cpp'; fi`
+
+arg3sqlite_test-row.test.o: row.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_test-row.test.o -MD -MP -MF $(DEPDIR)/arg3sqlite_test-row.test.Tpo -c -o arg3sqlite_test-row.test.o `test -f 'row.test.cpp' || echo '$(srcdir)/'`row.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_test-row.test.Tpo $(DEPDIR)/arg3sqlite_test-row.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='row.test.cpp' object='arg3sqlite_test-row.test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_test-row.test.o `test -f 'row.test.cpp' || echo '$(srcdir)/'`row.test.cpp
+
+arg3sqlite_test-row.test.obj: row.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_test-row.test.obj -MD -MP -MF $(DEPDIR)/arg3sqlite_test-row.test.Tpo -c -o arg3sqlite_test-row.test.obj `if test -f 'row.test.cpp'; then $(CYGPATH_W) 'row.test.cpp'; else $(CYGPATH_W) '$(srcdir)/row.test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_test-row.test.Tpo $(DEPDIR)/arg3sqlite_test-row.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='row.test.cpp' object='arg3sqlite_test-row.test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_test-row.test.obj `if test -f 'row.test.cpp'; then $(CYGPATH_W) 'row.test.cpp'; else $(CYGPATH_W) '$(srcdir)/row.test.cpp'; fi`
 
 arg3sqlite_test-schema.test.o: schema.test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_test-schema.test.o -MD -MP -MF $(DEPDIR)/arg3sqlite_test-schema.test.Tpo -c -o arg3sqlite_test-schema.test.o `test -f 'schema.test.cpp' || echo '$(srcdir)/'`schema.test.cpp

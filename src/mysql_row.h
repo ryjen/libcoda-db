@@ -7,6 +7,8 @@
 
 #include <mysql/mysql.h>
 #include "row.h"
+#include "mysql_column.h"
+#include <vector>
 
 namespace arg3
 {
@@ -24,11 +26,11 @@ namespace arg3
             friend class mysql_resultset;
         private:
             MYSQL_ROW row_;
-            MYSQL_RES *res_;
+            shared_ptr<MYSQL_RES> res_;
             mysql_db *db_;
             size_t size_;
         public:
-            mysql_row(mysql_db *db, MYSQL_RES *res, MYSQL_ROW row);
+            mysql_row(mysql_db *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row);
             virtual ~mysql_row();
             mysql_row(const mysql_row &other);
             mysql_row(mysql_row &&other);
@@ -67,6 +69,28 @@ namespace arg3
             size_t size() const;
             bool is_valid() const;
         };
+
+        class mysql_cached_row : public row_impl
+        {
+            friend class mysql_stmt_resultset;
+        private:
+            std::vector<shared_ptr<mysql_cached_column>> columns_;
+        public:
+            mysql_cached_row(MYSQL_RES *metadata, shared_ptr<mysql_binding> fields);
+            mysql_cached_row(MYSQL_RES *res, MYSQL_ROW row);
+            virtual ~mysql_cached_row() = default;
+            mysql_cached_row(const mysql_cached_row &other) = default;
+            mysql_cached_row(mysql_cached_row &&other) = default;
+            mysql_cached_row &operator=(const mysql_cached_row &other) = default;
+            mysql_cached_row &operator=(mysql_cached_row && other) = default;
+
+            string column_name(size_t nPosition) const;
+            arg3::db::column column(size_t nPosition) const;
+            arg3::db::column column(const string &name) const;
+            size_t size() const;
+            bool is_valid() const;
+        };
+
     }
 }
 

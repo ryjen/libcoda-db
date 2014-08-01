@@ -48,7 +48,8 @@ namespace arg3
             typedef enum
             {
                 NONE, INFO, DEBUG, VERBOSE
-            } LogLevel;
+            }
+            LogLevel;
 
             sqldb();
             sqldb(const sqldb &other) = default;

@@ -31,13 +31,13 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">44</td>
-            <td class="headerCovTableEntry">67</td>
-            <td class="headerCovTableEntryLo">65.7 %</td>
+            <td class="headerCovTableEntry">46</td>
+            <td class="headerCovTableEntry">69</td>
+            <td class="headerCovTableEntryLo">66.7 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-25</td>
+            <td class="headerValue">2014-08-01</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">15</td>
@@ -121,50 +121,50 @@
 <span class="lineNum">      51 </span>            : 
 <span class="lineNum">      52 </span>            :         void sqlite3_db::query_schema(const string &amp;tableName, std::vector&lt;column_definition&gt; &amp;columns)
 <span class="lineNum">      53 </span>            :         {
-<span class="lineNum">      54 </span><span class="lineCov">         18 :             auto rs = execute( &quot;pragma table_info(&quot; + tableName + &quot;)&quot; );</span>
+<span class="lineNum">      54 </span><span class="lineCov">         24 :             auto rs = execute( &quot;pragma table_info(&quot; + tableName + &quot;)&quot; );</span>
 <span class="lineNum">      55 </span>            : 
-<span class="lineNum">      56 </span><span class="lineCov">        216 :             for (auto &amp; row : rs)</span>
+<span class="lineNum">      56 </span><span class="lineCov">        288 :             for (auto &amp; row : rs)</span>
 <span class="lineNum">      57 </span>            :             {
-<span class="lineNum">      58 </span><span class="lineCov">         30 :                 column_definition def;</span>
+<span class="lineNum">      58 </span><span class="lineCov">         40 :                 column_definition def;</span>
 <span class="lineNum">      59 </span>            : 
 <span class="lineNum">      60 </span>            :                 // column name
-<span class="lineNum">      61 </span><span class="lineCov">        120 :                 def.name = row[&quot;name&quot;].to_string();</span>
+<span class="lineNum">      61 </span><span class="lineCov">        160 :                 def.name = row[&quot;name&quot;].to_string();</span>
 <span class="lineNum">      62 </span>            : 
 <span class="lineNum">      63 </span>            :                 // primary key check
-<span class="lineNum">      64 </span><span class="lineCov">        120 :                 def.pk = row[&quot;pk&quot;].to_bool();</span>
+<span class="lineNum">      64 </span><span class="lineCov">        160 :                 def.pk = row[&quot;pk&quot;].to_bool();</span>
 <span class="lineNum">      65 </span>            : 
 <span class="lineNum">      66 </span>            :                 // find type
-<span class="lineNum">      67 </span><span class="lineCov">        120 :                 string type = row[&quot;type&quot;].to_string();</span>
+<span class="lineNum">      67 </span><span class="lineCov">        160 :                 string type = row[&quot;type&quot;].to_string();</span>
 <span class="lineNum">      68 </span>            : 
-<span class="lineNum">      69 </span><span class="lineCov">         30 :                 if (type.find(&quot;integer&quot;) != string::npos)</span>
+<span class="lineNum">      69 </span><span class="lineCov">         40 :                 if (type.find(&quot;integer&quot;) != string::npos)</span>
 <span class="lineNum">      70 </span>            :                 {
-<span class="lineNum">      71 </span><span class="lineCov">          6 :                     def.type = SQLITE_INTEGER;</span>
-<span class="lineNum">      72 </span><span class="lineCov">          6 :                 }</span>
-<span class="lineNum">      73 </span><span class="lineCov">         24 :                 else if (type.find(&quot;real&quot;) != string::npos)</span>
+<span class="lineNum">      71 </span><span class="lineCov">          8 :                     def.type = SQLITE_INTEGER;</span>
+<span class="lineNum">      72 </span><span class="lineCov">          8 :                 }</span>
+<span class="lineNum">      73 </span><span class="lineCov">         32 :                 else if (type.find(&quot;real&quot;) != string::npos)</span>
 <span class="lineNum">      74 </span>            :                 {
-<span class="lineNum">      75 </span><span class="lineCov">          6 :                     def.type = SQLITE_FLOAT;</span>
-<span class="lineNum">      76 </span><span class="lineCov">          6 :                 }</span>
-<span class="lineNum">      77 </span><span class="lineCov">         18 :                 else if (type.find(&quot;blob&quot;) != string::npos)</span>
+<span class="lineNum">      75 </span><span class="lineCov">          8 :                     def.type = SQLITE_FLOAT;</span>
+<span class="lineNum">      76 </span><span class="lineCov">          8 :                 }</span>
+<span class="lineNum">      77 </span><span class="lineCov">         24 :                 else if (type.find(&quot;blob&quot;) != string::npos)</span>
 <span class="lineNum">      78 </span>            :                 {
-<span class="lineNum">      79 </span><span class="lineCov">          6 :                     def.type = SQLITE_BLOB;</span>
-<span class="lineNum">      80 </span><span class="lineCov">          6 :                 }</span>
+<span class="lineNum">      79 </span><span class="lineCov">          8 :                     def.type = SQLITE_BLOB;</span>
+<span class="lineNum">      80 </span><span class="lineCov">          8 :                 }</span>
 <span class="lineNum">      81 </span>            :                 else
 <span class="lineNum">      82 </span>            :                 {
-<span class="lineNum">      83 </span><span class="lineCov">         12 :                     def.type = SQLITE_TEXT;</span>
+<span class="lineNum">      83 </span><span class="lineCov">         16 :                     def.type = SQLITE_TEXT;</span>
 <span class="lineNum">      84 </span>            :                 }
 <span class="lineNum">      85 </span>            : 
-<span class="lineNum">      86 </span><span class="lineCov">         30 :                 columns.push_back(def);</span>
-<span class="lineNum">      87 </span><span class="lineCov">         30 :             }</span>
-<a name="88"><span class="lineNum">      88 </span><span class="lineCov">          6 :         }</span></a>
+<span class="lineNum">      86 </span><span class="lineCov">         40 :                 columns.push_back(def);</span>
+<span class="lineNum">      87 </span><span class="lineCov">         40 :             }</span>
+<a name="88"><span class="lineNum">      88 </span><span class="lineCov">          8 :         }</span></a>
 <span class="lineNum">      89 </span>            : 
 <span class="lineNum">      90 </span>            :         string sqlite3_db::connection_string() const
 <span class="lineNum">      91 </span>            :         {
-<span class="lineNum">      92 </span><span class="lineCov">          7 :             return filename_;</span>
+<span class="lineNum">      92 </span><span class="lineCov">          9 :             return filename_;</span>
 <a name="93"><span class="lineNum">      93 </span>            :         }</a>
 <span class="lineNum">      94 </span>            : 
 <span class="lineNum">      95 </span>            :         schema_factory *sqlite3_db::schemas()
 <span class="lineNum">      96 </span>            :         {
-<span class="lineNum">      97 </span><span class="lineCov">         52 :             return &amp;schema_factory_;</span>
+<span class="lineNum">      97 </span><span class="lineCov">         71 :             return &amp;schema_factory_;</span>
 <a name="98"><span class="lineNum">      98 </span>            :         }</a>
 <span class="lineNum">      99 </span>            : 
 <span class="lineNum">     100 </span>            :         void sqlite3_db::set_connection_string(const string &amp;value)
@@ -174,29 +174,29 @@
 <span class="lineNum">     104 </span>            : 
 <span class="lineNum">     105 </span>            :         void sqlite3_db::open()
 <span class="lineNum">     106 </span>            :         {
-<span class="lineNum">     107 </span><span class="lineCov">          7 :             open(SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_URI);</span>
-<a name="108"><span class="lineNum">     108 </span><span class="lineCov">          7 :         }</span></a>
+<span class="lineNum">     107 </span><span class="lineCov">          9 :             open(SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_URI);</span>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">          9 :         }</span></a>
 <span class="lineNum">     109 </span>            : 
 <span class="lineNum">     110 </span>            :         void sqlite3_db::open(int flags)
 <span class="lineNum">     111 </span>            :         {
-<span class="lineNum">     112 </span><span class="lineCov">          7 :             if (db_ != NULL) return;</span>
+<span class="lineNum">     112 </span><span class="lineCov">          9 :             if (db_ != NULL) return;</span>
 <span class="lineNum">     113 </span>            : 
-<span class="lineNum">     114 </span><span class="lineCov">          7 :             if (sqlite3_open_v2(filename_.c_str(), &amp;db_, flags, NULL) != SQLITE_OK)</span>
+<span class="lineNum">     114 </span><span class="lineCov">          9 :             if (sqlite3_open_v2(filename_.c_str(), &amp;db_, flags, NULL) != SQLITE_OK)</span>
 <span class="lineNum">     115 </span><span class="lineNoCov">          0 :                 throw database_exception(last_error());</span>
-<a name="116"><span class="lineNum">     116 </span><span class="lineCov">          7 :         }</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineCov">          9 :         }</span></a>
 <span class="lineNum">     117 </span>            : 
 <span class="lineNum">     118 </span>            :         bool sqlite3_db::is_open() const
 <span class="lineNum">     119 </span>            :         {
-<span class="lineNum">     120 </span><span class="lineCov">          6 :             return db_ != NULL;</span>
+<span class="lineNum">     120 </span><span class="lineCov">          8 :             return db_ != NULL;</span>
 <a name="121"><span class="lineNum">     121 </span>            :         }</a>
 <span class="lineNum">     122 </span>            : 
 <span class="lineNum">     123 </span><span class="lineNoCov">          0 :         void sqlite3_db::close()</span>
 <span class="lineNum">     124 </span>            :         {
-<span class="lineNum">     125 </span><span class="lineCov">         15 :             if (db_ == NULL) return;</span>
+<span class="lineNum">     125 </span><span class="lineCov">         17 :             if (db_ == NULL) return;</span>
 <span class="lineNum">     126 </span>            : 
-<span class="lineNum">     127 </span><span class="lineCov">          7 :             sqlite3_close(db_);</span>
-<span class="lineNum">     128 </span><span class="lineCov">          7 :             db_ = NULL;</span>
-<a name="129"><span class="lineNum">     129 </span><span class="lineCov">         18 :         }</span></a>
+<span class="lineNum">     127 </span><span class="lineCov">          9 :             sqlite3_close(db_);</span>
+<span class="lineNum">     128 </span><span class="lineCov">          9 :             db_ = NULL;</span>
+<a name="129"><span class="lineNum">     129 </span><span class="lineCov">         22 :         }</span></a>
 <span class="lineNum">     130 </span>            : 
 <span class="lineNum">     131 </span>            :         string sqlite3_db::last_error() const
 <span class="lineNum">     132 </span>            :         {
@@ -210,36 +210,39 @@
 <span class="lineNum">     140 </span>            : 
 <span class="lineNum">     141 </span>            :         long long sqlite3_db::last_insert_id() const
 <span class="lineNum">     142 </span>            :         {
-<span class="lineNum">     143 </span><span class="lineCov">         32 :             return sqlite3_last_insert_rowid(db_);</span>
+<span class="lineNum">     143 </span><span class="lineCov">         40 :             return sqlite3_last_insert_rowid(db_);</span>
 <a name="144"><span class="lineNum">     144 </span>            :         }</a>
 <span class="lineNum">     145 </span>            : 
 <span class="lineNum">     146 </span>            :         int sqlite3_db::last_number_of_changes() const
 <span class="lineNum">     147 </span>            :         {
-<span class="lineNum">     148 </span><span class="lineCov">         54 :             return sqlite3_changes(db_);</span>
+<span class="lineNum">     148 </span><span class="lineCov">         70 :             return sqlite3_changes(db_);</span>
 <a name="149"><span class="lineNum">     149 </span>            :         }</a>
 <span class="lineNum">     150 </span>            : 
 <span class="lineNum">     151 </span>            :         resultset sqlite3_db::execute(const string &amp;sql)
 <span class="lineNum">     152 </span>            :         {
 <span class="lineNum">     153 </span>            :             sqlite3_stmt *stmt;
 <span class="lineNum">     154 </span>            : 
-<span class="lineNum">     155 </span><span class="lineCov">         13 :             if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &amp;stmt, NULL) != SQLITE_OK)</span>
+<span class="lineNum">     155 </span><span class="lineCov">         18 :             if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &amp;stmt, NULL) != SQLITE_OK)</span>
 <span class="lineNum">     156 </span><span class="lineNoCov">          0 :                 throw database_exception(last_error());</span>
 <span class="lineNum">     157 </span>            : 
-<span class="lineNum">     158 </span><span class="lineCov">         26 :             resultset set(make_shared&lt;sqlite3_resultset&gt;(this, stmt));</span>
-<span class="lineNum">     159 </span>            : 
-<span class="lineNum">     160 </span><span class="lineCov">         13 :             set.next();</span>
-<span class="lineNum">     161 </span>            : 
-<span class="lineNum">     162 </span><span class="lineCov">         13 :             return set;</span>
-<a name="163"><span class="lineNum">     163 </span><span class="lineCov">         26 :         }</span></a>
+<span class="lineNum">     158 </span><span class="lineCov">         18 :             shared_ptr&lt;resultset_impl&gt; impl =</span>
+<span class="lineNum">     159 </span><span class="lineCov">         18 :                 make_shared&lt;sqlite3_resultset&gt;(this, shared_ptr&lt;sqlite3_stmt&gt;(stmt, sqlite3_stmt_delete()));</span>
+<span class="lineNum">     160 </span>            : 
+<span class="lineNum">     161 </span><span class="lineCov">         36 :             resultset set(impl);</span>
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span><span class="lineCov">         18 :             set.next();</span>
 <span class="lineNum">     164 </span>            : 
-<span class="lineNum">     165 </span>            :         shared_ptr&lt;statement&gt; sqlite3_db::create_statement()
-<span class="lineNum">     166 </span>            :         {
-<span class="lineNum">     167 </span><span class="lineCov">         75 :             return make_shared&lt;sqlite3_statement&gt;(this);</span>
-<span class="lineNum">     168 </span>            :         }
-<span class="lineNum">     169 </span>            :     }
-<span class="lineNum">     170 </span>            : }
-<span class="lineNum">     171 </span>            : 
-<span class="lineNum">     172 </span>            : #endif
+<span class="lineNum">     165 </span><span class="lineCov">         18 :             return set;</span>
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">         36 :         }</span></a>
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            :         shared_ptr&lt;statement&gt; sqlite3_db::create_statement()
+<span class="lineNum">     169 </span>            :         {
+<span class="lineNum">     170 </span><span class="lineCov">         94 :             return make_shared&lt;sqlite3_statement&gt;(this);</span>
+<span class="lineNum">     171 </span>            :         }
+<span class="lineNum">     172 </span>            :     }
+<span class="lineNum">     173 </span>            : }
+<span class="lineNum">     174 </span>            : 
+<span class="lineNum">     175 </span>            : #endif
 </pre>
       </td>
     </tr>

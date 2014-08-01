@@ -19,6 +19,7 @@ namespace arg3
         class sql_blob
         {
         public:
+            friend std::ostream &operator<<(std::ostream &out, const sql_blob &value);
             typedef void (*cleanup_method)(void *);
         private:
             const void *p_;
@@ -100,6 +101,8 @@ namespace arg3
 
             operator sql_blob() const;
 
+            operator bool() const;
+
             std::string to_string() const;
 
             void bind_to(bindable *obj, int index) const;
@@ -115,6 +118,8 @@ namespace arg3
         std::ostream &operator<<(std::ostream &out, const sql_value &value);
 
         std::ostream &operator<<(std::ostream &out, const sql_null_type &value);
+
+        std::ostream &operator<<(std::ostream &out, const sql_blob &value);
 
         inline bool operator==(const sql_null_type &a, const sql_null_type &b)
         {

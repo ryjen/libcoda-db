@@ -6,9 +6,34 @@ namespace arg3
 {
     namespace db
     {
+        void sqlite3_stmt_delete::operator()(sqlite3_stmt *p) const
+        {
+            sqlite3_finalize(p);
+        }
 
-        sqlite3_statement::sqlite3_statement(sqlite3_db *db) : db_(db), stmt_(NULL)
-        {}
+        sqlite3_statement::sqlite3_statement(sqlite3_db *db) : db_(db), stmt_(nullptr)
+        {
+
+        }
+
+        sqlite3_statement::sqlite3_statement(sqlite3_statement &&other) : db_(other.db_), stmt_(other.stmt_)
+        {
+            other.stmt_ = nullptr;
+            other.db_ = NULL;
+        }
+
+        sqlite3_statement &sqlite3_statement::operator=(sqlite3_statement && other)
+        {
+            db_ = other.db_;
+            stmt_ = other.stmt_;
+
+            other.stmt_ = nullptr;
+            other.db_ = NULL;
+
+            return *this;
+        }
+
+        sqlite3_statement::~sqlite3_statement() {}
 
         void sqlite3_statement::prepare(const string &sql)
         {
@@ -17,15 +42,19 @@ namespace arg3
                 throw database_exception("database not open");
             }
 
-            if (stmt_ != NULL) return;
+            if (is_valid()) return;
 
-            if (sqlite3_prepare_v2(db_->db_, sql.c_str(), -1, &stmt_, NULL) != SQLITE_OK)
+            sqlite3_stmt *temp;
+
+            if (sqlite3_prepare_v2(db_->db_, sql.c_str(), -1, &temp, NULL) != SQLITE_OK)
                 throw database_exception(db_->last_error());
+
+            stmt_ = shared_ptr<sqlite3_stmt>(temp, sqlite3_stmt_delete());
         }
 
         bool sqlite3_statement::is_valid() const
         {
-            return stmt_ != NULL;
+            return stmt_ != nullptr && stmt_;
         }
 
         int sqlite3_statement::last_number_of_changes()
@@ -40,44 +69,45 @@ namespace arg3
 
         sqlite3_statement &sqlite3_statement::bind(size_t index, int value)
         {
-            if (sqlite3_bind_int(stmt_, index, value) != SQLITE_OK)
+            if (sqlite3_bind_int(stmt_.get(), index, value) != SQLITE_OK)
                 throw binding_error(db_->last_error());
             return *this;
         }
         sqlite3_statement &sqlite3_statement::bind(size_t index, int64_t value)
         {
-            if (sqlite3_bind_int64(stmt_, index, value) != SQLITE_OK)
+            if (sqlite3_bind_int64(stmt_.get(), index, value) != SQLITE_OK)
                 throw binding_error(db_->last_error());
             return *this;
         }
         sqlite3_statement &sqlite3_statement::bind(size_t index, double value)
         {
-            if (sqlite3_bind_double(stmt_, index, value) != SQLITE_OK)
+            if (sqlite3_bind_double(stmt_.get(), index, value) != SQLITE_OK)
                 throw binding_error(db_->last_error());
             return *this;
         }
         sqlite3_statement &sqlite3_statement::bind(size_t index, const std::string &value, int len)
         {
-            if (sqlite3_bind_text(stmt_, index, value.c_str(), len, SQLITE_TRANSIENT) != SQLITE_OK)
+            if (sqlite3_bind_text(stmt_.get(), index, value.c_str(), len, SQLITE_TRANSIENT) != SQLITE_OK)
                 throw binding_error(db_->last_error());
             return *this;
         }
         sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_blob &value)
         {
-            if (sqlite3_bind_blob(stmt_, index, value.ptr(), value.size(), value.destructor() != NULL ? SQLITE_TRANSIENT : SQLITE_STATIC) != SQLITE_OK)
+            if (sqlite3_bind_blob(stmt_.get(), index, value.ptr(), value.size(), value.destructor() != NULL ? SQLITE_TRANSIENT : SQLITE_STATIC) != SQLITE_OK)
                 throw binding_error(db_->last_error());
             return *this;
         }
+
         sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_null_type &value)
         {
-            if (sqlite3_bind_null(stmt_, index) != SQLITE_OK)
+            if (sqlite3_bind_null(stmt_.get(), index) != SQLITE_OK)
                 throw binding_error(db_->last_error());
             return *this;
         }
 
         sqlite3_statement &sqlite3_statement::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
         {
-            if (sqlite3_bind_blob(stmt_, index, data, size, pFree) != SQLITE_OK)
+            if (sqlite3_bind_blob(stmt_.get(), index, data, size, pFree) != SQLITE_OK)
                 throw binding_error(db_->last_error());
             return *this;
         }
@@ -95,20 +125,17 @@ namespace arg3
 
         bool sqlite3_statement::result()
         {
-            return sqlite3_step(stmt_) == SQLITE_DONE;
+            return sqlite3_step(stmt_.get()) == SQLITE_DONE;
         }
 
         void sqlite3_statement::finish()
         {
-            if (sqlite3_finalize(stmt_) != SQLITE_OK)
-                throw database_exception(db_->last_error());
-
-            stmt_ = NULL;
+            stmt_ = nullptr;
         }
 
         void sqlite3_statement::reset()
         {
-            if (sqlite3_reset(stmt_) != SQLITE_OK)
+            if (sqlite3_reset(stmt_.get()) != SQLITE_OK)
                 throw database_exception(db_->last_error());
         }
 

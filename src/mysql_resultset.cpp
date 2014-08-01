@@ -13,28 +13,28 @@ namespace arg3
 {
     namespace db
     {
-
         extern string last_stmt_error(MYSQL_STMT *stmt);
 
-        mysql_resultset::mysql_resultset(mysql_db *db, MYSQL_RES *res) : res_(res), row_(NULL), db_(db)
+        void mysql_res_delete::operator()(MYSQL_RES *p) const
         {
-            //assert(res_ != NULL);
+            mysql_free_result(p);
+        }
+
+
+        mysql_resultset::mysql_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res) : res_(res), row_(NULL), db_(db)
+        {
         }
 
         mysql_resultset::mysql_resultset(mysql_resultset &&other) : res_(other.res_), row_(other.row_), db_(other.db_)
         {
             other.db_ = NULL;
-            other.res_ = NULL;
+            other.res_ = nullptr;
             other.row_ = NULL;
         }
 
         mysql_resultset::~mysql_resultset()
         {
-            if (res_ != NULL)
-            {
-                mysql_free_result(res_);
-                res_ = NULL;
-            }
+            res_ = nullptr;
         }
 
         mysql_resultset &mysql_resultset::operator=(mysql_resultset && other)
@@ -43,7 +43,7 @@ namespace arg3
             db_ = other.db_;
             row_ = other.row_;
             other.db_ = NULL;
-            other.res_ = NULL;
+            other.res_ = nullptr;
             other.row_ = NULL;
 
             return *this;
@@ -51,23 +51,30 @@ namespace arg3
 
         bool mysql_resultset::is_valid() const
         {
-            return res_ != NULL;
+            return res_ != nullptr;
         }
 
         bool mysql_resultset::next()
         {
             assert(db_ != NULL);
 
-            if (res_ == NULL || !db_->is_open())
+            if (!is_valid() || !db_->is_open())
                 return false;
 
-            bool value = (row_ = mysql_fetch_row(res_)) != NULL;
+            bool value = (row_ = mysql_fetch_row(res_.get())) != NULL;
 
             if (!value && !mysql_more_results(db_->db_))
             {
-                mysql_free_result(res_);
-                if ((res_ = mysql_use_result(db_->db_)) != NULL)
-                    value = (row_ = mysql_fetch_row(res_)) != NULL;
+                MYSQL_RES *temp;
+                if ((temp = mysql_use_result(db_->db_)) != NULL)
+                {
+                    res_ = shared_ptr<MYSQL_RES>(temp, mysql_res_delete());
+                    value = (row_ = mysql_fetch_row(temp)) != NULL;
+                }
+                else
+                {
+                    res_ = nullptr;
+                }
             }
 
             return value;
@@ -75,7 +82,7 @@ namespace arg3
 
         void mysql_resultset::reset()
         {
-            mysql_data_seek(res_, 0);
+            mysql_data_seek(res_.get(), 0);
         }
 
         row mysql_resultset::current_row()
@@ -83,27 +90,27 @@ namespace arg3
             return row(make_shared<mysql_row>(db_, res_, row_));
         }
 
-        size_t mysql_resultset::column_count() const
+        size_t mysql_resultset::size() const
         {
-            return mysql_num_fields(res_);
+            return mysql_num_fields(res_.get());
         }
 
 
         /* Statement version */
 
-        mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, MYSQL_STMT *stmt) : stmt_(stmt), metadata_(NULL), db_(db),
-            bindings_(nullptr), columnCount_(0), status_(-1)
+        mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, shared_ptr<MYSQL_STMT> stmt) : stmt_(stmt), metadata_(NULL), db_(db),
+            bindings_(nullptr), status_(-1)
         {
-            assert(stmt_ != NULL);
+            assert(stmt_ != nullptr);
             assert(db_ != NULL);
         }
 
         mysql_stmt_resultset::mysql_stmt_resultset(mysql_stmt_resultset &&other) : stmt_(other.stmt_), metadata_(other.metadata_),
             db_(other.db_),
-            bindings_(other.bindings_), columnCount_(other.columnCount_), status_(other.status_)
+            bindings_(other.bindings_), status_(other.status_)
         {
             other.db_ = NULL;
-            other.stmt_ = NULL;
+            other.stmt_ = nullptr;
             other.bindings_ = nullptr;
             other.metadata_ = NULL;
         }
@@ -123,7 +130,6 @@ namespace arg3
             db_ = other.db_;
             metadata_ = other.metadata_;
             bindings_ = other.bindings_;
-            columnCount_ = other.columnCount_;
             status_ = other.status_;
             other.db_ = NULL;
             other.bindings_ = NULL;
@@ -134,37 +140,37 @@ namespace arg3
 
         void mysql_stmt_resultset::prepare_results()
         {
-            if (stmt_ == NULL || bindings_ != NULL || status_ != -1)
+            if (stmt_ == nullptr || !stmt_ || bindings_ != NULL || status_ != -1)
                 return;
 
-            if ((status_ = mysql_stmt_execute(stmt_)))
+            if ((status_ = mysql_stmt_execute(stmt_.get())))
             {
-                throw database_exception(last_stmt_error(stmt_));
+                throw database_exception(last_stmt_error(stmt_.get()));
             }
 
             // get information about the results
-            metadata_ = mysql_stmt_result_metadata(stmt_);
+            metadata_ = mysql_stmt_result_metadata(stmt_.get());
 
             if (metadata_ == NULL)
                 throw database_exception("No result data found.");
 
-            columnCount_ = mysql_num_fields(metadata_);
+            int size = mysql_num_fields(metadata_);
 
             auto fields = mysql_fetch_fields(metadata_);
 
-            bindings_ = make_shared<mysql_binding>(fields, columnCount_);
+            bindings_ = make_shared<mysql_binding>(fields, size);
 
-            bindings_->bind_result(stmt_);
+            bindings_->bind_result(stmt_.get());
         }
 
         bool mysql_stmt_resultset::is_valid() const
         {
-            return stmt_ != NULL;
+            return stmt_ != nullptr && stmt_;
         }
 
         bool mysql_stmt_resultset::next()
         {
-            if (stmt_ == NULL)
+            if (!is_valid())
                 return false;
 
             if (status_ == -1)
@@ -175,10 +181,10 @@ namespace arg3
                     return false;
             }
 
-            int res = mysql_stmt_fetch(stmt_);
+            int res = mysql_stmt_fetch(stmt_.get());
 
             if (res == 1 || res == MYSQL_DATA_TRUNCATED)
-                throw database_exception(last_stmt_error(stmt_));
+                throw database_exception(last_stmt_error(stmt_.get()));
 
             if (res == MYSQL_NO_DATA)
             {
@@ -191,10 +197,10 @@ namespace arg3
 
         void mysql_stmt_resultset::reset()
         {
-            assert(stmt_ != NULL);
+            assert(is_valid());
 
-            if (mysql_stmt_reset(stmt_))
-                throw database_exception(last_stmt_error(stmt_));
+            if (mysql_stmt_reset(stmt_.get()))
+                throw database_exception(last_stmt_error(stmt_.get()));
 
             status_ = -1;
         }
@@ -208,12 +214,112 @@ namespace arg3
             return row(make_shared<mysql_stmt_row>(db_, metadata_, bindings_ ));
         }
 
-        size_t mysql_stmt_resultset::column_count() const
+        size_t mysql_stmt_resultset::size() const
         {
-            assert(stmt_ != NULL);
-            return mysql_stmt_field_count(stmt_);
+            assert(is_valid());
+            return mysql_stmt_field_count(stmt_.get());
         }
 
+
+        /* cached version */
+
+
+        mysql_cached_resultset::mysql_cached_resultset(shared_ptr<MYSQL_STMT> stmt) : currentRow_(0)
+        {
+            assert(is_valid());
+
+            if (mysql_stmt_execute(stmt.get()))
+            {
+                throw database_exception(last_stmt_error(stmt.get()));
+            }
+
+            // get information about the results
+            MYSQL_RES *metadata_ = mysql_stmt_result_metadata(stmt.get());
+
+            if (metadata_ == NULL)
+                throw database_exception("No result data found.");
+
+            int size_ = mysql_num_fields(metadata_);
+
+            auto fields = mysql_fetch_fields(metadata_);
+
+            mysql_binding bindings(fields, size_);
+
+            for (int i = 0; i < size_; i++)
+            {
+                rows_.push_back(make_shared<mysql_cached_row>(metadata_, bindings.get(i)));
+            }
+
+
+        }
+        mysql_cached_resultset::mysql_cached_resultset(mysql_db *db, MYSQL_RES *res) : currentRow_(0)
+        {
+            MYSQL_ROW row = mysql_fetch_row(res);
+
+            if (row != NULL)
+            {
+                rows_.push_back(make_shared<mysql_cached_row>(res, row));
+
+                while (mysql_more_results(db->db_) && (row = mysql_fetch_row(res)) != NULL)
+                {
+                    rows_.push_back(make_shared<mysql_cached_row>(res, row));
+                }
+            }
+            else
+            {
+                while ((res = mysql_use_result(db->db_)) != NULL && (row = mysql_fetch_row(res)))
+                {
+                    rows_.push_back(make_shared<mysql_cached_row>(res, row));
+                }
+            }
+        }
+        mysql_cached_resultset::mysql_cached_resultset(mysql_cached_resultset &&other) : rows_(std::move(other.rows_))
+        {
+            other.rows_.clear();
+        }
+
+        mysql_cached_resultset::~mysql_cached_resultset()
+        {
+        }
+
+        mysql_cached_resultset &mysql_cached_resultset::operator=(mysql_cached_resultset && other)
+        {
+            rows_ = std::move(other.rows_);
+
+            return *this;
+        }
+
+        bool mysql_cached_resultset::is_valid() const
+        {
+            return true;
+        }
+
+        bool mysql_cached_resultset::next()
+        {
+            if (rows_.empty())
+            {
+                return false;
+            }
+
+
+            return ++currentRow_ < rows_.size();
+
+        }
+
+        void mysql_cached_resultset::reset()
+        {
+            currentRow_ = 0;
+        }
+
+        row mysql_cached_resultset::current_row()
+        {
+            return row(rows_[currentRow_]);
+        }
+
+        size_t mysql_cached_resultset::size() const
+        {
+            return rows_.size();
+        }
     }
 }
 

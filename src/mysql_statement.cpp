@@ -12,7 +12,15 @@ namespace arg3
     namespace db
     {
 
-        mysql_statement::mysql_statement(mysql_db *db) : db_(db), stmt_(NULL)
+        struct mysql_stmt_delete
+        {
+            void operator()(MYSQL_STMT *p) const
+            {
+                mysql_stmt_close(p);
+            }
+        };
+
+        mysql_statement::mysql_statement(mysql_db *db) : db_(db), bindings_(), stmt_(nullptr)
         {}
 
         mysql_statement::mysql_statement(mysql_statement &&other)
@@ -21,7 +29,7 @@ namespace arg3
             bindings_ = other.bindings_;
             stmt_ = other.stmt_;
             other.db_ = NULL;
-            other.stmt_ = NULL;
+            other.stmt_ = nullptr;
         }
 
         mysql_statement &mysql_statement::operator=(mysql_statement && other)
@@ -31,7 +39,7 @@ namespace arg3
             stmt_ = other.stmt_;
 
             other.db_ = NULL;
-            other.stmt_ = NULL;
+            other.stmt_ = nullptr;
 
             return *this;
         }
@@ -48,19 +56,15 @@ namespace arg3
                 throw database_exception("database is not open");
             }
 
-            if (stmt_ != NULL)
-            {
-                return;
-            }
-            stmt_ = mysql_stmt_init(db_->db_);
+            stmt_ = shared_ptr<MYSQL_STMT>(mysql_stmt_init(db_->db_), mysql_stmt_delete());
 
-            if (mysql_stmt_prepare(stmt_, sql.c_str(), sql.length()))
+            if (mysql_stmt_prepare(stmt_.get(), sql.c_str(), sql.length()))
                 throw database_exception(db_->last_error());
         }
 
         bool mysql_statement::is_valid() const
         {
-            return stmt_ != NULL;
+            return stmt_ != nullptr && stmt_;
         }
 
         /**
@@ -117,16 +121,16 @@ namespace arg3
 
         resultset mysql_statement::results()
         {
-            bindings_.bind_params(stmt_);
+            bindings_.bind_params(stmt_.get());
 
             return resultset(make_shared<mysql_stmt_resultset>(db_, stmt_));
         }
 
         bool mysql_statement::result()
         {
-            bindings_.bind_params(stmt_);
+            bindings_.bind_params(stmt_.get());
 
-            if (!stmt_ || mysql_stmt_execute(stmt_))
+            if (!stmt_ || mysql_stmt_execute(stmt_.get()))
             {
                 return false;
             }
@@ -135,12 +139,12 @@ namespace arg3
 
         int mysql_statement::last_number_of_changes()
         {
-            return mysql_stmt_affected_rows(stmt_);
+            return mysql_stmt_affected_rows(stmt_.get());
         }
 
         string mysql_statement::last_error()
         {
-            return last_stmt_error(stmt_);
+            return last_stmt_error(stmt_.get());
         }
 
         void mysql_statement::finish()
@@ -149,11 +153,11 @@ namespace arg3
 
             if (stmt_ != NULL)
             {
-                mysql_stmt_free_result(stmt_);
+                mysql_stmt_free_result(stmt_.get());
 
-                mysql_stmt_close(stmt_);
+                //mysql_stmt_close(stmt_.get());
 
-                stmt_ = NULL;
+                stmt_ = nullptr;
             }
 
         }
@@ -162,7 +166,7 @@ namespace arg3
         {
             bindings_.reset();
 
-            if (!stmt_ || mysql_stmt_reset(stmt_))
+            if (!stmt_ || mysql_stmt_reset(stmt_.get()))
                 throw database_exception(last_error());
         }
 
@@ -170,7 +174,7 @@ namespace arg3
         {
             if (stmt_ == NULL) return 0;
 
-            return mysql_stmt_insert_id(stmt_);
+            return mysql_stmt_insert_id(stmt_.get());
         }
     }
 }

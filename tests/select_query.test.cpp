@@ -84,6 +84,23 @@ Context(select_query_test)
         Assert::That(to_string(moved2), Equals(to_string(other)));
     }
 
+    resultset get_results()
+    {
+        select_query query(testdb, "users");
+
+        return query.execute();
+    }
+    Spec(validity)
+    {
+        auto rs = get_results();
+
+        for (auto row : rs)
+        {
+            Assert::That(row.is_valid(), Equals(true));
+        }
+        Assert::That(rs.is_valid(), Equals(true));
+    }
+
     Spec(where_test)
     {
         auto query = select_query(testdb, "users");

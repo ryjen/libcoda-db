@@ -32,7 +32,6 @@ namespace arg3
             virtual size_t size() const = 0;
 
             virtual bool is_valid() const = 0;
-
         };
 
         /*!
@@ -44,8 +43,16 @@ namespace arg3
         protected:
             shared_ptr<RowType> row_;
             int position_;
+            NonConst currentValue_;
+            void set_current_value(size_t index)
+            {
+                assert(row_ != nullptr);
+
+                if (index < row_->size())
+                    currentValue_ = row_->column(index);
+            }
         public:
-            row_iterator() : row_(NULL),
+            row_iterator() : row_(nullptr),
                 position_(-1)
             {
             }
@@ -68,45 +75,37 @@ namespace arg3
 
             row_iterator &operator=(const row_iterator &other)
             {
-                if (this != &other)
-                {
-                    row_ = other.row_;
-                    position_ = other.position_;
-                }
+                row_ = other.row_;
+                position_ = other.position_;
+
                 return this;
             }
 
             row_iterator &operator=(row_iterator && other)
             {
-                if (this != &other)
-                {
-                    row_ = std::move(other.row_);
-                    position_ = other.position_;
-                    other.row_ = nullptr;
-                }
+                row_ = std::move(other.row_);
+                position_ = other.position_;
+                other.row_ = nullptr;
+
                 return this;
             }
 
             ValueType operator*()
             {
-                return operator[](position_);
+                set_current_value(position_);
+                return currentValue_;
             }
 
             ValueType *operator->()
             {
-                static NonConst operator_pointer;
-
-                operator_pointer = operator[](position_);
-
-                return &operator_pointer;
+                set_current_value(position_);
+                return &currentValue_;
             }
 
             ValueType operator[](size_t nPosition)
             {
-
-                assert(row_ != NULL);
-
-                return row_->column(nPosition);
+                set_current_value(nPosition);
+                return currentValue_;
             }
 
             row_iterator &operator++()
@@ -198,6 +197,7 @@ namespace arg3
 
             string name() const
             {
+                assert(row_ != nullptr);
                 return row_->column_name(position_);
             }
         };
@@ -210,7 +210,6 @@ namespace arg3
         {
         private:
             shared_ptr<row_impl> impl_;
-
         public:
             typedef row_iterator<column, column, row_impl> iterator;
             typedef row_iterator<const column, column, const row_impl> const_iterator;

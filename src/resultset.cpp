@@ -37,7 +37,7 @@ namespace arg3
 
         bool resultset::is_valid() const
         {
-            return impl_->is_valid();
+            return impl_ != nullptr && impl_->is_valid();
         }
 
         row resultset::current_row()
@@ -56,9 +56,9 @@ namespace arg3
             impl_->reset();
         }
 
-        size_t resultset::column_count() const
+        size_t resultset::size() const
         {
-            return impl_->column_count();
+            return impl_->size();
         }
 
         resultset::iterator resultset::begin()
@@ -80,6 +80,10 @@ namespace arg3
         resultset_iterator::resultset_iterator(shared_ptr<resultset_impl> rset, int position) : rs_(rset), pos_(position), value_(rset->current_row())
         {
         }
+
+        resultset_iterator::resultset_iterator(const resultset_iterator &other) : rs_(other.rs_), pos_(other.pos_), value_(other.value_)
+        {}
+
 
         resultset_iterator::resultset_iterator(resultset_iterator &&other) : rs_(std::move(other.rs_)), pos_(other.pos_),
             value_(std::move(other.value_))

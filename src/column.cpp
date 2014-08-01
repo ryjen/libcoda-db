@@ -110,5 +110,12 @@ namespace arg3
         {
             return to_double();
         }
+
+        string column::name() const
+        {
+            assert(impl_ != nullptr);
+
+            return impl_->name();
+        }
     }
 }
