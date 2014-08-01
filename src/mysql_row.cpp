@@ -13,15 +13,15 @@ namespace arg3
     namespace db
     {
 
-        mysql_row::mysql_row(mysql_db *db, MYSQL_RES *res, MYSQL_ROW row) : row_impl(), row_(row), res_(res), db_(db)
+        mysql_row::mysql_row(mysql_db *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row) : row_impl(), row_(row), res_(res), db_(db)
         {
             assert(db_ != NULL);
 
             assert(row_ != NULL);
 
-            assert(res_ != NULL);
+            assert(res_ != nullptr);
 
-            size_ = mysql_num_fields(res);
+            size_ = mysql_num_fields(res.get());
         }
 
         mysql_row::mysql_row(const mysql_row &other) : row_impl(other), row_(other.row_), res_(other.res_), db_(other.db_), size_(other.size_)
@@ -31,7 +31,7 @@ namespace arg3
         {
             other.row_ = NULL;
             other.db_ = NULL;
-            other.res_ = NULL;
+            other.res_ = nullptr;
         }
 
         mysql_row::~mysql_row() {}
@@ -54,7 +54,7 @@ namespace arg3
             size_ = other.size_;
             other.row_ = NULL;
             other.db_ = NULL;
-            other.res_ = NULL;
+            other.res_ = nullptr;
 
             return *this;
         }
@@ -72,11 +72,11 @@ namespace arg3
         {
             assert(!name.empty());
 
-            assert(res_ != NULL);
+            assert(res_ != nullptr);
 
             for (size_t i = 0; i < size_; i++)
             {
-                auto field = mysql_fetch_field_direct(res_, i);
+                auto field = mysql_fetch_field_direct(res_.get(), i);
 
                 if (name == field->name)
                 {
@@ -90,9 +90,9 @@ namespace arg3
         {
             assert(nPosition < size());
 
-            assert(res_ != NULL);
+            assert(res_ != nullptr);
 
-            auto field = mysql_fetch_field_direct(res_, nPosition);
+            auto field = mysql_fetch_field_direct(res_.get(), nPosition);
 
             return field->name;
         }
@@ -104,7 +104,7 @@ namespace arg3
 
         bool mysql_row::is_valid() const
         {
-            return res_ != NULL && row_ != NULL;
+            return res_ != nullptr && res_ && row_ != NULL;
         }
 
 

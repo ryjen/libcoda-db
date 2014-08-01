@@ -26,11 +26,11 @@ namespace arg3
             friend class mysql_resultset;
         private:
             MYSQL_ROW row_;
-            MYSQL_RES *res_;
+            shared_ptr<MYSQL_RES> res_;
             mysql_db *db_;
             size_t size_;
         public:
-            mysql_row(mysql_db *db, MYSQL_RES *res, MYSQL_ROW row);
+            mysql_row(mysql_db *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row);
             virtual ~mysql_row();
             mysql_row(const mysql_row &other);
             mysql_row(mysql_row &&other);

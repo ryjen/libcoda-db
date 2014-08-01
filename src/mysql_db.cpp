@@ -200,7 +200,7 @@ namespace arg3
                 throw database_exception(last_error());
             }
 
-            return resultset(make_shared<mysql_resultset>(this, res));
+            return resultset(make_shared<mysql_resultset>(this, shared_ptr<MYSQL_RES>(res, mysql_res_delete())));
         }
 
         shared_ptr<statement> mysql_db::create_statement()

@@ -37,7 +37,7 @@ namespace arg3
 
         bool resultset::is_valid() const
         {
-            return impl_->is_valid();
+            return impl_ != nullptr && impl_->is_valid();
         }
 
         row resultset::current_row()

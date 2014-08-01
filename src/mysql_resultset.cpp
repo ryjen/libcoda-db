@@ -13,28 +13,28 @@ namespace arg3
 {
     namespace db
     {
-
         extern string last_stmt_error(MYSQL_STMT *stmt);
 
-        mysql_resultset::mysql_resultset(mysql_db *db, MYSQL_RES *res) : res_(res), row_(NULL), db_(db)
+        void mysql_res_delete::operator()(MYSQL_RES *p) const
         {
-            //assert(res_ != NULL);
+            mysql_free_result(p);
+        }
+
+
+        mysql_resultset::mysql_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res) : res_(res), row_(NULL), db_(db)
+        {
         }
 
         mysql_resultset::mysql_resultset(mysql_resultset &&other) : res_(other.res_), row_(other.row_), db_(other.db_)
         {
             other.db_ = NULL;
-            other.res_ = NULL;
+            other.res_ = nullptr;
             other.row_ = NULL;
         }
 
         mysql_resultset::~mysql_resultset()
         {
-            if (res_ != NULL)
-            {
-                mysql_free_result(res_);
-                res_ = NULL;
-            }
+            res_ = nullptr;
         }
 
         mysql_resultset &mysql_resultset::operator=(mysql_resultset && other)
@@ -43,7 +43,7 @@ namespace arg3
             db_ = other.db_;
             row_ = other.row_;
             other.db_ = NULL;
-            other.res_ = NULL;
+            other.res_ = nullptr;
             other.row_ = NULL;
 
             return *this;
@@ -51,23 +51,30 @@ namespace arg3
 
         bool mysql_resultset::is_valid() const
         {
-            return res_ != NULL;
+            return res_ != nullptr;
         }
 
         bool mysql_resultset::next()
         {
             assert(db_ != NULL);
 
-            if (res_ == NULL || !db_->is_open())
+            if (!is_valid() || !db_->is_open())
                 return false;
 
-            bool value = (row_ = mysql_fetch_row(res_)) != NULL;
+            bool value = (row_ = mysql_fetch_row(res_.get())) != NULL;
 
             if (!value && !mysql_more_results(db_->db_))
             {
-                mysql_free_result(res_);
-                if ((res_ = mysql_use_result(db_->db_)) != NULL)
-                    value = (row_ = mysql_fetch_row(res_)) != NULL;
+                MYSQL_RES *temp;
+                if ((temp = mysql_use_result(db_->db_)) != NULL)
+                {
+                    res_ = shared_ptr<MYSQL_RES>(temp, mysql_res_delete());
+                    value = (row_ = mysql_fetch_row(temp)) != NULL;
+                }
+                else
+                {
+                    res_ = nullptr;
+                }
             }
 
             return value;
@@ -75,7 +82,7 @@ namespace arg3
 
         void mysql_resultset::reset()
         {
-            mysql_data_seek(res_, 0);
+            mysql_data_seek(res_.get(), 0);
         }
 
         row mysql_resultset::current_row()
@@ -85,7 +92,7 @@ namespace arg3
 
         size_t mysql_resultset::size() const
         {
-            return mysql_num_fields(res_);
+            return mysql_num_fields(res_.get());
         }
 
 

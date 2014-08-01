@@ -22,11 +22,11 @@ namespace arg3
         private:
             string name_;
             MYSQL_ROW value_;
-            MYSQL_RES *res_;
+            shared_ptr<MYSQL_RES> res_;
             size_t index_;
         public:
 
-            mysql_column(MYSQL_RES *res, MYSQL_ROW pValue, size_t index);
+            mysql_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
             mysql_column(const mysql_column &other);
             mysql_column(mysql_column &&other);
             virtual ~mysql_column();

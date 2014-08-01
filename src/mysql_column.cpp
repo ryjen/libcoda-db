@@ -11,10 +11,10 @@ namespace arg3
     namespace db
     {
 
-        mysql_column::mysql_column(MYSQL_RES *res, MYSQL_ROW pValue, size_t index) : value_(pValue), res_(res), index_(index)
+        mysql_column::mysql_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index) : value_(pValue), res_(res), index_(index)
         {
             assert(value_ != NULL);
-            assert(res_ != NULL);
+            assert(res_ != nullptr);
         }
 
         mysql_column::mysql_column(const mysql_column &other) : value_(other.value_), res_(other.res_), index_(other.index_) {}
@@ -22,7 +22,7 @@ namespace arg3
         mysql_column::mysql_column(mysql_column &&other) : value_(other.value_), res_(other.res_), index_(other.index_)
         {
             other.value_ = NULL;
-            other.res_ = NULL;
+            other.res_ = nullptr;
         }
 
         mysql_column::~mysql_column() {}
@@ -43,7 +43,7 @@ namespace arg3
             res_ = other.res_;
 
             other.value_ = NULL;
-            other.res_ = NULL;
+            other.res_ = nullptr;
 
             return *this;
         }
@@ -55,9 +55,9 @@ namespace arg3
 
         sql_blob mysql_column::to_blob() const
         {
-            assert(res_ != NULL && value_ != NULL);
+            assert(res_ != nullptr && value_ != NULL);
 
-            auto lengths = mysql_fetch_lengths(res_);
+            auto lengths = mysql_fetch_lengths(res_.get());
 
             void *buf = calloc(1, lengths[index_]);
             memmove(buf, value_[index_], lengths[index_]);
@@ -85,7 +85,7 @@ namespace arg3
 
         sql_value mysql_column::to_value() const
         {
-            auto field = mysql_fetch_field_direct(res_, index_);
+            auto field = mysql_fetch_field_direct(res_.get(), index_);
 
             switch (field->type)
             {
@@ -107,9 +107,9 @@ namespace arg3
 
         int mysql_column::type() const
         {
-            assert(res_ != NULL);
+            assert(res_ != nullptr);
 
-            auto field = mysql_fetch_field_direct(res_, index_);
+            auto field = mysql_fetch_field_direct(res_.get(), index_);
 
             return field->type;
         }
@@ -128,7 +128,7 @@ namespace arg3
 
         string mysql_column::name() const
         {
-            auto field = mysql_fetch_field_direct(res_, index_);
+            auto field = mysql_fetch_field_direct(res_.get(), index_);
 
             return field->name;
         }

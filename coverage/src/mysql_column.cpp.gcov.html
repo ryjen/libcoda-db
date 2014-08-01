@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-31</td>
+            <td class="headerValue">2014-08-01</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">16</td>
@@ -81,21 +81,21 @@
 <span class="lineNum">      11 </span>            :     namespace db
 <a name="12"><span class="lineNum">      12 </span>            :     {</a>
 <span class="lineNum">      13 </span>            : 
-<span class="lineNum">      14 </span>            :         mysql_column::mysql_column(MYSQL_RES *res, MYSQL_ROW pValue, size_t index) : value_(pValue), res_(res), index_(index)
-<span class="lineNum">      15 </span><span class="lineCov">        105 :         {</span>
-<span class="lineNum">      16 </span><span class="lineCov">        210 :             assert(value_ != NULL);</span>
-<span class="lineNum">      17 </span><span class="lineCov">        210 :             assert(res_ != NULL);</span>
-<a name="18"><span class="lineNum">      18 </span><span class="lineCov">        210 :         }</span></a>
+<span class="lineNum">      14 </span>            :         mysql_column::mysql_column(shared_ptr&lt;MYSQL_RES&gt; res, MYSQL_ROW pValue, size_t index) : value_(pValue), res_(res), index_(index)
+<span class="lineNum">      15 </span><span class="lineCov">        120 :         {</span>
+<span class="lineNum">      16 </span><span class="lineCov">        240 :             assert(value_ != NULL);</span>
+<span class="lineNum">      17 </span><span class="lineCov">        240 :             assert(res_ != nullptr);</span>
+<a name="18"><span class="lineNum">      18 </span><span class="lineCov">        240 :         }</span></a>
 <span class="lineNum">      19 </span>            : 
 <a name="20"><span class="lineNum">      20 </span><span class="lineNoCov">          0 :         mysql_column::mysql_column(const mysql_column &amp;other) : value_(other.value_), res_(other.res_), index_(other.index_) {}</span></a>
 <span class="lineNum">      21 </span>            : 
 <span class="lineNum">      22 </span>            :         mysql_column::mysql_column(mysql_column &amp;&amp;other) : value_(other.value_), res_(other.res_), index_(other.index_)
 <span class="lineNum">      23 </span><span class="lineNoCov">          0 :         {</span>
 <span class="lineNum">      24 </span><span class="lineNoCov">          0 :             other.value_ = NULL;</span>
-<span class="lineNum">      25 </span><span class="lineNoCov">          0 :             other.res_ = NULL;</span>
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :             other.res_ = nullptr;</span>
 <a name="26"><span class="lineNum">      26 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      27 </span>            : 
-<a name="28"><span class="lineNum">      28 </span><span class="lineCov">        210 :         mysql_column::~mysql_column() {}</span></a>
+<a name="28"><span class="lineNum">      28 </span><span class="lineCov">        240 :         mysql_column::~mysql_column() {}</span></a>
 <span class="lineNum">      29 </span>            : 
 <span class="lineNum">      30 </span>            :         mysql_column &amp;mysql_column::operator=(const mysql_column &amp;other)
 <span class="lineNum">      31 </span>            :         {
@@ -113,7 +113,7 @@
 <span class="lineNum">      43 </span><span class="lineNoCov">          0 :             res_ = other.res_;</span>
 <span class="lineNum">      44 </span>            : 
 <span class="lineNum">      45 </span><span class="lineNoCov">          0 :             other.value_ = NULL;</span>
-<span class="lineNum">      46 </span><span class="lineNoCov">          0 :             other.res_ = NULL;</span>
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :             other.res_ = nullptr;</span>
 <span class="lineNum">      47 </span>            : 
 <span class="lineNum">      48 </span><span class="lineNoCov">          0 :             return *this;</span>
 <a name="49"><span class="lineNum">      49 </span>            :         }</a>
@@ -125,9 +125,9 @@
 <span class="lineNum">      55 </span>            : 
 <span class="lineNum">      56 </span>            :         sql_blob mysql_column::to_blob() const
 <span class="lineNum">      57 </span>            :         {
-<span class="lineNum">      58 </span><span class="lineNoCov">          0 :             assert(res_ != NULL &amp;&amp; value_ != NULL);</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :             assert(res_ != nullptr &amp;&amp; value_ != NULL);</span>
 <span class="lineNum">      59 </span>            : 
-<span class="lineNum">      60 </span><span class="lineNoCov">          0 :             auto lengths = mysql_fetch_lengths(res_);</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :             auto lengths = mysql_fetch_lengths(res_.get());</span>
 <span class="lineNum">      61 </span>            : 
 <span class="lineNum">      62 </span><span class="lineNoCov">          0 :             void *buf = calloc(1, lengths[index_]);</span>
 <span class="lineNum">      63 </span><span class="lineNoCov">          0 :             memmove(buf, value_[index_], lengths[index_]);</span>
@@ -155,7 +155,7 @@
 <span class="lineNum">      85 </span>            : 
 <span class="lineNum">      86 </span>            :         sql_value mysql_column::to_value() const
 <span class="lineNum">      87 </span>            :         {
-<span class="lineNum">      88 </span><span class="lineNoCov">          0 :             auto field = mysql_fetch_field_direct(res_, index_);</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :             auto field = mysql_fetch_field_direct(res_.get(), index_);</span>
 <span class="lineNum">      89 </span>            : 
 <span class="lineNum">      90 </span><span class="lineNoCov">          0 :             switch (field-&gt;type)</span>
 <span class="lineNum">      91 </span>            :             {
@@ -177,28 +177,28 @@
 <span class="lineNum">     107 </span>            : 
 <span class="lineNum">     108 </span>            :         int mysql_column::type() const
 <span class="lineNum">     109 </span>            :         {
-<span class="lineNum">     110 </span><span class="lineNoCov">          0 :             assert(res_ != NULL);</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :             assert(res_ != nullptr);</span>
 <span class="lineNum">     111 </span>            : 
-<span class="lineNum">     112 </span><span class="lineNoCov">          0 :             auto field = mysql_fetch_field_direct(res_, index_);</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :             auto field = mysql_fetch_field_direct(res_.get(), index_);</span>
 <span class="lineNum">     113 </span>            : 
 <span class="lineNum">     114 </span><span class="lineNoCov">          0 :             return field-&gt;type;</span>
 <a name="115"><span class="lineNum">     115 </span>            :         }</a>
 <span class="lineNum">     116 </span>            : 
 <span class="lineNum">     117 </span>            :         string mysql_column::to_string() const
 <span class="lineNum">     118 </span>            :         {
-<span class="lineNum">     119 </span><span class="lineCov">        210 :             assert(value_ != NULL);</span>
+<span class="lineNum">     119 </span><span class="lineCov">        240 :             assert(value_ != NULL);</span>
 <span class="lineNum">     120 </span>            : 
-<span class="lineNum">     121 </span><span class="lineCov">        105 :             auto textValue = value_[index_];</span>
+<span class="lineNum">     121 </span><span class="lineCov">        120 :             auto textValue = value_[index_];</span>
 <span class="lineNum">     122 </span>            : 
-<span class="lineNum">     123 </span><span class="lineCov">        105 :             if (textValue == NULL)</span>
+<span class="lineNum">     123 </span><span class="lineCov">        120 :             if (textValue == NULL)</span>
 <span class="lineNum">     124 </span><span class="lineNoCov">          0 :                 return string();</span>
 <span class="lineNum">     125 </span>            : 
-<span class="lineNum">     126 </span><span class="lineCov">        105 :             return textValue;</span>
-<a name="127"><span class="lineNum">     127 </span><span class="lineCov">        105 :         }</span></a>
+<span class="lineNum">     126 </span><span class="lineCov">        120 :             return textValue;</span>
+<a name="127"><span class="lineNum">     127 </span><span class="lineCov">        120 :         }</span></a>
 <span class="lineNum">     128 </span>            : 
 <span class="lineNum">     129 </span>            :         string mysql_column::name() const
 <span class="lineNum">     130 </span>            :         {
-<span class="lineNum">     131 </span><span class="lineNoCov">          0 :             auto field = mysql_fetch_field_direct(res_, index_);</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :             auto field = mysql_fetch_field_direct(res_.get(), index_);</span>
 <span class="lineNum">     132 </span>            : 
 <span class="lineNum">     133 </span><span class="lineNoCov">          0 :             return field-&gt;name;</span>
 <span class="lineNum">     134 </span>            :         }

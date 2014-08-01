@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-31</td>
+            <td class="headerValue">2014-08-01</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -92,11 +92,11 @@
 <span class="lineNum">      22 </span>            :         private:
 <span class="lineNum">      23 </span>            :             string name_;
 <span class="lineNum">      24 </span>            :             MYSQL_ROW value_;
-<span class="lineNum">      25 </span>            :             MYSQL_RES *res_;
+<span class="lineNum">      25 </span>            :             shared_ptr&lt;MYSQL_RES&gt; res_;
 <span class="lineNum">      26 </span>            :             size_t index_;
 <span class="lineNum">      27 </span>            :         public:
 <span class="lineNum">      28 </span>            : 
-<span class="lineNum">      29 </span>            :             mysql_column(MYSQL_RES *res, MYSQL_ROW pValue, size_t index);
+<span class="lineNum">      29 </span>            :             mysql_column(shared_ptr&lt;MYSQL_RES&gt; res, MYSQL_ROW pValue, size_t index);
 <span class="lineNum">      30 </span>            :             mysql_column(const mysql_column &amp;other);
 <span class="lineNum">      31 </span>            :             mysql_column(mysql_column &amp;&amp;other);
 <span class="lineNum">      32 </span>            :             virtual ~mysql_column();

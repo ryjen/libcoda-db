@@ -27,11 +27,11 @@ namespace arg3
             friend class sqldb;
             friend class resultset_iterator;
         private:
-            MYSQL_RES *res_;
+            shared_ptr<MYSQL_RES> res_;
             MYSQL_ROW row_;
             mysql_db *db_;
         public:
-            mysql_resultset(mysql_db *db, MYSQL_RES *res);
+            mysql_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res);
 
             mysql_resultset(const mysql_resultset &other) = delete;
             mysql_resultset(mysql_resultset &&other);
@@ -114,6 +114,12 @@ namespace arg3
 
             size_t size() const;
         };
+
+        struct mysql_res_delete
+        {
+            void operator()(MYSQL_RES *p) const;
+        };
+
     }
 }
 
