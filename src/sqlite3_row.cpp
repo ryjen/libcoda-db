@@ -79,7 +79,6 @@ namespace arg3
 
         /* cached version */
 
-
         sqlite3_cached_row::sqlite3_cached_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt)
         {
             assert(db != NULL);

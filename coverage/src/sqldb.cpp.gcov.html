@@ -31,18 +31,18 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">31</td>
-            <td class="headerCovTableEntry">53</td>
-            <td class="headerCovTableEntryLo">58.5 %</td>
+            <td class="headerCovTableEntry">30</td>
+            <td class="headerCovTableEntry">50</td>
+            <td class="headerCovTableEntryLo">60.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-26</td>
+            <td class="headerValue">2014-07-31</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">5</td>
-            <td class="headerCovTableEntry">39</td>
-            <td class="headerCovTableEntryLo">12.8 %</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">37</td>
+            <td class="headerCovTableEntryLo">10.8 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -147,7 +147,7 @@
 <span class="lineNum">      77 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;unknown database &quot; + uri.value);</span>
 <a name="78"><span class="lineNum">      78 </span><span class="lineCov">          2 :         }</span></a>
 <span class="lineNum">      79 </span>            : 
-<span class="lineNum">      80 </span>            :         sqldb::sqldb() : logLevel_(NONE), cacheLevel_(CACHE_ROWS)
+<span class="lineNum">      80 </span>            :         sqldb::sqldb() : logLevel_(NONE)
 <a name="81"><span class="lineNum">      81 </span><span class="lineCov">          6 :         {}</span></a>
 <span class="lineNum">      82 </span>            : 
 <span class="lineNum">      83 </span>            :         void sqldb::set_log_level(LogLevel level)
@@ -155,22 +155,13 @@
 <span class="lineNum">      85 </span><span class="lineNoCov">          0 :             logLevel_ = level;</span>
 <a name="86"><span class="lineNum">      86 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      87 </span>            : 
-<span class="lineNum">      88 </span>            :         sqldb::CacheLevel sqldb::cache_level() const
+<span class="lineNum">      88 </span>            :         void sqldb::log(LogLevel level, const string &amp;message)
 <span class="lineNum">      89 </span>            :         {
-<a name="90"><span class="lineNum">      90 </span><span class="lineCov">        230 :             return cacheLevel_;</span></a>
-<span class="lineNum">      91 </span>            :         }
-<span class="lineNum">      92 </span>            :         void sqldb::set_cache_level(sqldb::CacheLevel level)
-<span class="lineNum">      93 </span>            :         {
-<span class="lineNum">      94 </span><span class="lineNoCov">          0 :             cacheLevel_ = level;</span>
-<a name="95"><span class="lineNum">      95 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">      96 </span>            : 
-<span class="lineNum">      97 </span>            :         void sqldb::log(LogLevel level, const string &amp;message)
-<span class="lineNum">      98 </span>            :         {
-<span class="lineNum">      99 </span><span class="lineCov">        178 :             if (logLevel_ &gt;= level)</span>
-<span class="lineNum">     100 </span><span class="lineNoCov">          0 :                 cout &lt;&lt; &quot;sqldb: &quot; &lt;&lt; message &lt;&lt; endl;</span>
-<span class="lineNum">     101 </span><span class="lineCov">        178 :         }</span>
-<span class="lineNum">     102 </span>            :     }
-<span class="lineNum">     103 </span>            : }
+<span class="lineNum">      90 </span><span class="lineCov">        180 :             if (logLevel_ &gt;= level)</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :                 cout &lt;&lt; &quot;sqldb: &quot; &lt;&lt; message &lt;&lt; endl;</span>
+<span class="lineNum">      92 </span><span class="lineCov">        180 :         }</span>
+<span class="lineNum">      93 </span>            :     }
+<span class="lineNum">      94 </span>            : }
 </pre>
       </td>
     </tr>

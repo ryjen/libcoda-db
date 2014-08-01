@@ -31,13 +31,13 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">62</td>
-            <td class="headerCovTableEntry">149</td>
-            <td class="headerCovTableEntryLo">41.6 %</td>
+            <td class="headerCovTableEntry">59</td>
+            <td class="headerCovTableEntry">146</td>
+            <td class="headerCovTableEntryLo">40.4 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-07-26</td>
+            <td class="headerValue">2014-07-31</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">16</td>
@@ -150,249 +150,243 @@
 <span class="lineNum">      80 </span>            : 
 <span class="lineNum">      81 </span>            :         row mysql_resultset::current_row()
 <span class="lineNum">      82 </span>            :         {
-<span class="lineNum">      83 </span><span class="lineCov">         42 :             if (db_-&gt;cache_level() == sqldb::CACHE_ROWS)</span>
-<span class="lineNum">      84 </span><span class="lineCov">         84 :                 return row(make_shared&lt;mysql_cached_row&gt;(res_, row_));</span>
-<span class="lineNum">      85 </span>            :             else
-<span class="lineNum">      86 </span><span class="lineNoCov">          0 :                 return row(make_shared&lt;mysql_row&gt;(db_, res_, row_));</span>
-<a name="87"><span class="lineNum">      87 </span><span class="lineCov">         42 :         }</span></a>
-<span class="lineNum">      88 </span>            : 
-<span class="lineNum">      89 </span>            :         size_t mysql_resultset::size() const
-<span class="lineNum">      90 </span>            :         {
-<span class="lineNum">      91 </span><span class="lineNoCov">          0 :             return mysql_num_fields(res_);</span>
-<span class="lineNum">      92 </span>            :         }
+<span class="lineNum">      83 </span><span class="lineCov">         84 :             return row(make_shared&lt;mysql_row&gt;(db_, res_, row_));</span>
+<a name="84"><span class="lineNum">      84 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span>            :         size_t mysql_resultset::size() const
+<span class="lineNum">      87 </span>            :         {
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :             return mysql_num_fields(res_);</span>
+<span class="lineNum">      89 </span>            :         }
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span>            : 
+<a name="92"><span class="lineNum">      92 </span>            :         /* Statement version */</a>
 <span class="lineNum">      93 </span>            : 
-<span class="lineNum">      94 </span>            : 
-<a name="95"><span class="lineNum">      95 </span>            :         /* Statement version */</a>
-<span class="lineNum">      96 </span>            : 
-<span class="lineNum">      97 </span>            :         mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, MYSQL_STMT *stmt) : stmt_(stmt), metadata_(NULL), db_(db),
-<span class="lineNum">      98 </span>            :             bindings_(nullptr), status_(-1)
-<span class="lineNum">      99 </span><span class="lineCov">         23 :         {</span>
-<span class="lineNum">     100 </span><span class="lineCov">         46 :             assert(stmt_ != NULL);</span>
-<span class="lineNum">     101 </span><span class="lineCov">         46 :             assert(db_ != NULL);</span>
-<a name="102"><span class="lineNum">     102 </span><span class="lineCov">         46 :         }</span></a>
-<span class="lineNum">     103 </span>            : 
-<span class="lineNum">     104 </span>            :         mysql_stmt_resultset::mysql_stmt_resultset(mysql_stmt_resultset &amp;&amp;other) : stmt_(other.stmt_), metadata_(other.metadata_),
-<span class="lineNum">     105 </span>            :             db_(other.db_),
-<span class="lineNum">     106 </span>            :             bindings_(other.bindings_), status_(other.status_)
-<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         {</span>
-<span class="lineNum">     108 </span><span class="lineNoCov">          0 :             other.db_ = NULL;</span>
-<span class="lineNum">     109 </span><span class="lineNoCov">          0 :             other.stmt_ = NULL;</span>
-<span class="lineNum">     110 </span><span class="lineNoCov">          0 :             other.bindings_ = nullptr;</span>
-<span class="lineNum">     111 </span><span class="lineNoCov">          0 :             other.metadata_ = NULL;</span>
-<a name="112"><span class="lineNum">     112 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     113 </span>            : 
-<span class="lineNum">     114 </span>            :         mysql_stmt_resultset::~mysql_stmt_resultset()
-<span class="lineNum">     115 </span><span class="lineCov">         46 :         {</span>
-<span class="lineNum">     116 </span><span class="lineCov">         23 :             if (metadata_)</span>
-<span class="lineNum">     117 </span>            :             {
-<span class="lineNum">     118 </span><span class="lineCov">         23 :                 mysql_free_result(metadata_);</span>
-<span class="lineNum">     119 </span><span class="lineCov">         23 :                 metadata_ = NULL;</span>
-<span class="lineNum">     120 </span><span class="lineCov">         23 :             }</span>
-<a name="121"><span class="lineNum">     121 </span><span class="lineCov">         46 :         }</span></a>
-<span class="lineNum">     122 </span>            : 
-<span class="lineNum">     123 </span>            :         mysql_stmt_resultset &amp;mysql_stmt_resultset::operator=(mysql_stmt_resultset &amp;&amp; other)
-<span class="lineNum">     124 </span>            :         {
-<span class="lineNum">     125 </span><span class="lineNoCov">          0 :             stmt_ = other.stmt_;</span>
-<span class="lineNum">     126 </span><span class="lineNoCov">          0 :             db_ = other.db_;</span>
-<span class="lineNum">     127 </span><span class="lineNoCov">          0 :             metadata_ = other.metadata_;</span>
-<span class="lineNum">     128 </span><span class="lineNoCov">          0 :             bindings_ = other.bindings_;</span>
-<span class="lineNum">     129 </span><span class="lineNoCov">          0 :             status_ = other.status_;</span>
-<span class="lineNum">     130 </span><span class="lineNoCov">          0 :             other.db_ = NULL;</span>
-<span class="lineNum">     131 </span><span class="lineNoCov">          0 :             other.bindings_ = NULL;</span>
-<span class="lineNum">     132 </span><span class="lineNoCov">          0 :             other.metadata_ = NULL;</span>
+<span class="lineNum">      94 </span>            :         mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, shared_ptr&lt;MYSQL_STMT&gt; stmt) : stmt_(stmt), metadata_(NULL), db_(db),
+<span class="lineNum">      95 </span>            :             bindings_(nullptr), status_(-1)
+<span class="lineNum">      96 </span><span class="lineCov">         24 :         {</span>
+<span class="lineNum">      97 </span><span class="lineCov">         48 :             assert(stmt_ != nullptr);</span>
+<span class="lineNum">      98 </span><span class="lineCov">         48 :             assert(db_ != NULL);</span>
+<a name="99"><span class="lineNum">      99 </span><span class="lineCov">         48 :         }</span></a>
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span>            :         mysql_stmt_resultset::mysql_stmt_resultset(mysql_stmt_resultset &amp;&amp;other) : stmt_(other.stmt_), metadata_(other.metadata_),
+<span class="lineNum">     102 </span>            :             db_(other.db_),
+<span class="lineNum">     103 </span>            :             bindings_(other.bindings_), status_(other.status_)
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         {</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :             other.db_ = NULL;</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :             other.stmt_ = nullptr;</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :             other.bindings_ = nullptr;</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :             other.metadata_ = NULL;</span>
+<a name="109"><span class="lineNum">     109 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span>            :         mysql_stmt_resultset::~mysql_stmt_resultset()
+<span class="lineNum">     112 </span><span class="lineCov">         48 :         {</span>
+<span class="lineNum">     113 </span><span class="lineCov">         24 :             if (metadata_)</span>
+<span class="lineNum">     114 </span>            :             {
+<span class="lineNum">     115 </span><span class="lineCov">         24 :                 mysql_free_result(metadata_);</span>
+<span class="lineNum">     116 </span><span class="lineCov">         24 :                 metadata_ = NULL;</span>
+<span class="lineNum">     117 </span><span class="lineCov">         24 :             }</span>
+<a name="118"><span class="lineNum">     118 </span><span class="lineCov">         48 :         }</span></a>
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span>            :         mysql_stmt_resultset &amp;mysql_stmt_resultset::operator=(mysql_stmt_resultset &amp;&amp; other)
+<span class="lineNum">     121 </span>            :         {
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :             stmt_ = other.stmt_;</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :             db_ = other.db_;</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :             metadata_ = other.metadata_;</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :             bindings_ = other.bindings_;</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :             status_ = other.status_;</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :             other.db_ = NULL;</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :             other.bindings_ = NULL;</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :             other.metadata_ = NULL;</span>
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :             return *this;</span>
+<a name="132"><span class="lineNum">     132 </span>            :         }</a>
 <span class="lineNum">     133 </span>            : 
-<span class="lineNum">     134 </span><span class="lineNoCov">          0 :             return *this;</span>
-<a name="135"><span class="lineNum">     135 </span>            :         }</a>
-<span class="lineNum">     136 </span>            : 
-<span class="lineNum">     137 </span>            :         void mysql_stmt_resultset::prepare_results()
-<span class="lineNum">     138 </span>            :         {
-<span class="lineNum">     139 </span><span class="lineCov">         73 :             if (stmt_ == NULL || bindings_ != NULL || status_ != -1)</span>
-<span class="lineNum">     140 </span><span class="lineCov">          2 :                 return;</span>
-<span class="lineNum">     141 </span>            : 
-<span class="lineNum">     142 </span><span class="lineCov">         23 :             if ((status_ = mysql_stmt_execute(stmt_)))</span>
-<span class="lineNum">     143 </span>            :             {
-<span class="lineNum">     144 </span><span class="lineNoCov">          0 :                 throw database_exception(last_stmt_error(stmt_));</span>
-<span class="lineNum">     145 </span>            :             }
+<span class="lineNum">     134 </span>            :         void mysql_stmt_resultset::prepare_results()
+<span class="lineNum">     135 </span>            :         {
+<span class="lineNum">     136 </span><span class="lineCov">        102 :             if (stmt_ == nullptr || !stmt_ || bindings_ != NULL || status_ != -1)</span>
+<span class="lineNum">     137 </span><span class="lineCov">          2 :                 return;</span>
+<span class="lineNum">     138 </span>            : 
+<span class="lineNum">     139 </span><span class="lineCov">         24 :             if ((status_ = mysql_stmt_execute(stmt_.get())))</span>
+<span class="lineNum">     140 </span>            :             {
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :                 throw database_exception(last_stmt_error(stmt_.get()));</span>
+<span class="lineNum">     142 </span>            :             }
+<span class="lineNum">     143 </span>            : 
+<span class="lineNum">     144 </span>            :             // get information about the results
+<span class="lineNum">     145 </span><span class="lineCov">         24 :             metadata_ = mysql_stmt_result_metadata(stmt_.get());</span>
 <span class="lineNum">     146 </span>            : 
-<span class="lineNum">     147 </span>            :             // get information about the results
-<span class="lineNum">     148 </span><span class="lineCov">         23 :             metadata_ = mysql_stmt_result_metadata(stmt_);</span>
+<span class="lineNum">     147 </span><span class="lineCov">         24 :             if (metadata_ == NULL)</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;No result data found.&quot;);</span>
 <span class="lineNum">     149 </span>            : 
-<span class="lineNum">     150 </span><span class="lineCov">         23 :             if (metadata_ == NULL)</span>
-<span class="lineNum">     151 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;No result data found.&quot;);</span>
-<span class="lineNum">     152 </span>            : 
-<span class="lineNum">     153 </span><span class="lineCov">         23 :             int size = mysql_num_fields(metadata_);</span>
-<span class="lineNum">     154 </span>            : 
-<span class="lineNum">     155 </span><span class="lineCov">         23 :             auto fields = mysql_fetch_fields(metadata_);</span>
-<span class="lineNum">     156 </span>            : 
-<span class="lineNum">     157 </span><span class="lineCov">         23 :             bindings_ = make_shared&lt;mysql_binding&gt;(fields, size);</span>
+<span class="lineNum">     150 </span><span class="lineCov">         24 :             int size = mysql_num_fields(metadata_);</span>
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span><span class="lineCov">         24 :             auto fields = mysql_fetch_fields(metadata_);</span>
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span><span class="lineCov">         24 :             bindings_ = make_shared&lt;mysql_binding&gt;(fields, size);</span>
+<span class="lineNum">     155 </span>            : 
+<span class="lineNum">     156 </span><span class="lineCov">         24 :             bindings_-&gt;bind_result(stmt_.get());</span>
+<a name="157"><span class="lineNum">     157 </span><span class="lineCov">         50 :         }</span></a>
 <span class="lineNum">     158 </span>            : 
-<span class="lineNum">     159 </span><span class="lineCov">         23 :             bindings_-&gt;bind_result(stmt_);</span>
-<a name="160"><span class="lineNum">     160 </span><span class="lineCov">         48 :         }</span></a>
-<span class="lineNum">     161 </span>            : 
-<span class="lineNum">     162 </span>            :         bool mysql_stmt_resultset::is_valid() const
-<span class="lineNum">     163 </span>            :         {
-<span class="lineNum">     164 </span><span class="lineCov">          5 :             return stmt_ != NULL;</span>
-<a name="165"><span class="lineNum">     165 </span>            :         }</a>
-<span class="lineNum">     166 </span>            : 
-<span class="lineNum">     167 </span>            :         bool mysql_stmt_resultset::next()
-<span class="lineNum">     168 </span>            :         {
-<span class="lineNum">     169 </span><span class="lineCov">         28 :             if (stmt_ == NULL)</span>
-<span class="lineNum">     170 </span><span class="lineNoCov">          0 :                 return false;</span>
-<span class="lineNum">     171 </span>            : 
-<span class="lineNum">     172 </span><span class="lineCov">         28 :             if (status_ == -1)</span>
-<span class="lineNum">     173 </span>            :             {
-<span class="lineNum">     174 </span><span class="lineCov">         25 :                 prepare_results();</span>
-<span class="lineNum">     175 </span>            : 
-<span class="lineNum">     176 </span><span class="lineCov">         25 :                 if (status_ == -1)</span>
-<span class="lineNum">     177 </span><span class="lineCov">          2 :                     return false;</span>
-<span class="lineNum">     178 </span><span class="lineCov">         23 :             }</span>
-<span class="lineNum">     179 </span>            : 
-<span class="lineNum">     180 </span><span class="lineCov">         26 :             int res = mysql_stmt_fetch(stmt_);</span>
+<span class="lineNum">     159 </span>            :         bool mysql_stmt_resultset::is_valid() const
+<span class="lineNum">     160 </span>            :         {
+<span class="lineNum">     161 </span><span class="lineCov">        112 :             return stmt_ != nullptr &amp;&amp; stmt_;</span>
+<a name="162"><span class="lineNum">     162 </span><span class="lineCov">         56 :         }</span></a>
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span>            :         bool mysql_stmt_resultset::next()
+<span class="lineNum">     165 </span>            :         {
+<span class="lineNum">     166 </span><span class="lineCov">         31 :             if (!is_valid())</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :                 return false;</span>
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span><span class="lineCov">         31 :             if (status_ == -1)</span>
+<span class="lineNum">     170 </span>            :             {
+<span class="lineNum">     171 </span><span class="lineCov">         26 :                 prepare_results();</span>
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span><span class="lineCov">         26 :                 if (status_ == -1)</span>
+<span class="lineNum">     174 </span><span class="lineCov">          2 :                     return false;</span>
+<span class="lineNum">     175 </span><span class="lineCov">         24 :             }</span>
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span><span class="lineCov">         29 :             int res = mysql_stmt_fetch(stmt_.get());</span>
+<span class="lineNum">     178 </span>            : 
+<span class="lineNum">     179 </span><span class="lineCov">         58 :             if (res == 1 || res == MYSQL_DATA_TRUNCATED)</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :                 throw database_exception(last_stmt_error(stmt_.get()));</span>
 <span class="lineNum">     181 </span>            : 
-<span class="lineNum">     182 </span><span class="lineCov">         52 :             if (res == 1 || res == MYSQL_DATA_TRUNCATED)</span>
-<span class="lineNum">     183 </span><span class="lineNoCov">          0 :                 throw database_exception(last_stmt_error(stmt_));</span>
-<span class="lineNum">     184 </span>            : 
-<span class="lineNum">     185 </span><span class="lineCov">         26 :             if (res == MYSQL_NO_DATA)</span>
-<span class="lineNum">     186 </span>            :             {
-<span class="lineNum">     187 </span><span class="lineCov">          4 :                 return false;</span>
-<span class="lineNum">     188 </span>            :             }
-<span class="lineNum">     189 </span>            : 
-<span class="lineNum">     190 </span><span class="lineCov">         22 :             return true;</span>
-<span class="lineNum">     191 </span>            : 
-<a name="192"><span class="lineNum">     192 </span><span class="lineCov">         28 :         }</span></a>
-<span class="lineNum">     193 </span>            : 
-<span class="lineNum">     194 </span>            :         void mysql_stmt_resultset::reset()
-<span class="lineNum">     195 </span>            :         {
-<span class="lineNum">     196 </span><span class="lineCov">         36 :             assert(stmt_ != NULL);</span>
+<span class="lineNum">     182 </span><span class="lineCov">         29 :             if (res == MYSQL_NO_DATA)</span>
+<span class="lineNum">     183 </span>            :             {
+<span class="lineNum">     184 </span><span class="lineCov">          5 :                 return false;</span>
+<span class="lineNum">     185 </span>            :             }
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span><span class="lineCov">         24 :             return true;</span>
+<span class="lineNum">     188 </span>            : 
+<a name="189"><span class="lineNum">     189 </span><span class="lineCov">         31 :         }</span></a>
+<span class="lineNum">     190 </span>            : 
+<span class="lineNum">     191 </span>            :         void mysql_stmt_resultset::reset()
+<span class="lineNum">     192 </span>            :         {
+<span class="lineNum">     193 </span><span class="lineCov">         38 :             assert(is_valid());</span>
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span><span class="lineCov">         19 :             if (mysql_stmt_reset(stmt_.get()))</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :                 throw database_exception(last_stmt_error(stmt_.get()));</span>
 <span class="lineNum">     197 </span>            : 
-<span class="lineNum">     198 </span><span class="lineCov">         18 :             if (mysql_stmt_reset(stmt_))</span>
-<span class="lineNum">     199 </span><span class="lineNoCov">          0 :                 throw database_exception(last_stmt_error(stmt_));</span>
+<span class="lineNum">     198 </span><span class="lineCov">         19 :             status_ = -1;</span>
+<a name="199"><span class="lineNum">     199 </span><span class="lineCov">         19 :         }</span></a>
 <span class="lineNum">     200 </span>            : 
-<span class="lineNum">     201 </span><span class="lineCov">         18 :             status_ = -1;</span>
-<a name="202"><span class="lineNum">     202 </span><span class="lineCov">         18 :         }</span></a>
-<span class="lineNum">     203 </span>            : 
-<span class="lineNum">     204 </span>            :         row mysql_stmt_resultset::current_row()
-<span class="lineNum">     205 </span>            :         {
-<span class="lineNum">     206 </span><span class="lineCov">         62 :             assert(db_ != NULL);</span>
-<span class="lineNum">     207 </span><span class="lineCov">         62 :             assert(metadata_ != NULL);</span>
-<span class="lineNum">     208 </span><span class="lineCov">         62 :             assert(bindings_ != nullptr);</span>
+<span class="lineNum">     201 </span>            :         row mysql_stmt_resultset::current_row()
+<span class="lineNum">     202 </span>            :         {
+<span class="lineNum">     203 </span><span class="lineCov">         68 :             assert(db_ != NULL);</span>
+<span class="lineNum">     204 </span><span class="lineCov">         68 :             assert(metadata_ != NULL);</span>
+<span class="lineNum">     205 </span><span class="lineCov">         68 :             assert(bindings_ != nullptr);</span>
+<span class="lineNum">     206 </span>            : 
+<span class="lineNum">     207 </span><span class="lineCov">         68 :             return row(make_shared&lt;mysql_stmt_row&gt;(db_, metadata_, bindings_ ));</span>
+<a name="208"><span class="lineNum">     208 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">     209 </span>            : 
-<span class="lineNum">     210 </span><span class="lineCov">         31 :             if (db_-&gt;cache_level() == sqldb::CACHE_ROWS)</span>
-<span class="lineNum">     211 </span><span class="lineCov">         62 :                 return row(make_shared&lt;mysql_cached_row&gt;(metadata_, bindings_));</span>
-<span class="lineNum">     212 </span>            :             else
-<span class="lineNum">     213 </span><span class="lineNoCov">          0 :                 return row(make_shared&lt;mysql_stmt_row&gt;(db_, metadata_, bindings_ ));</span>
-<a name="214"><span class="lineNum">     214 </span><span class="lineCov">         31 :         }</span></a>
+<span class="lineNum">     210 </span>            :         size_t mysql_stmt_resultset::size() const
+<span class="lineNum">     211 </span>            :         {
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :             assert(is_valid());</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :             return mysql_stmt_field_count(stmt_.get());</span>
+<span class="lineNum">     214 </span>            :         }
 <span class="lineNum">     215 </span>            : 
-<span class="lineNum">     216 </span>            :         size_t mysql_stmt_resultset::size() const
-<span class="lineNum">     217 </span>            :         {
-<span class="lineNum">     218 </span><span class="lineNoCov">          0 :             assert(stmt_ != NULL);</span>
-<span class="lineNum">     219 </span><span class="lineNoCov">          0 :             return mysql_stmt_field_count(stmt_);</span>
-<span class="lineNum">     220 </span>            :         }
-<span class="lineNum">     221 </span>            : 
-<span class="lineNum">     222 </span>            : 
-<span class="lineNum">     223 </span>            :         /* cached version */
-<a name="224"><span class="lineNum">     224 </span>            : </a>
-<span class="lineNum">     225 </span>            : 
-<span class="lineNum">     226 </span>            :         mysql_cached_resultset::mysql_cached_resultset(MYSQL_STMT *stmt) : currentRow_(0)
-<span class="lineNum">     227 </span><span class="lineNoCov">          0 :         {</span>
-<span class="lineNum">     228 </span><span class="lineNoCov">          0 :             assert(stmt != NULL);</span>
-<span class="lineNum">     229 </span>            : 
-<span class="lineNum">     230 </span><span class="lineNoCov">          0 :             if (mysql_stmt_execute(stmt))</span>
-<span class="lineNum">     231 </span>            :             {
-<span class="lineNum">     232 </span><span class="lineNoCov">          0 :                 throw database_exception(last_stmt_error(stmt));</span>
-<span class="lineNum">     233 </span>            :             }
+<span class="lineNum">     216 </span>            : 
+<span class="lineNum">     217 </span>            :         /* cached version */
+<a name="218"><span class="lineNum">     218 </span>            : </a>
+<span class="lineNum">     219 </span>            : 
+<span class="lineNum">     220 </span>            :         mysql_cached_resultset::mysql_cached_resultset(shared_ptr&lt;MYSQL_STMT&gt; stmt) : currentRow_(0)
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :         {</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :             assert(is_valid());</span>
+<span class="lineNum">     223 </span>            : 
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :             if (mysql_stmt_execute(stmt.get()))</span>
+<span class="lineNum">     225 </span>            :             {
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :                 throw database_exception(last_stmt_error(stmt.get()));</span>
+<span class="lineNum">     227 </span>            :             }
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span>            :             // get information about the results
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :             MYSQL_RES *metadata_ = mysql_stmt_result_metadata(stmt.get());</span>
+<span class="lineNum">     231 </span>            : 
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :             if (metadata_ == NULL)</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;No result data found.&quot;);</span>
 <span class="lineNum">     234 </span>            : 
-<span class="lineNum">     235 </span>            :             // get information about the results
-<span class="lineNum">     236 </span><span class="lineNoCov">          0 :             MYSQL_RES *metadata_ = mysql_stmt_result_metadata(stmt);</span>
-<span class="lineNum">     237 </span>            : 
-<span class="lineNum">     238 </span><span class="lineNoCov">          0 :             if (metadata_ == NULL)</span>
-<span class="lineNum">     239 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;No result data found.&quot;);</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :             int size_ = mysql_num_fields(metadata_);</span>
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :             auto fields = mysql_fetch_fields(metadata_);</span>
+<span class="lineNum">     238 </span>            : 
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :             mysql_binding bindings(fields, size_);</span>
 <span class="lineNum">     240 </span>            : 
-<span class="lineNum">     241 </span><span class="lineNoCov">          0 :             int size_ = mysql_num_fields(metadata_);</span>
-<span class="lineNum">     242 </span>            : 
-<span class="lineNum">     243 </span><span class="lineNoCov">          0 :             auto fields = mysql_fetch_fields(metadata_);</span>
-<span class="lineNum">     244 </span>            : 
-<span class="lineNum">     245 </span><span class="lineNoCov">          0 :             mysql_binding bindings(fields, size_);</span>
-<span class="lineNum">     246 </span>            : 
-<span class="lineNum">     247 </span><span class="lineNoCov">          0 :             for (int i = 0; i &lt; size_; i++)</span>
-<span class="lineNum">     248 </span>            :             {
-<span class="lineNum">     249 </span><span class="lineNoCov">          0 :                 rows_.push_back(make_shared&lt;mysql_cached_row&gt;(metadata_, bindings.get(i)));</span>
-<span class="lineNum">     250 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :             for (int i = 0; i &lt; size_; i++)</span>
+<span class="lineNum">     242 </span>            :             {
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :                 rows_.push_back(make_shared&lt;mysql_cached_row&gt;(metadata_, bindings.get(i)));</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     245 </span>            : 
+<a name="246"><span class="lineNum">     246 </span>            : </a>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     248 </span>            :         mysql_cached_resultset::mysql_cached_resultset(mysql_db *db, MYSQL_RES *res) : currentRow_(0)
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         {</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :             MYSQL_ROW row = mysql_fetch_row(res);</span>
 <span class="lineNum">     251 </span>            : 
-<a name="252"><span class="lineNum">     252 </span>            : </a>
-<span class="lineNum">     253 </span><span class="lineNoCov">          0 :         }</span>
-<span class="lineNum">     254 </span>            :         mysql_cached_resultset::mysql_cached_resultset(mysql_db *db, MYSQL_RES *res) : currentRow_(0)
-<span class="lineNum">     255 </span><span class="lineNoCov">          0 :         {</span>
-<span class="lineNum">     256 </span><span class="lineNoCov">          0 :             MYSQL_ROW row = mysql_fetch_row(res);</span>
-<span class="lineNum">     257 </span>            : 
-<span class="lineNum">     258 </span><span class="lineNoCov">          0 :             if (row != NULL)</span>
-<span class="lineNum">     259 </span>            :             {
-<span class="lineNum">     260 </span><span class="lineNoCov">          0 :                 rows_.push_back(make_shared&lt;mysql_cached_row&gt;(res, row));</span>
-<span class="lineNum">     261 </span>            : 
-<span class="lineNum">     262 </span><span class="lineNoCov">          0 :                 while (mysql_more_results(db-&gt;db_) &amp;&amp; (row = mysql_fetch_row(res)) != NULL)</span>
-<span class="lineNum">     263 </span>            :                 {
-<span class="lineNum">     264 </span><span class="lineNoCov">          0 :                     rows_.push_back(make_shared&lt;mysql_cached_row&gt;(res, row));</span>
-<span class="lineNum">     265 </span><span class="lineNoCov">          0 :                 }</span>
-<span class="lineNum">     266 </span><span class="lineNoCov">          0 :             }</span>
-<span class="lineNum">     267 </span>            :             else
-<span class="lineNum">     268 </span>            :             {
-<span class="lineNum">     269 </span><span class="lineNoCov">          0 :                 while ((res = mysql_use_result(db-&gt;db_)) != NULL &amp;&amp; (row = mysql_fetch_row(res)))</span>
-<span class="lineNum">     270 </span>            :                 {
-<span class="lineNum">     271 </span><span class="lineNoCov">          0 :                     rows_.push_back(make_shared&lt;mysql_cached_row&gt;(res, row));</span>
-<span class="lineNum">     272 </span><span class="lineNoCov">          0 :                 }</span>
-<a name="273"><span class="lineNum">     273 </span>            :             }</a>
-<span class="lineNum">     274 </span><span class="lineNoCov">          0 :         }</span>
-<span class="lineNum">     275 </span><span class="lineNoCov">          0 :         mysql_cached_resultset::mysql_cached_resultset(mysql_cached_resultset &amp;&amp;other) : rows_(std::move(other.rows_))</span>
-<span class="lineNum">     276 </span><span class="lineNoCov">          0 :         {</span>
-<span class="lineNum">     277 </span><span class="lineNoCov">          0 :             other.rows_.clear();</span>
-<a name="278"><span class="lineNum">     278 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     279 </span>            : 
-<span class="lineNum">     280 </span>            :         mysql_cached_resultset::~mysql_cached_resultset()
-<span class="lineNum">     281 </span><span class="lineNoCov">          0 :         {</span>
-<a name="282"><span class="lineNum">     282 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     283 </span>            : 
-<span class="lineNum">     284 </span>            :         mysql_cached_resultset &amp;mysql_cached_resultset::operator=(mysql_cached_resultset &amp;&amp; other)
-<span class="lineNum">     285 </span>            :         {
-<span class="lineNum">     286 </span><span class="lineNoCov">          0 :             rows_ = std::move(other.rows_);</span>
-<span class="lineNum">     287 </span>            : 
-<span class="lineNum">     288 </span><span class="lineNoCov">          0 :             return *this;</span>
-<a name="289"><span class="lineNum">     289 </span>            :         }</a>
-<span class="lineNum">     290 </span>            : 
-<span class="lineNum">     291 </span>            :         bool mysql_cached_resultset::is_valid() const
-<span class="lineNum">     292 </span>            :         {
-<span class="lineNum">     293 </span><span class="lineNoCov">          0 :             return true;</span>
-<a name="294"><span class="lineNum">     294 </span>            :         }</a>
-<span class="lineNum">     295 </span>            : 
-<span class="lineNum">     296 </span>            :         bool mysql_cached_resultset::next()
-<span class="lineNum">     297 </span>            :         {
-<span class="lineNum">     298 </span><span class="lineNoCov">          0 :             if (rows_.empty())</span>
-<span class="lineNum">     299 </span>            :             {
-<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                 return false;</span>
-<span class="lineNum">     301 </span>            :             }
-<span class="lineNum">     302 </span>            : 
-<span class="lineNum">     303 </span>            : 
-<span class="lineNum">     304 </span><span class="lineNoCov">          0 :             return ++currentRow_ &lt; rows_.size();</span>
-<span class="lineNum">     305 </span>            : 
-<a name="306"><span class="lineNum">     306 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     307 </span>            : 
-<span class="lineNum">     308 </span>            :         void mysql_cached_resultset::reset()
-<span class="lineNum">     309 </span>            :         {
-<span class="lineNum">     310 </span><span class="lineNoCov">          0 :             currentRow_ = 0;</span>
-<a name="311"><span class="lineNum">     311 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     312 </span>            : 
-<span class="lineNum">     313 </span>            :         row mysql_cached_resultset::current_row()
-<span class="lineNum">     314 </span>            :         {
-<span class="lineNum">     315 </span><span class="lineNoCov">          0 :             return row(rows_[currentRow_]);</span>
-<a name="316"><span class="lineNum">     316 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     317 </span>            : 
-<span class="lineNum">     318 </span>            :         size_t mysql_cached_resultset::size() const
-<span class="lineNum">     319 </span>            :         {
-<span class="lineNum">     320 </span><span class="lineNoCov">          0 :             return rows_.size();</span>
-<span class="lineNum">     321 </span>            :         }
-<span class="lineNum">     322 </span>            :     }
-<span class="lineNum">     323 </span>            : }
-<span class="lineNum">     324 </span>            : 
-<span class="lineNum">     325 </span>            : #endif
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :             if (row != NULL)</span>
+<span class="lineNum">     253 </span>            :             {
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :                 rows_.push_back(make_shared&lt;mysql_cached_row&gt;(res, row));</span>
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :                 while (mysql_more_results(db-&gt;db_) &amp;&amp; (row = mysql_fetch_row(res)) != NULL)</span>
+<span class="lineNum">     257 </span>            :                 {
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :                     rows_.push_back(make_shared&lt;mysql_cached_row&gt;(res, row));</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :                 }</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     261 </span>            :             else
+<span class="lineNum">     262 </span>            :             {
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :                 while ((res = mysql_use_result(db-&gt;db_)) != NULL &amp;&amp; (row = mysql_fetch_row(res)))</span>
+<span class="lineNum">     264 </span>            :                 {
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :                     rows_.push_back(make_shared&lt;mysql_cached_row&gt;(res, row));</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :                 }</span>
+<a name="267"><span class="lineNum">     267 </span>            :             }</a>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         mysql_cached_resultset::mysql_cached_resultset(mysql_cached_resultset &amp;&amp;other) : rows_(std::move(other.rows_))</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :         {</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :             other.rows_.clear();</span>
+<a name="272"><span class="lineNum">     272 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span>            :         mysql_cached_resultset::~mysql_cached_resultset()
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :         {</span>
+<a name="276"><span class="lineNum">     276 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     277 </span>            : 
+<span class="lineNum">     278 </span>            :         mysql_cached_resultset &amp;mysql_cached_resultset::operator=(mysql_cached_resultset &amp;&amp; other)
+<span class="lineNum">     279 </span>            :         {
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :             rows_ = std::move(other.rows_);</span>
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :             return *this;</span>
+<a name="283"><span class="lineNum">     283 </span>            :         }</a>
+<span class="lineNum">     284 </span>            : 
+<span class="lineNum">     285 </span>            :         bool mysql_cached_resultset::is_valid() const
+<span class="lineNum">     286 </span>            :         {
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :             return true;</span>
+<a name="288"><span class="lineNum">     288 </span>            :         }</a>
+<span class="lineNum">     289 </span>            : 
+<span class="lineNum">     290 </span>            :         bool mysql_cached_resultset::next()
+<span class="lineNum">     291 </span>            :         {
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :             if (rows_.empty())</span>
+<span class="lineNum">     293 </span>            :             {
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :                 return false;</span>
+<span class="lineNum">     295 </span>            :             }
+<span class="lineNum">     296 </span>            : 
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :             return ++currentRow_ &lt; rows_.size();</span>
+<span class="lineNum">     299 </span>            : 
+<a name="300"><span class="lineNum">     300 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     301 </span>            : 
+<span class="lineNum">     302 </span>            :         void mysql_cached_resultset::reset()
+<span class="lineNum">     303 </span>            :         {
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :             currentRow_ = 0;</span>
+<a name="305"><span class="lineNum">     305 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     306 </span>            : 
+<span class="lineNum">     307 </span>            :         row mysql_cached_resultset::current_row()
+<span class="lineNum">     308 </span>            :         {
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :             return row(rows_[currentRow_]);</span>
+<a name="310"><span class="lineNum">     310 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     311 </span>            : 
+<span class="lineNum">     312 </span>            :         size_t mysql_cached_resultset::size() const
+<span class="lineNum">     313 </span>            :         {
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :             return rows_.size();</span>
+<span class="lineNum">     315 </span>            :         }
+<span class="lineNum">     316 </span>            :     }
+<span class="lineNum">     317 </span>            : }
+<span class="lineNum">     318 </span>            : 
+<span class="lineNum">     319 </span>            : #endif
 </pre>
       </td>
     </tr>
