@@ -117,11 +117,7 @@ namespace arg3
 
         mysql_stmt_resultset::~mysql_stmt_resultset()
         {
-            if (metadata_)
-            {
-                mysql_free_result(metadata_);
-                metadata_ = NULL;
-            }
+            metadata_ = nullptr;
         }
 
         mysql_stmt_resultset &mysql_stmt_resultset::operator=(mysql_stmt_resultset && other)
@@ -149,14 +145,16 @@ namespace arg3
             }
 
             // get information about the results
-            metadata_ = mysql_stmt_result_metadata(stmt_.get());
+            MYSQL_RES *temp = mysql_stmt_result_metadata(stmt_.get());
 
-            if (metadata_ == NULL)
+            if (temp == NULL)
                 throw database_exception("No result data found.");
 
-            int size = mysql_num_fields(metadata_);
+            metadata_ = shared_ptr<MYSQL_RES>(temp, mysql_res_delete());
 
-            auto fields = mysql_fetch_fields(metadata_);
+            int size = mysql_num_fields(temp);
+
+            auto fields = mysql_fetch_fields(temp);
 
             bindings_ = make_shared<mysql_binding>(fields, size);
 
@@ -165,7 +163,7 @@ namespace arg3
 
         bool mysql_stmt_resultset::is_valid() const
         {
-            return stmt_ != nullptr && stmt_;
+            return stmt_ != nullptr;
         }
 
         bool mysql_stmt_resultset::next()
@@ -208,15 +206,14 @@ namespace arg3
         row mysql_stmt_resultset::current_row()
         {
             assert(db_ != NULL);
-            assert(metadata_ != NULL);
-            assert(bindings_ != nullptr);
 
             return row(make_shared<mysql_stmt_row>(db_, metadata_, bindings_ ));
         }
 
         size_t mysql_stmt_resultset::size() const
         {
-            assert(is_valid());
+            if (!is_valid()) return 0;
+
             return mysql_stmt_field_count(stmt_.get());
         }
 
@@ -224,7 +221,7 @@ namespace arg3
         /* cached version */
 
 
-        mysql_cached_resultset::mysql_cached_resultset(shared_ptr<MYSQL_STMT> stmt) : currentRow_(0)
+        mysql_cached_resultset::mysql_cached_resultset(sqldb *db, shared_ptr<MYSQL_STMT> stmt) : currentRow_(0)
         {
             assert(is_valid());
 
@@ -234,42 +231,46 @@ namespace arg3
             }
 
             // get information about the results
-            MYSQL_RES *metadata_ = mysql_stmt_result_metadata(stmt.get());
+            MYSQL_RES *temp = mysql_stmt_result_metadata(stmt.get());
 
-            if (metadata_ == NULL)
+            if (temp == NULL)
                 throw database_exception("No result data found.");
 
-            int size_ = mysql_num_fields(metadata_);
+            auto metadata = shared_ptr<MYSQL_RES>(temp, mysql_res_delete());
 
-            auto fields = mysql_fetch_fields(metadata_);
+            int size_ = mysql_num_fields(temp);
+
+            auto fields = mysql_fetch_fields(temp);
 
             mysql_binding bindings(fields, size_);
 
             for (int i = 0; i < size_; i++)
             {
-                rows_.push_back(make_shared<mysql_cached_row>(metadata_, bindings.get(i)));
+                rows_.push_back(make_shared<mysql_cached_row>(db, metadata, bindings.get(i)));
             }
 
 
         }
-        mysql_cached_resultset::mysql_cached_resultset(mysql_db *db, MYSQL_RES *res) : currentRow_(0)
+        mysql_cached_resultset::mysql_cached_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res) : currentRow_(0)
         {
-            MYSQL_ROW row = mysql_fetch_row(res);
+            MYSQL_ROW row = mysql_fetch_row(res.get());
 
             if (row != NULL)
             {
-                rows_.push_back(make_shared<mysql_cached_row>(res, row));
+                rows_.push_back(make_shared<mysql_cached_row>(db, res, row));
 
-                while (mysql_more_results(db->db_) && (row = mysql_fetch_row(res)) != NULL)
+                while (mysql_more_results(db->db_) && (row = mysql_fetch_row(res.get())) != NULL)
                 {
-                    rows_.push_back(make_shared<mysql_cached_row>(res, row));
+                    rows_.push_back(make_shared<mysql_cached_row>(db, res, row));
                 }
             }
             else
             {
-                while ((res = mysql_use_result(db->db_)) != NULL && (row = mysql_fetch_row(res)))
+                MYSQL_RES *temp;
+
+                while ((temp = mysql_use_result(db->db_)) != NULL && (row = mysql_fetch_row(temp)))
                 {
-                    rows_.push_back(make_shared<mysql_cached_row>(res, row));
+                    rows_.push_back(make_shared<mysql_cached_row>(db, shared_ptr<MYSQL_RES>(temp, mysql_res_delete()), row));
                 }
             }
         }

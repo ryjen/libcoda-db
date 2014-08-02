@@ -23,8 +23,11 @@ namespace arg3
         schema::schema(const schema &other) : db_(other.db_), tableName_(other.tableName_), columns_(other.columns_)
         {}
 
-        schema::schema(schema &&other) : db_(std::move(other.db_)), tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))
-        {}
+        schema::schema(schema &&other) : db_(other.db_), tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))
+        {
+            other.db_ = NULL;
+            other.columns_.clear();
+        }
 
         schema &schema::operator=(const schema &other)
         {
@@ -40,6 +43,9 @@ namespace arg3
             columns_ = std::move(other.columns_);
             db_ = std::move(other.db_);
             tableName_ = std::move(other.tableName_);
+
+            other.columns_.clear();
+            other.db_ = NULL;
 
             return *this;
         }

@@ -63,6 +63,25 @@ Context(row_test)
         Assert::That(other.empty(), Equals(false));
     }
 
+    Spec(copyable)
+    {
+        select_query q(testdb, "users");
+
+        auto rs = q.execute();
+
+        auto i = rs.begin() + 2;
+
+        row other = get_first_user_row();
+
+        other = *i;
+
+        Assert::That(other.empty(), Equals(false));
+
+        Assert::That(other.size(), Equals(i->size()));
+
+        Assert::That(other.column_name(0), Equals("id"));
+    }
+
     Spec(iterator)
     {
         select_query query(testdb, "users");
@@ -92,12 +111,12 @@ Context(row_test)
         /*for (row::reverse_iterator i = r.rbegin(); i != r.rend(); i++)
         {
             Assert::That(i->is_valid(), Equals(true));
-        }
+        }*/
 
         for (row::const_reverse_iterator i = r.crbegin(); i != r.crend(); i++)
         {
             Assert::That(i->is_valid(), Equals(true));
-        }*/
+        }
     }
 };
 

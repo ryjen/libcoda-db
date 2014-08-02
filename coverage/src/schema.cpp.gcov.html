@@ -31,18 +31,18 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">25</td>
-            <td class="headerCovTableEntry">39</td>
-            <td class="headerCovTableEntryLo">64.1 %</td>
+            <td class="headerCovTableEntry">43</td>
+            <td class="headerCovTableEntry">44</td>
+            <td class="headerCovTableEntryHi">97.7 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
             <td class="headerValue">2014-08-01</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntry">17</td>
             <td class="headerCovTableEntry">20</td>
-            <td class="headerCovTableEntryLo">55.0 %</td>
+            <td class="headerCovTableEntryMed">85.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -80,102 +80,108 @@
 <span class="lineNum">      10 </span>            :     {
 <span class="lineNum">      11 </span>            :         ostream &amp;operator&lt;&lt;(ostream &amp;os, const column_definition &amp;def)
 <span class="lineNum">      12 </span>            :         {
-<span class="lineNum">      13 </span><span class="lineNoCov">          0 :             os &lt;&lt; def.name;</span>
-<span class="lineNum">      14 </span><span class="lineNoCov">          0 :             return os;</span>
+<span class="lineNum">      13 </span><span class="lineCov">          2 :             os &lt;&lt; def.name;</span>
+<span class="lineNum">      14 </span><span class="lineCov">          2 :             return os;</span>
 <a name="15"><span class="lineNum">      15 </span>            :         }</a>
 <span class="lineNum">      16 </span>            : 
-<a name="17"><span class="lineNum">      17 </span><span class="lineCov">         36 :         schema::schema(sqldb *db, const string &amp;tablename) : db_(db), tableName_(tablename) {}</span></a>
+<a name="17"><span class="lineNum">      17 </span><span class="lineCov">         60 :         schema::schema(sqldb *db, const string &amp;tablename) : db_(db), tableName_(tablename) {}</span></a>
 <span class="lineNum">      18 </span>            : 
 <span class="lineNum">      19 </span>            :         schema::~schema()
-<span class="lineNum">      20 </span><span class="lineCov">         36 :         {</span>
-<a name="21"><span class="lineNum">      21 </span><span class="lineCov">         36 :         }</span></a>
+<span class="lineNum">      20 </span><span class="lineCov">         64 :         {</span>
+<a name="21"><span class="lineNum">      21 </span><span class="lineCov">         64 :         }</span></a>
 <span class="lineNum">      22 </span>            : 
 <span class="lineNum">      23 </span>            :         schema::schema(const schema &amp;other) : db_(other.db_), tableName_(other.tableName_), columns_(other.columns_)
 <a name="24"><span class="lineNum">      24 </span><span class="lineNoCov">          0 :         {}</span></a>
 <span class="lineNum">      25 </span>            : 
-<span class="lineNum">      26 </span><span class="lineNoCov">          0 :         schema::schema(schema &amp;&amp;other) : db_(std::move(other.db_)), tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))</span>
-<a name="27"><span class="lineNum">      27 </span><span class="lineNoCov">          0 :         {}</span></a>
-<span class="lineNum">      28 </span>            : 
-<span class="lineNum">      29 </span>            :         schema &amp;schema::operator=(const schema &amp;other)
-<span class="lineNum">      30 </span>            :         {
-<span class="lineNum">      31 </span><span class="lineNoCov">          0 :             columns_ = other.columns_;</span>
-<span class="lineNum">      32 </span><span class="lineNoCov">          0 :             db_ = other.db_;</span>
-<span class="lineNum">      33 </span><span class="lineNoCov">          0 :             tableName_ = other.tableName_;</span>
-<span class="lineNum">      34 </span>            : 
-<span class="lineNum">      35 </span><span class="lineNoCov">          0 :             return *this;</span>
-<a name="36"><span class="lineNum">      36 </span>            :         }</a>
+<span class="lineNum">      26 </span><span class="lineCov">          4 :         schema::schema(schema &amp;&amp;other) : db_(other.db_), tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))</span>
+<span class="lineNum">      27 </span><span class="lineCov">          6 :         {</span>
+<span class="lineNum">      28 </span><span class="lineCov">          2 :             other.db_ = NULL;</span>
+<span class="lineNum">      29 </span><span class="lineCov">          2 :             other.columns_.clear();</span>
+<a name="30"><span class="lineNum">      30 </span><span class="lineCov">          4 :         }</span></a>
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            :         schema &amp;schema::operator=(const schema &amp;other)
+<span class="lineNum">      33 </span>            :         {
+<span class="lineNum">      34 </span><span class="lineCov">          2 :             columns_ = other.columns_;</span>
+<span class="lineNum">      35 </span><span class="lineCov">          2 :             db_ = other.db_;</span>
+<span class="lineNum">      36 </span><span class="lineCov">          2 :             tableName_ = other.tableName_;</span>
 <span class="lineNum">      37 </span>            : 
-<span class="lineNum">      38 </span>            :         schema &amp;schema::operator=(schema &amp;&amp; other)
-<span class="lineNum">      39 </span>            :         {
-<span class="lineNum">      40 </span><span class="lineNoCov">          0 :             columns_ = std::move(other.columns_);</span>
-<span class="lineNum">      41 </span><span class="lineNoCov">          0 :             db_ = std::move(other.db_);</span>
-<span class="lineNum">      42 </span><span class="lineNoCov">          0 :             tableName_ = std::move(other.tableName_);</span>
-<span class="lineNum">      43 </span>            : 
-<span class="lineNum">      44 </span><span class="lineNoCov">          0 :             return *this;</span>
-<a name="45"><span class="lineNum">      45 </span>            :         }</a>
+<span class="lineNum">      38 </span><span class="lineCov">          2 :             return *this;</span>
+<a name="39"><span class="lineNum">      39 </span>            :         }</a>
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            :         schema &amp;schema::operator=(schema &amp;&amp; other)
+<span class="lineNum">      42 </span>            :         {
+<span class="lineNum">      43 </span><span class="lineCov">          2 :             columns_ = std::move(other.columns_);</span>
+<span class="lineNum">      44 </span><span class="lineCov">          2 :             db_ = std::move(other.db_);</span>
+<span class="lineNum">      45 </span><span class="lineCov">          2 :             tableName_ = std::move(other.tableName_);</span>
 <span class="lineNum">      46 </span>            : 
-<span class="lineNum">      47 </span>            :         bool schema::is_valid() const
-<span class="lineNum">      48 </span>            :         {
-<span class="lineNum">      49 </span><span class="lineCov">        228 :             return columns_.size() &gt; 0;</span>
-<a name="50"><span class="lineNum">      50 </span>            :         }</a>
-<span class="lineNum">      51 </span>            : 
-<span class="lineNum">      52 </span>            :         void schema::init()
-<span class="lineNum">      53 </span>            :         {
-<span class="lineNum">      54 </span><span class="lineCov">         32 :             assert(db_ != NULL);</span>
-<span class="lineNum">      55 </span>            : 
-<span class="lineNum">      56 </span><span class="lineCov">         32 :             assert(db_-&gt;is_open());</span>
+<span class="lineNum">      47 </span><span class="lineCov">          2 :             other.columns_.clear();</span>
+<span class="lineNum">      48 </span><span class="lineCov">          2 :             other.db_ = NULL;</span>
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span><span class="lineCov">          2 :             return *this;</span>
+<a name="51"><span class="lineNum">      51 </span>            :         }</a>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span>            :         bool schema::is_valid() const
+<span class="lineNum">      54 </span>            :         {
+<span class="lineNum">      55 </span><span class="lineCov">        298 :             return columns_.size() &gt; 0;</span>
+<a name="56"><span class="lineNum">      56 </span>            :         }</a>
 <span class="lineNum">      57 </span>            : 
-<span class="lineNum">      58 </span><span class="lineCov">         32 :             assert(!tableName_.empty());</span>
-<span class="lineNum">      59 </span>            : 
-<span class="lineNum">      60 </span><span class="lineCov">         16 :             db_-&gt;query_schema(tableName_, columns_);</span>
-<a name="61"><span class="lineNum">      61 </span><span class="lineCov">         16 :         }</span></a>
-<span class="lineNum">      62 </span>            : 
-<span class="lineNum">      63 </span>            :         vector&lt;column_definition&gt; schema::columns() const
-<span class="lineNum">      64 </span>            :         {
-<span class="lineNum">      65 </span><span class="lineCov">         78 :             return columns_;</span>
-<a name="66"><span class="lineNum">      66 </span>            :         }</a>
-<span class="lineNum">      67 </span>            : 
-<span class="lineNum">      68 </span>            :         vector&lt;string&gt; schema::column_names() const
-<span class="lineNum">      69 </span>            :         {
-<span class="lineNum">      70 </span><span class="lineCov">        102 :             vector&lt;string&gt; names;</span>
-<span class="lineNum">      71 </span>            : 
-<span class="lineNum">      72 </span><span class="lineCov">       1704 :             for (auto &amp; c : columns_)</span>
-<span class="lineNum">      73 </span>            :             {
-<span class="lineNum">      74 </span><span class="lineCov">        500 :                 names.push_back(c.name);</span>
-<span class="lineNum">      75 </span><span class="lineCov">        500 :             }</span>
-<span class="lineNum">      76 </span><span class="lineCov">        102 :             return names;</span>
-<a name="77"><span class="lineNum">      77 </span><span class="lineCov">        204 :         }</span></a>
-<span class="lineNum">      78 </span>            : 
-<span class="lineNum">      79 </span>            :         vector&lt;string&gt; schema::primary_keys() const
-<span class="lineNum">      80 </span>            :         {
-<span class="lineNum">      81 </span><span class="lineCov">          2 :             vector&lt;string&gt; names;</span>
-<span class="lineNum">      82 </span>            : 
-<span class="lineNum">      83 </span><span class="lineCov">         34 :             for (auto &amp; c : columns_)</span>
-<span class="lineNum">      84 </span>            :             {
-<span class="lineNum">      85 </span><span class="lineCov">         10 :                 if (c.pk)</span>
-<span class="lineNum">      86 </span><span class="lineCov">          4 :                     names.push_back(c.name);</span>
-<span class="lineNum">      87 </span><span class="lineCov">         10 :             }</span>
+<span class="lineNum">      58 </span>            :         void schema::init()
+<span class="lineNum">      59 </span>            :         {
+<span class="lineNum">      60 </span><span class="lineCov">         44 :             assert(db_ != NULL);</span>
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span><span class="lineCov">         44 :             assert(db_-&gt;is_open());</span>
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span><span class="lineCov">         44 :             assert(!tableName_.empty());</span>
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span><span class="lineCov">         22 :             db_-&gt;query_schema(tableName_, columns_);</span>
+<a name="67"><span class="lineNum">      67 </span><span class="lineCov">         22 :         }</span></a>
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span>            :         vector&lt;column_definition&gt; schema::columns() const
+<span class="lineNum">      70 </span>            :         {
+<span class="lineNum">      71 </span><span class="lineCov">         98 :             return columns_;</span>
+<a name="72"><span class="lineNum">      72 </span>            :         }</a>
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            :         vector&lt;string&gt; schema::column_names() const
+<span class="lineNum">      75 </span>            :         {
+<span class="lineNum">      76 </span><span class="lineCov">        122 :             vector&lt;string&gt; names;</span>
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span><span class="lineCov">       2044 :             for (auto &amp; c : columns_)</span>
+<span class="lineNum">      79 </span>            :             {
+<span class="lineNum">      80 </span><span class="lineCov">        600 :                 names.push_back(c.name);</span>
+<span class="lineNum">      81 </span><span class="lineCov">        600 :             }</span>
+<span class="lineNum">      82 </span><span class="lineCov">        122 :             return names;</span>
+<a name="83"><span class="lineNum">      83 </span><span class="lineCov">        244 :         }</span></a>
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span>            :         vector&lt;string&gt; schema::primary_keys() const
+<span class="lineNum">      86 </span>            :         {
+<span class="lineNum">      87 </span><span class="lineCov">          2 :             vector&lt;string&gt; names;</span>
 <span class="lineNum">      88 </span>            : 
-<span class="lineNum">      89 </span><span class="lineCov">          2 :             return names;</span>
-<a name="90"><span class="lineNum">      90 </span><span class="lineCov">          4 :         }</span></a>
-<span class="lineNum">      91 </span>            : 
-<span class="lineNum">      92 </span>            :         string schema::table_name() const
-<span class="lineNum">      93 </span>            :         {
-<span class="lineNum">      94 </span><span class="lineCov">        146 :             return tableName_;</span>
-<a name="95"><span class="lineNum">      95 </span>            :         }</a>
-<span class="lineNum">      96 </span>            : 
-<span class="lineNum">      97 </span>            :         sqldb *schema::db() const
-<span class="lineNum">      98 </span>            :         {
-<span class="lineNum">      99 </span><span class="lineCov">        146 :             return db_;</span>
-<a name="100"><span class="lineNum">     100 </span>            :         }</a>
-<span class="lineNum">     101 </span>            : 
-<span class="lineNum">     102 </span>            :         column_definition schema::operator[](size_t index) const
-<span class="lineNum">     103 </span>            :         {
-<span class="lineNum">     104 </span><span class="lineNoCov">          0 :             return columns_[index];</span>
-<span class="lineNum">     105 </span>            :         }
-<span class="lineNum">     106 </span>            :     };
+<span class="lineNum">      89 </span><span class="lineCov">         34 :             for (auto &amp; c : columns_)</span>
+<span class="lineNum">      90 </span>            :             {
+<span class="lineNum">      91 </span><span class="lineCov">         10 :                 if (c.pk)</span>
+<span class="lineNum">      92 </span><span class="lineCov">          4 :                     names.push_back(c.name);</span>
+<span class="lineNum">      93 </span><span class="lineCov">         10 :             }</span>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span><span class="lineCov">          2 :             return names;</span>
+<a name="96"><span class="lineNum">      96 </span><span class="lineCov">          4 :         }</span></a>
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            :         string schema::table_name() const
+<span class="lineNum">      99 </span>            :         {
+<span class="lineNum">     100 </span><span class="lineCov">        190 :             return tableName_;</span>
+<a name="101"><span class="lineNum">     101 </span>            :         }</a>
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span>            :         sqldb *schema::db() const
+<span class="lineNum">     104 </span>            :         {
+<span class="lineNum">     105 </span><span class="lineCov">        186 :             return db_;</span>
+<a name="106"><span class="lineNum">     106 </span>            :         }</a>
 <span class="lineNum">     107 </span>            : 
-<span class="lineNum">     108 </span>            : }
+<span class="lineNum">     108 </span>            :         column_definition schema::operator[](size_t index) const
+<span class="lineNum">     109 </span>            :         {
+<span class="lineNum">     110 </span><span class="lineCov">          2 :             return columns_[index];</span>
+<span class="lineNum">     111 </span>            :         }
+<span class="lineNum">     112 </span>            :     };
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span>            : }
 </pre>
       </td>
     </tr>

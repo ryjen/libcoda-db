@@ -61,9 +61,13 @@ namespace arg3
 
         column mysql_row::column(size_t nPosition) const
         {
-            assert(nPosition < size());
+            if (!is_valid())
+                throw database_exception("invalid row");
 
-            assert(is_valid());
+            if (nPosition >= size())
+            {
+                throw database_exception("invalid index for row column");
+            }
 
             return db::column( make_shared<mysql_column>( res_, row_, nPosition ) );
         }
@@ -88,9 +92,12 @@ namespace arg3
 
         string mysql_row::column_name(size_t nPosition) const
         {
-            assert(nPosition < size());
-
             assert(res_ != nullptr);
+
+            if (nPosition >= size())
+            {
+                throw database_exception("invalid index for row column");
+            }
 
             auto field = mysql_fetch_field_direct(res_.get(), nPosition);
 
@@ -111,17 +118,17 @@ namespace arg3
         /* statement version */
 
 
-        mysql_stmt_row::mysql_stmt_row(mysql_db *db, MYSQL_RES *metadata, shared_ptr<mysql_binding> fields) : row_impl(), fields_(fields), metadata_(metadata),
+        mysql_stmt_row::mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields) : row_impl(), fields_(fields), metadata_(metadata),
             db_(db)
         {
             assert(db_ != NULL);
 
-            assert(metadata_ != NULL);
+            //assert(metadata_ != NULL);
 
-            assert(fields_ != nullptr);
+            //assert(fields_ != nullptr);
 
-            if (metadata_ != NULL)
-                size_ = mysql_num_fields(metadata_);
+            if (metadata_ != nullptr)
+                size_ = mysql_num_fields(metadata_.get());
         }
 
         mysql_stmt_row::mysql_stmt_row(const mysql_stmt_row &other) : row_impl(other), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_)
@@ -131,7 +138,7 @@ namespace arg3
         {
             other.fields_ = nullptr;
             other.db_ = NULL;
-            other.metadata_ = NULL;
+            other.metadata_ = nullptr;
         }
 
         mysql_stmt_row::~mysql_stmt_row() {}
@@ -154,16 +161,24 @@ namespace arg3
             size_ = other.size_;
             other.fields_ = nullptr;
             other.db_ = NULL;
-            other.metadata_ = NULL;
+            other.metadata_ = nullptr;
 
             return *this;
         }
 
         column mysql_stmt_row::column(size_t nPosition) const
         {
-            assert(nPosition < size());
+            assert(fields_ != nullptr);
 
-            assert(fields_ != NULL);
+            if (!is_valid())
+            {
+                throw database_exception("invalid row");
+            }
+
+            if (nPosition >= size())
+            {
+                throw database_exception("invalid index for row column");
+            }
 
             return db::column(make_shared<mysql_stmt_column>( column_name(nPosition), fields_->get(nPosition) ) );
         }
@@ -172,11 +187,16 @@ namespace arg3
         {
             assert(!name.empty());
 
-            assert(metadata_ != NULL);
+            assert(metadata_ != nullptr);
 
-            for (size_t i = 0; i < size_; i++)
+            if (!is_valid())
             {
-                auto field = mysql_fetch_field_direct(metadata_, i);
+                throw database_exception("invalid row");
+            }
+
+            for (size_t i = 0; i < size(); i++)
+            {
+                auto field = mysql_fetch_field_direct(metadata_.get(), i);
 
                 if (name == field->name)
                 {
@@ -188,11 +208,14 @@ namespace arg3
 
         string mysql_stmt_row::column_name(size_t nPosition) const
         {
-            assert(nPosition < size());
+            assert(metadata_ != nullptr);
 
-            assert(metadata_ != NULL);
+            if (nPosition >= size())
+            {
+                throw database_exception("invalid index for row column");
+            }
 
-            auto field = mysql_fetch_field_direct(metadata_, nPosition);
+            auto field = mysql_fetch_field_direct(metadata_.get(), nPosition);
 
             return field->name;
         }
@@ -204,34 +227,35 @@ namespace arg3
 
         bool mysql_stmt_row::is_valid() const
         {
-            return fields_ != NULL && metadata_ != NULL;
+            return fields_ != nullptr && metadata_ != nullptr;
         }
 
         /* cached version */
 
-        mysql_cached_row::mysql_cached_row(MYSQL_RES *metadata, shared_ptr<mysql_binding> fields)
+        mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields)
         {
-            assert(metadata != NULL);
+            //assert(fields != nullptr);
 
-            assert(fields != nullptr);
-
-            int size = mysql_num_fields(metadata);
-
-            for (size_t i = 0; i < size; i++)
+            if (metadata != nullptr && fields != nullptr)
             {
-                auto field = mysql_fetch_field_direct(metadata, i);
+                int size = mysql_num_fields(metadata.get());
 
-                columns_.push_back(make_shared<mysql_cached_column>(field->name, fields->get(i)));
+                for (size_t i = 0; i < size; i++)
+                {
+                    auto field = mysql_fetch_field_direct(metadata.get(), i);
+
+                    columns_.push_back(make_shared<mysql_cached_column>(field->name, fields->get(i)));
+                }
             }
         }
 
-        mysql_cached_row::mysql_cached_row(MYSQL_RES *res, MYSQL_ROW row)
+        mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row)
         {
             assert(row != NULL);
 
             assert(res != NULL);
 
-            int size = mysql_num_fields(res);
+            int size = mysql_num_fields(res.get());
 
             for (size_t i = 0; i < size; i++)
             {

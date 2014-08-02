@@ -243,11 +243,11 @@ namespace arg3
         {
         }
 
-        mysql_cached_column::mysql_cached_column(MYSQL_RES *res, MYSQL_ROW pValue, size_t index)
+        mysql_cached_column::mysql_cached_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index)
         {
-            assert(res != NULL);
+            assert(res != nullptr);
 
-            auto field = mysql_fetch_field_direct(res, index);
+            auto field = mysql_fetch_field_direct(res.get(), index);
 
             type_ = field->type;
 
@@ -279,7 +279,7 @@ namespace arg3
             case MYSQL_TYPE_BLOB:
             {
 
-                auto lengths = mysql_fetch_lengths(res);
+                auto lengths = mysql_fetch_lengths(res.get());
 
                 void *buf = calloc(1, lengths[index]);
                 memmove(buf, pValue[index], lengths[index]);

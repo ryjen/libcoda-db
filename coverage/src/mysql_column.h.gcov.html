@@ -172,7 +172,7 @@
 <span class="lineNum">     102 </span>            :             int type_;
 <span class="lineNum">     103 </span>            :         public:
 <span class="lineNum">     104 </span>            :             mysql_cached_column(const string &amp;name, shared_ptr&lt;mysql_binding&gt; value);
-<span class="lineNum">     105 </span>            :             mysql_cached_column(MYSQL_RES *res, MYSQL_ROW pValue, size_t index);
+<span class="lineNum">     105 </span>            :             mysql_cached_column(shared_ptr&lt;MYSQL_RES&gt; res, MYSQL_ROW pValue, size_t index);
 <a name="106"><span class="lineNum">     106 </span>            :             mysql_cached_column(const mysql_cached_column &amp;other) = default;</a>
 <span class="lineNum">     107 </span>            :             mysql_cached_column(mysql_cached_column &amp;&amp;other) = default;
 <span class="lineNum">     108 </span><span class="lineNoCov">          0 :             virtual ~mysql_cached_column() = default;</span>

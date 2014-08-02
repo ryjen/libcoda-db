@@ -78,7 +78,7 @@ namespace arg3
                 row_ = other.row_;
                 position_ = other.position_;
 
-                return this;
+                return *this;
             }
 
             row_iterator &operator=(row_iterator && other)
@@ -87,7 +87,7 @@ namespace arg3
                 position_ = other.position_;
                 other.row_ = nullptr;
 
-                return this;
+                return *this;
             }
 
             ValueType operator*()

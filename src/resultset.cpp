@@ -89,6 +89,7 @@ namespace arg3
             value_(std::move(other.value_))
         {
             other.rs_ = nullptr;
+            other.pos_ = -1;
         }
 
         resultset_iterator::~resultset_iterator() {}
@@ -110,7 +111,7 @@ namespace arg3
 
         resultset_iterator &resultset_iterator::operator++()
         {
-            if (pos_ == -1)
+            if (pos_ == -1 || rs_ == nullptr)
                 return *this;
 
             bool res = rs_->next();

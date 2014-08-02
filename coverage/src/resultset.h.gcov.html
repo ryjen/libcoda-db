@@ -88,11 +88,11 @@
 <span class="lineNum">      18 </span>            :         class resultset_impl
 <a name="19"><span class="lineNum">      19 </span>            :         {</a>
 <span class="lineNum">      20 </span>            :         protected:
-<span class="lineNum">      21 </span><span class="lineCov">         93 :             resultset_impl() = default;</span>
+<span class="lineNum">      21 </span><span class="lineCov">        114 :             resultset_impl() = default;</span>
 <span class="lineNum">      22 </span>            :         public:
 <a name="23"><span class="lineNum">      23 </span>            :             resultset_impl(const resultset_impl &amp;other) = delete;</a>
 <span class="lineNum">      24 </span>            :             resultset_impl(resultset_impl &amp;&amp;other) = default;
-<span class="lineNum">      25 </span><span class="lineCov">         93 :             virtual ~resultset_impl() = default;</span>
+<span class="lineNum">      25 </span><span class="lineCov">        114 :             virtual ~resultset_impl() = default;</span>
 <span class="lineNum">      26 </span>            : 
 <span class="lineNum">      27 </span>            :             resultset_impl &amp;operator=(const resultset_impl &amp;other) = delete;
 <span class="lineNum">      28 </span>            :             resultset_impl &amp;operator=(resultset_impl &amp;&amp; other) = default;

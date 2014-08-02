@@ -52,11 +52,11 @@ namespace arg3
             friend class mysql_stmt_resultset;
         private:
             shared_ptr<mysql_binding> fields_;
-            MYSQL_RES *metadata_;
+            shared_ptr<MYSQL_RES> metadata_;
             mysql_db *db_;
             size_t size_;
         public:
-            mysql_stmt_row(mysql_db *db, MYSQL_RES *metadata, shared_ptr<mysql_binding> fields);
+            mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields);
             virtual ~mysql_stmt_row();
             mysql_stmt_row(const mysql_stmt_row &other);
             mysql_stmt_row(mysql_stmt_row &&other);
@@ -76,8 +76,8 @@ namespace arg3
         private:
             std::vector<shared_ptr<mysql_cached_column>> columns_;
         public:
-            mysql_cached_row(MYSQL_RES *metadata, shared_ptr<mysql_binding> fields);
-            mysql_cached_row(MYSQL_RES *res, MYSQL_ROW row);
+            mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields);
+            mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row);
             virtual ~mysql_cached_row() = default;
             mysql_cached_row(const mysql_cached_row &other) = default;
             mysql_cached_row(mysql_cached_row &&other) = default;

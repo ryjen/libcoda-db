@@ -102,7 +102,7 @@ namespace arg3
             int type_;
         public:
             mysql_cached_column(const string &name, shared_ptr<mysql_binding> value);
-            mysql_cached_column(MYSQL_RES *res, MYSQL_ROW pValue, size_t index);
+            mysql_cached_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
             mysql_cached_column(const mysql_cached_column &other) = default;
             mysql_cached_column(mysql_cached_column &&other) = default;
             virtual ~mysql_cached_column() = default;

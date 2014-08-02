@@ -58,7 +58,7 @@ namespace arg3
             friend class resultset_iterator;
         private:
             shared_ptr<MYSQL_STMT> stmt_;
-            MYSQL_RES *metadata_;
+            shared_ptr<MYSQL_RES> metadata_;
             mysql_db *db_;
             shared_ptr<mysql_binding> bindings_;
             int status_;
@@ -94,8 +94,8 @@ namespace arg3
             vector<shared_ptr<row_impl>> rows_;
             int currentRow_;
         public:
-            mysql_cached_resultset(shared_ptr<MYSQL_STMT> stmt);
-            mysql_cached_resultset(mysql_db *db, MYSQL_RES *res);
+            mysql_cached_resultset(sqldb *db, shared_ptr<MYSQL_STMT> stmt);
+            mysql_cached_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res);
 
             mysql_cached_resultset(const mysql_cached_resultset &other) = delete;
             mysql_cached_resultset(mysql_cached_resultset &&other);

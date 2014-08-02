@@ -110,7 +110,6 @@ namespace arg3
             return column(name);
         }
 
-
         string row::column_name(size_t nPosition) const
         {
             assert(impl_ != nullptr);

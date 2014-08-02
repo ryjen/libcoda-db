@@ -122,11 +122,11 @@
 <span class="lineNum">      52 </span>            :             friend class mysql_stmt_resultset;
 <span class="lineNum">      53 </span>            :         private:
 <span class="lineNum">      54 </span>            :             shared_ptr&lt;mysql_binding&gt; fields_;
-<span class="lineNum">      55 </span>            :             MYSQL_RES *metadata_;
+<span class="lineNum">      55 </span>            :             shared_ptr&lt;MYSQL_RES&gt; metadata_;
 <span class="lineNum">      56 </span>            :             mysql_db *db_;
 <span class="lineNum">      57 </span>            :             size_t size_;
 <span class="lineNum">      58 </span>            :         public:
-<span class="lineNum">      59 </span>            :             mysql_stmt_row(mysql_db *db, MYSQL_RES *metadata, shared_ptr&lt;mysql_binding&gt; fields);
+<span class="lineNum">      59 </span>            :             mysql_stmt_row(mysql_db *db, shared_ptr&lt;MYSQL_RES&gt; metadata, shared_ptr&lt;mysql_binding&gt; fields);
 <span class="lineNum">      60 </span>            :             virtual ~mysql_stmt_row();
 <span class="lineNum">      61 </span>            :             mysql_stmt_row(const mysql_stmt_row &amp;other);
 <span class="lineNum">      62 </span>            :             mysql_stmt_row(mysql_stmt_row &amp;&amp;other);
@@ -146,8 +146,8 @@
 <span class="lineNum">      76 </span>            :         private:
 <span class="lineNum">      77 </span>            :             std::vector&lt;shared_ptr&lt;mysql_cached_column&gt;&gt; columns_;
 <span class="lineNum">      78 </span>            :         public:
-<a name="79"><span class="lineNum">      79 </span>            :             mysql_cached_row(MYSQL_RES *metadata, shared_ptr&lt;mysql_binding&gt; fields);</a>
-<span class="lineNum">      80 </span>            :             mysql_cached_row(MYSQL_RES *res, MYSQL_ROW row);
+<a name="79"><span class="lineNum">      79 </span>            :             mysql_cached_row(sqldb *db, shared_ptr&lt;MYSQL_RES&gt; metadata, shared_ptr&lt;mysql_binding&gt; fields);</a>
+<span class="lineNum">      80 </span>            :             mysql_cached_row(sqldb *db, shared_ptr&lt;MYSQL_RES&gt; res, MYSQL_ROW row);
 <span class="lineNum">      81 </span><span class="lineNoCov">          0 :             virtual ~mysql_cached_row() = default;</span>
 <span class="lineNum">      82 </span>            :             mysql_cached_row(const mysql_cached_row &amp;other) = default;
 <span class="lineNum">      83 </span>            :             mysql_cached_row(mysql_cached_row &amp;&amp;other) = default;
