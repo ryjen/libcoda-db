@@ -180,7 +180,7 @@ namespace arg3
                 throw database_exception("invalid index for row column");
             }
 
-            return db::column(make_shared<mysql_stmt_column>( column_name(nPosition), fields_->get(nPosition) ) );
+            return db::column(make_shared<mysql_stmt_column>( column_name(nPosition), fields_, nPosition ) );
         }
 
         column mysql_stmt_row::column(const string &name) const
@@ -232,11 +232,11 @@ namespace arg3
 
         /* cached version */
 
-        mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields)
+        mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> metadata, mysql_binding &fields)
         {
             //assert(fields != nullptr);
 
-            if (metadata != nullptr && fields != nullptr)
+            if (metadata != nullptr)
             {
                 int size = mysql_num_fields(metadata.get());
 
@@ -244,7 +244,7 @@ namespace arg3
                 {
                     auto field = mysql_fetch_field_direct(metadata.get(), i);
 
-                    columns_.push_back(make_shared<mysql_cached_column>(field->name, fields->get(i)));
+                    columns_.push_back(make_shared<mysql_cached_column>(field->name, fields, i));
                 }
             }
         }

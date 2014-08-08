@@ -106,6 +106,7 @@ namespace arg3
             }
             memset(&value_[i], 0, sizeof(value_[i]));
         }
+
         void mysql_binding::clear_value()
         {
             if (value_)
@@ -194,11 +195,11 @@ namespace arg3
             clear_value();
         }
 
-        shared_ptr<mysql_binding> mysql_binding::get(size_t index) const
+        MYSQL_BIND *mysql_binding::get(size_t index) const
         {
             assert(index < size_);
 
-            return make_shared<mysql_binding>(value_[index]);
+            return &value_[index];
         }
 
         void mysql_binding::bind_result(MYSQL_STMT *stmt) const
@@ -300,8 +301,6 @@ namespace arg3
 
             return textValue;
         }
-
-
 
         void mysql_binding::reallocate_value(size_t index)
         {

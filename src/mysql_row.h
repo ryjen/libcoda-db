@@ -76,7 +76,7 @@ namespace arg3
         private:
             std::vector<shared_ptr<mysql_cached_column>> columns_;
         public:
-            mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields);
+            mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> metadata, mysql_binding &fields);
             mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row);
             virtual ~mysql_cached_row() = default;
             mysql_cached_row(const mysql_cached_row &other) = default;

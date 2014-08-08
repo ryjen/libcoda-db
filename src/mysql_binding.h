@@ -43,7 +43,7 @@ namespace arg3
 
             size_t size() const;
 
-            std::shared_ptr<mysql_binding> get(size_t index) const;
+            MYSQL_BIND *get(size_t index) const;
 
             sql_blob to_blob(size_t index) const;
 

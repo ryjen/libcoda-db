@@ -136,15 +136,15 @@ namespace arg3
 
         /* statement version */
 
-        mysql_stmt_column::mysql_stmt_column(const string &name, shared_ptr<mysql_binding> value) : name_(name), value_(value)
+        mysql_stmt_column::mysql_stmt_column(const string &name, shared_ptr<mysql_binding> bindings, size_t position) : name_(name), value_(bindings), position_(position)
         {
         }
 
-        mysql_stmt_column::mysql_stmt_column(const mysql_stmt_column &other) : name_(other.name_), value_(other.value_)
+        mysql_stmt_column::mysql_stmt_column(const mysql_stmt_column &other) : name_(other.name_), value_(other.value_), position_(other.position_)
         {
         }
 
-        mysql_stmt_column::mysql_stmt_column(mysql_stmt_column &&other) : name_(std::move(other.name_)), value_(other.value_)
+        mysql_stmt_column::mysql_stmt_column(mysql_stmt_column &&other) : name_(std::move(other.name_)), value_(other.value_), position_(other.position_)
         {
             other.value_ = nullptr;
         }
@@ -158,6 +158,7 @@ namespace arg3
         {
             value_ = other.value_;
             name_ = other.name_;
+            position_ = other.position_;
 
             return *this;
         }
@@ -166,6 +167,7 @@ namespace arg3
         {
             name_ = std::move(other.name_);
             value_ = other.value_;
+            position_ = other.position_;
             other.value_ = nullptr;
             return *this;
         }
@@ -179,54 +181,54 @@ namespace arg3
         {
             assert(value_ != nullptr);
 
-            return value_->to_blob(0);
+            return value_->to_blob(position_);
         }
 
         double mysql_stmt_column::to_double() const
         {
             assert(value_ != nullptr);
 
-            return value_->to_double(0);
+            return value_->to_double(position_);
         }
         bool mysql_stmt_column::to_bool() const
         {
             assert(value_ != nullptr);
 
-            return value_->to_bool(0);
+            return value_->to_bool(position_);
         }
         int mysql_stmt_column::to_int() const
         {
             assert(value_ != nullptr);
 
-            return value_->to_int(0);
+            return value_->to_int(position_);
         }
 
         int64_t mysql_stmt_column::to_int64() const
         {
             assert(value_ != nullptr);
 
-            return value_->to_int64(0);
+            return value_->to_int64(position_);
         }
 
         sql_value mysql_stmt_column::to_value() const
         {
             assert(value_ != nullptr);
 
-            return value_->to_value(0);
+            return value_->to_value(position_);
         }
 
         int mysql_stmt_column::type() const
         {
             assert(value_ != nullptr);
 
-            return value_->type(0);
+            return value_->type(position_);
         }
 
         string mysql_stmt_column::to_string() const
         {
             assert(value_ != nullptr);
 
-            return value_->to_string(0);
+            return value_->to_string(position_);
         }
 
         string mysql_stmt_column::name() const
@@ -238,8 +240,8 @@ namespace arg3
         /* cached version */
 
 
-        mysql_cached_column::mysql_cached_column(const string &name, shared_ptr<mysql_binding> value) : name_(name),
-            value_(value->to_value(0)), type_(value->type(0))
+        mysql_cached_column::mysql_cached_column(const string &name, mysql_binding &bindings, size_t position) : name_(name),
+            value_(bindings.to_value(position)), type_(bindings.type(position))
         {
         }
 

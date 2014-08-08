@@ -244,9 +244,9 @@ namespace arg3
 
             mysql_binding bindings(fields, size_);
 
-            for (int i = 0; i < size_; i++)
+            for (size_t i = 0; i < size_; i++)
             {
-                rows_.push_back(make_shared<mysql_cached_row>(db, metadata, bindings.get(i)));
+                rows_.push_back(make_shared<mysql_cached_row>(db, metadata, bindings));
             }
 
 

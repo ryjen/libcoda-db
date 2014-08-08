@@ -63,9 +63,10 @@ namespace arg3
         private:
             string name_;
             shared_ptr<mysql_binding> value_;
+            size_t position_;
         public:
 
-            mysql_stmt_column(const string &name, shared_ptr<mysql_binding> value);
+            mysql_stmt_column(const string &name, shared_ptr<mysql_binding> bindings, size_t position);
             mysql_stmt_column(const mysql_stmt_column &other);
             mysql_stmt_column(mysql_stmt_column &&other);
             virtual ~mysql_stmt_column();
@@ -101,7 +102,7 @@ namespace arg3
             sql_value value_;
             int type_;
         public:
-            mysql_cached_column(const string &name, shared_ptr<mysql_binding> value);
+            mysql_cached_column(const string &name, mysql_binding &bindings, size_t position);
             mysql_cached_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
             mysql_cached_column(const mysql_cached_column &other) = default;
             mysql_cached_column(mysql_cached_column &&other) = default;
