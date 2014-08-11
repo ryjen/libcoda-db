@@ -19,7 +19,7 @@
         <table cellpadding=1 border=0 width="100%">
           <tr>
             <td width="10%" class="headerItem">Current view:</td>
-            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - schema_factory.cpp<span style="font-size: 80%;"> (source / <a href="schema_factory.cpp.func.html">functions</a>)</span></td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - schema_factory.cpp<span style="font-size: 80%;"> (source / <a href="schema_factory.cpp.func-sort-c.html">functions</a>)</span></td>
             <td width="5%"></td>
             <td width="15%"></td>
             <td width="10%" class="headerCovTableHead">Hit</td>
@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-01</td>
+            <td class="headerValue">2014-08-10 21:14:27</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">11</td>
@@ -80,10 +80,10 @@
 <span class="lineNum">      10 </span>            : 
 <span class="lineNum">      11 </span>            :         shared_ptr&lt;schema&gt; schema_factory::create(const string &amp;tableName)
 <span class="lineNum">      12 </span>            :         {
-<span class="lineNum">      13 </span><span class="lineCov">         22 :             shared_ptr&lt;schema&gt; p = make_shared&lt;schema&gt;(db_, tableName);</span>
-<span class="lineNum">      14 </span><span class="lineCov">         44 :             schema_cache_[tableName] = p;</span>
-<span class="lineNum">      15 </span><span class="lineCov">         22 :             return p;</span>
-<a name="16"><span class="lineNum">      16 </span><span class="lineCov">         44 :         }</span></a>
+<span class="lineNum">      13 </span><span class="lineCov">         64 :             shared_ptr&lt;schema&gt; p = make_shared&lt;schema&gt;(db_, tableName);</span>
+<span class="lineNum">      14 </span><span class="lineCov">        128 :             schema_cache_[tableName] = p;</span>
+<span class="lineNum">      15 </span><span class="lineCov">         64 :             return p;</span>
+<a name="16"><span class="lineNum">      16 </span><span class="lineCov">        128 :         }</span></a>
 <span class="lineNum">      17 </span>            : 
 <span class="lineNum">      18 </span>            :         schema_factory &amp;schema_factory::operator=(const schema_factory &amp;other)
 <span class="lineNum">      19 </span>            :         {
@@ -119,23 +119,24 @@
 <span class="lineNum">      49 </span>            : 
 <span class="lineNum">      50 </span>            :         std::shared_ptr&lt;schema&gt; schema_factory::get(const string &amp;tableName)
 <span class="lineNum">      51 </span>            :         {
-<span class="lineNum">      52 </span><span class="lineCov">        154 :             auto i = schema_cache_.find(tableName);</span>
-<span class="lineNum">      53 </span><span class="lineCov">        154 :             if (i == schema_cache_.end())</span>
-<span class="lineNum">      54 </span>            :             {
-<span class="lineNum">      55 </span><span class="lineCov">         22 :                 return create(tableName);</span>
-<span class="lineNum">      56 </span>            :             }
-<span class="lineNum">      57 </span>            :             else
-<span class="lineNum">      58 </span>            :             {
-<span class="lineNum">      59 </span><span class="lineCov">        132 :                 return i-&gt;second;</span>
-<span class="lineNum">      60 </span>            :             }
-<a name="61"><span class="lineNum">      61 </span><span class="lineCov">        154 :         }</span></a>
-<span class="lineNum">      62 </span>            : 
-<span class="lineNum">      63 </span>            :         void schema_factory::clear(const string &amp;tablename)
-<span class="lineNum">      64 </span>            :         {
-<span class="lineNum">      65 </span><span class="lineCov">         20 :             schema_cache_.erase(tablename);</span>
-<span class="lineNum">      66 </span><span class="lineCov">         20 :         }</span>
-<span class="lineNum">      67 </span>            :     }
-<span class="lineNum">      68 </span>            : }
+<span class="lineNum">      52 </span><span class="lineCov">        114 :             auto i = schema_cache_.find(tableName);</span>
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span><span class="lineCov">        114 :             if (i == schema_cache_.end())</span>
+<span class="lineNum">      55 </span>            :             {
+<span class="lineNum">      56 </span><span class="lineCov">         64 :                 return create(tableName);</span>
+<span class="lineNum">      57 </span>            :             }
+<span class="lineNum">      58 </span>            :             else
+<span class="lineNum">      59 </span>            :             {
+<span class="lineNum">      60 </span><span class="lineCov">         50 :                 return i-&gt;second;</span>
+<span class="lineNum">      61 </span>            :             }
+<a name="62"><span class="lineNum">      62 </span><span class="lineCov">        114 :         }</span></a>
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            :         void schema_factory::clear(const string &amp;tablename)
+<span class="lineNum">      65 </span>            :         {
+<span class="lineNum">      66 </span><span class="lineCov">         88 :             schema_cache_.erase(tablename);</span>
+<span class="lineNum">      67 </span><span class="lineCov">         88 :         }</span>
+<span class="lineNum">      68 </span>            :     }
+<span class="lineNum">      69 </span>            : }
 </pre>
       </td>
     </tr>
@@ -144,7 +145,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
   </table>
   <br>
 

@@ -1,77 +1,84 @@
-#include <igloo/igloo.h>
+#include <bandit/bandit.h>
 #include "schema.h"
 #include "db.test.h"
 
-using namespace igloo;
+using namespace bandit;
 
 using namespace std;
 
 using namespace arg3::db;
 
-Context(schema_test)
+go_bandit([]()
 {
-    static void SetUpContext()
+
+    describe("schema", []()
     {
-        setup_testdb();
+        before_each([]()
+        {
+            setup_testdb();
+        });
 
-    }
-
-    static void TearDownContext()
-    {
-        teardown_testdb();
-    }
+        after_each([]()
+        {
+            teardown_testdb();
+        });
 
 
-    Spec(test_primary_keys)
-    {
-        user u;
+        it("has primary keys", []()
+        {
+            user u;
 
-        auto keys = u.schema()->primary_keys();
+            auto keys = u.schema()->primary_keys();
 
-        Assert::That(keys.size(), Equals(1));
+            Assert::That(keys.size(), Equals(1));
 
-        Assert::That(keys[0], Equals("id"));
-    }
+            Assert::That(keys[0], Equals("id"));
+        });
 
-    Spec(operators)
-    {
-        schema s(testdb, "users");
+        it("has operators", []()
+        {
+            schema s(testdb, "users");
 
-        s.init();
+            s.init();
 
-        schema other(std::move(s));
+            schema other(std::move(s));
 
-        Assert::That(s.is_valid(), Equals(false));
+            Assert::That(s.is_valid(), Equals(false));
 
-        Assert::That(other.is_valid(), Equals(true));
+            Assert::That(other.is_valid(), Equals(true));
 
-        schema copy(testdb, "other_users");
+            schema copy(testdb, "other_users");
 
-        copy = other;
+            copy = other;
 
-        Assert::That(copy.table_name(), Equals(other.table_name()));
+            Assert::That(copy.table_name(), Equals(other.table_name()));
 
-        schema moved(testdb, "moved_users");
+            schema moved(testdb, "moved_users");
 
-        moved = std::move(other);
+            moved = std::move(other);
 
-        Assert::That(moved.is_valid(), Equals(true));
+            Assert::That(moved.is_valid(), Equals(true));
 
-        Assert::That(other.is_valid(), Equals(false));
-    }
+            Assert::That(other.is_valid(), Equals(false));
+        });
 
-    Spec(columns)
-    {
-        schema s(testdb, "users");
+        it("has columns", []()
+        {
+            schema s(testdb, "users");
 
-        s.init();
+            s.init();
 
-        auto cd = s[0];
+            auto cd = s[0];
 
-        ostringstream os;
+            ostringstream os;
 
-        os << cd;
+            os << cd;
 
-        Assert::That(os.str(), Equals("id"));
-    }
-};
+            Assert::That(os.str(), Equals("id"));
+        });
+
+    });
+
+
+});
+

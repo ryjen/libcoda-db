@@ -68,6 +68,8 @@ namespace arg3
 
             resultset execute();
 
+            void execute(std::function<void (resultset)>);
+
             int count();
 
             void reset();

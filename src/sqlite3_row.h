@@ -39,6 +39,9 @@ namespace arg3
             bool is_valid() const;
         };
 
+        /*!
+         * a row that contains pre-fetched columns
+         */
         class sqlite3_cached_row : public row_impl
         {
             friend class sqlite3_resultset;

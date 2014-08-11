@@ -40,7 +40,10 @@ namespace arg3
         {
             assert(nPosition < size());
 
-            return db::column(make_shared<sqlite3_column>(stmt_, nPosition ) );
+            if (db_->cache_level() == sqldb::CACHE_COLUMN)
+                return db::column(make_shared<sqlite3_cached_column>(stmt_, nPosition));
+            else
+                return db::column(make_shared<sqlite3_column>(stmt_, nPosition ) );
         }
 
         column sqlite3_row::column(const string &name) const

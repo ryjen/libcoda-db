@@ -50,6 +50,7 @@ namespace arg3
         std::shared_ptr<schema> schema_factory::get(const string &tableName)
         {
             auto i = schema_cache_.find(tableName);
+
             if (i == schema_cache_.end())
             {
                 return create(tableName);

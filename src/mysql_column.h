@@ -95,6 +95,9 @@ namespace arg3
 
         };
 
+        /*!
+         * a column that contains a prefetched value
+         */
         class mysql_cached_column : public column_impl
         {
         private:

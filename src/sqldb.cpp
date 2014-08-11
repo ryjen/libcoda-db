@@ -77,12 +77,22 @@ namespace arg3
                 throw database_exception("unknown database " + uri.value);
         }
 
-        sqldb::sqldb() : logLevel_(NONE)
+        sqldb::sqldb() : logLevel_(LOG_NONE), cacheLevel_(CACHE_NONE)
         {}
 
         void sqldb::set_log_level(LogLevel level)
         {
             logLevel_ = level;
+        }
+
+        void sqldb::set_cache_level(CacheLevel level)
+        {
+            cacheLevel_ = level;
+        }
+
+        sqldb::CacheLevel sqldb::cache_level() const
+        {
+            return cacheLevel_;
         }
 
         void sqldb::log(LogLevel level, const string &message)

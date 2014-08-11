@@ -1,163 +1,169 @@
-#include <igloo/igloo.h>
+#include <bandit/bandit.h>
 #include "resultset.h"
 #include "db.test.h"
 
-using namespace igloo;
+using namespace bandit;
 
 using namespace std;
 
 using namespace arg3::db;
 
-Context(resultset_test)
+go_bandit([]()
 {
-    user user1;
-    user user2;
 
-    static void SetUpContext()
+    describe("resultset", []()
     {
-        setup_testdb();
+        user user1;
+        user user2;
 
-    }
+        before_each([]()
+        {
+            setup_testdb();
 
-    static void TearDownContext()
-    {
-        teardown_testdb();
-    }
+        });
 
-    void SetUp()
-    {
-        user1.set("first_name", "Bryan");
-        user1.set("last_name", "Jenkins");
+        before_each([&]()
+        {
+            user1.set("first_name", "Bryan");
+            user1.set("last_name", "Jenkins");
 
-        user1.save();
+            user1.save();
 
-        user2.set("first_name", "Mark");
-        user2.set("last_name", "Smith");
+            user2.set("first_name", "Mark");
+            user2.set("last_name", "Smith");
 
-        user2.save();
-    }
+            user2.save();
+        });
 
-    void TearDown()
-    {
-        user1.de1ete();
-        user2.de1ete();
-    }
+        after_each([&]()
+        {
+            user1.de1ete();
+            user2.de1ete();
+        });
 
-    Spec(movable)
-    {
-        auto rs = testdb->execute("select * from users");
+        after_each([]()
+        {
+            teardown_testdb();
+        });
 
-        Assert::That(rs.is_valid(), Equals(true));
+        it("is movable", []()
+        {
+            auto rs = testdb->execute("select * from users");
 
-        resultset rs2(std::move(rs));
+            Assert::That(rs.is_valid(), Equals(true));
 
-        Assert::That(rs2.is_valid(), Equals(true));
+            resultset rs2(std::move(rs));
 
-        Assert::That(rs.is_valid(), Equals(false));
-    }
+            Assert::That(rs2.is_valid(), Equals(true));
 
-    Spec(current_row)
-    {
-        select_query q(testdb, "users");
+            Assert::That(rs.is_valid(), Equals(false));
+        });
 
-        auto rs = q.execute();
+        it("has a current row", []()
+        {
+            select_query q(testdb, "users");
 
-        auto i = rs.begin();
+            auto rs = q.execute();
 
-        auto row = rs.current_row();
+            auto i = rs.begin();
 
-        Assert::That(row.is_valid(), Equals(true));
+            auto row = rs.current_row();
 
-        auto rowCol = row[0].to_value().to_string();
+            Assert::That(row.is_valid(), Equals(true));
 
-        Assert::That(rowCol.empty(), Equals(false));
+            auto rowCol = row[0].to_value().to_string();
 
-        Assert::That(rowCol, Equals(i->column(0).to_value().to_string()));
+            Assert::That(rowCol.empty(), Equals(false));
 
-    }
+            Assert::That(rowCol, Equals(i->column(0).to_value().to_string()));
 
-    Spec(reset)
-    {
-        select_query q(testdb, "users");
+        });
 
-        auto rs = q.execute();
+        it("can be reset", []()
+        {
+            select_query q(testdb, "users");
 
-        Assert::That(rs.size(), Equals(5));
+            auto rs = q.execute();
 
-        auto i = rs.begin();
+            Assert::That(rs.size(), Equals(5));
 
-        Assert::That(i->column(1).to_string(), Equals("Bryan"));
+            auto i = rs.begin();
 
-        i++;
+            Assert::That(i->column(1).to_string(), Equals("Bryan"));
 
-        Assert::That(i->column(1).to_string(), Equals("Mark"));
+            i++;
 
-        rs.reset();
+            Assert::That(i != rs.end(), IsTrue());
 
-        if (rs.next())
+            Assert::That(i->column(1).to_string(), Equals("Mark"));
 
-            Assert::That(rs.current_row().column(1).to_string(), Equals("Bryan"));
+            rs.reset();
 
-    }
+            if (rs.next())
 
-    Spec(iterator_constructors)
-    {
-        select_query q(testdb, "users");
+                Assert::That(rs.current_row().column(1).to_string(), Equals("Bryan"));
 
-        auto rs = q.execute();
+        });
 
-        auto i = rs.begin();
+        it("can construct iterators", []()
+        {
+            select_query q(testdb, "users");
 
-        auto i2(i);
+            auto rs = q.execute();
 
-        Assert::That(i2 != rs.end(), Equals(true));
-        Assert::That(i != rs.end(), Equals(true));
+            auto i = rs.begin();
 
-        Assert::That(i == i2, Equals(true));
+            auto i2(i);
 
+            Assert::That(i2 != rs.end(), Equals(true));
+            Assert::That(i != rs.end(), Equals(true));
 
-        auto i3(std::move(i));
+            Assert::That(i == i2, Equals(true));
 
-        Assert::That(i == rs.end(), Equals(true));
+            auto i3(std::move(i));
 
-        Assert::That(i3 == i2, Equals(true));
-    }
+            Assert::That(i == rs.end(), Equals(true));
 
-    Spec(iterator_operators)
-    {
-        select_query q(testdb, "users");
+            Assert::That(i3 == i2, Equals(true));
+        });
 
-        auto rs = q.execute();
+        it("can operate on iterators", []()
+        {
+            select_query q(testdb, "users");
 
-        auto i = rs.end();
+            auto rs = q.execute();
 
-        i++;
+            auto i = rs.end();
 
-        Assert::That(i == rs.end(), Equals(true));
+            i++;
 
-        i = rs.begin();
+            Assert::That(i == rs.end(), Equals(true));
 
-        ++i;
+            i = rs.begin();
 
-        Assert::That(i != rs.end(), Equals(true));
+            ++i;
 
-        auto j = i + 1;
+            Assert::That(i != rs.end(), Equals(true));
 
-        Assert::That(i != rs.end(), Equals(true));
+            auto j = i + 1;
 
-        Assert::That(i < j, Equals(true));
+            Assert::That(i != rs.end(), Equals(true));
 
-        Assert::That(j > i, Equals(true));
+            Assert::That(i < j, Equals(true));
 
-        Assert::That(i <= j, Equals(true));
+            Assert::That(j > i, Equals(true));
 
-        Assert::That(j >= i, Equals(true));
+            Assert::That(i <= j, Equals(true));
 
-        i += 1;
+            Assert::That(j >= i, Equals(true));
 
-        Assert::That(i <= j, Equals(true));
+            i += 1;
 
-        Assert::That(j >= i, Equals(true));
-    }
-};
+            Assert::That(i <= j, Equals(true));
+
+            Assert::That(j >= i, Equals(true));
+        });
+    });
+
+});
 

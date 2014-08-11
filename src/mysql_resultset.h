@@ -84,6 +84,9 @@ namespace arg3
             size_t size() const;
         };
 
+        /*!
+         * a resultset that contains pre-fetched rows
+         */
         class mysql_cached_resultset : public resultset_impl
         {
             friend class select_query;

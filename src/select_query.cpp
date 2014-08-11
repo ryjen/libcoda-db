@@ -169,6 +169,13 @@ namespace arg3
 
         }
 
+        void select_query::execute(std::function<void (resultset rs)> funk)
+        {
+            prepare();
+
+            funk(stmt_->results());
+        }
+
         void select_query::reset()
         {
             base_query::reset();

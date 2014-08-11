@@ -61,7 +61,10 @@ namespace arg3
 
         row sqlite3_resultset::current_row()
         {
-            return row(make_shared<sqlite3_row>(db_, stmt_));
+            if (db_->cache_level() == sqldb::CACHE_ROW)
+                return row(make_shared<sqlite3_cached_row>(db_, stmt_));
+            else
+                return row(make_shared<sqlite3_row>(db_, stmt_));
         }
 
         /* cached version */

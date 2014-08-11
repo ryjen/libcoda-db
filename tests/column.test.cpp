@@ -1,116 +1,117 @@
-#include <igloo/igloo.h>
+#include <bandit/bandit.h>
 #include "base_record.h"
 #include "db.test.h"
 #include "sqlite3_column.h"
 
-using namespace igloo;
+using namespace bandit;
 
 using namespace std;
 
 using namespace arg3::db;
 
-Context(column_test)
+
+column get_user_column(const string &name)
 {
-    static void SetUpContext()
+    select_query q(testdb, "users");
+
+    auto rs = q.execute();
+
+    auto row = rs.begin();
+
+    return row->column(name);
+}
+
+go_bandit([]()
+{
+    describe("column", []()
     {
-        setup_testdb();
+        before_each([]()
+        {
+            setup_testdb();
+        });
 
-    }
+        after_each([]()
+        {
+            teardown_testdb();
+        });
+        before_each([]()
+        {
+            user u;
+            u.set("first_name", "Bob");
+            u.set("last_name", "Jenkins");
+            u.set("dval", 123.321);
 
-    static void TearDownContext()
-    {
-        teardown_testdb();
-    }
+            int *data = (int *) calloc(1, sizeof(int));
 
-    void SetUp()
-    {
-        user u;
-        u.set("first_name", "Bob");
-        u.set("last_name", "Jenkins");
-        u.set("dval", 123.321);
+            *data = 4;
 
-        int *data = (int *) calloc(1, sizeof(int));
+            u.set("data", sql_blob(data, sizeof(int), free));
 
-        *data = 4;
+            u.save();
+        });
 
-        u.set("data", sql_blob(data, sizeof(int), free));
+        it("is copyable", []()
+        {
+            auto col = get_user_column("first_name");
 
-        u.save();
-    }
+            column other(col);
 
+            AssertThat(other.is_valid(), IsTrue());
 
-    column get_user_column(const string & name)
-    {
-        select_query q(testdb, "users");
+            AssertThat(other.to_string(), Equals(col.to_string()));
+        });
 
-        auto rs = q.execute();
+        it("is movable", []()
+        {
+            auto col = get_user_column("first_name");
 
-        auto row = rs.begin();
+            auto val = col.to_string();
 
-        return row->column(name);
-    }
+            column other(std::move(col));
 
-    Spec(copy_constructor)
-    {
-        auto col = get_user_column("first_name");
+            AssertThat(col.is_valid(), IsFalse());
 
-        column other(col);
+            AssertThat(other.is_valid(), IsTrue());
 
-        Assert::That(other.is_valid(), Equals(true));
+            AssertThat(other.to_string(), Equals(val));
 
-        Assert::That(other.to_string(), Equals(col.to_string()));
-    }
+            column last = get_user_column("last_name");
 
-    Spec(move_assignment)
-    {
-        auto col = get_user_column("first_name");
+            last = std::move(other);
 
-        auto val = col.to_string();
+            AssertThat(other.is_valid(), IsFalse());
+            AssertThat(last.is_valid(), IsTrue());
+            AssertThat(last.to_string(), Equals(val));
+        });
 
-        column other(std::move(col));
+        it("can be a blob", []()
+        {
+            auto col = get_user_column("data");
 
-        Assert::That(col.is_valid(), Equals(false));
+            AssertThat(col.to_blob().size(), Equals(4));
+        });
 
-        Assert::That(other.is_valid(), Equals(true));
+        it("can be a double", []()
+        {
+            auto col = get_user_column("dval");
 
-        Assert::That(other.to_string(), Equals(val));
+            AssertThat(col.to_double(), Equals(123.321));
 
-        column last = get_user_column("last_name");
+            double val = col;
 
-        last = std::move(other);
+            AssertThat(val, Equals(123.321));
+        });
 
-        Assert::That(other.is_valid(), Equals(false));
-        Assert::That(last.is_valid(), Equals(true));
-        Assert::That(last.to_string(), Equals(val));
-    }
+        it("can be an int64", []()
+        {
+            auto col = get_user_column("id");
 
-    Spec(to_blob)
-    {
-        auto col = get_user_column("data");
+            AssertThat(col.to_int64() > 0, IsTrue());
 
-        Assert::That(col.to_blob().size(), Equals(4));
-    }
+            int64_t val = col;
 
-    Spec(to_double)
-    {
-        auto col = get_user_column("dval");
+            AssertThat(val > 0, IsTrue());
+        });
 
-        Assert::That(col.to_double(), Equals(123.321));
-
-        double val = col;
-
-        Assert::That(val, Equals(123.321));
-    }
-
-    Spec(to_int64)
-    {
-        auto col = get_user_column("id");
-
-        Assert::That(col.to_int64() > 0, Equals(true));
-
-        int64_t val = col;
-
-        Assert::That(val > 0, Equals(true));
-    }
-
-};
+    });
+});

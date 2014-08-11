@@ -70,6 +70,9 @@ namespace arg3
             bool is_valid() const;
         };
 
+        /*!
+         * a row that contains pre-fetched columns
+         */
         class mysql_cached_row : public row_impl
         {
             friend class mysql_stmt_resultset;

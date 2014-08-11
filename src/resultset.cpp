@@ -61,6 +61,14 @@ namespace arg3
             return impl_->size();
         }
 
+        void resultset::for_each(std::function<void (row row)> funk)
+        {
+            for (auto & row : *this)
+            {
+                funk(row);
+            }
+        }
+
         resultset::iterator resultset::begin()
         {
             impl_->reset();

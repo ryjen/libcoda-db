@@ -264,6 +264,8 @@ namespace arg3
             bool empty() const;
 
             bool is_valid() const;
+
+            void for_each(std::function<void (db::column)> funk) const;
         };
 
     }

@@ -56,6 +56,10 @@ namespace arg3
 
             string name() const;
         };
+
+        /*!
+         * a column that contains pre-fetched values
+         */
         class sqlite3_cached_column : public column_impl
         {
         private:

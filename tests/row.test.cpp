@@ -1,122 +1,135 @@
-#include <igloo/igloo.h>
+#include <bandit/bandit.h>
 #include "base_record.h"
 #include "row.h"
 #include "db.test.h"
 
-using namespace igloo;
+using namespace bandit;
 
 using namespace std;
 
 using namespace arg3::db;
 
-Context(row_test)
+row get_first_user_row()
 {
-    user user1;
-    user user2;
+    select_query query(testdb, "users");
 
-    static void SetUpContext()
+    auto rs = query.execute();
+
+    return *rs.begin();
+}
+
+go_bandit([]()
+{
+
+    describe("a row", []()
     {
-        setup_testdb();
-    }
+        user user1;
+        user user2;
 
-    static void TearDownContext()
-    {
-        teardown_testdb();
-    }
-
-    void SetUp()
-    {
-        user1.set("first_name", "Bryan");
-        user1.set("last_name", "Jenkins");
-
-        user1.save();
-
-        user2.set("first_name", "Mark");
-        user2.set("last_name", "Smith");
-
-        user2.save();
-    }
-
-    void TearDown()
-    {
-        user1.de1ete();
-        user2.de1ete();
-    }
-
-    row get_first_user_row()
-    {
-        select_query query(testdb, "users");
-
-        auto rs = query.execute();
-
-        return *rs.begin();
-    }
-
-    Spec(moveable)
-    {
-        auto r = get_first_user_row();
-
-        row other(std::move(r));
-
-        Assert::That(other.is_valid(), Equals(true));
-
-        Assert::That(other.empty(), Equals(false));
-    }
-
-    Spec(copyable)
-    {
-        select_query q(testdb, "users");
-
-        auto rs = q.execute();
-
-        auto i = rs.begin() + 2;
-
-        row other = get_first_user_row();
-
-        other = *i;
-
-        Assert::That(other.empty(), Equals(false));
-
-        Assert::That(other.size(), Equals(i->size()));
-
-        Assert::That(other.column_name(0), Equals("id"));
-    }
-
-    Spec(iterator)
-    {
-        select_query query(testdb, "users");
-
-        auto rs = query.execute();
-
-        auto r = *rs.begin();
-
-        auto columns = testdb->schemas()->get("users")->column_names();
-
-        row::const_iterator ci = r.cbegin();
-
-        Assert::That(ci.name(), Equals(columns[0]));
-
-        for (; ci < r.cend() - 1; ci++)
+        before_each([]()
         {
-            Assert::That(ci->is_valid(), Equals(true));
-        }
+            setup_testdb();
+        });
 
-        //Assert::That(ci.name(), Equals(columns[columns.size() - 1]));
-
-        for (auto c : r)
+        before_each([&]()
         {
-            Assert::That(c.is_valid(), Equals(true));
-        }
+            user1.set("first_name", "Bryan");
+            user1.set("last_name", "Jenkins");
 
-        /*for (row::reverse_iterator i = r.rbegin(); i != r.rend(); i++)
-        {
-            Assert::That(i->is_valid(), Equals(true));
-        }*/
+            user1.save();
 
-        for (row::const_reverse_iterator i = r.crbegin(); i != r.crend(); i++)
+            user2.set("first_name", "Mark");
+            user2.set("last_name", "Smith");
+
+            user2.save();
+        });
+
+        after_each([&]()
         {
-            Assert::That(i->is_valid(), Equals(true));
-        }
-    }
-};
+            user1.de1ete();
+            user2.de1ete();
+        });
+
+        after_each([]()
+        {
+            teardown_testdb();
+        });
+
+        it("can be movable", []()
+        {
+            auto r = get_first_user_row();
+
+            row other(std::move(r));
+
+            AssertThat(other.is_valid(), IsTrue());
+
+            AssertThat(other.empty(), IsFalse());
+        });
+
+        it("can be copied", []()
+        {
+            select_query q(testdb, "users");
+
+            auto rs = q.execute();
+
+            auto i = rs.begin() + 2;
+
+            row other = get_first_user_row();
+
+            other = *i;
+
+            AssertThat(other.empty(), IsFalse());
+
+            AssertThat(other.size(), Equals(i->size()));
+
+            AssertThat(other.column_name(0), Equals("id"));
+        });
+
+        it("has an iterator", []()
+        {
+
+            auto schema = testdb->schemas()->get("users");
+
+            if (!schema->is_valid())
+                schema->init();
+
+            select_query query(testdb, "users");
+
+            auto rs = query.execute();
+
+            auto r = *rs.begin();
+
+            auto columns = schema->column_names();
+
+            AssertThat(columns.size() > 0, IsTrue());
+
+            row::const_iterator ci = r.cbegin();
+
+            AssertThat(ci.name(), Equals(columns[0]));
+
+            for (; ci < r.cend() - 1; ci++)
+            {
+                AssertThat(ci->is_valid(), IsTrue());
+            }
+
+            //AssertThat(ci.name(), Equals(columns[columns.size() - 1]));
+
+            for (auto c : r)
+            {
+                AssertThat(c.is_valid(), IsTrue());
+            }
+
+            /*for (row::reverse_iterator i = r.rbegin(); i != r.rend(); i++)
+            {
+                AssertThat(i->is_valid(), IsTrue());
+            }*/
+
+            for (row::const_reverse_iterator i = r.crbegin(); i != r.crend(); i++)
+            {
+                AssertThat(i->is_valid(), IsTrue());
+            }
+        });
+    });
+
+});
 

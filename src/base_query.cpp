@@ -78,7 +78,7 @@ namespace arg3
 
             string sql = to_string();
 
-            db_->log(sqldb::VERBOSE, sql);
+            db_->log(sqldb::LOG_VERBOSE, sql);
 
             if (stmt_ == nullptr)
                 stmt_ = db_->create_statement();

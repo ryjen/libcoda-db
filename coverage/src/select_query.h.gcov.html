@@ -19,7 +19,7 @@
         <table cellpadding=1 border=0 width="100%">
           <tr>
             <td width="10%" class="headerItem">Current view:</td>
-            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - select_query.h<span style="font-size: 80%;"> (source / <a href="select_query.h.func.html">functions</a>)</span></td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - select_query.h<span style="font-size: 80%;"> (source / <a href="select_query.h.func-sort-c.html">functions</a>)</span></td>
             <td width="5%"></td>
             <td width="15%"></td>
             <td width="10%" class="headerCovTableHead">Hit</td>
@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-01</td>
+            <td class="headerValue">2014-08-10 21:14:27</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -138,34 +138,36 @@
 <span class="lineNum">      68 </span>            : 
 <span class="lineNum">      69 </span>            :             resultset execute();
 <span class="lineNum">      70 </span>            : 
-<span class="lineNum">      71 </span>            :             int count();
+<span class="lineNum">      71 </span>            :             void execute(std::function&lt;void (resultset)&gt;);
 <span class="lineNum">      72 </span>            : 
-<span class="lineNum">      73 </span>            :             void reset();
+<span class="lineNum">      73 </span>            :             int count();
 <span class="lineNum">      74 </span>            : 
-<span class="lineNum">      75 </span>            :             /*!
-<span class="lineNum">      76 </span>            :              * return the first column in the first row of the result set
-<a name="77"><span class="lineNum">      77 </span>            :              */</a>
-<span class="lineNum">      78 </span>            :             template&lt;typename T&gt;
-<span class="lineNum">      79 </span>            :             T execute_scalar()
-<span class="lineNum">      80 </span>            :             {
-<span class="lineNum">      81 </span><span class="lineCov">          2 :                 auto rs = execute();</span>
-<span class="lineNum">      82 </span>            : 
-<span class="lineNum">      83 </span><span class="lineCov">         22 :                 if (!rs.is_valid() || rs.begin() == rs.end())</span>
-<span class="lineNum">      84 </span><span class="lineNoCov">          0 :                     return T();</span>
-<span class="lineNum">      85 </span>            : 
-<span class="lineNum">      86 </span><span class="lineCov">          2 :                 auto row = rs.begin();</span>
+<span class="lineNum">      75 </span>            :             void reset();
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span>            :             /*!
+<span class="lineNum">      78 </span>            :              * return the first column in the first row of the result set
+<a name="79"><span class="lineNum">      79 </span>            :              */</a>
+<span class="lineNum">      80 </span>            :             template&lt;typename T&gt;
+<span class="lineNum">      81 </span>            :             T execute_scalar()
+<span class="lineNum">      82 </span>            :             {
+<span class="lineNum">      83 </span><span class="lineCov">          2 :                 auto rs = execute();</span>
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span><span class="lineCov">         22 :                 if (!rs.is_valid() || rs.begin() == rs.end())</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :                     return T();</span>
 <span class="lineNum">      87 </span>            : 
-<span class="lineNum">      88 </span><span class="lineCov">          4 :                 auto col = row-&gt;begin();</span>
+<span class="lineNum">      88 </span><span class="lineCov">          2 :                 auto row = rs.begin();</span>
 <span class="lineNum">      89 </span>            : 
-<span class="lineNum">      90 </span><span class="lineCov">          6 :                 return *col;</span>
-<span class="lineNum">      91 </span><span class="lineCov">          4 :             }</span>
-<span class="lineNum">      92 </span>            : 
-<span class="lineNum">      93 </span>            :         };
+<span class="lineNum">      90 </span><span class="lineCov">          4 :                 auto col = row-&gt;begin();</span>
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span><span class="lineCov">          6 :                 return *col;</span>
+<span class="lineNum">      93 </span><span class="lineCov">          4 :             }</span>
 <span class="lineNum">      94 </span>            : 
-<span class="lineNum">      95 </span>            :     }
-<span class="lineNum">      96 </span>            : }
-<span class="lineNum">      97 </span>            : 
-<span class="lineNum">      98 </span>            : #endif
+<span class="lineNum">      95 </span>            :         };
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span>            :     }
+<span class="lineNum">      98 </span>            : }
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span>            : #endif
 </pre>
       </td>
     </tr>
@@ -174,7 +176,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
   </table>
   <br>
 

@@ -87,7 +87,10 @@ namespace arg3
 
         row mysql_resultset::current_row()
         {
-            return row(make_shared<mysql_row>(db_, res_, row_));
+            if (db_->cache_level() == sqldb::CACHE_ROW)
+                return row(make_shared<mysql_cached_row>(db_, res_, row_));
+            else
+                return row(make_shared<mysql_row>(db_, res_, row_));
         }
 
         size_t mysql_resultset::size() const
@@ -207,7 +210,10 @@ namespace arg3
         {
             assert(db_ != NULL);
 
-            return row(make_shared<mysql_stmt_row>(db_, metadata_, bindings_ ));
+            if (db_->cache_level() == sqldb::CACHE_ROW)
+                return row(make_shared<mysql_cached_row>(db_, metadata_, *bindings_.get()));
+            else
+                return row(make_shared<mysql_stmt_row>(db_, metadata_, bindings_ ));
         }
 
         size_t mysql_stmt_resultset::size() const
@@ -220,8 +226,7 @@ namespace arg3
 
         /* cached version */
 
-
-        mysql_cached_resultset::mysql_cached_resultset(sqldb *db, shared_ptr<MYSQL_STMT> stmt) : currentRow_(0)
+        mysql_cached_resultset::mysql_cached_resultset(sqldb *db, shared_ptr<MYSQL_STMT> stmt) : currentRow_(-1)
         {
             assert(is_valid());
 
@@ -238,19 +243,27 @@ namespace arg3
 
             auto metadata = shared_ptr<MYSQL_RES>(temp, mysql_res_delete());
 
-            int size_ = mysql_num_fields(temp);
+            int size = mysql_num_fields(temp);
 
             auto fields = mysql_fetch_fields(temp);
 
-            mysql_binding bindings(fields, size_);
+            mysql_binding bindings(fields, size);
 
-            for (size_t i = 0; i < size_; i++)
+            bindings.bind_result(stmt.get());
+
+            int res = mysql_stmt_fetch(stmt.get());
+
+            while (res != 1 && res != MYSQL_DATA_TRUNCATED)
             {
+                if (res == MYSQL_NO_DATA)
+                    break;
+
                 rows_.push_back(make_shared<mysql_cached_row>(db, metadata, bindings));
+
+                res = mysql_stmt_fetch(stmt.get());
             }
-
-
         }
+
         mysql_cached_resultset::mysql_cached_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res) : currentRow_(0)
         {
             MYSQL_ROW row = mysql_fetch_row(res.get());
@@ -302,18 +315,18 @@ namespace arg3
                 return false;
             }
 
-
             return ++currentRow_ < rows_.size();
-
         }
 
         void mysql_cached_resultset::reset()
         {
-            currentRow_ = 0;
+            currentRow_ = -1;
         }
 
         row mysql_cached_resultset::current_row()
         {
+            assert (currentRow_ >= 0 && currentRow_ < rows_.size());
+
             return row(rows_[currentRow_]);
         }
 

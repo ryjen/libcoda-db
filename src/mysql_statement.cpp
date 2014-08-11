@@ -123,7 +123,10 @@ namespace arg3
         {
             bindings_.bind_params(stmt_.get());
 
-            return resultset(make_shared<mysql_stmt_resultset>(db_, stmt_));
+            if (db_->cache_level() == sqldb::CACHE_RESULTSET)
+                return resultset(make_shared<mysql_cached_resultset>(db_, stmt_));
+            else
+                return resultset(make_shared<mysql_stmt_resultset>(db_, stmt_));
         }
 
         bool mysql_statement::result()

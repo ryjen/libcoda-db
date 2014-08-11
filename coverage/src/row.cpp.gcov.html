@@ -19,7 +19,7 @@
         <table cellpadding=1 border=0 width="100%">
           <tr>
             <td width="10%" class="headerItem">Current view:</td>
-            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - row.cpp<span style="font-size: 80%;"> (source / <a href="row.cpp.func.html">functions</a>)</span></td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - row.cpp<span style="font-size: 80%;"> (source / <a href="row.cpp.func-sort-c.html">functions</a>)</span></td>
             <td width="5%"></td>
             <td width="15%"></td>
             <td width="10%" class="headerCovTableHead">Hit</td>
@@ -32,17 +32,17 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">37</td>
-            <td class="headerCovTableEntry">47</td>
-            <td class="headerCovTableEntryMed">78.7 %</td>
+            <td class="headerCovTableEntry">51</td>
+            <td class="headerCovTableEntryLo">72.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-01</td>
+            <td class="headerValue">2014-08-10 21:14:27</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">28</td>
-            <td class="headerCovTableEntry">31</td>
-            <td class="headerCovTableEntryHi">90.3 %</td>
+            <td class="headerCovTableEntry">32</td>
+            <td class="headerCovTableEntryMed">87.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -79,9 +79,9 @@
 <a name="9"><span class="lineNum">       9 </span>            :     namespace db</a>
 <span class="lineNum">      10 </span>            :     {
 <span class="lineNum">      11 </span>            :         row::row(shared_ptr&lt;row_impl&gt; impl) : impl_(impl)
-<span class="lineNum">      12 </span><span class="lineCov">        235 :         {</span>
-<span class="lineNum">      13 </span><span class="lineCov">        470 :             assert(impl_ != nullptr);</span>
-<a name="14"><span class="lineNum">      14 </span><span class="lineCov">        470 :         }</span></a>
+<span class="lineNum">      12 </span><span class="lineCov">        475 :         {</span>
+<span class="lineNum">      13 </span><span class="lineCov">        950 :             assert(impl_ != nullptr);</span>
+<a name="14"><span class="lineNum">      14 </span><span class="lineCov">        950 :         }</span></a>
 <span class="lineNum">      15 </span>            : 
 <span class="lineNum">      16 </span>            :         row::row(const row &amp;other) : impl_(other.impl_)
 <a name="17"><span class="lineNum">      17 </span><span class="lineCov">         40 :         {}</span></a>
@@ -92,8 +92,8 @@
 <a name="22"><span class="lineNum">      22 </span><span class="lineCov">          8 :         }</span></a>
 <span class="lineNum">      23 </span>            : 
 <span class="lineNum">      24 </span>            :         row::~row()
-<span class="lineNum">      25 </span><span class="lineCov">        518 :         {</span>
-<a name="26"><span class="lineNum">      26 </span><span class="lineCov">        518 :         }</span></a>
+<span class="lineNum">      25 </span><span class="lineCov">        998 :         {</span>
+<a name="26"><span class="lineNum">      26 </span><span class="lineCov">        998 :         }</span></a>
 <span class="lineNum">      27 </span>            : 
 <span class="lineNum">      28 </span>            :         row &amp;row::operator=(const row &amp;other)
 <span class="lineNum">      29 </span>            :         {
@@ -104,10 +104,10 @@
 <span class="lineNum">      34 </span>            : 
 <span class="lineNum">      35 </span>            :         row &amp;row::operator=(row &amp;&amp; other)
 <span class="lineNum">      36 </span>            :         {
-<span class="lineNum">      37 </span><span class="lineCov">        102 :             impl_ = std::move(other.impl_);</span>
-<span class="lineNum">      38 </span><span class="lineCov">        102 :             other.impl_ = nullptr;</span>
+<span class="lineNum">      37 </span><span class="lineCov">        262 :             impl_ = std::move(other.impl_);</span>
+<span class="lineNum">      38 </span><span class="lineCov">        262 :             other.impl_ = nullptr;</span>
 <span class="lineNum">      39 </span>            : 
-<span class="lineNum">      40 </span><span class="lineCov">        102 :             return *this;</span>
+<span class="lineNum">      40 </span><span class="lineCov">        262 :             return *this;</span>
 <a name="41"><span class="lineNum">      41 </span>            :         }</a>
 <span class="lineNum">      42 </span>            : 
 <span class="lineNum">      43 </span>            :         row::iterator row::begin()
@@ -177,7 +177,7 @@
 <span class="lineNum">     107 </span>            : 
 <span class="lineNum">     108 </span>            :         column row::operator[](const string &amp;name) const
 <span class="lineNum">     109 </span>            :         {
-<span class="lineNum">     110 </span><span class="lineCov">        330 :             return column(name);</span>
+<span class="lineNum">     110 </span><span class="lineCov">        930 :             return column(name);</span>
 <a name="111"><span class="lineNum">     111 </span>            :         }</a>
 <span class="lineNum">     112 </span>            : 
 <span class="lineNum">     113 </span>            :         string row::column_name(size_t nPosition) const
@@ -194,8 +194,8 @@
 <span class="lineNum">     124 </span>            : 
 <span class="lineNum">     125 </span>            :         arg3::db::column row::column(const string &amp;name) const
 <span class="lineNum">     126 </span>            :         {
-<span class="lineNum">     127 </span><span class="lineCov">        696 :             assert(impl_ != nullptr);</span>
-<span class="lineNum">     128 </span><span class="lineCov">        348 :             return impl_-&gt;column(name);</span>
+<span class="lineNum">     127 </span><span class="lineCov">       1896 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">     128 </span><span class="lineCov">        948 :             return impl_-&gt;column(name);</span>
 <a name="129"><span class="lineNum">     129 </span>            :         }</a>
 <span class="lineNum">     130 </span>            : 
 <span class="lineNum">     131 </span>            :         size_t row::size() const
@@ -211,9 +211,17 @@
 <span class="lineNum">     141 </span>            :         bool row::is_valid() const
 <span class="lineNum">     142 </span>            :         {
 <span class="lineNum">     143 </span><span class="lineCov">         64 :             return impl_ != nullptr &amp;&amp; impl_-&gt;is_valid();</span>
-<span class="lineNum">     144 </span><span class="lineCov">         32 :         }</span>
-<span class="lineNum">     145 </span>            :     }
-<span class="lineNum">     146 </span>            : }
+<a name="144"><span class="lineNum">     144 </span><span class="lineCov">         32 :         }</span></a>
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span>            :         void row::for_each(std::function&lt;void (db::column)&gt; funk) const
+<span class="lineNum">     147 </span>            :         {
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :             for (auto &amp; c : *this)</span>
+<span class="lineNum">     149 </span>            :             {
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :                 funk(c);</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     153 </span>            :     }
+<span class="lineNum">     154 </span>            : }
 </pre>
       </td>
     </tr>
@@ -222,7 +230,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
   </table>
   <br>
 

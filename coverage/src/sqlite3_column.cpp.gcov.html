@@ -19,7 +19,7 @@
         <table cellpadding=1 border=0 width="100%">
           <tr>
             <td width="10%" class="headerItem">Current view:</td>
-            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - sqlite3_column.cpp<span style="font-size: 80%;"> (source / <a href="sqlite3_column.cpp.func.html">functions</a>)</span></td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - sqlite3_column.cpp<span style="font-size: 80%;"> (source / <a href="sqlite3_column.cpp.func-sort-c.html">functions</a>)</span></td>
             <td width="5%"></td>
             <td width="15%"></td>
             <td width="10%" class="headerCovTableHead">Hit</td>
@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-01</td>
+            <td class="headerValue">2014-08-10 21:14:27</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">13</td>
@@ -80,15 +80,15 @@
 <a name="10"><span class="lineNum">      10 </span>            :     {</a>
 <span class="lineNum">      11 </span>            : 
 <span class="lineNum">      12 </span>            :         sqlite3_column::sqlite3_column(shared_ptr&lt;sqlite3_stmt&gt; stmt, int column) : stmt_(stmt), column_(column)
-<span class="lineNum">      13 </span><span class="lineCov">        240 :         {</span>
-<a name="14"><span class="lineNum">      14 </span><span class="lineCov">        480 :         }</span></a>
+<span class="lineNum">      13 </span><span class="lineCov">        540 :         {</span>
+<a name="14"><span class="lineNum">      14 </span><span class="lineCov">       1080 :         }</span></a>
 <span class="lineNum">      15 </span>            : 
 <span class="lineNum">      16 </span>            :         sqlite3_column::sqlite3_column(sqlite3_column &amp;&amp;other) : stmt_(other.stmt_), column_(other.column_)
 <span class="lineNum">      17 </span><span class="lineNoCov">          0 :         {</span>
 <span class="lineNum">      18 </span><span class="lineNoCov">          0 :             other.stmt_ = nullptr;</span>
 <a name="19"><span class="lineNum">      19 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      20 </span>            : 
-<a name="21"><span class="lineNum">      21 </span><span class="lineCov">        480 :         sqlite3_column::~sqlite3_column() {}</span></a>
+<a name="21"><span class="lineNum">      21 </span><span class="lineCov">       1080 :         sqlite3_column::~sqlite3_column() {}</span></a>
 <span class="lineNum">      22 </span>            : 
 <span class="lineNum">      23 </span>            :         sqlite3_column &amp;sqlite3_column::operator=(sqlite3_column &amp;&amp; other)
 <span class="lineNum">      24 </span>            :         {
@@ -101,16 +101,16 @@
 <span class="lineNum">      31 </span>            : 
 <span class="lineNum">      32 </span>            :         bool sqlite3_column::is_valid() const
 <span class="lineNum">      33 </span>            :         {
-<span class="lineNum">      34 </span><span class="lineCov">        588 :             return stmt_ != nullptr &amp;&amp; stmt_;</span>
-<a name="35"><span class="lineNum">      35 </span><span class="lineCov">        294 :         }</span></a>
+<span class="lineNum">      34 </span><span class="lineCov">       1188 :             return stmt_ != nullptr &amp;&amp; stmt_;</span>
+<a name="35"><span class="lineNum">      35 </span><span class="lineCov">        594 :         }</span></a>
 <span class="lineNum">      36 </span>            : 
 <span class="lineNum">      37 </span>            :         void sqlite3_column::assert_value() const throw (no_such_column_exception)
 <span class="lineNum">      38 </span>            :         {
-<span class="lineNum">      39 </span><span class="lineCov">        554 :             if (!is_valid())</span>
+<span class="lineNum">      39 </span><span class="lineCov">       1154 :             if (!is_valid())</span>
 <span class="lineNum">      40 </span>            :             {
 <span class="lineNum">      41 </span><span class="lineNoCov">          0 :                 throw no_such_column_exception();</span>
 <span class="lineNum">      42 </span>            :             }
-<a name="43"><span class="lineNum">      43 </span><span class="lineCov">        277 :         }</span></a>
+<a name="43"><span class="lineNum">      43 </span><span class="lineCov">        577 :         }</span></a>
 <span class="lineNum">      44 </span>            : 
 <span class="lineNum">      45 </span>            :         sql_blob sqlite3_column::to_blob() const
 <span class="lineNum">      46 </span>            :         {
@@ -127,9 +127,9 @@
 <span class="lineNum">      57 </span>            :         }
 <span class="lineNum">      58 </span>            :         bool sqlite3_column::to_bool() const
 <span class="lineNum">      59 </span>            :         {
-<span class="lineNum">      60 </span><span class="lineCov">         55 :             assert_value();</span>
+<span class="lineNum">      60 </span><span class="lineCov">        155 :             assert_value();</span>
 <span class="lineNum">      61 </span>            : 
-<a name="62"><span class="lineNum">      62 </span><span class="lineCov">         55 :             return sqlite3_column_int(stmt_.get(), column_);</span></a>
+<a name="62"><span class="lineNum">      62 </span><span class="lineCov">        155 :             return sqlite3_column_int(stmt_.get(), column_);</span></a>
 <span class="lineNum">      63 </span>            :         }
 <span class="lineNum">      64 </span>            :         int sqlite3_column::to_int() const
 <span class="lineNum">      65 </span>            :         {
@@ -185,15 +185,15 @@
 <span class="lineNum">     115 </span>            : 
 <span class="lineNum">     116 </span>            :         string sqlite3_column::to_string() const
 <span class="lineNum">     117 </span>            :         {
-<span class="lineNum">     118 </span><span class="lineCov">        158 :             assert_value();</span>
+<span class="lineNum">     118 </span><span class="lineCov">        358 :             assert_value();</span>
 <span class="lineNum">     119 </span>            : 
-<span class="lineNum">     120 </span><span class="lineCov">        158 :             const unsigned char *textValue = sqlite3_column_text(stmt_.get(), column_);</span>
+<span class="lineNum">     120 </span><span class="lineCov">        358 :             const unsigned char *textValue = sqlite3_column_text(stmt_.get(), column_);</span>
 <span class="lineNum">     121 </span>            : 
-<span class="lineNum">     122 </span><span class="lineCov">        158 :             if (textValue == NULL)</span>
+<span class="lineNum">     122 </span><span class="lineCov">        358 :             if (textValue == NULL)</span>
 <span class="lineNum">     123 </span><span class="lineCov">         16 :                 return string();</span>
 <span class="lineNum">     124 </span>            : 
-<span class="lineNum">     125 </span><span class="lineCov">        142 :             return reinterpret_cast&lt;const char *&gt;(textValue);</span>
-<a name="126"><span class="lineNum">     126 </span><span class="lineCov">        158 :         }</span></a>
+<span class="lineNum">     125 </span><span class="lineCov">        342 :             return reinterpret_cast&lt;const char *&gt;(textValue);</span>
+<a name="126"><span class="lineNum">     126 </span><span class="lineCov">        358 :         }</span></a>
 <span class="lineNum">     127 </span>            : 
 <span class="lineNum">     128 </span>            :         string sqlite3_column::name() const
 <span class="lineNum">     129 </span>            :         {
@@ -305,7 +305,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
   </table>
   <br>
 

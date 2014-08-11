@@ -1,13 +1,13 @@
 /*!
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
-#include <igloo/igloo.h>
+#include <bandit/bandit.h>
 #include "base_record.h"
 #include "select_query.h"
 #include "sqldb.h"
 #include "db.test.h"
 
-using namespace igloo;
+using namespace bandit;
 
 using namespace std;
 
@@ -76,32 +76,33 @@ void test_mysql_db::teardown()
     schemas()->clear("users");
 }
 
-Context(sqldb_test)
+go_bandit([]()
 {
-    static void SetUpContext()
+    describe("database", []()
     {
-        setup_testdb();
-
-    }
-
-    static void TearDownContext()
-    {
-        teardown_testdb();
-    }
-
-    Spec(can_parse_uri)
-    {
-        try
+        before_each([]()
         {
-            auto db = get_db_from_uri("file://test.db");
+            setup_testdb();
+        });
 
-            Assert::That(dynamic_cast<sqlite3_db *>(db.get()) != NULL, Equals(true));
-        }
-        catch (const std::exception &e)
+        after_each([]()
         {
-            cerr << e.what() << endl;
-            throw e;
-        }
-    }
-};
+            teardown_testdb();
+        });
+        it("can_parse_uri", []()
+        {
+            try
+            {
+                auto db = get_db_from_uri("file://test.db");
+
+                AssertThat(db.get() != NULL, IsTrue());
+            }
+            catch (const std::exception &e)
+            {
+                cerr << e.what() << endl;
+                throw e;
+            }
+        });
+    });
+});
 

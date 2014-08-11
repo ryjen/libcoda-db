@@ -69,7 +69,10 @@ namespace arg3
                 throw database_exception("invalid index for row column");
             }
 
-            return db::column( make_shared<mysql_column>( res_, row_, nPosition ) );
+            if (db_->cache_level() == sqldb::CACHE_COLUMN)
+                return db::column(make_shared<mysql_cached_column>( res_, row_, nPosition ));
+            else
+                return db::column( make_shared<mysql_column>( res_, row_, nPosition ) );
         }
 
         column mysql_row::column(const string &name) const
@@ -180,7 +183,10 @@ namespace arg3
                 throw database_exception("invalid index for row column");
             }
 
-            return db::column(make_shared<mysql_stmt_column>( column_name(nPosition), fields_, nPosition ) );
+            if (db_->cache_level() == sqldb::CACHE_COLUMN)
+                return db::column(make_shared<mysql_cached_column>( column_name(nPosition), *fields_.get(), nPosition));
+            else
+                return db::column(make_shared<mysql_stmt_column>( column_name(nPosition), fields_, nPosition ) );
         }
 
         column mysql_stmt_row::column(const string &name) const

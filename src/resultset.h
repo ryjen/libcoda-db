@@ -126,6 +126,8 @@ namespace arg3
             void reset();
 
             size_t size() const;
+
+            void for_each(std::function<void (row)> funk);
         };
 
     }
