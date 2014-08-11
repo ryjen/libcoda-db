@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-10 21:14:27</td>
+            <td class="headerValue">2014-08-11 10:44:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">22</td>
@@ -82,51 +82,51 @@
 <span class="lineNum">      12 </span>            : 
 <span class="lineNum">      13 </span>            :         select_query::select_query(sqldb *db, const string &amp;tableName,
 <span class="lineNum">      14 </span>            :                                    const vector&lt;string&gt; &amp;columns) : base_query(db, tableName), columns_(columns)
-<a name="15"><span class="lineNum">      15 </span><span class="lineCov">         16 :         {}</span></a>
+<a name="15"><span class="lineNum">      15 </span><span class="lineCov">         32 :         {}</span></a>
 <span class="lineNum">      16 </span>            : 
 <span class="lineNum">      17 </span>            :         select_query::select_query(sqldb *db, const string &amp;tableName) : base_query(db, tableName), columns_()
-<a name="18"><span class="lineNum">      18 </span><span class="lineCov">        126 :         {}</span></a>
+<a name="18"><span class="lineNum">      18 </span><span class="lineCov">        252 :         {}</span></a>
 <span class="lineNum">      19 </span>            : 
 <span class="lineNum">      20 </span>            :         select_query::select_query(const select_query &amp;other) : base_query(other), where_(other.where_),
 <span class="lineNum">      21 </span>            :             limit_(other.limit_), orderBy_(other.orderBy_), groupBy_(other.groupBy_), columns_(other.columns_)
-<span class="lineNum">      22 </span><span class="lineCov">         10 :         {</span>
-<a name="23"><span class="lineNum">      23 </span><span class="lineCov">          4 :         }</span></a>
+<span class="lineNum">      22 </span><span class="lineCov">         20 :         {</span>
+<a name="23"><span class="lineNum">      23 </span><span class="lineCov">          8 :         }</span></a>
 <span class="lineNum">      24 </span>            : 
-<span class="lineNum">      25 </span><span class="lineCov">         22 :         select_query::select_query(shared_ptr&lt;schema&gt; schema) : base_query(schema), columns_(schema-&gt;column_names())</span>
-<a name="26"><span class="lineNum">      26 </span><span class="lineCov">        110 :         {}</span></a>
+<span class="lineNum">      25 </span><span class="lineCov">         44 :         select_query::select_query(shared_ptr&lt;schema&gt; schema) : base_query(schema), columns_(schema-&gt;column_names())</span>
+<a name="26"><span class="lineNum">      26 </span><span class="lineCov">        220 :         {}</span></a>
 <span class="lineNum">      27 </span>            : 
-<span class="lineNum">      28 </span><span class="lineCov">          4 :         select_query::select_query(select_query &amp;&amp;other) : base_query(std::move(other)), where_(std::move(other.where_)),</span>
-<span class="lineNum">      29 </span><span class="lineCov">          8 :             limit_(std::move(other.limit_)), orderBy_(std::move(other.orderBy_)), groupBy_(std::move(other.groupBy_)), columns_(std::move(other.columns_))</span>
-<span class="lineNum">      30 </span><span class="lineCov">         16 :         {</span>
-<a name="31"><span class="lineNum">      31 </span><span class="lineCov">          4 :         }</span></a>
+<span class="lineNum">      28 </span><span class="lineCov">          8 :         select_query::select_query(select_query &amp;&amp;other) : base_query(std::move(other)), where_(std::move(other.where_)),</span>
+<span class="lineNum">      29 </span><span class="lineCov">         16 :             limit_(std::move(other.limit_)), orderBy_(std::move(other.orderBy_)), groupBy_(std::move(other.groupBy_)), columns_(std::move(other.columns_))</span>
+<span class="lineNum">      30 </span><span class="lineCov">         32 :         {</span>
+<a name="31"><span class="lineNum">      31 </span><span class="lineCov">          8 :         }</span></a>
 <span class="lineNum">      32 </span>            : 
 <span class="lineNum">      33 </span>            :         select_query::~select_query()
-<a name="34"><span class="lineNum">      34 </span><span class="lineCov">        144 :         {}</span></a>
+<a name="34"><span class="lineNum">      34 </span><span class="lineCov">        288 :         {}</span></a>
 <span class="lineNum">      35 </span>            : 
 <span class="lineNum">      36 </span>            :         select_query &amp;select_query::operator=(const select_query &amp;other)
 <span class="lineNum">      37 </span>            :         {
-<span class="lineNum">      38 </span><span class="lineCov">          2 :             base_query::operator=(other);</span>
-<span class="lineNum">      39 </span><span class="lineCov">          2 :             where_ = other.where_;</span>
-<span class="lineNum">      40 </span><span class="lineCov">          2 :             limit_ = other.limit_;</span>
-<span class="lineNum">      41 </span><span class="lineCov">          2 :             orderBy_ = other.orderBy_;</span>
-<span class="lineNum">      42 </span><span class="lineCov">          2 :             groupBy_ = other.groupBy_;</span>
+<span class="lineNum">      38 </span><span class="lineCov">          4 :             base_query::operator=(other);</span>
+<span class="lineNum">      39 </span><span class="lineCov">          4 :             where_ = other.where_;</span>
+<span class="lineNum">      40 </span><span class="lineCov">          4 :             limit_ = other.limit_;</span>
+<span class="lineNum">      41 </span><span class="lineCov">          4 :             orderBy_ = other.orderBy_;</span>
+<span class="lineNum">      42 </span><span class="lineCov">          4 :             groupBy_ = other.groupBy_;</span>
 <span class="lineNum">      43 </span>            : 
-<span class="lineNum">      44 </span><span class="lineCov">          2 :             columns_ = other.columns_;</span>
+<span class="lineNum">      44 </span><span class="lineCov">          4 :             columns_ = other.columns_;</span>
 <span class="lineNum">      45 </span>            : 
-<span class="lineNum">      46 </span><span class="lineCov">          2 :             return *this;</span>
+<span class="lineNum">      46 </span><span class="lineCov">          4 :             return *this;</span>
 <a name="47"><span class="lineNum">      47 </span>            :         }</a>
 <span class="lineNum">      48 </span>            : 
 <span class="lineNum">      49 </span>            :         select_query &amp;select_query::operator=(select_query &amp;&amp; other)
 <span class="lineNum">      50 </span>            :         {
-<span class="lineNum">      51 </span><span class="lineCov">          2 :             base_query::operator=(std::move(other));</span>
-<span class="lineNum">      52 </span><span class="lineCov">          2 :             where_ = std::move(other.where_);</span>
-<span class="lineNum">      53 </span><span class="lineCov">          2 :             limit_ = std::move(other.limit_);</span>
-<span class="lineNum">      54 </span><span class="lineCov">          2 :             orderBy_ = std::move(other.orderBy_);</span>
-<span class="lineNum">      55 </span><span class="lineCov">          2 :             groupBy_ = std::move(other.groupBy_);</span>
+<span class="lineNum">      51 </span><span class="lineCov">          4 :             base_query::operator=(std::move(other));</span>
+<span class="lineNum">      52 </span><span class="lineCov">          4 :             where_ = std::move(other.where_);</span>
+<span class="lineNum">      53 </span><span class="lineCov">          4 :             limit_ = std::move(other.limit_);</span>
+<span class="lineNum">      54 </span><span class="lineCov">          4 :             orderBy_ = std::move(other.orderBy_);</span>
+<span class="lineNum">      55 </span><span class="lineCov">          4 :             groupBy_ = std::move(other.groupBy_);</span>
 <span class="lineNum">      56 </span>            : 
-<span class="lineNum">      57 </span><span class="lineCov">          2 :             columns_ = std::move(other.columns_);</span>
+<span class="lineNum">      57 </span><span class="lineCov">          4 :             columns_ = std::move(other.columns_);</span>
 <span class="lineNum">      58 </span>            : 
-<span class="lineNum">      59 </span><span class="lineCov">          2 :             return *this;</span>
+<span class="lineNum">      59 </span><span class="lineCov">          4 :             return *this;</span>
 <a name="60"><span class="lineNum">      60 </span>            :         }</a>
 <span class="lineNum">      61 </span>            : 
 <span class="lineNum">      62 </span>            :         vector&lt;string&gt; select_query::columns() const
@@ -151,23 +151,23 @@
 <span class="lineNum">      81 </span>            : 
 <span class="lineNum">      82 </span>            :         select_query &amp;select_query::where(const where_clause &amp;value)
 <span class="lineNum">      83 </span>            :         {
-<span class="lineNum">      84 </span><span class="lineCov">          2 :             where_ = value;</span>
+<span class="lineNum">      84 </span><span class="lineCov">          4 :             where_ = value;</span>
 <span class="lineNum">      85 </span>            : 
-<span class="lineNum">      86 </span><span class="lineCov">          2 :             return *this;</span>
+<span class="lineNum">      86 </span><span class="lineCov">          4 :             return *this;</span>
 <a name="87"><span class="lineNum">      87 </span>            :         }</a>
 <span class="lineNum">      88 </span>            : 
 <span class="lineNum">      89 </span>            :         select_query &amp;select_query::where(const string &amp;value)
 <span class="lineNum">      90 </span>            :         {
-<span class="lineNum">      91 </span><span class="lineCov">         48 :             where_ = where_clause(value);</span>
+<span class="lineNum">      91 </span><span class="lineCov">         96 :             where_ = where_clause(value);</span>
 <span class="lineNum">      92 </span>            : 
-<span class="lineNum">      93 </span><span class="lineCov">         24 :             return *this;</span>
+<span class="lineNum">      93 </span><span class="lineCov">         48 :             return *this;</span>
 <a name="94"><span class="lineNum">      94 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      95 </span>            : 
 <span class="lineNum">      96 </span>            :         select_query &amp;select_query::limit(const string &amp;value)
 <span class="lineNum">      97 </span>            :         {
-<span class="lineNum">      98 </span><span class="lineCov">         14 :             limit_ = value;</span>
+<span class="lineNum">      98 </span><span class="lineCov">         28 :             limit_ = value;</span>
 <span class="lineNum">      99 </span>            : 
-<span class="lineNum">     100 </span><span class="lineCov">         14 :             return *this;</span>
+<span class="lineNum">     100 </span><span class="lineCov">         28 :             return *this;</span>
 <a name="101"><span class="lineNum">     101 </span>            :         }</a>
 <span class="lineNum">     102 </span>            : 
 <span class="lineNum">     103 </span>            :         select_query &amp;select_query::order_by(const string &amp;value)
@@ -185,72 +185,72 @@
 <span class="lineNum">     115 </span>            : 
 <span class="lineNum">     116 </span>            :         string select_query::to_string() const
 <span class="lineNum">     117 </span>            :         {
-<span class="lineNum">     118 </span><span class="lineCov">         76 :             ostringstream buf;</span>
+<span class="lineNum">     118 </span><span class="lineCov">        152 :             ostringstream buf;</span>
 <span class="lineNum">     119 </span>            : 
-<span class="lineNum">     120 </span><span class="lineCov">         76 :             buf &lt;&lt; &quot;SELECT &quot;;</span>
+<span class="lineNum">     120 </span><span class="lineCov">        152 :             buf &lt;&lt; &quot;SELECT &quot;;</span>
 <a name="121"><span class="lineNum">     121 </span>            : </a>
-<span class="lineNum">     122 </span><span class="lineCov">        460 :             buf &lt;&lt; (columns_.size() == 0 ? &quot;*&quot; : join_csv(columns_));</span>
+<span class="lineNum">     122 </span><span class="lineCov">        920 :             buf &lt;&lt; (columns_.size() == 0 ? &quot;*&quot; : join_csv(columns_));</span>
 <span class="lineNum">     123 </span><span class="lineNoCov">          0 : </span>
-<span class="lineNum">     124 </span><span class="lineCov">        152 :             buf &lt;&lt; &quot; FROM &quot; &lt;&lt; tableName_;</span>
+<span class="lineNum">     124 </span><span class="lineCov">        304 :             buf &lt;&lt; &quot; FROM &quot; &lt;&lt; tableName_;</span>
 <span class="lineNum">     125 </span>            : 
-<span class="lineNum">     126 </span><span class="lineCov">        152 :             if (!where_.empty())</span>
+<span class="lineNum">     126 </span><span class="lineCov">        304 :             if (!where_.empty())</span>
 <span class="lineNum">     127 </span>            :             {
-<span class="lineNum">     128 </span><span class="lineCov">        104 :                 buf &lt;&lt; &quot; WHERE &quot; &lt;&lt; where_.to_string();</span>
-<span class="lineNum">     129 </span><span class="lineCov">         26 :             }</span>
+<span class="lineNum">     128 </span><span class="lineCov">        208 :                 buf &lt;&lt; &quot; WHERE &quot; &lt;&lt; where_.to_string();</span>
+<span class="lineNum">     129 </span><span class="lineCov">         52 :             }</span>
 <span class="lineNum">     130 </span>            : 
-<span class="lineNum">     131 </span><span class="lineCov">         76 :             if (!orderBy_.empty())</span>
+<span class="lineNum">     131 </span><span class="lineCov">        152 :             if (!orderBy_.empty())</span>
 <span class="lineNum">     132 </span>            :             {
 <span class="lineNum">     133 </span><span class="lineNoCov">          0 :                 buf &lt;&lt; &quot; ORDER BY &quot; &lt;&lt; orderBy_;</span>
 <span class="lineNum">     134 </span><span class="lineNoCov">          0 :             }</span>
 <span class="lineNum">     135 </span>            : 
-<span class="lineNum">     136 </span><span class="lineCov">         76 :             if (!limit_.empty())</span>
+<span class="lineNum">     136 </span><span class="lineCov">        152 :             if (!limit_.empty())</span>
 <span class="lineNum">     137 </span>            :             {
-<span class="lineNum">     138 </span><span class="lineCov">         28 :                 buf &lt;&lt; &quot; LIMIT &quot; &lt;&lt; limit_;</span>
-<span class="lineNum">     139 </span><span class="lineCov">         14 :             }</span>
+<span class="lineNum">     138 </span><span class="lineCov">         56 :                 buf &lt;&lt; &quot; LIMIT &quot; &lt;&lt; limit_;</span>
+<span class="lineNum">     139 </span><span class="lineCov">         28 :             }</span>
 <span class="lineNum">     140 </span>            : 
-<span class="lineNum">     141 </span><span class="lineCov">         76 :             if (!groupBy_.empty())</span>
+<span class="lineNum">     141 </span><span class="lineCov">        152 :             if (!groupBy_.empty())</span>
 <span class="lineNum">     142 </span>            :             {
 <span class="lineNum">     143 </span><span class="lineNoCov">          0 :                 buf &lt;&lt; &quot; GROUP BY &quot; &lt;&lt; groupBy_;</span>
 <span class="lineNum">     144 </span><span class="lineNoCov">          0 :             }</span>
 <span class="lineNum">     145 </span>            : 
-<span class="lineNum">     146 </span><span class="lineCov">         76 :             return buf.str();</span>
-<a name="147"><span class="lineNum">     147 </span><span class="lineCov">         76 :         }</span></a>
+<span class="lineNum">     146 </span><span class="lineCov">        152 :             return buf.str();</span>
+<a name="147"><span class="lineNum">     147 </span><span class="lineCov">        152 :         }</span></a>
 <span class="lineNum">     148 </span>            : 
 <span class="lineNum">     149 </span>            :         int select_query::count()
 <span class="lineNum">     150 </span>            :         {
-<span class="lineNum">     151 </span><span class="lineCov">          2 :             auto cols(columns_);</span>
+<span class="lineNum">     151 </span><span class="lineCov">          4 :             auto cols(columns_);</span>
 <span class="lineNum">     152 </span>            : 
-<span class="lineNum">     153 </span><span class="lineCov">          8 :             columns_ = { &quot;count(*)&quot; };</span>
+<span class="lineNum">     153 </span><span class="lineCov">         16 :             columns_ = { &quot;count(*)&quot; };</span>
 <span class="lineNum">     154 </span>            : 
-<span class="lineNum">     155 </span><span class="lineCov">          2 :             prepare();</span>
+<span class="lineNum">     155 </span><span class="lineCov">          4 :             prepare();</span>
 <span class="lineNum">     156 </span>            : 
-<span class="lineNum">     157 </span><span class="lineCov">          4 :             int value = execute_scalar&lt;int&gt;();</span>
+<span class="lineNum">     157 </span><span class="lineCov">          8 :             int value = execute_scalar&lt;int&gt;();</span>
 <span class="lineNum">     158 </span>            : 
-<span class="lineNum">     159 </span><span class="lineCov">          2 :             columns_ = cols;</span>
+<span class="lineNum">     159 </span><span class="lineCov">          4 :             columns_ = cols;</span>
 <span class="lineNum">     160 </span>            : 
-<span class="lineNum">     161 </span><span class="lineCov">          2 :             return value;</span>
-<a name="162"><span class="lineNum">     162 </span><span class="lineCov">          2 :         }</span></a>
+<span class="lineNum">     161 </span><span class="lineCov">          4 :             return value;</span>
+<a name="162"><span class="lineNum">     162 </span><span class="lineCov">          4 :         }</span></a>
 <span class="lineNum">     163 </span>            : 
 <span class="lineNum">     164 </span>            :         resultset select_query::execute()
 <span class="lineNum">     165 </span>            :         {
-<span class="lineNum">     166 </span><span class="lineCov">         58 :             prepare();</span>
+<span class="lineNum">     166 </span><span class="lineCov">        116 :             prepare();</span>
 <span class="lineNum">     167 </span>            : 
-<span class="lineNum">     168 </span><span class="lineCov">         58 :             return stmt_-&gt;results();</span>
+<span class="lineNum">     168 </span><span class="lineCov">        116 :             return stmt_-&gt;results();</span>
 <span class="lineNum">     169 </span>            : 
 <a name="170"><span class="lineNum">     170 </span>            :         }</a>
 <span class="lineNum">     171 </span>            : 
 <span class="lineNum">     172 </span>            :         void select_query::execute(std::function&lt;void (resultset rs)&gt; funk)
 <span class="lineNum">     173 </span>            :         {
-<span class="lineNum">     174 </span><span class="lineCov">          2 :             prepare();</span>
+<span class="lineNum">     174 </span><span class="lineCov">          4 :             prepare();</span>
 <span class="lineNum">     175 </span>            : 
-<span class="lineNum">     176 </span><span class="lineCov">          4 :             funk(stmt_-&gt;results());</span>
-<a name="177"><span class="lineNum">     177 </span><span class="lineCov">          2 :         }</span></a>
+<span class="lineNum">     176 </span><span class="lineCov">          8 :             funk(stmt_-&gt;results());</span>
+<a name="177"><span class="lineNum">     177 </span><span class="lineCov">          4 :         }</span></a>
 <span class="lineNum">     178 </span>            : 
 <span class="lineNum">     179 </span>            :         void select_query::reset()
 <span class="lineNum">     180 </span>            :         {
-<span class="lineNum">     181 </span><span class="lineCov">          2 :             base_query::reset();</span>
-<span class="lineNum">     182 </span><span class="lineCov">          2 :             stmt_ = nullptr;</span>
-<span class="lineNum">     183 </span><span class="lineCov">          2 :         }</span>
+<span class="lineNum">     181 </span><span class="lineCov">          4 :             base_query::reset();</span>
+<span class="lineNum">     182 </span><span class="lineCov">          4 :             stmt_ = nullptr;</span>
+<span class="lineNum">     183 </span><span class="lineCov">          4 :         }</span>
 <span class="lineNum">     184 </span>            :     }
 <span class="lineNum">     185 </span>            : }
 </pre>

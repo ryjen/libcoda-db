@@ -31,18 +31,18 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">0</td>
             <td class="headerCovTableEntry">1</td>
-            <td class="headerCovTableEntryLo">0.0 %</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-10 21:14:27</td>
+            <td class="headerValue">2014-08-11 10:44:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">2</td>
             <td class="headerCovTableEntry">3</td>
-            <td class="headerCovTableEntryLo">0.0 %</td>
+            <td class="headerCovTableEntryLo">66.7 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -179,7 +179,7 @@
 <span class="lineNum">     109 </span>            :             mysql_cached_column(shared_ptr&lt;MYSQL_RES&gt; res, MYSQL_ROW pValue, size_t index);
 <a name="110"><span class="lineNum">     110 </span>            :             mysql_cached_column(const mysql_cached_column &amp;other) = default;</a>
 <span class="lineNum">     111 </span>            :             mysql_cached_column(mysql_cached_column &amp;&amp;other) = default;
-<span class="lineNum">     112 </span><span class="lineNoCov">          0 :             virtual ~mysql_cached_column() = default;</span>
+<span class="lineNum">     112 </span><span class="lineCov">        364 :             virtual ~mysql_cached_column() = default;</span>
 <span class="lineNum">     113 </span>            :             mysql_cached_column &amp;operator=(const mysql_cached_column &amp;other) = default;
 <span class="lineNum">     114 </span>            :             mysql_cached_column &amp;operator=(mysql_cached_column &amp;&amp; other) = default;
 <span class="lineNum">     115 </span>            : 

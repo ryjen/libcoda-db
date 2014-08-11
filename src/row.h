@@ -216,6 +216,7 @@ namespace arg3
             typedef std::reverse_iterator<iterator> reverse_iterator;
             typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
+            row();
             row(shared_ptr<row_impl> impl);
             row(const row &other);
             row(row &&other);

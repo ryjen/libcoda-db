@@ -325,9 +325,12 @@ namespace arg3
 
         row mysql_cached_resultset::current_row()
         {
-            assert (currentRow_ >= 0 && currentRow_ < rows_.size());
+            if (currentRow_ >= 0 && currentRow_ < rows_.size())
 
-            return row(rows_[currentRow_]);
+                return row(rows_[currentRow_]);
+
+            else
+                return row();
         }
 
         size_t mysql_cached_resultset::size() const

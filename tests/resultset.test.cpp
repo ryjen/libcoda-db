@@ -85,8 +85,11 @@ go_bandit([]()
 
             auto rs = q.execute();
 
+#ifdef TEST_CACHE
+            Assert::That(rs.size(), Equals(2));
+#else
             Assert::That(rs.size(), Equals(5));
-
+#endif
             auto i = rs.begin();
 
             Assert::That(i->column(1).to_string(), Equals("Bryan"));
@@ -125,6 +128,7 @@ go_bandit([]()
             Assert::That(i == rs.end(), Equals(true));
 
             Assert::That(i3 == i2, Equals(true));
+
         });
 
         it("can operate on iterators", []()
@@ -147,7 +151,7 @@ go_bandit([]()
 
             auto j = i + 1;
 
-            Assert::That(i != rs.end(), Equals(true));
+            Assert::That(j == rs.end(), Equals(true));
 
             Assert::That(i < j, Equals(true));
 
@@ -158,6 +162,8 @@ go_bandit([]()
             Assert::That(j >= i, Equals(true));
 
             i += 1;
+
+            Assert::That(i == rs.end(), Equals(true));
 
             Assert::That(i <= j, Equals(true));
 

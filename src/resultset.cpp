@@ -42,6 +42,7 @@ namespace arg3
 
         row resultset::current_row()
         {
+            assert(is_valid());
             return impl_->current_row();
         }
 

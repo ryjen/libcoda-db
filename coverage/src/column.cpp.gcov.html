@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-10 21:14:27</td>
+            <td class="headerValue">2014-08-11 10:44:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">21</td>
@@ -75,20 +75,20 @@
 <a name="5"><span class="lineNum">       5 </span>            :     namespace db</a>
 <span class="lineNum">       6 </span>            :     {
 <span class="lineNum">       7 </span>            :         column::column()
-<a name="8"><span class="lineNum">       8 </span><span class="lineCov">        680 :         {}</span></a>
+<a name="8"><span class="lineNum">       8 </span><span class="lineCov">       1360 :         {}</span></a>
 <span class="lineNum">       9 </span>            : 
 <span class="lineNum">      10 </span>            :         column::column(shared_ptr&lt;column_impl&gt; impl) : impl_(impl)
-<span class="lineNum">      11 </span><span class="lineCov">       1079 :         {</span>
-<span class="lineNum">      12 </span><span class="lineCov">       2158 :             assert(impl_ != nullptr);</span>
-<a name="13"><span class="lineNum">      13 </span><span class="lineCov">       2158 :         }</span></a>
+<span class="lineNum">      11 </span><span class="lineCov">       2159 :         {</span>
+<span class="lineNum">      12 </span><span class="lineCov">       4318 :             assert(impl_ != nullptr);</span>
+<a name="13"><span class="lineNum">      13 </span><span class="lineCov">       4318 :         }</span></a>
 <span class="lineNum">      14 </span>            : 
 <span class="lineNum">      15 </span>            :         column::column(const column &amp;other) : impl_(other.impl_)
-<a name="16"><span class="lineNum">      16 </span><span class="lineCov">         52 :         {}</span></a>
+<a name="16"><span class="lineNum">      16 </span><span class="lineCov">        104 :         {}</span></a>
 <span class="lineNum">      17 </span>            : 
-<span class="lineNum">      18 </span><span class="lineCov">          2 :         column::column(column &amp;&amp;other) : impl_(std::move(other.impl_))</span>
-<span class="lineNum">      19 </span><span class="lineCov">          4 :         {</span>
-<span class="lineNum">      20 </span><span class="lineCov">          2 :             other.impl_ = nullptr;</span>
-<a name="21"><span class="lineNum">      21 </span><span class="lineCov">          4 :         }</span></a>
+<span class="lineNum">      18 </span><span class="lineCov">          4 :         column::column(column &amp;&amp;other) : impl_(std::move(other.impl_))</span>
+<span class="lineNum">      19 </span><span class="lineCov">          8 :         {</span>
+<span class="lineNum">      20 </span><span class="lineCov">          4 :             other.impl_ = nullptr;</span>
+<a name="21"><span class="lineNum">      21 </span><span class="lineCov">          8 :         }</span></a>
 <span class="lineNum">      22 </span>            : 
 <span class="lineNum">      23 </span>            :         column &amp;column::operator=(const column &amp;other)
 <span class="lineNum">      24 </span>            :         {
@@ -99,86 +99,86 @@
 <span class="lineNum">      29 </span>            : 
 <span class="lineNum">      30 </span>            :         column &amp;column::operator=(column &amp;&amp; other)
 <span class="lineNum">      31 </span>            :         {
-<span class="lineNum">      32 </span><span class="lineCov">        124 :             impl_ = std::move(other.impl_);</span>
-<span class="lineNum">      33 </span><span class="lineCov">        124 :             other.impl_ = nullptr;</span>
+<span class="lineNum">      32 </span><span class="lineCov">        248 :             impl_ = std::move(other.impl_);</span>
+<span class="lineNum">      33 </span><span class="lineCov">        248 :             other.impl_ = nullptr;</span>
 <span class="lineNum">      34 </span>            : 
-<span class="lineNum">      35 </span><span class="lineCov">        124 :             return *this;</span>
+<span class="lineNum">      35 </span><span class="lineCov">        248 :             return *this;</span>
 <a name="36"><span class="lineNum">      36 </span>            :         }</a>
 <span class="lineNum">      37 </span>            : 
 <span class="lineNum">      38 </span>            :         bool column::is_valid() const
 <span class="lineNum">      39 </span>            :         {
-<span class="lineNum">      40 </span><span class="lineCov">         42 :             if (impl_ == nullptr) return false;</span>
+<span class="lineNum">      40 </span><span class="lineCov">         84 :             if (impl_ == nullptr) return false;</span>
 <span class="lineNum">      41 </span>            : 
-<span class="lineNum">      42 </span><span class="lineCov">         34 :             return impl_-&gt;is_valid();</span>
-<a name="43"><span class="lineNum">      43 </span><span class="lineCov">         38 :         }</span></a>
+<span class="lineNum">      42 </span><span class="lineCov">         68 :             return impl_-&gt;is_valid();</span>
+<a name="43"><span class="lineNum">      43 </span><span class="lineCov">         76 :         }</span></a>
 <span class="lineNum">      44 </span>            : 
 <span class="lineNum">      45 </span>            :         sql_blob column::to_blob() const
 <span class="lineNum">      46 </span>            :         {
-<span class="lineNum">      47 </span><span class="lineCov">          4 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">      47 </span><span class="lineCov">          8 :             assert(impl_ != nullptr);</span>
 <span class="lineNum">      48 </span>            : 
-<span class="lineNum">      49 </span><span class="lineCov">          2 :             return impl_-&gt;to_blob();</span>
+<span class="lineNum">      49 </span><span class="lineCov">          4 :             return impl_-&gt;to_blob();</span>
 <a name="50"><span class="lineNum">      50 </span>            :         }</a>
 <span class="lineNum">      51 </span>            : 
 <span class="lineNum">      52 </span>            :         double column::to_double() const
 <span class="lineNum">      53 </span>            :         {
-<span class="lineNum">      54 </span><span class="lineCov">          8 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">      54 </span><span class="lineCov">         16 :             assert(impl_ != nullptr);</span>
 <span class="lineNum">      55 </span>            : 
-<span class="lineNum">      56 </span><span class="lineCov">          4 :             return impl_-&gt;to_double();</span>
+<span class="lineNum">      56 </span><span class="lineCov">          8 :             return impl_-&gt;to_double();</span>
 <a name="57"><span class="lineNum">      57 </span>            :         }</a>
 <span class="lineNum">      58 </span>            : 
 <span class="lineNum">      59 </span>            :         int column::to_int() const
 <span class="lineNum">      60 </span>            :         {
-<span class="lineNum">      61 </span><span class="lineCov">          4 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">      61 </span><span class="lineCov">          8 :             assert(impl_ != nullptr);</span>
 <span class="lineNum">      62 </span>            : 
-<span class="lineNum">      63 </span><span class="lineCov">          2 :             return impl_-&gt;to_int();</span>
+<span class="lineNum">      63 </span><span class="lineCov">          4 :             return impl_-&gt;to_int();</span>
 <a name="64"><span class="lineNum">      64 </span>            :         }</a>
 <span class="lineNum">      65 </span>            : 
 <span class="lineNum">      66 </span>            :         bool column::to_bool() const
 <span class="lineNum">      67 </span>            :         {
-<span class="lineNum">      68 </span><span class="lineCov">        310 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">      68 </span><span class="lineCov">        620 :             assert(impl_ != nullptr);</span>
 <span class="lineNum">      69 </span>            : 
-<span class="lineNum">      70 </span><span class="lineCov">        155 :             return impl_-&gt;to_bool();</span>
+<span class="lineNum">      70 </span><span class="lineCov">        310 :             return impl_-&gt;to_bool();</span>
 <a name="71"><span class="lineNum">      71 </span>            :         }</a>
 <span class="lineNum">      72 </span>            : 
 <span class="lineNum">      73 </span>            :         int64_t column::to_int64() const
 <span class="lineNum">      74 </span>            :         {
-<span class="lineNum">      75 </span><span class="lineCov">          8 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">      75 </span><span class="lineCov">         16 :             assert(impl_ != nullptr);</span>
 <span class="lineNum">      76 </span>            : 
-<span class="lineNum">      77 </span><span class="lineCov">          4 :             return impl_-&gt;to_int64();</span>
+<span class="lineNum">      77 </span><span class="lineCov">          8 :             return impl_-&gt;to_int64();</span>
 <a name="78"><span class="lineNum">      78 </span>            :         }</a>
 <span class="lineNum">      79 </span>            : 
 <span class="lineNum">      80 </span>            :         string column::to_string() const
 <span class="lineNum">      81 </span>            :         {
-<span class="lineNum">      82 </span><span class="lineCov">       1596 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">      82 </span><span class="lineCov">       3194 :             assert(impl_ != nullptr);</span>
 <span class="lineNum">      83 </span>            : 
-<span class="lineNum">      84 </span><span class="lineCov">        798 :             return impl_-&gt;to_string();</span>
+<span class="lineNum">      84 </span><span class="lineCov">       1597 :             return impl_-&gt;to_string();</span>
 <a name="85"><span class="lineNum">      85 </span>            :         }</a>
 <span class="lineNum">      86 </span>            : 
 <span class="lineNum">      87 </span>            :         sql_value column::to_value() const
 <span class="lineNum">      88 </span>            :         {
-<span class="lineNum">      89 </span><span class="lineCov">        188 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">      89 </span><span class="lineCov">        376 :             assert(impl_ != nullptr);</span>
 <span class="lineNum">      90 </span>            : 
-<span class="lineNum">      91 </span><span class="lineCov">         94 :             return impl_-&gt;to_value();</span>
+<span class="lineNum">      91 </span><span class="lineCov">        188 :             return impl_-&gt;to_value();</span>
 <a name="92"><span class="lineNum">      92 </span>            :         }</a>
 <span class="lineNum">      93 </span>            : 
 <span class="lineNum">      94 </span>            :         column::operator string() const
 <span class="lineNum">      95 </span>            :         {
-<span class="lineNum">      96 </span><span class="lineCov">          2 :             return to_string();</span>
+<span class="lineNum">      96 </span><span class="lineCov">          4 :             return to_string();</span>
 <a name="97"><span class="lineNum">      97 </span>            :         }</a>
 <span class="lineNum">      98 </span>            : 
 <span class="lineNum">      99 </span>            :         column::operator int() const
 <span class="lineNum">     100 </span>            :         {
-<span class="lineNum">     101 </span><span class="lineCov">          2 :             return to_int();</span>
+<span class="lineNum">     101 </span><span class="lineCov">          4 :             return to_int();</span>
 <a name="102"><span class="lineNum">     102 </span>            :         }</a>
 <span class="lineNum">     103 </span>            : 
 <span class="lineNum">     104 </span>            :         column::operator int64_t() const
 <span class="lineNum">     105 </span>            :         {
-<span class="lineNum">     106 </span><span class="lineCov">          2 :             return to_int64();</span>
+<span class="lineNum">     106 </span><span class="lineCov">          4 :             return to_int64();</span>
 <a name="107"><span class="lineNum">     107 </span>            :         }</a>
 <span class="lineNum">     108 </span>            : 
 <span class="lineNum">     109 </span>            :         column::operator double() const
 <span class="lineNum">     110 </span>            :         {
-<span class="lineNum">     111 </span><span class="lineCov">          2 :             return to_double();</span>
+<span class="lineNum">     111 </span><span class="lineCov">          4 :             return to_double();</span>
 <a name="112"><span class="lineNum">     112 </span>            :         }</a>
 <span class="lineNum">     113 </span>            : 
 <span class="lineNum">     114 </span>            :         string column::name() const

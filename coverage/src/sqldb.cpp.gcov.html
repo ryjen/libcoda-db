@@ -31,18 +31,18 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">31</td>
+            <td class="headerCovTableEntry">33</td>
             <td class="headerCovTableEntry">53</td>
-            <td class="headerCovTableEntryLo">58.5 %</td>
+            <td class="headerCovTableEntryLo">62.3 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-10 21:14:27</td>
+            <td class="headerValue">2014-08-11 10:44:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntry">6</td>
             <td class="headerCovTableEntry">39</td>
-            <td class="headerCovTableEntryLo">12.8 %</td>
+            <td class="headerCovTableEntryLo">15.4 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -92,23 +92,23 @@
 <span class="lineNum">      22 </span>            : 
 <span class="lineNum">      23 </span>            :         void uri::parse(const string &amp;url_s)
 <span class="lineNum">      24 </span>            :         {
-<span class="lineNum">      25 </span><span class="lineCov">          2 :             value = url_s;</span>
+<span class="lineNum">      25 </span><span class="lineCov">          4 :             value = url_s;</span>
 <span class="lineNum">      26 </span>            : 
-<span class="lineNum">      27 </span><span class="lineCov">          2 :             const string prot_end(&quot;://&quot;);</span>
-<span class="lineNum">      28 </span><span class="lineCov">          6 :             string::const_iterator prot_i = search(url_s.begin(), url_s.end(),</span>
-<span class="lineNum">      29 </span><span class="lineCov">          2 :                                                    prot_end.begin(), prot_end.end());</span>
-<span class="lineNum">      30 </span><span class="lineCov">          4 :             protocol.reserve(distance(url_s.begin(), prot_i));</span>
-<span class="lineNum">      31 </span><span class="lineCov">          6 :             transform(url_s.begin(), prot_i,</span>
-<span class="lineNum">      32 </span><span class="lineCov">          4 :                       back_inserter(protocol),</span>
-<span class="lineNum">      33 </span><span class="lineCov">          4 :                       ptr_fun&lt;int, int&gt;(tolower)); // protocol is icase</span>
-<span class="lineNum">      34 </span><span class="lineCov">          2 :             if ( prot_i == url_s.end() )</span>
+<span class="lineNum">      27 </span><span class="lineCov">          4 :             const string prot_end(&quot;://&quot;);</span>
+<span class="lineNum">      28 </span><span class="lineCov">         12 :             string::const_iterator prot_i = search(url_s.begin(), url_s.end(),</span>
+<span class="lineNum">      29 </span><span class="lineCov">          4 :                                                    prot_end.begin(), prot_end.end());</span>
+<span class="lineNum">      30 </span><span class="lineCov">          8 :             protocol.reserve(distance(url_s.begin(), prot_i));</span>
+<span class="lineNum">      31 </span><span class="lineCov">         12 :             transform(url_s.begin(), prot_i,</span>
+<span class="lineNum">      32 </span><span class="lineCov">          8 :                       back_inserter(protocol),</span>
+<span class="lineNum">      33 </span><span class="lineCov">          8 :                       ptr_fun&lt;int, int&gt;(tolower)); // protocol is icase</span>
+<span class="lineNum">      34 </span><span class="lineCov">          4 :             if ( prot_i == url_s.end() )</span>
 <span class="lineNum">      35 </span><span class="lineNoCov">          0 :                 return;</span>
-<span class="lineNum">      36 </span><span class="lineCov">          2 :             advance(prot_i, prot_end.length());</span>
+<span class="lineNum">      36 </span><span class="lineCov">          4 :             advance(prot_i, prot_end.length());</span>
 <span class="lineNum">      37 </span>            : 
-<span class="lineNum">      38 </span><span class="lineCov">          4 :             string::const_iterator user_i = find(prot_i, url_s.end(), '@');</span>
-<span class="lineNum">      39 </span><span class="lineCov">          2 :             string::const_iterator path_i;</span>
+<span class="lineNum">      38 </span><span class="lineCov">          8 :             string::const_iterator user_i = find(prot_i, url_s.end(), '@');</span>
+<span class="lineNum">      39 </span><span class="lineCov">          4 :             string::const_iterator path_i;</span>
 <span class="lineNum">      40 </span>            : 
-<span class="lineNum">      41 </span><span class="lineCov">          2 :             if (user_i != url_s.end())</span>
+<span class="lineNum">      41 </span><span class="lineCov">          4 :             if (user_i != url_s.end())</span>
 <span class="lineNum">      42 </span>            :             {
 <span class="lineNum">      43 </span><span class="lineNoCov">          0 :                 string::const_iterator pwd_i = find(prot_i, user_i, ':');</span>
 <span class="lineNum">      44 </span>            : 
@@ -123,32 +123,32 @@
 <span class="lineNum">      53 </span>            :                 }
 <span class="lineNum">      54 </span><span class="lineNoCov">          0 :                 path_i = user_i;</span>
 <span class="lineNum">      55 </span><span class="lineNoCov">          0 :             }</span>
-<span class="lineNum">      56 </span><span class="lineCov">          4 :             else path_i = find(prot_i, url_s.end(), '/');</span>
-<span class="lineNum">      57 </span><span class="lineCov">          4 :             host.reserve(distance(prot_i, path_i));</span>
-<span class="lineNum">      58 </span><span class="lineCov">          6 :             transform(prot_i, path_i,</span>
-<span class="lineNum">      59 </span><span class="lineCov">          4 :                       back_inserter(host),</span>
-<span class="lineNum">      60 </span><span class="lineCov">          4 :                       ptr_fun&lt;int, int&gt;(tolower)); // host is icase</span>
-<span class="lineNum">      61 </span><span class="lineCov">          4 :             string::const_iterator query_i = find(path_i, url_s.end(), '?');</span>
-<span class="lineNum">      62 </span><span class="lineCov">          2 :             path.assign(path_i, query_i);</span>
-<span class="lineNum">      63 </span><span class="lineCov">          2 :             if ( query_i != url_s.end() )</span>
+<span class="lineNum">      56 </span><span class="lineCov">          8 :             else path_i = find(prot_i, url_s.end(), '/');</span>
+<span class="lineNum">      57 </span><span class="lineCov">          8 :             host.reserve(distance(prot_i, path_i));</span>
+<span class="lineNum">      58 </span><span class="lineCov">         12 :             transform(prot_i, path_i,</span>
+<span class="lineNum">      59 </span><span class="lineCov">          8 :                       back_inserter(host),</span>
+<span class="lineNum">      60 </span><span class="lineCov">          8 :                       ptr_fun&lt;int, int&gt;(tolower)); // host is icase</span>
+<span class="lineNum">      61 </span><span class="lineCov">          8 :             string::const_iterator query_i = find(path_i, url_s.end(), '?');</span>
+<span class="lineNum">      62 </span><span class="lineCov">          4 :             path.assign(path_i, query_i);</span>
+<span class="lineNum">      63 </span><span class="lineCov">          4 :             if ( query_i != url_s.end() )</span>
 <span class="lineNum">      64 </span><span class="lineNoCov">          0 :                 ++query_i;</span>
-<span class="lineNum">      65 </span><span class="lineCov">          6 :             query.assign(query_i, url_s.end());</span>
-<a name="66"><span class="lineNum">      66 </span><span class="lineCov">          2 :         }</span></a>
+<span class="lineNum">      65 </span><span class="lineCov">         12 :             query.assign(query_i, url_s.end());</span>
+<a name="66"><span class="lineNum">      66 </span><span class="lineCov">          4 :         }</span></a>
 <span class="lineNum">      67 </span>            : 
 <span class="lineNum">      68 </span>            :         shared_ptr&lt;sqldb&gt; get_db_from_uri(const string &amp;uristr)
 <span class="lineNum">      69 </span>            :         {
-<span class="lineNum">      70 </span><span class="lineCov">          2 :             db::uri uri(uristr);</span>
+<span class="lineNum">      70 </span><span class="lineCov">          4 :             db::uri uri(uristr);</span>
 <span class="lineNum">      71 </span>            : 
-<span class="lineNum">      72 </span><span class="lineCov">          2 :             if (&quot;file&quot; == uri.protocol)</span>
-<span class="lineNum">      73 </span><span class="lineCov">          4 :                 return make_shared&lt;sqlite3_db&gt;(uri);</span>
+<span class="lineNum">      72 </span><span class="lineCov">          4 :             if (&quot;file&quot; == uri.protocol)</span>
+<span class="lineNum">      73 </span><span class="lineCov">          8 :                 return make_shared&lt;sqlite3_db&gt;(uri);</span>
 <span class="lineNum">      74 </span><span class="lineNoCov">          0 :             else if (&quot;mysql&quot; == uri.protocol)</span>
 <span class="lineNum">      75 </span><span class="lineNoCov">          0 :                 return make_shared&lt;mysql_db&gt;(uri);</span>
 <span class="lineNum">      76 </span>            :             else
 <span class="lineNum">      77 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;unknown database &quot; + uri.value);</span>
-<a name="78"><span class="lineNum">      78 </span><span class="lineCov">          2 :         }</span></a>
+<a name="78"><span class="lineNum">      78 </span><span class="lineCov">          4 :         }</span></a>
 <span class="lineNum">      79 </span>            : 
 <span class="lineNum">      80 </span>            :         sqldb::sqldb() : logLevel_(LOG_NONE), cacheLevel_(CACHE_NONE)
-<a name="81"><span class="lineNum">      81 </span><span class="lineCov">          6 :         {}</span></a>
+<a name="81"><span class="lineNum">      81 </span><span class="lineCov">         12 :         {}</span></a>
 <span class="lineNum">      82 </span>            : 
 <span class="lineNum">      83 </span>            :         void sqldb::set_log_level(LogLevel level)
 <span class="lineNum">      84 </span>            :         {
@@ -157,19 +157,19 @@
 <span class="lineNum">      87 </span>            : 
 <span class="lineNum">      88 </span>            :         void sqldb::set_cache_level(CacheLevel level)
 <span class="lineNum">      89 </span>            :         {
-<span class="lineNum">      90 </span><span class="lineNoCov">          0 :             cacheLevel_ = level;</span>
-<a name="91"><span class="lineNum">      91 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">      90 </span><span class="lineCov">          2 :             cacheLevel_ = level;</span>
+<a name="91"><span class="lineNum">      91 </span><span class="lineCov">          2 :         }</span></a>
 <span class="lineNum">      92 </span>            : 
 <span class="lineNum">      93 </span>            :         sqldb::CacheLevel sqldb::cache_level() const
 <span class="lineNum">      94 </span>            :         {
-<span class="lineNum">      95 </span><span class="lineCov">       1614 :             return cacheLevel_;</span>
+<span class="lineNum">      95 </span><span class="lineCov">       2980 :             return cacheLevel_;</span>
 <a name="96"><span class="lineNum">      96 </span>            :         }</a>
 <span class="lineNum">      97 </span>            : 
 <span class="lineNum">      98 </span>            :         void sqldb::log(LogLevel level, const string &amp;message)
 <span class="lineNum">      99 </span>            :         {
-<span class="lineNum">     100 </span><span class="lineCov">        276 :             if (logLevel_ &gt;= level)</span>
+<span class="lineNum">     100 </span><span class="lineCov">        552 :             if (logLevel_ &gt;= level)</span>
 <span class="lineNum">     101 </span><span class="lineNoCov">          0 :                 cout &lt;&lt; &quot;sqldb: &quot; &lt;&lt; message &lt;&lt; endl;</span>
-<span class="lineNum">     102 </span><span class="lineCov">        276 :         }</span>
+<span class="lineNum">     102 </span><span class="lineCov">        552 :         }</span>
 <span class="lineNum">     103 </span>            :     }
 <span class="lineNum">     104 </span>            : }
 </pre>

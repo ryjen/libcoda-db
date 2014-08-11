@@ -69,9 +69,8 @@ namespace arg3
 
         /* cached version */
 
-        sqlite3_cached_resultset::sqlite3_cached_resultset(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt) : db_(db), currentRow_(0)
+        sqlite3_cached_resultset::sqlite3_cached_resultset(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt) : db_(db), currentRow_(-1)
         {
-
             int status = sqlite3_step(stmt.get());
 
             while (status == SQLITE_ROW)
@@ -111,16 +110,21 @@ namespace arg3
 
         bool sqlite3_cached_resultset::next()
         {
+            if (rows_.empty()) return false;
+
             return ++currentRow_ < rows_.size();
         }
         void sqlite3_cached_resultset::reset()
         {
-            currentRow_ = 0;
+            currentRow_ = -1;
         }
 
         row sqlite3_cached_resultset::current_row()
         {
-            return row(rows_[currentRow_]);
+            if (currentRow_ >= 0 && currentRow_ < rows_.size())
+                return row(rows_[currentRow_]);
+            else
+                return row();
         }
 
     }
