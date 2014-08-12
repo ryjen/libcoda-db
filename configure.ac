@@ -37,7 +37,6 @@ AC_CHECK_LIB(mysqlclient, my_init)
 AC_CHECK_HEADERS([unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_HEADER_STDBOOL
 AC_C_INLINE
 AC_TYPE_INT64_T
 AC_TYPE_SIZE_T
