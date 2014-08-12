@@ -3,5 +3,4 @@ compiler: clang
 before_install: 
     - sudo apt-get install mysql-client
     - sudo apt-get install sqlite3
-    - sudo apt-get install autotools-dev
-    - sudo apt-get install aclocal
+    - sudo apt-get install automake
