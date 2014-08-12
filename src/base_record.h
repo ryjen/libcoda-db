@@ -17,20 +17,17 @@ namespace arg3
     {
         class record_db;
         class row;
-
+        template<typename T> class base_record;
 
         template<typename T>
-        inline vector<shared_ptr<T>> find_all(shared_ptr<schema> schema)
+        inline void find_all(shared_ptr<schema> schema, typename base_record<T>::callback funk)
         {
             select_query query(schema);
 
             auto results = query.execute();
 
-            /* convert sql rows to objects */
-            vector<shared_ptr<T>> items;
-
             if (!results.is_valid())
-                return items;
+                return;
 
             for (auto & row : results)
             {
@@ -38,15 +35,28 @@ namespace arg3
                 {
                     auto record = make_shared<T>();
                     record->init(row);
-                    items.push_back(record);
+                    funk(record);
                 }
             }
+        }
+
+
+        template<typename T>
+        inline vector<shared_ptr<T>> find_all(shared_ptr<schema> schema)
+        {
+            /* convert sql rows to objects */
+            vector<shared_ptr<T>> items;
+
+            db::find_all<T>(schema, [&](shared_ptr<T> record)
+            {
+                items.push_back(record);
+            });
 
             return items;
         }
 
         template<typename T>
-        inline vector<shared_ptr<T>> find_by(shared_ptr<schema> schema, const string &name, const sql_value &value)
+        inline void find_by(shared_ptr<schema> schema, const string &name, const sql_value &value, typename base_record<T>::callback funk)
         {
             select_query query(schema);
 
@@ -56,11 +66,8 @@ namespace arg3
 
             auto results = query.execute();
 
-            /* convert sql rows to objects */
-            vector<shared_ptr<T>> items;
-
             if (!results.is_valid())
-                return items;
+                return;
 
             for (auto & row : results)
             {
@@ -68,9 +75,21 @@ namespace arg3
                 {
                     auto record = make_shared<T>();
                     record->init(row);
-                    items.push_back(record);
+                    funk(record);
                 }
             }
+        }
+        template<typename T>
+        inline vector<shared_ptr<T>> find_by(shared_ptr<schema> schema, const string &name, const sql_value &value)
+        {
+
+            /* convert sql rows to objects */
+            vector<shared_ptr<T>> items;
+
+            db::find_by<T>(schema, name, value, [&](shared_ptr<T> record)
+            {
+                items.push_back(record);
+            });
 
             return items;
         }
@@ -87,6 +106,8 @@ namespace arg3
             std::unordered_map<string, sql_value> values_;
             string idColumnName_;
         public:
+
+            typedef std::function<void (shared_ptr<T>)> callback;
 
             /*!
              * @param db the database the record uses
@@ -276,10 +297,13 @@ namespace arg3
 
                 bool rval = query.execute(&id);
 
-                if (insertId)
-                    *insertId = id;
+                if (rval)
+                {
+                    if (insertId)
+                        *insertId = id;
 
-                set(idColumnName_, id);
+                    set(idColumnName_, id);
+                }
 
                 return rval;
             }
@@ -331,6 +355,11 @@ namespace arg3
                 return arg3::db::find_all<T>(schema());
             }
 
+            void find_all(callback funk)
+            {
+                arg3::db::find_all<T>(schema(), funk);
+            }
+
             /*!
              * finds a single record by its id column
              */
@@ -360,6 +389,11 @@ namespace arg3
             vector<shared_ptr<T>> find_by(const string &name, const sql_value &value)
             {
                 return arg3::db::find_by<T>(schema(), name, value);
+            }
+
+            void find_by(const string &name, const sql_value &value, callback funk)
+            {
+                arg3::db::find_by<T>(schema(), name, value, funk);
             }
 
             /*!

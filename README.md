@@ -30,10 +30,10 @@ Model
 <pre>
 /* database interfaces */
 <b>sqldb</b>                                 - interface for a specific database
-  |- <b>statement</b>                        - interface for a prepared statement
-        |- <b>resultset</b>                  - results of a statement
-              |- <b>row</b>                  - an single result
-                   |- <b>column</b>          - a field in a row containing a value
+  └ <b>statement</b>                         - interface for a prepared statement
+        └ <b>resultset</b>                   - results of a statement
+              └ <b>row</b>                   - an single result
+                   └ <b>column</b>           - a field in a row containing a value
 
 /* implementations using the above*/
 <b>schema</b>                                - a definition of a table
@@ -83,19 +83,17 @@ public:
 Query records
 -------------
 ```c++
-    /* get all users */
- 	auto results = user().find_all();
-
-    for (auto &user : results)
-    {
-        cout << "User: " << user.to_string() << endl;
+    /* find all users */
+ 	user().find_all([](shared_ptr<user> record) {
+        cout << "User: " << record->to_string() << endl;
     }
 
+    /* alternative type returns a vector */
     results = user().find_by("first_name", "Joe");
 
-    for (auto &user : results)
+    for (auto user : results)
     {
-        cout << "Found user: " << user.to_string() << endl;
+        cout << "Found user: " << user->to_string() << endl;
     }
 ````
 Save a record
@@ -148,11 +146,22 @@ query.bind(1, "Jenkins");
 
 auto results = query.execute();
 
-for(auto &row: results)
-{
+for ( auto &row : results) {
     string lName = row["last_name"]; // "Jenkins"
     ...
 }
+
+/* alternatively */
+typedef std::function<void (const resultset &)> handler_type;
+
+handler_type handler = [](const resultset &results)
+{
+    results.for_each([](const row &row) {
+        string lName = row["last_name"]; // "Jenkins"
+        ...
+    });
+}
+query.execute(handler);
 ```
 
 
