@@ -1,2 +1,6 @@
 language: cpp
 compiler: clang
+
+before_install: 
+	- sudo apt-get install mysqlclient
+	- sudo apt-get install sqlite3
