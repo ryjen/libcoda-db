@@ -18,7 +18,8 @@ AC_PROG_CC
 AC_PROG_MAKE_SET
 
 if test "x$CXX" = "xclang++"; then
-	AC_SUBST([AM_CPPFLAGS], ["-std=c++11 -stdlib=libc++ -Wall -Werror"])
+	AC_SUBST([AM_CPPFLAGS], ["-std=c++11 -Wall -Werror"])
+	AC_SUBST([AM_LDFLAGS], ["-stdlib=libc++"])
 else
 	AC_SUBST([AM_CPPFLAGS], ["-std=c++0x -Wall -Werror"])
 fi
