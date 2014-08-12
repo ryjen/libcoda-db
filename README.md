@@ -106,7 +106,7 @@ Save a record
     obj.set("last_name", "Doe");
 
     if(!obj.save())
-    	cout << testdb.last_error() << endl;
+    	cerr << testdb.last_error() << endl;
 ```
 
 Delete a record
@@ -115,7 +115,7 @@ Delete a record
     user obj(1); // id constructor
 
     if(!obj.de1ete())
-        cout << testdb.last_error() << endl;
+        cerr << testdb.last_error() << endl;
 ```
 
 Basic Queries
@@ -131,7 +131,7 @@ query.bind(1, 1234).bind(2, "happy").bind(3, "gilmour");
 
 /* saves user { "id": 1234, "first_name": "happy", "last_name": "gilmour" } */
 if(!query.execute())
-    cout << testdb.last_error() << endl;
+    cerr << testdb.last_error() << endl;
 ```
 
 Select Query
