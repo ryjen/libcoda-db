@@ -18,8 +18,8 @@ libtool
 *.la
 *.status
 config.h
-arg3mysql_test
-arg3sqlite_test
+arg3mysql_*test
+arg3sqlite_*test
 *.gcno
 coverage.info
 .gradle
