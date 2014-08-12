@@ -3,7 +3,7 @@ SOURCES = arg3.test.cpp base_record.test.cpp column.test.cpp db.test.cpp delete_
 	resultset.test.cpp row.test.cpp schema.test.cpp schema_factory.test.cpp select_query.test.cpp sql_value.test.cpp \
 	where_clause.test.cpp
 
-AM_CPPFLAGS = -std=c++11 -stdlib=libc++ -Ivendor -Wall -Werror
+AM_CPPFLAGS = -std=c++11 -stdlib=libc++ -Ivendor/bandit -Wall -Werror
 
 pkginclude_HEADERS = db.test.h
 
