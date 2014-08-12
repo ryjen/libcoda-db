@@ -3,3 +3,4 @@ compiler: clang
 before_install: 
     - sudo apt-get install mysql-client
     - sudo apt-get install sqlite3
+    - sudo apt-get install aclocal
