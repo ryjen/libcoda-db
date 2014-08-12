@@ -38,6 +38,9 @@ namespace arg3
         sql_blob::sql_blob(const void *ptr, size_t size, sql_blob::cleanup_method cleanup) : p_(ptr), s_(size), destruct_(cleanup)
         {}
 
+        sql_blob::sql_blob(const void *ptr, size_t size) : p_(ptr), s_(size), destruct_(NULL)
+        {}
+
         sql_blob::sql_blob(const sql_blob &other) : p_(NULL), destruct_(NULL)
         {
             copy(other);
@@ -111,11 +114,6 @@ namespace arg3
             return os.str();
         }
 
-        bool sql_blob::operator==(const sql_blob &other) const
-        {
-            return p_ == other.p_ && s_ == other.s_;
-        }
-
         sql_blob::cleanup_method sql_blob::destructor() const
         {
             return destruct_;
@@ -159,28 +157,26 @@ namespace arg3
         {
         }
 
-        sql_value::sql_value(const sql_value &&other) : value_(other.value_)
+        sql_value::sql_value( sql_value &&other) : value_(std::move(other.value_))
         {
+            other.value_ = sql_null;
         }
+
         sql_value &sql_value::operator=(const sql_value &other)
         {
             value_ = other.value_;
             return *this;
         }
 
-        sql_value &sql_value::operator=(const sql_value && other)
+        sql_value &sql_value::operator=(sql_value && other)
         {
             value_ = std::move(other.value_);
+            other.value_ = sql_null;
             return *this;
         }
 
         sql_value::~sql_value()
         {
-        }
-
-        bool sql_value::operator==(const sql_value &other) const
-        {
-            return other.to_string() == to_string();
         }
 
         string sql_value::to_string() const
@@ -198,6 +194,18 @@ namespace arg3
         {
             return apply_visitor(sql_exists_visitor<sql_null_type>(), value_);
         }
+        bool sql_value::operator==(const sql_value &other) const
+        {
+            return other.to_string() == to_string();
+        }
+        bool sql_value::operator!=(const sql_null_type &other) const
+        {
+            return !operator==(other);
+        }
+        bool sql_value::operator!=(const sql_value &other) const
+        {
+            return !operator==(other);
+        }
 
         sql_value::operator std::string() const
         {
@@ -212,6 +220,17 @@ namespace arg3
             }
             catch (const std::exception &e)
             {
+
+                string data = to_string();
+
+                std::transform(data.begin(), data.end(), data.begin(), std::ptr_fun<int, int>(std::tolower));
+
+                if (data == "true")
+                    return true;
+
+                if (data == "yes")
+                    return true;
+
                 return false;
             }
         }

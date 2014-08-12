@@ -90,7 +90,7 @@ namespace arg3
                 return *this;
             }
 
-            ValueType operator*()
+            ValueType &operator*()
             {
                 set_current_value(position_);
                 return currentValue_;
@@ -211,8 +211,8 @@ namespace arg3
         private:
             shared_ptr<row_impl> impl_;
         public:
-            typedef row_iterator<column, column, row_impl> iterator;
-            typedef row_iterator<const column, column, const row_impl> const_iterator;
+            typedef row_iterator<db::column, db::column, row_impl> iterator;
+            typedef row_iterator<const db::column, db::column, const row_impl> const_iterator;
             typedef std::reverse_iterator<iterator> reverse_iterator;
             typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -266,7 +266,7 @@ namespace arg3
 
             bool is_valid() const;
 
-            void for_each(std::function<void (db::column)> funk) const;
+            void for_each(std::function<void (const db::column &)> funk) const;
         };
 
     }

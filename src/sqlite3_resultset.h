@@ -19,7 +19,7 @@ namespace arg3
             friend class select_query;
             friend class row;
             friend class sqldb;
-            friend class resultset_iterator;
+            template<typename, typename> friend class resultset_iterator;
         private:
             shared_ptr<sqlite3_stmt> stmt_;
             sqlite3_db *db_;
@@ -52,7 +52,7 @@ namespace arg3
             friend class select_query;
             friend class row;
             friend class sqldb;
-            friend class resultset_iterator;
+            template<typename, typename> friend class resultset_iterator;
         private:
             sqlite3_db *db_;
             vector<shared_ptr<row_impl>> rows_;

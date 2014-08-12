@@ -62,7 +62,7 @@ namespace arg3
             return impl_->size();
         }
 
-        void resultset::for_each(std::function<void (row row)> funk)
+        void resultset::for_each(std::function<void (const row &row)> funk) const
         {
             for (auto & row : *this)
             {
@@ -85,123 +85,20 @@ namespace arg3
             return iterator(impl_, -1);
         }
 
-
-        resultset_iterator::resultset_iterator(shared_ptr<resultset_impl> rset, int position) : rs_(rset), pos_(position), value_(rset->current_row())
+        resultset::const_iterator resultset::begin() const
         {
-        }
+            impl_->reset();
 
-        resultset_iterator::resultset_iterator(const resultset_iterator &other) : rs_(other.rs_), pos_(other.pos_), value_(other.value_)
-        {}
-
-
-        resultset_iterator::resultset_iterator(resultset_iterator &&other) : rs_(std::move(other.rs_)), pos_(other.pos_),
-            value_(std::move(other.value_))
-        {
-            other.rs_ = nullptr;
-            other.pos_ = -1;
-        }
-
-        resultset_iterator::~resultset_iterator() {}
-
-        resultset_iterator &resultset_iterator::operator=(resultset_iterator && other)
-        {
-            rs_ = std::move(other.rs_);
-            pos_ = other.pos_;
-            value_ = std::move(other.value_);
-            other.rs_ = nullptr;
-
-            return *this;
-        }
-
-        resultset_iterator::reference resultset_iterator::operator*()
-        {
-            return value_;
-        }
-
-        resultset_iterator &resultset_iterator::operator++()
-        {
-            if (pos_ == -1 || rs_ == nullptr)
-                return *this;
-
-            bool res = rs_->next();
-
-            if (res)
-            {
-                pos_++;
-                value_ = rs_->current_row();
-            }
+            if (impl_->next())
+                return const_iterator(impl_, 0);
             else
-            {
-                pos_ = -1;
-            }
-
-            return *this;
-
+                return end();
         }
 
-
-        resultset_iterator::pointer resultset_iterator::operator->()
+        resultset::const_iterator resultset::end() const
         {
-            return &(operator*());
+            return const_iterator(impl_, -1);
         }
 
-        resultset_iterator resultset_iterator::operator++(int)
-        {
-            resultset_iterator tmp(*this);
-            ++(*this);
-            return tmp;
-        }
-
-        resultset_iterator resultset_iterator::operator+(difference_type n)
-        {
-            resultset_iterator tmp(*this);
-            for (difference_type i = 0; i < n; i++)
-                ++(tmp);
-            return tmp;
-        }
-
-        resultset_iterator &resultset_iterator::operator+=(difference_type n)
-        {
-            for (difference_type i = 0; i < n; i++)
-                operator++();
-            return *this;
-        }
-
-        bool resultset_iterator::operator==(const resultset_iterator &other) const
-        {
-            return pos_ == other.pos_;
-        }
-
-        bool resultset_iterator::operator!=(const resultset_iterator &other) const
-        {
-            return !operator==(other);
-        }
-
-        bool resultset_iterator::operator<(const resultset_iterator &other) const
-        {
-            if (pos_ == -1 && other.pos_ == -1)
-                return false;
-            else if (pos_ == -1)
-                return false;
-            else if (other.pos_ == -1)
-                return true;
-            else
-                return pos_ < other.pos_;
-        }
-
-        bool resultset_iterator::operator<=(const resultset_iterator &other) const
-        {
-            return operator<(other) || operator==(other);
-        }
-
-        bool resultset_iterator::operator>(const resultset_iterator &other) const
-        {
-            return !operator<(other);
-        }
-
-        bool resultset_iterator::operator>=(const resultset_iterator &other) const
-        {
-            return operator>(other) || operator==(other);
-        }
     }
 }

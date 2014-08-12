@@ -79,6 +79,23 @@ go_bandit([]()
 
         });
 
+        it("can use for each", []()
+        {
+            select_query q(testdb, "users");
+
+            auto rs = q.execute();
+
+            rs.for_each([](const row & row)
+            {
+                AssertThat(row.is_valid(), IsTrue());
+
+                row.for_each([](const column & c)
+                {
+                    AssertThat(c.is_valid(), IsTrue());
+                });
+            });
+        });
+
         it("can be reset", []()
         {
             select_query q(testdb, "users");

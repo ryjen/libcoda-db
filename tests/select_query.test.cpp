@@ -106,6 +106,26 @@ go_bandit([]()
             Assert::That(rs.is_valid(), Equals(true));
         });
 
+        it("can use callbacks", []()
+        {
+            select_query query(testdb, "users");
+
+            query.execute([](const resultset & rs)
+            {
+                AssertThat(rs.is_valid(), IsTrue());
+
+                rs.for_each([](const row & r)
+                {
+                    AssertThat(r.is_valid(), IsTrue());
+
+                    r.for_each([](const column & c)
+                    {
+                        AssertThat(c.is_valid(), IsTrue());
+                    });
+                });
+            });
+        });
+
         it("can be used with a where clause", []()
         {
             auto query = select_query(testdb, "users");
@@ -179,7 +199,7 @@ go_bandit([]()
 
             query.where("first_name=? and last_name=?");
 
-            query.execute([](resultset rs)
+            query.execute([](const resultset & rs)
             {
                 Assert::That(rs.is_valid(), Equals(true));
 

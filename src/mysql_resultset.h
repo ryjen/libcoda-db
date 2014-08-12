@@ -25,7 +25,7 @@ namespace arg3
             friend class select_query;
             friend class row;
             friend class sqldb;
-            friend class resultset_iterator;
+            template<typename, typename> friend class resultset_iterator;
         private:
             shared_ptr<MYSQL_RES> res_;
             MYSQL_ROW row_;
@@ -55,7 +55,7 @@ namespace arg3
             friend class select_query;
             friend class row;
             friend class sqldb;
-            friend class resultset_iterator;
+            template<typename, typename> friend class resultset_iterator;
         private:
             shared_ptr<MYSQL_STMT> stmt_;
             shared_ptr<MYSQL_RES> metadata_;
@@ -92,7 +92,7 @@ namespace arg3
             friend class select_query;
             friend class row;
             friend class sqldb;
-            friend class resultset_iterator;
+            template<typename, typename> friend class resultset_iterator;
         private:
             vector<shared_ptr<row_impl>> rows_;
             int currentRow_;

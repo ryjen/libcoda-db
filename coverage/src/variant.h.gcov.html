@@ -31,18 +31,18 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">60</td>
-            <td class="headerCovTableEntry">67</td>
-            <td class="headerCovTableEntryMed">89.6 %</td>
+            <td class="headerCovTableEntry">83</td>
+            <td class="headerCovTableEntry">90</td>
+            <td class="headerCovTableEntryHi">92.2 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-11 10:44:20</td>
+            <td class="headerValue">2014-08-11 17:11:37</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">131</td>
-            <td class="headerCovTableEntry">167</td>
-            <td class="headerCovTableEntryMed">78.4 %</td>
+            <td class="headerCovTableEntry">161</td>
+            <td class="headerCovTableEntry">204</td>
+            <td class="headerCovTableEntryMed">78.9 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -225,7 +225,7 @@
 <span class="lineNum">     155 </span>            :         T &amp;
 <span class="lineNum">     156 </span>            :         get_value(T &amp;t, const Internal &amp;)
 <span class="lineNum">     157 </span>            :         {
-<span class="lineNum">     158 </span><span class="lineCov">      19878 :             return t;</span>
+<span class="lineNum">     158 </span><span class="lineCov">      26746 :             return t;</span>
 <span class="lineNum">     159 </span>            :         }
 <span class="lineNum">     160 </span>            : 
 <span class="lineNum">     161 </span>            :         template &lt;typename T&gt;
@@ -266,7 +266,7 @@
 <span class="lineNum">     196 </span>            :         T
 <span class="lineNum">     197 </span>            :         &gt;::type ConstType;
 <span class="lineNum">     198 </span>            : 
-<span class="lineNum">     199 </span><span class="lineCov">      19878 :         return visitor(detail::get_value(*reinterpret_cast&lt;ConstType *&gt;(storage),</span>
+<span class="lineNum">     199 </span><span class="lineCov">      26746 :         return visitor(detail::get_value(*reinterpret_cast&lt;ConstType *&gt;(storage),</span>
 <span class="lineNum">     200 </span>            :                                          internal), std::forward&lt;Args&gt;(args)...);
 <span class="lineNum">     201 </span>            :     }
 <span class="lineNum">     202 </span>            : 
@@ -305,13 +305,13 @@
 <span class="lineNum">     235 </span>            :                 }
 <span class="lineNum">     236 </span>            :                 ;
 <span class="lineNum">     237 </span>            : 
-<span class="lineNum">     238 </span><span class="lineCov">      59634 :                 assert(which &gt;= 0 &amp;&amp; which &lt; sizeof...(AllTypes));</span>
+<span class="lineNum">     238 </span><span class="lineCov">      80238 :                 assert(which &gt;= 0 &amp;&amp; which &lt; sizeof...(AllTypes));</span>
 <span class="lineNum">     239 </span>            : 
-<span class="lineNum">     240 </span><span class="lineCov">      39756 :                 return (*callers[which])</span>
+<span class="lineNum">     240 </span><span class="lineCov">      53492 :                 return (*callers[which])</span>
 <span class="lineNum">     241 </span>            :                        (
-<span class="lineNum">     242 </span><span class="lineCov">      19878 :                            std::forward&lt;Internal&gt;(internal),</span>
-<span class="lineNum">     243 </span><span class="lineCov">      19878 :                            std::forward&lt;VoidPtrCV&gt;(storage),</span>
-<span class="lineNum">     244 </span><span class="lineCov">      19878 :                            std::forward&lt;Visitor&gt;(visitor),</span>
+<span class="lineNum">     242 </span><span class="lineCov">      26746 :                            std::forward&lt;Internal&gt;(internal),</span>
+<span class="lineNum">     243 </span><span class="lineCov">      26746 :                            std::forward&lt;VoidPtrCV&gt;(storage),</span>
+<span class="lineNum">     244 </span><span class="lineCov">      26746 :                            std::forward&lt;Visitor&gt;(visitor),</span>
 <span class="lineNum">     245 </span>            :                            std::forward&lt;Args&gt;(args)...
 <span class="lineNum">     246 </span>            :                        );
 <span class="lineNum">     247 </span>            :             }
@@ -344,15 +344,15 @@
 <span class="lineNum">     274 </span>            : 
 <span class="lineNum">     275 </span>            :             constructor(Variant &amp;self)
 <span class="lineNum">     276 </span>            :                 : m_self(self)
-<span class="lineNum">     277 </span><span class="lineCov">       2978 :             {</span>
-<span class="lineNum">     278 </span><span class="lineCov">       5956 :             }</span>
+<span class="lineNum">     277 </span><span class="lineCov">       3242 :             {</span>
+<span class="lineNum">     278 </span><span class="lineCov">       6484 :             }</span>
 <span class="lineNum">     279 </span>            : 
 <a name="280"><span class="lineNum">     280 </span>            :             template &lt;typename T&gt;</a>
 <span class="lineNum">     281 </span>            :             void
 <span class="lineNum">     282 </span>            :             operator()(const T &amp;rhs) const
 <span class="lineNum">     283 </span>            :             {
-<span class="lineNum">     284 </span><span class="lineCov">       2978 :                 m_self.construct(rhs);</span>
-<span class="lineNum">     285 </span><span class="lineCov">       2978 :             }</span>
+<span class="lineNum">     284 </span><span class="lineCov">       3242 :                 m_self.construct(rhs);</span>
+<span class="lineNum">     285 </span><span class="lineCov">       3242 :             }</span>
 <span class="lineNum">     286 </span>            : 
 <span class="lineNum">     287 </span>            :         private:
 <span class="lineNum">     288 </span>            :             Variant &amp;m_self;
@@ -360,19 +360,19 @@
 <span class="lineNum">     290 </span>            : 
 <span class="lineNum">     291 </span>            :         struct move_constructor
 <span class="lineNum">     292 </span>            :         {
-<span class="lineNum">     293 </span>            :             typedef void result_type;
+<a name="293"><span class="lineNum">     293 </span>            :             typedef void result_type;</a>
 <span class="lineNum">     294 </span>            : 
 <span class="lineNum">     295 </span>            :             move_constructor(Variant &amp;self)
 <span class="lineNum">     296 </span>            :                 : m_self(self)
-<span class="lineNum">     297 </span>            :             {
-<span class="lineNum">     298 </span>            :             }
+<span class="lineNum">     297 </span><span class="lineCov">          4 :             {</span>
+<span class="lineNum">     298 </span><span class="lineCov">          8 :             }</span>
 <span class="lineNum">     299 </span>            : 
-<span class="lineNum">     300 </span>            :             template &lt;typename T&gt;
+<a name="300"><span class="lineNum">     300 </span>            :             template &lt;typename T&gt;</a>
 <span class="lineNum">     301 </span>            :             void
 <span class="lineNum">     302 </span>            :             operator()(T &amp;rhs) const
 <span class="lineNum">     303 </span>            :             {
-<span class="lineNum">     304 </span>            :                 m_self.construct(std::move(rhs));
-<span class="lineNum">     305 </span>            :             }
+<span class="lineNum">     304 </span><span class="lineCov">          4 :                 m_self.construct(std::move(rhs));</span>
+<span class="lineNum">     305 </span><span class="lineCov">          4 :             }</span>
 <span class="lineNum">     306 </span>            : 
 <span class="lineNum">     307 </span>            :         private:
 <span class="lineNum">     308 </span>            :             Variant &amp;m_self;
@@ -384,25 +384,25 @@
 <span class="lineNum">     314 </span>            : 
 <span class="lineNum">     315 </span>            :             assigner(Variant &amp;self, int rhs_which)
 <span class="lineNum">     316 </span>            :                 : m_self(self), m_rhs_which(rhs_which)
-<span class="lineNum">     317 </span><span class="lineCov">       2866 :             {</span>
-<span class="lineNum">     318 </span><span class="lineCov">       5732 :             }</span>
+<span class="lineNum">     317 </span><span class="lineCov">       1212 :             {</span>
+<span class="lineNum">     318 </span><span class="lineCov">       2424 :             }</span>
 <span class="lineNum">     319 </span>            : 
 <a name="320"><span class="lineNum">     320 </span>            :             template &lt;typename Rhs&gt;</a>
 <span class="lineNum">     321 </span>            :             void
 <span class="lineNum">     322 </span>            :             operator()(const Rhs &amp;rhs) const
 <span class="lineNum">     323 </span>            :             {
-<span class="lineNum">     324 </span><span class="lineCov">       2866 :                 if (m_self.which() == m_rhs_which)</span>
+<span class="lineNum">     324 </span><span class="lineCov">       1212 :                 if (m_self.which() == m_rhs_which)</span>
 <span class="lineNum">     325 </span>            :                 {
 <span class="lineNum">     326 </span>            :                     //the types are the same, so just assign into the lhs
-<span class="lineNum">     327 </span><span class="lineCov">        960 :                     *reinterpret_cast&lt;Rhs *&gt;(m_self.address()) = rhs;</span>
-<span class="lineNum">     328 </span><span class="lineCov">        960 :                 }</span>
+<span class="lineNum">     327 </span><span class="lineCov">        450 :                     *reinterpret_cast&lt;Rhs *&gt;(m_self.address()) = rhs;</span>
+<span class="lineNum">     328 </span><span class="lineCov">        450 :                 }</span>
 <span class="lineNum">     329 </span>            :                 else
 <span class="lineNum">     330 </span>            :                 {
-<span class="lineNum">     331 </span><span class="lineCov">       1906 :                     Rhs tmp(rhs);</span>
-<span class="lineNum">     332 </span><span class="lineCov">       1906 :                     m_self.destroy(); //nothrow</span>
-<span class="lineNum">     333 </span><span class="lineCov">       1906 :                     m_self.construct(std::move(tmp)); //nothrow (please)</span>
-<span class="lineNum">     334 </span><span class="lineCov">       1151 :                 }</span>
-<span class="lineNum">     335 </span><span class="lineCov">       2866 :             }</span>
+<span class="lineNum">     331 </span><span class="lineCov">        762 :                     Rhs tmp(rhs);</span>
+<span class="lineNum">     332 </span><span class="lineCov">        762 :                     m_self.destroy(); //nothrow</span>
+<span class="lineNum">     333 </span><span class="lineCov">        762 :                     m_self.construct(std::move(tmp)); //nothrow (please)</span>
+<span class="lineNum">     334 </span><span class="lineCov">        432 :                 }</span>
+<span class="lineNum">     335 </span><span class="lineCov">       1212 :             }</span>
 <span class="lineNum">     336 </span>            : 
 <span class="lineNum">     337 </span>            :         private:
 <span class="lineNum">     338 </span>            :             Variant &amp;m_self;
@@ -411,29 +411,29 @@
 <span class="lineNum">     341 </span>            : 
 <span class="lineNum">     342 </span>            :         struct move_assigner
 <span class="lineNum">     343 </span>            :         {
-<span class="lineNum">     344 </span>            :             typedef void result_type;
+<a name="344"><span class="lineNum">     344 </span>            :             typedef void result_type;</a>
 <span class="lineNum">     345 </span>            : 
 <span class="lineNum">     346 </span>            :             move_assigner(Variant &amp;self, int rhs_which)
 <span class="lineNum">     347 </span>            :                 : m_self(self), m_rhs_which(rhs_which)
-<span class="lineNum">     348 </span>            :             {
-<span class="lineNum">     349 </span>            :             }
+<span class="lineNum">     348 </span><span class="lineCov">       3788 :             {</span>
+<span class="lineNum">     349 </span><span class="lineCov">       7576 :             }</span>
 <span class="lineNum">     350 </span>            : 
-<span class="lineNum">     351 </span>            :             template &lt;typename Rhs&gt;
+<a name="351"><span class="lineNum">     351 </span>            :             template &lt;typename Rhs&gt;</a>
 <span class="lineNum">     352 </span>            :             void
 <span class="lineNum">     353 </span>            :             operator()(Rhs &amp;rhs) const
 <span class="lineNum">     354 </span>            :             {
 <span class="lineNum">     355 </span>            :                 typedef typename std::remove_const&lt;Rhs&gt;::type RhsNoConst;
-<span class="lineNum">     356 </span>            :                 if (m_self.which() == m_rhs_which)
+<span class="lineNum">     356 </span><span class="lineCov">       3788 :                 if (m_self.which() == m_rhs_which)</span>
 <span class="lineNum">     357 </span>            :                 {
 <span class="lineNum">     358 </span>            :                     //the types are the same, so just assign into the lhs
-<span class="lineNum">     359 </span>            :                     *reinterpret_cast&lt;RhsNoConst *&gt;(m_self.address()) = std::move(rhs);
-<span class="lineNum">     360 </span>            :                 }
+<span class="lineNum">     359 </span><span class="lineCov">       1216 :                     *reinterpret_cast&lt;RhsNoConst *&gt;(m_self.address()) = std::move(rhs);</span>
+<span class="lineNum">     360 </span><span class="lineCov">       1216 :                 }</span>
 <span class="lineNum">     361 </span>            :                 else
 <span class="lineNum">     362 </span>            :                 {
-<span class="lineNum">     363 </span>            :                     m_self.destroy(); //nothrow
-<span class="lineNum">     364 </span>            :                     m_self.construct(std::move(rhs)); //nothrow (please)
+<span class="lineNum">     363 </span><span class="lineCov">       2572 :                     m_self.destroy(); //nothrow</span>
+<span class="lineNum">     364 </span><span class="lineCov">       2572 :                     m_self.construct(std::move(rhs)); //nothrow (please)</span>
 <span class="lineNum">     365 </span>            :                 }
-<span class="lineNum">     366 </span>            :             }
+<span class="lineNum">     366 </span><span class="lineCov">       3788 :             }</span>
 <span class="lineNum">     367 </span>            : 
 <span class="lineNum">     368 </span>            :         private:
 <span class="lineNum">     369 </span>            :             Variant &amp;m_self;
@@ -468,8 +468,8 @@
 <span class="lineNum">     398 </span>            :             void
 <span class="lineNum">     399 </span>            :             operator()(T &amp;t) const
 <span class="lineNum">     400 </span>            :             {
-<span class="lineNum">     401 </span><span class="lineCov">      10876 :                 t.~T();</span>
-<span class="lineNum">     402 </span><span class="lineCov">      10876 :             }</span>
+<span class="lineNum">     401 </span><span class="lineCov">      14998 :                 t.~T();</span>
+<span class="lineNum">     402 </span><span class="lineCov">      14998 :             }</span>
 <span class="lineNum">     403 </span>            :         };
 <span class="lineNum">     404 </span>            : 
 <span class="lineNum">     405 </span>            :         template &lt;size_t Which, typename... MyTypes&gt;
@@ -492,9 +492,9 @@
 <span class="lineNum">     422 </span>            :             static void
 <span class="lineNum">     423 </span>            :             initialise(Variant &amp;v, const Current &amp;current)
 <span class="lineNum">     424 </span>            :             {
-<span class="lineNum">     425 </span><span class="lineCov">       4460 :                 v.construct(current);</span>
-<span class="lineNum">     426 </span><span class="lineCov">       4460 :                 v.indicate_which(Which);</span>
-<span class="lineNum">     427 </span><span class="lineCov">       4460 :             }</span>
+<span class="lineNum">     425 </span><span class="lineCov">       6730 :                 v.construct(current);</span>
+<span class="lineNum">     426 </span><span class="lineCov">       6730 :                 v.indicate_which(Which);</span>
+<span class="lineNum">     427 </span><span class="lineCov">       6730 :             }</span>
 <span class="lineNum">     428 </span>            :         };
 <span class="lineNum">     429 </span>            : 
 <span class="lineNum">     430 </span>            :         template &lt;size_t Which&gt;
@@ -515,9 +515,9 @@
 <a name="445"><span class="lineNum">     445 </span>            :         }</a>
 <span class="lineNum">     446 </span>            : 
 <span class="lineNum">     447 </span>            :         ~Variant()
-<span class="lineNum">     448 </span><span class="lineCov">       8970 :         {</span>
-<span class="lineNum">     449 </span><span class="lineCov">       8970 :             destroy();</span>
-<span class="lineNum">     450 </span><span class="lineCov">      17940 :         }</span>
+<span class="lineNum">     448 </span><span class="lineCov">      11664 :         {</span>
+<span class="lineNum">     449 </span><span class="lineCov">      11664 :             destroy();</span>
+<span class="lineNum">     450 </span><span class="lineCov">      23328 :         }</span>
 <span class="lineNum">     451 </span>            : 
 <span class="lineNum">     452 </span>            :         //enable_if disables this function if we are constructing with a Variant.
 <span class="lineNum">     453 </span>            :         //Unfortunately, this becomes Variant(Variant&amp;) which is a better match
@@ -538,50 +538,50 @@
 <a name="468"><span class="lineNum">     468 </span>            :                  &gt;::type</a>
 <span class="lineNum">     469 </span>            :                  &gt;
 <span class="lineNum">     470 </span>            :         Variant(T &amp;&amp; t)
-<span class="lineNum">     471 </span><span class="lineCov">       4460 :         {</span>
+<span class="lineNum">     471 </span><span class="lineCov">       6730 :         {</span>
 <span class="lineNum">     472 </span>            :             static_assert(
 <span class="lineNum">     473 </span>            :                 !std::is_same&lt;Variant&lt;First, Types...&gt;&amp;, T&gt;::value,
 <span class="lineNum">     474 </span>            :                 &quot;why is Variant(T&amp;&amp;) instantiated with a Variant?&quot;);
 <span class="lineNum">     475 </span>            : 
 <span class="lineNum">     476 </span>            :             //compile error here means that T is not unambiguously convertible to
 <span class="lineNum">     477 </span>            :             //any of the types in (First, Types...)
-<span class="lineNum">     478 </span><span class="lineCov">       4460 :             initialiser&lt;0, First, Types...&gt;::initialise(*this, std::forward&lt;T&gt;(t));</span>
-<a name="479"><span class="lineNum">     479 </span><span class="lineCov">       8920 :         }</span></a>
+<span class="lineNum">     478 </span><span class="lineCov">       6730 :             initialiser&lt;0, First, Types...&gt;::initialise(*this, std::forward&lt;T&gt;(t));</span>
+<a name="479"><span class="lineNum">     479 </span><span class="lineCov">      13460 :         }</span></a>
 <span class="lineNum">     480 </span>            : 
 <span class="lineNum">     481 </span>            :         Variant(const Variant &amp;rhs)
-<span class="lineNum">     482 </span><span class="lineCov">       2978 :         {</span>
-<span class="lineNum">     483 </span><span class="lineCov">       2978 :             constructor c(*this);</span>
-<span class="lineNum">     484 </span><span class="lineCov">       2978 :             rhs.apply_visitor_internal(c);</span>
-<span class="lineNum">     485 </span><span class="lineCov">       2978 :             indicate_which(rhs.which());</span>
-<span class="lineNum">     486 </span><span class="lineCov">       5956 :         }</span>
+<span class="lineNum">     482 </span><span class="lineCov">       3242 :         {</span>
+<span class="lineNum">     483 </span><span class="lineCov">       3242 :             constructor c(*this);</span>
+<span class="lineNum">     484 </span><span class="lineCov">       3242 :             rhs.apply_visitor_internal(c);</span>
+<span class="lineNum">     485 </span><span class="lineCov">       3242 :             indicate_which(rhs.which());</span>
+<a name="486"><span class="lineNum">     486 </span><span class="lineCov">       6484 :         }</span></a>
 <span class="lineNum">     487 </span>            : 
 <span class="lineNum">     488 </span>            :         Variant(Variant &amp;&amp;rhs)
-<span class="lineNum">     489 </span>            :         {
-<span class="lineNum">     490 </span>            :             move_constructor mc(*this);
-<span class="lineNum">     491 </span>            :             rhs.apply_visitor_internal(mc);
-<span class="lineNum">     492 </span>            :             indicate_which(rhs.which());
-<a name="493"><span class="lineNum">     493 </span>            :         }</a>
+<span class="lineNum">     489 </span><span class="lineCov">          4 :         {</span>
+<span class="lineNum">     490 </span><span class="lineCov">          4 :             move_constructor mc(*this);</span>
+<span class="lineNum">     491 </span><span class="lineCov">          4 :             rhs.apply_visitor_internal(mc);</span>
+<span class="lineNum">     492 </span><span class="lineCov">          4 :             indicate_which(rhs.which());</span>
+<a name="493"><span class="lineNum">     493 </span><span class="lineCov">          8 :         }</span></a>
 <span class="lineNum">     494 </span>            : 
 <span class="lineNum">     495 </span>            :         Variant &amp;operator=(const Variant &amp;rhs)
 <span class="lineNum">     496 </span>            :         {
-<span class="lineNum">     497 </span><span class="lineCov">       2866 :             if (this != &amp;rhs)</span>
+<span class="lineNum">     497 </span><span class="lineCov">       1212 :             if (this != &amp;rhs)</span>
 <span class="lineNum">     498 </span>            :             {
-<span class="lineNum">     499 </span><span class="lineCov">       2866 :                 assigner a(*this, rhs.which());</span>
-<span class="lineNum">     500 </span><span class="lineCov">       2866 :                 rhs.apply_visitor_internal(a);</span>
-<span class="lineNum">     501 </span><span class="lineCov">       2866 :                 indicate_which(rhs.which());</span>
-<span class="lineNum">     502 </span><span class="lineCov">       2866 :             }</span>
-<span class="lineNum">     503 </span><span class="lineCov">       2866 :             return *this;</span>
-<span class="lineNum">     504 </span>            :         }
+<span class="lineNum">     499 </span><span class="lineCov">       1212 :                 assigner a(*this, rhs.which());</span>
+<span class="lineNum">     500 </span><span class="lineCov">       1212 :                 rhs.apply_visitor_internal(a);</span>
+<span class="lineNum">     501 </span><span class="lineCov">       1212 :                 indicate_which(rhs.which());</span>
+<span class="lineNum">     502 </span><span class="lineCov">       1212 :             }</span>
+<span class="lineNum">     503 </span><span class="lineCov">       1212 :             return *this;</span>
+<a name="504"><span class="lineNum">     504 </span>            :         }</a>
 <span class="lineNum">     505 </span>            : 
 <span class="lineNum">     506 </span>            :         Variant &amp;operator=(Variant &amp;&amp; rhs)
 <span class="lineNum">     507 </span>            :         {
-<span class="lineNum">     508 </span>            :             if (this != &amp;rhs)
+<span class="lineNum">     508 </span><span class="lineCov">       3788 :             if (this != &amp;rhs)</span>
 <span class="lineNum">     509 </span>            :             {
-<span class="lineNum">     510 </span>            :                 move_assigner ma(*this, rhs.which());
-<span class="lineNum">     511 </span>            :                 rhs.apply_visitor_internal(ma);
-<span class="lineNum">     512 </span>            :                 indicate_which(rhs.which());
-<span class="lineNum">     513 </span>            :             }
-<span class="lineNum">     514 </span>            :             return *this;
+<span class="lineNum">     510 </span><span class="lineCov">       3788 :                 move_assigner ma(*this, rhs.which());</span>
+<span class="lineNum">     511 </span><span class="lineCov">       3788 :                 rhs.apply_visitor_internal(ma);</span>
+<span class="lineNum">     512 </span><span class="lineCov">       3788 :                 indicate_which(rhs.which());</span>
+<span class="lineNum">     513 </span><span class="lineCov">       3788 :             }</span>
+<span class="lineNum">     514 </span><span class="lineCov">       3788 :             return *this;</span>
 <span class="lineNum">     515 </span>            :         }
 <span class="lineNum">     516 </span>            : 
 <span class="lineNum">     517 </span>            :         bool
@@ -598,14 +598,14 @@
 <span class="lineNum">     528 </span>            : 
 <span class="lineNum">     529 </span>            :         int which() const
 <span class="lineNum">     530 </span>            :         {
-<span class="lineNum">     531 </span><span class="lineCov">      11576 :             return m_which;</span>
+<span class="lineNum">     531 </span><span class="lineCov">      18246 :             return m_which;</span>
 <span class="lineNum">     532 </span>            :         }
 <span class="lineNum">     533 </span>            : 
 <a name="534"><span class="lineNum">     534 </span>            :         template &lt;typename Internal, typename Visitor, typename... Args&gt;</a>
 <span class="lineNum">     535 </span>            :         typename Visitor::result_type
 <span class="lineNum">     536 </span>            :         apply_visitor(Visitor &amp;visitor, Args &amp;&amp;... args)
 <span class="lineNum">     537 </span>            :         {
-<span class="lineNum">     538 </span><span class="lineCov">      10876 :             return do_visit&lt;First, Types...&gt;()(Internal(), m_which, &amp;m_storage,</span>
+<span class="lineNum">     538 </span><span class="lineCov">      18790 :             return do_visit&lt;First, Types...&gt;()(Internal(), m_which, &amp;m_storage,</span>
 <span class="lineNum">     539 </span>            :                                                visitor, std::forward&lt;Args&gt;(args)...);
 <span class="lineNum">     540 </span>            :         }
 <span class="lineNum">     541 </span>            : 
@@ -613,7 +613,7 @@
 <span class="lineNum">     543 </span>            :         typename Visitor::result_type
 <span class="lineNum">     544 </span>            :         apply_visitor(Visitor &amp;visitor, Args &amp;&amp;... args) const
 <span class="lineNum">     545 </span>            :         {
-<span class="lineNum">     546 </span><span class="lineCov">       9002 :             return do_visit&lt;First, Types...&gt;()(Internal(), m_which, &amp;m_storage,</span>
+<span class="lineNum">     546 </span><span class="lineCov">       7956 :             return do_visit&lt;First, Types...&gt;()(Internal(), m_which, &amp;m_storage,</span>
 <span class="lineNum">     547 </span>            :                                                visitor, std::forward&lt;Args&gt;(args)...);
 <span class="lineNum">     548 </span>            :         }
 <span class="lineNum">     549 </span>            : 
@@ -629,12 +629,12 @@
 <span class="lineNum">     559 </span>            : 
 <span class="lineNum">     560 </span>            :         void indicate_which(int which)
 <span class="lineNum">     561 </span>            :         {
-<span class="lineNum">     562 </span><span class="lineCov">      10304 :             m_which = which;</span>
-<a name="563"><span class="lineNum">     563 </span><span class="lineCov">      10304 :         }</span></a>
+<span class="lineNum">     562 </span><span class="lineCov">      14976 :             m_which = which;</span>
+<a name="563"><span class="lineNum">     563 </span><span class="lineCov">      14976 :         }</span></a>
 <span class="lineNum">     564 </span>            : 
 <span class="lineNum">     565 </span>            :         void *address()
 <span class="lineNum">     566 </span>            :         {
-<span class="lineNum">     567 </span><span class="lineCov">        960 :             return &amp;m_storage;</span>
+<span class="lineNum">     567 </span><span class="lineCov">       1666 :             return &amp;m_storage;</span>
 <span class="lineNum">     568 </span>            :         }
 <span class="lineNum">     569 </span>            :         const void *address() const
 <span class="lineNum">     570 </span>            :         {
@@ -645,30 +645,30 @@
 <span class="lineNum">     575 </span>            :         typename Visitor::result_type
 <span class="lineNum">     576 </span>            :         apply_visitor_internal(Visitor &amp;visitor)
 <span class="lineNum">     577 </span>            :         {
-<span class="lineNum">     578 </span><span class="lineCov">      10876 :             return apply_visitor&lt;MPL::true_, Visitor&gt;(visitor);</span>
+<span class="lineNum">     578 </span><span class="lineCov">      18790 :             return apply_visitor&lt;MPL::true_, Visitor&gt;(visitor);</span>
 <span class="lineNum">     579 </span>            :         }
 <span class="lineNum">     580 </span>            : 
 <a name="581"><span class="lineNum">     581 </span>            :         template &lt;typename Visitor&gt;</a>
 <span class="lineNum">     582 </span>            :         typename Visitor::result_type
 <span class="lineNum">     583 </span>            :         apply_visitor_internal(Visitor &amp;visitor) const
 <span class="lineNum">     584 </span>            :         {
-<span class="lineNum">     585 </span><span class="lineCov">       5844 :             return apply_visitor&lt;MPL::true_, Visitor&gt;(visitor);</span>
+<span class="lineNum">     585 </span><span class="lineCov">       4454 :             return apply_visitor&lt;MPL::true_, Visitor&gt;(visitor);</span>
 <span class="lineNum">     586 </span>            :         }
 <a name="587"><span class="lineNum">     587 </span>            : </a>
 <span class="lineNum">     588 </span>            :         void
 <span class="lineNum">     589 </span>            :         destroy()
 <span class="lineNum">     590 </span>            :         {
 <span class="lineNum">     591 </span>            :             destroyer d;
-<span class="lineNum">     592 </span><span class="lineCov">      10876 :             apply_visitor_internal(d);</span>
-<span class="lineNum">     593 </span><span class="lineCov">      10876 :         }</span>
+<span class="lineNum">     592 </span><span class="lineCov">      14998 :             apply_visitor_internal(d);</span>
+<span class="lineNum">     593 </span><span class="lineCov">      14998 :         }</span>
 <span class="lineNum">     594 </span>            : 
 <a name="595"><span class="lineNum">     595 </span>            :         template &lt;typename T&gt;</a>
 <span class="lineNum">     596 </span>            :         void
 <span class="lineNum">     597 </span>            :         construct(T &amp;&amp;t)
 <span class="lineNum">     598 </span>            :         {
 <span class="lineNum">     599 </span>            :             typedef typename std::remove_reference&lt;T&gt;::type type;
-<span class="lineNum">     600 </span><span class="lineCov">      28032 :             new(&amp;m_storage) type(std::forward&lt;T&gt;(t));</span>
-<span class="lineNum">     601 </span><span class="lineCov">       9344 :         }</span>
+<span class="lineNum">     600 </span><span class="lineCov">      39930 :             new(&amp;m_storage) type(std::forward&lt;T&gt;(t));</span>
+<span class="lineNum">     601 </span><span class="lineCov">      13310 :         }</span>
 <a name="602"><span class="lineNum">     602 </span>            :     };</a>
 <span class="lineNum">     603 </span>            : 
 <a name="604"><span class="lineNum">     604 </span><span class="lineNoCov">          0 :     struct bad_get : public std::exception</span></a>
@@ -710,7 +710,7 @@
 <span class="lineNum">     640 </span>            :     typename Visitor::result_type
 <span class="lineNum">     641 </span>            :     apply_visitor(const Visitor &amp;visitor, Visitable &amp;visitable, Args &amp;&amp;... args)
 <span class="lineNum">     642 </span>            :     {
-<span class="lineNum">     643 </span><span class="lineCov">       3158 :         return visitable.template apply_visitor&lt;MPL::false_&gt;</span>
+<span class="lineNum">     643 </span><span class="lineCov">       3502 :         return visitable.template apply_visitor&lt;MPL::false_&gt;</span>
 <span class="lineNum">     644 </span>            :                (visitor, std::forward&lt;Args&gt;(args)...);
 <span class="lineNum">     645 </span>            :     }
 <span class="lineNum">     646 </span>            : 

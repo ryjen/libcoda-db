@@ -29,6 +29,7 @@ namespace arg3
             void clear();
         public:
             sql_blob(const void *ptr, size_t size, cleanup_method cleanup);
+            sql_blob(const void *ptr, size_t size);
             sql_blob(const sql_blob &other);
             sql_blob(sql_blob &&other);
             sql_blob &operator=(const sql_blob &other);
@@ -38,7 +39,6 @@ namespace arg3
             size_t size() const;
             cleanup_method destructor() const;
             std::string to_string() const;
-            bool operator==(const sql_blob &other) const;
         };
 
         /*!
@@ -78,11 +78,11 @@ namespace arg3
 
             sql_value(const sql_value &other);
 
-            sql_value(const sql_value &&other);
+            sql_value(sql_value &&other);
 
             sql_value &operator=(const sql_value &other);
 
-            sql_value &operator=(const sql_value && other);
+            sql_value &operator=(sql_value && other);
 
             ~sql_value();
 
@@ -113,6 +113,14 @@ namespace arg3
 
             template<typename T>
             bool operator==(const T &other) const;
+
+
+            bool operator!=(const sql_value &other) const;
+
+            bool operator!=(const sql_null_type &other) const;
+
+            template<typename T>
+            bool operator!=(const T &other) const;
         };
 
         std::ostream &operator<<(std::ostream &out, const sql_value &value);
@@ -257,6 +265,42 @@ namespace arg3
         bool sql_value::operator==(const T &other) const
         {
             return Juice::apply_visitor(sql_equality_visitor<T>(other), value_);
+        }
+
+        inline bool operator!=(const std::string &other, const sql_value &value)
+        {
+            return !operator==(other, value);
+        }
+
+        inline bool operator!=(int other, const sql_value &value)
+        {
+            return !operator==(other, value);
+        }
+
+        inline bool operator!=(int64_t other, const sql_value &value)
+        {
+            return !operator==(other, value);
+        }
+
+        inline bool operator!=(double other, const sql_value &value)
+        {
+            return !operator==(other, value);
+        }
+
+        inline bool operator!=(const sql_null_type &other, const sql_value &value)
+        {
+            return !operator==(other, value);
+        }
+
+        inline bool operator!=(const sql_blob &other, const sql_value &value)
+        {
+            return !operator==(other, value);
+        }
+
+        template<typename T>
+        bool sql_value::operator!=(const T &other) const
+        {
+            return !operator==(other);
         }
     }
 

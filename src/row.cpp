@@ -146,7 +146,7 @@ namespace arg3
             return impl_ != nullptr && impl_->is_valid();
         }
 
-        void row::for_each(std::function<void (db::column)> funk) const
+        void row::for_each(std::function<void (const db::column &)> funk) const
         {
             for (auto & c : *this)
             {

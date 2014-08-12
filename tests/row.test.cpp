@@ -85,6 +85,16 @@ go_bandit([]()
             AssertThat(other.column_name(0), Equals("id"));
         });
 
+        it("can use for each", []()
+        {
+            row r = get_first_user_row();
+
+            r.for_each([](const arg3::db::column & c)
+            {
+                AssertThat(c.is_valid(), IsTrue());
+            });
+        });
+
         it("has an iterator", []()
         {
 
@@ -119,10 +129,10 @@ go_bandit([]()
                 AssertThat(c.is_valid(), IsTrue());
             }
 
-            /*for (row::reverse_iterator i = r.rbegin(); i != r.rend(); i++)
+            for (row::reverse_iterator i = r.rbegin(); i != r.rend(); i++)
             {
                 AssertThat(i->is_valid(), IsTrue());
-            }*/
+            }
 
             for (row::const_reverse_iterator i = r.crbegin(); i != r.crend(); i++)
             {
