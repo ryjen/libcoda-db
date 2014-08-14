@@ -5,6 +5,7 @@
 #include <sqlite3.h>
 #include "column.h"
 #include <iterator>
+#include <memory>
 
 namespace arg3
 {

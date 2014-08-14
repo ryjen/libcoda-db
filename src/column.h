@@ -7,6 +7,7 @@
 #include <sqlite3.h>
 #include <string>
 #include <cassert>
+#include <memory>
 #include "exception.h"
 #include "sql_value.h"
 
