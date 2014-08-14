@@ -17,8 +17,8 @@ AC_PROG_CXX([clang++ g++])
 AC_PROG_CC
 AC_PROG_MAKE_SET
 
-AC_SUBST([AM_CPPFLAGS], ["-std=c++11 -Wall -Werror"])
-AC_SUBST([AM_LDFLAGS], ["-stdlib=libc++"])
+AC_SUBST([AM_CPPFLAGS], ["-std=c++11 -stdlib=libc++ -Wall -Werror"])
+#AC_SUBST([AM_LDFLAGS], ["-stdlib=libc++"])
 
 m4_include([m4/gcov.m4])
 AC_TDD_GCOV
