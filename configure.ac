@@ -17,8 +17,11 @@ AC_PROG_CXX([clang++ g++])
 AC_PROG_CC
 AC_PROG_MAKE_SET
 
-AC_SUBST([AM_CPPFLAGS], ["-std=c++11 -stdlib=libc++ -Wall -Werror"])
-#AC_SUBST([AM_LDFLAGS], ["-stdlib=libc++"])
+if test "x$CXX" = "xclang++"; then
+	AC_SUBST([AM_CPPFLAGS], ["-std=c++11 -stdlib=libc++-Wall -Werror"])
+else
+	AC_SUBST([AM_CPPFLAGS], ["-std=c++11 -stdlib=libstdc++ -Wall -Werror"])
+fi
 
 m4_include([m4/gcov.m4])
 AC_TDD_GCOV
