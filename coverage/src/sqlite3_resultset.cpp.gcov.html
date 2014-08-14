@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-11 17:11:37</td>
+            <td class="headerValue">2014-08-12 12:28:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">18</td>
@@ -77,9 +77,9 @@
 <a name="7"><span class="lineNum">       7 </span>            :     namespace db</a>
 <span class="lineNum">       8 </span>            :     {
 <span class="lineNum">       9 </span>            :         sqlite3_resultset::sqlite3_resultset(sqlite3_db *db, shared_ptr&lt;sqlite3_stmt&gt; stmt) : stmt_(stmt), db_(db), status_(-1)
-<span class="lineNum">      10 </span><span class="lineCov">        193 :         {</span>
+<span class="lineNum">      10 </span><span class="lineCov">        199 :         {</span>
 <span class="lineNum">      11 </span>            : 
-<a name="12"><span class="lineNum">      12 </span><span class="lineCov">        386 :         }</span></a>
+<a name="12"><span class="lineNum">      12 </span><span class="lineCov">        398 :         }</span></a>
 <span class="lineNum">      13 </span>            : 
 <span class="lineNum">      14 </span>            :         sqlite3_resultset::sqlite3_resultset(sqlite3_resultset &amp;&amp;other) : stmt_(other.stmt_), db_(other.db_), status_(other.status_)
 <span class="lineNum">      15 </span><span class="lineNoCov">          0 :         {</span>
@@ -87,7 +87,7 @@
 <span class="lineNum">      17 </span><span class="lineNoCov">          0 :             other.stmt_ = nullptr;</span>
 <a name="18"><span class="lineNum">      18 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      19 </span>            : 
-<a name="20"><span class="lineNum">      20 </span><span class="lineCov">        386 :         sqlite3_resultset::~sqlite3_resultset() {}</span></a>
+<a name="20"><span class="lineNum">      20 </span><span class="lineCov">        398 :         sqlite3_resultset::~sqlite3_resultset() {}</span></a>
 <span class="lineNum">      21 </span>            : 
 <span class="lineNum">      22 </span>            :         sqlite3_resultset &amp;sqlite3_resultset::operator=(sqlite3_resultset &amp;&amp; other)
 <span class="lineNum">      23 </span>            :         {
@@ -102,8 +102,8 @@
 <span class="lineNum">      32 </span>            : 
 <span class="lineNum">      33 </span>            :         bool sqlite3_resultset::is_valid() const
 <span class="lineNum">      34 </span>            :         {
-<span class="lineNum">      35 </span><span class="lineCov">       1216 :             return stmt_ != nullptr &amp;&amp; stmt_;</span>
-<a name="36"><span class="lineNum">      36 </span><span class="lineCov">        608 :         }</span></a>
+<span class="lineNum">      35 </span><span class="lineCov">       1228 :             return stmt_ != nullptr &amp;&amp; stmt_;</span>
+<a name="36"><span class="lineNum">      36 </span><span class="lineCov">        614 :         }</span></a>
 <span class="lineNum">      37 </span>            : 
 <span class="lineNum">      38 </span>            :         size_t sqlite3_resultset::size() const
 <span class="lineNum">      39 </span>            :         {
@@ -112,16 +112,16 @@
 <span class="lineNum">      42 </span>            : 
 <span class="lineNum">      43 </span>            :         bool sqlite3_resultset::next()
 <span class="lineNum">      44 </span>            :         {
-<span class="lineNum">      45 </span><span class="lineCov">        595 :             if (!is_valid())</span>
+<span class="lineNum">      45 </span><span class="lineCov">        601 :             if (!is_valid())</span>
 <span class="lineNum">      46 </span><span class="lineNoCov">          0 :                 return false;</span>
 <span class="lineNum">      47 </span>            : 
-<span class="lineNum">      48 </span><span class="lineCov">        595 :             if (status_ == SQLITE_DONE)</span>
+<span class="lineNum">      48 </span><span class="lineCov">        601 :             if (status_ == SQLITE_DONE)</span>
 <span class="lineNum">      49 </span><span class="lineCov">          1 :                 return false;</span>
 <span class="lineNum">      50 </span>            : 
-<span class="lineNum">      51 </span><span class="lineCov">        594 :             status_ = sqlite3_step(stmt_.get());</span>
+<span class="lineNum">      51 </span><span class="lineCov">        600 :             status_ = sqlite3_step(stmt_.get());</span>
 <span class="lineNum">      52 </span>            : 
-<span class="lineNum">      53 </span><span class="lineCov">        594 :             return status_ == SQLITE_ROW;</span>
-<a name="54"><span class="lineNum">      54 </span><span class="lineCov">        595 :         }</span></a>
+<span class="lineNum">      53 </span><span class="lineCov">        600 :             return status_ == SQLITE_ROW;</span>
+<a name="54"><span class="lineNum">      54 </span><span class="lineCov">        601 :         }</span></a>
 <span class="lineNum">      55 </span>            : 
 <span class="lineNum">      56 </span>            :         void sqlite3_resultset::reset()
 <span class="lineNum">      57 </span>            :         {

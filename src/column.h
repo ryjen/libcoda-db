@@ -97,6 +97,8 @@ namespace arg3
             operator double() const;
 
             string name() const;
+
+            shared_ptr<column_impl> impl() const;
         };
 
     }

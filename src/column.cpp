@@ -117,5 +117,10 @@ namespace arg3
 
             return impl_->name();
         }
+
+        shared_ptr<column_impl> column::impl() const
+        {
+            return impl_;
+        }
     }
 }

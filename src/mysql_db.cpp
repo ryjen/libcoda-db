@@ -184,7 +184,7 @@ namespace arg3
             return mysql_affected_rows(db_);
         }
 
-        resultset mysql_db::execute(const string &sql)
+        resultset mysql_db::execute(const string &sql, bool cache)
         {
             assert(db_ != NULL);
 
@@ -200,7 +200,10 @@ namespace arg3
                 throw database_exception(last_error());
             }
 
-            return resultset(make_shared<mysql_resultset>(this, shared_ptr<MYSQL_RES>(res, mysql_res_delete())));
+            if (cache)
+                return resultset(make_shared<mysql_cached_resultset>(this, shared_ptr<MYSQL_RES>(res, mysql_res_delete())));
+            else
+                return resultset(make_shared<mysql_resultset>(this, shared_ptr<MYSQL_RES>(res, mysql_res_delete())));
         }
 
         shared_ptr<statement> mysql_db::create_statement()

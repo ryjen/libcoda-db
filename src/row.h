@@ -267,6 +267,8 @@ namespace arg3
             bool is_valid() const;
 
             void for_each(std::function<void (const db::column &)> funk) const;
+
+            shared_ptr<row_impl> impl() const;
         };
 
     }

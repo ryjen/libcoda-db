@@ -80,6 +80,11 @@ namespace arg3
         sqldb::sqldb() : logLevel_(LOG_NONE), cacheLevel_(CACHE_NONE)
         {}
 
+        resultset sqldb::execute(const string &sql)
+        {
+            return execute(sql, cache_level() == sqldb::CACHE_RESULTSET);
+        }
+
         void sqldb::set_log_level(LogLevel level)
         {
             logLevel_ = level;

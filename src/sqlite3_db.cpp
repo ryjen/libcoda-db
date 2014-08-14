@@ -148,15 +148,20 @@ namespace arg3
             return sqlite3_changes(db_);
         }
 
-        resultset sqlite3_db::execute(const string &sql)
+        resultset sqlite3_db::execute(const string &sql, bool cache)
         {
             sqlite3_stmt *stmt;
 
             if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK)
                 throw database_exception(last_error());
 
-            shared_ptr<resultset_impl> impl =
-                make_shared<sqlite3_resultset>(this, shared_ptr<sqlite3_stmt>(stmt, sqlite3_stmt_delete()));
+            shared_ptr<resultset_impl> impl;
+
+            if (cache)
+                impl = make_shared<sqlite3_cached_resultset>(this, shared_ptr<sqlite3_stmt>(stmt, sqlite3_stmt_delete()));
+            else
+                impl =
+                    make_shared<sqlite3_resultset>(this, shared_ptr<sqlite3_stmt>(stmt, sqlite3_stmt_delete()));
 
             resultset set(impl);
 

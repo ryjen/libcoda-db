@@ -16064,7 +16064,7 @@ if test "x$CXX" = "xclang++"; then
 	AM_LDFLAGS="-stdlib=libc++"
 
 else
-	AM_CPPFLAGS="-std=c++0x -Wall -Werror"
+	AM_CPPFLAGS="-std=gnu++11 -Wall -Werror"
 
 fi
 

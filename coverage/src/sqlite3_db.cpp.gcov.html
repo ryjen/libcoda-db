@@ -31,18 +31,18 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">46</td>
+            <td class="headerCovTableEntry">51</td>
             <td class="headerCovTableEntry">69</td>
-            <td class="headerCovTableEntryLo">66.7 %</td>
+            <td class="headerCovTableEntryLo">73.9 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-11 17:11:37</td>
+            <td class="headerValue">2014-08-12 12:28:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntry">16</td>
             <td class="headerCovTableEntry">26</td>
-            <td class="headerCovTableEntryLo">57.7 %</td>
+            <td class="headerCovTableEntryLo">61.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -159,12 +159,12 @@
 <span class="lineNum">      89 </span>            : 
 <span class="lineNum">      90 </span>            :         string sqlite3_db::connection_string() const
 <span class="lineNum">      91 </span>            :         {
-<span class="lineNum">      92 </span><span class="lineCov">         94 :             return filename_;</span>
+<span class="lineNum">      92 </span><span class="lineCov">        100 :             return filename_;</span>
 <a name="93"><span class="lineNum">      93 </span>            :         }</a>
 <span class="lineNum">      94 </span>            : 
 <span class="lineNum">      95 </span>            :         schema_factory *sqlite3_db::schemas()
 <span class="lineNum">      96 </span>            :         {
-<span class="lineNum">      97 </span><span class="lineCov">        204 :             return &amp;schema_factory_;</span>
+<span class="lineNum">      97 </span><span class="lineCov">        210 :             return &amp;schema_factory_;</span>
 <a name="98"><span class="lineNum">      98 </span>            :         }</a>
 <span class="lineNum">      99 </span>            : 
 <span class="lineNum">     100 </span>            :         void sqlite3_db::set_connection_string(const string &amp;value)
@@ -174,16 +174,16 @@
 <span class="lineNum">     104 </span>            : 
 <span class="lineNum">     105 </span>            :         void sqlite3_db::open()
 <span class="lineNum">     106 </span>            :         {
-<span class="lineNum">     107 </span><span class="lineCov">         94 :             open(SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_URI);</span>
-<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         94 :         }</span></a>
+<span class="lineNum">     107 </span><span class="lineCov">        100 :             open(SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_URI);</span>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">        100 :         }</span></a>
 <span class="lineNum">     109 </span>            : 
 <span class="lineNum">     110 </span>            :         void sqlite3_db::open(int flags)
 <span class="lineNum">     111 </span>            :         {
-<span class="lineNum">     112 </span><span class="lineCov">         94 :             if (db_ != NULL) return;</span>
+<span class="lineNum">     112 </span><span class="lineCov">        100 :             if (db_ != NULL) return;</span>
 <span class="lineNum">     113 </span>            : 
-<span class="lineNum">     114 </span><span class="lineCov">         94 :             if (sqlite3_open_v2(filename_.c_str(), &amp;db_, flags, NULL) != SQLITE_OK)</span>
+<span class="lineNum">     114 </span><span class="lineCov">        100 :             if (sqlite3_open_v2(filename_.c_str(), &amp;db_, flags, NULL) != SQLITE_OK)</span>
 <span class="lineNum">     115 </span><span class="lineNoCov">          0 :                 throw database_exception(last_error());</span>
-<a name="116"><span class="lineNum">     116 </span><span class="lineCov">         94 :         }</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineCov">        100 :         }</span></a>
 <span class="lineNum">     117 </span>            : 
 <span class="lineNum">     118 </span>            :         bool sqlite3_db::is_open() const
 <span class="lineNum">     119 </span>            :         {
@@ -192,21 +192,21 @@
 <span class="lineNum">     122 </span>            : 
 <span class="lineNum">     123 </span><span class="lineNoCov">          0 :         void sqlite3_db::close()</span>
 <span class="lineNum">     124 </span>            :         {
-<span class="lineNum">     125 </span><span class="lineCov">        110 :             if (db_ == NULL) return;</span>
+<span class="lineNum">     125 </span><span class="lineCov">        116 :             if (db_ == NULL) return;</span>
 <span class="lineNum">     126 </span>            : 
-<span class="lineNum">     127 </span><span class="lineCov">         94 :             sqlite3_close(db_);</span>
-<span class="lineNum">     128 </span><span class="lineCov">         94 :             db_ = NULL;</span>
-<a name="129"><span class="lineNum">     129 </span><span class="lineCov">        196 :         }</span></a>
+<span class="lineNum">     127 </span><span class="lineCov">        100 :             sqlite3_close(db_);</span>
+<span class="lineNum">     128 </span><span class="lineCov">        100 :             db_ = NULL;</span>
+<a name="129"><span class="lineNum">     129 </span><span class="lineCov">        208 :         }</span></a>
 <span class="lineNum">     130 </span>            : 
 <span class="lineNum">     131 </span>            :         string sqlite3_db::last_error() const
 <span class="lineNum">     132 </span>            :         {
-<span class="lineNum">     133 </span><span class="lineNoCov">          0 :             ostringstream buf;</span>
+<span class="lineNum">     133 </span><span class="lineCov">         20 :             ostringstream buf;</span>
 <span class="lineNum">     134 </span>            : 
-<span class="lineNum">     135 </span><span class="lineNoCov">          0 :             buf &lt;&lt; sqlite3_errcode(db_);</span>
-<span class="lineNum">     136 </span><span class="lineNoCov">          0 :             buf &lt;&lt; &quot;: &quot; &lt;&lt; sqlite3_errmsg(db_);</span>
+<span class="lineNum">     135 </span><span class="lineCov">         40 :             buf &lt;&lt; sqlite3_errcode(db_);</span>
+<span class="lineNum">     136 </span><span class="lineCov">         60 :             buf &lt;&lt; &quot;: &quot; &lt;&lt; sqlite3_errmsg(db_);</span>
 <span class="lineNum">     137 </span>            : 
-<span class="lineNum">     138 </span><span class="lineNoCov">          0 :             return buf.str();</span>
-<a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     138 </span><span class="lineCov">         20 :             return buf.str();</span>
+<a name="139"><span class="lineNum">     139 </span><span class="lineCov">         20 :         }</span></a>
 <span class="lineNum">     140 </span>            : 
 <span class="lineNum">     141 </span>            :         long long sqlite3_db::last_insert_id() const
 <span class="lineNum">     142 </span>            :         {
@@ -222,18 +222,18 @@
 <span class="lineNum">     152 </span>            :         {
 <span class="lineNum">     153 </span>            :             sqlite3_stmt *stmt;
 <span class="lineNum">     154 </span>            : 
-<span class="lineNum">     155 </span><span class="lineCov">        160 :             if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &amp;stmt, NULL) != SQLITE_OK)</span>
+<span class="lineNum">     155 </span><span class="lineCov">        166 :             if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &amp;stmt, NULL) != SQLITE_OK)</span>
 <span class="lineNum">     156 </span><span class="lineNoCov">          0 :                 throw database_exception(last_error());</span>
 <span class="lineNum">     157 </span>            : 
-<span class="lineNum">     158 </span><span class="lineCov">        160 :             shared_ptr&lt;resultset_impl&gt; impl =</span>
-<span class="lineNum">     159 </span><span class="lineCov">        160 :                 make_shared&lt;sqlite3_resultset&gt;(this, shared_ptr&lt;sqlite3_stmt&gt;(stmt, sqlite3_stmt_delete()));</span>
+<span class="lineNum">     158 </span><span class="lineCov">        166 :             shared_ptr&lt;resultset_impl&gt; impl =</span>
+<span class="lineNum">     159 </span><span class="lineCov">        166 :                 make_shared&lt;sqlite3_resultset&gt;(this, shared_ptr&lt;sqlite3_stmt&gt;(stmt, sqlite3_stmt_delete()));</span>
 <span class="lineNum">     160 </span>            : 
-<span class="lineNum">     161 </span><span class="lineCov">        320 :             resultset set(impl);</span>
+<span class="lineNum">     161 </span><span class="lineCov">        332 :             resultset set(impl);</span>
 <span class="lineNum">     162 </span>            : 
-<span class="lineNum">     163 </span><span class="lineCov">        160 :             set.next();</span>
+<span class="lineNum">     163 </span><span class="lineCov">        166 :             set.next();</span>
 <span class="lineNum">     164 </span>            : 
-<span class="lineNum">     165 </span><span class="lineCov">        160 :             return set;</span>
-<a name="166"><span class="lineNum">     166 </span><span class="lineCov">        320 :         }</span></a>
+<span class="lineNum">     165 </span><span class="lineCov">        166 :             return set;</span>
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">        332 :         }</span></a>
 <span class="lineNum">     167 </span>            : 
 <span class="lineNum">     168 </span>            :         shared_ptr&lt;statement&gt; sqlite3_db::create_statement()
 <span class="lineNum">     169 </span>            :         {
