@@ -7,6 +7,7 @@
 #include "exception.h"
 #include <memory>
 #include <cstdlib>
+#include <time.h>
 
 namespace arg3
 {
@@ -213,54 +214,48 @@ namespace arg3
         {
             assert(index < size_);
 
-            if (value_[index].buffer && value_[index].length)
-            {
-                void *buf = calloc(1, *value_[index].length);
-                memmove(buf, value_[index].buffer, *value_[index].length);
-
-                return sql_blob(buf, *value_[index].length, free);
-            }
-
-            return sql_blob(NULL, 0, NULL);
+            return to_value(index).to_blob();
         }
 
-        double mysql_binding::to_double(size_t index) const
+        double mysql_binding::to_double(size_t index, const double def) const
         {
             assert(index < size_);
 
-            double *value = static_cast<double *>(value_[index].buffer);
-
-            return value == NULL ? 0 : *value;
+            return to_value(index).to_double(def);
         }
-        bool mysql_binding::to_bool(size_t index) const
+        bool mysql_binding::to_bool(size_t index, const bool def) const
         {
             assert(index < size_);
 
-            int *value = static_cast<int *>(value_[index].buffer);
-
-            return value != NULL && *value;
+            return to_value(index).to_bool(def);
         }
-        int mysql_binding::to_int(size_t index) const
+        int mysql_binding::to_int(size_t index, const int def) const
         {
             assert(index < size_);
 
-            int *value = static_cast<int *>(value_[index].buffer);
-
-            return value == NULL ? 0 : *value;
+            return to_value(index).to_int(def);
         }
 
-        int64_t mysql_binding::to_int64(size_t index) const
+        int64_t mysql_binding::to_int64(size_t index, const int64_t def) const
         {
             assert(index < size_);
 
-            int64_t *value = static_cast<int64_t *>(value_[index].buffer);
+            return to_value(index).to_int64(def);
+        }
 
-            return value == NULL ? 0 : *value;
+        time_t mysql_binding::to_timestamp(size_t index, const time_t def) const
+        {
+            assert(index < size_);
+
+            return to_value(index).to_int(def);
         }
 
         sql_value mysql_binding::to_value(size_t index) const
         {
             assert(index < size_);
+
+            if (value_[index].buffer == NULL)
+                return sql_null;
 
             switch (value_[index].buffer_type)
             {
@@ -268,15 +263,68 @@ namespace arg3
             case MYSQL_TYPE_SHORT:
             case MYSQL_TYPE_LONG:
             case MYSQL_TYPE_INT24:
+            {
+                int *p = static_cast<int *>(value_[index].buffer);
+                if (p == NULL) return sql_null;
+                return *p;
+            }
             case MYSQL_TYPE_LONGLONG:
-                return sql_value(to_int64(index));
+            {
+                int64_t *p = static_cast<int64_t *>(value_[index].buffer);
+
+                if (p == NULL) return sql_null;
+
+                return *p;
+            }
+            case MYSQL_TYPE_NULL:
+                return sql_null;
+            case MYSQL_TYPE_TIME:
+            case MYSQL_TYPE_DATE:
+            case MYSQL_TYPE_TIMESTAMP:
+            case MYSQL_TYPE_DATETIME:
+            {
+                struct tm *tp;
+
+                if ((tp = getdate(static_cast<char *>(value_[index].buffer))))
+                {
+                    return (long long) mktime(tp);
+                }
+                else
+                {
+                    int *p = static_cast<int *>(value_[index].buffer);
+                    if (p == NULL) return sql_null;
+                    return *p;
+                }
+            }
             default:
-                return sql_value(to_string(index));
+            {
+                char *p = static_cast<char *>(value_[index].buffer);
+
+                if (p == NULL) return sql_null;
+
+                return p;
+            }
             case MYSQL_TYPE_FLOAT:
             case MYSQL_TYPE_DOUBLE:
-                return sql_value(to_double(index));
+            {
+                double *p = static_cast<double *>(value_[index].buffer);
+
+                if (p == NULL) return sql_null;
+
+                return *p;
+            }
             case MYSQL_TYPE_BLOB:
-                return sql_value(to_blob(index));
+            {
+                if (value_[index].length)
+                {
+                    void *buf = calloc(1, *value_[index].length);
+                    memmove(buf, value_[index].buffer, *value_[index].length);
+
+                    return sql_blob(buf, *value_[index].length, free);
+                }
+
+                return sql_blob(NULL, 0, NULL);
+            }
             }
         }
 
@@ -291,15 +339,7 @@ namespace arg3
         {
             assert(index < size_);
 
-            if (value_[index].is_null && *value_[index].is_null)
-                return string();
-
-            auto textValue = static_cast<char *>(value_[index].buffer);
-
-            if (textValue == NULL)
-                return string();
-
-            return textValue;
+            return to_value(index).to_string();
         }
 
         void mysql_binding::reallocate_value(size_t index)

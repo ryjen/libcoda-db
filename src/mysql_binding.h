@@ -47,17 +47,19 @@ namespace arg3
 
             sql_blob to_blob(size_t index) const;
 
-            double to_double(size_t index) const;
+            double to_double(size_t index, const double def = DOUBLE_DEFAULT) const;
 
-            int to_int(size_t index) const;
+            int to_int(size_t index, const int def = INT_DEFAULT) const;
 
-            bool to_bool(size_t index) const;
+            bool to_bool(size_t index, const bool def = BOOL_DEFAULT) const;
 
-            int64_t to_int64(size_t index) const;
+            int64_t to_int64(size_t index, const int64_t def = INT_DEFAULT) const;
 
             std::string to_string(size_t index) const;
 
             sql_value to_value(size_t index) const;
+
+            time_t to_timestamp(size_t index, const time_t def = INT_DEFAULT) const;
 
             int type(size_t index) const;
 

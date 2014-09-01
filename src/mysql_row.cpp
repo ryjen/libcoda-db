@@ -126,10 +126,6 @@ namespace arg3
         {
             assert(db_ != NULL);
 
-            //assert(metadata_ != NULL);
-
-            //assert(fields_ != nullptr);
-
             if (metadata_ != nullptr)
                 size_ = mysql_num_fields(metadata_.get());
         }

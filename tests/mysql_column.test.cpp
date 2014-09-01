@@ -12,8 +12,6 @@ using namespace arg3::db;
 
 shared_ptr<column_impl> get_a_column(int index)
 {
-    printf("x\n");
-
     select_query query(testdb, "users");
 
     auto rs = query.execute();
@@ -37,6 +35,24 @@ go_bandit([]()
         before_each([]()
         {
             setup_testdb();
+
+            user user1;
+
+            user1.set_id(1);
+            user1.set("first_name", "Bryan");
+            user1.set("last_name", "Jenkins");
+
+            user1.save();
+
+
+            user user2;
+
+            user2.set_id(3);
+
+            user2.set("first_name", "Bob");
+            user2.set("last_name", "Smith");
+
+            user2.save();
         });
 
         after_each([]()

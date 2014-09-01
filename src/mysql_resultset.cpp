@@ -253,11 +253,8 @@ namespace arg3
 
             int res = mysql_stmt_fetch(stmt.get());
 
-            while (res != 1 && res != MYSQL_DATA_TRUNCATED)
+            while (res == 0)
             {
-                if (res == MYSQL_NO_DATA)
-                    break;
-
                 rows_.push_back(make_shared<mysql_cached_row>(db, metadata, bindings));
 
                 res = mysql_stmt_fetch(stmt.get());
@@ -287,9 +284,10 @@ namespace arg3
                 }
             }
         }
-        mysql_cached_resultset::mysql_cached_resultset(mysql_cached_resultset &&other) : rows_(std::move(other.rows_))
+        mysql_cached_resultset::mysql_cached_resultset(mysql_cached_resultset &&other) : rows_(std::move(other.rows_)), currentRow_(other.currentRow_)
         {
             other.rows_.clear();
+            other.currentRow_ = 0;
         }
 
         mysql_cached_resultset::~mysql_cached_resultset()
@@ -299,6 +297,10 @@ namespace arg3
         mysql_cached_resultset &mysql_cached_resultset::operator=(mysql_cached_resultset && other)
         {
             rows_ = std::move(other.rows_);
+            currentRow_ = other.currentRow_;
+
+            other.rows_.clear();
+            other.currentRow_ = 0;
 
             return *this;
         }

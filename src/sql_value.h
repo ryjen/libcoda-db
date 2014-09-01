@@ -4,6 +4,12 @@
 #include "variant.h"
 #include <iostream>
 #include <sqlite3.h>
+#include <cmath>
+
+#define DOUBLE_DEFAULT 0.0
+#define INT_DEFAULT 0
+#define BOOL_DEFAULT false
+#define VALUE_DEFAULT NULL;
 
 namespace arg3
 {
@@ -104,6 +110,16 @@ namespace arg3
             operator bool() const;
 
             std::string to_string() const;
+
+            int to_int(const int def = INT_DEFAULT) const;
+
+            int64_t to_int64(const int64_t def = INT_DEFAULT) const;
+
+            double to_double(const double def = DOUBLE_DEFAULT) const;
+
+            bool to_bool(const bool def = BOOL_DEFAULT) const;
+
+            sql_blob to_blob() const;
 
             void bind_to(bindable *obj, int index) const;
 

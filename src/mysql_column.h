@@ -37,6 +37,8 @@ namespace arg3
 
             sql_blob to_blob() const;
 
+            time_t to_timestamp() const;
+
             double to_double() const;
 
             int to_int() const;
