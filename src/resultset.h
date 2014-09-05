@@ -212,6 +212,8 @@ namespace arg3
             size_t size() const;
 
             void for_each(std::function<void (const row &)> funk) const;
+
+            shared_ptr<resultset_impl> impl() const;
         };
 
     }

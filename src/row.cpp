@@ -153,5 +153,10 @@ namespace arg3
                 funk(c);
             }
         }
+
+        shared_ptr<row_impl> row::impl() const
+        {
+            return impl_;
+        }
     }
 }

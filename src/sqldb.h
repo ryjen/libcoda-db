@@ -78,7 +78,9 @@ namespace arg3
             virtual string connection_string() const = 0;
             virtual void set_connection_string(const string &value) = 0;
 
-            virtual resultset execute(const string &sql) = 0;
+            virtual resultset execute(const string &sql, bool cache) = 0;
+
+            resultset execute(const string &sql);
 
             virtual string last_error() const = 0;
 

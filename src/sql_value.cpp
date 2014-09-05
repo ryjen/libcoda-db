@@ -214,28 +214,33 @@ namespace arg3
 
         sql_value::operator bool() const
         {
+            return to_bool();
+        }
+
+        bool sql_value::to_bool(const bool def) const
+        {
             try
             {
                 return std::stoi(to_string()) != 0;
             }
             catch (const std::exception &e)
             {
-
                 string data = to_string();
 
                 std::transform(data.begin(), data.end(), data.begin(), std::ptr_fun<int, int>(std::tolower));
 
-                if (data == "true")
-                    return true;
+                if (data == "true" || data == "yes") return true;
 
-                if (data == "yes")
-                    return true;
-
-                return false;
+                return def;
             }
         }
 
         sql_value::operator int() const
+        {
+            return to_int();
+        }
+
+        int sql_value::to_int(const int def) const
         {
             try
             {
@@ -243,11 +248,16 @@ namespace arg3
             }
             catch (const std::exception &e)
             {
-                return 0;
+                return def;
             }
         }
 
         sql_value::operator int64_t() const
+        {
+            return to_int64();
+        }
+
+        int64_t sql_value::to_int64(const int64_t def) const
         {
             try
             {
@@ -255,11 +265,16 @@ namespace arg3
             }
             catch (const std::exception &e)
             {
-                return 0;
+                return def;
             }
         }
 
         sql_value::operator double() const
+        {
+            return to_double();
+        }
+
+        double sql_value::to_double(const double def) const
         {
             try
             {
@@ -267,11 +282,16 @@ namespace arg3
             }
             catch (const std::exception &e)
             {
-                return 0;
+                return def;
             }
         }
 
         sql_value::operator sql_blob() const
+        {
+            return to_blob();
+        }
+
+        sql_blob sql_value::to_blob() const
         {
             if (!apply_visitor(sql_exists_visitor<sql_blob>(), value_))
                 return sql_blob(NULL, 0, NULL);

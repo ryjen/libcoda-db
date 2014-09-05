@@ -100,5 +100,9 @@ namespace arg3
             return const_iterator(impl_, -1);
         }
 
+        shared_ptr<resultset_impl> resultset::impl() const
+        {
+            return impl_;
+        }
     }
 }

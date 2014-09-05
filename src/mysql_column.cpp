@@ -3,6 +3,7 @@
 #ifdef HAVE_LIBMYSQLCLIENT
 
 #include <string>
+#include <time.h>
 #include "mysql_column.h"
 #include "mysql_binding.h"
 
@@ -57,6 +58,10 @@ namespace arg3
         {
             assert(res_ != nullptr && value_ != NULL);
 
+            if (value_[index_] == NULL)
+            {
+                return sql_blob(NULL, 0, NULL);
+            }
             auto lengths = mysql_fetch_lengths(res_.get());
 
             void *buf = calloc(1, lengths[index_]);
@@ -67,20 +72,73 @@ namespace arg3
 
         double mysql_column::to_double() const
         {
-            return std::stod(value_[index_]);
+            if (value_[index_] == NULL) return DOUBLE_DEFAULT;
+
+            try
+            {
+                return std::stod(value_[index_]);
+            }
+            catch ( const std::exception &e)
+            {
+                return DOUBLE_DEFAULT;
+            }
         }
         bool mysql_column::to_bool() const
         {
-            return std::stoi(value_[index_]) != 0;
+            if (value_[index_] == NULL) return BOOL_DEFAULT;
+            try
+            {
+                if (!strcasecmp(value_[index_], "true") || !strcasecmp(value_[index_], "yes"))
+                    return true;
+                if (!strcasecmp(value_[index_], "false") || !strcasecmp(value_[index_], "no"))
+                    return false;
+
+                return std::stoi(value_[index_]) != 0;
+            }
+            catch ( const std::exception &e)
+            {
+                return BOOL_DEFAULT;
+            }
         }
         int mysql_column::to_int() const
         {
-            return std::stoi(value_[index_]);
+            if (value_[index_] == NULL) return INT_DEFAULT;
+            try
+            {
+                return std::stoi(value_[index_]);
+            }
+            catch (const std::exception &e)
+            {
+                return INT_DEFAULT;
+            }
         }
 
         int64_t mysql_column::to_int64() const
         {
-            return std::stoll(value_[index_]);
+            if (value_[index_] == NULL) return INT_DEFAULT;
+
+            try
+            {
+                return std::stoll(value_[index_]);
+            }
+            catch (const std::exception &e)
+            {
+                return INT_DEFAULT;
+            }
+        }
+
+        time_t mysql_column::to_timestamp() const
+        {
+            if (value_[index_] == NULL) return INT_DEFAULT;
+
+            struct tm *tp;
+
+            if ((tp = getdate(value_[index_])))
+            {
+                return mktime(tp);
+            }
+
+            return INT_DEFAULT;
         }
 
         sql_value mysql_column::to_value() const
@@ -94,14 +152,21 @@ namespace arg3
             case MYSQL_TYPE_LONG:
             case MYSQL_TYPE_INT24:
             case MYSQL_TYPE_LONGLONG:
-                return sql_value(to_int64());
+                return to_int64();
+            case MYSQL_TYPE_DATE:
+            case MYSQL_TYPE_DATETIME:
+            case MYSQL_TYPE_TIMESTAMP:
+            case MYSQL_TYPE_TIME:
+                return (long long) to_timestamp();
             default:
-                return sql_value(to_string());
+                return to_string();
             case MYSQL_TYPE_FLOAT:
             case MYSQL_TYPE_DOUBLE:
-                return sql_value(to_double());
+                return to_double();
             case MYSQL_TYPE_BLOB:
-                return sql_value(to_blob());
+                return to_blob();
+            case MYSQL_TYPE_NULL:
+                return sql_null;
             }
         }
 
@@ -118,12 +183,10 @@ namespace arg3
         {
             assert(value_ != NULL);
 
-            auto textValue = value_[index_];
-
-            if (textValue == NULL)
+            if (value_[index_] == NULL)
                 return string();
 
-            return textValue;
+            return value_[index_];
         }
 
         string mysql_column::name() const
@@ -188,26 +251,26 @@ namespace arg3
         {
             assert(value_ != nullptr);
 
-            return value_->to_double(position_);
+            return value_->to_double(position_, DOUBLE_DEFAULT);
         }
         bool mysql_stmt_column::to_bool() const
         {
             assert(value_ != nullptr);
 
-            return value_->to_bool(position_);
+            return value_->to_bool(position_, BOOL_DEFAULT);
         }
         int mysql_stmt_column::to_int() const
         {
             assert(value_ != nullptr);
 
-            return value_->to_int(position_);
+            return value_->to_int(position_, INT_DEFAULT);
         }
 
         int64_t mysql_stmt_column::to_int64() const
         {
             assert(value_ != nullptr);
 
-            return value_->to_int64(position_);
+            return value_->to_int64(position_, INT_DEFAULT);
         }
 
         sql_value mysql_stmt_column::to_value() const
@@ -262,8 +325,32 @@ namespace arg3
             case MYSQL_TYPE_LONG:
             case MYSQL_TYPE_INT24:
             case MYSQL_TYPE_LONGLONG:
-                value_ = std::stoll(pValue[index]);
+                if (pValue[index])
+                    value_ = std::stoll(pValue[index]);
+                else
+                    value_ = sql_null;
                 break;
+            case MYSQL_TYPE_NULL:
+                value_ = sql_null;
+                break;
+            case MYSQL_TYPE_TIME:
+            case MYSQL_TYPE_DATE:
+            case MYSQL_TYPE_DATETIME:
+            case MYSQL_TYPE_TIMESTAMP:
+            {
+                struct tm *tp;
+
+                if (pValue[index] && (tp = getdate(pValue[index])))
+                {
+                    long long epoch = mktime(tp);
+                    value_ = epoch;
+                }
+                else
+                {
+                    value_ = sql_null;
+                }
+                break;
+            }
             default:
             {
                 auto textValue = pValue[index];
@@ -276,14 +363,17 @@ namespace arg3
             }
             case MYSQL_TYPE_FLOAT:
             case MYSQL_TYPE_DOUBLE:
-                value_ = std::stod(pValue[index]);
+                if (pValue[index])
+                    value_ = std::stod(pValue[index]);
+                else
+                    value_ = sql_null;
                 break;
             case MYSQL_TYPE_BLOB:
             {
-
                 auto lengths = mysql_fetch_lengths(res.get());
 
                 void *buf = calloc(1, lengths[index]);
+
                 memmove(buf, pValue[index], lengths[index]);
 
                 value_ = sql_blob(buf, lengths[index], free);
@@ -304,20 +394,20 @@ namespace arg3
 
         double mysql_cached_column::to_double() const
         {
-            return value_;
+            return value_.to_double(DOUBLE_DEFAULT);
         }
         bool mysql_cached_column::to_bool() const
         {
-            return value_;
+            return value_.to_bool(BOOL_DEFAULT);
         }
         int mysql_cached_column::to_int() const
         {
-            return value_;
+            return value_.to_int(INT_DEFAULT);
         }
 
         int64_t mysql_cached_column::to_int64() const
         {
-            return value_;
+            return value_.to_int64(INT_DEFAULT);
         }
 
         sql_value mysql_cached_column::to_value() const

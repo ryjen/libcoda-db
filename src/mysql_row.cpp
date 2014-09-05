@@ -126,10 +126,6 @@ namespace arg3
         {
             assert(db_ != NULL);
 
-            //assert(metadata_ != NULL);
-
-            //assert(fields_ != nullptr);
-
             if (metadata_ != nullptr)
                 size_ = mysql_num_fields(metadata_.get());
         }
@@ -240,19 +236,17 @@ namespace arg3
 
         mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> metadata, mysql_binding &fields)
         {
-            //assert(fields != nullptr);
+            assert(metadata != nullptr);
 
-            if (metadata != nullptr)
+            int size = mysql_num_fields(metadata.get());
+
+            for (size_t i = 0; i < size; i++)
             {
-                int size = mysql_num_fields(metadata.get());
+                auto field = mysql_fetch_field_direct(metadata.get(), i);
 
-                for (size_t i = 0; i < size; i++)
-                {
-                    auto field = mysql_fetch_field_direct(metadata.get(), i);
-
-                    columns_.push_back(make_shared<mysql_cached_column>(field->name, fields, i));
-                }
+                columns_.push_back(make_shared<mysql_cached_column>(field->name, fields, i));
             }
+
         }
 
         mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row)

@@ -7,6 +7,7 @@
 #include <sqlite3.h>
 #include <string>
 #include <cassert>
+#include <memory>
 #include "exception.h"
 #include "sql_value.h"
 
@@ -97,6 +98,8 @@ namespace arg3
             operator double() const;
 
             string name() const;
+
+            shared_ptr<column_impl> impl() const;
         };
 
     }

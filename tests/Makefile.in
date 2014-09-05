@@ -108,7 +108,9 @@ am__objects_1 = arg3mysql_cache_test-arg3.test.$(OBJEXT) \
 	arg3mysql_cache_test-schema_factory.test.$(OBJEXT) \
 	arg3mysql_cache_test-select_query.test.$(OBJEXT) \
 	arg3mysql_cache_test-sql_value.test.$(OBJEXT) \
-	arg3mysql_cache_test-where_clause.test.$(OBJEXT)
+	arg3mysql_cache_test-where_clause.test.$(OBJEXT) \
+	arg3mysql_cache_test-sqlite3_statement.test.$(OBJEXT) \
+	arg3mysql_cache_test-mysql_column.test.$(OBJEXT)
 am_arg3mysql_cache_test_OBJECTS = $(am__objects_1)
 arg3mysql_cache_test_OBJECTS = $(am_arg3mysql_cache_test_OBJECTS)
 arg3mysql_cache_test_DEPENDENCIES = ../src/libarg3db-0.5.la
@@ -128,7 +130,9 @@ am__objects_2 = arg3mysql_test-arg3.test.$(OBJEXT) \
 	arg3mysql_test-schema_factory.test.$(OBJEXT) \
 	arg3mysql_test-select_query.test.$(OBJEXT) \
 	arg3mysql_test-sql_value.test.$(OBJEXT) \
-	arg3mysql_test-where_clause.test.$(OBJEXT)
+	arg3mysql_test-where_clause.test.$(OBJEXT) \
+	arg3mysql_test-sqlite3_statement.test.$(OBJEXT) \
+	arg3mysql_test-mysql_column.test.$(OBJEXT)
 am_arg3mysql_test_OBJECTS = $(am__objects_2)
 arg3mysql_test_OBJECTS = $(am_arg3mysql_test_OBJECTS)
 arg3mysql_test_DEPENDENCIES = ../src/libarg3db-0.5.la
@@ -144,7 +148,9 @@ am__objects_3 = arg3sqlite_cache_test-arg3.test.$(OBJEXT) \
 	arg3sqlite_cache_test-schema_factory.test.$(OBJEXT) \
 	arg3sqlite_cache_test-select_query.test.$(OBJEXT) \
 	arg3sqlite_cache_test-sql_value.test.$(OBJEXT) \
-	arg3sqlite_cache_test-where_clause.test.$(OBJEXT)
+	arg3sqlite_cache_test-where_clause.test.$(OBJEXT) \
+	arg3sqlite_cache_test-sqlite3_statement.test.$(OBJEXT) \
+	arg3sqlite_cache_test-mysql_column.test.$(OBJEXT)
 am_arg3sqlite_cache_test_OBJECTS = $(am__objects_3)
 arg3sqlite_cache_test_OBJECTS = $(am_arg3sqlite_cache_test_OBJECTS)
 arg3sqlite_cache_test_DEPENDENCIES = ../src/libarg3db-0.5.la
@@ -160,7 +166,9 @@ am__objects_4 = arg3sqlite_test-arg3.test.$(OBJEXT) \
 	arg3sqlite_test-schema_factory.test.$(OBJEXT) \
 	arg3sqlite_test-select_query.test.$(OBJEXT) \
 	arg3sqlite_test-sql_value.test.$(OBJEXT) \
-	arg3sqlite_test-where_clause.test.$(OBJEXT)
+	arg3sqlite_test-where_clause.test.$(OBJEXT) \
+	arg3sqlite_test-sqlite3_statement.test.$(OBJEXT) \
+	arg3sqlite_test-mysql_column.test.$(OBJEXT)
 am_arg3sqlite_test_OBJECTS = $(am__objects_4)
 arg3sqlite_test_OBJECTS = $(am_arg3sqlite_test_OBJECTS)
 arg3sqlite_test_DEPENDENCIES = ../src/libarg3db-0.5.la
@@ -259,7 +267,6 @@ ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_CPPFLAGS = -std=c++11 -stdlib=libc++ -Ivendor/bandit -Wall -Werror
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
-AM_LDFLAGS = @AM_LDFLAGS@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -384,7 +391,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SOURCES = arg3.test.cpp base_record.test.cpp column.test.cpp db.test.cpp delete_query.test.cpp modify_query.test.cpp \
 	resultset.test.cpp row.test.cpp schema.test.cpp schema_factory.test.cpp select_query.test.cpp sql_value.test.cpp \
-	where_clause.test.cpp
+	where_clause.test.cpp sqlite3_statement.test.cpp mysql_column.test.cpp
 
 pkginclude_HEADERS = db.test.h
 arg3mysql_test_SOURCES = $(SOURCES)
@@ -471,12 +478,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_cache_test-db.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_cache_test-delete_query.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_cache_test-modify_query.test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_cache_test-mysql_column.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_cache_test-resultset.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_cache_test-row.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_cache_test-schema.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_cache_test-schema_factory.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_cache_test-select_query.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_cache_test-sql_value.test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_cache_test-sqlite3_statement.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_cache_test-where_clause.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-arg3.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-base_record.test.Po@am__quote@
@@ -484,12 +493,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-db.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-delete_query.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-modify_query.test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-mysql_column.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-resultset.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-row.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-schema.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-schema_factory.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-select_query.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-sql_value.test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-sqlite3_statement.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3mysql_test-where_clause.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-arg3.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-base_record.test.Po@am__quote@
@@ -497,12 +508,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-db.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-delete_query.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-modify_query.test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-mysql_column.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-resultset.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-row.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-schema.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-schema_factory.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-select_query.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-sql_value.test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-sqlite3_statement.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_cache_test-where_clause.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-arg3.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-base_record.test.Po@am__quote@
@@ -510,12 +523,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-db.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-delete_query.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-modify_query.test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-mysql_column.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-resultset.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-row.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-schema.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-schema_factory.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-select_query.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-sql_value.test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-sqlite3_statement.test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arg3sqlite_test-where_clause.test.Po@am__quote@
 
 .cpp.o:
@@ -721,6 +736,34 @@ arg3mysql_cache_test-where_clause.test.obj: where_clause.test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_cache_test-where_clause.test.obj `if test -f 'where_clause.test.cpp'; then $(CYGPATH_W) 'where_clause.test.cpp'; else $(CYGPATH_W) '$(srcdir)/where_clause.test.cpp'; fi`
 
+arg3mysql_cache_test-sqlite3_statement.test.o: sqlite3_statement.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_cache_test-sqlite3_statement.test.o -MD -MP -MF $(DEPDIR)/arg3mysql_cache_test-sqlite3_statement.test.Tpo -c -o arg3mysql_cache_test-sqlite3_statement.test.o `test -f 'sqlite3_statement.test.cpp' || echo '$(srcdir)/'`sqlite3_statement.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_cache_test-sqlite3_statement.test.Tpo $(DEPDIR)/arg3mysql_cache_test-sqlite3_statement.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sqlite3_statement.test.cpp' object='arg3mysql_cache_test-sqlite3_statement.test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_cache_test-sqlite3_statement.test.o `test -f 'sqlite3_statement.test.cpp' || echo '$(srcdir)/'`sqlite3_statement.test.cpp
+
+arg3mysql_cache_test-sqlite3_statement.test.obj: sqlite3_statement.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_cache_test-sqlite3_statement.test.obj -MD -MP -MF $(DEPDIR)/arg3mysql_cache_test-sqlite3_statement.test.Tpo -c -o arg3mysql_cache_test-sqlite3_statement.test.obj `if test -f 'sqlite3_statement.test.cpp'; then $(CYGPATH_W) 'sqlite3_statement.test.cpp'; else $(CYGPATH_W) '$(srcdir)/sqlite3_statement.test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_cache_test-sqlite3_statement.test.Tpo $(DEPDIR)/arg3mysql_cache_test-sqlite3_statement.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sqlite3_statement.test.cpp' object='arg3mysql_cache_test-sqlite3_statement.test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_cache_test-sqlite3_statement.test.obj `if test -f 'sqlite3_statement.test.cpp'; then $(CYGPATH_W) 'sqlite3_statement.test.cpp'; else $(CYGPATH_W) '$(srcdir)/sqlite3_statement.test.cpp'; fi`
+
+arg3mysql_cache_test-mysql_column.test.o: mysql_column.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_cache_test-mysql_column.test.o -MD -MP -MF $(DEPDIR)/arg3mysql_cache_test-mysql_column.test.Tpo -c -o arg3mysql_cache_test-mysql_column.test.o `test -f 'mysql_column.test.cpp' || echo '$(srcdir)/'`mysql_column.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_cache_test-mysql_column.test.Tpo $(DEPDIR)/arg3mysql_cache_test-mysql_column.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mysql_column.test.cpp' object='arg3mysql_cache_test-mysql_column.test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_cache_test-mysql_column.test.o `test -f 'mysql_column.test.cpp' || echo '$(srcdir)/'`mysql_column.test.cpp
+
+arg3mysql_cache_test-mysql_column.test.obj: mysql_column.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_cache_test-mysql_column.test.obj -MD -MP -MF $(DEPDIR)/arg3mysql_cache_test-mysql_column.test.Tpo -c -o arg3mysql_cache_test-mysql_column.test.obj `if test -f 'mysql_column.test.cpp'; then $(CYGPATH_W) 'mysql_column.test.cpp'; else $(CYGPATH_W) '$(srcdir)/mysql_column.test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_cache_test-mysql_column.test.Tpo $(DEPDIR)/arg3mysql_cache_test-mysql_column.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mysql_column.test.cpp' object='arg3mysql_cache_test-mysql_column.test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_cache_test-mysql_column.test.obj `if test -f 'mysql_column.test.cpp'; then $(CYGPATH_W) 'mysql_column.test.cpp'; else $(CYGPATH_W) '$(srcdir)/mysql_column.test.cpp'; fi`
+
 arg3mysql_test-arg3.test.o: arg3.test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_test-arg3.test.o -MD -MP -MF $(DEPDIR)/arg3mysql_test-arg3.test.Tpo -c -o arg3mysql_test-arg3.test.o `test -f 'arg3.test.cpp' || echo '$(srcdir)/'`arg3.test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_test-arg3.test.Tpo $(DEPDIR)/arg3mysql_test-arg3.test.Po
@@ -902,6 +945,34 @@ arg3mysql_test-where_clause.test.obj: where_clause.test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='where_clause.test.cpp' object='arg3mysql_test-where_clause.test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_test-where_clause.test.obj `if test -f 'where_clause.test.cpp'; then $(CYGPATH_W) 'where_clause.test.cpp'; else $(CYGPATH_W) '$(srcdir)/where_clause.test.cpp'; fi`
+
+arg3mysql_test-sqlite3_statement.test.o: sqlite3_statement.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_test-sqlite3_statement.test.o -MD -MP -MF $(DEPDIR)/arg3mysql_test-sqlite3_statement.test.Tpo -c -o arg3mysql_test-sqlite3_statement.test.o `test -f 'sqlite3_statement.test.cpp' || echo '$(srcdir)/'`sqlite3_statement.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_test-sqlite3_statement.test.Tpo $(DEPDIR)/arg3mysql_test-sqlite3_statement.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sqlite3_statement.test.cpp' object='arg3mysql_test-sqlite3_statement.test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_test-sqlite3_statement.test.o `test -f 'sqlite3_statement.test.cpp' || echo '$(srcdir)/'`sqlite3_statement.test.cpp
+
+arg3mysql_test-sqlite3_statement.test.obj: sqlite3_statement.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_test-sqlite3_statement.test.obj -MD -MP -MF $(DEPDIR)/arg3mysql_test-sqlite3_statement.test.Tpo -c -o arg3mysql_test-sqlite3_statement.test.obj `if test -f 'sqlite3_statement.test.cpp'; then $(CYGPATH_W) 'sqlite3_statement.test.cpp'; else $(CYGPATH_W) '$(srcdir)/sqlite3_statement.test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_test-sqlite3_statement.test.Tpo $(DEPDIR)/arg3mysql_test-sqlite3_statement.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sqlite3_statement.test.cpp' object='arg3mysql_test-sqlite3_statement.test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_test-sqlite3_statement.test.obj `if test -f 'sqlite3_statement.test.cpp'; then $(CYGPATH_W) 'sqlite3_statement.test.cpp'; else $(CYGPATH_W) '$(srcdir)/sqlite3_statement.test.cpp'; fi`
+
+arg3mysql_test-mysql_column.test.o: mysql_column.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_test-mysql_column.test.o -MD -MP -MF $(DEPDIR)/arg3mysql_test-mysql_column.test.Tpo -c -o arg3mysql_test-mysql_column.test.o `test -f 'mysql_column.test.cpp' || echo '$(srcdir)/'`mysql_column.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_test-mysql_column.test.Tpo $(DEPDIR)/arg3mysql_test-mysql_column.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mysql_column.test.cpp' object='arg3mysql_test-mysql_column.test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_test-mysql_column.test.o `test -f 'mysql_column.test.cpp' || echo '$(srcdir)/'`mysql_column.test.cpp
+
+arg3mysql_test-mysql_column.test.obj: mysql_column.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3mysql_test-mysql_column.test.obj -MD -MP -MF $(DEPDIR)/arg3mysql_test-mysql_column.test.Tpo -c -o arg3mysql_test-mysql_column.test.obj `if test -f 'mysql_column.test.cpp'; then $(CYGPATH_W) 'mysql_column.test.cpp'; else $(CYGPATH_W) '$(srcdir)/mysql_column.test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3mysql_test-mysql_column.test.Tpo $(DEPDIR)/arg3mysql_test-mysql_column.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mysql_column.test.cpp' object='arg3mysql_test-mysql_column.test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3mysql_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3mysql_test-mysql_column.test.obj `if test -f 'mysql_column.test.cpp'; then $(CYGPATH_W) 'mysql_column.test.cpp'; else $(CYGPATH_W) '$(srcdir)/mysql_column.test.cpp'; fi`
 
 arg3sqlite_cache_test-arg3.test.o: arg3.test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_cache_test-arg3.test.o -MD -MP -MF $(DEPDIR)/arg3sqlite_cache_test-arg3.test.Tpo -c -o arg3sqlite_cache_test-arg3.test.o `test -f 'arg3.test.cpp' || echo '$(srcdir)/'`arg3.test.cpp
@@ -1085,6 +1156,34 @@ arg3sqlite_cache_test-where_clause.test.obj: where_clause.test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_cache_test-where_clause.test.obj `if test -f 'where_clause.test.cpp'; then $(CYGPATH_W) 'where_clause.test.cpp'; else $(CYGPATH_W) '$(srcdir)/where_clause.test.cpp'; fi`
 
+arg3sqlite_cache_test-sqlite3_statement.test.o: sqlite3_statement.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_cache_test-sqlite3_statement.test.o -MD -MP -MF $(DEPDIR)/arg3sqlite_cache_test-sqlite3_statement.test.Tpo -c -o arg3sqlite_cache_test-sqlite3_statement.test.o `test -f 'sqlite3_statement.test.cpp' || echo '$(srcdir)/'`sqlite3_statement.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_cache_test-sqlite3_statement.test.Tpo $(DEPDIR)/arg3sqlite_cache_test-sqlite3_statement.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sqlite3_statement.test.cpp' object='arg3sqlite_cache_test-sqlite3_statement.test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_cache_test-sqlite3_statement.test.o `test -f 'sqlite3_statement.test.cpp' || echo '$(srcdir)/'`sqlite3_statement.test.cpp
+
+arg3sqlite_cache_test-sqlite3_statement.test.obj: sqlite3_statement.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_cache_test-sqlite3_statement.test.obj -MD -MP -MF $(DEPDIR)/arg3sqlite_cache_test-sqlite3_statement.test.Tpo -c -o arg3sqlite_cache_test-sqlite3_statement.test.obj `if test -f 'sqlite3_statement.test.cpp'; then $(CYGPATH_W) 'sqlite3_statement.test.cpp'; else $(CYGPATH_W) '$(srcdir)/sqlite3_statement.test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_cache_test-sqlite3_statement.test.Tpo $(DEPDIR)/arg3sqlite_cache_test-sqlite3_statement.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sqlite3_statement.test.cpp' object='arg3sqlite_cache_test-sqlite3_statement.test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_cache_test-sqlite3_statement.test.obj `if test -f 'sqlite3_statement.test.cpp'; then $(CYGPATH_W) 'sqlite3_statement.test.cpp'; else $(CYGPATH_W) '$(srcdir)/sqlite3_statement.test.cpp'; fi`
+
+arg3sqlite_cache_test-mysql_column.test.o: mysql_column.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_cache_test-mysql_column.test.o -MD -MP -MF $(DEPDIR)/arg3sqlite_cache_test-mysql_column.test.Tpo -c -o arg3sqlite_cache_test-mysql_column.test.o `test -f 'mysql_column.test.cpp' || echo '$(srcdir)/'`mysql_column.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_cache_test-mysql_column.test.Tpo $(DEPDIR)/arg3sqlite_cache_test-mysql_column.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mysql_column.test.cpp' object='arg3sqlite_cache_test-mysql_column.test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_cache_test-mysql_column.test.o `test -f 'mysql_column.test.cpp' || echo '$(srcdir)/'`mysql_column.test.cpp
+
+arg3sqlite_cache_test-mysql_column.test.obj: mysql_column.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_cache_test-mysql_column.test.obj -MD -MP -MF $(DEPDIR)/arg3sqlite_cache_test-mysql_column.test.Tpo -c -o arg3sqlite_cache_test-mysql_column.test.obj `if test -f 'mysql_column.test.cpp'; then $(CYGPATH_W) 'mysql_column.test.cpp'; else $(CYGPATH_W) '$(srcdir)/mysql_column.test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_cache_test-mysql_column.test.Tpo $(DEPDIR)/arg3sqlite_cache_test-mysql_column.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mysql_column.test.cpp' object='arg3sqlite_cache_test-mysql_column.test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_cache_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_cache_test-mysql_column.test.obj `if test -f 'mysql_column.test.cpp'; then $(CYGPATH_W) 'mysql_column.test.cpp'; else $(CYGPATH_W) '$(srcdir)/mysql_column.test.cpp'; fi`
+
 arg3sqlite_test-arg3.test.o: arg3.test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_test-arg3.test.o -MD -MP -MF $(DEPDIR)/arg3sqlite_test-arg3.test.Tpo -c -o arg3sqlite_test-arg3.test.o `test -f 'arg3.test.cpp' || echo '$(srcdir)/'`arg3.test.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_test-arg3.test.Tpo $(DEPDIR)/arg3sqlite_test-arg3.test.Po
@@ -1266,6 +1365,34 @@ arg3sqlite_test-where_clause.test.obj: where_clause.test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='where_clause.test.cpp' object='arg3sqlite_test-where_clause.test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_test-where_clause.test.obj `if test -f 'where_clause.test.cpp'; then $(CYGPATH_W) 'where_clause.test.cpp'; else $(CYGPATH_W) '$(srcdir)/where_clause.test.cpp'; fi`
+
+arg3sqlite_test-sqlite3_statement.test.o: sqlite3_statement.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_test-sqlite3_statement.test.o -MD -MP -MF $(DEPDIR)/arg3sqlite_test-sqlite3_statement.test.Tpo -c -o arg3sqlite_test-sqlite3_statement.test.o `test -f 'sqlite3_statement.test.cpp' || echo '$(srcdir)/'`sqlite3_statement.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_test-sqlite3_statement.test.Tpo $(DEPDIR)/arg3sqlite_test-sqlite3_statement.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sqlite3_statement.test.cpp' object='arg3sqlite_test-sqlite3_statement.test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_test-sqlite3_statement.test.o `test -f 'sqlite3_statement.test.cpp' || echo '$(srcdir)/'`sqlite3_statement.test.cpp
+
+arg3sqlite_test-sqlite3_statement.test.obj: sqlite3_statement.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_test-sqlite3_statement.test.obj -MD -MP -MF $(DEPDIR)/arg3sqlite_test-sqlite3_statement.test.Tpo -c -o arg3sqlite_test-sqlite3_statement.test.obj `if test -f 'sqlite3_statement.test.cpp'; then $(CYGPATH_W) 'sqlite3_statement.test.cpp'; else $(CYGPATH_W) '$(srcdir)/sqlite3_statement.test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_test-sqlite3_statement.test.Tpo $(DEPDIR)/arg3sqlite_test-sqlite3_statement.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sqlite3_statement.test.cpp' object='arg3sqlite_test-sqlite3_statement.test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_test-sqlite3_statement.test.obj `if test -f 'sqlite3_statement.test.cpp'; then $(CYGPATH_W) 'sqlite3_statement.test.cpp'; else $(CYGPATH_W) '$(srcdir)/sqlite3_statement.test.cpp'; fi`
+
+arg3sqlite_test-mysql_column.test.o: mysql_column.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_test-mysql_column.test.o -MD -MP -MF $(DEPDIR)/arg3sqlite_test-mysql_column.test.Tpo -c -o arg3sqlite_test-mysql_column.test.o `test -f 'mysql_column.test.cpp' || echo '$(srcdir)/'`mysql_column.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_test-mysql_column.test.Tpo $(DEPDIR)/arg3sqlite_test-mysql_column.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mysql_column.test.cpp' object='arg3sqlite_test-mysql_column.test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_test-mysql_column.test.o `test -f 'mysql_column.test.cpp' || echo '$(srcdir)/'`mysql_column.test.cpp
+
+arg3sqlite_test-mysql_column.test.obj: mysql_column.test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT arg3sqlite_test-mysql_column.test.obj -MD -MP -MF $(DEPDIR)/arg3sqlite_test-mysql_column.test.Tpo -c -o arg3sqlite_test-mysql_column.test.obj `if test -f 'mysql_column.test.cpp'; then $(CYGPATH_W) 'mysql_column.test.cpp'; else $(CYGPATH_W) '$(srcdir)/mysql_column.test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/arg3sqlite_test-mysql_column.test.Tpo $(DEPDIR)/arg3sqlite_test-mysql_column.test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mysql_column.test.cpp' object='arg3sqlite_test-mysql_column.test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(arg3sqlite_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o arg3sqlite_test-mysql_column.test.obj `if test -f 'mysql_column.test.cpp'; then $(CYGPATH_W) 'mysql_column.test.cpp'; else $(CYGPATH_W) '$(srcdir)/mysql_column.test.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

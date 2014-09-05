@@ -1,0 +1,104 @@
+#ifdef TEST_SQLITE
+
+#include <bandit/bandit.h>
+#include "db.test.h"
+#include "sqlite3_statement.h"
+
+using namespace bandit;
+
+using namespace std;
+
+using namespace arg3::db;
+
+go_bandit([]()
+{
+
+    describe("sqlite3 statement", []()
+    {
+        before_each([]()
+        {
+            setup_testdb();
+        });
+
+        after_each([]()
+        {
+            teardown_testdb();
+        });
+
+
+        it("is movable", []()
+        {
+            sqlite3_statement stmt(&testdb1);
+
+            stmt.prepare("select * from users");
+
+            AssertThat(stmt.is_valid(), IsTrue());
+
+            sqlite3_statement s2(std::move(stmt));
+
+            AssertThat(s2.is_valid(), IsTrue());
+
+            AssertThat(stmt.is_valid(), IsFalse());
+
+            sqlite3_statement s3(&testdb1);
+
+            AssertThat(s3.is_valid(), IsFalse());
+
+            s3 = std::move(s2);
+
+            AssertThat(s3.is_valid(), IsTrue());
+
+            AssertThat(s2.is_valid(), IsFalse());
+        });
+
+        it("throws exceptions", []()
+        {
+            sqlite3_statement stmt(NULL);
+
+            AssertThrows(database_exception, stmt.prepare("select * from users"));
+
+            stmt = sqlite3_statement(&testdb1);
+
+            AssertThrows(database_exception, stmt.prepare("asdfasdfasdf"));
+
+            AssertThat(stmt.last_error().empty(), IsFalse());
+
+            AssertThrows(binding_error, stmt.bind(1, 1));
+
+            AssertThrows(binding_error, stmt.bind(1, 1234LL));
+
+            AssertThrows(binding_error, stmt.bind(1, 123.123));
+
+            AssertThrows(binding_error, stmt.bind(1, "12134123"));
+
+            AssertThrows(binding_error, stmt.bind(1, sql_blob(NULL, 0)));
+
+            AssertThrows(binding_error, stmt.bind(1, sql_null));
+
+            AssertThrows(binding_error, stmt.bind(1, NULL, 0, NULL));
+
+            AssertThrows(binding_error, stmt.bind_value(1, sql_value(1234)));
+
+        });
+
+        it("can reset", []()
+        {
+            sqlite3_statement stmt(&testdb1);
+
+            stmt.prepare("select * from users");
+
+            AssertThat(stmt.is_valid(), IsTrue());
+
+            stmt.reset();
+
+            stmt.prepare("select id, first_name from users where id > 0");
+
+            AssertThat(stmt.is_valid(), IsTrue());
+        });
+
+    });
+
+});
+
+#endif
+

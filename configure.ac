@@ -18,10 +18,9 @@ AC_PROG_CC
 AC_PROG_MAKE_SET
 
 if test "x$CXX" = "xclang++"; then
-	AC_SUBST([AM_CPPFLAGS], ["-std=c++11 -Wall -Werror"])
-	AC_SUBST([AM_LDFLAGS], ["-stdlib=libc++"])
+	AC_SUBST([AM_CPPFLAGS], ["-std=c++11 -stdlib=libc++ -Wall -Werror"])
 else
-	AC_SUBST([AM_CPPFLAGS], ["-std=c++0x -Wall -Werror"])
+	AC_SUBST([AM_CPPFLAGS], ["-std=c++11 -Wall -Werror"])
 fi
 
 m4_include([m4/gcov.m4])

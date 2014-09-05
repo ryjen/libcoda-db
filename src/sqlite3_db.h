@@ -48,7 +48,7 @@ namespace arg3
             string connection_string() const;
             void set_connection_string(const string &value);
 
-            resultset execute(const string &sql);
+            resultset execute(const string &sql, bool cache = false);
 
             string last_error() const;
 

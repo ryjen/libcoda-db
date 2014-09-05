@@ -5,6 +5,7 @@
 #include <sqlite3.h>
 #include "column.h"
 #include <iterator>
+#include <memory>
 
 namespace arg3
 {
@@ -267,6 +268,8 @@ namespace arg3
             bool is_valid() const;
 
             void for_each(std::function<void (const db::column &)> funk) const;
+
+            shared_ptr<row_impl> impl() const;
         };
 
     }

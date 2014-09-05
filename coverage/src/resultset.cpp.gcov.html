@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-11 17:11:37</td>
+            <td class="headerValue">2014-08-12 12:28:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">18</td>
@@ -80,13 +80,13 @@
 <a name="10"><span class="lineNum">      10 </span>            :     {</a>
 <span class="lineNum">      11 </span>            : 
 <span class="lineNum">      12 </span>            :         resultset::resultset(shared_ptr&lt;resultset_impl&gt; impl) : impl_(impl)
-<span class="lineNum">      13 </span><span class="lineCov">        546 :         {</span>
-<span class="lineNum">      14 </span><span class="lineCov">       1092 :             assert(impl_ != nullptr);</span>
-<a name="15"><span class="lineNum">      15 </span><span class="lineCov">       1092 :         }</span></a>
+<span class="lineNum">      13 </span><span class="lineCov">        552 :         {</span>
+<span class="lineNum">      14 </span><span class="lineCov">       1104 :             assert(impl_ != nullptr);</span>
+<a name="15"><span class="lineNum">      15 </span><span class="lineCov">       1104 :         }</span></a>
 <span class="lineNum">      16 </span>            : 
 <span class="lineNum">      17 </span>            :         resultset::~resultset()
-<span class="lineNum">      18 </span><span class="lineCov">       1100 :         {</span>
-<a name="19"><span class="lineNum">      19 </span><span class="lineCov">       1100 :         }</span></a>
+<span class="lineNum">      18 </span><span class="lineCov">       1112 :         {</span>
+<a name="19"><span class="lineNum">      19 </span><span class="lineCov">       1112 :         }</span></a>
 <span class="lineNum">      20 </span>            : 
 <span class="lineNum">      21 </span><span class="lineCov">          4 :         resultset::resultset(resultset &amp;&amp;other) : impl_(std::move(other.impl_))</span>
 <span class="lineNum">      22 </span><span class="lineCov">          8 :         {</span>
@@ -118,7 +118,7 @@
 <span class="lineNum">      48 </span>            : 
 <span class="lineNum">      49 </span>            :         bool resultset::next()
 <span class="lineNum">      50 </span>            :         {
-<span class="lineNum">      51 </span><span class="lineCov">        192 :             return impl_-&gt;next();</span>
+<span class="lineNum">      51 </span><span class="lineCov">        198 :             return impl_-&gt;next();</span>
 <span class="lineNum">      52 </span>            :         }
 <a name="53"><span class="lineNum">      53 </span>            : </a>
 <span class="lineNum">      54 </span>            : 
