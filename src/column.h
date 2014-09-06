@@ -41,7 +41,7 @@ namespace arg3
 
             virtual bool to_bool() const = 0;
 
-            virtual int64_t to_int64() const = 0;
+            virtual long long to_llong() const = 0;
 
             virtual string to_string() const = 0;
 
@@ -83,7 +83,7 @@ namespace arg3
 
             bool to_bool() const;
 
-            int64_t to_int64() const;
+            long long to_llong() const;
 
             string to_string() const;
 
@@ -93,7 +93,7 @@ namespace arg3
 
             operator int() const;
 
-            operator int64_t() const;
+            operator long long() const;
 
             operator double() const;
 

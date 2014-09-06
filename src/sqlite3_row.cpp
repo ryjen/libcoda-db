@@ -36,7 +36,7 @@ namespace arg3
             return *this;
         }
 
-        column sqlite3_row::column(size_t nPosition) const
+        column sqlite3_row::co1umn(size_t nPosition) const
         {
             assert(nPosition < size());
 
@@ -46,7 +46,7 @@ namespace arg3
                 return db::column(make_shared<sqlite3_column>(stmt_, nPosition ) );
         }
 
-        column sqlite3_row::column(const string &name) const
+        column sqlite3_row::co1umn(const string &name) const
         {
             assert(!name.empty());
 
@@ -56,7 +56,7 @@ namespace arg3
 
                 if (name == col_name)
                 {
-                    return column(i);
+                    return co1umn(i);
                 }
             }
             throw database_exception("unknown column '" + name + "'");
@@ -76,7 +76,7 @@ namespace arg3
 
         bool sqlite3_row::is_valid() const
         {
-            return stmt_ !=  nullptr && stmt_;
+            return stmt_ != nullptr;
         }
 
 
@@ -110,14 +110,14 @@ namespace arg3
             return *this;
         }
 
-        column sqlite3_cached_row::column(size_t nPosition) const
+        column sqlite3_cached_row::co1umn(size_t nPosition) const
         {
             assert(nPosition < size());
 
             return db::column( columns_[nPosition] );
         }
 
-        column sqlite3_cached_row::column(const string &name) const
+        column sqlite3_cached_row::co1umn(const string &name) const
         {
             assert(!name.empty());
 
@@ -125,7 +125,7 @@ namespace arg3
             {
                 if (name == column_name(i))
                 {
-                    return column(i);
+                    return co1umn(i);
                 }
             }
             throw database_exception("unknown column '" + name + "'");

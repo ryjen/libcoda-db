@@ -50,7 +50,7 @@ go_bandit([]()
 
             AssertThat(d, Equals(1234.0));
 
-            int64_t i64 = v;
+            long long i64 = v;
 
             AssertThat(i64, Equals(1234));
 
@@ -75,7 +75,7 @@ go_bandit([]()
 
             AssertThat(d, Equals(0.0));
 
-            int64_t i64 = v;
+            long long i64 = v;
 
             AssertThat(i64, Equals(0LL));
 

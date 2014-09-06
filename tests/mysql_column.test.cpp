@@ -1,4 +1,4 @@
-#ifdef TEST_MYSQL
+#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
 
 #include <bandit/bandit.h>
 #include "db.test.h"
@@ -21,7 +21,7 @@ shared_ptr<column_impl> get_a_column(int index)
     if (index >= i->size())
         throw database_exception("invalid column index");
 
-    auto c = i->column(index);
+    auto c = i->co1umn(index);
 
     return c.impl();
 }

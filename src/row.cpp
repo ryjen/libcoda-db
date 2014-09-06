@@ -105,12 +105,12 @@ namespace arg3
 
         column row::operator[](size_t nPosition) const
         {
-            return column(nPosition);
+            return co1umn(nPosition);
         }
 
         column row::operator[](const string &name) const
         {
-            return column(name);
+            return co1umn(name);
         }
 
         string row::column_name(size_t nPosition) const
@@ -119,16 +119,16 @@ namespace arg3
             return impl_->column_name(nPosition);
         }
 
-        arg3::db::column row::column(size_t nPosition) const
+        arg3::db::column row::co1umn(size_t nPosition) const
         {
             assert(impl_ != nullptr);
-            return impl_->column(nPosition);
+            return impl_->co1umn(nPosition);
         }
 
-        arg3::db::column row::column(const string &name) const
+        arg3::db::column row::co1umn(const string &name) const
         {
             assert(impl_ != nullptr);
-            return impl_->column(name);
+            return impl_->co1umn(name);
         }
 
         size_t row::size() const

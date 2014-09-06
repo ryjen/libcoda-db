@@ -112,7 +112,7 @@ namespace arg3
         {
             if (rows_.empty()) return false;
 
-            return ++currentRow_ < rows_.size();
+            return ++currentRow_ < static_cast<int>(rows_.size());
         }
         void sqlite3_cached_resultset::reset()
         {
@@ -121,7 +121,7 @@ namespace arg3
 
         row sqlite3_cached_resultset::current_row()
         {
-            if (currentRow_ >= 0 && currentRow_ < rows_.size())
+            if (currentRow_ >= 0 && currentRow_ < static_cast<int>(rows_.size()))
                 return row(rows_[currentRow_]);
             else
                 return row();

@@ -18,7 +18,7 @@ column get_user_column(const string &name)
 
     auto row = rs.begin();
 
-    return row->column(name);
+    return row->co1umn(name);
 }
 
 go_bandit([]()
@@ -106,9 +106,9 @@ go_bandit([]()
         {
             auto col = get_user_column("id");
 
-            AssertThat(col.to_int64() > 0, IsTrue());
+            AssertThat(col.to_llong() > 0, IsTrue());
 
-            int64_t val = col;
+            long long val = col;
 
             AssertThat(val > 0, IsTrue());
         });

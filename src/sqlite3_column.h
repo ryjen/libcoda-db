@@ -42,7 +42,7 @@ namespace arg3
 
             bool to_bool() const;
 
-            int64_t to_int64() const;
+            long long to_llong() const;
 
             const unsigned char *to_text() const;
 
@@ -85,7 +85,7 @@ namespace arg3
 
             bool to_bool() const;
 
-            int64_t to_int64() const;
+            long long to_llong() const;
 
             const unsigned char *to_text() const;
 

@@ -26,9 +26,9 @@ namespace arg3
 
             virtual string column_name(size_t nPosition) const = 0;
 
-            virtual arg3::db::column column(size_t nPosition) const = 0;
+            virtual arg3::db::column co1umn(size_t nPosition) const = 0;
 
-            virtual arg3::db::column column(const string &name) const = 0;
+            virtual arg3::db::column co1umn(const string &name) const = 0;
 
             virtual size_t size() const = 0;
 
@@ -50,7 +50,7 @@ namespace arg3
                 assert(row_ != nullptr);
 
                 if (index < row_->size())
-                    currentValue_ = row_->column(index);
+                    currentValue_ = row_->co1umn(index);
             }
         public:
             row_iterator() : row_(nullptr),
@@ -257,9 +257,9 @@ namespace arg3
 
             string column_name(size_t nPosition) const;
 
-            arg3::db::column column(size_t nPosition) const;
+            arg3::db::column co1umn(size_t nPosition) const;
 
-            arg3::db::column column(const string &name) const;
+            arg3::db::column co1umn(const string &name) const;
 
             size_t size() const;
 

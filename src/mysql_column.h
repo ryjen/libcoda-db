@@ -45,7 +45,7 @@ namespace arg3
 
             bool to_bool() const;
 
-            int64_t to_int64() const;
+            long long to_llong() const;
 
             string to_string() const;
 
@@ -85,7 +85,7 @@ namespace arg3
 
             bool to_bool() const;
 
-            int64_t to_int64() const;
+            long long to_llong() const;
 
             string to_string() const;
 
@@ -125,7 +125,7 @@ namespace arg3
 
             bool to_bool() const;
 
-            int64_t to_int64() const;
+            long long to_llong() const;
 
             string to_string() const;
 

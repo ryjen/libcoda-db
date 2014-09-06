@@ -73,7 +73,7 @@ namespace arg3
                 throw binding_error(db_->last_error());
             return *this;
         }
-        sqlite3_statement &sqlite3_statement::bind(size_t index, int64_t value)
+        sqlite3_statement &sqlite3_statement::bind(size_t index, long long value)
         {
             if (sqlite3_bind_int64(stmt_.get(), index, value) != SQLITE_OK)
                 throw binding_error(db_->last_error());

@@ -70,11 +70,11 @@ namespace arg3
             return impl_->to_bool();
         }
 
-        int64_t column::to_int64() const
+        long long column::to_llong() const
         {
             assert(impl_ != nullptr);
 
-            return impl_->to_int64();
+            return impl_->to_llong();
         }
 
         string column::to_string() const
@@ -101,9 +101,9 @@ namespace arg3
             return to_int();
         }
 
-        column::operator int64_t() const
+        column::operator long long() const
         {
-            return to_int64();
+            return to_llong();
         }
 
         column::operator double() const

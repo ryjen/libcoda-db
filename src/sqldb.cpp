@@ -1,6 +1,7 @@
 /*!
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
+#include <algorithm>
 #include "sqldb.h"
 #include "base_query.h"
 #include "exception.h"
@@ -71,8 +72,10 @@ namespace arg3
 
             if ("file" == uri.protocol)
                 return make_shared<sqlite3_db>(uri);
+#ifdef HAVE_LIBMYSQLCLIENT
             else if ("mysql" == uri.protocol)
                 return make_shared<mysql_db>(uri);
+#endif
             else
                 throw database_exception("unknown database " + uri.value);
         }

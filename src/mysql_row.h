@@ -38,8 +38,8 @@ namespace arg3
             mysql_row &operator=(mysql_row && other);
 
             string column_name(size_t nPosition) const;
-            arg3::db::column column(size_t nPosition) const;
-            arg3::db::column column(const string &name) const;
+            arg3::db::column co1umn(size_t nPosition) const;
+            arg3::db::column co1umn(const string &name) const;
             size_t size() const;
             bool is_valid() const;
         };
@@ -64,8 +64,8 @@ namespace arg3
             mysql_stmt_row &operator=(mysql_stmt_row && other);
 
             string column_name(size_t nPosition) const;
-            arg3::db::column column(size_t nPosition) const;
-            arg3::db::column column(const string &name) const;
+            arg3::db::column co1umn(size_t nPosition) const;
+            arg3::db::column co1umn(const string &name) const;
             size_t size() const;
             bool is_valid() const;
         };
@@ -88,8 +88,8 @@ namespace arg3
             mysql_cached_row &operator=(mysql_cached_row && other) = default;
 
             string column_name(size_t nPosition) const;
-            arg3::db::column column(size_t nPosition) const;
-            arg3::db::column column(const string &name) const;
+            arg3::db::column co1umn(size_t nPosition) const;
+            arg3::db::column co1umn(const string &name) const;
             size_t size() const;
             bool is_valid() const;
         };

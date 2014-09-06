@@ -13,12 +13,12 @@ using namespace std;
 
 using namespace arg3::db;
 
-test_sqlite3_db testdb1;
-test_mysql_db testdb2;
+#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
 
-#ifdef TEST_MYSQL
+test_mysql_db testdb2;
 sqldb *testdb = &testdb2;
 #else
+test_sqlite3_db testdb1;
 sqldb *testdb = &testdb1;
 #endif
 
@@ -29,7 +29,7 @@ void setup_testdb()
 #ifdef TEST_SQLITE
         testdb1.setup();
 #endif
-#ifdef TEST_MYSQL
+#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
         testdb2.setup();
 #endif
     }
@@ -45,7 +45,7 @@ void teardown_testdb()
 #ifdef TEST_SQLITE
     testdb1.teardown();
 #endif
-#ifdef TEST_MYSQL
+#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
     testdb2.teardown();
 #endif
 }
@@ -63,6 +63,7 @@ void test_sqlite3_db::teardown()
     schemas()->clear("users");
 }
 
+#ifdef HAVE_LIBMYSQLCLIENT
 void test_mysql_db::setup()
 {
     open();
@@ -75,6 +76,7 @@ void test_mysql_db::teardown()
     close();
     schemas()->clear("users");
 }
+#endif
 
 go_bandit([]()
 {

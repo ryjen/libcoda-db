@@ -59,7 +59,7 @@ namespace arg3
             return *this;
         }
 
-        column mysql_row::column(size_t nPosition) const
+        column mysql_row::co1umn(size_t nPosition) const
         {
             if (!is_valid())
                 throw database_exception("invalid row");
@@ -75,7 +75,7 @@ namespace arg3
                 return db::column( make_shared<mysql_column>( res_, row_, nPosition ) );
         }
 
-        column mysql_row::column(const string &name) const
+        column mysql_row::co1umn(const string &name) const
         {
             assert(!name.empty());
 
@@ -165,7 +165,7 @@ namespace arg3
             return *this;
         }
 
-        column mysql_stmt_row::column(size_t nPosition) const
+        column mysql_stmt_row::co1umn(size_t nPosition) const
         {
             assert(fields_ != nullptr);
 
@@ -185,7 +185,7 @@ namespace arg3
                 return db::column(make_shared<mysql_stmt_column>( column_name(nPosition), fields_, nPosition ) );
         }
 
-        column mysql_stmt_row::column(const string &name) const
+        column mysql_stmt_row::co1umn(const string &name) const
         {
             assert(!name.empty());
 
@@ -263,14 +263,14 @@ namespace arg3
             }
         }
 
-        column mysql_cached_row::column(size_t nPosition) const
+        column mysql_cached_row::co1umn(size_t nPosition) const
         {
             assert(nPosition < size());
 
             return arg3::db::column(columns_[nPosition]);
         }
 
-        column mysql_cached_row::column(const string &name) const
+        column mysql_cached_row::co1umn(const string &name) const
         {
             assert(!name.empty());
 

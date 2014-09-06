@@ -109,7 +109,10 @@ namespace arg3
 
         string sql_blob::to_string() const
         {
+	    if(p_ == NULL) return "0x0";
+
             ostringstream os;
+	    os << hex;
             os << p_;
             return os.str();
         }
@@ -193,7 +196,7 @@ namespace arg3
         {
             return other == value_;
         }
-        bool sql_value::operator==(const int64_t &other) const
+        bool sql_value::operator==(const long long &other) const
         {
             return other == value_;
         }
@@ -217,7 +220,7 @@ namespace arg3
         {
             return !operator==(other);
         }
-        bool sql_value::operator!=(const int64_t &other) const
+        bool sql_value::operator!=(const long long &other) const
         {
             return !operator==(other);
         }
@@ -255,12 +258,12 @@ namespace arg3
             return value_.to_int(def);
         }
 
-        sql_value::operator int64_t() const
+        sql_value::operator long long() const
         {
-            return to_int64();
+            return to_llong();
         }
 
-        int64_t sql_value::to_int64(const int64_t def) const
+        long long sql_value::to_llong(const long long def) const
         {
             return value_.to_llong(def);
         }
@@ -300,7 +303,7 @@ namespace arg3
         }
         std::ostream &operator<<(std::ostream &out, const sql_blob &value)
         {
-            out << value.p_;
+            out << hex << value.p_;
 
             return out;
         }

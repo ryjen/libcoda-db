@@ -26,6 +26,11 @@ public:
     }
 };
 
+extern test_sqlite3_db testdb1;
+
+
+#ifdef HAVE_LIBMYSQLCLIENT
+
 class test_mysql_db : public arg3::db::mysql_db
 {
 public:
@@ -42,12 +47,12 @@ public:
         return db_;
     }
 };
+extern test_mysql_db testdb2;
+
+#endif
 
 extern void setup_testdb();
 extern void teardown_testdb();
-
-extern test_sqlite3_db testdb1;
-extern test_mysql_db testdb2;
 
 extern arg3::db::sqldb *testdb;
 

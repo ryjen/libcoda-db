@@ -72,7 +72,7 @@ namespace arg3
             friend std::ostream &operator<<(std::ostream &out, const sql_value &value);
             friend bool operator==(const std::string &other, const sql_value &value);
             friend bool operator==(int other, const sql_value &value);
-            friend bool operator==(int64_t other, const sql_value &value);
+            friend bool operator==(long long other, const sql_value &value);
             friend bool operator==(double other, const sql_value &value);
             friend bool operator==(const sql_null_type &other, const sql_value &value);
         private:
@@ -97,7 +97,7 @@ namespace arg3
 
             sql_value(int value) : value_(value) {}
 
-            sql_value(int64_t value) : value_(value) {}
+            sql_value(long long value) : value_(value) {}
 
             sql_value(double value) : value_(value) {}
 
@@ -109,7 +109,7 @@ namespace arg3
 
             operator int() const;
 
-            operator int64_t() const;
+            operator long long() const;
 
             operator double() const;
 
@@ -121,7 +121,7 @@ namespace arg3
 
             int to_int(const int def = INT_DEFAULT) const;
 
-            int64_t to_int64(const int64_t def = INT_DEFAULT) const;
+            long long to_llong(const long long def = INT_DEFAULT) const;
 
             double to_double(const double def = DOUBLE_DEFAULT) const;
 
@@ -137,7 +137,7 @@ namespace arg3
 
             bool operator==(const int &other) const;
 
-            bool operator==(const int64_t &other) const;
+            bool operator==(const long long &other) const;
 
             bool operator==(const double &other) const;
 
@@ -149,7 +149,7 @@ namespace arg3
 
             bool operator!=(const int &other) const;
 
-            bool operator!=(const int64_t &other) const;
+            bool operator!=(const long long &other) const;
 
             bool operator!=(const double &other) const;
 
@@ -178,7 +178,7 @@ namespace arg3
             return other == value.value_;
         }
 
-        inline bool operator==(int64_t other, const sql_value &value)
+        inline bool operator==(long long other, const sql_value &value)
         {
             return other == value.value_;
         }
@@ -203,7 +203,7 @@ namespace arg3
             return !operator==(other, value);
         }
 
-        inline bool operator!=(int64_t other, const sql_value &value)
+        inline bool operator!=(long long other, const sql_value &value)
         {
             return !operator==(other, value);
         }

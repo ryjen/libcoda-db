@@ -113,7 +113,7 @@ namespace arg3
             }
         }
 
-        int64_t mysql_column::to_int64() const
+        long long mysql_column::to_llong() const
         {
             if (value_[index_] == NULL) return INT_DEFAULT;
 
@@ -266,7 +266,7 @@ namespace arg3
             return value_->to_int(position_, INT_DEFAULT);
         }
 
-        int64_t mysql_stmt_column::to_int64() const
+        llong mysql_stmt_column::to_llong() const
         {
             assert(value_ != nullptr);
 
@@ -431,7 +431,7 @@ namespace arg3
             return value_.to_int(INT_DEFAULT);
         }
 
-        int64_t mysql_cached_column::to_int64() const
+        long long mysql_cached_column::to_llong() const
         {
             return value_.to_int64(INT_DEFAULT);
         }

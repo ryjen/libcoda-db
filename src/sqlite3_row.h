@@ -33,8 +33,8 @@ namespace arg3
             sqlite3_row &operator=(sqlite3_row && other);
 
             string column_name(size_t nPosition) const;
-            arg3::db::column column(size_t nPosition) const;
-            arg3::db::column column(const string &name) const;
+            arg3::db::column co1umn(size_t nPosition) const;
+            arg3::db::column co1umn(const string &name) const;
             size_t size() const;
             bool is_valid() const;
         };
@@ -56,8 +56,8 @@ namespace arg3
             sqlite3_cached_row &operator=(sqlite3_cached_row && other);
 
             string column_name(size_t nPosition) const;
-            arg3::db::column column(size_t nPosition) const;
-            arg3::db::column column(const string &name) const;
+            arg3::db::column co1umn(size_t nPosition) const;
+            arg3::db::column co1umn(const string &name) const;
             size_t size() const;
             bool is_valid() const;
         };

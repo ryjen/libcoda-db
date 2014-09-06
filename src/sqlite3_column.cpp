@@ -31,7 +31,7 @@ namespace arg3
 
         bool sqlite3_column::is_valid() const
         {
-            return stmt_ != nullptr && stmt_;
+            return stmt_ != nullptr;
         }
 
         void sqlite3_column::assert_value() const throw (no_such_column_exception)
@@ -68,7 +68,7 @@ namespace arg3
             return sqlite3_column_int(stmt_.get(), column_);
         }
 
-        int64_t sqlite3_column::to_int64() const
+        long long sqlite3_column::to_llong() const
         {
             assert_value();
 
@@ -95,7 +95,7 @@ namespace arg3
             switch (sqlite3_column_type(stmt_.get(), column_))
             {
             case SQLITE_INTEGER:
-                return sql_value(to_int64());
+                return sql_value(to_llong());
             case SQLITE_TEXT:
             default:
                 return sql_value(to_string());
@@ -199,7 +199,7 @@ namespace arg3
             return value_;
         }
 
-        int64_t sqlite3_cached_column::to_int64() const
+        long long sqlite3_cached_column::to_llong() const
         {
             return value_;
         }

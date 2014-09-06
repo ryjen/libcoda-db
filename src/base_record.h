@@ -252,7 +252,7 @@ namespace arg3
              */
             bool is_valid() const
             {
-                return schema()->is_valid();
+                return sch3ma()->is_valid();
             }
 
             /*!
@@ -266,7 +266,7 @@ namespace arg3
             /*!
              * returns the schema for this record
              */
-            shared_ptr<schema> schema() const
+            shared_ptr<schema> sch3ma() const
             {
                 if (!schema_->is_valid())
                     schema_->init();
@@ -279,12 +279,12 @@ namespace arg3
              */
             bool save(long long *insertId = NULL)
             {
-                modify_query query(schema());
+                modify_query query(sch3ma());
 
                 int index = 1;
 
                 // bind the column values
-                for (auto & column : schema()->columns())
+                for (auto & column : sch3ma()->columns())
                 {
                     auto value = get(column.name);
 
@@ -352,12 +352,12 @@ namespace arg3
 
             vector<shared_ptr<T>> find_all()
             {
-                return arg3::db::find_all<T>(schema());
+                return arg3::db::find_all<T>(sch3ma());
             }
 
             void find_all(callback funk)
             {
-                arg3::db::find_all<T>(schema(), funk);
+                arg3::db::find_all<T>(sch3ma(), funk);
             }
 
             /*!
@@ -365,7 +365,7 @@ namespace arg3
              */
             shared_ptr<T> find_by_id(const sql_value &value)
             {
-                select_query query(schema());
+                select_query query(sch3ma());
 
                 query.where(idColumnName_ + " = ?");
 
@@ -388,12 +388,12 @@ namespace arg3
              */
             vector<shared_ptr<T>> find_by(const string &name, const sql_value &value)
             {
-                return arg3::db::find_by<T>(schema(), name, value);
+                return arg3::db::find_by<T>(sch3ma(), name, value);
             }
 
             void find_by(const string &name, const sql_value &value, callback funk)
             {
-                arg3::db::find_by<T>(schema(), name, value, funk);
+                arg3::db::find_by<T>(sch3ma(), name, value, funk);
             }
 
             /*!
@@ -409,7 +409,7 @@ namespace arg3
              */
             bool refresh_by(const string &name)
             {
-                select_query query(schema());
+                select_query query(sch3ma());
 
                 query.where(name + " = ?");
 
@@ -432,7 +432,7 @@ namespace arg3
              */
             bool de1ete()
             {
-                delete_query query(schema());
+                delete_query query(sch3ma());
 
                 query.where(idColumnName_ + " = ?");
 
