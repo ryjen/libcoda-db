@@ -8,6 +8,7 @@
 #include <memory>
 #include <cstdlib>
 #include <time.h>
+#include <cassert>
 
 namespace arg3
 {

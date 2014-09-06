@@ -128,7 +128,7 @@ namespace arg3
 
         base_query &base_query::bind(size_t index)
         {
-            bindings_[assert_binding_index(index)]  = sql_null;
+            bindings_[assert_binding_index(index)]  = nullptr;
 
             return *this;
         }

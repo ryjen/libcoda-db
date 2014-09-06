@@ -46,4 +46,7 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset strdup])
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
+
+AC_CONFIG_SUBDIRS([src/variant])
+
 AC_OUTPUT

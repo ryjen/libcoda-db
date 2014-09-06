@@ -119,37 +119,7 @@ namespace arg3
             return destruct_;
         }
 
-        sql_binding_visitor::sql_binding_visitor(bindable *obj, int index) : obj_(obj), index_(index)
-        {
-            assert(obj_ != NULL);
-        }
-
-        void sql_binding_visitor::operator()(int value) const
-        {
-            obj_->bind(index_, value);
-        }
-        void sql_binding_visitor::operator()(int64_t value) const
-        {
-            obj_->bind(index_, value);
-        }
-        void sql_binding_visitor::operator()(double value) const
-        {
-            obj_->bind(index_, value);
-        }
-        void sql_binding_visitor::operator()(const std::string &value) const
-        {
-            obj_->bind(index_, value);
-        }
-        void sql_binding_visitor::operator()(const sql_blob &value) const
-        {
-            obj_->bind(index_, value);
-        }
-        void sql_binding_visitor::operator()(const sql_null_type &value) const
-        {
-            obj_->bind(index_, value);
-        }
-
-        sql_value::sql_value()  : value_(sql_null)
+        sql_value::sql_value()  : value_(nullptr)
         {
         }
 
@@ -159,7 +129,7 @@ namespace arg3
 
         sql_value::sql_value( sql_value &&other) : value_(std::move(other.value_))
         {
-            other.value_ = sql_null;
+            other.value_ = nullptr;
         }
 
         sql_value &sql_value::operator=(const sql_value &other)
@@ -171,7 +141,7 @@ namespace arg3
         sql_value &sql_value::operator=(sql_value && other)
         {
             value_ = std::move(other.value_);
-            other.value_ = sql_null;
+            other.value_ = nullptr;
             return *this;
         }
 
@@ -181,28 +151,81 @@ namespace arg3
 
         string sql_value::to_string() const
         {
-            ostringstream os;
-            apply_visitor(arg3::db::ostream_sql_value_visitor(os), value_);
-            return os.str();
+            return value_.to_string();
         }
 
         void sql_value::bind_to(bindable *obj, int index) const
         {
-            apply_visitor(sql_binding_visitor(obj, index), value_);
+            if (value_.is_null())
+            {
+                obj->bind(index, sql_null);
+            }
+            else if (value_.is_numeric())
+            {
+                if (value_.is_real())
+                {
+                    obj->bind(index, value_.to_double(DOUBLE_DEFAULT));
+                }
+                else
+                {
+                    obj->bind(index, value_.to_llong(INT_DEFAULT));
+                }
+            }
+            else if (value_.is_string())
+            {
+                obj->bind(index, value_.to_string());
+            }
+            else
+            {
+                obj->bind(index, value_.to_pointer(), value_.size(), NULL);
+            }
         }
+
         bool sql_value::operator==(const sql_null_type &other) const
         {
-            return apply_visitor(sql_exists_visitor<sql_null_type>(), value_);
+            return value_.is_null();
         }
         bool sql_value::operator==(const sql_value &other) const
         {
-            return other.to_string() == to_string();
+            return other.value_ == value_;
+        }
+        bool sql_value::operator==(const int &other) const
+        {
+            return other == value_;
+        }
+        bool sql_value::operator==(const int64_t &other) const
+        {
+            return other == value_;
+        }
+        bool sql_value::operator==(const double &other) const
+        {
+            return other == value_;
+        }
+        bool sql_value::operator==(const std::string &other) const
+        {
+            return other == value_;
         }
         bool sql_value::operator!=(const sql_null_type &other) const
         {
             return !operator==(other);
         }
         bool sql_value::operator!=(const sql_value &other) const
+        {
+            return !operator==(other);
+        }
+        bool sql_value::operator!=(const int &other) const
+        {
+            return !operator==(other);
+        }
+        bool sql_value::operator!=(const int64_t &other) const
+        {
+            return !operator==(other);
+        }
+        bool sql_value::operator!=(const double &other) const
+        {
+            return !operator==(other);
+        }
+        bool sql_value::operator!=(const std::string &other) const
         {
             return !operator==(other);
         }
@@ -219,20 +242,7 @@ namespace arg3
 
         bool sql_value::to_bool(const bool def) const
         {
-            try
-            {
-                return std::stoi(to_string()) != 0;
-            }
-            catch (const std::exception &e)
-            {
-                string data = to_string();
-
-                std::transform(data.begin(), data.end(), data.begin(), std::ptr_fun<int, int>(std::tolower));
-
-                if (data == "true" || data == "yes") return true;
-
-                return def;
-            }
+            return value_.to_bool();
         }
 
         sql_value::operator int() const
@@ -242,14 +252,7 @@ namespace arg3
 
         int sql_value::to_int(const int def) const
         {
-            try
-            {
-                return std::stoi(to_string());
-            }
-            catch (const std::exception &e)
-            {
-                return def;
-            }
+            return value_.to_int(def);
         }
 
         sql_value::operator int64_t() const
@@ -259,14 +262,7 @@ namespace arg3
 
         int64_t sql_value::to_int64(const int64_t def) const
         {
-            try
-            {
-                return std::stoll(to_string());
-            }
-            catch (const std::exception &e)
-            {
-                return def;
-            }
+            return value_.to_llong(def);
         }
 
         sql_value::operator double() const
@@ -276,14 +272,7 @@ namespace arg3
 
         double sql_value::to_double(const double def) const
         {
-            try
-            {
-                return std::stod(to_string());
-            }
-            catch (const std::exception &e)
-            {
-                return def;
-            }
+            return value_.to_double(def);
         }
 
         sql_value::operator sql_blob() const
@@ -293,15 +282,12 @@ namespace arg3
 
         sql_blob sql_value::to_blob() const
         {
-            if (!apply_visitor(sql_exists_visitor<sql_blob>(), value_))
-                return sql_blob(NULL, 0, NULL);
-
-            return Juice::get<sql_blob>(value_);
+            return sql_blob(value_.to_pointer(), value_.size(), NULL);
         }
 
         std::ostream &operator<<(std::ostream &out, const sql_value &value)
         {
-            apply_visitor(ostream_sql_value_visitor(out), value.value_);
+            out << value.value_;
 
             return out;
         }
@@ -318,5 +304,7 @@ namespace arg3
 
             return out;
         }
+
+
     }
 }

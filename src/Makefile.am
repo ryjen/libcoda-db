@@ -1,4 +1,6 @@
 
+SUBDIRS = variant
+
 lib_LTLIBRARIES = libarg3db-0.5.la
 
 libarg3db_0_5_la_SOURCES = base_query.cpp column.cpp delete_query.cpp modify_query.cpp mysql_column.cpp mysql_binding.cpp mysql_db.cpp \
@@ -6,9 +8,11 @@ libarg3db_0_5_la_SOURCES = base_query.cpp column.cpp delete_query.cpp modify_que
 	sql_value.cpp sqldb.cpp sqlite3_column.cpp sqlite3_db.cpp sqlite3_resultset.cpp sqlite3_row.cpp sqlite3_statement.cpp \
 	where_clause.cpp
 
-libarg3db_0_5_la_CXXFLAGS = $(LIBARG3DB_0_5_LA_CXXFLAGS) $(COVERAGE_CFLAGS)
+libarg3db_0_5_la_CXXFLAGS = $(LIBARG3DB_0_5_LA_CXXFLAGS) $(COVERAGE_CFLAGS) -Ivariant/src
 
-pkginclude_HEADERS = base_query.h base_record.h bindable.h column.h config.h delete_query.h exception.h modify_query.h mpl.h \
+#libarg3db_0_5_la_LDFLAGS = $(LIBARG3DB_0_5_LA_LDFLAGS) ./variant/src/libarg3variant-0.1.la
+
+pkginclude_HEADERS = base_query.h base_record.h bindable.h column.h config.h delete_query.h exception.h modify_query.h \
 	mysql_binding.h mysql_column.h mysql_db.h mysql_resultset.h mysql_row.h mysql_statement.h resultset.h row.h schema.h schema_factory.h \
 	select_query.h sql_value.h sqldb.h sqlite3_column.h sqlite3_db.h sqlite3_resultset.h sqlite3_row.h sqlite3_statement.h \
-	statement.h variant.h where_clause.h
+	statement.h where_clause.h
