@@ -382,6 +382,32 @@ namespace arg3
             }
         }
 
+        mysql_cached_column::mysql_cached_column(const mysql_cached_column &other) : name_(other.name_), value_(other.value_), type_(other.type_)
+        {}
+
+        mysql_cached_column::mysql_cached_column(mysql_cached_column &&other) : name_(std::move(other.name_)), value_(std::move(other.value_)), type_(other.type_)
+        {
+            value_ = nullptr;
+        }
+        mysql_cached_column::~mysql_cached_column() {}
+
+        mysql_cached_column &mysql_cached_column::operator=(const mysql_cached_column &other)
+        {
+            name_ = other.name_;
+            value_ = other.value_;
+            type_ = other.type_;
+
+            return *this;
+        }
+        mysql_cached_column &mysql_cached_column::operator=(mysql_cached_column && other)
+        {
+            name_ = std::move(other.name_);
+            value_ = std::move(other.value_);
+            type_ = other.type_;
+
+            return *this;
+        }
+
         bool mysql_cached_column::is_valid() const
         {
             return true;

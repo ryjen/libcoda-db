@@ -109,11 +109,11 @@ namespace arg3
         public:
             mysql_cached_column(const string &name, mysql_binding &bindings, size_t position);
             mysql_cached_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
-            mysql_cached_column(const mysql_cached_column &other) = default;
-            mysql_cached_column(mysql_cached_column &&other) = default;
-            virtual ~mysql_cached_column() = default;
-            mysql_cached_column &operator=(const mysql_cached_column &other) = default;
-            mysql_cached_column &operator=(mysql_cached_column && other) = default;
+            mysql_cached_column(const mysql_cached_column &other);
+            mysql_cached_column(mysql_cached_column &&other);
+            virtual ~mysql_cached_column();
+            mysql_cached_column &operator=(const mysql_cached_column &other);
+            mysql_cached_column &operator=(mysql_cached_column && other);
 
             bool is_valid() const;
 

@@ -64,9 +64,7 @@ go_bandit([]()
         {
             auto c = get_a_column(0);
 
-            mysql_stmt_column other(*static_cast<mysql_stmt_column *>(c.get()));
-
-            AssertThat(other.is_valid(), IsTrue());
+            AssertThat(c->is_valid(), IsTrue());
 
             auto c2 = get_a_column(1);
 
