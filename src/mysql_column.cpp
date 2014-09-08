@@ -152,7 +152,7 @@ namespace arg3
             case MYSQL_TYPE_LONG:
             case MYSQL_TYPE_INT24:
             case MYSQL_TYPE_LONGLONG:
-                return to_int64();
+                return to_llong();
             case MYSQL_TYPE_DATE:
             case MYSQL_TYPE_DATETIME:
             case MYSQL_TYPE_TIMESTAMP:
@@ -266,11 +266,11 @@ namespace arg3
             return value_->to_int(position_, INT_DEFAULT);
         }
 
-        llong mysql_stmt_column::to_llong() const
+        long long mysql_stmt_column::to_llong() const
         {
             assert(value_ != nullptr);
 
-            return value_->to_int64(position_, INT_DEFAULT);
+            return value_->to_llong(position_, INT_DEFAULT);
         }
 
         sql_value mysql_stmt_column::to_value() const
@@ -433,7 +433,7 @@ namespace arg3
 
         long long mysql_cached_column::to_llong() const
         {
-            return value_.to_int64(INT_DEFAULT);
+            return value_.to_llong(INT_DEFAULT);
         }
 
         sql_value mysql_cached_column::to_value() const

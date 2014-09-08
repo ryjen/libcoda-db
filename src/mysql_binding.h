@@ -53,7 +53,7 @@ namespace arg3
 
             bool to_bool(size_t index, const bool def = BOOL_DEFAULT) const;
 
-            int64_t to_int64(size_t index, const int64_t def = INT_DEFAULT) const;
+            long long to_llong(size_t index, const long long def = INT_DEFAULT) const;
 
             std::string to_string(size_t index) const;
 

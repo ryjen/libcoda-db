@@ -87,7 +87,7 @@ namespace arg3
 
                 if (name == field->name)
                 {
-                    return column(i);
+                    return co1umn(i);
                 }
             }
             throw database_exception("unknown column '" + name + "'");
@@ -202,7 +202,7 @@ namespace arg3
 
                 if (name == field->name)
                 {
-                    return column(i);
+                    return co1umn(i);
                 }
             }
             throw database_exception("unknown column '" + name + "'");
@@ -277,7 +277,7 @@ namespace arg3
             for (int i = 0; i < columns_.size(); i++)
             {
                 if (name == column_name(i))
-                    return column(i);
+                    return co1umn(i);
             }
             throw database_exception("unknown column '" + name + "'");
         }

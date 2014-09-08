@@ -237,11 +237,11 @@ namespace arg3
             return to_value(index).to_int(def);
         }
 
-        int64_t mysql_binding::to_int64(size_t index, const int64_t def) const
+        long long mysql_binding::to_llong(size_t index, const long long def) const
         {
             assert(index < size_);
 
-            return to_value(index).to_int64(def);
+            return to_value(index).to_llong(def);
         }
 
         time_t mysql_binding::to_timestamp(size_t index, const time_t def) const
