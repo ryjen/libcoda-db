@@ -79,6 +79,16 @@ public:
 
         return buf.str();
     }
+
+    // optional overridden method to do custom initialization
+    void on_record_init(const arg3::db::row &row) {
+        set("customValue", row.co1umn("customName").to_value());
+    }   
+
+    // custom find method using the schema functions
+    vector<shared_ptr<user>> find_by_first_name(const string &value) {
+        return arg3::db::find_by<user>(sch3ma(), "first_name", value);
+    }
 };
 ```
 
@@ -98,6 +108,7 @@ Query records
         cout << "Found user: " << user->to_string() << endl;
     }
 ````
+
 Save a record
 -------------
 ```c++

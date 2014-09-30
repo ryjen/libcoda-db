@@ -241,10 +241,10 @@ namespace arg3
                     set(v.name(), v->to_value());
                 }
 
-                on_record_init();
+                on_record_init(values);
             }
 
-            virtual void on_record_init()
+            virtual void on_record_init(const row &values)
             {}
 
             /*!
