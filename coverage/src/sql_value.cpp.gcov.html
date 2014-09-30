@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-29 18:44:26</td>
+            <td class="headerValue">2014-09-30 11:52:28</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">44</td>
@@ -106,7 +106,7 @@
 <a name="36"><span class="lineNum">      36 </span><span class="lineCov">          4 :         const sql_null_type sql_null = sql_null_type::instance;</span></a>
 <span class="lineNum">      37 </span>            : 
 <span class="lineNum">      38 </span>            :         sql_blob::sql_blob(const void *ptr, size_t size, sql_blob::cleanup_method cleanup) : p_(ptr), s_(size), destruct_(cleanup)
-<a name="39"><span class="lineNum">      39 </span><span class="lineCov">        428 :         {}</span></a>
+<a name="39"><span class="lineNum">      39 </span><span class="lineCov">        452 :         {}</span></a>
 <span class="lineNum">      40 </span>            : 
 <span class="lineNum">      41 </span>            :         sql_blob::sql_blob(const void *ptr, size_t size) : p_(ptr), s_(size), destruct_(NULL)
 <a name="42"><span class="lineNum">      42 </span><span class="lineCov">         36 :         {}</span></a>
@@ -143,17 +143,17 @@
 <span class="lineNum">      73 </span>            : 
 <span class="lineNum">      74 </span>            :         void sql_blob::clear()
 <span class="lineNum">      75 </span>            :         {
-<span class="lineNum">      76 </span><span class="lineCov">        454 :             if (p_ != NULL &amp;&amp; destruct_ != NULL)</span>
+<span class="lineNum">      76 </span><span class="lineCov">        478 :             if (p_ != NULL &amp;&amp; destruct_ != NULL)</span>
 <span class="lineNum">      77 </span>            :             {
-<span class="lineNum">      78 </span><span class="lineCov">        129 :                 destruct_(const_cast&lt;void *&gt;(p_));</span>
-<span class="lineNum">      79 </span><span class="lineCov">        129 :                 p_ = NULL;</span>
-<span class="lineNum">      80 </span><span class="lineCov">        129 :             }</span>
-<a name="81"><span class="lineNum">      81 </span><span class="lineCov">        236 :         }</span></a>
+<span class="lineNum">      78 </span><span class="lineCov">        141 :                 destruct_(const_cast&lt;void *&gt;(p_));</span>
+<span class="lineNum">      79 </span><span class="lineCov">        141 :                 p_ = NULL;</span>
+<span class="lineNum">      80 </span><span class="lineCov">        141 :             }</span>
+<a name="81"><span class="lineNum">      81 </span><span class="lineCov">        248 :         }</span></a>
 <span class="lineNum">      82 </span>            : 
 <span class="lineNum">      83 </span>            :         sql_blob::~sql_blob()
-<span class="lineNum">      84 </span><span class="lineCov">        472 :         {</span>
-<span class="lineNum">      85 </span><span class="lineCov">        236 :             clear();</span>
-<a name="86"><span class="lineNum">      86 </span><span class="lineCov">        472 :         }</span></a>
+<span class="lineNum">      84 </span><span class="lineCov">        496 :         {</span>
+<span class="lineNum">      85 </span><span class="lineCov">        248 :             clear();</span>
+<a name="86"><span class="lineNum">      86 </span><span class="lineCov">        496 :         }</span></a>
 <span class="lineNum">      87 </span>            : 
 <span class="lineNum">      88 </span>            :         void sql_blob::copy(const sql_blob &amp;other)
 <span class="lineNum">      89 </span>            :         {
@@ -170,11 +170,11 @@
 <span class="lineNum">     100 </span>            : 
 <span class="lineNum">     101 </span>            :         const void *sql_blob::ptr() const
 <span class="lineNum">     102 </span>            :         {
-<a name="103"><span class="lineNum">     103 </span><span class="lineCov">        249 :             return p_;</span></a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineCov">        261 :             return p_;</span></a>
 <span class="lineNum">     104 </span>            :         }
 <span class="lineNum">     105 </span>            :         size_t sql_blob::size() const
 <span class="lineNum">     106 </span>            :         {
-<span class="lineNum">     107 </span><span class="lineCov">        236 :             return s_;</span>
+<span class="lineNum">     107 </span><span class="lineCov">        248 :             return s_;</span>
 <a name="108"><span class="lineNum">     108 </span>            :         }</a>
 <span class="lineNum">     109 </span>            : 
 <span class="lineNum">     110 </span>            :         string sql_blob::to_string() const
@@ -193,12 +193,12 @@
 <a name="123"><span class="lineNum">     123 </span>            :         }</a>
 <span class="lineNum">     124 </span>            : 
 <span class="lineNum">     125 </span>            :         sql_value::sql_value()  : value_(nullptr)
-<span class="lineNum">     126 </span><span class="lineCov">       3135 :         {</span>
-<a name="127"><span class="lineNum">     127 </span><span class="lineCov">       6270 :         }</span></a>
+<span class="lineNum">     126 </span><span class="lineCov">       3341 :         {</span>
+<a name="127"><span class="lineNum">     127 </span><span class="lineCov">       6682 :         }</span></a>
 <span class="lineNum">     128 </span>            : 
 <span class="lineNum">     129 </span>            :         sql_value::sql_value(const sql_value &amp;other) : value_(other.value_)
-<span class="lineNum">     130 </span><span class="lineCov">       3829 :         {</span>
-<a name="131"><span class="lineNum">     131 </span><span class="lineCov">       7658 :         }</span></a>
+<span class="lineNum">     130 </span><span class="lineCov">       4081 :         {</span>
+<a name="131"><span class="lineNum">     131 </span><span class="lineCov">       8162 :         }</span></a>
 <span class="lineNum">     132 </span>            : 
 <span class="lineNum">     133 </span><span class="lineCov">          5 :         sql_value::sql_value( sql_value &amp;&amp;other) : value_(std::move(other.value_))</span>
 <span class="lineNum">     134 </span><span class="lineCov">         10 :         {</span>
@@ -207,52 +207,52 @@
 <span class="lineNum">     137 </span>            : 
 <span class="lineNum">     138 </span>            :         sql_value &amp;sql_value::operator=(const sql_value &amp;other)
 <span class="lineNum">     139 </span>            :         {
-<span class="lineNum">     140 </span><span class="lineCov">       1501 :             value_ = other.value_;</span>
-<span class="lineNum">     141 </span><span class="lineCov">       1501 :             return *this;</span>
+<span class="lineNum">     140 </span><span class="lineCov">       1609 :             value_ = other.value_;</span>
+<span class="lineNum">     141 </span><span class="lineCov">       1609 :             return *this;</span>
 <a name="142"><span class="lineNum">     142 </span>            :         }</a>
 <span class="lineNum">     143 </span>            : 
 <span class="lineNum">     144 </span>            :         sql_value &amp;sql_value::operator=(sql_value &amp;&amp; other)
 <span class="lineNum">     145 </span>            :         {
-<span class="lineNum">     146 </span><span class="lineCov">       2145 :             value_ = std::move(other.value_);</span>
-<span class="lineNum">     147 </span><span class="lineCov">       4290 :             other.value_ = nullptr;</span>
-<span class="lineNum">     148 </span><span class="lineCov">       2145 :             return *this;</span>
+<span class="lineNum">     146 </span><span class="lineCov">       2267 :             value_ = std::move(other.value_);</span>
+<span class="lineNum">     147 </span><span class="lineCov">       4534 :             other.value_ = nullptr;</span>
+<span class="lineNum">     148 </span><span class="lineCov">       2267 :             return *this;</span>
 <a name="149"><span class="lineNum">     149 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">     150 </span>            : 
 <span class="lineNum">     151 </span>            :         sql_value::~sql_value()
-<span class="lineNum">     152 </span><span class="lineCov">      11588 :         {</span>
-<a name="153"><span class="lineNum">     153 </span><span class="lineCov">      23176 :         }</span></a>
+<span class="lineNum">     152 </span><span class="lineCov">      12375 :         {</span>
+<a name="153"><span class="lineNum">     153 </span><span class="lineCov">      24750 :         }</span></a>
 <span class="lineNum">     154 </span>            : 
 <span class="lineNum">     155 </span>            :         string sql_value::to_string() const
 <span class="lineNum">     156 </span>            :         {
-<span class="lineNum">     157 </span><span class="lineCov">         47 :             return value_.to_string();</span>
+<span class="lineNum">     157 </span><span class="lineCov">         51 :             return value_.to_string();</span>
 <a name="158"><span class="lineNum">     158 </span>            :         }</a>
 <span class="lineNum">     159 </span>            : 
 <span class="lineNum">     160 </span>            :         void sql_value::bind_to(bindable *obj, int index) const
 <span class="lineNum">     161 </span>            :         {
-<span class="lineNum">     162 </span><span class="lineCov">       3858 :             if (value_.is_null())</span>
+<span class="lineNum">     162 </span><span class="lineCov">       4098 :             if (value_.is_null())</span>
 <span class="lineNum">     163 </span>            :             {
-<span class="lineNum">     164 </span><span class="lineCov">       1216 :                 obj-&gt;bind(index, sql_null);</span>
-<span class="lineNum">     165 </span><span class="lineCov">       1216 :             }</span>
-<span class="lineNum">     166 </span><span class="lineCov">       2642 :             else if (value_.is_numeric())</span>
+<span class="lineNum">     164 </span><span class="lineCov">       1288 :                 obj-&gt;bind(index, sql_null);</span>
+<span class="lineNum">     165 </span><span class="lineCov">       1288 :             }</span>
+<span class="lineNum">     166 </span><span class="lineCov">       2810 :             else if (value_.is_numeric())</span>
 <span class="lineNum">     167 </span>            :             {
-<span class="lineNum">     168 </span><span class="lineCov">       1054 :                 if (value_.is_real())</span>
+<span class="lineNum">     168 </span><span class="lineCov">       1126 :                 if (value_.is_real())</span>
 <span class="lineNum">     169 </span>            :                 {
-<span class="lineNum">     170 </span><span class="lineCov">        148 :                     obj-&gt;bind(index, value_.to_double(DOUBLE_DEFAULT));</span>
-<span class="lineNum">     171 </span><span class="lineCov">        148 :                 }</span>
+<span class="lineNum">     170 </span><span class="lineCov">        172 :                     obj-&gt;bind(index, value_.to_double(DOUBLE_DEFAULT));</span>
+<span class="lineNum">     171 </span><span class="lineCov">        172 :                 }</span>
 <span class="lineNum">     172 </span>            :                 else
 <span class="lineNum">     173 </span>            :                 {
-<span class="lineNum">     174 </span><span class="lineCov">        906 :                     obj-&gt;bind(index, value_.to_llong(INT_DEFAULT));</span>
+<span class="lineNum">     174 </span><span class="lineCov">        954 :                     obj-&gt;bind(index, value_.to_llong(INT_DEFAULT));</span>
 <span class="lineNum">     175 </span>            :                 }
-<span class="lineNum">     176 </span><span class="lineCov">       1052 :             }</span>
-<span class="lineNum">     177 </span><span class="lineCov">       1588 :             else if (value_.is_string())</span>
+<span class="lineNum">     176 </span><span class="lineCov">       1124 :             }</span>
+<span class="lineNum">     177 </span><span class="lineCov">       1684 :             else if (value_.is_string())</span>
 <span class="lineNum">     178 </span>            :             {
-<span class="lineNum">     179 </span><span class="lineCov">       2904 :                 obj-&gt;bind(index, value_.to_string());</span>
-<span class="lineNum">     180 </span><span class="lineCov">       1452 :             }</span>
+<span class="lineNum">     179 </span><span class="lineCov">       3096 :                 obj-&gt;bind(index, value_.to_string());</span>
+<span class="lineNum">     180 </span><span class="lineCov">       1548 :             }</span>
 <span class="lineNum">     181 </span>            :             else
 <span class="lineNum">     182 </span>            :             {
 <span class="lineNum">     183 </span><span class="lineCov">        136 :                 obj-&gt;bind(index, value_.to_pointer(), value_.size(), NULL);</span>
 <span class="lineNum">     184 </span>            :             }
-<a name="185"><span class="lineNum">     185 </span><span class="lineCov">       3856 :         }</span></a>
+<a name="185"><span class="lineNum">     185 </span><span class="lineCov">       4096 :         }</span></a>
 <span class="lineNum">     186 </span>            : 
 <span class="lineNum">     187 </span>            :         bool sql_value::operator==(const sql_null_type &amp;other) const
 <span class="lineNum">     188 </span>            :         {
@@ -305,7 +305,7 @@
 <span class="lineNum">     235 </span>            : 
 <span class="lineNum">     236 </span>            :         sql_value::operator std::string() const
 <span class="lineNum">     237 </span>            :         {
-<span class="lineNum">     238 </span><span class="lineCov">         28 :             return to_string();</span>
+<span class="lineNum">     238 </span><span class="lineCov">         31 :             return to_string();</span>
 <a name="239"><span class="lineNum">     239 </span>            :         }</a>
 <span class="lineNum">     240 </span>            : 
 <span class="lineNum">     241 </span>            :         sql_value::operator bool() const

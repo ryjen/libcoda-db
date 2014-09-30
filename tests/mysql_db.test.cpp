@@ -26,9 +26,9 @@ go_bandit([]()
         });
         after_each([]()
         {
-            if (mysql_testdb.is_open())
-                mysql_testdb.teardown();
+            mysql_testdb.teardown();
         });
+
         it("is copyable", []()
         {
             mysql_db db(mysql_testdb);

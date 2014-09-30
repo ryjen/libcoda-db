@@ -130,10 +130,10 @@ namespace arg3
                 size_ = mysql_num_fields(metadata_.get());
         }
 
-        mysql_stmt_row::mysql_stmt_row(const mysql_stmt_row &other) : row_impl(other), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_)
+        mysql_stmt_row::mysql_stmt_row(const mysql_stmt_row &other) : row_impl(other), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_), size_(other.size_)
         {}
 
-        mysql_stmt_row::mysql_stmt_row(mysql_stmt_row &&other) : row_impl(std::move(other)), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_)
+        mysql_stmt_row::mysql_stmt_row(mysql_stmt_row &&other) : row_impl(std::move(other)), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_), size_(other.size_)
         {
             other.fields_ = nullptr;
             other.db_ = NULL;
@@ -265,7 +265,10 @@ namespace arg3
 
         column mysql_cached_row::co1umn(size_t nPosition) const
         {
-            assert(nPosition < size());
+            if (nPosition >= columns_.size())
+            {
+                throw database_exception("invalid index for row column");
+            }
 
             return arg3::db::column(columns_[nPosition]);
         }
@@ -284,8 +287,10 @@ namespace arg3
 
         string mysql_cached_row::column_name(size_t nPosition) const
         {
-            assert(nPosition < size());
-
+            if (nPosition >= columns_.size())
+            {
+                throw database_exception("invalid index for row column");
+            }
             return columns_[nPosition]->name();
         }
 

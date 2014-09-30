@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-29 18:44:26</td>
+            <td class="headerValue">2014-09-30 11:52:28</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">145</td>
@@ -85,7 +85,7 @@
 <span class="lineNum">      15 </span>            : 
 <span class="lineNum">      16 </span>            :     variant::variant(const nullptr_t &amp;null) :
 <span class="lineNum">      17 </span>            :         type_(NULLTYPE), refcount_(NULL), size_(0), value_(nullptr)
-<a name="18"><span class="lineNum">      18 </span><span class="lineCov">      11808 :     {}</span></a>
+<a name="18"><span class="lineNum">      18 </span><span class="lineCov">      12536 :     {}</span></a>
 <span class="lineNum">      19 </span>            : 
 <span class="lineNum">      20 </span>            :     variant::variant(bool value) : type_(BOOL), refcount_(NULL), size_(sizeof(bool)), value_(value)
 <a name="21"><span class="lineNum">      21 </span><span class="lineCov">          4 :     {}</span></a>
@@ -112,7 +112,7 @@
 <span class="lineNum">      42 </span>            : 
 <span class="lineNum">      43 </span>            :     variant::variant(int i) :
 <span class="lineNum">      44 </span>            :         type_(NUMBER), refcount_(NULL), size_(sizeof(i)), value_(i)
-<a name="45"><span class="lineNum">      45 </span><span class="lineCov">        544 :     {}</span></a>
+<a name="45"><span class="lineNum">      45 </span><span class="lineCov">        618 :     {}</span></a>
 <span class="lineNum">      46 </span>            : 
 <span class="lineNum">      47 </span>            :     variant::variant(unsigned ui) :
 <span class="lineNum">      48 </span>            :         type_(UNUMBER), refcount_(NULL), size_(sizeof(ui)), value_(ui)
@@ -132,7 +132,7 @@
 <span class="lineNum">      62 </span>            : 
 <span class="lineNum">      63 </span>            :     variant::variant(double d) :
 <span class="lineNum">      64 </span>            :         type_(DOUBLE), refcount_(NULL), size_(sizeof(d)), value_(d)
-<a name="65"><span class="lineNum">      65 </span><span class="lineCov">        488 :     {}</span></a>
+<a name="65"><span class="lineNum">      65 </span><span class="lineCov">        560 :     {}</span></a>
 <span class="lineNum">      66 </span>            : 
 <span class="lineNum">      67 </span>            :     variant::variant(long double ld) :
 <span class="lineNum">      68 </span>            :         type_(DOUBLE), refcount_(NULL), size_(sizeof(ld)), value_(ld)
@@ -140,15 +140,15 @@
 <span class="lineNum">      70 </span>            : 
 <span class="lineNum">      71 </span>            :     variant::variant(long long ll) :
 <span class="lineNum">      72 </span>            :         type_(NUMBER), refcount_(NULL), size_(sizeof(ll)), value_(ll)
-<a name="73"><span class="lineNum">      73 </span><span class="lineCov">       1732 :     {}</span></a>
+<a name="73"><span class="lineNum">      73 </span><span class="lineCov">       1830 :     {}</span></a>
 <span class="lineNum">      74 </span>            : 
 <span class="lineNum">      75 </span>            :     variant::variant(unsigned long long ull) :
 <span class="lineNum">      76 </span>            :         type_(UNUMBER), refcount_(NULL), size_(sizeof(ull)), value_(ull)
 <a name="77"><span class="lineNum">      77 </span><span class="lineCov">          6 :     {}</span></a>
 <span class="lineNum">      78 </span>            : 
 <span class="lineNum">      79 </span>            :     variant::variant(const void *p, size_t psize) : type_(NULLTYPE), refcount_(NULL), size_(0), value_(nullptr)
-<span class="lineNum">      80 </span><span class="lineCov">        229 :     {</span>
-<span class="lineNum">      81 </span><span class="lineCov">        458 :         if (p &amp;&amp; psize &gt; 0)</span>
+<span class="lineNum">      80 </span><span class="lineCov">        241 :     {</span>
+<span class="lineNum">      81 </span><span class="lineCov">        482 :         if (p &amp;&amp; psize &gt; 0)</span>
 <span class="lineNum">      82 </span>            :         {
 <span class="lineNum">      83 </span><span class="lineCov">        183 :             type_ = POINTER;</span>
 <span class="lineNum">      84 </span>            : 
@@ -160,19 +160,19 @@
 <span class="lineNum">      90 </span>            : 
 <span class="lineNum">      91 </span><span class="lineCov">        183 :             refcount_ = new unsigned(0);</span>
 <span class="lineNum">      92 </span><span class="lineCov">        183 :         }</span>
-<a name="93"><span class="lineNum">      93 </span><span class="lineCov">        458 :     }</span></a>
+<a name="93"><span class="lineNum">      93 </span><span class="lineCov">        482 :     }</span></a>
 <span class="lineNum">      94 </span>            : 
 <span class="lineNum">      95 </span>            :     variant::variant(const char *str) : type_(NULLTYPE), refcount_(NULL), size_(0), value_(nullptr)
-<span class="lineNum">      96 </span><span class="lineCov">       1548 :     {</span>
-<span class="lineNum">      97 </span><span class="lineCov">       1548 :         if (str)</span>
+<span class="lineNum">      96 </span><span class="lineCov">       1659 :     {</span>
+<span class="lineNum">      97 </span><span class="lineCov">       1659 :         if (str)</span>
 <span class="lineNum">      98 </span>            :         {
 <span class="lineNum">      99 </span>            :             // for strings we initialize refcount and make a copy of the cstring
-<span class="lineNum">     100 </span><span class="lineCov">        939 :             type_ = STRING;</span>
-<span class="lineNum">     101 </span><span class="lineCov">        939 :             refcount_ = new unsigned(0);</span>
-<span class="lineNum">     102 </span><span class="lineCov">        939 :             size_ = strlen(str);</span>
-<span class="lineNum">     103 </span><span class="lineCov">        939 :             value_ = strdup(str);</span>
-<span class="lineNum">     104 </span><span class="lineCov">        939 :         }</span>
-<a name="105"><span class="lineNum">     105 </span><span class="lineCov">       3096 :     }</span></a>
+<span class="lineNum">     100 </span><span class="lineCov">       1014 :             type_ = STRING;</span>
+<span class="lineNum">     101 </span><span class="lineCov">       1014 :             refcount_ = new unsigned(0);</span>
+<span class="lineNum">     102 </span><span class="lineCov">       1014 :             size_ = strlen(str);</span>
+<span class="lineNum">     103 </span><span class="lineCov">       1014 :             value_ = strdup(str);</span>
+<span class="lineNum">     104 </span><span class="lineCov">       1014 :         }</span>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov">       3318 :     }</span></a>
 <span class="lineNum">     106 </span>            : 
 <span class="lineNum">     107 </span>            :     variant::variant(const wchar_t *str) : type_(NULLTYPE), refcount_(NULL), size_(0), value_(nullptr)
 <span class="lineNum">     108 </span><span class="lineCov">         19 :     {</span>
@@ -186,8 +186,8 @@
 <a name="116"><span class="lineNum">     116 </span><span class="lineCov">         38 :     }</span></a>
 <span class="lineNum">     117 </span>            : 
 <span class="lineNum">     118 </span>            :     variant::variant(const string &amp;str) :
-<span class="lineNum">     119 </span><span class="lineCov">        909 :         type_(STRING), refcount_(new unsigned(0)), size_(str.length()), value_(strdup(str.c_str()))</span>
-<a name="120"><span class="lineNum">     120 </span><span class="lineCov">       2727 :     {}</span></a>
+<span class="lineNum">     119 </span><span class="lineCov">        957 :         type_(STRING), refcount_(new unsigned(0)), size_(str.length()), value_(strdup(str.c_str()))</span>
+<a name="120"><span class="lineNum">     120 </span><span class="lineCov">       2871 :     {}</span></a>
 <span class="lineNum">     121 </span>            : 
 <span class="lineNum">     122 </span>            :     variant::variant(const wstring &amp;str) :
 <span class="lineNum">     123 </span><span class="lineCov">          3 :         type_(WSTRING), refcount_(new unsigned(0)), size_(str.length()), value_(wcsdup(str.c_str()))</span>
@@ -197,11 +197,11 @@
 <span class="lineNum">     127 </span>            :     // copy constructor
 <span class="lineNum">     128 </span>            :     variant::variant(const variant &amp;other) :
 <span class="lineNum">     129 </span>            :         type_(other.type_), refcount_(other.refcount_), size_(other.size_), value_(other.value_)
-<span class="lineNum">     130 </span><span class="lineCov">       3834 :     {</span>
+<span class="lineNum">     130 </span><span class="lineCov">       4086 :     {</span>
 <span class="lineNum">     131 </span>            :         // update refcount
-<span class="lineNum">     132 </span><span class="lineCov">       3834 :         if (refcount_)</span>
-<span class="lineNum">     133 </span><span class="lineCov">       1869 :             (*refcount_)++;</span>
-<a name="134"><span class="lineNum">     134 </span><span class="lineCov">       7668 :     }</span></a>
+<span class="lineNum">     132 </span><span class="lineCov">       4086 :         if (refcount_)</span>
+<span class="lineNum">     133 </span><span class="lineCov">       1989 :             (*refcount_)++;</span>
+<a name="134"><span class="lineNum">     134 </span><span class="lineCov">       8172 :     }</span></a>
 <span class="lineNum">     135 </span>            : 
 <span class="lineNum">     136 </span>            :     variant::variant(variant &amp;&amp;other) : type_(other.type_), refcount_(other.refcount_), size_(other.size_), value_(other.value_)
 <span class="lineNum">     137 </span><span class="lineCov">          6 :     {</span>
@@ -213,62 +213,62 @@
 <span class="lineNum">     143 </span>            : 
 <span class="lineNum">     144 </span>            :     variant &amp;variant::operator=(const variant &amp;other)
 <span class="lineNum">     145 </span>            :     {
-<span class="lineNum">     146 </span><span class="lineCov">       1502 :         type_ = other.type_;</span>
+<span class="lineNum">     146 </span><span class="lineCov">       1610 :         type_ = other.type_;</span>
 <span class="lineNum">     147 </span>            : 
-<span class="lineNum">     148 </span><span class="lineCov">       1502 :         value_ = other.value_;</span>
+<span class="lineNum">     148 </span><span class="lineCov">       1610 :         value_ = other.value_;</span>
 <span class="lineNum">     149 </span>            : 
-<span class="lineNum">     150 </span><span class="lineCov">       1502 :         size_ = other.size_;</span>
+<span class="lineNum">     150 </span><span class="lineCov">       1610 :         size_ = other.size_;</span>
 <span class="lineNum">     151 </span>            : 
-<span class="lineNum">     152 </span><span class="lineCov">       1502 :         if (refcount_ != other.refcount_)</span>
+<span class="lineNum">     152 </span><span class="lineCov">       1610 :         if (refcount_ != other.refcount_)</span>
 <span class="lineNum">     153 </span>            :         {
-<span class="lineNum">     154 </span><span class="lineCov">        844 :             refcount_ = other.refcount_;</span>
+<span class="lineNum">     154 </span><span class="lineCov">        892 :             refcount_ = other.refcount_;</span>
 <span class="lineNum">     155 </span>            : 
 <span class="lineNum">     156 </span>            :             // update refcount
-<span class="lineNum">     157 </span><span class="lineCov">        844 :             if (refcount_)</span>
-<span class="lineNum">     158 </span><span class="lineCov">        844 :                 (*refcount_)++;</span>
-<span class="lineNum">     159 </span><span class="lineCov">        844 :         }</span>
-<span class="lineNum">     160 </span><span class="lineCov">       1502 :         return *this;</span>
+<span class="lineNum">     157 </span><span class="lineCov">        892 :             if (refcount_)</span>
+<span class="lineNum">     158 </span><span class="lineCov">        892 :                 (*refcount_)++;</span>
+<span class="lineNum">     159 </span><span class="lineCov">        892 :         }</span>
+<span class="lineNum">     160 </span><span class="lineCov">       1610 :         return *this;</span>
 <a name="161"><span class="lineNum">     161 </span>            :     }</a>
 <span class="lineNum">     162 </span>            : 
 <span class="lineNum">     163 </span>            :     variant &amp;variant::operator=(variant &amp;&amp; other)
 <span class="lineNum">     164 </span>            :     {
-<span class="lineNum">     165 </span><span class="lineCov">       4353 :         type_ = other.type_;</span>
-<span class="lineNum">     166 </span><span class="lineCov">       4353 :         value_ = other.value_;</span>
-<span class="lineNum">     167 </span><span class="lineCov">       4353 :         refcount_ = other.refcount_;</span>
-<span class="lineNum">     168 </span><span class="lineCov">       4353 :         size_ = other.size_;</span>
-<span class="lineNum">     169 </span><span class="lineCov">       4353 :         other.refcount_ = NULL;</span>
-<span class="lineNum">     170 </span><span class="lineCov">       4353 :         other.value_.p = NULL;</span>
-<span class="lineNum">     171 </span><span class="lineCov">       4353 :         other.type_ = NULLTYPE;</span>
-<span class="lineNum">     172 </span><span class="lineCov">       4353 :         other.size_ = 0;</span>
+<span class="lineNum">     165 </span><span class="lineCov">       4597 :         type_ = other.type_;</span>
+<span class="lineNum">     166 </span><span class="lineCov">       4597 :         value_ = other.value_;</span>
+<span class="lineNum">     167 </span><span class="lineCov">       4597 :         refcount_ = other.refcount_;</span>
+<span class="lineNum">     168 </span><span class="lineCov">       4597 :         size_ = other.size_;</span>
+<span class="lineNum">     169 </span><span class="lineCov">       4597 :         other.refcount_ = NULL;</span>
+<span class="lineNum">     170 </span><span class="lineCov">       4597 :         other.value_.p = NULL;</span>
+<span class="lineNum">     171 </span><span class="lineCov">       4597 :         other.type_ = NULLTYPE;</span>
+<span class="lineNum">     172 </span><span class="lineCov">       4597 :         other.size_ = 0;</span>
 <span class="lineNum">     173 </span>            : 
-<span class="lineNum">     174 </span><span class="lineCov">       4353 :         return *this;</span>
+<span class="lineNum">     174 </span><span class="lineCov">       4597 :         return *this;</span>
 <a name="175"><span class="lineNum">     175 </span>            :     }</a>
 <span class="lineNum">     176 </span>            : 
 <span class="lineNum">     177 </span>            :     variant::~variant()
-<span class="lineNum">     178 </span><span class="lineCov">      27730 :     {</span>
+<span class="lineNum">     178 </span><span class="lineCov">      29548 :     {</span>
 <span class="lineNum">     179 </span>            :         // check refcounts to free a pointer.
 <span class="lineNum">     180 </span>            :         // anything with a refcount needs to be freed eventually
-<span class="lineNum">     181 </span><span class="lineCov">      13865 :         if (refcount_)</span>
+<span class="lineNum">     181 </span><span class="lineCov">      14774 :         if (refcount_)</span>
 <span class="lineNum">     182 </span>            :         {
 <span class="lineNum">     183 </span>            :             // no references except this one
-<span class="lineNum">     184 </span><span class="lineCov">       4442 :             if (*refcount_ == 0)</span>
+<span class="lineNum">     184 </span><span class="lineCov">       4733 :             if (*refcount_ == 0)</span>
 <span class="lineNum">     185 </span>            :             {
-<span class="lineNum">     186 </span><span class="lineCov">       1729 :                 if (value_.p)</span>
+<span class="lineNum">     186 </span><span class="lineCov">       1852 :                 if (value_.p)</span>
 <span class="lineNum">     187 </span>            :                 {
-<span class="lineNum">     188 </span><span class="lineCov">       1729 :                     free(value_.p);</span>
-<span class="lineNum">     189 </span><span class="lineCov">       1729 :                     value_.p = NULL;</span>
-<span class="lineNum">     190 </span><span class="lineCov">       1729 :                 }</span>
-<span class="lineNum">     191 </span><span class="lineCov">       3458 :                 delete refcount_;</span>
-<span class="lineNum">     192 </span><span class="lineCov">       1729 :                 refcount_ = NULL;</span>
-<span class="lineNum">     193 </span><span class="lineCov">       1729 :             }</span>
+<span class="lineNum">     188 </span><span class="lineCov">       1852 :                     free(value_.p);</span>
+<span class="lineNum">     189 </span><span class="lineCov">       1852 :                     value_.p = NULL;</span>
+<span class="lineNum">     190 </span><span class="lineCov">       1852 :                 }</span>
+<span class="lineNum">     191 </span><span class="lineCov">       3704 :                 delete refcount_;</span>
+<span class="lineNum">     192 </span><span class="lineCov">       1852 :                 refcount_ = NULL;</span>
+<span class="lineNum">     193 </span><span class="lineCov">       1852 :             }</span>
 <span class="lineNum">     194 </span>            :             // decrement reference count
 <span class="lineNum">     195 </span>            :             else
 <span class="lineNum">     196 </span>            :             {
-<span class="lineNum">     197 </span><span class="lineCov">       2713 :                 (*refcount_)--;</span>
+<span class="lineNum">     197 </span><span class="lineCov">       2881 :                 (*refcount_)--;</span>
 <span class="lineNum">     198 </span>            :             }
-<span class="lineNum">     199 </span><span class="lineCov">       4442 :         }</span>
+<span class="lineNum">     199 </span><span class="lineCov">       4733 :         }</span>
 <span class="lineNum">     200 </span>            : 
-<a name="201"><span class="lineNum">     201 </span><span class="lineCov">      27730 :     }</span></a>
+<a name="201"><span class="lineNum">     201 </span><span class="lineCov">      29548 :     }</span></a>
 <span class="lineNum">     202 </span>            : 
 <span class="lineNum">     203 </span>            :     size_t variant::size() const
 <span class="lineNum">     204 </span>            :     {
@@ -536,14 +536,14 @@
 <span class="lineNum">     466 </span>            : 
 <span class="lineNum">     467 </span>            :     bool variant::is_string() const
 <span class="lineNum">     468 </span>            :     {
-<span class="lineNum">     469 </span><span class="lineCov">       1664 :         switch (type_)</span>
+<span class="lineNum">     469 </span><span class="lineCov">       1760 :         switch (type_)</span>
 <span class="lineNum">     470 </span>            :         {
 <span class="lineNum">     471 </span>            :         case STRING:
-<span class="lineNum">     472 </span><span class="lineCov">       1505 :             return true;</span>
+<span class="lineNum">     472 </span><span class="lineCov">       1601 :             return true;</span>
 <span class="lineNum">     473 </span>            :         default:
 <span class="lineNum">     474 </span><span class="lineCov">        159 :             return false;</span>
 <span class="lineNum">     475 </span>            :         }
-<a name="476"><span class="lineNum">     476 </span><span class="lineCov">       1664 :     }</span></a>
+<a name="476"><span class="lineNum">     476 </span><span class="lineCov">       1760 :     }</span></a>
 <span class="lineNum">     477 </span>            : 
 <span class="lineNum">     478 </span>            :     bool variant::is_wstring() const
 <span class="lineNum">     479 </span>            :     {
@@ -558,7 +558,7 @@
 <span class="lineNum">     488 </span>            : 
 <span class="lineNum">     489 </span>            :     bool variant::is_numeric() const
 <span class="lineNum">     490 </span>            :     {
-<span class="lineNum">     491 </span><span class="lineCov">       4009 :         switch (type_)</span>
+<span class="lineNum">     491 </span><span class="lineCov">       4249 :         switch (type_)</span>
 <span class="lineNum">     492 </span>            :         {
 <span class="lineNum">     493 </span>            :         case NUMBER:
 <span class="lineNum">     494 </span>            :         case UNUMBER:
@@ -566,37 +566,37 @@
 <span class="lineNum">     496 </span>            :         case WCHAR:
 <span class="lineNum">     497 </span>            :         case BOOL:
 <span class="lineNum">     498 </span>            :         case DOUBLE:
-<span class="lineNum">     499 </span><span class="lineCov">       2204 :             return true;</span>
+<span class="lineNum">     499 </span><span class="lineCov">       2348 :             return true;</span>
 <span class="lineNum">     500 </span>            :         default:
-<span class="lineNum">     501 </span><span class="lineCov">       1805 :             return false;</span>
+<span class="lineNum">     501 </span><span class="lineCov">       1901 :             return false;</span>
 <span class="lineNum">     502 </span>            :         }
-<a name="503"><span class="lineNum">     503 </span><span class="lineCov">       4009 :     }</span></a>
+<a name="503"><span class="lineNum">     503 </span><span class="lineCov">       4249 :     }</span></a>
 <span class="lineNum">     504 </span>            : 
 <span class="lineNum">     505 </span>            :     bool variant::is_real() const
 <span class="lineNum">     506 </span>            :     {
-<span class="lineNum">     507 </span><span class="lineCov">       1130 :         switch (type_)</span>
+<span class="lineNum">     507 </span><span class="lineCov">       1202 :         switch (type_)</span>
 <span class="lineNum">     508 </span>            :         {
 <span class="lineNum">     509 </span>            :         case DOUBLE:
-<span class="lineNum">     510 </span><span class="lineCov">        150 :             return true;</span>
+<span class="lineNum">     510 </span><span class="lineCov">        174 :             return true;</span>
 <span class="lineNum">     511 </span>            :         default:
-<span class="lineNum">     512 </span><span class="lineCov">        980 :             return false;</span>
+<span class="lineNum">     512 </span><span class="lineCov">       1028 :             return false;</span>
 <span class="lineNum">     513 </span>            :         }
-<a name="514"><span class="lineNum">     514 </span><span class="lineCov">       1130 :     }</span></a>
+<a name="514"><span class="lineNum">     514 </span><span class="lineCov">       1202 :     }</span></a>
 <span class="lineNum">     515 </span>            : 
 <span class="lineNum">     516 </span>            :     bool variant::is_null() const
 <span class="lineNum">     517 </span>            :     {
-<span class="lineNum">     518 </span><span class="lineCov">       3870 :         switch (type_)</span>
+<span class="lineNum">     518 </span><span class="lineCov">       4110 :         switch (type_)</span>
 <span class="lineNum">     519 </span>            :         {
 <span class="lineNum">     520 </span>            :         case NULLTYPE:
-<span class="lineNum">     521 </span><span class="lineCov">       1226 :             return true;</span>
+<span class="lineNum">     521 </span><span class="lineCov">       1298 :             return true;</span>
 <span class="lineNum">     522 </span>            :         case STRING:
 <span class="lineNum">     523 </span>            :         case WSTRING:
 <span class="lineNum">     524 </span>            :         case POINTER:
-<span class="lineNum">     525 </span><span class="lineCov">       1589 :             return value_.p == NULL;</span>
+<span class="lineNum">     525 </span><span class="lineCov">       1685 :             return value_.p == NULL;</span>
 <span class="lineNum">     526 </span>            :         default:
-<span class="lineNum">     527 </span><span class="lineCov">       1055 :             return false;</span>
+<span class="lineNum">     527 </span><span class="lineCov">       1127 :             return false;</span>
 <span class="lineNum">     528 </span>            :         }
-<a name="529"><span class="lineNum">     529 </span><span class="lineCov">       3870 :     }</span></a>
+<a name="529"><span class="lineNum">     529 </span><span class="lineCov">       4110 :     }</span></a>
 <span class="lineNum">     530 </span>            : 
 <span class="lineNum">     531 </span>            :     const void *variant::to_pointer() const
 <span class="lineNum">     532 </span>            :     {
@@ -617,11 +617,11 @@
 <span class="lineNum">     547 </span><span class="lineCov">          2 :     }</span>
 <span class="lineNum">     548 </span>            :     string variant::to_string() const throw(illegal_conversion)
 <span class="lineNum">     549 </span>            :     {
-<span class="lineNum">     550 </span><span class="lineCov">       1580 :         switch (type_)</span>
+<span class="lineNum">     550 </span><span class="lineCov">       1680 :         switch (type_)</span>
 <span class="lineNum">     551 </span>            :         {
 <span class="lineNum">     552 </span>            :         case STRING:
-<span class="lineNum">     553 </span><span class="lineCov">       1552 :             if (value_.p == NULL) return string();</span>
-<span class="lineNum">     554 </span><span class="lineCov">       3104 :             return static_cast&lt;const char *&gt;(value_.p);</span>
+<span class="lineNum">     553 </span><span class="lineCov">       1652 :             if (value_.p == NULL) return string();</span>
+<span class="lineNum">     554 </span><span class="lineCov">       3304 :             return static_cast&lt;const char *&gt;(value_.p);</span>
 <span class="lineNum">     555 </span>            :         case CHAR:
 <span class="lineNum">     556 </span>            :         {
 <span class="lineNum">     557 </span>            :             static char buf[2] = {0};
@@ -639,7 +639,7 @@
 <span class="lineNum">     569 </span>            :         default:
 <span class="lineNum">     570 </span><span class="lineCov">          1 :             throw illegal_conversion();</span>
 <a name="571"><span class="lineNum">     571 </span>            :         }</a>
-<span class="lineNum">     572 </span><span class="lineCov">       1579 :     }</span>
+<span class="lineNum">     572 </span><span class="lineCov">       1679 :     }</span>
 <span class="lineNum">     573 </span>            :     const char *variant::to_cstring(const char *def) const
 <span class="lineNum">     574 </span>            :     {
 <span class="lineNum">     575 </span>            :         try
@@ -806,17 +806,17 @@
 <span class="lineNum">     736 </span>            :     {
 <span class="lineNum">     737 </span>            :         try
 <span class="lineNum">     738 </span>            :         {
-<span class="lineNum">     739 </span><span class="lineCov">       1849 :             return to_llong();</span>
+<span class="lineNum">     739 </span><span class="lineCov">       1945 :             return to_llong();</span>
 <span class="lineNum">     740 </span><span class="lineCov">         18 :         }</span>
 <span class="lineNum">     741 </span>            :         catch (const illegal_conversion &amp;e)
 <span class="lineNum">     742 </span>            :         {
 <span class="lineNum">     743 </span><span class="lineCov">          9 :             return def;</span>
 <span class="lineNum">     744 </span><span class="lineCov">          9 :         }</span>
-<a name="745"><span class="lineNum">     745 </span><span class="lineCov">        938 :     }</span></a>
+<a name="745"><span class="lineNum">     745 </span><span class="lineCov">        986 :     }</span></a>
 <span class="lineNum">     746 </span>            : 
 <span class="lineNum">     747 </span>            :     long long variant::to_llong() const throw(illegal_conversion)
 <span class="lineNum">     748 </span>            :     {
-<span class="lineNum">     749 </span><span class="lineCov">       1858 :         return convert_base&lt;long long, long long&gt;(stoll, stoll, BASE);</span>
+<span class="lineNum">     749 </span><span class="lineCov">       1954 :         return convert_base&lt;long long, long long&gt;(stoll, stoll, BASE);</span>
 <a name="750"><span class="lineNum">     750 </span><span class="lineNoCov">          0 :     }</span></a>
 <span class="lineNum">     751 </span>            : 
 <span class="lineNum">     752 </span>            :     unsigned long long variant::to_ullong(const unsigned long long def) const
@@ -839,17 +839,17 @@
 <span class="lineNum">     769 </span>            :     {
 <span class="lineNum">     770 </span>            :         try
 <span class="lineNum">     771 </span>            :         {
-<span class="lineNum">     772 </span><span class="lineCov">        323 :             return to_double();</span>
+<span class="lineNum">     772 </span><span class="lineCov">        371 :             return to_double();</span>
 <span class="lineNum">     773 </span><span class="lineCov">         22 :         }</span>
 <span class="lineNum">     774 </span>            :         catch (const illegal_conversion &amp;e)
 <span class="lineNum">     775 </span>            :         {
 <span class="lineNum">     776 </span><span class="lineCov">         11 :             return def;</span>
 <span class="lineNum">     777 </span><span class="lineCov">         11 :         }</span>
-<a name="778"><span class="lineNum">     778 </span><span class="lineCov">        178 :     }</span></a>
+<a name="778"><span class="lineNum">     778 </span><span class="lineCov">        202 :     }</span></a>
 <span class="lineNum">     779 </span>            : 
 <span class="lineNum">     780 </span>            :     double variant::to_double() const throw(illegal_conversion)
 <span class="lineNum">     781 </span>            :     {
-<span class="lineNum">     782 </span><span class="lineCov">        326 :         return convert&lt;double, double&gt;(stod, stod);</span>
+<span class="lineNum">     782 </span><span class="lineCov">        374 :         return convert&lt;double, double&gt;(stod, stod);</span>
 <a name="783"><span class="lineNum">     783 </span><span class="lineNoCov">          0 :     }</span></a>
 <span class="lineNum">     784 </span>            : 
 <span class="lineNum">     785 </span>            :     long double variant::to_ldouble(const long double def) const
