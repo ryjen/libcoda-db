@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-29 17:09:40</td>
+            <td class="headerValue">2014-09-29 18:06:18</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">11</td>
@@ -80,10 +80,10 @@
 <span class="lineNum">      10 </span>            : 
 <span class="lineNum">      11 </span>            :         shared_ptr&lt;schema&gt; schema_factory::create(const string &amp;tableName)
 <span class="lineNum">      12 </span>            :         {
-<span class="lineNum">      13 </span><span class="lineCov">        138 :             shared_ptr&lt;schema&gt; p = make_shared&lt;schema&gt;(db_, tableName);</span>
-<span class="lineNum">      14 </span><span class="lineCov">        276 :             schema_cache_[tableName] = p;</span>
-<span class="lineNum">      15 </span><span class="lineCov">        138 :             return p;</span>
-<a name="16"><span class="lineNum">      16 </span><span class="lineCov">        276 :         }</span></a>
+<span class="lineNum">      13 </span><span class="lineCov">        156 :             shared_ptr&lt;schema&gt; p = make_shared&lt;schema&gt;(db_, tableName);</span>
+<span class="lineNum">      14 </span><span class="lineCov">        312 :             schema_cache_[tableName] = p;</span>
+<span class="lineNum">      15 </span><span class="lineCov">        156 :             return p;</span>
+<a name="16"><span class="lineNum">      16 </span><span class="lineCov">        312 :         }</span></a>
 <span class="lineNum">      17 </span>            : 
 <span class="lineNum">      18 </span>            :         schema_factory &amp;schema_factory::operator=(const schema_factory &amp;other)
 <span class="lineNum">      19 </span>            :         {
@@ -119,22 +119,22 @@
 <span class="lineNum">      49 </span>            : 
 <span class="lineNum">      50 </span>            :         std::shared_ptr&lt;schema&gt; schema_factory::get(const string &amp;tableName)
 <span class="lineNum">      51 </span>            :         {
-<span class="lineNum">      52 </span><span class="lineCov">        248 :             auto i = schema_cache_.find(tableName);</span>
+<span class="lineNum">      52 </span><span class="lineCov">        284 :             auto i = schema_cache_.find(tableName);</span>
 <span class="lineNum">      53 </span>            : 
-<span class="lineNum">      54 </span><span class="lineCov">        248 :             if (i == schema_cache_.end())</span>
+<span class="lineNum">      54 </span><span class="lineCov">        284 :             if (i == schema_cache_.end())</span>
 <span class="lineNum">      55 </span>            :             {
-<span class="lineNum">      56 </span><span class="lineCov">        138 :                 return create(tableName);</span>
+<span class="lineNum">      56 </span><span class="lineCov">        156 :                 return create(tableName);</span>
 <span class="lineNum">      57 </span>            :             }
 <span class="lineNum">      58 </span>            :             else
 <span class="lineNum">      59 </span>            :             {
-<span class="lineNum">      60 </span><span class="lineCov">        110 :                 return i-&gt;second;</span>
+<span class="lineNum">      60 </span><span class="lineCov">        128 :                 return i-&gt;second;</span>
 <span class="lineNum">      61 </span>            :             }
-<a name="62"><span class="lineNum">      62 </span><span class="lineCov">        248 :         }</span></a>
+<a name="62"><span class="lineNum">      62 </span><span class="lineCov">        284 :         }</span></a>
 <span class="lineNum">      63 </span>            : 
 <span class="lineNum">      64 </span>            :         void schema_factory::clear(const string &amp;tablename)
 <span class="lineNum">      65 </span>            :         {
-<span class="lineNum">      66 </span><span class="lineCov">        200 :             schema_cache_.erase(tablename);</span>
-<span class="lineNum">      67 </span><span class="lineCov">        200 :         }</span>
+<span class="lineNum">      66 </span><span class="lineCov">        218 :             schema_cache_.erase(tablename);</span>
+<span class="lineNum">      67 </span><span class="lineCov">        218 :         }</span>
 <span class="lineNum">      68 </span>            :     }
 <span class="lineNum">      69 </span>            : }
 </pre>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-29 17:09:40</td>
+            <td class="headerValue">2014-09-29 18:06:18</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">16</td>
@@ -161,19 +161,19 @@
 <span class="lineNum">      91 </span>            : 
 <a name="92"><span class="lineNum">      92 </span>            :             ~sql_value();</a>
 <span class="lineNum">      93 </span>            : 
-<a name="94"><span class="lineNum">      94 </span><span class="lineCov">       1670 :             sql_value(const std::string &amp;value) : value_(value) {}</span></a>
+<a name="94"><span class="lineNum">      94 </span><span class="lineCov">       1814 :             sql_value(const std::string &amp;value) : value_(value) {}</span></a>
 <span class="lineNum">      95 </span>            : 
-<a name="96"><span class="lineNum">      96 </span><span class="lineCov">       1538 :             sql_value(const char *value) : value_(value) {}</span></a>
+<a name="96"><span class="lineNum">      96 </span><span class="lineCov">       1590 :             sql_value(const char *value) : value_(value) {}</span></a>
 <span class="lineNum">      97 </span>            : 
-<a name="98"><span class="lineNum">      98 </span><span class="lineCov">        166 :             sql_value(int value) : value_(value) {}</span></a>
+<a name="98"><span class="lineNum">      98 </span><span class="lineCov">        210 :             sql_value(int value) : value_(value) {}</span></a>
 <span class="lineNum">      99 </span>            : 
-<a name="100"><span class="lineNum">     100 </span><span class="lineCov">        942 :             sql_value(long long value) : value_(value) {}</span></a>
+<a name="100"><span class="lineNum">     100 </span><span class="lineCov">       1014 :             sql_value(long long value) : value_(value) {}</span></a>
 <span class="lineNum">     101 </span>            : 
-<a name="102"><span class="lineNum">     102 </span><span class="lineCov">        186 :             sql_value(double value) : value_(value) {}</span></a>
+<a name="102"><span class="lineNum">     102 </span><span class="lineCov">        334 :             sql_value(double value) : value_(value) {}</span></a>
 <span class="lineNum">     103 </span>            : 
 <a name="104"><span class="lineNum">     104 </span><span class="lineCov">          2 :             sql_value(const sql_null_type &amp;value) : value_(nullptr) {}</span></a>
 <span class="lineNum">     105 </span>            : 
-<span class="lineNum">     106 </span><span class="lineCov">        174 :             sql_value(const sql_blob &amp;value) : value_(value.ptr(), value.size()) {}</span>
+<span class="lineNum">     106 </span><span class="lineCov">        318 :             sql_value(const sql_blob &amp;value) : value_(value.ptr(), value.size()) {}</span>
 <span class="lineNum">     107 </span>            : 
 <span class="lineNum">     108 </span>            :             operator std::string() const;
 <span class="lineNum">     109 </span>            : 
