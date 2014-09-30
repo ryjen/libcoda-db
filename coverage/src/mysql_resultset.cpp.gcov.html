@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-29 18:06:18</td>
+            <td class="headerValue">2014-09-29 18:44:26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">31</td>
@@ -87,13 +87,13 @@
 <span class="lineNum">      17 </span>            : 
 <span class="lineNum">      18 </span>            :         void mysql_res_delete::operator()(MYSQL_RES *p) const
 <span class="lineNum">      19 </span>            :         {
-<span class="lineNum">      20 </span><span class="lineCov">        437 :             mysql_free_result(p);</span>
-<span class="lineNum">      21 </span><span class="lineCov">        437 :         }</span>
+<span class="lineNum">      20 </span><span class="lineCov">        449 :             mysql_free_result(p);</span>
+<span class="lineNum">      21 </span><span class="lineCov">        449 :         }</span>
 <a name="22"><span class="lineNum">      22 </span>            : </a>
 <span class="lineNum">      23 </span>            : 
 <span class="lineNum">      24 </span>            :         mysql_resultset::mysql_resultset(mysql_db *db, shared_ptr&lt;MYSQL_RES&gt; res) : res_(res), row_(NULL), db_(db)
-<span class="lineNum">      25 </span><span class="lineCov">        340 :         {</span>
-<a name="26"><span class="lineNum">      26 </span><span class="lineCov">        680 :         }</span></a>
+<span class="lineNum">      25 </span><span class="lineCov">        352 :         {</span>
+<a name="26"><span class="lineNum">      26 </span><span class="lineCov">        704 :         }</span></a>
 <span class="lineNum">      27 </span>            : 
 <span class="lineNum">      28 </span>            :         mysql_resultset::mysql_resultset(mysql_resultset &amp;&amp;other) : res_(other.res_), row_(other.row_), db_(other.db_)
 <span class="lineNum">      29 </span><span class="lineNoCov">          0 :         {</span>
@@ -103,9 +103,9 @@
 <a name="33"><span class="lineNum">      33 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      34 </span>            : 
 <span class="lineNum">      35 </span>            :         mysql_resultset::~mysql_resultset()
-<span class="lineNum">      36 </span><span class="lineCov">        680 :         {</span>
-<span class="lineNum">      37 </span><span class="lineCov">        340 :             res_ = nullptr;</span>
-<a name="38"><span class="lineNum">      38 </span><span class="lineCov">        680 :         }</span></a>
+<span class="lineNum">      36 </span><span class="lineCov">        704 :         {</span>
+<span class="lineNum">      37 </span><span class="lineCov">        352 :             res_ = nullptr;</span>
+<a name="38"><span class="lineNum">      38 </span><span class="lineCov">        704 :         }</span></a>
 <span class="lineNum">      39 </span>            : 
 <span class="lineNum">      40 </span>            :         mysql_resultset &amp;mysql_resultset::operator=(mysql_resultset &amp;&amp; other)
 <span class="lineNum">      41 </span>            :         {

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-29 18:06:18</td>
+            <td class="headerValue">2014-09-29 18:44:26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">12</td>
@@ -83,7 +83,7 @@
 <span class="lineNum">      13 </span>            : {
 <a name="14"><span class="lineNum">      14 </span>            :     namespace db</a>
 <span class="lineNum">      15 </span>            :     {
-<a name="16"><span class="lineNum">      16 </span><span class="lineCov">         28 :         ARG3_IMPLEMENT_EXCEPTION(database_exception, std::exception);</span></a>
+<a name="16"><span class="lineNum">      16 </span><span class="lineCov">         34 :         ARG3_IMPLEMENT_EXCEPTION(database_exception, std::exception);</span></a>
 <span class="lineNum">      17 </span>            : 
 <a name="18"><span class="lineNum">      18 </span><span class="lineNoCov">          0 :         ARG3_IMPLEMENT_EXCEPTION(no_such_column_exception, database_exception);</span></a>
 <span class="lineNum">      19 </span>            : 
@@ -151,7 +151,7 @@
 <a name="81"><span class="lineNum">      81 </span><span class="lineCov">          4 :         }</span></a>
 <span class="lineNum">      82 </span>            : 
 <span class="lineNum">      83 </span>            :         sqldb::sqldb() : logLevel_(LOG_NONE), cacheLevel_(CACHE_NONE)
-<a name="84"><span class="lineNum">      84 </span><span class="lineCov">          8 :         {}</span></a>
+<a name="84"><span class="lineNum">      84 </span><span class="lineCov">         10 :         {}</span></a>
 <span class="lineNum">      85 </span>            : 
 <span class="lineNum">      86 </span>            :         resultset sqldb::execute(const string &amp;sql)
 <span class="lineNum">      87 </span>            :         {

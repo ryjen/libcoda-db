@@ -29,7 +29,7 @@ namespace arg3
         {
         }
 
-        mysql_db::mysql_db(const mysql_db &other) : sqldb(other), db_(other.db_),
+        mysql_db::mysql_db(const mysql_db &other) : sqldb(other), db_(NULL),
             dbName_(other.dbName_), user_(other.user_), password_(other.password_), host_(other.host_),
             port_(other.port_), schema_factory_(other.schema_factory_)
         {
@@ -45,7 +45,7 @@ namespace arg3
 
         mysql_db &mysql_db::operator=(const mysql_db &other)
         {
-            db_ = other.db_;
+            db_ = NULL;
             dbName_ = other.dbName_;
             user_ = other.user_;
             password_ = other.password_;
@@ -94,6 +94,8 @@ namespace arg3
 
         void mysql_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
         {
+            if (!is_open()) return;
+
             auto rs = execute("show columns from " + tableName);
 
             for (auto & row : rs)
@@ -113,9 +115,9 @@ namespace arg3
                 {
                     def.type = MYSQL_TYPE_LONG;
                 }
-                else if (type.find("real") != string::npos)
+                else if (type.find("double") != string::npos)
                 {
-                    def.type = MYSQL_TYPE_FLOAT;
+                    def.type = MYSQL_TYPE_DOUBLE;
                 }
                 else if (type.find("blob") != string::npos)
                 {
