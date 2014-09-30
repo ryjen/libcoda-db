@@ -61,13 +61,13 @@ class user : public arg3::db::base_record<user>
     constexpr static const char *const ID_COLUMN = "id";
     constexpr static const char *const TABLE_NAME = "users";
 public:
-    /* default constructor */
+    /* default constructor, no database hits */
     user() : base_record(&testdb, TABLE_NAME, ID_COLUMN) {}
 
     /* results constructor */
     user(const row &values) : base_record(&testdb, TABLE_NAME, ID_COLUMN, values) {}
 
-    /* id constructor */
+    /* id constructor, pulls data from database */
     user(long id) : base_record(&testdb, TABLE_NAME, ID_COLUMN, id) {}
 
     /* utility method showing how to get columns */
