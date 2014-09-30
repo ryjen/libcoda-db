@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-30 12:52:51</td>
+            <td class="headerValue">2014-09-30 16:17:34</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">17</td>
@@ -84,11 +84,11 @@
 <span class="lineNum">      14 </span><span class="lineCov">          4 :             return os;</span>
 <a name="15"><span class="lineNum">      15 </span>            :         }</a>
 <span class="lineNum">      16 </span>            : 
-<a name="17"><span class="lineNum">      17 </span><span class="lineCov">        404 :         schema::schema(sqldb *db, const string &amp;tablename) : db_(db), tableName_(tablename) {}</span></a>
+<a name="17"><span class="lineNum">      17 </span><span class="lineCov">        412 :         schema::schema(sqldb *db, const string &amp;tablename) : db_(db), tableName_(tablename) {}</span></a>
 <span class="lineNum">      18 </span>            : 
 <span class="lineNum">      19 </span>            :         schema::~schema()
-<span class="lineNum">      20 </span><span class="lineCov">        412 :         {</span>
-<a name="21"><span class="lineNum">      21 </span><span class="lineCov">        412 :         }</span></a>
+<span class="lineNum">      20 </span><span class="lineCov">        420 :         {</span>
+<a name="21"><span class="lineNum">      21 </span><span class="lineCov">        420 :         }</span></a>
 <span class="lineNum">      22 </span>            : 
 <span class="lineNum">      23 </span>            :         schema::schema(const schema &amp;other) : db_(other.db_), tableName_(other.tableName_), columns_(other.columns_)
 <a name="24"><span class="lineNum">      24 </span><span class="lineNoCov">          0 :         {}</span></a>
@@ -122,35 +122,35 @@
 <span class="lineNum">      52 </span>            : 
 <span class="lineNum">      53 </span>            :         bool schema::is_valid() const
 <span class="lineNum">      54 </span>            :         {
-<span class="lineNum">      55 </span><span class="lineCov">       1024 :             return columns_.size() &gt; 0;</span>
+<span class="lineNum">      55 </span><span class="lineCov">       1040 :             return columns_.size() &gt; 0;</span>
 <a name="56"><span class="lineNum">      56 </span>            :         }</a>
 <span class="lineNum">      57 </span>            : 
 <span class="lineNum">      58 </span>            :         void schema::init()
 <span class="lineNum">      59 </span>            :         {
-<span class="lineNum">      60 </span><span class="lineCov">        364 :             assert(db_ != NULL);</span>
+<span class="lineNum">      60 </span><span class="lineCov">        372 :             assert(db_ != NULL);</span>
 <span class="lineNum">      61 </span>            : 
-<span class="lineNum">      62 </span><span class="lineCov">        364 :             assert(db_-&gt;is_open());</span>
+<span class="lineNum">      62 </span><span class="lineCov">        372 :             assert(db_-&gt;is_open());</span>
 <span class="lineNum">      63 </span>            : 
-<span class="lineNum">      64 </span><span class="lineCov">        364 :             assert(!tableName_.empty());</span>
+<span class="lineNum">      64 </span><span class="lineCov">        372 :             assert(!tableName_.empty());</span>
 <span class="lineNum">      65 </span>            : 
-<span class="lineNum">      66 </span><span class="lineCov">        182 :             db_-&gt;query_schema(tableName_, columns_);</span>
-<a name="67"><span class="lineNum">      67 </span><span class="lineCov">        182 :         }</span></a>
+<span class="lineNum">      66 </span><span class="lineCov">        186 :             db_-&gt;query_schema(tableName_, columns_);</span>
+<a name="67"><span class="lineNum">      67 </span><span class="lineCov">        186 :         }</span></a>
 <span class="lineNum">      68 </span>            : 
 <span class="lineNum">      69 </span>            :         vector&lt;column_definition&gt; schema::columns() const
 <span class="lineNum">      70 </span>            :         {
-<span class="lineNum">      71 </span><span class="lineCov">        400 :             return columns_;</span>
+<span class="lineNum">      71 </span><span class="lineCov">        408 :             return columns_;</span>
 <a name="72"><span class="lineNum">      72 </span>            :         }</a>
 <span class="lineNum">      73 </span>            : 
 <span class="lineNum">      74 </span>            :         vector&lt;string&gt; schema::column_names() const
 <span class="lineNum">      75 </span>            :         {
-<span class="lineNum">      76 </span><span class="lineCov">        448 :             vector&lt;string&gt; names;</span>
+<span class="lineNum">      76 </span><span class="lineCov">        456 :             vector&lt;string&gt; names;</span>
 <span class="lineNum">      77 </span>            : 
-<span class="lineNum">      78 </span><span class="lineCov">       7556 :             for (auto &amp; c : columns_)</span>
+<span class="lineNum">      78 </span><span class="lineCov">       7692 :             for (auto &amp; c : columns_)</span>
 <span class="lineNum">      79 </span>            :             {
-<span class="lineNum">      80 </span><span class="lineCov">       2220 :                 names.push_back(c.name);</span>
-<span class="lineNum">      81 </span><span class="lineCov">       2220 :             }</span>
-<span class="lineNum">      82 </span><span class="lineCov">        448 :             return names;</span>
-<a name="83"><span class="lineNum">      83 </span><span class="lineCov">        896 :         }</span></a>
+<span class="lineNum">      80 </span><span class="lineCov">       2260 :                 names.push_back(c.name);</span>
+<span class="lineNum">      81 </span><span class="lineCov">       2260 :             }</span>
+<span class="lineNum">      82 </span><span class="lineCov">        456 :             return names;</span>
+<a name="83"><span class="lineNum">      83 </span><span class="lineCov">        912 :         }</span></a>
 <span class="lineNum">      84 </span>            : 
 <span class="lineNum">      85 </span>            :         vector&lt;string&gt; schema::primary_keys() const
 <span class="lineNum">      86 </span>            :         {
@@ -167,12 +167,12 @@
 <span class="lineNum">      97 </span>            : 
 <span class="lineNum">      98 </span>            :         string schema::table_name() const
 <span class="lineNum">      99 </span>            :         {
-<span class="lineNum">     100 </span><span class="lineCov">        600 :             return tableName_;</span>
+<span class="lineNum">     100 </span><span class="lineCov">        608 :             return tableName_;</span>
 <a name="101"><span class="lineNum">     101 </span>            :         }</a>
 <span class="lineNum">     102 </span>            : 
 <span class="lineNum">     103 </span>            :         sqldb *schema::db() const
 <span class="lineNum">     104 </span>            :         {
-<span class="lineNum">     105 </span><span class="lineCov">        592 :             return db_;</span>
+<span class="lineNum">     105 </span><span class="lineCov">        600 :             return db_;</span>
 <a name="106"><span class="lineNum">     106 </span>            :         }</a>
 <span class="lineNum">     107 </span>            : 
 <span class="lineNum">     108 </span>            :         column_definition schema::operator[](size_t index) const

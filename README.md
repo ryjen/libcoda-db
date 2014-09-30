@@ -150,27 +150,45 @@ auto results = query.execute();
 
 for ( auto &row : results) {
     string lName = row["last_name"]; // "Jenkins"
-    ...
+    // do more stuff
 }
 
 /* alternatively */
-typedef std::function<void (const resultset &)> handler_type;
 
-handler_type handler = [](const resultset &results)
-{
-    results.for_each([](const row &row) {
-        string lName = row["last_name"]; // "Jenkins"
-        ...
-    });
-}
-query.execute(handler);
 ```
 
+The query types also support a call back interface:
+
+```
+select_query query(testdb, "users");
+
+query.execute([](const resultset & rs)
+{
+    // do something with a resultset
+
+    rs.for_each([](const row & r)
+    {
+        // do something with a row
+
+        r.for_each([](const column & c)
+        {
+            // do something with a column
+        });
+    });
+});
+
+std::function<void (const resultset &)> handler = [](const resultset &results)
+{
+    printf("found %d results", results.size());
+}
+
+query.execute(handler);
+```
 
 TODO
 ====
 
-* More tests
+* More tests, at least 95% test coverage
 * More database implementations
 
 

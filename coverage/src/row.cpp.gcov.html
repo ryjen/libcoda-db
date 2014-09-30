@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-30 12:52:51</td>
+            <td class="headerValue">2014-09-30 16:17:34</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">34</td>
@@ -82,9 +82,9 @@
 <a name="12"><span class="lineNum">      12 </span><span class="lineCov">         16 :         {}</span></a>
 <span class="lineNum">      13 </span>            : 
 <span class="lineNum">      14 </span>            :         row::row(shared_ptr&lt;row_impl&gt; impl) : impl_(impl)
-<span class="lineNum">      15 </span><span class="lineCov">       1407 :         {</span>
-<span class="lineNum">      16 </span><span class="lineCov">       2814 :             assert(impl_ != nullptr);</span>
-<a name="17"><span class="lineNum">      17 </span><span class="lineCov">       2814 :         }</span></a>
+<span class="lineNum">      15 </span><span class="lineCov">       1431 :         {</span>
+<span class="lineNum">      16 </span><span class="lineCov">       2862 :             assert(impl_ != nullptr);</span>
+<a name="17"><span class="lineNum">      17 </span><span class="lineCov">       2862 :         }</span></a>
 <span class="lineNum">      18 </span>            : 
 <span class="lineNum">      19 </span>            :         row::row(const row &amp;other) : impl_(other.impl_)
 <a name="20"><span class="lineNum">      20 </span><span class="lineCov">         88 :         {}</span></a>
@@ -95,8 +95,8 @@
 <a name="25"><span class="lineNum">      25 </span><span class="lineCov">         16 :         }</span></a>
 <span class="lineNum">      26 </span>            : 
 <span class="lineNum">      27 </span>            :         row::~row()
-<span class="lineNum">      28 </span><span class="lineCov">       2934 :         {</span>
-<a name="29"><span class="lineNum">      29 </span><span class="lineCov">       2934 :         }</span></a>
+<span class="lineNum">      28 </span><span class="lineCov">       2982 :         {</span>
+<a name="29"><span class="lineNum">      29 </span><span class="lineCov">       2982 :         }</span></a>
 <span class="lineNum">      30 </span>            : 
 <span class="lineNum">      31 </span>            :         row &amp;row::operator=(const row &amp;other)
 <span class="lineNum">      32 </span>            :         {
@@ -107,10 +107,10 @@
 <span class="lineNum">      37 </span>            : 
 <span class="lineNum">      38 </span>            :         row &amp;row::operator=(row &amp;&amp; other)
 <span class="lineNum">      39 </span>            :         {
-<span class="lineNum">      40 </span><span class="lineCov">        773 :             impl_ = std::move(other.impl_);</span>
-<span class="lineNum">      41 </span><span class="lineCov">        773 :             other.impl_ = nullptr;</span>
+<span class="lineNum">      40 </span><span class="lineCov">        789 :             impl_ = std::move(other.impl_);</span>
+<span class="lineNum">      41 </span><span class="lineCov">        789 :             other.impl_ = nullptr;</span>
 <span class="lineNum">      42 </span>            : 
-<span class="lineNum">      43 </span><span class="lineCov">        773 :             return *this;</span>
+<span class="lineNum">      43 </span><span class="lineCov">        789 :             return *this;</span>
 <a name="44"><span class="lineNum">      44 </span>            :         }</a>
 <span class="lineNum">      45 </span>            : 
 <span class="lineNum">      46 </span>            :         row::iterator row::begin()
@@ -180,7 +180,7 @@
 <span class="lineNum">     110 </span>            : 
 <span class="lineNum">     111 </span>            :         column row::operator[](const string &amp;name) const
 <span class="lineNum">     112 </span>            :         {
-<span class="lineNum">     113 </span><span class="lineCov">       2730 :             return co1umn(name);</span>
+<span class="lineNum">     113 </span><span class="lineCov">       2790 :             return co1umn(name);</span>
 <a name="114"><span class="lineNum">     114 </span>            :         }</a>
 <span class="lineNum">     115 </span>            : 
 <span class="lineNum">     116 </span>            :         string row::column_name(size_t nPosition) const
@@ -197,8 +197,8 @@
 <span class="lineNum">     127 </span>            : 
 <span class="lineNum">     128 </span>            :         arg3::db::column row::co1umn(const string &amp;name) const
 <span class="lineNum">     129 </span>            :         {
-<span class="lineNum">     130 </span><span class="lineCov">       5532 :             assert(impl_ != nullptr);</span>
-<span class="lineNum">     131 </span><span class="lineCov">       2766 :             return impl_-&gt;co1umn(name);</span>
+<span class="lineNum">     130 </span><span class="lineCov">       5652 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">     131 </span><span class="lineCov">       2826 :             return impl_-&gt;co1umn(name);</span>
 <a name="132"><span class="lineNum">     132 </span>            :         }</a>
 <span class="lineNum">     133 </span>            : 
 <span class="lineNum">     134 </span>            :         size_t row::size() const

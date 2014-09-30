@@ -2,7 +2,7 @@
 SOURCES = arg3.test.cpp base_record.test.cpp column.test.cpp db.test.cpp delete_query.test.cpp modify_query.test.cpp \
 	resultset.test.cpp row.test.cpp schema.test.cpp schema_factory.test.cpp select_query.test.cpp sql_value.test.cpp \
 	where_clause.test.cpp sqlite3_statement.test.cpp mysql_column.test.cpp mysql_db.test.cpp mysql_row.test.cpp \
-	mysql_resultset.test.cpp mysql_binding.test.cpp
+	mysql_resultset.test.cpp mysql_binding.test.cpp mysql_statement.test.cpp
 
 AM_CPPFLAGS = @AM_CPPFLAGS@ -Ivendor/bandit -Wall -Werror -I../src/variant/src
 

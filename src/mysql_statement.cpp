@@ -121,6 +121,9 @@ namespace arg3
 
         resultset mysql_statement::results()
         {
+            if (stmt_ == nullptr)
+                throw database_exception("statement not prepared");
+
             bindings_.bind_params(stmt_.get());
 
             if (db_->cache_level() == sqldb::CACHE_RESULTSET)
@@ -131,9 +134,11 @@ namespace arg3
 
         bool mysql_statement::result()
         {
+            if (stmt_ == nullptr) return false;
+
             bindings_.bind_params(stmt_.get());
 
-            if (!stmt_ || mysql_stmt_execute(stmt_.get()))
+            if (mysql_stmt_execute(stmt_.get()))
             {
                 return false;
             }
@@ -142,11 +147,16 @@ namespace arg3
 
         int mysql_statement::last_number_of_changes()
         {
+            if (stmt_ == nullptr) return 0;
+
             return mysql_stmt_affected_rows(stmt_.get());
         }
 
         string mysql_statement::last_error()
         {
+            if (stmt_ == nullptr)
+                throw database_exception("statement not prepared");
+
             return last_stmt_error(stmt_.get());
         }
 
@@ -154,11 +164,9 @@ namespace arg3
         {
             bindings_.reset();
 
-            if (stmt_ != NULL)
+            if (stmt_ != nullptr)
             {
                 mysql_stmt_free_result(stmt_.get());
-
-                //mysql_stmt_close(stmt_.get());
 
                 stmt_ = nullptr;
             }
@@ -169,13 +177,16 @@ namespace arg3
         {
             bindings_.reset();
 
-            if (!stmt_ || mysql_stmt_reset(stmt_.get()))
+            if (stmt_ == nullptr)
+                return;
+
+            if (mysql_stmt_reset(stmt_.get()))
                 throw database_exception(last_error());
         }
 
         long long mysql_statement::last_insert_id()
         {
-            if (stmt_ == NULL) return 0;
+            if (stmt_ == nullptr) return 0;
 
             return mysql_stmt_insert_id(stmt_.get());
         }

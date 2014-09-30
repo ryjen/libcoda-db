@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-30 12:52:51</td>
+            <td class="headerValue">2014-09-30 16:17:34</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">62</td>
@@ -83,10 +83,10 @@
 <a name="13"><span class="lineNum">      13 </span>            :     {</a>
 <span class="lineNum">      14 </span>            : 
 <span class="lineNum">      15 </span>            :         mysql_column::mysql_column(shared_ptr&lt;MYSQL_RES&gt; res, MYSQL_ROW pValue, size_t index) : value_(pValue), res_(res), index_(index)
-<span class="lineNum">      16 </span><span class="lineCov">       1787 :         {</span>
-<span class="lineNum">      17 </span><span class="lineCov">       3574 :             assert(value_ != NULL);</span>
-<span class="lineNum">      18 </span><span class="lineCov">       3574 :             assert(res_ != nullptr);</span>
-<a name="19"><span class="lineNum">      19 </span><span class="lineCov">       3574 :         }</span></a>
+<span class="lineNum">      16 </span><span class="lineCov">       1847 :         {</span>
+<span class="lineNum">      17 </span><span class="lineCov">       3694 :             assert(value_ != NULL);</span>
+<span class="lineNum">      18 </span><span class="lineCov">       3694 :             assert(res_ != nullptr);</span>
+<a name="19"><span class="lineNum">      19 </span><span class="lineCov">       3694 :         }</span></a>
 <span class="lineNum">      20 </span>            : 
 <a name="21"><span class="lineNum">      21 </span><span class="lineCov">          2 :         mysql_column::mysql_column(const mysql_column &amp;other) : value_(other.value_), res_(other.res_), index_(other.index_) {}</span></a>
 <span class="lineNum">      22 </span>            : 
@@ -96,7 +96,7 @@
 <span class="lineNum">      26 </span><span class="lineCov">          1 :             other.res_ = nullptr;</span>
 <a name="27"><span class="lineNum">      27 </span><span class="lineCov">          2 :         }</span></a>
 <span class="lineNum">      28 </span>            : 
-<a name="29"><span class="lineNum">      29 </span><span class="lineCov">       3578 :         mysql_column::~mysql_column() {}</span></a>
+<a name="29"><span class="lineNum">      29 </span><span class="lineCov">       3698 :         mysql_column::~mysql_column() {}</span></a>
 <span class="lineNum">      30 </span>            : 
 <span class="lineNum">      31 </span>            :         mysql_column &amp;mysql_column::operator=(const mysql_column &amp;other)
 <span class="lineNum">      32 </span>            :         {
@@ -251,13 +251,13 @@
 <span class="lineNum">     181 </span>            : 
 <span class="lineNum">     182 </span>            :         string mysql_column::to_string() const
 <span class="lineNum">     183 </span>            :         {
-<span class="lineNum">     184 </span><span class="lineCov">       3550 :             assert(value_ != NULL);</span>
+<span class="lineNum">     184 </span><span class="lineCov">       3670 :             assert(value_ != NULL);</span>
 <span class="lineNum">     185 </span>            : 
-<span class="lineNum">     186 </span><span class="lineCov">       1775 :             if (value_[index_] == NULL)</span>
+<span class="lineNum">     186 </span><span class="lineCov">       1835 :             if (value_[index_] == NULL)</span>
 <span class="lineNum">     187 </span><span class="lineNoCov">          0 :                 return string();</span>
 <span class="lineNum">     188 </span>            : 
-<span class="lineNum">     189 </span><span class="lineCov">       1775 :             return value_[index_];</span>
-<a name="190"><span class="lineNum">     190 </span><span class="lineCov">       1775 :         }</span></a>
+<span class="lineNum">     189 </span><span class="lineCov">       1835 :             return value_[index_];</span>
+<a name="190"><span class="lineNum">     190 </span><span class="lineCov">       1835 :         }</span></a>
 <span class="lineNum">     191 </span>            : 
 <span class="lineNum">     192 </span>            :         string mysql_column::name() const
 <span class="lineNum">     193 </span>            :         {
