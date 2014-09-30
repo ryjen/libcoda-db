@@ -139,11 +139,12 @@ namespace arg3
                     value->length = (unsigned long *) calloc(1, sizeof(unsigned long));
                     memmove(value->length, other->length, sizeof(unsigned long));
 
-                    if (other->buffer)
-                    {
-                        value->buffer = calloc(1, *other->length);
-                        memmove(value->buffer, other->buffer, *other->length);
-                    }
+                }
+
+                if (other->buffer_length > 0 && other->buffer)
+                {
+                    value->buffer = calloc(1, other->buffer_length);
+                    memmove(value->buffer, other->buffer, other->buffer_length);
                 }
 
                 if (other->is_null)
@@ -208,7 +209,7 @@ namespace arg3
         {
             if (mysql_stmt_bind_result(stmt, value_) != 0)
             {
-                throw database_exception(last_stmt_error(stmt));
+                throw binding_error(last_stmt_error(stmt));
             }
         }
         sql_blob mysql_binding::to_blob(size_t index) const
@@ -382,6 +383,7 @@ namespace arg3
 
             value_[index - 1].buffer_type = MYSQL_TYPE_LONG;
             value_[index - 1].buffer = to_ptr(value);
+            value_[index - 1].buffer_length = sizeof(value);
 
             return *this;
         }
@@ -390,6 +392,7 @@ namespace arg3
             reallocate_value(index);
             value_[index - 1].buffer_type = MYSQL_TYPE_LONGLONG;
             value_[index - 1].buffer = to_ptr(value);
+            value_[index - 1].buffer_length = sizeof(value);
 
             return *this;
         }
@@ -398,6 +401,7 @@ namespace arg3
             reallocate_value(index);
             value_[index - 1].buffer_type = MYSQL_TYPE_DOUBLE;
             value_[index - 1].buffer = to_ptr(value);
+            value_[index - 1].buffer_length = sizeof(value);
 
             return *this;
         }
@@ -452,7 +456,7 @@ namespace arg3
         void mysql_binding::bind_params(MYSQL_STMT *stmt) const
         {
             if (mysql_stmt_bind_param(stmt, value_))
-                throw database_exception(last_stmt_error(stmt));
+                throw binding_error(last_stmt_error(stmt));
 
         }
 

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-30 11:52:28</td>
+            <td class="headerValue">2014-09-30 12:52:51</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">22</td>
@@ -78,9 +78,9 @@
 <a name="8"><span class="lineNum">       8 </span><span class="lineCov">       1784 :         {}</span></a>
 <span class="lineNum">       9 </span>            : 
 <span class="lineNum">      10 </span>            :         column::column(shared_ptr&lt;column_impl&gt; impl) : impl_(impl)
-<span class="lineNum">      11 </span><span class="lineCov">       2934 :         {</span>
-<span class="lineNum">      12 </span><span class="lineCov">       5868 :             assert(impl_ != nullptr);</span>
-<a name="13"><span class="lineNum">      13 </span><span class="lineCov">       5868 :         }</span></a>
+<span class="lineNum">      11 </span><span class="lineCov">       3204 :         {</span>
+<span class="lineNum">      12 </span><span class="lineCov">       6408 :             assert(impl_ != nullptr);</span>
+<a name="13"><span class="lineNum">      13 </span><span class="lineCov">       6408 :         }</span></a>
 <span class="lineNum">      14 </span>            : 
 <span class="lineNum">      15 </span>            :         column::column(const column &amp;other) : impl_(other.impl_)
 <a name="16"><span class="lineNum">      16 </span><span class="lineCov">         48 :         {}</span></a>
@@ -149,9 +149,9 @@
 <span class="lineNum">      79 </span>            : 
 <span class="lineNum">      80 </span>            :         string column::to_string() const
 <span class="lineNum">      81 </span>            :         {
-<span class="lineNum">      82 </span><span class="lineCov">       4384 :             assert(impl_ != nullptr);</span>
+<span class="lineNum">      82 </span><span class="lineCov">       4924 :             assert(impl_ != nullptr);</span>
 <span class="lineNum">      83 </span>            : 
-<span class="lineNum">      84 </span><span class="lineCov">       2192 :             return impl_-&gt;to_string();</span>
+<span class="lineNum">      84 </span><span class="lineCov">       2462 :             return impl_-&gt;to_string();</span>
 <a name="85"><span class="lineNum">      85 </span>            :         }</a>
 <span class="lineNum">      86 </span>            : 
 <span class="lineNum">      87 </span>            :         sql_value column::to_value() const
