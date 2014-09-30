@@ -20,18 +20,19 @@ using namespace bandit;
 int main(int argc, char *argv[])
 {
 #ifdef TEST_SQLITE
-    testdb = &testdb1;
+    testdb = &sqlite_testdb;
 #elif defined(HAVE_LIBMYSQLCLIENT)
-    testdb = &testdb2;
+    testdb = &mysql_testdb;
 #else
     cout << "Mysql not supported" << endl;
     return 0;
 #endif
 
 #ifdef TEST_CACHE
-    if(testdb) {
-	testdb->set_cache_level(arg3::db::sqldb::CACHE_RESULTSET);
-	cout << "setting cache level" << endl;
+    if (testdb)
+    {
+        testdb->set_cache_level(arg3::db::sqldb::CACHE_RESULTSET);
+        cout << "setting cache level" << endl;
     }
 #endif
     // return TestRunner::RunAllTests(argc, argv);

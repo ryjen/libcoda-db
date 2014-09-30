@@ -17,18 +17,18 @@ go_bandit([]()
     {
         before_each([]()
         {
-            setup_testdb();
+            sqlite_testdb.setup();
         });
 
         after_each([]()
         {
-            teardown_testdb();
+            sqlite_testdb.teardown();
         });
 
 
         it("is movable", []()
         {
-            sqlite3_statement stmt(&testdb1);
+            sqlite3_statement stmt(&sqlite_testdb);
 
             stmt.prepare("select * from users");
 
@@ -40,7 +40,7 @@ go_bandit([]()
 
             AssertThat(stmt.is_valid(), IsFalse());
 
-            sqlite3_statement s3(&testdb1);
+            sqlite3_statement s3(&sqlite_testdb);
 
             AssertThat(s3.is_valid(), IsFalse());
 
@@ -57,7 +57,7 @@ go_bandit([]()
 
             AssertThrows(database_exception, stmt.prepare("select * from users"));
 
-            stmt = sqlite3_statement(&testdb1);
+            stmt = sqlite3_statement(&sqlite_testdb);
 
             AssertThrows(database_exception, stmt.prepare("asdfasdfasdf"));
 
@@ -83,7 +83,7 @@ go_bandit([]()
 
         it("can reset", []()
         {
-            sqlite3_statement stmt(&testdb1);
+            sqlite3_statement stmt(&sqlite_testdb);
 
             stmt.prepare("select * from users");
 

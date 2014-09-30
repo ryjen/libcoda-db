@@ -32,17 +32,17 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">36</td>
-            <td class="headerCovTableEntry">39</td>
-            <td class="headerCovTableEntryHi">92.3 %</td>
+            <td class="headerCovTableEntry">40</td>
+            <td class="headerCovTableEntryHi">90.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-12 12:28:12</td>
+            <td class="headerValue">2014-09-29 17:09:40</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">18</td>
-            <td class="headerCovTableEntry">19</td>
-            <td class="headerCovTableEntryHi">94.7 %</td>
+            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntryHi">90.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -80,13 +80,13 @@
 <a name="10"><span class="lineNum">      10 </span>            :     {</a>
 <span class="lineNum">      11 </span>            : 
 <span class="lineNum">      12 </span>            :         resultset::resultset(shared_ptr&lt;resultset_impl&gt; impl) : impl_(impl)
-<span class="lineNum">      13 </span><span class="lineCov">        552 :         {</span>
-<span class="lineNum">      14 </span><span class="lineCov">       1104 :             assert(impl_ != nullptr);</span>
-<a name="15"><span class="lineNum">      15 </span><span class="lineCov">       1104 :         }</span></a>
+<span class="lineNum">      13 </span><span class="lineCov">        582 :         {</span>
+<span class="lineNum">      14 </span><span class="lineCov">       1164 :             assert(impl_ != nullptr);</span>
+<a name="15"><span class="lineNum">      15 </span><span class="lineCov">       1164 :         }</span></a>
 <span class="lineNum">      16 </span>            : 
 <span class="lineNum">      17 </span>            :         resultset::~resultset()
-<span class="lineNum">      18 </span><span class="lineCov">       1112 :         {</span>
-<a name="19"><span class="lineNum">      19 </span><span class="lineCov">       1112 :         }</span></a>
+<span class="lineNum">      18 </span><span class="lineCov">       1172 :         {</span>
+<a name="19"><span class="lineNum">      19 </span><span class="lineCov">       1172 :         }</span></a>
 <span class="lineNum">      20 </span>            : 
 <span class="lineNum">      21 </span><span class="lineCov">          4 :         resultset::resultset(resultset &amp;&amp;other) : impl_(std::move(other.impl_))</span>
 <span class="lineNum">      22 </span><span class="lineCov">          8 :         {</span>
@@ -142,17 +142,17 @@
 <span class="lineNum">      72 </span>            : 
 <span class="lineNum">      73 </span>            :         resultset::iterator resultset::begin()
 <span class="lineNum">      74 </span>            :         {
-<span class="lineNum">      75 </span><span class="lineCov">        228 :             impl_-&gt;reset();</span>
+<span class="lineNum">      75 </span><span class="lineCov">        246 :             impl_-&gt;reset();</span>
 <span class="lineNum">      76 </span>            : 
-<span class="lineNum">      77 </span><span class="lineCov">        228 :             if (impl_-&gt;next())</span>
-<span class="lineNum">      78 </span><span class="lineCov">        452 :                 return iterator(impl_, 0);</span>
+<span class="lineNum">      77 </span><span class="lineCov">        246 :             if (impl_-&gt;next())</span>
+<span class="lineNum">      78 </span><span class="lineCov">        488 :                 return iterator(impl_, 0);</span>
 <span class="lineNum">      79 </span>            :             else
 <span class="lineNum">      80 </span><span class="lineCov">          2 :                 return end();</span>
-<a name="81"><span class="lineNum">      81 </span><span class="lineCov">        228 :         }</span></a>
+<a name="81"><span class="lineNum">      81 </span><span class="lineCov">        246 :         }</span></a>
 <span class="lineNum">      82 </span>            : 
 <span class="lineNum">      83 </span>            :         resultset::iterator resultset::end()
 <span class="lineNum">      84 </span>            :         {
-<span class="lineNum">      85 </span><span class="lineCov">        396 :             return iterator(impl_, -1);</span>
+<span class="lineNum">      85 </span><span class="lineCov">        408 :             return iterator(impl_, -1);</span>
 <a name="86"><span class="lineNum">      86 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      87 </span>            : 
 <span class="lineNum">      88 </span>            :         resultset::const_iterator resultset::begin() const
@@ -168,10 +168,14 @@
 <span class="lineNum">      98 </span>            :         resultset::const_iterator resultset::end() const
 <span class="lineNum">      99 </span>            :         {
 <span class="lineNum">     100 </span><span class="lineCov">         16 :             return const_iterator(impl_, -1);</span>
-<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         }</span>
+<a name="101"><span class="lineNum">     101 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">     102 </span>            : 
-<span class="lineNum">     103 </span>            :     }
-<span class="lineNum">     104 </span>            : }
+<span class="lineNum">     103 </span>            :         shared_ptr&lt;resultset_impl&gt; resultset::impl() const
+<span class="lineNum">     104 </span>            :         {
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :             return impl_;</span>
+<span class="lineNum">     106 </span>            :         }
+<span class="lineNum">     107 </span>            :     }
+<span class="lineNum">     108 </span>            : }
 </pre>
       </td>
     </tr>

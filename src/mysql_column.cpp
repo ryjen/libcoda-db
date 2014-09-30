@@ -387,7 +387,7 @@ namespace arg3
 
         mysql_cached_column::mysql_cached_column(mysql_cached_column &&other) : name_(std::move(other.name_)), value_(std::move(other.value_)), type_(other.type_)
         {
-            value_ = nullptr;
+            other.value_ = nullptr;
         }
         mysql_cached_column::~mysql_cached_column() {}
 

@@ -26,7 +26,7 @@ public:
     }
 };
 
-extern test_sqlite3_db testdb1;
+extern test_sqlite3_db sqlite_testdb;
 
 
 #ifdef HAVE_LIBMYSQLCLIENT
@@ -47,7 +47,7 @@ public:
         return db_;
     }
 };
-extern test_mysql_db testdb2;
+extern test_mysql_db mysql_testdb;
 
 #endif
 

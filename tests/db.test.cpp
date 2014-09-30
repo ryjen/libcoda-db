@@ -15,11 +15,11 @@ using namespace arg3::db;
 
 #if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
 
-test_mysql_db testdb2;
-sqldb *testdb = &testdb2;
+test_mysql_db mysql_testdb;
+sqldb *testdb = &mysql_testdb;
 #else
-test_sqlite3_db testdb1;
-sqldb *testdb = &testdb1;
+test_sqlite3_db sqlite_testdb;
+sqldb *testdb = &sqlite_testdb;
 #endif
 
 void setup_testdb()
@@ -27,10 +27,10 @@ void setup_testdb()
     try
     {
 #ifdef TEST_SQLITE
-        testdb1.setup();
+        sqlite_testdb.setup();
 #endif
 #if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
-        testdb2.setup();
+        mysql_testdb.setup();
 #endif
     }
     catch (const std::exception &e)
@@ -43,10 +43,10 @@ void setup_testdb()
 void teardown_testdb()
 {
 #ifdef TEST_SQLITE
-    testdb1.teardown();
+    sqlite_testdb.teardown();
 #endif
 #if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
-    testdb2.teardown();
+    mysql_testdb.teardown();
 #endif
 }
 

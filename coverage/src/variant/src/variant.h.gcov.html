@@ -1,0 +1,422 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - Code Coverage - src/variant/src/variant.h</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../index.html">top level</a> - <a href="index.html">src/variant/src</a> - variant.h<span style="font-size: 80%;"> (source / <a href="variant.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">Code Coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">57</td>
+            <td class="headerCovTableEntry">61</td>
+            <td class="headerCovTableEntryHi">93.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2014-09-29 17:09:40</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">62</td>
+            <td class="headerCovTableEntry">63</td>
+            <td class="headerCovTableEntryHi">98.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+</td>
+            <td></td>
+          </tr>
+          <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #ifndef ARG3_VARIANT_H_</a>
+<span class="lineNum">       2 </span>            : #define ARG3_VARIANT_H_
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : #include &lt;limits&gt;
+<span class="lineNum">       5 </span>            : #include &lt;string&gt;
+<span class="lineNum">       6 </span>            : #include &lt;cmath&gt;
+<span class="lineNum">       7 </span>            : #include &lt;cstring&gt;
+<span class="lineNum">       8 </span>            : #include &lt;functional&gt;
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : using namespace std;
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            : namespace arg3
+<a name="13"><span class="lineNum">      13 </span>            : {</a>
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span><span class="lineCov">        104 :     class illegal_conversion : std::runtime_error</span>
+<a name="16"><span class="lineNum">      16 </span>            :     {</a>
+<a name="17"><span class="lineNum">      17 </span>            :     public:</a>
+<span class="lineNum">      18 </span><span class="lineCov">         68 :         explicit illegal_conversion (const string &amp;what_arg) : std::runtime_error(what_arg) {}</span>
+<span class="lineNum">      19 </span><span class="lineCov">         36 :         explicit illegal_conversion() : std::runtime_error(&quot;no conversion available&quot;) {}</span>
+<span class="lineNum">      20 </span>            :     };
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            :     class variant
+<span class="lineNum">      23 </span>            :     {
+<span class="lineNum">      24 </span>            :     private:
+<span class="lineNum">      25 </span>            :         enum
+<span class="lineNum">      26 </span>            :         {
+<span class="lineNum">      27 </span>            :             NULLTYPE, NUMBER, UNUMBER, DOUBLE, POINTER,
+<span class="lineNum">      28 </span>            :             STRING, WSTRING, CHAR, WCHAR, BOOL
+<span class="lineNum">      29 </span>            :         };
+<span class="lineNum">      30 </span>            :         static const int BASE = 0; // autodetect
+<span class="lineNum">      31 </span>            :         int type_;
+<span class="lineNum">      32 </span>            :         unsigned *refcount_;
+<span class="lineNum">      33 </span>            :         size_t size_;
+<span class="lineNum">      34 </span>            :         union var
+<span class="lineNum">      35 </span>            :         {
+<span class="lineNum">      36 </span>            :             //members
+<span class="lineNum">      37 </span>            :             long long i;
+<span class="lineNum">      38 </span>            :             unsigned long long ui;
+<span class="lineNum">      39 </span>            :             long double d;
+<span class="lineNum">      40 </span>            :             void *p;
+<a name="41"><span class="lineNum">      41 </span>            : </a>
+<a name="42"><span class="lineNum">      42 </span>            :             //initializers</a>
+<a name="43"><span class="lineNum">      43 </span><span class="lineCov">          4 :             var(long double ld) : d(ld) {}</span></a>
+<span class="lineNum">      44 </span><span class="lineCov">       1588 :             var(long long ll) : i(ll) {}</span>
+<a name="45"><span class="lineNum">      45 </span><span class="lineCov">          6 :             var(unsigned long long ull) : ui(ull) {}</span></a>
+<a name="46"><span class="lineNum">      46 </span>            :             var(void *p) : p(p) {}</a>
+<a name="47"><span class="lineNum">      47 </span><span class="lineCov">          2 :             var(char c) : i(c) {};</span></a>
+<a name="48"><span class="lineNum">      48 </span><span class="lineCov">          2 :             var(unsigned char uc) : ui(uc) {}</span></a>
+<a name="49"><span class="lineNum">      49 </span><span class="lineCov">          2 :             var(wchar_t wc) : i(wc) {}</span></a>
+<a name="50"><span class="lineNum">      50 </span><span class="lineCov">          2 :             var(short s) : i(s) {}</span></a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineCov">          4 :             explicit var(bool b) : i(b) {}</span></a>
+<a name="52"><span class="lineNum">      52 </span><span class="lineCov">          2 :             var(unsigned short us) : ui(us) {}</span></a>
+<a name="53"><span class="lineNum">      53 </span><span class="lineCov">        428 :             var(int i) : i(i) {}</span></a>
+<a name="54"><span class="lineNum">      54 </span><span class="lineCov">          6 :             var(unsigned ui) : ui(ui) {}</span></a>
+<a name="55"><span class="lineNum">      55 </span><span class="lineCov">          4 :             var(long l) : i(l) {}</span></a>
+<a name="56"><span class="lineNum">      56 </span><span class="lineCov">          4 :             var(unsigned long ul) : ui(ul) {}</span></a>
+<a name="57"><span class="lineNum">      57 </span><span class="lineCov">          6 :             var(float f) : d(f) {}</span></a>
+<a name="58"><span class="lineNum">      58 </span><span class="lineCov">        244 :             var(double d) : d(d) {}</span></a>
+<a name="59"><span class="lineNum">      59 </span><span class="lineCov">       3308 :             var(char *str) : p(str) {}</span></a>
+<span class="lineNum">      60 </span><span class="lineCov">         44 :             var(wchar_t *str) : p(str) {}</span>
+<span class="lineNum">      61 </span><span class="lineCov">      13902 :             var(nullptr_t nil) : p(NULL) {}</span>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            :         } value_;
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            :         template&lt;typename T, typename V&gt;
+<span class="lineNum">      66 </span>            :         static T value(const V val)
+<span class="lineNum">      67 </span>            :         {
+<span class="lineNum">      68 </span>            :             if (val &gt; numeric_limits&lt;T&gt;::max() || val &lt; numeric_limits&lt;T&gt;::min())
+<span class="lineNum">      69 </span>            :                 throw illegal_conversion(&quot;out of range&quot;);
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span>            :             return val;
+<span class="lineNum">      72 </span>            :         }
+<a name="73"><span class="lineNum">      73 </span>            : </a>
+<span class="lineNum">      74 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">      75 </span>            :         T convert_numeric() const throw(illegal_conversion)
+<span class="lineNum">      76 </span>            :         {
+<span class="lineNum">      77 </span><span class="lineCov">        978 :             switch (type_)</span>
+<span class="lineNum">      78 </span>            :             {
+<span class="lineNum">      79 </span>            :             case BOOL:
+<span class="lineNum">      80 </span>            :             case CHAR:
+<span class="lineNum">      81 </span>            :             case WCHAR:
+<span class="lineNum">      82 </span>            :             case NUMBER:
+<span class="lineNum">      83 </span><span class="lineCov">       1772 :                 if (value_.i &lt;= numeric_limits&lt;T&gt;::max() &amp;&amp; value_.i &gt;= numeric_limits&lt;T&gt;::min())</span>
+<span class="lineNum">      84 </span><span class="lineCov">        885 :                     return static_cast&lt;T&gt;(value_.i);</span>
+<span class="lineNum">      85 </span><span class="lineCov">          2 :                 break;</span>
+<span class="lineNum">      86 </span>            :             case UNUMBER:
+<span class="lineNum">      87 </span><span class="lineCov">         27 :                 if (value_.ui &lt;= numeric_limits&lt;T&gt;::max() &amp;&amp; value_.i &gt;= numeric_limits&lt;T&gt;::min())</span>
+<span class="lineNum">      88 </span><span class="lineCov">         13 :                     return static_cast&lt;T&gt;(value_.ui);</span>
+<span class="lineNum">      89 </span><span class="lineCov">          1 :                 break;</span>
+<span class="lineNum">      90 </span>            :             case DOUBLE:
+<span class="lineNum">      91 </span><span class="lineCov">        140 :                 if (value_.d &lt;= numeric_limits&lt;T&gt;::max() &amp;&amp; value_.d &gt;= numeric_limits&lt;T&gt;::min())</span>
+<span class="lineNum">      92 </span><span class="lineCov">         66 :                     return static_cast&lt;T&gt;(value_.d);</span>
+<span class="lineNum">      93 </span><span class="lineCov">          4 :                 break;</span>
+<span class="lineNum">      94 </span>            :             }
+<span class="lineNum">      95 </span><span class="lineCov">          7 :             throw illegal_conversion();</span>
+<span class="lineNum">      96 </span><span class="lineCov">        964 :         };</span>
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            :         template&lt;class T&gt; using str_base_fn = T( *)(const string &amp;, size_t *, int);
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span>            :         template&lt;class T&gt; using wstr_base_fn = T( *)(const wstring &amp;, size_t *, int);
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span>            :         template&lt;class T&gt; using str_fn = T( *)(const string &amp;, size_t *);
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span>            :         template&lt;class T&gt; using wstr_fn = T( *)(const wstring &amp;, size_t *);
+<a name="105"><span class="lineNum">     105 </span>            : </a>
+<span class="lineNum">     106 </span>            :         template&lt;typename T, typename R&gt;
+<span class="lineNum">     107 </span>            :         T convert_base(str_base_fn&lt;R&gt; strfunk, wstr_base_fn&lt;R&gt; wstrfunk, int base) const throw(illegal_conversion)
+<span class="lineNum">     108 </span>            :         {
+<span class="lineNum">     109 </span><span class="lineCov">       1994 :             if (is_numeric() || is_real())</span>
+<span class="lineNum">     110 </span>            :             {
+<span class="lineNum">     111 </span><span class="lineCov">       1784 :                 return convert_numeric&lt;T&gt;();</span>
+<span class="lineNum">     112 </span>            :             }
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span><span class="lineCov">        104 :             if (is_string())</span>
+<span class="lineNum">     115 </span>            :             {
+<span class="lineNum">     116 </span>            :                 try
+<span class="lineNum">     117 </span>            :                 {
+<span class="lineNum">     118 </span><span class="lineCov">         85 :                     return strfunk(static_cast&lt;const char *&gt;(value_.p), NULL, base);</span>
+<span class="lineNum">     119 </span><span class="lineCov">         40 :                 }</span>
+<span class="lineNum">     120 </span>            :                 catch (const std::exception &amp;e)
+<span class="lineNum">     121 </span>            :                 {
+<span class="lineNum">     122 </span><span class="lineCov">         60 :                     throw illegal_conversion(e.what());</span>
+<span class="lineNum">     123 </span>            :                 }
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     125 </span><span class="lineCov">         34 :             else if (is_wstring())</span>
+<span class="lineNum">     126 </span>            :             {
+<span class="lineNum">     127 </span>            :                 try
+<span class="lineNum">     128 </span>            :                 {
+<span class="lineNum">     129 </span><span class="lineCov">         30 :                     return wstrfunk(static_cast&lt;const wchar_t *&gt;(value_.p), NULL, base);</span>
+<span class="lineNum">     130 </span><span class="lineCov">         12 :                 }</span>
+<span class="lineNum">     131 </span>            :                 catch (const std::exception &amp;e)
+<span class="lineNum">     132 </span>            :                 {
+<span class="lineNum">     133 </span><span class="lineCov">         18 :                     throw illegal_conversion(e.what());</span>
+<span class="lineNum">     134 </span>            :                 }
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span><span class="lineCov">          5 :             throw illegal_conversion();</span>
+<a name="138"><span class="lineNum">     138 </span><span class="lineCov">       1095 :         }</span></a>
+<span class="lineNum">     139 </span>            :         template&lt;typename T, typename R&gt;
+<span class="lineNum">     140 </span>            :         T convert(str_fn&lt;R&gt; strfunk, wstr_fn&lt;R&gt; wstrfunk) const throw(illegal_conversion)
+<span class="lineNum">     141 </span>            :         {
+<span class="lineNum">     142 </span><span class="lineCov">        212 :             if (is_numeric() || is_real())</span>
+<span class="lineNum">     143 </span>            :             {
+<span class="lineNum">     144 </span><span class="lineCov">        140 :                 return convert_numeric&lt;T&gt;();</span>
+<span class="lineNum">     145 </span>            :             }
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span><span class="lineCov">         32 :             if (is_string())</span>
+<span class="lineNum">     148 </span>            :             {
+<span class="lineNum">     149 </span>            :                 try
+<span class="lineNum">     150 </span>            :                 {
+<span class="lineNum">     151 </span><span class="lineCov">         24 :                     return strfunk(static_cast&lt;const char *&gt;(value_.p), NULL);</span>
+<span class="lineNum">     152 </span><span class="lineCov">         12 :                 }</span>
+<span class="lineNum">     153 </span>            :                 catch (const std::exception &amp;e)
+<span class="lineNum">     154 </span>            :                 {
+<span class="lineNum">     155 </span><span class="lineCov">         18 :                     throw illegal_conversion(e.what());</span>
+<span class="lineNum">     156 </span>            :                 }
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     158 </span><span class="lineCov">         12 :             else if (is_wstring())</span>
+<span class="lineNum">     159 </span>            :             {
+<span class="lineNum">     160 </span>            :                 try
+<span class="lineNum">     161 </span>            :                 {
+<span class="lineNum">     162 </span><span class="lineCov">         10 :                     return wstrfunk(static_cast&lt;const wchar_t *&gt;(value_.p), NULL);</span>
+<span class="lineNum">     163 </span><span class="lineCov">          4 :                 }</span>
+<span class="lineNum">     164 </span>            :                 catch (const std::exception &amp;e)
+<span class="lineNum">     165 </span>            :                 {
+<span class="lineNum">     166 </span><span class="lineCov">          6 :                     throw illegal_conversion(e.what());</span>
+<span class="lineNum">     167 </span>            :                 }
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     169 </span>            : 
+<span class="lineNum">     170 </span><span class="lineCov">          2 :             throw illegal_conversion();</span>
+<span class="lineNum">     171 </span><span class="lineCov">        132 :         }</span>
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span>            :     public:
+<span class="lineNum">     174 </span>            : 
+<span class="lineNum">     175 </span>            :         // constructors
+<span class="lineNum">     176 </span>            :         variant();
+<span class="lineNum">     177 </span>            :         variant(const nullptr_t &amp;null);
+<span class="lineNum">     178 </span>            :         explicit variant(bool b);
+<span class="lineNum">     179 </span>            :         variant(char c);
+<span class="lineNum">     180 </span>            :         variant(unsigned char uc);
+<span class="lineNum">     181 </span>            :         variant(wchar_t wc);
+<span class="lineNum">     182 </span>            :         variant(short s);
+<span class="lineNum">     183 </span>            :         variant(unsigned short us);
+<span class="lineNum">     184 </span>            :         variant(int i);
+<span class="lineNum">     185 </span>            :         variant(unsigned ui);
+<span class="lineNum">     186 </span>            :         variant(long l);
+<span class="lineNum">     187 </span>            :         variant(unsigned long ul);
+<span class="lineNum">     188 </span>            :         variant(float f);
+<span class="lineNum">     189 </span>            :         variant(double d);
+<span class="lineNum">     190 </span>            :         variant(long double ld);
+<span class="lineNum">     191 </span>            :         variant(long long ll);
+<span class="lineNum">     192 </span>            :         variant(unsigned long long ull);
+<span class="lineNum">     193 </span>            :         variant(const void *p, size_t psize);
+<span class="lineNum">     194 </span>            :         variant(const char *str);
+<span class="lineNum">     195 </span>            :         variant(const wchar_t *str);
+<span class="lineNum">     196 </span>            :         variant(const string &amp;str);
+<span class="lineNum">     197 </span>            :         variant(const wstring &amp;str);
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span>            :         // rule of 5
+<span class="lineNum">     200 </span>            :         variant(const variant &amp;other);
+<span class="lineNum">     201 </span>            :         variant(variant &amp;&amp;other);
+<span class="lineNum">     202 </span>            :         variant &amp;operator=(const variant &amp;other);
+<span class="lineNum">     203 </span>            :         variant &amp;operator=(variant &amp;&amp; other);
+<span class="lineNum">     204 </span>            :         virtual ~variant();
+<span class="lineNum">     205 </span>            : 
+<span class="lineNum">     206 </span>            :         // implicit cast operators
+<span class="lineNum">     207 </span>            :         operator string() const;
+<span class="lineNum">     208 </span>            :         operator int() const;
+<span class="lineNum">     209 </span>            :         operator long() const;
+<span class="lineNum">     210 </span>            :         operator long long() const;
+<span class="lineNum">     211 </span>            :         operator unsigned long() const;
+<span class="lineNum">     212 </span>            :         operator unsigned long long() const;
+<span class="lineNum">     213 </span>            :         operator double() const;
+<span class="lineNum">     214 </span>            :         operator long double() const;
+<span class="lineNum">     215 </span>            :         operator float() const;
+<span class="lineNum">     216 </span>            :         operator bool() const;
+<span class="lineNum">     217 </span>            :         operator wstring() const;
+<span class="lineNum">     218 </span>            :         operator unsigned() const;
+<span class="lineNum">     219 </span>            :         operator char() const;
+<span class="lineNum">     220 </span>            :         operator const wchar_t *() const;
+<span class="lineNum">     221 </span>            :         operator const char *() const;
+<span class="lineNum">     222 </span>            : 
+<span class="lineNum">     223 </span>            :         // equality operators
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span>            :         bool operator==(const nullptr_t &amp;t) const;
+<span class="lineNum">     226 </span>            :         bool operator==(bool other) const;
+<span class="lineNum">     227 </span>            :         bool operator==(float other) const;
+<span class="lineNum">     228 </span>            :         bool operator==(double other) const;
+<span class="lineNum">     229 </span>            :         bool operator==(long double other) const;
+<span class="lineNum">     230 </span>            :         bool operator==(const wstring &amp;str) const;
+<span class="lineNum">     231 </span>            :         bool operator==(const string &amp;str) const;
+<span class="lineNum">     232 </span>            :         bool operator==(unsigned long long ull) const;
+<span class="lineNum">     233 </span>            :         bool operator==(long long ll) const;
+<span class="lineNum">     234 </span>            :         bool operator==(long l) const;
+<span class="lineNum">     235 </span>            :         bool operator==(int i) const;
+<span class="lineNum">     236 </span>            :         bool operator==(unsigned ui) const;
+<span class="lineNum">     237 </span>            :         bool operator==(unsigned long ul) const;
+<span class="lineNum">     238 </span>            :         bool operator==(const char *str) const;
+<span class="lineNum">     239 </span>            :         bool operator==(const wchar_t *str) const;
+<span class="lineNum">     240 </span>            :         bool operator==(const variant &amp;value) const;
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span>            :         bool operator!=(const nullptr_t &amp;n) const;
+<span class="lineNum">     243 </span>            :         bool operator!=(bool other) const;
+<span class="lineNum">     244 </span>            :         bool operator!=(float other) const;
+<span class="lineNum">     245 </span>            :         bool operator!=(double other) const;
+<span class="lineNum">     246 </span>            :         bool operator!=(long double other) const;
+<span class="lineNum">     247 </span>            :         bool operator!=(const wstring &amp;str) const;
+<span class="lineNum">     248 </span>            :         bool operator!=(const string &amp;str) const;
+<span class="lineNum">     249 </span>            :         bool operator!=(unsigned long long ull) const;
+<span class="lineNum">     250 </span>            :         bool operator!=(long long ll) const;
+<span class="lineNum">     251 </span>            :         bool operator!=(long l) const;
+<span class="lineNum">     252 </span>            :         bool operator!=(int i) const;
+<span class="lineNum">     253 </span>            :         bool operator!=(unsigned ui) const;
+<span class="lineNum">     254 </span>            :         bool operator!=(unsigned long ul) const;
+<span class="lineNum">     255 </span>            :         bool operator!=(const char *str) const;
+<span class="lineNum">     256 </span>            :         bool operator!=(const wchar_t *str) const;
+<span class="lineNum">     257 </span>            :         bool operator!=(const variant &amp;value) const;
+<span class="lineNum">     258 </span>            : 
+<span class="lineNum">     259 </span>            :         bool equals(const variant &amp;value) const;
+<span class="lineNum">     260 </span>            : 
+<span class="lineNum">     261 </span>            :         // property methods
+<span class="lineNum">     262 </span>            : 
+<span class="lineNum">     263 </span>            :         bool is_string() const;
+<span class="lineNum">     264 </span>            :         bool is_wstring() const;
+<span class="lineNum">     265 </span>            :         bool is_numeric() const;
+<span class="lineNum">     266 </span>            :         bool is_real() const;
+<span class="lineNum">     267 </span>            :         bool is_null() const;
+<span class="lineNum">     268 </span>            :         size_t size() const;
+<span class="lineNum">     269 </span>            : 
+<span class="lineNum">     270 </span>            :         // conversion methods
+<span class="lineNum">     271 </span>            :         int to_int(const int def) const;
+<span class="lineNum">     272 </span>            :         int to_int() const throw(illegal_conversion);
+<span class="lineNum">     273 </span>            :         unsigned to_uint(const unsigned def) const;
+<span class="lineNum">     274 </span>            :         unsigned to_uint() const throw(illegal_conversion);
+<span class="lineNum">     275 </span>            :         long to_long(const long def) const;
+<span class="lineNum">     276 </span>            :         long to_long() const throw(illegal_conversion);
+<span class="lineNum">     277 </span>            :         unsigned long to_ulong(const unsigned long def) const;
+<span class="lineNum">     278 </span>            :         unsigned long to_ulong() const throw(illegal_conversion);
+<span class="lineNum">     279 </span>            :         long long to_llong(const long long def) const;
+<span class="lineNum">     280 </span>            :         long long to_llong() const throw(illegal_conversion);
+<span class="lineNum">     281 </span>            :         unsigned long long to_ullong(const unsigned long long def) const;
+<span class="lineNum">     282 </span>            :         unsigned long long to_ullong() const throw(illegal_conversion);
+<span class="lineNum">     283 </span>            :         double to_double(const double def) const;
+<span class="lineNum">     284 </span>            :         double to_double() const throw(illegal_conversion);
+<span class="lineNum">     285 </span>            :         long double to_ldouble(const long double def) const;
+<span class="lineNum">     286 </span>            :         long double to_ldouble() const throw(illegal_conversion);
+<span class="lineNum">     287 </span>            :         bool to_bool() const;
+<span class="lineNum">     288 </span>            :         float to_float(const float def) const;
+<span class="lineNum">     289 </span>            :         float to_float() const throw(illegal_conversion);
+<span class="lineNum">     290 </span>            :         const void *to_pointer() const;
+<span class="lineNum">     291 </span>            :         char to_char(const char def) const;
+<span class="lineNum">     292 </span>            :         char to_char() const throw(illegal_conversion);
+<span class="lineNum">     293 </span>            :         unsigned char to_uchar(const unsigned char def) const;
+<span class="lineNum">     294 </span>            :         unsigned char to_uchar() const throw(illegal_conversion);
+<span class="lineNum">     295 </span>            :         string to_string(const string &amp;def) const;
+<span class="lineNum">     296 </span>            :         string to_string() const throw(illegal_conversion);
+<span class="lineNum">     297 </span>            :         const char *to_cstring(const char *def) const;
+<span class="lineNum">     298 </span>            :         const char *to_cstring() const throw(illegal_conversion);
+<span class="lineNum">     299 </span>            :         const wchar_t *to_wcstring(const wchar_t *def) const;
+<span class="lineNum">     300 </span>            :         const wchar_t *to_wcstring() const throw(illegal_conversion);
+<span class="lineNum">     301 </span>            :         wstring to_wstring(const wstring &amp;def) const;
+<span class="lineNum">     302 </span>            :         wstring to_wstring() const throw(illegal_conversion);
+<span class="lineNum">     303 </span>            :     };
+<span class="lineNum">     304 </span>            : 
+<span class="lineNum">     305 </span>            :     // stream operator
+<span class="lineNum">     306 </span>            :     ostream &amp;operator&lt;&lt;(ostream &amp;stream, const variant &amp;v);
+<span class="lineNum">     307 </span>            : 
+<span class="lineNum">     308 </span>            :     // equality operators
+<span class="lineNum">     309 </span>            :     bool operator==(const nullptr_t &amp;n, const variant &amp;v);
+<span class="lineNum">     310 </span>            :     bool operator==(float f, const variant &amp;v);
+<span class="lineNum">     311 </span>            :     bool operator==(const wstring &amp;str, const variant &amp;v);
+<span class="lineNum">     312 </span>            :     bool operator==(const string &amp;str, const variant &amp;v);
+<span class="lineNum">     313 </span>            :     bool operator==(unsigned long long ull, const variant &amp;v);
+<span class="lineNum">     314 </span>            :     bool operator==(long long ll, const variant &amp;v);
+<span class="lineNum">     315 </span>            :     bool operator==(long l, const variant &amp;v);
+<span class="lineNum">     316 </span>            :     bool operator==(int i, const variant &amp;v);
+<span class="lineNum">     317 </span>            :     bool operator==(unsigned ui, const variant &amp;v);
+<span class="lineNum">     318 </span>            :     bool operator==(unsigned long ul, const variant &amp;v);
+<span class="lineNum">     319 </span>            :     bool operator==(bool b, const variant &amp;v) ;
+<span class="lineNum">     320 </span>            :     bool operator==(double d, const variant &amp;v);
+<span class="lineNum">     321 </span>            :     bool operator==(long double ld, const variant &amp;v);
+<span class="lineNum">     322 </span>            : 
+<span class="lineNum">     323 </span>            :     bool operator!=(const nullptr_t &amp;n, const variant &amp;v);
+<span class="lineNum">     324 </span>            :     bool operator!=(float f, const variant &amp;v);
+<span class="lineNum">     325 </span>            :     bool operator!=(const wstring &amp;str, const variant &amp;v);
+<span class="lineNum">     326 </span>            :     bool operator!=(const string &amp;str, const variant &amp;v);
+<span class="lineNum">     327 </span>            :     bool operator!=(unsigned long long ull, const variant &amp;v);
+<span class="lineNum">     328 </span>            :     bool operator!=(long long ll, const variant &amp;v);
+<span class="lineNum">     329 </span>            :     bool operator!=(long l, const variant &amp;v);
+<span class="lineNum">     330 </span>            :     bool operator!=(int i, const variant &amp;v);
+<span class="lineNum">     331 </span>            :     bool operator!=(unsigned ui, const variant &amp;v);
+<span class="lineNum">     332 </span>            :     bool operator!=(unsigned long ul, const variant &amp;v);
+<span class="lineNum">     333 </span>            :     bool operator!=(bool b, const variant &amp;v) ;
+<span class="lineNum">     334 </span>            :     bool operator!=(double d, const variant &amp;v);
+<span class="lineNum">     335 </span>            :     bool operator!=(long double ld, const variant &amp;v);
+<span class="lineNum">     336 </span>            : }
+<span class="lineNum">     337 </span>            : 
+<span class="lineNum">     338 </span>            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

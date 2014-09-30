@@ -31,18 +31,18 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">72</td>
-            <td class="headerCovTableEntry">139</td>
-            <td class="headerCovTableEntryLo">51.8 %</td>
+            <td class="headerCovTableEntry">79</td>
+            <td class="headerCovTableEntry">138</td>
+            <td class="headerCovTableEntryLo">57.2 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-12 12:28:12</td>
+            <td class="headerValue">2014-09-29 17:09:40</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntry">26</td>
             <td class="headerCovTableEntry">41</td>
-            <td class="headerCovTableEntryLo">58.5 %</td>
+            <td class="headerCovTableEntryLo">63.4 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -84,15 +84,15 @@
 <a name="14"><span class="lineNum">      14 </span>            :     {</a>
 <span class="lineNum">      15 </span>            : 
 <span class="lineNum">      16 </span>            :         mysql_row::mysql_row(mysql_db *db, shared_ptr&lt;MYSQL_RES&gt; res, MYSQL_ROW row) : row_impl(), row_(row), res_(res), db_(db)
-<span class="lineNum">      17 </span><span class="lineCov">        384 :         {</span>
-<span class="lineNum">      18 </span><span class="lineCov">        768 :             assert(db_ != NULL);</span>
+<span class="lineNum">      17 </span><span class="lineCov">        424 :         {</span>
+<span class="lineNum">      18 </span><span class="lineCov">        848 :             assert(db_ != NULL);</span>
 <span class="lineNum">      19 </span>            : 
-<span class="lineNum">      20 </span><span class="lineCov">        768 :             assert(row_ != NULL);</span>
+<span class="lineNum">      20 </span><span class="lineCov">        848 :             assert(row_ != NULL);</span>
 <span class="lineNum">      21 </span>            : 
-<span class="lineNum">      22 </span><span class="lineCov">        768 :             assert(res_ != nullptr);</span>
+<span class="lineNum">      22 </span><span class="lineCov">        848 :             assert(res_ != nullptr);</span>
 <span class="lineNum">      23 </span>            : 
-<span class="lineNum">      24 </span><span class="lineCov">        768 :             size_ = mysql_num_fields(res.get());</span>
-<a name="25"><span class="lineNum">      25 </span><span class="lineCov">        768 :         }</span></a>
+<span class="lineNum">      24 </span><span class="lineCov">        848 :             size_ = mysql_num_fields(res.get());</span>
+<a name="25"><span class="lineNum">      25 </span><span class="lineCov">        848 :         }</span></a>
 <span class="lineNum">      26 </span>            : 
 <span class="lineNum">      27 </span>            :         mysql_row::mysql_row(const mysql_row &amp;other) : row_impl(other), row_(other.row_), res_(other.res_), db_(other.db_), size_(other.size_)
 <a name="28"><span class="lineNum">      28 </span><span class="lineNoCov">          0 :         {}</span></a>
@@ -104,7 +104,7 @@
 <span class="lineNum">      34 </span><span class="lineNoCov">          0 :             other.res_ = nullptr;</span>
 <a name="35"><span class="lineNum">      35 </span><span class="lineNoCov">          0 :         }</span></a>
 <span class="lineNum">      36 </span>            : 
-<a name="37"><span class="lineNum">      37 </span><span class="lineCov">        768 :         mysql_row::~mysql_row() {}</span></a>
+<a name="37"><span class="lineNum">      37 </span><span class="lineCov">        848 :         mysql_row::~mysql_row() {}</span></a>
 <span class="lineNum">      38 </span>            : 
 <span class="lineNum">      39 </span>            :         mysql_row &amp;mysql_row::operator=(const mysql_row &amp;other)
 <span class="lineNum">      40 </span>            :         {
@@ -129,39 +129,39 @@
 <span class="lineNum">      59 </span><span class="lineNoCov">          0 :             return *this;</span>
 <a name="60"><span class="lineNum">      60 </span>            :         }</a>
 <span class="lineNum">      61 </span>            : 
-<span class="lineNum">      62 </span>            :         column mysql_row::column(size_t nPosition) const
+<span class="lineNum">      62 </span>            :         column mysql_row::co1umn(size_t nPosition) const
 <span class="lineNum">      63 </span>            :         {
-<span class="lineNum">      64 </span><span class="lineCov">        960 :             if (!is_valid())</span>
+<span class="lineNum">      64 </span><span class="lineCov">       1054 :             if (!is_valid())</span>
 <span class="lineNum">      65 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;invalid row&quot;);</span>
 <span class="lineNum">      66 </span>            : 
-<span class="lineNum">      67 </span><span class="lineCov">        960 :             if (nPosition &gt;= size())</span>
+<span class="lineNum">      67 </span><span class="lineCov">       1054 :             if (nPosition &gt;= size())</span>
 <span class="lineNum">      68 </span>            :             {
 <span class="lineNum">      69 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;invalid index for row column&quot;);</span>
 <span class="lineNum">      70 </span>            :             }
 <span class="lineNum">      71 </span>            : 
-<span class="lineNum">      72 </span><span class="lineCov">        960 :             if (db_-&gt;cache_level() == sqldb::CACHE_COLUMN)</span>
+<span class="lineNum">      72 </span><span class="lineCov">       1054 :             if (db_-&gt;cache_level() == sqldb::CACHE_COLUMN)</span>
 <span class="lineNum">      73 </span><span class="lineNoCov">          0 :                 return db::column(make_shared&lt;mysql_cached_column&gt;( res_, row_, nPosition ));</span>
 <span class="lineNum">      74 </span>            :             else
-<span class="lineNum">      75 </span><span class="lineCov">       1920 :                 return db::column( make_shared&lt;mysql_column&gt;( res_, row_, nPosition ) );</span>
-<a name="76"><span class="lineNum">      76 </span><span class="lineCov">        960 :         }</span></a>
+<span class="lineNum">      75 </span><span class="lineCov">       2108 :                 return db::column( make_shared&lt;mysql_column&gt;( res_, row_, nPosition ) );</span>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">       1054 :         }</span></a>
 <span class="lineNum">      77 </span>            : 
-<span class="lineNum">      78 </span>            :         column mysql_row::column(const string &amp;name) const
+<span class="lineNum">      78 </span>            :         column mysql_row::co1umn(const string &amp;name) const
 <span class="lineNum">      79 </span>            :         {
-<span class="lineNum">      80 </span><span class="lineCov">       1920 :             assert(!name.empty());</span>
+<span class="lineNum">      80 </span><span class="lineCov">       2100 :             assert(!name.empty());</span>
 <span class="lineNum">      81 </span>            : 
-<span class="lineNum">      82 </span><span class="lineCov">       1920 :             assert(res_ != nullptr);</span>
+<span class="lineNum">      82 </span><span class="lineCov">       2100 :             assert(res_ != nullptr);</span>
 <span class="lineNum">      83 </span>            : 
-<span class="lineNum">      84 </span><span class="lineCov">       4480 :             for (size_t i = 0; i &lt; size_; i++)</span>
+<span class="lineNum">      84 </span><span class="lineCov">       4900 :             for (size_t i = 0; i &lt; size_; i++)</span>
 <span class="lineNum">      85 </span>            :             {
-<span class="lineNum">      86 </span><span class="lineCov">       2240 :                 auto field = mysql_fetch_field_direct(res_.get(), i);</span>
+<span class="lineNum">      86 </span><span class="lineCov">       2450 :                 auto field = mysql_fetch_field_direct(res_.get(), i);</span>
 <span class="lineNum">      87 </span>            : 
-<span class="lineNum">      88 </span><span class="lineCov">       2240 :                 if (name == field-&gt;name)</span>
+<span class="lineNum">      88 </span><span class="lineCov">       2450 :                 if (name == field-&gt;name)</span>
 <span class="lineNum">      89 </span>            :                 {
-<span class="lineNum">      90 </span><span class="lineCov">        960 :                     return column(i);</span>
+<span class="lineNum">      90 </span><span class="lineCov">       1050 :                     return co1umn(i);</span>
 <span class="lineNum">      91 </span>            :                 }
-<span class="lineNum">      92 </span><span class="lineCov">       1280 :             }</span>
+<span class="lineNum">      92 </span><span class="lineCov">       1400 :             }</span>
 <span class="lineNum">      93 </span><span class="lineNoCov">          0 :             throw database_exception(&quot;unknown column '&quot; + name + &quot;'&quot;);</span>
-<a name="94"><span class="lineNum">      94 </span><span class="lineCov">        960 :         }</span></a>
+<a name="94"><span class="lineNum">      94 </span><span class="lineCov">       1050 :         }</span></a>
 <span class="lineNum">      95 </span>            : 
 <span class="lineNum">      96 </span>            :         string mysql_row::column_name(size_t nPosition) const
 <span class="lineNum">      97 </span>            :         {
@@ -179,13 +179,13 @@
 <span class="lineNum">     109 </span>            : 
 <span class="lineNum">     110 </span>            :         size_t mysql_row::size() const
 <span class="lineNum">     111 </span>            :         {
-<span class="lineNum">     112 </span><span class="lineCov">        960 :             return size_;</span>
+<span class="lineNum">     112 </span><span class="lineCov">       1058 :             return size_;</span>
 <a name="113"><span class="lineNum">     113 </span>            :         }</a>
 <span class="lineNum">     114 </span>            : 
 <span class="lineNum">     115 </span>            :         bool mysql_row::is_valid() const
 <span class="lineNum">     116 </span>            :         {
-<span class="lineNum">     117 </span><span class="lineCov">       2880 :             return res_ != nullptr &amp;&amp; res_ &amp;&amp; row_ != NULL;</span>
-<span class="lineNum">     118 </span><span class="lineCov">        960 :         }</span>
+<span class="lineNum">     117 </span><span class="lineCov">       3162 :             return res_ != nullptr &amp;&amp; res_ &amp;&amp; row_ != NULL;</span>
+<span class="lineNum">     118 </span><span class="lineCov">       1054 :         }</span>
 <span class="lineNum">     119 </span>            : 
 <span class="lineNum">     120 </span>            : 
 <span class="lineNum">     121 </span>            :         /* statement version */
@@ -193,191 +193,185 @@
 <span class="lineNum">     123 </span>            : 
 <span class="lineNum">     124 </span>            :         mysql_stmt_row::mysql_stmt_row(mysql_db *db, shared_ptr&lt;MYSQL_RES&gt; metadata, shared_ptr&lt;mysql_binding&gt; fields) : row_impl(), fields_(fields), metadata_(metadata),
 <span class="lineNum">     125 </span>            :             db_(db)
-<span class="lineNum">     126 </span><span class="lineCov">         60 :         {</span>
-<span class="lineNum">     127 </span><span class="lineCov">        120 :             assert(db_ != NULL);</span>
+<span class="lineNum">     126 </span><span class="lineCov">         64 :         {</span>
+<span class="lineNum">     127 </span><span class="lineCov">        128 :             assert(db_ != NULL);</span>
 <span class="lineNum">     128 </span>            : 
-<span class="lineNum">     129 </span>            :             //assert(metadata_ != NULL);
-<span class="lineNum">     130 </span>            : 
-<span class="lineNum">     131 </span>            :             //assert(fields_ != nullptr);
+<span class="lineNum">     129 </span><span class="lineCov">         64 :             if (metadata_ != nullptr)</span>
+<span class="lineNum">     130 </span><span class="lineCov">        124 :                 size_ = mysql_num_fields(metadata_.get());</span>
+<a name="131"><span class="lineNum">     131 </span><span class="lineCov">        128 :         }</span></a>
 <span class="lineNum">     132 </span>            : 
-<span class="lineNum">     133 </span><span class="lineCov">         60 :             if (metadata_ != nullptr)</span>
-<span class="lineNum">     134 </span><span class="lineCov">        116 :                 size_ = mysql_num_fields(metadata_.get());</span>
-<a name="135"><span class="lineNum">     135 </span><span class="lineCov">        120 :         }</span></a>
-<span class="lineNum">     136 </span>            : 
-<span class="lineNum">     137 </span>            :         mysql_stmt_row::mysql_stmt_row(const mysql_stmt_row &amp;other) : row_impl(other), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_)
-<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 :         {}</span></a>
-<span class="lineNum">     139 </span>            : 
-<span class="lineNum">     140 </span><span class="lineNoCov">          0 :         mysql_stmt_row::mysql_stmt_row(mysql_stmt_row &amp;&amp;other) : row_impl(std::move(other)), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_)</span>
-<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         {</span>
-<span class="lineNum">     142 </span><span class="lineNoCov">          0 :             other.fields_ = nullptr;</span>
-<span class="lineNum">     143 </span><span class="lineNoCov">          0 :             other.db_ = NULL;</span>
-<span class="lineNum">     144 </span><span class="lineNoCov">          0 :             other.metadata_ = nullptr;</span>
-<a name="145"><span class="lineNum">     145 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     146 </span>            : 
-<a name="147"><span class="lineNum">     147 </span><span class="lineCov">        120 :         mysql_stmt_row::~mysql_stmt_row() {}</span></a>
-<span class="lineNum">     148 </span>            : 
-<span class="lineNum">     149 </span>            :         mysql_stmt_row &amp;mysql_stmt_row::operator=(const mysql_stmt_row &amp;other)
-<span class="lineNum">     150 </span>            :         {
-<span class="lineNum">     151 </span><span class="lineNoCov">          0 :             fields_ = other.fields_;</span>
-<span class="lineNum">     152 </span><span class="lineNoCov">          0 :             metadata_ = other.metadata_;</span>
-<span class="lineNum">     153 </span><span class="lineNoCov">          0 :             db_ = other.db_;</span>
-<span class="lineNum">     154 </span><span class="lineNoCov">          0 :             size_ = other.size_;</span>
-<span class="lineNum">     155 </span>            : 
-<span class="lineNum">     156 </span><span class="lineNoCov">          0 :             return *this;</span>
-<a name="157"><span class="lineNum">     157 </span>            :         }</a>
-<span class="lineNum">     158 </span>            : 
-<span class="lineNum">     159 </span>            :         mysql_stmt_row &amp;mysql_stmt_row::operator=(mysql_stmt_row &amp;&amp; other)
-<span class="lineNum">     160 </span>            :         {
-<span class="lineNum">     161 </span><span class="lineNoCov">          0 :             fields_ = other.fields_;</span>
-<span class="lineNum">     162 </span><span class="lineNoCov">          0 :             metadata_ = other.metadata_;</span>
-<span class="lineNum">     163 </span><span class="lineNoCov">          0 :             db_ = other.db_;</span>
-<span class="lineNum">     164 </span><span class="lineNoCov">          0 :             size_ = other.size_;</span>
-<span class="lineNum">     165 </span><span class="lineNoCov">          0 :             other.fields_ = nullptr;</span>
-<span class="lineNum">     166 </span><span class="lineNoCov">          0 :             other.db_ = NULL;</span>
-<span class="lineNum">     167 </span><span class="lineNoCov">          0 :             other.metadata_ = nullptr;</span>
-<span class="lineNum">     168 </span>            : 
-<span class="lineNum">     169 </span><span class="lineNoCov">          0 :             return *this;</span>
-<a name="170"><span class="lineNum">     170 </span>            :         }</a>
+<span class="lineNum">     133 </span>            :         mysql_stmt_row::mysql_stmt_row(const mysql_stmt_row &amp;other) : row_impl(other), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_)
+<a name="134"><span class="lineNum">     134 </span><span class="lineNoCov">          0 :         {}</span></a>
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         mysql_stmt_row::mysql_stmt_row(mysql_stmt_row &amp;&amp;other) : row_impl(std::move(other)), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_)</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :         {</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :             other.fields_ = nullptr;</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :             other.db_ = NULL;</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :             other.metadata_ = nullptr;</span>
+<a name="141"><span class="lineNum">     141 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     142 </span>            : 
+<a name="143"><span class="lineNum">     143 </span><span class="lineCov">        128 :         mysql_stmt_row::~mysql_stmt_row() {}</span></a>
+<span class="lineNum">     144 </span>            : 
+<span class="lineNum">     145 </span>            :         mysql_stmt_row &amp;mysql_stmt_row::operator=(const mysql_stmt_row &amp;other)
+<span class="lineNum">     146 </span>            :         {
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :             fields_ = other.fields_;</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :             metadata_ = other.metadata_;</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :             db_ = other.db_;</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :             size_ = other.size_;</span>
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :             return *this;</span>
+<a name="153"><span class="lineNum">     153 </span>            :         }</a>
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span>            :         mysql_stmt_row &amp;mysql_stmt_row::operator=(mysql_stmt_row &amp;&amp; other)
+<span class="lineNum">     156 </span>            :         {
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :             fields_ = other.fields_;</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :             metadata_ = other.metadata_;</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :             db_ = other.db_;</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :             size_ = other.size_;</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :             other.fields_ = nullptr;</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :             other.db_ = NULL;</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :             other.metadata_ = nullptr;</span>
+<span class="lineNum">     164 </span>            : 
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :             return *this;</span>
+<a name="166"><span class="lineNum">     166 </span>            :         }</a>
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            :         column mysql_stmt_row::co1umn(size_t nPosition) const
+<span class="lineNum">     169 </span>            :         {
+<span class="lineNum">     170 </span><span class="lineCov">        216 :             assert(fields_ != nullptr);</span>
 <span class="lineNum">     171 </span>            : 
-<span class="lineNum">     172 </span>            :         column mysql_stmt_row::column(size_t nPosition) const
-<span class="lineNum">     173 </span>            :         {
-<span class="lineNum">     174 </span><span class="lineCov">        208 :             assert(fields_ != nullptr);</span>
-<span class="lineNum">     175 </span>            : 
-<span class="lineNum">     176 </span><span class="lineCov">        104 :             if (!is_valid())</span>
-<span class="lineNum">     177 </span>            :             {
-<span class="lineNum">     178 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;invalid row&quot;);</span>
-<span class="lineNum">     179 </span>            :             }
-<span class="lineNum">     180 </span>            : 
-<span class="lineNum">     181 </span><span class="lineCov">        104 :             if (nPosition &gt;= size())</span>
-<span class="lineNum">     182 </span>            :             {
-<span class="lineNum">     183 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;invalid index for row column&quot;);</span>
-<span class="lineNum">     184 </span>            :             }
-<span class="lineNum">     185 </span>            : 
-<span class="lineNum">     186 </span><span class="lineCov">        104 :             if (db_-&gt;cache_level() == sqldb::CACHE_COLUMN)</span>
-<span class="lineNum">     187 </span><span class="lineNoCov">          0 :                 return db::column(make_shared&lt;mysql_cached_column&gt;( column_name(nPosition), *fields_.get(), nPosition));</span>
-<span class="lineNum">     188 </span>            :             else
-<span class="lineNum">     189 </span><span class="lineCov">        312 :                 return db::column(make_shared&lt;mysql_stmt_column&gt;( column_name(nPosition), fields_, nPosition ) );</span>
-<a name="190"><span class="lineNum">     190 </span><span class="lineCov">        104 :         }</span></a>
+<span class="lineNum">     172 </span><span class="lineCov">        108 :             if (!is_valid())</span>
+<span class="lineNum">     173 </span>            :             {
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;invalid row&quot;);</span>
+<span class="lineNum">     175 </span>            :             }
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span><span class="lineCov">        108 :             if (nPosition &gt;= size())</span>
+<span class="lineNum">     178 </span>            :             {
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;invalid index for row column&quot;);</span>
+<span class="lineNum">     180 </span>            :             }
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span><span class="lineCov">        108 :             if (db_-&gt;cache_level() == sqldb::CACHE_COLUMN)</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :                 return db::column(make_shared&lt;mysql_cached_column&gt;( column_name(nPosition), *fields_.get(), nPosition));</span>
+<span class="lineNum">     184 </span>            :             else
+<span class="lineNum">     185 </span><span class="lineCov">        324 :                 return db::column(make_shared&lt;mysql_stmt_column&gt;( column_name(nPosition), fields_, nPosition ) );</span>
+<a name="186"><span class="lineNum">     186 </span><span class="lineCov">        108 :         }</span></a>
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span>            :         column mysql_stmt_row::co1umn(const string &amp;name) const
+<span class="lineNum">     189 </span>            :         {
+<span class="lineNum">     190 </span><span class="lineCov">         18 :             assert(!name.empty());</span>
 <span class="lineNum">     191 </span>            : 
-<span class="lineNum">     192 </span>            :         column mysql_stmt_row::column(const string &amp;name) const
-<span class="lineNum">     193 </span>            :         {
-<span class="lineNum">     194 </span><span class="lineCov">         18 :             assert(!name.empty());</span>
-<span class="lineNum">     195 </span>            : 
-<span class="lineNum">     196 </span><span class="lineCov">         18 :             assert(metadata_ != nullptr);</span>
-<span class="lineNum">     197 </span>            : 
-<span class="lineNum">     198 </span><span class="lineCov">          9 :             if (!is_valid())</span>
-<span class="lineNum">     199 </span>            :             {
-<span class="lineNum">     200 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;invalid row&quot;);</span>
-<span class="lineNum">     201 </span>            :             }
+<span class="lineNum">     192 </span><span class="lineCov">         18 :             assert(metadata_ != nullptr);</span>
+<span class="lineNum">     193 </span>            : 
+<span class="lineNum">     194 </span><span class="lineCov">          9 :             if (!is_valid())</span>
+<span class="lineNum">     195 </span>            :             {
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;invalid row&quot;);</span>
+<span class="lineNum">     197 </span>            :             }
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span><span class="lineCov">         50 :             for (size_t i = 0; i &lt; size(); i++)</span>
+<span class="lineNum">     200 </span>            :             {
+<span class="lineNum">     201 </span><span class="lineCov">         25 :                 auto field = mysql_fetch_field_direct(metadata_.get(), i);</span>
 <span class="lineNum">     202 </span>            : 
-<span class="lineNum">     203 </span><span class="lineCov">         50 :             for (size_t i = 0; i &lt; size(); i++)</span>
-<span class="lineNum">     204 </span>            :             {
-<span class="lineNum">     205 </span><span class="lineCov">         25 :                 auto field = mysql_fetch_field_direct(metadata_.get(), i);</span>
-<span class="lineNum">     206 </span>            : 
-<span class="lineNum">     207 </span><span class="lineCov">         25 :                 if (name == field-&gt;name)</span>
-<span class="lineNum">     208 </span>            :                 {
-<span class="lineNum">     209 </span><span class="lineCov">          9 :                     return column(i);</span>
-<span class="lineNum">     210 </span>            :                 }
-<span class="lineNum">     211 </span><span class="lineCov">         16 :             }</span>
-<span class="lineNum">     212 </span><span class="lineNoCov">          0 :             throw database_exception(&quot;unknown column '&quot; + name + &quot;'&quot;);</span>
-<a name="213"><span class="lineNum">     213 </span><span class="lineCov">          9 :         }</span></a>
+<span class="lineNum">     203 </span><span class="lineCov">         25 :                 if (name == field-&gt;name)</span>
+<span class="lineNum">     204 </span>            :                 {
+<span class="lineNum">     205 </span><span class="lineCov">          9 :                     return co1umn(i);</span>
+<span class="lineNum">     206 </span>            :                 }
+<span class="lineNum">     207 </span><span class="lineCov">         16 :             }</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :             throw database_exception(&quot;unknown column '&quot; + name + &quot;'&quot;);</span>
+<a name="209"><span class="lineNum">     209 </span><span class="lineCov">          9 :         }</span></a>
+<span class="lineNum">     210 </span>            : 
+<span class="lineNum">     211 </span>            :         string mysql_stmt_row::column_name(size_t nPosition) const
+<span class="lineNum">     212 </span>            :         {
+<span class="lineNum">     213 </span><span class="lineCov">        310 :             assert(metadata_ != nullptr);</span>
 <span class="lineNum">     214 </span>            : 
-<span class="lineNum">     215 </span>            :         string mysql_stmt_row::column_name(size_t nPosition) const
-<span class="lineNum">     216 </span>            :         {
-<span class="lineNum">     217 </span><span class="lineCov">        302 :             assert(metadata_ != nullptr);</span>
-<span class="lineNum">     218 </span>            : 
-<span class="lineNum">     219 </span><span class="lineCov">        151 :             if (nPosition &gt;= size())</span>
-<span class="lineNum">     220 </span>            :             {
-<span class="lineNum">     221 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;invalid index for row column&quot;);</span>
-<span class="lineNum">     222 </span>            :             }
-<span class="lineNum">     223 </span>            : 
-<span class="lineNum">     224 </span><span class="lineCov">        151 :             auto field = mysql_fetch_field_direct(metadata_.get(), nPosition);</span>
-<span class="lineNum">     225 </span>            : 
-<span class="lineNum">     226 </span><span class="lineCov">        151 :             return field-&gt;name;</span>
-<a name="227"><span class="lineNum">     227 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     228 </span>            : 
-<span class="lineNum">     229 </span>            :         size_t mysql_stmt_row::size() const
-<span class="lineNum">     230 </span>            :         {
-<span class="lineNum">     231 </span><span class="lineCov">        442 :             return size_;</span>
-<a name="232"><span class="lineNum">     232 </span>            :         }</a>
-<span class="lineNum">     233 </span>            : 
-<span class="lineNum">     234 </span>            :         bool mysql_stmt_row::is_valid() const
-<span class="lineNum">     235 </span>            :         {
-<span class="lineNum">     236 </span><span class="lineCov">        266 :             return fields_ != nullptr &amp;&amp; metadata_ != nullptr;</span>
-<span class="lineNum">     237 </span><span class="lineCov">        133 :         }</span>
-<span class="lineNum">     238 </span>            : 
-<a name="239"><span class="lineNum">     239 </span>            :         /* cached version */</a>
+<span class="lineNum">     215 </span><span class="lineCov">        155 :             if (nPosition &gt;= size())</span>
+<span class="lineNum">     216 </span>            :             {
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;invalid index for row column&quot;);</span>
+<span class="lineNum">     218 </span>            :             }
+<span class="lineNum">     219 </span>            : 
+<span class="lineNum">     220 </span><span class="lineCov">        155 :             auto field = mysql_fetch_field_direct(metadata_.get(), nPosition);</span>
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span><span class="lineCov">        155 :             return field-&gt;name;</span>
+<a name="223"><span class="lineNum">     223 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span>            :         size_t mysql_stmt_row::size() const
+<span class="lineNum">     226 </span>            :         {
+<span class="lineNum">     227 </span><span class="lineCov">        454 :             return size_;</span>
+<a name="228"><span class="lineNum">     228 </span>            :         }</a>
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span>            :         bool mysql_stmt_row::is_valid() const
+<span class="lineNum">     231 </span>            :         {
+<span class="lineNum">     232 </span><span class="lineCov">        274 :             return fields_ != nullptr &amp;&amp; metadata_ != nullptr;</span>
+<span class="lineNum">     233 </span><span class="lineCov">        137 :         }</span>
+<span class="lineNum">     234 </span>            : 
+<a name="235"><span class="lineNum">     235 </span>            :         /* cached version */</a>
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span>            :         mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr&lt;MYSQL_RES&gt; metadata, mysql_binding &amp;fields)
+<span class="lineNum">     238 </span><span class="lineCov">         52 :         {</span>
+<span class="lineNum">     239 </span><span class="lineCov">        104 :             assert(metadata != nullptr);</span>
 <span class="lineNum">     240 </span>            : 
-<span class="lineNum">     241 </span>            :         mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr&lt;MYSQL_RES&gt; metadata, mysql_binding &amp;fields)
-<span class="lineNum">     242 </span><span class="lineCov">         44 :         {</span>
-<span class="lineNum">     243 </span>            :             //assert(fields != nullptr);
-<span class="lineNum">     244 </span>            : 
-<span class="lineNum">     245 </span><span class="lineCov">         44 :             if (metadata != nullptr)</span>
-<span class="lineNum">     246 </span>            :             {
-<span class="lineNum">     247 </span><span class="lineCov">         88 :                 int size = mysql_num_fields(metadata.get());</span>
-<span class="lineNum">     248 </span>            : 
-<span class="lineNum">     249 </span><span class="lineCov">        512 :                 for (size_t i = 0; i &lt; size; i++)</span>
-<span class="lineNum">     250 </span>            :                 {
-<span class="lineNum">     251 </span><span class="lineCov">        424 :                     auto field = mysql_fetch_field_direct(metadata.get(), i);</span>
-<span class="lineNum">     252 </span>            : 
-<span class="lineNum">     253 </span><span class="lineCov">        636 :                     columns_.push_back(make_shared&lt;mysql_cached_column&gt;(field-&gt;name, fields, i));</span>
-<span class="lineNum">     254 </span><span class="lineCov">        212 :                 }</span>
-<span class="lineNum">     255 </span><span class="lineCov">         44 :             }</span>
-<a name="256"><span class="lineNum">     256 </span><span class="lineCov">         88 :         }</span></a>
+<span class="lineNum">     241 </span><span class="lineCov">        104 :             int size = mysql_num_fields(metadata.get());</span>
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span><span class="lineCov">        608 :             for (size_t i = 0; i &lt; size; i++)</span>
+<span class="lineNum">     244 </span>            :             {
+<span class="lineNum">     245 </span><span class="lineCov">        504 :                 auto field = mysql_fetch_field_direct(metadata.get(), i);</span>
+<span class="lineNum">     246 </span>            : 
+<span class="lineNum">     247 </span><span class="lineCov">        756 :                 columns_.push_back(make_shared&lt;mysql_cached_column&gt;(field-&gt;name, fields, i));</span>
+<span class="lineNum">     248 </span><span class="lineCov">        252 :             }</span>
+<span class="lineNum">     249 </span>            : 
+<a name="250"><span class="lineNum">     250 </span><span class="lineCov">        104 :         }</span></a>
+<span class="lineNum">     251 </span>            : 
+<span class="lineNum">     252 </span>            :         mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr&lt;MYSQL_RES&gt; res, MYSQL_ROW row)
+<span class="lineNum">     253 </span><span class="lineCov">          1 :         {</span>
+<span class="lineNum">     254 </span><span class="lineCov">          2 :             assert(row != NULL);</span>
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span><span class="lineCov">          2 :             assert(res != NULL);</span>
 <span class="lineNum">     257 </span>            : 
-<span class="lineNum">     258 </span>            :         mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr&lt;MYSQL_RES&gt; res, MYSQL_ROW row)
-<span class="lineNum">     259 </span><span class="lineNoCov">          0 :         {</span>
-<span class="lineNum">     260 </span><span class="lineNoCov">          0 :             assert(row != NULL);</span>
-<span class="lineNum">     261 </span>            : 
-<span class="lineNum">     262 </span><span class="lineNoCov">          0 :             assert(res != NULL);</span>
-<span class="lineNum">     263 </span>            : 
-<span class="lineNum">     264 </span><span class="lineNoCov">          0 :             int size = mysql_num_fields(res.get());</span>
+<span class="lineNum">     258 </span><span class="lineCov">          2 :             int size = mysql_num_fields(res.get());</span>
+<span class="lineNum">     259 </span>            : 
+<span class="lineNum">     260 </span><span class="lineCov">         12 :             for (size_t i = 0; i &lt; size; i++)</span>
+<span class="lineNum">     261 </span>            :             {
+<span class="lineNum">     262 </span><span class="lineCov">         15 :                 columns_.push_back(make_shared&lt;mysql_cached_column&gt;(res, row, i));</span>
+<span class="lineNum">     263 </span><span class="lineCov">          5 :             }</span>
+<a name="264"><span class="lineNum">     264 </span><span class="lineCov">          2 :         }</span></a>
 <span class="lineNum">     265 </span>            : 
-<span class="lineNum">     266 </span><span class="lineNoCov">          0 :             for (size_t i = 0; i &lt; size; i++)</span>
-<span class="lineNum">     267 </span>            :             {
-<span class="lineNum">     268 </span><span class="lineNoCov">          0 :                 columns_.push_back(make_shared&lt;mysql_cached_column&gt;(res, row, i));</span>
-<span class="lineNum">     269 </span><span class="lineNoCov">          0 :             }</span>
-<a name="270"><span class="lineNum">     270 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     271 </span>            : 
-<span class="lineNum">     272 </span>            :         column mysql_cached_row::column(size_t nPosition) const
-<span class="lineNum">     273 </span>            :         {
-<span class="lineNum">     274 </span><span class="lineCov">        210 :             assert(nPosition &lt; size());</span>
-<span class="lineNum">     275 </span>            : 
-<span class="lineNum">     276 </span><span class="lineCov">        210 :             return arg3::db::column(columns_[nPosition]);</span>
-<a name="277"><span class="lineNum">     277 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     278 </span>            : 
-<span class="lineNum">     279 </span>            :         column mysql_cached_row::column(const string &amp;name) const
-<span class="lineNum">     280 </span>            :         {
-<span class="lineNum">     281 </span><span class="lineCov">         18 :             assert(!name.empty());</span>
-<span class="lineNum">     282 </span>            : 
-<span class="lineNum">     283 </span><span class="lineCov">         50 :             for (int i = 0; i &lt; columns_.size(); i++)</span>
-<span class="lineNum">     284 </span>            :             {
-<span class="lineNum">     285 </span><span class="lineCov">         25 :                 if (name == column_name(i))</span>
-<span class="lineNum">     286 </span><span class="lineCov">          9 :                     return column(i);</span>
-<span class="lineNum">     287 </span><span class="lineCov">         16 :             }</span>
-<span class="lineNum">     288 </span><span class="lineNoCov">          0 :             throw database_exception(&quot;unknown column '&quot; + name + &quot;'&quot;);</span>
-<a name="289"><span class="lineNum">     289 </span><span class="lineCov">          9 :         }</span></a>
-<span class="lineNum">     290 </span>            : 
-<span class="lineNum">     291 </span>            :         string mysql_cached_row::column_name(size_t nPosition) const
-<span class="lineNum">     292 </span>            :         {
-<span class="lineNum">     293 </span><span class="lineCov">        144 :             assert(nPosition &lt; size());</span>
-<span class="lineNum">     294 </span>            : 
-<span class="lineNum">     295 </span><span class="lineCov">         72 :             return columns_[nPosition]-&gt;name();</span>
-<a name="296"><span class="lineNum">     296 </span>            :         }</a>
-<span class="lineNum">     297 </span>            : 
-<span class="lineNum">     298 </span>            :         size_t mysql_cached_row::size() const
-<span class="lineNum">     299 </span>            :         {
-<span class="lineNum">     300 </span><span class="lineCov">        339 :             return columns_.size();</span>
-<a name="301"><span class="lineNum">     301 </span>            :         }</a>
-<span class="lineNum">     302 </span>            : 
-<span class="lineNum">     303 </span>            :         bool mysql_cached_row::is_valid() const
-<span class="lineNum">     304 </span>            :         {
-<span class="lineNum">     305 </span><span class="lineCov">         20 :             return true;</span>
-<span class="lineNum">     306 </span>            :         }
-<span class="lineNum">     307 </span>            :     }
-<span class="lineNum">     308 </span>            : }
-<span class="lineNum">     309 </span>            : 
-<span class="lineNum">     310 </span>            : #endif
+<span class="lineNum">     266 </span>            :         column mysql_cached_row::co1umn(size_t nPosition) const
+<span class="lineNum">     267 </span>            :         {
+<span class="lineNum">     268 </span><span class="lineCov">        218 :             assert(nPosition &lt; size());</span>
+<span class="lineNum">     269 </span>            : 
+<span class="lineNum">     270 </span><span class="lineCov">        218 :             return arg3::db::column(columns_[nPosition]);</span>
+<a name="271"><span class="lineNum">     271 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span>            :         column mysql_cached_row::co1umn(const string &amp;name) const
+<span class="lineNum">     274 </span>            :         {
+<span class="lineNum">     275 </span><span class="lineCov">         18 :             assert(!name.empty());</span>
+<span class="lineNum">     276 </span>            : 
+<span class="lineNum">     277 </span><span class="lineCov">         50 :             for (int i = 0; i &lt; columns_.size(); i++)</span>
+<span class="lineNum">     278 </span>            :             {
+<span class="lineNum">     279 </span><span class="lineCov">         25 :                 if (name == column_name(i))</span>
+<span class="lineNum">     280 </span><span class="lineCov">          9 :                     return co1umn(i);</span>
+<span class="lineNum">     281 </span><span class="lineCov">         16 :             }</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :             throw database_exception(&quot;unknown column '&quot; + name + &quot;'&quot;);</span>
+<a name="283"><span class="lineNum">     283 </span><span class="lineCov">          9 :         }</span></a>
+<span class="lineNum">     284 </span>            : 
+<span class="lineNum">     285 </span>            :         string mysql_cached_row::column_name(size_t nPosition) const
+<span class="lineNum">     286 </span>            :         {
+<span class="lineNum">     287 </span><span class="lineCov">        144 :             assert(nPosition &lt; size());</span>
+<span class="lineNum">     288 </span>            : 
+<span class="lineNum">     289 </span><span class="lineCov">         72 :             return columns_[nPosition]-&gt;name();</span>
+<a name="290"><span class="lineNum">     290 </span>            :         }</a>
+<span class="lineNum">     291 </span>            : 
+<span class="lineNum">     292 </span>            :         size_t mysql_cached_row::size() const
+<span class="lineNum">     293 </span>            :         {
+<span class="lineNum">     294 </span><span class="lineCov">        347 :             return columns_.size();</span>
+<a name="295"><span class="lineNum">     295 </span>            :         }</a>
+<span class="lineNum">     296 </span>            : 
+<span class="lineNum">     297 </span>            :         bool mysql_cached_row::is_valid() const
+<span class="lineNum">     298 </span>            :         {
+<span class="lineNum">     299 </span><span class="lineCov">         20 :             return true;</span>
+<span class="lineNum">     300 </span>            :         }
+<span class="lineNum">     301 </span>            :     }
+<span class="lineNum">     302 </span>            : }
+<span class="lineNum">     303 </span>            : 
+<span class="lineNum">     304 </span>            : #endif
 </pre>
       </td>
     </tr>

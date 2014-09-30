@@ -31,18 +31,18 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">41</td>
-            <td class="headerCovTableEntry">91</td>
-            <td class="headerCovTableEntryLo">45.1 %</td>
+            <td class="headerCovTableEntry">44</td>
+            <td class="headerCovTableEntry">93</td>
+            <td class="headerCovTableEntryLo">47.3 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-08-12 12:28:12</td>
+            <td class="headerValue">2014-09-29 17:09:40</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">10</td>
-            <td class="headerCovTableEntry">26</td>
-            <td class="headerCovTableEntryLo">38.5 %</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntryLo">41.7 %</td>
           </tr>
           <tr>
             <td class="headerItem">Legend:</td>
@@ -96,8 +96,8 @@
 <span class="lineNum">      26 </span>            : 
 <span class="lineNum">      27 </span>            :         mysql_db::mysql_db(const string &amp;dbName, const string &amp;user, const string &amp;password, const string &amp;host, int port) : sqldb(), db_(NULL),
 <span class="lineNum">      28 </span>            :             dbName_(dbName), user_(user), password_(password), host_(host), port_(port), schema_factory_(this)
-<span class="lineNum">      29 </span><span class="lineCov">         20 :         {</span>
-<a name="30"><span class="lineNum">      30 </span><span class="lineCov">          4 :         }</span></a>
+<span class="lineNum">      29 </span><span class="lineCov">         10 :         {</span>
+<a name="30"><span class="lineNum">      30 </span><span class="lineCov">          2 :         }</span></a>
 <span class="lineNum">      31 </span>            : 
 <span class="lineNum">      32 </span>            :         mysql_db::mysql_db(const mysql_db &amp;other) : sqldb(other), db_(other.db_),
 <span class="lineNum">      33 </span>            :             dbName_(other.dbName_), user_(other.user_), password_(other.password_), host_(other.host_),
@@ -141,9 +141,9 @@
 <a name="71"><span class="lineNum">      71 </span>            :         }</a>
 <span class="lineNum">      72 </span>            : 
 <span class="lineNum">      73 </span>            :         mysql_db::~mysql_db()
-<span class="lineNum">      74 </span><span class="lineCov">          4 :         {</span>
-<span class="lineNum">      75 </span><span class="lineCov">          4 :             close();</span>
-<a name="76"><span class="lineNum">      76 </span><span class="lineCov">          4 :         }</span></a>
+<span class="lineNum">      74 </span><span class="lineCov">          2 :         {</span>
+<span class="lineNum">      75 </span><span class="lineCov">          2 :             close();</span>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">          2 :         }</span></a>
 <span class="lineNum">      77 </span>            : 
 <span class="lineNum">      78 </span>            :         string mysql_db::connection_string() const
 <span class="lineNum">      79 </span>            :         {
@@ -154,7 +154,7 @@
 <span class="lineNum">      84 </span>            : 
 <span class="lineNum">      85 </span>            :         schema_factory *mysql_db::schemas()
 <span class="lineNum">      86 </span>            :         {
-<span class="lineNum">      87 </span><span class="lineCov">        204 :             return &amp;schema_factory_;</span>
+<span class="lineNum">      87 </span><span class="lineCov">        222 :             return &amp;schema_factory_;</span>
 <a name="88"><span class="lineNum">      88 </span>            :         }</a>
 <span class="lineNum">      89 </span>            : 
 <span class="lineNum">      90 </span>            :         void mysql_db::set_connection_string(const string &amp;value)
@@ -164,69 +164,69 @@
 <span class="lineNum">      94 </span>            : 
 <span class="lineNum">      95 </span>            :         void mysql_db::query_schema(const string &amp;tableName, std::vector&lt;column_definition&gt; &amp;columns)
 <span class="lineNum">      96 </span>            :         {
-<span class="lineNum">      97 </span><span class="lineCov">        128 :             auto rs = execute(&quot;show columns from &quot; + tableName);</span>
+<span class="lineNum">      97 </span><span class="lineCov">        140 :             auto rs = execute(&quot;show columns from &quot; + tableName);</span>
 <span class="lineNum">      98 </span>            : 
-<span class="lineNum">      99 </span><span class="lineCov">       2304 :             for (auto &amp; row : rs)</span>
+<span class="lineNum">      99 </span><span class="lineCov">       2520 :             for (auto &amp; row : rs)</span>
 <span class="lineNum">     100 </span>            :             {
-<span class="lineNum">     101 </span><span class="lineCov">        320 :                 column_definition def;</span>
+<span class="lineNum">     101 </span><span class="lineCov">        350 :                 column_definition def;</span>
 <span class="lineNum">     102 </span>            : 
 <span class="lineNum">     103 </span>            :                 // column name
-<span class="lineNum">     104 </span><span class="lineCov">       1280 :                 def.name = row[&quot;Field&quot;].to_string();</span>
+<span class="lineNum">     104 </span><span class="lineCov">       1400 :                 def.name = row[&quot;Field&quot;].to_string();</span>
 <span class="lineNum">     105 </span>            : 
 <span class="lineNum">     106 </span>            :                 // primary key check
-<span class="lineNum">     107 </span><span class="lineCov">       1280 :                 def.pk = row[&quot;Key&quot;].to_string() == &quot;PRI&quot;;</span>
+<span class="lineNum">     107 </span><span class="lineCov">       1400 :                 def.pk = row[&quot;Key&quot;].to_string() == &quot;PRI&quot;;</span>
 <span class="lineNum">     108 </span>            : 
 <span class="lineNum">     109 </span>            :                 // find type
-<span class="lineNum">     110 </span><span class="lineCov">       1280 :                 string type = row[&quot;Type&quot;].to_string();</span>
+<span class="lineNum">     110 </span><span class="lineCov">       1400 :                 string type = row[&quot;Type&quot;].to_string();</span>
 <span class="lineNum">     111 </span>            : 
-<span class="lineNum">     112 </span><span class="lineCov">        320 :                 if (type.find(&quot;int&quot;) != string::npos)</span>
+<span class="lineNum">     112 </span><span class="lineCov">        350 :                 if (type.find(&quot;int&quot;) != string::npos)</span>
 <span class="lineNum">     113 </span>            :                 {
-<span class="lineNum">     114 </span><span class="lineCov">         64 :                     def.type = MYSQL_TYPE_LONG;</span>
-<span class="lineNum">     115 </span><span class="lineCov">         64 :                 }</span>
-<span class="lineNum">     116 </span><span class="lineCov">        256 :                 else if (type.find(&quot;real&quot;) != string::npos)</span>
+<span class="lineNum">     114 </span><span class="lineCov">         70 :                     def.type = MYSQL_TYPE_LONG;</span>
+<span class="lineNum">     115 </span><span class="lineCov">         70 :                 }</span>
+<span class="lineNum">     116 </span><span class="lineCov">        280 :                 else if (type.find(&quot;real&quot;) != string::npos)</span>
 <span class="lineNum">     117 </span>            :                 {
 <span class="lineNum">     118 </span><span class="lineNoCov">          0 :                     def.type = MYSQL_TYPE_FLOAT;</span>
 <span class="lineNum">     119 </span><span class="lineNoCov">          0 :                 }</span>
-<span class="lineNum">     120 </span><span class="lineCov">        256 :                 else if (type.find(&quot;blob&quot;) != string::npos)</span>
-<a name="121"><span class="lineNum">     121 </span>            :                 {</a>
-<span class="lineNum">     122 </span><span class="lineCov">         64 :                     def.type = MYSQL_TYPE_BLOB;</span>
-<span class="lineNum">     123 </span><span class="lineCov">         64 :                 }</span>
+<span class="lineNum">     120 </span><span class="lineCov">        280 :                 else if (type.find(&quot;blob&quot;) != string::npos)</span>
+<span class="lineNum">     121 </span>            :                 {
+<span class="lineNum">     122 </span><span class="lineCov">         70 :                     def.type = MYSQL_TYPE_BLOB;</span>
+<span class="lineNum">     123 </span><span class="lineCov">         70 :                 }</span>
 <span class="lineNum">     124 </span>            :                 else
 <span class="lineNum">     125 </span>            :                 {
-<span class="lineNum">     126 </span><span class="lineCov">        192 :                     def.type = MYSQL_TYPE_STRING;</span>
+<span class="lineNum">     126 </span><span class="lineCov">        210 :                     def.type = MYSQL_TYPE_STRING;</span>
 <span class="lineNum">     127 </span>            :                 }
 <span class="lineNum">     128 </span>            : 
-<span class="lineNum">     129 </span><span class="lineCov">        320 :                 columns.push_back(def);</span>
-<span class="lineNum">     130 </span><span class="lineCov">        320 :             }</span>
-<a name="131"><span class="lineNum">     131 </span><span class="lineCov">         64 :         }</span></a>
+<span class="lineNum">     129 </span><span class="lineCov">        350 :                 columns.push_back(def);</span>
+<span class="lineNum">     130 </span><span class="lineCov">        350 :             }</span>
+<a name="131"><span class="lineNum">     131 </span><span class="lineCov">         70 :         }</span></a>
 <span class="lineNum">     132 </span>            : 
 <span class="lineNum">     133 </span>            :         void mysql_db::open()
 <span class="lineNum">     134 </span>            :         {
-<span class="lineNum">     135 </span><span class="lineCov">         94 :             if (db_ != NULL) return;</span>
+<span class="lineNum">     135 </span><span class="lineCov">        100 :             if (db_ != NULL) return;</span>
 <span class="lineNum">     136 </span>            : 
-<span class="lineNum">     137 </span><span class="lineCov">         94 :             db_ = mysql_init(NULL);</span>
+<span class="lineNum">     137 </span><span class="lineCov">        100 :             db_ = mysql_init(NULL);</span>
 <span class="lineNum">     138 </span>            : 
-<span class="lineNum">     139 </span><span class="lineCov">         94 :             if (mysql_real_connect(db_, host_.c_str(), user_.c_str(), password_.c_str(), dbName_.c_str(), port_, NULL, 0) == NULL)</span>
+<span class="lineNum">     139 </span><span class="lineCov">        100 :             if (mysql_real_connect(db_, host_.c_str(), user_.c_str(), password_.c_str(), dbName_.c_str(), port_, NULL, 0) == NULL)</span>
 <span class="lineNum">     140 </span>            :             {
 <span class="lineNum">     141 </span><span class="lineNoCov">          0 :                 mysql_close(db_);</span>
 <span class="lineNum">     142 </span><span class="lineNoCov">          0 :                 db_ = NULL;</span>
 <span class="lineNum">     143 </span><span class="lineNoCov">          0 :                 throw database_exception(&quot;No connection could be made to the database&quot;);</span>
 <span class="lineNum">     144 </span>            :             }
-<a name="145"><span class="lineNum">     145 </span><span class="lineCov">         94 :         }</span></a>
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">        100 :         }</span></a>
 <span class="lineNum">     146 </span>            : 
 <span class="lineNum">     147 </span>            :         bool mysql_db::is_open() const
 <span class="lineNum">     148 </span>            :         {
-<span class="lineNum">     149 </span><span class="lineCov">        750 :             return db_ != NULL;</span>
+<span class="lineNum">     149 </span><span class="lineCov">        816 :             return db_ != NULL;</span>
 <a name="150"><span class="lineNum">     150 </span>            :         }</a>
 <span class="lineNum">     151 </span>            : 
 <span class="lineNum">     152 </span>            :         void mysql_db::close()
 <span class="lineNum">     153 </span>            :         {
-<span class="lineNum">     154 </span><span class="lineCov">         98 :             if (db_ != NULL)</span>
+<span class="lineNum">     154 </span><span class="lineCov">        102 :             if (db_ != NULL)</span>
 <span class="lineNum">     155 </span>            :             {
-<span class="lineNum">     156 </span><span class="lineCov">         94 :                 mysql_close(db_);</span>
-<span class="lineNum">     157 </span><span class="lineCov">         94 :                 db_ = NULL;</span>
-<span class="lineNum">     158 </span><span class="lineCov">         94 :             }</span>
-<a name="159"><span class="lineNum">     159 </span><span class="lineCov">         98 :         }</span></a>
+<span class="lineNum">     156 </span><span class="lineCov">        100 :                 mysql_close(db_);</span>
+<span class="lineNum">     157 </span><span class="lineCov">        100 :                 db_ = NULL;</span>
+<span class="lineNum">     158 </span><span class="lineCov">        100 :             }</span>
+<a name="159"><span class="lineNum">     159 </span><span class="lineCov">        102 :         }</span></a>
 <span class="lineNum">     160 </span>            : 
 <span class="lineNum">     161 </span>            :         string mysql_db::last_error() const
 <span class="lineNum">     162 </span>            :         {
@@ -254,33 +254,36 @@
 <span class="lineNum">     184 </span><span class="lineNoCov">          0 :             return mysql_affected_rows(db_);</span>
 <a name="185"><span class="lineNum">     185 </span>            :         }</a>
 <span class="lineNum">     186 </span>            : 
-<span class="lineNum">     187 </span>            :         resultset mysql_db::execute(const string &amp;sql)
+<span class="lineNum">     187 </span>            :         resultset mysql_db::execute(const string &amp;sql, bool cache)
 <span class="lineNum">     188 </span>            :         {
-<span class="lineNum">     189 </span><span class="lineCov">        508 :             assert(db_ != NULL);</span>
+<span class="lineNum">     189 </span><span class="lineCov">        552 :             assert(db_ != NULL);</span>
 <span class="lineNum">     190 </span>            : 
 <span class="lineNum">     191 </span>            :             MYSQL_RES *res;
 <span class="lineNum">     192 </span>            : 
-<span class="lineNum">     193 </span><span class="lineCov">        254 :             if (mysql_real_query(db_, sql.c_str(), sql.length()))</span>
+<span class="lineNum">     193 </span><span class="lineCov">        276 :             if (mysql_real_query(db_, sql.c_str(), sql.length()))</span>
 <span class="lineNum">     194 </span><span class="lineNoCov">          0 :                 throw database_exception(last_error());</span>
 <span class="lineNum">     195 </span>            : 
-<span class="lineNum">     196 </span><span class="lineCov">        254 :             res = mysql_use_result(db_);</span>
+<span class="lineNum">     196 </span><span class="lineCov">        276 :             res = mysql_store_result(db_);</span>
 <span class="lineNum">     197 </span>            : 
-<span class="lineNum">     198 </span><span class="lineCov">        442 :             if (res == NULL &amp;&amp; mysql_field_count(db_) != 0)</span>
+<span class="lineNum">     198 </span><span class="lineCov">        476 :             if (res == NULL &amp;&amp; mysql_field_count(db_) != 0)</span>
 <span class="lineNum">     199 </span>            :             {
 <span class="lineNum">     200 </span><span class="lineNoCov">          0 :                 throw database_exception(last_error());</span>
 <span class="lineNum">     201 </span>            :             }
 <span class="lineNum">     202 </span>            : 
-<span class="lineNum">     203 </span><span class="lineCov">        762 :             return resultset(make_shared&lt;mysql_resultset&gt;(this, shared_ptr&lt;MYSQL_RES&gt;(res, mysql_res_delete())));</span>
-<a name="204"><span class="lineNum">     204 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     205 </span>            : 
-<span class="lineNum">     206 </span>            :         shared_ptr&lt;statement&gt; mysql_db::create_statement()
-<span class="lineNum">     207 </span>            :         {
-<span class="lineNum">     208 </span><span class="lineCov">        302 :             return make_shared&lt;mysql_statement&gt;(this);</span>
-<span class="lineNum">     209 </span>            :         }
-<span class="lineNum">     210 </span>            :     }
-<span class="lineNum">     211 </span>            : }
-<span class="lineNum">     212 </span>            : 
-<span class="lineNum">     213 </span>            : #endif
+<span class="lineNum">     203 </span><span class="lineCov">        276 :             if (cache)</span>
+<span class="lineNum">     204 </span><span class="lineCov">          3 :                 return resultset(make_shared&lt;mysql_cached_resultset&gt;(this, shared_ptr&lt;MYSQL_RES&gt;(res, mysql_res_delete())));</span>
+<span class="lineNum">     205 </span>            :             else
+<span class="lineNum">     206 </span><span class="lineCov">        825 :                 return resultset(make_shared&lt;mysql_resultset&gt;(this, shared_ptr&lt;MYSQL_RES&gt;(res, mysql_res_delete())));</span>
+<a name="207"><span class="lineNum">     207 </span><span class="lineCov">        276 :         }</span></a>
+<span class="lineNum">     208 </span>            : 
+<span class="lineNum">     209 </span>            :         shared_ptr&lt;statement&gt; mysql_db::create_statement()
+<span class="lineNum">     210 </span>            :         {
+<span class="lineNum">     211 </span><span class="lineCov">        322 :             return make_shared&lt;mysql_statement&gt;(this);</span>
+<span class="lineNum">     212 </span>            :         }
+<span class="lineNum">     213 </span>            :     }
+<span class="lineNum">     214 </span>            : }
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span>            : #endif
 </pre>
       </td>
     </tr>

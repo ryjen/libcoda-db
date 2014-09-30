@@ -193,7 +193,7 @@ namespace arg3
             if (mysql_real_query(db_, sql.c_str(), sql.length()))
                 throw database_exception(last_error());
 
-            res = mysql_use_result(db_);
+            res = mysql_store_result(db_);
 
             if (res == NULL && mysql_field_count(db_) != 0)
             {
