@@ -104,6 +104,9 @@ namespace arg3
 
             auto field = mysql_fetch_field_direct(res_.get(), nPosition);
 
+            if (field == NULL || field->name == NULL)
+                return string();
+
             return field->name;
         }
 
@@ -219,7 +222,8 @@ namespace arg3
 
             auto field = mysql_fetch_field_direct(metadata_.get(), nPosition);
 
-            if (field == NULL && field->name == NULL) return string();
+            if (field == NULL && field->name == NULL)
+                return string();
 
             return field->name;
         }
