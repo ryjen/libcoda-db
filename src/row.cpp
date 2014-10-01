@@ -73,36 +73,6 @@ namespace arg3
             return end();
         }
 
-        row::reverse_iterator row::rbegin()
-        {
-            return reverse_iterator(end());
-        }
-
-        row::const_reverse_iterator row::rbegin() const
-        {
-            return const_reverse_iterator(end());
-        }
-
-        row::const_reverse_iterator row::crbegin() const
-        {
-            return rbegin();
-        }
-
-        row::reverse_iterator row::rend()
-        {
-            return reverse_iterator(begin());
-        }
-
-        row::const_reverse_iterator row::rend() const
-        {
-            return const_reverse_iterator(begin());
-        }
-
-        row::const_reverse_iterator row::crend() const
-        {
-            return rend();
-        }
-
         column row::operator[](size_t nPosition) const
         {
             return co1umn(nPosition);

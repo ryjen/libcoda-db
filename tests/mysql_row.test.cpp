@@ -213,7 +213,9 @@ go_bandit([]()
             {
                 it("as statement results", []()
                 {
-                    auto c = std::move(get_stmt_row(0));
+                    select_query query(&mysql_testdb, "users");
+			auto rs = query.execute();
+			auto c = rs.begin();
 
                     Assert::That(c->column_name(0), Equals("id"));
                     AssertThrows(database_exception, c->column_name(1234123));

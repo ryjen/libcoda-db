@@ -219,8 +219,6 @@ namespace arg3
         public:
             typedef row_iterator<db::column, db::column, row_impl> iterator;
             typedef row_iterator<const db::column, db::column, const row_impl> const_iterator;
-            typedef std::reverse_iterator<iterator> reverse_iterator;
-            typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
             row();
             row(shared_ptr<row_impl> impl);
@@ -243,18 +241,6 @@ namespace arg3
             const_iterator end() const;
 
             const_iterator cend() const;
-
-            reverse_iterator rbegin();
-
-            const_reverse_iterator rbegin() const;
-
-            const_reverse_iterator crbegin() const;
-
-            reverse_iterator rend();
-
-            const_reverse_iterator rend() const;
-
-            const_reverse_iterator crend() const;
 
             column operator[](size_t nPosition) const;
 

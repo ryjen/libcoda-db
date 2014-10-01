@@ -126,7 +126,7 @@ go_bandit([]()
 
             AssertThat(ci.name(), Equals(columns[0]));
 
-            for (; ci < r.cend() - 1; ci++)
+            for (; ci < r.cend(); ci++)
             {
                 AssertThat(ci->is_valid(), IsTrue());
             }
@@ -138,15 +138,6 @@ go_bandit([]()
                 AssertThat(c.is_valid(), IsTrue());
             }
 
-            for (row::reverse_iterator i = r.rbegin(); i != r.rend(); i++)
-            {
-                AssertThat(i->is_valid(), IsTrue());
-            }
-
-            for (row::const_reverse_iterator i = r.crbegin(); i != r.crend(); i++)
-            {
-                AssertThat(i->is_valid(), IsTrue());
-            }
         });
     });
 
