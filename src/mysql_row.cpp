@@ -222,7 +222,7 @@ namespace arg3
 
             auto field = mysql_fetch_field_direct(metadata_.get(), nPosition);
 
-            if (field == NULL && field->name == NULL)
+            if (field == NULL || field->name == NULL)
                 return string();
 
             return field->name;
@@ -249,9 +249,9 @@ namespace arg3
             for (size_t i = 0; i < size; i++)
             {
                 auto field = mysql_fetch_field_direct(metadata.get(), i);
-		
-		if(field == NULL || field->name == NULL)
-			continue;
+
+                if (field == NULL || field->name == NULL)
+                    continue;
 
                 columns_.push_back(make_shared<mysql_cached_column>(field->name, fields, i));
             }

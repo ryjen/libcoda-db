@@ -144,7 +144,7 @@ namespace arg3
         sql_value mysql_column::to_value() const
         {
             auto field = mysql_fetch_field_direct(res_.get(), index_);
-			
+
             switch (field->type)
             {
             case MYSQL_TYPE_TINY:
@@ -192,9 +192,9 @@ namespace arg3
         string mysql_column::name() const
         {
             auto field = mysql_fetch_field_direct(res_.get(), index_);
-	
-		if(field == NULL || field->name == NULL)
-			return string();
+
+            if (field == NULL || field->name == NULL)
+                return string();
 
             return field->name;
         }
@@ -318,9 +318,9 @@ namespace arg3
             auto field = mysql_fetch_field_direct(res.get(), index);
 
             type_ = field->type;
-	
-		if(field->name)
-            name_ = field->name;
+
+            if (field->name)
+                name_ = field->name;
 
             switch (field->type)
             {

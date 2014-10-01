@@ -109,10 +109,10 @@ namespace arg3
 
         string sql_blob::to_string() const
         {
-	    if(p_ == NULL) return "0x0";
+            if (p_ == NULL) return "0x0";
 
             ostringstream os;
-	    os << hex;
+            os << hex;
             os << p_;
             return os.str();
         }
