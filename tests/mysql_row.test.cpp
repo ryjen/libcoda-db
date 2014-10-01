@@ -14,7 +14,7 @@ using namespace std;
 
 using namespace arg3::db;
 
-shared_ptr<row_impl> get_results_row(int index)
+shared_ptr<row_impl> get_results_row(size_t index)
 {
     auto rs = mysql_testdb.execute("select * from users");
 
@@ -33,7 +33,7 @@ shared_ptr<row_impl> get_results_row(int index)
     return i->impl();
 }
 
-shared_ptr<row_impl> get_stmt_row(int index)
+shared_ptr<row_impl> get_stmt_row(size_t index)
 {
     select_query query(&mysql_testdb, "users");
 
@@ -55,7 +55,7 @@ shared_ptr<row_impl> get_stmt_row(int index)
 }
 
 template<typename T>
-void test_copy_row(std::function<shared_ptr<row_impl>(int)> funk)
+void test_copy_row(std::function<shared_ptr<row_impl>(size_t)> funk)
 {
     auto f1 = funk(0);
 
@@ -75,7 +75,7 @@ void test_copy_row(std::function<shared_ptr<row_impl>(int)> funk)
 }
 
 template<typename T>
-void test_move_row(std::function < shared_ptr<row_impl>(int)> funk)
+void test_move_row(std::function < shared_ptr<row_impl>(size_t)> funk)
 {
     auto f1 = funk(0);
 
@@ -99,7 +99,7 @@ void test_move_row(std::function < shared_ptr<row_impl>(int)> funk)
 }
 
 template<typename T>
-void test_row_column(std::function<shared_ptr<row_impl>(int)> funk)
+void test_row_column(std::function<shared_ptr<row_impl>(size_t)> funk)
 {
     auto r = funk(0);
 

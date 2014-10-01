@@ -49,7 +49,7 @@ namespace arg3
         {
             value_ = (MYSQL_BIND *) calloc(size, sizeof(MYSQL_BIND));
 
-            for (auto i = 0; i < size; i++)
+            for (size_t i = 0; i < size; i++)
             {
                 // get the right field types for mysql_stmt_bind_result()
                 switch (fields[i].type)
@@ -113,7 +113,7 @@ namespace arg3
         {
             if (value_)
             {
-                for (int i = 0; i < size_; i++)
+                for (size_t i = 0; i < size_; i++)
                 {
                     clear_value(i);
                 }
@@ -129,7 +129,7 @@ namespace arg3
 
             value_ = (MYSQL_BIND *) calloc(size, sizeof(MYSQL_BIND));
 
-            for (int i = 0; i < size; i++)
+            for (size_t i = 0; i < size; i++)
             {
                 const MYSQL_BIND *other = &others[i];
                 MYSQL_BIND *value = &value_[i];
@@ -272,7 +272,7 @@ namespace arg3
             }
             case MYSQL_TYPE_LONGLONG:
             {
-                int64_t *p = static_cast<int64_t *>(value_[index].buffer);
+                long long *p = static_cast<long long *>(value_[index].buffer);
 
                 if (p == NULL) return sql_null;
 
@@ -387,7 +387,7 @@ namespace arg3
 
             return *this;
         }
-        mysql_binding &mysql_binding::bind(size_t index, int64_t value)
+        mysql_binding &mysql_binding::bind(size_t index, long long value)
         {
             reallocate_value(index);
             value_[index - 1].buffer_type = MYSQL_TYPE_LONGLONG;

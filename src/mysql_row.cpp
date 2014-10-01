@@ -238,7 +238,7 @@ namespace arg3
         {
             assert(metadata != nullptr);
 
-            int size = mysql_num_fields(metadata.get());
+            size_t size = mysql_num_fields(metadata.get());
 
             for (size_t i = 0; i < size; i++)
             {
@@ -255,7 +255,7 @@ namespace arg3
 
             assert(res != NULL);
 
-            int size = mysql_num_fields(res.get());
+            size_t size = mysql_num_fields(res.get());
 
             for (size_t i = 0; i < size; i++)
             {
@@ -277,7 +277,7 @@ namespace arg3
         {
             assert(!name.empty());
 
-            for (int i = 0; i < columns_.size(); i++)
+            for (size_t i = 0; i < columns_.size(); i++)
             {
                 if (name == column_name(i))
                     return co1umn(i);

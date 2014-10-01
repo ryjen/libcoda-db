@@ -77,7 +77,7 @@ namespace arg3
 
             return *this;
         }
-        mysql_statement &mysql_statement::bind(size_t index, int64_t value)
+        mysql_statement &mysql_statement::bind(size_t index, long long value)
         {
             bindings_.bind(index, value);
 

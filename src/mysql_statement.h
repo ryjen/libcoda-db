@@ -43,7 +43,7 @@ namespace arg3
             long long last_insert_id();
             string last_error();
             mysql_statement &bind(size_t index, int value);
-            mysql_statement &bind(size_t index, int64_t value);
+            mysql_statement &bind(size_t index, long long value);
             mysql_statement &bind(size_t index, double value);
             mysql_statement &bind(size_t index, const std::string &value, int len = -1);
             mysql_statement &bind(size_t index, const sql_blob &value);

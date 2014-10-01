@@ -64,7 +64,7 @@ namespace arg3
             int type(size_t index) const;
 
             mysql_binding &bind(size_t index, int value);
-            mysql_binding &bind(size_t index, int64_t value);
+            mysql_binding &bind(size_t index, long long value);
             mysql_binding &bind(size_t index, double value);
             mysql_binding &bind(size_t index, const std::string &value, int len = -1);
             mysql_binding &bind(size_t index, const sql_blob &value);

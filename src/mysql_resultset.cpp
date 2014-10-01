@@ -317,7 +317,7 @@ namespace arg3
                 return false;
             }
 
-            return ++currentRow_ < rows_.size();
+            return static_cast<size_t>(++currentRow_) < rows_.size();
         }
 
         void mysql_cached_resultset::reset()
@@ -327,7 +327,7 @@ namespace arg3
 
         row mysql_cached_resultset::current_row()
         {
-            if (currentRow_ >= 0 && currentRow_ < rows_.size())
+            if (currentRow_ >= 0 && static_cast<size_t>(currentRow_) < rows_.size())
 
                 return row(rows_[currentRow_]);
 
