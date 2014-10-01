@@ -111,7 +111,8 @@ namespace arg3
 
             row_iterator &operator++()
             {
-                ++position_;
+                if (position_ < row_->size())
+                    ++position_;
                 return *this;
             }
 
@@ -124,7 +125,8 @@ namespace arg3
 
             row_iterator &operator--()
             {
-                --position_;
+                if (position_ > 0)
+                    --position_;
                 return *this;
             }
 
@@ -138,26 +140,26 @@ namespace arg3
             row_iterator operator+(int n)
             {
                 row_iterator tmp(*this);
-                tmp.position_ += n;
+                tmp += n;
                 return tmp;
             }
 
             row_iterator &operator+=(int n)
             {
-                position_ += n;
+                position_ = std::min(position_ + n, row_->size());
                 return *this;
             }
 
             row_iterator operator-(int n)
             {
                 row_iterator tmp(*this);
-                tmp.position_ -= n;
+                tmp -= n;
                 return tmp;
             }
 
             row_iterator &operator-=(int n)
             {
-                position_ -= n;
+                position_ = std::max(position_ - n, 0);
                 return *this;
             }
 
@@ -193,7 +195,10 @@ namespace arg3
 
             int operator-(const row_iterator &other)
             {
-                return position_ - other.position_;
+                if (position_ >= other.position_)
+                    return position_ - other.position_;
+                else
+                    return 0;
             }
 
             string name() const

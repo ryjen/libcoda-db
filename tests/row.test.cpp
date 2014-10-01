@@ -124,7 +124,7 @@ go_bandit([]()
 
             //AssertThat(ci.name(), Equals(columns[columns.size() - 1]));
 
-            for (auto c : r)
+            for (auto & c : r)
             {
                 AssertThat(c.is_valid(), IsTrue());
             }
