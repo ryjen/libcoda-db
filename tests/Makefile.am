@@ -38,7 +38,7 @@ arg3sqlite_cache_test_CPPFLAGS = -DTEST_SQLITE -DTEST_CACHE $(AM_CPPFLAGS)
 arg3sqlite_cache_test_LDADD = ../src/libarg3db-0.5.la ../src/variant/src/libarg3variant-0.1.la
 
 
-all-local: arg3mysql_test$(EXEEXT) arg3sqlite_test$(EXEEXT)
+check: arg3mysql_test$(EXEEXT) arg3sqlite_test$(EXEEXT)
 	./arg3mysql_test
 	./arg3sqlite_test
 	./arg3mysql_cache_test

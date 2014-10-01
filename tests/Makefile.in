@@ -1832,7 +1832,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS) $(HEADERS) all-local
+all-am: Makefile $(PROGRAMS) $(HEADERS)
 installdirs:
 	for dir in "$(DESTDIR)$(pkgincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
@@ -1940,9 +1940,9 @@ uninstall-am: uninstall-pkgincludeHEADERS
 
 .MAKE: install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am all-local check check-am clean \
-	clean-generic clean-libtool clean-noinstPROGRAMS cscopelist-am \
-	ctags ctags-am distclean distclean-compile distclean-generic \
+.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
+	clean-libtool clean-noinstPROGRAMS cscopelist-am ctags \
+	ctags-am distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
@@ -1956,7 +1956,7 @@ uninstall-am: uninstall-pkgincludeHEADERS
 	uninstall-pkgincludeHEADERS
 
 
-all-local: arg3mysql_test$(EXEEXT) arg3sqlite_test$(EXEEXT)
+check: arg3mysql_test$(EXEEXT) arg3sqlite_test$(EXEEXT)
 	./arg3mysql_test
 	./arg3sqlite_test
 	./arg3mysql_cache_test
