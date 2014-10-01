@@ -31,7 +31,7 @@ namespace arg3
             int port_;
             schema_factory schema_factory_;
         public:
-            mysql_db(const string &dbName, const string &user = "root", const string &password = "", const string &host = "localhost", int port = 3306);
+            mysql_db(const string &dbName, const string &user = "root", const string &password = "", const string &host = "127.0.0.1", int port = 3306);
             mysql_db(const mysql_db &other);
             mysql_db(mysql_db &&other);
             mysql_db &operator=(const mysql_db &other);
