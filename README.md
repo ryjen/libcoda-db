@@ -2,9 +2,12 @@
 libarg3db
 =========
 
+[![Build Status](https://travis-ci.org/c0der78/arg3db.svg?branch=master)](https://travis-ci.org/c0der78/arg3db)
+
 a sqlite3 and mysql wrapper / active record (ish) implementation
 
 [View Testing Code Coverage](http://htmlpreview.github.com/?https://github.com/c0der78/arg3db/blob/master/coverage/index.html)
+
 
 Use in production at your own risk, I'm not finished testing this bad boy.
 
