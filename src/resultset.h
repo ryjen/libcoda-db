@@ -73,6 +73,7 @@ namespace arg3
                 pos_ = other.pos_;
                 value_ = std::move(other.value_);
                 other.rs_ = nullptr;
+                other.pos_ = -1;
 
                 return *this;
             }
@@ -119,8 +120,9 @@ namespace arg3
             resultset_iterator operator+(int n)
             {
                 resultset_iterator tmp(*this);
-                for (int i = 0; i < n; i++)
-                    ++(tmp);
+
+                tmp += n;
+
                 return tmp;
             }
 

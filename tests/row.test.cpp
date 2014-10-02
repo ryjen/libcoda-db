@@ -15,7 +15,12 @@ row get_first_user_row()
 
     auto rs = query.execute();
 
-    return *rs.begin();
+    auto i = rs.begin();
+
+    if (i == rs.end())
+        throw database_exception("No rows in users table");
+
+    return *i;
 }
 
 go_bandit([]()
@@ -87,11 +92,15 @@ go_bandit([]()
 
         it("can use for each", []()
         {
-            row r = get_first_user_row();
+            select_query query(testdb, "users");
 
-            r.for_each([](const arg3::db::column & c)
+            auto rs = query.execute();
+
+            auto r = rs.begin();
+
+            r->for_each([](const arg3::db::column & c)
             {
-                AssertThat(c.is_valid(), IsTrue());
+                Assert::That(c.is_valid(), IsTrue());
             });
         });
 

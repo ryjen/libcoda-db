@@ -49,7 +49,7 @@ namespace arg3
             {
                 assert(row_ != nullptr);
 
-                if (index < row_->size())
+                if (index >= 0 && index < row_->size())
                     currentValue_ = row_->co1umn(index);
             }
         public:

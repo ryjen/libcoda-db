@@ -213,7 +213,7 @@ go_bandit([]()
             {
                 it("as statement results", []()
                 {
-                    auto c = get_stmt_row(0);
+                    auto c = std::move(get_stmt_row(0));
 
                     Assert::That(c->column_name(0), Equals("id"));
                     AssertThrows(database_exception, c->column_name(1234123));
@@ -221,7 +221,7 @@ go_bandit([]()
 
                 it("as results", []()
                 {
-                    auto c = get_results_row(0);
+                    auto c = std::move(get_results_row(0));
 
                     Assert::That(c->column_name(0), Equals("id"));
 
