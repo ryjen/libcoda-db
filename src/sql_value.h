@@ -3,7 +3,6 @@
 
 #include "variant.h"
 #include <iostream>
-#include <sqlite3.h>
 #include <cmath>
 
 #define DOUBLE_DEFAULT 0.0

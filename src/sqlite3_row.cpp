@@ -2,6 +2,8 @@
 #include "sqlite3_column.h"
 #include "sqlite3_db.h"
 
+#ifdef HAVE_LIBSQLITE3
+
 namespace arg3
 {
     namespace db
@@ -149,3 +151,6 @@ namespace arg3
         }
     }
 }
+
+#endif
+

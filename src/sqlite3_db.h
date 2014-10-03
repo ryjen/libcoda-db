@@ -5,6 +5,8 @@
 
 #ifdef HAVE_LIBSQLITE3
 
+#include <sqlite3.h>
+
 #include "sqldb.h"
 
 namespace arg3

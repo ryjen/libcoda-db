@@ -2,7 +2,6 @@
 #ifndef _ARG3_DB_ROW_H_
 #define _ARG3_DB_ROW_H_
 
-#include <sqlite3.h>
 #include "column.h"
 #include <iterator>
 #include <memory>

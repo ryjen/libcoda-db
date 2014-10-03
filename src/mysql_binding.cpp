@@ -81,7 +81,7 @@ namespace arg3
                 value_[i].is_unsigned = 0;
                 value_[i].error = 0;
                 value_[i].buffer_length = fields[i].length;
-                value_[i].length = (size_t *) calloc(1, sizeof(size_t));
+                value_[i].length = (unsigned long *) calloc(1, sizeof(unsigned long));
                 value_[i].buffer = calloc(1, fields[i].length);
             }
         }

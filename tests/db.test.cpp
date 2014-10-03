@@ -17,16 +17,19 @@ using namespace arg3::db;
 
 test_mysql_db mysql_testdb;
 sqldb *testdb = &mysql_testdb;
-#else
+
+#elif defined(TEST_SQLITE) && defined(HAVE_LIBSQLITE3)
 test_sqlite3_db sqlite_testdb;
 sqldb *testdb = &sqlite_testdb;
+#else
+sqldb *testdb = NULL;
 #endif
 
 void setup_testdb()
 {
     try
     {
-#ifdef TEST_SQLITE
+#if defined(TEST_SQLITE) && defined(HAVE_LIBSQLITE3)
         sqlite_testdb.setup();
 #endif
 #if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
@@ -42,7 +45,7 @@ void setup_testdb()
 
 void teardown_testdb()
 {
-#ifdef TEST_SQLITE
+#if defined(TEST_SQLITE) && defined(HAVE_LIBSQLITE3)
     sqlite_testdb.teardown();
 #endif
 #if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
@@ -50,6 +53,7 @@ void teardown_testdb()
 #endif
 }
 
+#if defined(TEST_SQLITE) && defined(HAVE_LIBSQLITE3)
 void test_sqlite3_db::setup()
 {
     open();
@@ -62,8 +66,9 @@ void test_sqlite3_db::teardown()
     unlink(connection_string().c_str());
     schemas()->clear("users");
 }
+#endif
 
-#ifdef HAVE_LIBMYSQLCLIENT
+#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
 void test_mysql_db::setup()
 {
     open();
@@ -95,10 +100,16 @@ go_bandit([]()
         {
             try
             {
-                auto db = get_db_from_uri("file://test.db");
+#ifdef HAVE_LIBSQLITE3
+                auto file = get_db_from_uri("file://test.db");
 
-                AssertThat(db.get() != NULL, IsTrue());
-            }
+                AssertThat(file.get() != NULL, IsTrue());
+#endif
+#ifdef HAVE_LIBMYSQLCLIENT
+								auto mysql = get_db_from_uri("mysql://localhost:4000/test");
+								AssertThat(mysql.get() != NULL, IsTrue());
+#endif
+						}
             catch (const std::exception &e)
             {
                 cerr << e.what() << endl;

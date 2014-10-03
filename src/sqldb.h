@@ -6,7 +6,6 @@
 
 #include <string>
 #include <sstream>
-#include <sqlite3.h>
 #include <type_traits>
 #include "sql_value.h"
 #include "schema_factory.h"

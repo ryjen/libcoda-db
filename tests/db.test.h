@@ -1,6 +1,8 @@
 #ifndef ARG3_TEST_DB_H
 #define ARG3_TEST_DB_H
 
+#include "config.h"
+
 #include "sqldb.h"
 #include "base_record.h"
 #include <unistd.h>
@@ -8,6 +10,12 @@
 #include "mysql_db.h"
 
 #define TESTDB "test.db"
+
+#if !defined(HAVE_LIBMYSQLCLIENT) && !defined(HAVE_LIBSQLITE3)
+#error "Mysql or sqlite is not installed on the system"
+#endif
+
+#ifdef HAVE_LIBSQLITE3
 
 class test_sqlite3_db : public arg3::db::sqlite3_db
 {
@@ -27,7 +35,7 @@ public:
 };
 
 extern test_sqlite3_db sqlite_testdb;
-
+#endif
 
 #ifdef HAVE_LIBMYSQLCLIENT
 

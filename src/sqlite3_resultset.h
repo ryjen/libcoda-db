@@ -1,6 +1,10 @@
 #ifndef ARG3_DB_SQLITE_RESULTSET_H_
 #define ARG3_DB_SQLITE_RESULTSET_H_
 
+#include "config.h"
+
+#ifdef HAVE_LIBSQLITE3
+#include <sqlite3.h>
 #include "resultset.h"
 #include <vector>
 
@@ -78,5 +82,7 @@ namespace arg3
         };
     }
 }
+
+#endif
 
 #endif

@@ -1,6 +1,8 @@
 /*!
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
+#include "config.h"
+
 #include <algorithm>
 #include "sqldb.h"
 #include "base_query.h"
@@ -69,15 +71,15 @@ namespace arg3
         shared_ptr<sqldb> get_db_from_uri(const string &uristr)
         {
             db::uri uri(uristr);
-
+#ifdef HAVE_LIBSQLITE3
             if ("file" == uri.protocol)
                 return make_shared<sqlite3_db>(uri);
+#endif
 #ifdef HAVE_LIBMYSQLCLIENT
-            else if ("mysql" == uri.protocol)
+           if ("mysql" == uri.protocol)
                 return make_shared<mysql_db>(uri);
 #endif
-            else
-                throw database_exception("unknown database " + uri.value);
+           throw database_exception("unknown database " + uri.value);
         }
 
         sqldb::sqldb() : logLevel_(LOG_NONE), cacheLevel_(CACHE_NONE)

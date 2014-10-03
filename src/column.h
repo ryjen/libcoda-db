@@ -4,7 +4,6 @@
 #ifndef _ARG3_DB_COLUMN_VALUE_H_
 #define _ARG3_DB_COLUMN_VALUE_H_
 
-#include <sqlite3.h>
 #include <string>
 #include <cassert>
 #include <memory>

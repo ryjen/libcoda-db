@@ -1,6 +1,10 @@
 #ifndef ARG3_DB_SQLITE_ROW_H_
 #define ARG3_DB_SQLITE_ROW_H_
 
+#include "config.h"
+
+#ifdef HAVE_LIBSQLITE3
+
 #include "row.h"
 #include "sqlite3_column.h"
 #include <vector>
@@ -65,3 +69,6 @@ namespace arg3
 }
 
 #endif
+
+#endif
+

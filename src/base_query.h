@@ -6,7 +6,6 @@
 #ifndef _ARG3_DB_BASE_QUERY_H_
 #define _ARG3_DB_BASE_QUERY_H_
 
-#include <sqlite3.h>
 #include <map>
 #include <sstream>
 #include "schema.h"

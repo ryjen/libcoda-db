@@ -4,7 +4,7 @@
 #include "config.h"
 
 #ifdef HAVE_LIBSQLITE3
-
+#include <sqlite3.h>
 #include "column.h"
 
 #define sqlite3_default_column sqlite3_cached_column

@@ -20,12 +20,19 @@ using namespace bandit;
 int main(int argc, char *argv[])
 {
 #ifdef TEST_SQLITE
+#ifdef HAVE_LIBSQLITE3
     testdb = &sqlite_testdb;
-#elif defined(HAVE_LIBMYSQLCLIENT)
+#else
+    cout << "Sqlite not supported" << endl;
+    return 0;
+#endif
+#elif defined(TEST_MYSQL)
+#ifdef HAVE_LIBMYSQLCLIENT
     testdb = &mysql_testdb;
 #else
     cout << "Mysql not supported" << endl;
     return 0;
+#endif
 #endif
 
 #ifdef TEST_CACHE
