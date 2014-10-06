@@ -12,7 +12,7 @@ libarg3db_0_5_la_CXXFLAGS = $(LIBARG3DB_0_5_LA_CXXFLAGS) $(COVERAGE_CFLAGS) -Iva
 
 #libarg3db_0_5_la_LDFLAGS = $(LIBARG3DB_0_5_LA_LDFLAGS) ./variant/src/libarg3variant-0.1.la
 
-pkginclude_HEADERS = base_query.h base_record.h bindable.h column.h config.h delete_query.h exception.h modify_query.h \
+pkginclude_HEADERS = base_query.h base_record.h bindable.h column.h delete_query.h exception.h modify_query.h \
 	mysql_binding.h mysql_column.h mysql_db.h mysql_resultset.h mysql_row.h mysql_statement.h resultset.h row.h schema.h schema_factory.h \
 	select_query.h sql_value.h sqldb.h sqlite3_column.h sqlite3_db.h sqlite3_resultset.h sqlite3_row.h sqlite3_statement.h \
 	statement.h where_clause.h
