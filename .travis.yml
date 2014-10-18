@@ -5,7 +5,7 @@ before_install:
     - sudo apt-get install mysql-client
     - sudo apt-get install sqlite3
     - mysql -e "create database IF NOT EXISTS test;" -uroot    
-before_script: autoreconf -i
+before_script: autoreconf -if
 install:
   - sudo apt-get install -qq gcc-4.8 g++-4.8 
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90

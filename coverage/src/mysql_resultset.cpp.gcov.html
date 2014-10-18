@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-30 16:17:34</td>
+            <td class="headerValue">2014-10-18 13:30:40</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">40</td>
@@ -278,13 +278,13 @@
 <span class="lineNum">     208 </span>            : 
 <span class="lineNum">     209 </span>            :         row mysql_stmt_resultset::current_row()
 <span class="lineNum">     210 </span>            :         {
-<span class="lineNum">     211 </span><span class="lineCov">        174 :             assert(db_ != NULL);</span>
+<span class="lineNum">     211 </span><span class="lineCov">        178 :             assert(db_ != NULL);</span>
 <span class="lineNum">     212 </span>            : 
-<span class="lineNum">     213 </span><span class="lineCov">         87 :             if (db_-&gt;cache_level() == sqldb::CACHE_ROW)</span>
+<span class="lineNum">     213 </span><span class="lineCov">         89 :             if (db_-&gt;cache_level() == sqldb::CACHE_ROW)</span>
 <span class="lineNum">     214 </span><span class="lineNoCov">          0 :                 return row(make_shared&lt;mysql_cached_row&gt;(db_, metadata_, *bindings_.get()));</span>
 <span class="lineNum">     215 </span>            :             else
-<span class="lineNum">     216 </span><span class="lineCov">        174 :                 return row(make_shared&lt;mysql_stmt_row&gt;(db_, metadata_, bindings_ ));</span>
-<a name="217"><span class="lineNum">     217 </span><span class="lineCov">         87 :         }</span></a>
+<span class="lineNum">     216 </span><span class="lineCov">        178 :                 return row(make_shared&lt;mysql_stmt_row&gt;(db_, metadata_, bindings_ ));</span>
+<a name="217"><span class="lineNum">     217 </span><span class="lineCov">         89 :         }</span></a>
 <span class="lineNum">     218 </span>            : 
 <span class="lineNum">     219 </span>            :         size_t mysql_stmt_resultset::size() const
 <span class="lineNum">     220 </span>            :         {
@@ -387,7 +387,7 @@
 <span class="lineNum">     317 </span><span class="lineCov">          2 :                 return false;</span>
 <span class="lineNum">     318 </span>            :             }
 <span class="lineNum">     319 </span>            : 
-<span class="lineNum">     320 </span><span class="lineCov">         74 :             return ++currentRow_ &lt; rows_.size();</span>
+<span class="lineNum">     320 </span><span class="lineCov">         74 :             return static_cast&lt;size_t&gt;(++currentRow_) &lt; rows_.size();</span>
 <a name="321"><span class="lineNum">     321 </span><span class="lineCov">         76 :         }</span></a>
 <span class="lineNum">     322 </span>            : 
 <span class="lineNum">     323 </span>            :         void mysql_cached_resultset::reset()
@@ -397,13 +397,13 @@
 <span class="lineNum">     327 </span>            : 
 <span class="lineNum">     328 </span>            :         row mysql_cached_resultset::current_row()
 <span class="lineNum">     329 </span>            :         {
-<span class="lineNum">     330 </span><span class="lineCov">        172 :             if (currentRow_ &gt;= 0 &amp;&amp; currentRow_ &lt; rows_.size())</span>
+<span class="lineNum">     330 </span><span class="lineCov">        176 :             if (currentRow_ &gt;= 0 &amp;&amp; static_cast&lt;size_t&gt;(currentRow_) &lt; rows_.size())</span>
 <span class="lineNum">     331 </span>            : 
-<span class="lineNum">     332 </span><span class="lineCov">        166 :                 return row(rows_[currentRow_]);</span>
+<span class="lineNum">     332 </span><span class="lineCov">        170 :                 return row(rows_[currentRow_]);</span>
 <span class="lineNum">     333 </span>            : 
 <span class="lineNum">     334 </span>            :             else
 <span class="lineNum">     335 </span><span class="lineCov">          4 :                 return row();</span>
-<a name="336"><span class="lineNum">     336 </span><span class="lineCov">         87 :         }</span></a>
+<a name="336"><span class="lineNum">     336 </span><span class="lineCov">         89 :         }</span></a>
 <span class="lineNum">     337 </span>            : 
 <span class="lineNum">     338 </span>            :         size_t mysql_cached_resultset::size() const
 <span class="lineNum">     339 </span>            :         {

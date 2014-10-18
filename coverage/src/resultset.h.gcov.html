@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-30 16:17:34</td>
+            <td class="headerValue">2014-10-18 13:30:40</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">19</td>
@@ -120,9 +120,9 @@
 <span class="lineNum">      50 </span>            :             NonConst value_;
 <a name="51"><span class="lineNum">      51 </span>            :         public:</a>
 <span class="lineNum">      52 </span>            : 
-<span class="lineNum">      53 </span><span class="lineCov">        625 :             resultset_iterator(shared_ptr&lt;resultset_impl&gt; rset, int position) : rs_(rset), pos_(position), value_(rset-&gt;current_row())</span>
-<span class="lineNum">      54 </span><span class="lineCov">        625 :             {</span>
-<span class="lineNum">      55 </span><span class="lineCov">       1250 :             }</span>
+<span class="lineNum">      53 </span><span class="lineCov">        633 :             resultset_iterator(shared_ptr&lt;resultset_impl&gt; rset, int position) : rs_(rset), pos_(position), value_(rset-&gt;current_row())</span>
+<span class="lineNum">      54 </span><span class="lineCov">        633 :             {</span>
+<span class="lineNum">      55 </span><span class="lineCov">       1266 :             }</span>
 <span class="lineNum">      56 </span>            : 
 <span class="lineNum">      57 </span>            :             resultset_iterator(const resultset_iterator &amp;other) : rs_(other.rs_), pos_(other.pos_), value_(other.value_)
 <span class="lineNum">      58 </span>            :             {}
@@ -143,155 +143,157 @@
 <span class="lineNum">      73 </span>            :                 pos_ = other.pos_;
 <span class="lineNum">      74 </span>            :                 value_ = std::move(other.value_);
 <span class="lineNum">      75 </span>            :                 other.rs_ = nullptr;
-<span class="lineNum">      76 </span>            : 
-<span class="lineNum">      77 </span>            :                 return *this;
-<a name="78"><span class="lineNum">      78 </span>            :             }</a>
-<span class="lineNum">      79 </span>            : 
-<span class="lineNum">      80 </span>            :             ValueType &amp;operator*()
-<span class="lineNum">      81 </span>            :             {
-<span class="lineNum">      82 </span><span class="lineCov">        950 :                 return value_;</span>
-<a name="83"><span class="lineNum">      83 </span>            :             }</a>
-<span class="lineNum">      84 </span>            : 
-<span class="lineNum">      85 </span>            :             resultset_iterator &amp;operator++()
-<span class="lineNum">      86 </span>            :             {
-<span class="lineNum">      87 </span><span class="lineCov">       1892 :                 if (pos_ == -1 || rs_ == nullptr)</span>
-<span class="lineNum">      88 </span><span class="lineNoCov">          0 :                     return *this;</span>
-<span class="lineNum">      89 </span>            : 
-<span class="lineNum">      90 </span><span class="lineCov">        946 :                 bool res = rs_-&gt;next();</span>
-<span class="lineNum">      91 </span>            : 
-<span class="lineNum">      92 </span><span class="lineCov">        946 :                 if (res)</span>
-<span class="lineNum">      93 </span>            :                 {
-<span class="lineNum">      94 </span><span class="lineCov">        752 :                     pos_++;</span>
-<span class="lineNum">      95 </span><span class="lineCov">       1504 :                     value_ = rs_-&gt;current_row();</span>
-<span class="lineNum">      96 </span><span class="lineCov">        752 :                 }</span>
-<span class="lineNum">      97 </span>            :                 else
-<span class="lineNum">      98 </span>            :                 {
-<span class="lineNum">      99 </span><span class="lineCov">        194 :                     pos_ = -1;</span>
-<span class="lineNum">     100 </span>            :                 }
-<span class="lineNum">     101 </span>            : 
-<span class="lineNum">     102 </span><span class="lineCov">        946 :                 return *this;</span>
-<span class="lineNum">     103 </span>            : 
-<span class="lineNum">     104 </span><span class="lineCov">        946 :             }</span>
-<a name="105"><span class="lineNum">     105 </span>            : </a>
-<span class="lineNum">     106 </span>            : 
-<span class="lineNum">     107 </span>            :             ValueType *operator-&gt;()
-<span class="lineNum">     108 </span>            :             {
-<span class="lineNum">     109 </span><span class="lineCov">          4 :                 return &amp;(operator*());</span>
-<span class="lineNum">     110 </span>            :             }
-<span class="lineNum">     111 </span>            : 
-<span class="lineNum">     112 </span>            :             resultset_iterator operator++(int)
-<span class="lineNum">     113 </span>            :             {
-<span class="lineNum">     114 </span>            :                 resultset_iterator tmp(*this);
-<span class="lineNum">     115 </span>            :                 ++(*this);
-<span class="lineNum">     116 </span>            :                 return tmp;
-<span class="lineNum">     117 </span>            :             }
-<span class="lineNum">     118 </span>            : 
-<span class="lineNum">     119 </span>            :             resultset_iterator operator+(int n)
-<span class="lineNum">     120 </span>            :             {
-<span class="lineNum">     121 </span>            :                 resultset_iterator tmp(*this);
-<span class="lineNum">     122 </span>            :                 for (int i = 0; i &lt; n; i++)
-<span class="lineNum">     123 </span>            :                     ++(tmp);
-<span class="lineNum">     124 </span>            :                 return tmp;
-<span class="lineNum">     125 </span>            :             }
-<span class="lineNum">     126 </span>            : 
-<span class="lineNum">     127 </span>            :             resultset_iterator &amp;operator+=(int n)
-<span class="lineNum">     128 </span>            :             {
-<span class="lineNum">     129 </span>            :                 for (int i = 0; i &lt; n; i++)
-<span class="lineNum">     130 </span>            :                     operator++();
-<span class="lineNum">     131 </span>            :                 return *this;
-<a name="132"><span class="lineNum">     132 </span>            :             }</a>
-<span class="lineNum">     133 </span>            : 
-<span class="lineNum">     134 </span>            :             bool operator==(const resultset_iterator &amp;other) const
-<span class="lineNum">     135 </span>            :             {
-<span class="lineNum">     136 </span><span class="lineCov">       1144 :                 return pos_ == other.pos_;</span>
-<a name="137"><span class="lineNum">     137 </span>            :             }</a>
-<span class="lineNum">     138 </span>            : 
-<span class="lineNum">     139 </span>            :             bool operator!=(const resultset_iterator &amp;other) const
-<span class="lineNum">     140 </span>            :             {
-<span class="lineNum">     141 </span><span class="lineCov">       1140 :                 return !operator==(other);</span>
-<span class="lineNum">     142 </span>            :             }
-<span class="lineNum">     143 </span>            : 
-<span class="lineNum">     144 </span>            :             bool operator&lt;(const resultset_iterator &amp;other) const
-<span class="lineNum">     145 </span>            :             {
-<span class="lineNum">     146 </span>            :                 if (pos_ == -1 &amp;&amp; other.pos_ == -1)
-<span class="lineNum">     147 </span>            :                     return false;
-<span class="lineNum">     148 </span>            :                 else if (pos_ == -1)
+<span class="lineNum">      76 </span>            :                 other.pos_ = -1;
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            :                 return *this;
+<a name="79"><span class="lineNum">      79 </span>            :             }</a>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span>            :             ValueType &amp;operator*()
+<span class="lineNum">      82 </span>            :             {
+<span class="lineNum">      83 </span><span class="lineCov">        950 :                 return value_;</span>
+<a name="84"><span class="lineNum">      84 </span>            :             }</a>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span>            :             resultset_iterator &amp;operator++()
+<span class="lineNum">      87 </span>            :             {
+<span class="lineNum">      88 </span><span class="lineCov">       1892 :                 if (pos_ == -1 || rs_ == nullptr)</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :                     return *this;</span>
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span><span class="lineCov">        946 :                 bool res = rs_-&gt;next();</span>
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span><span class="lineCov">        946 :                 if (res)</span>
+<span class="lineNum">      94 </span>            :                 {
+<span class="lineNum">      95 </span><span class="lineCov">        752 :                     pos_++;</span>
+<span class="lineNum">      96 </span><span class="lineCov">       1504 :                     value_ = rs_-&gt;current_row();</span>
+<span class="lineNum">      97 </span><span class="lineCov">        752 :                 }</span>
+<span class="lineNum">      98 </span>            :                 else
+<span class="lineNum">      99 </span>            :                 {
+<span class="lineNum">     100 </span><span class="lineCov">        194 :                     pos_ = -1;</span>
+<span class="lineNum">     101 </span>            :                 }
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span><span class="lineCov">        946 :                 return *this;</span>
+<span class="lineNum">     104 </span>            : 
+<span class="lineNum">     105 </span><span class="lineCov">        946 :             }</span>
+<a name="106"><span class="lineNum">     106 </span>            : </a>
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span>            :             ValueType *operator-&gt;()
+<span class="lineNum">     109 </span>            :             {
+<span class="lineNum">     110 </span><span class="lineCov">          4 :                 return &amp;(operator*());</span>
+<span class="lineNum">     111 </span>            :             }
+<span class="lineNum">     112 </span>            : 
+<span class="lineNum">     113 </span>            :             resultset_iterator operator++(int)
+<span class="lineNum">     114 </span>            :             {
+<span class="lineNum">     115 </span>            :                 resultset_iterator tmp(*this);
+<span class="lineNum">     116 </span>            :                 ++(*this);
+<span class="lineNum">     117 </span>            :                 return tmp;
+<span class="lineNum">     118 </span>            :             }
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span>            :             resultset_iterator operator+(int n)
+<span class="lineNum">     121 </span>            :             {
+<span class="lineNum">     122 </span>            :                 resultset_iterator tmp(*this);
+<span class="lineNum">     123 </span>            : 
+<span class="lineNum">     124 </span>            :                 tmp += n;
+<span class="lineNum">     125 </span>            : 
+<span class="lineNum">     126 </span>            :                 return tmp;
+<span class="lineNum">     127 </span>            :             }
+<span class="lineNum">     128 </span>            : 
+<span class="lineNum">     129 </span>            :             resultset_iterator &amp;operator+=(int n)
+<span class="lineNum">     130 </span>            :             {
+<span class="lineNum">     131 </span>            :                 for (int i = 0; i &lt; n; i++)
+<span class="lineNum">     132 </span>            :                     operator++();
+<span class="lineNum">     133 </span>            :                 return *this;
+<a name="134"><span class="lineNum">     134 </span>            :             }</a>
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span>            :             bool operator==(const resultset_iterator &amp;other) const
+<span class="lineNum">     137 </span>            :             {
+<span class="lineNum">     138 </span><span class="lineCov">       1144 :                 return pos_ == other.pos_;</span>
+<a name="139"><span class="lineNum">     139 </span>            :             }</a>
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span>            :             bool operator!=(const resultset_iterator &amp;other) const
+<span class="lineNum">     142 </span>            :             {
+<span class="lineNum">     143 </span><span class="lineCov">       1140 :                 return !operator==(other);</span>
+<span class="lineNum">     144 </span>            :             }
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span>            :             bool operator&lt;(const resultset_iterator &amp;other) const
+<span class="lineNum">     147 </span>            :             {
+<span class="lineNum">     148 </span>            :                 if (pos_ == -1 &amp;&amp; other.pos_ == -1)
 <span class="lineNum">     149 </span>            :                     return false;
-<span class="lineNum">     150 </span>            :                 else if (other.pos_ == -1)
-<span class="lineNum">     151 </span>            :                     return true;
-<span class="lineNum">     152 </span>            :                 else
-<span class="lineNum">     153 </span>            :                     return pos_ &lt; other.pos_;
-<span class="lineNum">     154 </span>            :             }
-<span class="lineNum">     155 </span>            : 
-<span class="lineNum">     156 </span>            :             bool operator&lt;=(const resultset_iterator &amp;other) const
-<span class="lineNum">     157 </span>            :             {
-<span class="lineNum">     158 </span>            :                 return operator&lt;(other) || operator==(other);
-<span class="lineNum">     159 </span>            :             }
-<span class="lineNum">     160 </span>            : 
-<span class="lineNum">     161 </span>            :             bool operator&gt;(const resultset_iterator &amp;other) const
-<span class="lineNum">     162 </span>            :             {
-<span class="lineNum">     163 </span>            :                 return !operator&lt;(other);
-<span class="lineNum">     164 </span>            :             }
-<span class="lineNum">     165 </span>            : 
-<span class="lineNum">     166 </span>            :             bool operator&gt;=(const resultset_iterator &amp;other) const
-<span class="lineNum">     167 </span>            :             {
-<span class="lineNum">     168 </span>            :                 return operator&gt;(other) || operator==(other);
-<span class="lineNum">     169 </span>            :             }
-<span class="lineNum">     170 </span>            : 
-<span class="lineNum">     171 </span>            :         };
+<span class="lineNum">     150 </span>            :                 else if (pos_ == -1)
+<span class="lineNum">     151 </span>            :                     return false;
+<span class="lineNum">     152 </span>            :                 else if (other.pos_ == -1)
+<span class="lineNum">     153 </span>            :                     return true;
+<span class="lineNum">     154 </span>            :                 else
+<span class="lineNum">     155 </span>            :                     return pos_ &lt; other.pos_;
+<span class="lineNum">     156 </span>            :             }
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span>            :             bool operator&lt;=(const resultset_iterator &amp;other) const
+<span class="lineNum">     159 </span>            :             {
+<span class="lineNum">     160 </span>            :                 return operator&lt;(other) || operator==(other);
+<span class="lineNum">     161 </span>            :             }
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span>            :             bool operator&gt;(const resultset_iterator &amp;other) const
+<span class="lineNum">     164 </span>            :             {
+<span class="lineNum">     165 </span>            :                 return !operator&lt;(other);
+<span class="lineNum">     166 </span>            :             }
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            :             bool operator&gt;=(const resultset_iterator &amp;other) const
+<span class="lineNum">     169 </span>            :             {
+<span class="lineNum">     170 </span>            :                 return operator&gt;(other) || operator==(other);
+<span class="lineNum">     171 </span>            :             }
 <span class="lineNum">     172 </span>            : 
-<span class="lineNum">     173 </span>            :         /*!
-<span class="lineNum">     174 </span>            :          * the results (a set of rows) for a query
-<span class="lineNum">     175 </span>            :          */
-<span class="lineNum">     176 </span>            :         class resultset
-<span class="lineNum">     177 </span>            :         {
-<span class="lineNum">     178 </span>            :         private:
-<span class="lineNum">     179 </span>            :             shared_ptr&lt;resultset_impl&gt; impl_;
-<span class="lineNum">     180 </span>            :         public:
-<span class="lineNum">     181 </span>            : 
-<span class="lineNum">     182 </span>            :             resultset(shared_ptr&lt;resultset_impl&gt; impl);
+<span class="lineNum">     173 </span>            :         };
+<span class="lineNum">     174 </span>            : 
+<span class="lineNum">     175 </span>            :         /*!
+<span class="lineNum">     176 </span>            :          * the results (a set of rows) for a query
+<span class="lineNum">     177 </span>            :          */
+<span class="lineNum">     178 </span>            :         class resultset
+<span class="lineNum">     179 </span>            :         {
+<span class="lineNum">     180 </span>            :         private:
+<span class="lineNum">     181 </span>            :             shared_ptr&lt;resultset_impl&gt; impl_;
+<span class="lineNum">     182 </span>            :         public:
 <span class="lineNum">     183 </span>            : 
-<span class="lineNum">     184 </span>            :             resultset(const resultset &amp;other) = delete;
-<span class="lineNum">     185 </span>            :             resultset(resultset &amp;&amp;other);
-<span class="lineNum">     186 </span>            :             virtual ~resultset();
-<span class="lineNum">     187 </span>            : 
-<span class="lineNum">     188 </span>            :             resultset &amp;operator=(const resultset &amp;other) = delete;
-<span class="lineNum">     189 </span>            :             resultset &amp;operator=(resultset &amp;&amp; other);
-<span class="lineNum">     190 </span>            : 
-<span class="lineNum">     191 </span>            :             typedef resultset_iterator&lt;row, row&gt; iterator;
-<span class="lineNum">     192 </span>            :             typedef resultset_iterator&lt;const row, row&gt; const_iterator;
-<span class="lineNum">     193 </span>            : 
-<span class="lineNum">     194 </span>            :             bool is_valid() const;
+<span class="lineNum">     184 </span>            :             resultset(shared_ptr&lt;resultset_impl&gt; impl);
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span>            :             resultset(const resultset &amp;other) = delete;
+<span class="lineNum">     187 </span>            :             resultset(resultset &amp;&amp;other);
+<span class="lineNum">     188 </span>            :             virtual ~resultset();
+<span class="lineNum">     189 </span>            : 
+<span class="lineNum">     190 </span>            :             resultset &amp;operator=(const resultset &amp;other) = delete;
+<span class="lineNum">     191 </span>            :             resultset &amp;operator=(resultset &amp;&amp; other);
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span>            :             typedef resultset_iterator&lt;row, row&gt; iterator;
+<span class="lineNum">     194 </span>            :             typedef resultset_iterator&lt;const row, row&gt; const_iterator;
 <span class="lineNum">     195 </span>            : 
-<span class="lineNum">     196 </span>            :             iterator begin();
+<span class="lineNum">     196 </span>            :             bool is_valid() const;
 <span class="lineNum">     197 </span>            : 
-<span class="lineNum">     198 </span>            :             const_iterator begin() const;
+<span class="lineNum">     198 </span>            :             iterator begin();
 <span class="lineNum">     199 </span>            : 
-<span class="lineNum">     200 </span>            :             iterator end();
+<span class="lineNum">     200 </span>            :             const_iterator begin() const;
 <span class="lineNum">     201 </span>            : 
-<span class="lineNum">     202 </span>            :             const_iterator end() const;
+<span class="lineNum">     202 </span>            :             iterator end();
 <span class="lineNum">     203 </span>            : 
-<span class="lineNum">     204 </span>            :             row current_row();
+<span class="lineNum">     204 </span>            :             const_iterator end() const;
 <span class="lineNum">     205 </span>            : 
-<span class="lineNum">     206 </span>            :             bool next();
+<span class="lineNum">     206 </span>            :             row current_row();
 <span class="lineNum">     207 </span>            : 
-<span class="lineNum">     208 </span>            :             row operator*();
+<span class="lineNum">     208 </span>            :             bool next();
 <span class="lineNum">     209 </span>            : 
-<span class="lineNum">     210 </span>            :             void reset();
+<span class="lineNum">     210 </span>            :             row operator*();
 <span class="lineNum">     211 </span>            : 
-<span class="lineNum">     212 </span>            :             size_t size() const;
+<span class="lineNum">     212 </span>            :             void reset();
 <span class="lineNum">     213 </span>            : 
-<span class="lineNum">     214 </span>            :             void for_each(std::function&lt;void (const row &amp;)&gt; funk) const;
+<span class="lineNum">     214 </span>            :             size_t size() const;
 <span class="lineNum">     215 </span>            : 
-<span class="lineNum">     216 </span>            :             shared_ptr&lt;resultset_impl&gt; impl() const;
-<span class="lineNum">     217 </span>            :         };
-<span class="lineNum">     218 </span>            : 
-<span class="lineNum">     219 </span>            :     }
+<span class="lineNum">     216 </span>            :             void for_each(std::function&lt;void (const row &amp;)&gt; funk) const;
+<span class="lineNum">     217 </span>            : 
+<span class="lineNum">     218 </span>            :             shared_ptr&lt;resultset_impl&gt; impl() const;
+<span class="lineNum">     219 </span>            :         };
 <span class="lineNum">     220 </span>            : 
-<span class="lineNum">     221 </span>            : 
-<span class="lineNum">     222 </span>            : }
+<span class="lineNum">     221 </span>            :     }
+<span class="lineNum">     222 </span>            : 
 <span class="lineNum">     223 </span>            : 
-<span class="lineNum">     224 </span>            : #endif
+<span class="lineNum">     224 </span>            : }
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span>            : #endif
 </pre>
       </td>
     </tr>
