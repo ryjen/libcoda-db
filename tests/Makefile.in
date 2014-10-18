@@ -1856,10 +1856,10 @@ uninstall-am: uninstall-pkgincludeHEADERS
 	uninstall-pkgincludeHEADERS
 
 
-check: arg3mysql_test$(EXEEXT) arg3sqlite_test$(EXEEXT)
+check: arg3mysql_test arg3mysql_cache_test arg3sqlite_test arg3sqlite_cache_test
 	./arg3mysql_test
-	./arg3sqlite_test
 	./arg3mysql_cache_test
+	./arg3sqlite_test
 	./arg3sqlite_cache_test
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
