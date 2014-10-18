@@ -8,7 +8,7 @@ AM_CPPFLAGS = @AM_CPPFLAGS@ -Ivendor/bandit -Wall -Werror -I../src/variant/src
 
 pkginclude_HEADERS = db.test.h
 
-noinst_PROGRAMS = arg3mysql_test arg3sqlite_test arg3mysql_cache_test arg3sqlite_cache_test
+check_PROGRAMS = arg3mysql_test arg3sqlite_test arg3mysql_cache_test arg3sqlite_cache_test
 
 arg3mysql_test_SOURCES = $(SOURCES)
 

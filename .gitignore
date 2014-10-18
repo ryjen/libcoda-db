@@ -23,3 +23,4 @@ arg3sqlite_*test
 *.gcno
 coverage.info
 .gradle
+*~
