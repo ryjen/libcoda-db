@@ -14,28 +14,28 @@ arg3mysql_test_SOURCES = $(SOURCES)
 
 arg3mysql_test_CPPFLAGS = -DTEST_MYSQL $(AM_CPPFLAGS)
 
-arg3mysql_test_LDADD = ../src/libarg3db-0.5.la ../src/variant/src/libarg3variant-0.1.la
+arg3mysql_test_LDADD = ../src/libarg3db.la ../src/variant/src/libarg3variant.la
 
 
 arg3sqlite_test_SOURCES = $(SOURCES)
 
 arg3sqlite_test_CPPFLAGS = -DTEST_SQLITE $(AM_CPPFLAGS)
 
-arg3sqlite_test_LDADD = ../src/libarg3db-0.5.la ../src/variant/src/libarg3variant-0.1.la
+arg3sqlite_test_LDADD = ../src/libarg3db.la ../src/variant/src/libarg3variant.la
 
 
 arg3mysql_cache_test_SOURCES = $(SOURCES)
 
 arg3mysql_cache_test_CPPFLAGS = -DTEST_MYSQL -DTEST_CACHE $(AM_CPPFLAGS)
 
-arg3mysql_cache_test_LDADD = ../src/libarg3db-0.5.la ../src/variant/src/libarg3variant-0.1.la
+arg3mysql_cache_test_LDADD = ../src/libarg3db.la ../src/variant/src/libarg3variant.la
 
 
 arg3sqlite_cache_test_SOURCES = $(SOURCES)
 
 arg3sqlite_cache_test_CPPFLAGS = -DTEST_SQLITE -DTEST_CACHE $(AM_CPPFLAGS)
 
-arg3sqlite_cache_test_LDADD = ../src/libarg3db-0.5.la ../src/variant/src/libarg3variant-0.1.la
+arg3sqlite_cache_test_LDADD = ../src/libarg3db.la ../src/variant/src/libarg3variant.la
 
 check: arg3mysql_test arg3mysql_cache_test arg3sqlite_test arg3sqlite_cache_test
 	./arg3mysql_test
