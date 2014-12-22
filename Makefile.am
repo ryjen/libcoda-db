@@ -1,5 +1,5 @@
 
-SUBDIRS = src tests
+SUBDIRS = variant src tests
 
 include $(top_srcdir)/Makefile.am.coverage
 

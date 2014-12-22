@@ -1,6 +1,6 @@
 [submodule "tests/vendor/bandit"]
 	path = tests/vendor/bandit
 	url = http://github.com/c0der78/bandit.git
-[submodule "src/variant"]
-	path = src/variant
-	url = http://github.com/c0der78/arg3variant
+[submodule "variant"]
+	path = variant
+	url = http://github.com/c0der78/arg3variant.git
