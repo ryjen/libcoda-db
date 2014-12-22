@@ -794,7 +794,7 @@ CXX
 CXXFLAGS
 CCC
 CXXCPP'
-ac_subdirs_all='variant'
+ac_subdirs_all='libs/variant'
 
 # Initialize some variables set by options.
 ac_init_help=
@@ -16597,7 +16597,7 @@ ac_config_files="$ac_config_files Makefile src/Makefile tests/Makefile"
 
 
 
-subdirs="$subdirs variant"
+subdirs="$subdirs libs/variant"
 
 
 cat >confcache <<\_ACEOF

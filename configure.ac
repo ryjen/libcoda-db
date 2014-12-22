@@ -55,6 +55,6 @@ AC_CHECK_FUNCS([memset strdup])
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
 
-AC_CONFIG_SUBDIRS([variant])
+AC_CONFIG_SUBDIRS([libs/variant])
 
 AC_OUTPUT

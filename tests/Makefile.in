@@ -117,7 +117,7 @@ am__objects_1 = arg3mysql_cache_test-arg3.test.$(OBJEXT) \
 am_arg3mysql_cache_test_OBJECTS = $(am__objects_1)
 arg3mysql_cache_test_OBJECTS = $(am_arg3mysql_cache_test_OBJECTS)
 arg3mysql_cache_test_DEPENDENCIES = ../src/libarg3db.la \
-	../src/variant/src/libarg3variant.la
+	../libs/variant/src/libarg3variant.la
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -145,7 +145,7 @@ am__objects_2 = arg3mysql_test-arg3.test.$(OBJEXT) \
 am_arg3mysql_test_OBJECTS = $(am__objects_2)
 arg3mysql_test_OBJECTS = $(am_arg3mysql_test_OBJECTS)
 arg3mysql_test_DEPENDENCIES = ../src/libarg3db.la \
-	../src/variant/src/libarg3variant.la
+	../libs/variant/src/libarg3variant.la
 am__objects_3 = arg3sqlite_cache_test-arg3.test.$(OBJEXT) \
 	arg3sqlite_cache_test-base_record.test.$(OBJEXT) \
 	arg3sqlite_cache_test-column.test.$(OBJEXT) \
@@ -169,7 +169,7 @@ am__objects_3 = arg3sqlite_cache_test-arg3.test.$(OBJEXT) \
 am_arg3sqlite_cache_test_OBJECTS = $(am__objects_3)
 arg3sqlite_cache_test_OBJECTS = $(am_arg3sqlite_cache_test_OBJECTS)
 arg3sqlite_cache_test_DEPENDENCIES = ../src/libarg3db.la \
-	../src/variant/src/libarg3variant.la
+	../libs/variant/src/libarg3variant.la
 am__objects_4 = arg3sqlite_test-arg3.test.$(OBJEXT) \
 	arg3sqlite_test-base_record.test.$(OBJEXT) \
 	arg3sqlite_test-column.test.$(OBJEXT) \
@@ -193,7 +193,7 @@ am__objects_4 = arg3sqlite_test-arg3.test.$(OBJEXT) \
 am_arg3sqlite_test_OBJECTS = $(am__objects_4)
 arg3sqlite_test_OBJECTS = $(am_arg3sqlite_test_OBJECTS)
 arg3sqlite_test_DEPENDENCIES = ../src/libarg3db.la \
-	../src/variant/src/libarg3variant.la
+	../libs/variant/src/libarg3variant.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -287,7 +287,7 @@ CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
-AM_CPPFLAGS = @AM_CPPFLAGS@ -Ivendor/bandit -Wall -Werror -I../src/variant/src
+AM_CPPFLAGS = @AM_CPPFLAGS@ -Ivendor/bandit -Wall -Werror -I../libs/variant/src
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
@@ -421,16 +421,16 @@ SOURCES = arg3.test.cpp base_record.test.cpp column.test.cpp db.test.cpp delete_
 pkginclude_HEADERS = db.test.h
 arg3mysql_test_SOURCES = $(SOURCES)
 arg3mysql_test_CPPFLAGS = -DTEST_MYSQL $(AM_CPPFLAGS)
-arg3mysql_test_LDADD = ../src/libarg3db.la ../src/variant/src/libarg3variant.la
+arg3mysql_test_LDADD = ../src/libarg3db.la ../libs/variant/src/libarg3variant.la
 arg3sqlite_test_SOURCES = $(SOURCES)
 arg3sqlite_test_CPPFLAGS = -DTEST_SQLITE $(AM_CPPFLAGS)
-arg3sqlite_test_LDADD = ../src/libarg3db.la ../src/variant/src/libarg3variant.la
+arg3sqlite_test_LDADD = ../src/libarg3db.la ../libs/variant/src/libarg3variant.la
 arg3mysql_cache_test_SOURCES = $(SOURCES)
 arg3mysql_cache_test_CPPFLAGS = -DTEST_MYSQL -DTEST_CACHE $(AM_CPPFLAGS)
-arg3mysql_cache_test_LDADD = ../src/libarg3db.la ../src/variant/src/libarg3variant.la
+arg3mysql_cache_test_LDADD = ../src/libarg3db.la ../libs/variant/src/libarg3variant.la
 arg3sqlite_cache_test_SOURCES = $(SOURCES)
 arg3sqlite_cache_test_CPPFLAGS = -DTEST_SQLITE -DTEST_CACHE $(AM_CPPFLAGS)
-arg3sqlite_cache_test_LDADD = ../src/libarg3db.la ../src/variant/src/libarg3variant.la
+arg3sqlite_cache_test_LDADD = ../src/libarg3db.la ../libs/variant/src/libarg3variant.la
 all: all-am
 
 .SUFFIXES:
