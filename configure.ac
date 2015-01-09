@@ -35,6 +35,7 @@ if test x"$GIT_CHECK" != x"yes" ; then
     AC_MSG_ERROR([Required program 'git' not found.])
 else
     git submodule update --init --recursive
+    autoreconf -if
 fi
 
 # Checks for libraries.

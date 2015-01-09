@@ -16909,6 +16909,7 @@ if test x"$GIT_CHECK" != x"yes" ; then
     as_fn_error $? "Required program 'git' not found." "$LINENO" 5
 else
     git submodule update --init --recursive
+    autoreconf -if
 fi
 
 # Checks for libraries.
