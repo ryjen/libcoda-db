@@ -15,9 +15,7 @@ install:
 script:
   - ./configure
   - make test
-  - valgrind --leak-check=full --error-exitcode=5 ./tests/arg3mysql_cache_test
   - valgrind --leak-check=full --error-exitcode=5 ./tests/arg3mysql_test
-  - valgrind --leak-check=full --error-exitcode=5 ./tests/arg3sqlite_cache_test
   - valgrind --leak-check=full --error-exitcode=5 ./tests/arg3sqlite_test 
 
 
