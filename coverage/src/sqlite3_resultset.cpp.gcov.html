@@ -31,13 +31,13 @@
             <td class="headerValue">Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">36</td>
-            <td class="headerCovTableEntry">57</td>
-            <td class="headerCovTableEntryLo">63.2 %</td>
+            <td class="headerCovTableEntry">34</td>
+            <td class="headerCovTableEntry">55</td>
+            <td class="headerCovTableEntryLo">61.8 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-10-18 13:30:40</td>
+            <td class="headerValue">2015-05-04 23:02:43</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">18</td>
@@ -104,8 +104,8 @@
 <span class="lineNum">      34 </span>            : 
 <span class="lineNum">      35 </span>            :         bool sqlite3_resultset::is_valid() const
 <span class="lineNum">      36 </span>            :         {
-<span class="lineNum">      37 </span><span class="lineCov">       1222 :             return stmt_ != nullptr &amp;&amp; stmt_;</span>
-<a name="38"><span class="lineNum">      38 </span><span class="lineCov">        611 :         }</span></a>
+<span class="lineNum">      37 </span><span class="lineCov">       1833 :             return stmt_ != nullptr &amp;&amp; stmt_;</span>
+<a name="38"><span class="lineNum">      38 </span>            :         }</a>
 <span class="lineNum">      39 </span>            : 
 <span class="lineNum">      40 </span>            :         size_t sqlite3_resultset::size() const
 <span class="lineNum">      41 </span>            :         {
@@ -145,12 +145,12 @@
 <span class="lineNum">      75 </span><span class="lineCov">         34 :         {</span>
 <span class="lineNum">      76 </span><span class="lineCov">         68 :             int status = sqlite3_step(stmt.get());</span>
 <span class="lineNum">      77 </span>            : 
-<span class="lineNum">      78 </span><span class="lineCov">        114 :             while (status == SQLITE_ROW)</span>
+<span class="lineNum">      78 </span><span class="lineCov">        160 :             while (status == SQLITE_ROW)</span>
 <span class="lineNum">      79 </span>            :             {
 <span class="lineNum">      80 </span><span class="lineCov">        138 :                 rows_.push_back(make_shared&lt;sqlite3_cached_row&gt;(db, stmt));</span>
 <span class="lineNum">      81 </span>            : 
 <span class="lineNum">      82 </span><span class="lineCov">         92 :                 status = sqlite3_step(stmt.get());</span>
-<span class="lineNum">      83 </span><span class="lineCov">         46 :             }</span>
+<span class="lineNum">      83 </span>            :             }
 <a name="84"><span class="lineNum">      84 </span><span class="lineCov">         68 :         }</span></a>
 <span class="lineNum">      85 </span>            : 
 <span class="lineNum">      86 </span>            :         sqlite3_cached_resultset::sqlite3_cached_resultset(sqlite3_cached_resultset &amp;&amp;other) : db_(other.db_), rows_(other.rows_), currentRow_(other.currentRow_)

@@ -23,3 +23,4 @@ arg3sqlite_*test
 coverage.info
 .gradle
 *~
+arg3db.pc

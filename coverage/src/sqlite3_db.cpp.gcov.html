@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-10-18 13:30:40</td>
+            <td class="headerValue">2015-05-04 23:02:43</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">16</td>
@@ -83,8 +83,8 @@
 <a name="13"><span class="lineNum">      13 </span>            :     {</a>
 <span class="lineNum">      14 </span>            : 
 <span class="lineNum">      15 </span>            :         sqlite3_db::sqlite3_db(const string &amp;name) : sqldb(), db_(NULL), filename_(name), schema_factory_(this)
-<span class="lineNum">      16 </span><span class="lineCov">         12 :         {</span>
-<a name="17"><span class="lineNum">      17 </span><span class="lineCov">         10 :         }</span></a>
+<span class="lineNum">      16 </span><span class="lineCov">         10 :         {</span>
+<a name="17"><span class="lineNum">      17 </span><span class="lineCov">          9 :         }</span></a>
 <span class="lineNum">      18 </span>            : 
 <span class="lineNum">      19 </span>            :         sqlite3_db::sqlite3_db(const sqlite3_db &amp;other) : sqldb(other), db_(other.db_), filename_(other.filename_), schema_factory_(other.schema_factory_)
 <span class="lineNum">      20 </span><span class="lineNoCov">          0 :         {</span>
@@ -115,15 +115,15 @@
 <a name="45"><span class="lineNum">      45 </span>            :         }</a>
 <span class="lineNum">      46 </span>            : 
 <span class="lineNum">      47 </span>            :         sqlite3_db::~sqlite3_db()
-<span class="lineNum">      48 </span><span class="lineCov">         10 :         {</span>
-<span class="lineNum">      49 </span><span class="lineCov">          6 :             close();</span>
-<a name="50"><span class="lineNum">      50 </span><span class="lineCov">         10 :         }</span></a>
+<span class="lineNum">      48 </span><span class="lineCov">          9 :         {</span>
+<span class="lineNum">      49 </span><span class="lineCov">          5 :             close();</span>
+<a name="50"><span class="lineNum">      50 </span><span class="lineCov">          9 :         }</span></a>
 <span class="lineNum">      51 </span>            : 
 <span class="lineNum">      52 </span>            :         void sqlite3_db::query_schema(const string &amp;tableName, std::vector&lt;column_definition&gt; &amp;columns)
 <span class="lineNum">      53 </span>            :         {
 <span class="lineNum">      54 </span><span class="lineCov">        192 :             auto rs = execute( &quot;pragma table_info(&quot; + tableName + &quot;)&quot; );</span>
 <span class="lineNum">      55 </span>            : 
-<span class="lineNum">      56 </span><span class="lineCov">       2304 :             for (auto &amp; row : rs)</span>
+<span class="lineNum">      56 </span><span class="lineCov">       2624 :             for (auto &amp; row : rs)</span>
 <span class="lineNum">      57 </span>            :             {
 <span class="lineNum">      58 </span><span class="lineCov">        320 :                 column_definition def;</span>
 <span class="lineNum">      59 </span>            : 
@@ -192,11 +192,11 @@
 <span class="lineNum">     122 </span>            : 
 <span class="lineNum">     123 </span>            :         void sqlite3_db::close()
 <span class="lineNum">     124 </span>            :         {
-<span class="lineNum">     125 </span><span class="lineCov">        112 :             if (db_ == NULL) return;</span>
+<span class="lineNum">     125 </span><span class="lineCov">        110 :             if (db_ == NULL) return;</span>
 <span class="lineNum">     126 </span>            : 
 <span class="lineNum">     127 </span><span class="lineCov">        100 :             sqlite3_close(db_);</span>
 <span class="lineNum">     128 </span><span class="lineCov">        100 :             db_ = NULL;</span>
-<a name="129"><span class="lineNum">     129 </span><span class="lineCov">        206 :         }</span></a>
+<a name="129"><span class="lineNum">     129 </span><span class="lineCov">        205 :         }</span></a>
 <span class="lineNum">     130 </span>            : 
 <span class="lineNum">     131 </span>            :         string sqlite3_db::last_error() const
 <span class="lineNum">     132 </span>            :         {
