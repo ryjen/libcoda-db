@@ -102,11 +102,12 @@ go_bandit([]()
 
             auto rs = q.execute();
 
-#ifdef TEST_CACHE
-            Assert::That(rs.size(), Equals(2));
-#else
-            Assert::That(rs.size(), Equals(5));
-#endif
+						if (testdb->cache_level() != sqldb::CACHE_NONE) { 
+            	Assert::That(rs.size(), Equals(2));
+						} else {
+            	Assert::That(rs.size(), Equals(5));
+						}
+
             auto i = rs.begin();
 
             Assert::That(i->co1umn(1).to_string(), Equals("Bryan"));
