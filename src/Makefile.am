@@ -1,7 +1,9 @@
 
 lib_LTLIBRARIES = libarg3db.la
 
-libarg3db_la_LDFLAGS = $(LIBARG3DB_LA_LDFLAGS) -version-info 0:0:0 ../libs/variant/src/libarg3variant.la
+libarg3db_la_LDFLAGS = $(LIBARG3DB_LA_LDFLAGS) -version-info 0:0:0
+
+libarg3db_la_LIBADD = ../libs/variant/src/libarg3variant.la
 
 libarg3db_la_SOURCES = base_query.cpp column.cpp delete_query.cpp modify_query.cpp mysql_column.cpp mysql_binding.cpp mysql_db.cpp \
 	mysql_resultset.cpp mysql_row.cpp mysql_statement.cpp resultset.cpp row.cpp schema.cpp schema_factory.cpp select_query.cpp \

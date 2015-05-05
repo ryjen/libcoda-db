@@ -7,7 +7,6 @@ Makefile
 *.sublime-workspace
 reinstall.sh
 .deps
-config.h.in~
 *.o
 .libs
 stamp-h1
@@ -16,7 +15,7 @@ stamp-h1
 *.cache
 libtool
 *.la
-*.status
+config.status
 config.h
 arg3mysql_*test
 arg3sqlite_*test

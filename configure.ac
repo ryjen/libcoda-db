@@ -4,7 +4,7 @@
 AC_PREREQ([2.58])
 AC_INIT([arg3db], [0.5], [c0der78@gmail.com])
 AC_CONFIG_SRCDIR([src/sqldb.cpp])
-AC_CONFIG_HEADERS([src/config.h])
+AC_CONFIG_HEADERS([config.h])
 
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE([enable])
