@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.58])
-AC_INIT([arg3db], [0.5.1], [c0der78@gmail.com])
+AC_INIT([arg3db], [0.5.1], [c0der78@gmail.com], [arg3db], [http://github.com/c0der78/arg3db/archive/0.5.1.tar.gz])
 AC_CONFIG_SRCDIR([src/sqldb.cpp])
 AC_CONFIG_HEADERS([config.h])
 
@@ -32,12 +32,19 @@ AC_SUBST(COVERAGE_CFLAGS)
 AC_SUBST(COVERAGE_CXXFLAGS)
 AC_SUBST(COVERAGE_LDFLAGS)
 
+# if a git enabled folder...
+if test -d .git ; then
+  
+  # get the git program
+  AC_CHECK_PROG(GIT_CHECK,git,yes)
 
-AC_CHECK_PROG(GIT_CHECK,git,yes)
-if test x"$GIT_CHECK" != x"yes" ; then
-    AC_MSG_ERROR([Required program 'git' not found.])
-else
-    git submodule update --init --recursive
+  # require git
+  if test x"$GIT_CHECK" != x"yes" ; then
+      AC_MSG_ERROR([Required program 'git' not found.])
+  else
+      # update the submodules
+      git submodule update --init --recursive
+  fi
 fi
 
 # Checks for libraries.

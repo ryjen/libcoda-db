@@ -593,7 +593,7 @@ PACKAGE_TARNAME='arg3db'
 PACKAGE_VERSION='0.5.1'
 PACKAGE_STRING='arg3db 0.5.1'
 PACKAGE_BUGREPORT='c0der78@gmail.com'
-PACKAGE_URL=''
+PACKAGE_URL='http://github.com/c0der78/arg3db/archive/0.5.1.tar.gz'
 
 ac_unique_file="src/sqldb.cpp"
 # Factoring default headers for most tests.
@@ -1466,6 +1466,7 @@ Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
 
 Report bugs to <c0der78@gmail.com>.
+arg3db home page: <http://github.com/c0der78/arg3db/archive/0.5.1.tar.gz>.
 _ACEOF
 ac_status=$?
 fi
@@ -16939,8 +16940,11 @@ fi
 
 
 
+# if a git enabled folder...
+if test -d .git ; then
 
-# Extract the first word of "git", so it can be a program name with args.
+  # get the git program
+  # Extract the first word of "git", so it can be a program name with args.
 set dummy git; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
@@ -16977,10 +16981,14 @@ $as_echo "no" >&6; }
 fi
 
 
-if test x"$GIT_CHECK" != x"yes" ; then
-    as_fn_error $? "Required program 'git' not found." "$LINENO" 5
-else
-    git submodule update --init --recursive
+
+  # require git
+  if test x"$GIT_CHECK" != x"yes" ; then
+      as_fn_error $? "Required program 'git' not found." "$LINENO" 5
+  else
+      # update the submodules
+      git submodule update --init --recursive
+  fi
 fi
 
 # Checks for libraries.
@@ -17850,7 +17858,8 @@ $config_headers
 Configuration commands:
 $config_commands
 
-Report bugs to <c0der78@gmail.com>."
+Report bugs to <c0der78@gmail.com>.
+arg3db home page: <http://github.com/c0der78/arg3db/archive/0.5.1.tar.gz>."
 
 _ACEOF
 cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1

@@ -24,3 +24,4 @@ coverage.info
 .gradle
 *~
 arg3db.pc
+*.tar.gz
