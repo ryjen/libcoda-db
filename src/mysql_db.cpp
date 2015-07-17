@@ -105,12 +105,18 @@ namespace arg3
                 // column name
                 def.name = row["Field"].to_string();
 
+                if (def.name.empty()) {
+                    continue;
+                }
+
                 // primary key check
                 def.pk = row["Key"].to_string() == "PRI";
 
                 // find type
                 string type = row["Type"].to_string();
 
+
+                // yes, this is pretty immature
                 if (type.find("int") != string::npos)
                 {
                     def.type = MYSQL_TYPE_LONG;

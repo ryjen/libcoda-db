@@ -69,7 +69,7 @@ namespace arg3
 
         int delete_query::execute(bool batch)
         {
-            prepare();
+            prepare(to_string());
 
             int res = stmt_->result() ? stmt_->last_number_of_changes() : 0;
 

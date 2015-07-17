@@ -28,7 +28,7 @@ go_bandit([]()
         {
             user u;
 
-            auto keys = u.sch3ma()->primary_keys();
+            auto keys = u.schema()->primary_keys();
 
             Assert::That(keys.size(), Equals(1));
 

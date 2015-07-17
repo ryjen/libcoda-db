@@ -157,6 +157,10 @@ namespace arg3
             return value_.to_string();
         }
 
+        bool sql_value::is_valid() const {
+            return !value_.is_null();
+        }
+
         void sql_value::bind_to(bindable *obj, int index) const
         {
             if (value_.is_null())

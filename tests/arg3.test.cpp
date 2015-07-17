@@ -21,7 +21,10 @@ int main(int argc, char *argv[])
     return 1;
 #endif
 #endif
-    
+
+    	if (testdb) {
+    		testdb->set_log_level(arg3::db::sqldb::LOG_DEBUG);
+		}	
 		if (!bandit::run(argc, argv)) {
 			if (testdb) {
 				testdb->set_cache_level(arg3::db::sqldb::CACHE_RESULTSET);

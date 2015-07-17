@@ -70,13 +70,11 @@ namespace arg3
             return tableName_;
         }
 
-        void base_query::prepare()
+        void base_query::prepare(const string &sql)
         {
             assert(db_ != NULL);
 
             if (stmt_ != nullptr && stmt_->is_valid()) return;
-
-            string sql = to_string();
 
             db_->log(sqldb::LOG_VERBOSE, sql);
 
@@ -91,6 +89,11 @@ namespace arg3
 
                 value.bind_to(stmt_.get(), i);
             }
+        }
+
+        void base_query::prepare()
+        {
+            prepare(to_string());
         }
 
         size_t base_query::assert_binding_index(size_t index)
