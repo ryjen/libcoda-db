@@ -102,13 +102,17 @@ namespace arg3
         template<typename T>
         class base_record
         {
+        public:
+
+            typedef arg3::db::schema schema_type;
+
+            typedef std::function<void (shared_ptr<T>)> callback;
+
         private:
-            std::shared_ptr<schema> schema_;
+            std::shared_ptr<schema_type> schema_;
             std::unordered_map<string, sql_value> values_;
             string idColumnName_;
         public:
-
-            typedef std::function<void (shared_ptr<T>)> callback;
 
             /*!
              * @param db the database the record uses
@@ -124,7 +128,7 @@ namespace arg3
              * @param schema the schema to operate on
              * @param columnName the name of the id column in the schema
              */
-            base_record(std::shared_ptr<schema> schema, const string &columnName) : schema_(schema), idColumnName_(columnName)
+            base_record(std::shared_ptr<schema_type> schema, const string &columnName) : schema_(schema), idColumnName_(columnName)
             {
                 assert(schema_ != nullptr);
             }
@@ -135,7 +139,7 @@ namespace arg3
              * @param value the value of the id column
              */
             template<typename V>
-            base_record(std::shared_ptr<schema> schema, const string &columnName, V value) : base_record(schema, columnName)
+            base_record(std::shared_ptr<schema_type> schema, const string &columnName, V value) : base_record(schema, columnName)
             {
                 set(idColumnName_, value);
                 refresh(); // load up from database
@@ -157,7 +161,7 @@ namespace arg3
             /*!
              * construct with values from a database row
              */
-            base_record(std::shared_ptr<schema> schema, const string &columnName, const row &values) : base_record(schema, columnName)
+            base_record(std::shared_ptr<schema_type> schema, const string &columnName, const row &values) : base_record(schema, columnName)
             {
                 init(values);
             }
@@ -267,7 +271,7 @@ namespace arg3
             /*!
              * returns the schema for this record
              */
-            shared_ptr<db::schema> schema() const
+            shared_ptr<schema_type> schema() const
             {
                 if (!schema_->is_valid())
                     schema_->init();
