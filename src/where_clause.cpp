@@ -6,19 +6,26 @@ namespace arg3
 {
     namespace db
     {
+        where_clause operator "" _w( const char *cstr, size_t len )
+        {
+           return where_clause(string(cstr, len));
+        }
+
         where_clause::where_clause() {}
 
         where_clause::where_clause(const string &value) : value_(value) {}
 
-        where_clause::where_clause(const where_clause &other) : value_(other.value_) {}
+        where_clause::where_clause(const where_clause &other) : value_(other.value_), and_(other.and_), or_(other.or_) {}
 
-        where_clause::where_clause(where_clause &&other) : value_(std::move(other.value_)) {}
+        where_clause::where_clause(where_clause &&other) : value_(std::move(other.value_)), and_(std::move(other.and_)), or_(std::move(other.or_)) {}
 
         where_clause::~where_clause() {}
 
         where_clause &where_clause::operator=(const where_clause &other)
         {
             value_ = other.value_;
+            and_ = other.and_;
+            or_ = other.or_;
 
             return *this;
         }
@@ -26,6 +33,9 @@ namespace arg3
         where_clause &where_clause::operator=(where_clause && other)
         {
             value_ = std::move( other.value_ );
+            and_ = std::move(other.and_);
+            or_ = std::move(other.or_);
+            
             return *this;
         }
 
@@ -79,6 +89,7 @@ namespace arg3
                 value_ = value;
             else
                 and_.push_back(where_clause(value));
+
             return *this;
         }
         where_clause &where_clause::operator||(const where_clause &value)
