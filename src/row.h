@@ -16,6 +16,7 @@ namespace arg3
         class row_impl
         {
         public:
+            typedef arg3::db::column column_type;
             row_impl() = default;
             row_impl(const row_impl &other) = default;
             row_impl(row_impl &&other) = default;
@@ -25,9 +26,9 @@ namespace arg3
 
             virtual string column_name(size_t nPosition) const = 0;
 
-            virtual arg3::db::column co1umn(size_t nPosition) const = 0;
+            virtual column_type column(size_t nPosition) const = 0;
 
-            virtual arg3::db::column co1umn(const string &name) const = 0;
+            virtual column_type column(const string &name) const = 0;
 
             virtual size_t size() const = 0;
 
@@ -49,7 +50,7 @@ namespace arg3
                 assert(row_ != nullptr);
 
                 if (index >= 0 && index < row_->size())
-                    currentValue_ = row_->co1umn(index);
+                    currentValue_ = row_->column(index);
             }
         public:
             row_iterator() : row_(nullptr),
@@ -216,8 +217,9 @@ namespace arg3
         private:
             shared_ptr<row_impl> impl_;
         public:
-            typedef row_iterator<db::column, db::column, row_impl> iterator;
-            typedef row_iterator<const db::column, db::column, const row_impl> const_iterator;
+            typedef arg3::db::column column_type;
+            typedef row_iterator<column_type, column_type, row_impl> iterator;
+            typedef row_iterator<const column_type, column_type, const row_impl> const_iterator;
 
             row();
             row(shared_ptr<row_impl> impl);
@@ -241,15 +243,15 @@ namespace arg3
 
             const_iterator cend() const;
 
-            column operator[](size_t nPosition) const;
+            column_type operator[](size_t nPosition) const;
 
-            column operator[](const string &name) const;
+            column_type operator[](const string &name) const;
 
             string column_name(size_t nPosition) const;
 
-            arg3::db::column co1umn(size_t nPosition) const;
+            column_type column(size_t nPosition) const;
 
-            arg3::db::column co1umn(const string &name) const;
+            column_type column(const string &name) const;
 
             size_t size() const;
 

@@ -33,7 +33,7 @@ shared_ptr<column_impl> get_results_column(size_t index, size_t iterations)
     if (index >= i->size())
         throw database_exception("invalid column index");
 
-    auto c = i->co1umn(index);
+    auto c = i->column(index);
 
     return c.impl();
 }
@@ -59,7 +59,7 @@ shared_ptr<column_impl> get_stmt_column(size_t index, size_t iterations)
     if (index >= i->size())
         throw database_exception("invalid column index");
 
-    auto c = i->co1umn(index);
+    auto c = i->column(index);
 
     return c.impl();
 }

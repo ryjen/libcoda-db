@@ -59,7 +59,7 @@ namespace arg3
             return *this;
         }
 
-        column mysql_row::co1umn(size_t nPosition) const
+        row_impl::column_type mysql_row::column(size_t nPosition) const
         {
             if (!is_valid())
                 throw database_exception("invalid row");
@@ -70,12 +70,12 @@ namespace arg3
             }
 
             if (db_->cache_level() == sqldb::CACHE_COLUMN)
-                return db::column(make_shared<mysql_cached_column>( res_, row_, nPosition ));
+                return row_impl::column_type(make_shared<mysql_cached_column>( res_, row_, nPosition ));
             else
-                return db::column( make_shared<mysql_column>( res_, row_, nPosition ) );
+                return row_impl::column_type( make_shared<mysql_column>( res_, row_, nPosition ) );
         }
 
-        column mysql_row::co1umn(const string &name) const
+        row_impl::column_type mysql_row::column(const string &name) const
         {
             assert(!name.empty());
 
@@ -87,7 +87,7 @@ namespace arg3
 
                 if (field != NULL && field->name != NULL && name == field->name)
                 {
-                    return co1umn(i);
+                    return column(i);
                 }
             }
             throw database_exception("unknown column '" + name + "'");
@@ -168,7 +168,7 @@ namespace arg3
             return *this;
         }
 
-        column mysql_stmt_row::co1umn(size_t nPosition) const
+        row_impl::column_type mysql_stmt_row::column(size_t nPosition) const
         {
             assert(fields_ != nullptr);
 
@@ -183,12 +183,12 @@ namespace arg3
             }
 
             if (db_->cache_level() == sqldb::CACHE_COLUMN)
-                return db::column(make_shared<mysql_cached_column>( column_name(nPosition), *fields_.get(), nPosition));
+                return row_impl::column_type(make_shared<mysql_cached_column>( column_name(nPosition), *fields_.get(), nPosition));
             else
-                return db::column(make_shared<mysql_stmt_column>( column_name(nPosition), fields_, nPosition ) );
+                return row_impl::column_type(make_shared<mysql_stmt_column>( column_name(nPosition), fields_, nPosition ) );
         }
 
-        column mysql_stmt_row::co1umn(const string &name) const
+        row_impl::column_type mysql_stmt_row::column(const string &name) const
         {
             assert(!name.empty());
 
@@ -205,7 +205,7 @@ namespace arg3
 
                 if (field != NULL && field->name != NULL && name == field->name)
                 {
-                    return co1umn(i);
+                    return column(i);
                 }
             }
             throw database_exception("unknown column '" + name + "'");
@@ -272,24 +272,24 @@ namespace arg3
             }
         }
 
-        column mysql_cached_row::co1umn(size_t nPosition) const
+        row_impl::column_type mysql_cached_row::column(size_t nPosition) const
         {
             if (nPosition >= columns_.size())
             {
                 throw database_exception("invalid index for row column");
             }
 
-            return arg3::db::column(columns_[nPosition]);
+            return row_impl::column_type(columns_[nPosition]);
         }
 
-        column mysql_cached_row::co1umn(const string &name) const
+        row_impl::column_type mysql_cached_row::column(const string &name) const
         {
             assert(!name.empty());
 
             for (size_t i = 0; i < columns_.size(); i++)
             {
                 if (name == column_name(i))
-                    return co1umn(i);
+                    return column(i);
             }
             throw database_exception("unknown column '" + name + "'");
         }

@@ -38,17 +38,17 @@ namespace arg3
             return *this;
         }
 
-        column sqlite3_row::co1umn(size_t nPosition) const
+        row_impl::column_type sqlite3_row::column(size_t nPosition) const
         {
             assert(nPosition < size());
 
             if (db_->cache_level() == sqldb::CACHE_COLUMN)
-                return db::column(make_shared<sqlite3_cached_column>(stmt_, nPosition));
+                return row_impl::column_type(make_shared<sqlite3_cached_column>(stmt_, nPosition));
             else
-                return db::column(make_shared<sqlite3_column>(stmt_, nPosition ) );
+                return row_impl::column_type(make_shared<sqlite3_column>(stmt_, nPosition ) );
         }
 
-        column sqlite3_row::co1umn(const string &name) const
+        row_impl::column_type sqlite3_row::column(const string &name) const
         {
             assert(!name.empty());
 
@@ -58,7 +58,7 @@ namespace arg3
 
                 if (name == col_name)
                 {
-                    return co1umn(i);
+                    return column(i);
                 }
             }
             throw database_exception("unknown column '" + name + "'");
@@ -112,14 +112,14 @@ namespace arg3
             return *this;
         }
 
-        column sqlite3_cached_row::co1umn(size_t nPosition) const
+        row_impl::column_type sqlite3_cached_row::column(size_t nPosition) const
         {
             assert(nPosition < size());
 
-            return db::column( columns_[nPosition] );
+            return row_impl::column_type( columns_[nPosition] );
         }
 
-        column sqlite3_cached_row::co1umn(const string &name) const
+        row_impl::column_type sqlite3_cached_row::column(const string &name) const
         {
             assert(!name.empty());
 
@@ -127,7 +127,7 @@ namespace arg3
             {
                 if (name == column_name(i))
                 {
-                    return co1umn(i);
+                    return column(i);
                 }
             }
             throw database_exception("unknown column '" + name + "'");
