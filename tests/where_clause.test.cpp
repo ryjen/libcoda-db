@@ -17,7 +17,7 @@ go_bandit([]()
         {
             where_clause w("this");
 
-            w  &&"that";
+            w  && "that";
 
             w || "blah";
 
@@ -40,7 +40,7 @@ go_bandit([]()
 
             AssertThat(value, Equals("this OR that"));
 
-            w3 &&w4;
+            w3 && w4;
 
             AssertThat(w3.to_string(), Equals("blah AND bleh"));
         });
@@ -51,7 +51,7 @@ go_bandit([]()
 
             where_clause w2;
 
-            w1  &&"blah";
+            w1  && "blah";
 
             string value = (string) w1;
 
@@ -63,7 +63,7 @@ go_bandit([]()
 
             where_clause w3;
 
-            w3  &&w1;
+            w3  && w1;
 
             AssertThat(w3.to_string(), Equals(w1.to_string()));
 
@@ -84,6 +84,14 @@ go_bandit([]()
 
             AssertThat(w.to_string(), Equals(""));
 
+        });
+
+        it("can use literal", []() {
+            auto w = ("this = ?"_w && "that = ?"_w);
+
+            w || ("abc = def"_w && "xyz = tuv"_w);
+
+            AssertThat(w.to_string(), Equals("this = ? AND that = ? OR abc = def AND xyz = tuv"));
         });
 
     });

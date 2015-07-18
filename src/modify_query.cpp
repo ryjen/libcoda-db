@@ -41,6 +41,51 @@ namespace arg3
             return *this;
         }
 
+        string modify_query::to_insert_string() const
+        {
+            ostringstream buf;
+
+            buf << "INSERT INTO " << tableName_;
+
+            if (columns_.size() > 0) {
+                buf << "(";
+
+                buf << join_csv(columns_);
+
+                buf << ") VALUES (";
+
+                buf << join_csv('?', columns_.size());
+
+                buf << ")";
+            } else {
+                buf << " DEAULT VALUES";
+            }
+
+            return buf.str();
+        }
+
+        string modify_query::to_update_string(const std::string &idColumnName) const
+        {
+            ostringstream buf;
+
+            buf << "UPDATE " << tableName_;
+
+            if(columns_.size() > 0) {
+                buf << " SET ";
+
+                for(int i = 0, size = columns_.size(); i < size; i++) {
+                    buf << columns_[i] << " = ?";
+                    if (i + 1 < size) {
+                        buf << ", ";
+                    }
+                }
+            } 
+
+            buf << " WHERE " << idColumnName << " = ?";
+
+            return buf.str();
+        }
+
         string modify_query::to_string() const
         {
             ostringstream buf;
@@ -65,6 +110,58 @@ namespace arg3
             }
 
             return buf.str();
+        }
+
+        int modify_query::executeUpdate(const std::string &idColumnName, bool batch)
+        {
+            prepare(to_update_string(idColumnName));
+             
+            bool success = stmt_->result();
+
+            int res = 0;
+
+            if (success)
+            {
+                res = stmt_->last_number_of_changes();
+            }
+            if (!batch)
+            {
+                stmt_->finish();
+                stmt_ = nullptr;
+            }
+            else
+            {
+                reset();
+            }
+
+            return res;
+        }
+
+        int modify_query::executeInsert(long long *insertId, bool batch)
+        {
+            prepare(to_insert_string());
+
+            bool success = stmt_->result();
+
+            int res = 0;
+
+            if (success)
+            {
+                res = stmt_->last_number_of_changes();
+                if (insertId)
+                    *insertId = stmt_->last_insert_id();
+            }
+            if (!batch)
+            {
+                stmt_->finish();
+                stmt_ = nullptr;
+            }
+            else
+            {
+                reset();
+            }
+
+            return res;
         }
 
         int modify_query::execute(long long *insertId, bool batch)

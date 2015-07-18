@@ -103,13 +103,13 @@ void test_row_column(std::function<shared_ptr<row_impl>(size_t)> funk)
 {
     auto r = funk(0);
 
-    Assert::That(r->co1umn(0).is_valid(), IsTrue());
+    Assert::That(r->column(0).is_valid(), IsTrue());
 
-    Assert::That(r->co1umn(1).to_string(), Equals("Bryan"));
+    Assert::That(r->column(1).to_string(), Equals("Bryan"));
 
-    AssertThrows(database_exception, r->co1umn(1234));
+    AssertThrows(database_exception, r->column(1234));
 
-    AssertThrows(database_exception, r->co1umn("absdfas"));
+    AssertThrows(database_exception, r->column("absdfas"));
 }
 
 go_bandit([]()

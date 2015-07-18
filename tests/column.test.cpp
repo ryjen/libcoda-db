@@ -18,7 +18,7 @@ column get_user_column(const string &name)
 
     auto row = rs.begin();
 
-    return row->co1umn(name);
+    return row->column(name);
 }
 
 go_bandit([]()

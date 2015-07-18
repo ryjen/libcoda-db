@@ -17,6 +17,7 @@ namespace arg3
     {
         class record_db;
         class row;
+
         template<typename T> class base_record;
 
         template<typename T>
@@ -79,6 +80,7 @@ namespace arg3
                 }
             }
         }
+
         template<typename T>
         inline vector<shared_ptr<T>> find_by(shared_ptr<schema> schema, const string &name, const sql_value &value)
         {
@@ -94,20 +96,23 @@ namespace arg3
             return items;
         }
 
-
         /*!
          * an active-record (ish) pattern
          */
         template<typename T>
         class base_record
         {
+        public:
+
+            typedef arg3::db::schema schema_type;
+
+            typedef std::function<void (shared_ptr<T>)> callback;
+
         private:
-            std::shared_ptr<schema> schema_;
+            std::shared_ptr<schema_type> schema_;
             std::unordered_map<string, sql_value> values_;
             string idColumnName_;
         public:
-
-            typedef std::function<void (shared_ptr<T>)> callback;
 
             /*!
              * @param db the database the record uses
@@ -123,7 +128,7 @@ namespace arg3
              * @param schema the schema to operate on
              * @param columnName the name of the id column in the schema
              */
-            base_record(std::shared_ptr<schema> schema, const string &columnName) : schema_(schema), idColumnName_(columnName)
+            base_record(std::shared_ptr<schema_type> schema, const string &columnName) : schema_(schema), idColumnName_(columnName)
             {
                 assert(schema_ != nullptr);
             }
@@ -134,7 +139,7 @@ namespace arg3
              * @param value the value of the id column
              */
             template<typename V>
-            base_record(std::shared_ptr<schema> schema, const string &columnName, V value) : base_record(schema, columnName)
+            base_record(std::shared_ptr<schema_type> schema, const string &columnName, V value) : base_record(schema, columnName)
             {
                 set(idColumnName_, value);
                 refresh(); // load up from database
@@ -156,7 +161,7 @@ namespace arg3
             /*!
              * construct with values from a database row
              */
-            base_record(std::shared_ptr<schema> schema, const string &columnName, const row &values) : base_record(schema, columnName)
+            base_record(std::shared_ptr<schema_type> schema, const string &columnName, const row &values) : base_record(schema, columnName)
             {
                 init(values);
             }
@@ -252,7 +257,7 @@ namespace arg3
              */
             bool is_valid() const
             {
-                return sch3ma()->is_valid();
+                return schema()->is_valid();
             }
 
             /*!
@@ -266,7 +271,7 @@ namespace arg3
             /*!
              * returns the schema for this record
              */
-            shared_ptr<schema> sch3ma() const
+            shared_ptr<schema_type> schema() const
             {
                 if (!schema_->is_valid())
                     schema_->init();
@@ -279,12 +284,25 @@ namespace arg3
              */
             bool save(long long *insertId = NULL)
             {
-                modify_query query(sch3ma());
-
                 int index = 1;
+                bool rval = false;
+                bool exists = has(idColumnName_);
+                
+                if (exists)
+                {
+                    select_query query(schema());
+                
+                    query.where(idColumnName_ + " = ?");
 
+                    query.bind_value(1, get(idColumnName_));
+
+                    exists = query.count() > 0;
+                }
+
+                modify_query query(schema());
+                
                 // bind the column values
-                for (auto & column : sch3ma()->columns())
+                for (auto & column : schema()->columns())
                 {
                     auto value = get(column.name);
 
@@ -293,16 +311,24 @@ namespace arg3
                     index++;
                 }
 
-                long long id;
+                if (exists) {
+                    query.bind_value(index++, get(idColumnName_));
 
-                bool rval = query.execute(&id);
-
-                if (rval)
+                    rval = query.executeUpdate(idColumnName_);
+                } 
+                else 
                 {
-                    if (insertId)
-                        *insertId = id;
+                    long long id;
 
-                    set(idColumnName_, id);
+                    rval = query.executeInsert(&id);
+
+                    if (rval)
+                    {
+                        if (insertId)
+                            *insertId = id;
+
+                        set(idColumnName_, id);
+                    }
                 }
 
                 return rval;
@@ -352,12 +378,12 @@ namespace arg3
 
             vector<shared_ptr<T>> find_all()
             {
-                return arg3::db::find_all<T>(sch3ma());
+                return arg3::db::find_all<T>(schema());
             }
 
             void find_all(callback funk)
             {
-                arg3::db::find_all<T>(sch3ma(), funk);
+                arg3::db::find_all<T>(schema(), funk);
             }
 
             /*!
@@ -365,7 +391,7 @@ namespace arg3
              */
             shared_ptr<T> find_by_id(const sql_value &value)
             {
-                select_query query(sch3ma());
+                select_query query(schema());
 
                 query.where(idColumnName_ + " = ?");
 
@@ -388,12 +414,12 @@ namespace arg3
              */
             vector<shared_ptr<T>> find_by(const string &name, const sql_value &value)
             {
-                return arg3::db::find_by<T>(sch3ma(), name, value);
+                return arg3::db::find_by<T>(schema(), name, value);
             }
 
             void find_by(const string &name, const sql_value &value, callback funk)
             {
-                arg3::db::find_by<T>(sch3ma(), name, value, funk);
+                arg3::db::find_by<T>(schema(), name, value, funk);
             }
 
             /*!
@@ -409,7 +435,7 @@ namespace arg3
              */
             bool refresh_by(const string &name)
             {
-                select_query query(sch3ma());
+                select_query query(schema());
 
                 query.where(name + " = ?");
 
@@ -432,7 +458,7 @@ namespace arg3
              */
             bool de1ete()
             {
-                delete_query query(sch3ma());
+                delete_query query(schema());
 
                 query.where(idColumnName_ + " = ?");
 

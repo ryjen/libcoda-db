@@ -63,6 +63,7 @@ namespace arg3
 
             sqldb *db() const;
         };
+
     }
 }
 

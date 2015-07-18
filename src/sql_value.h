@@ -118,6 +118,8 @@ namespace arg3
 
             std::string to_string() const;
 
+            bool is_valid() const;
+
             int to_int(const int def = INT_DEFAULT) const;
 
             long long to_llong(const long long def = INT_DEFAULT) const;

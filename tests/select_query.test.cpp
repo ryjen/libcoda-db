@@ -143,7 +143,7 @@ go_bandit([]()
 
                 Assert::That(row != results.end(), Equals(true));
 
-                string lastName = row->co1umn("last_name").to_string();
+                string lastName = row->column("last_name").to_string();
 
                 Assert::That(lastName, Equals("Jenkins"));
 
@@ -161,7 +161,7 @@ go_bandit([]()
 
                 Assert::That(row != results.end(), Equals(true));
 
-                lastName = row->co1umn("last_name").to_string();
+                lastName = row->column("last_name").to_string();
 
                 Assert::That(lastName, Equals("Smith"));
             }
@@ -203,7 +203,7 @@ go_bandit([]()
             {
                 Assert::That(rs.is_valid(), Equals(true));
 
-                auto u = rs.begin()->co1umn("first_name");
+                auto u = rs.begin()->column("first_name");
 
                 Assert::That(u.to_string(), Equals("Bryan"));
             });

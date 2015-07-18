@@ -34,8 +34,13 @@ namespace arg3
             modify_query &operator=(modify_query && other);
 
             string to_string() const;
+            string to_update_string(const std::string &idColumnName) const;
+            string to_insert_string() const;
 
             int execute(long long *insertId = NULL, bool batch = false);
+            int executeUpdate(const std::string &idColumnName, bool batch = false);
+            int executeInsert(long long *insertId = NULL, bool batch = false);
+
         private:
             vector<string> columns_;
         };

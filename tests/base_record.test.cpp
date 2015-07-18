@@ -30,13 +30,10 @@ go_bandit([]()
                 user1.set("first_name", "Ryan");
                 user1.set("last_name", "Jennings");
 
-                long long insertId = 0;
+                //long long insertId = 0;
+                AssertThat(user1.save(), IsTrue());
 
-                AssertThat(user1.save(&insertId), IsTrue());
-
-                user1.set_id(insertId);
-
-                user1.refresh(); // load values back up from db
+                Assert::That(user1.refresh(), IsTrue()); // load values back up from db
 
                 AssertThat(user1.get("first_name"), Equals("Ryan"));
 

@@ -17,9 +17,9 @@ namespace arg3
         class where_clause
         {
         private:
+            string value_;
             vector<where_clause> and_;
             vector<where_clause> or_;
-            string value_;
 
         public:
             where_clause();
@@ -43,9 +43,11 @@ namespace arg3
             bool empty() const;
 
             void reset();
+
         };
 
-
+        // user defined literal for expressions like "this = ?"_w && "that = ?"_w
+        where_clause operator"" _w ( const char *cstr, size_t len );
 
         inline where_clause where(const string &str)
         {

@@ -37,6 +37,7 @@ namespace arg3
             shared_ptr<statement> stmt_;
             string tableName_;
             vector<sql_value> bindings_;
+            void prepare(const string &sql);
             void prepare();
         public:
 
