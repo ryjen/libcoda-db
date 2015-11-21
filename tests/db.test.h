@@ -1,8 +1,6 @@
 #ifndef ARG3_TEST_DB_H
 #define ARG3_TEST_DB_H
 
-#include "config.h"
-
 #include "sqldb.h"
 #include "base_record.h"
 #include <unistd.h>
@@ -11,15 +9,11 @@
 
 #define TESTDB "test.db"
 
-#if !defined(HAVE_LIBMYSQLCLIENT) && !defined(HAVE_LIBSQLITE3)
-#error "Mysql or sqlite is not installed on the system"
-#endif
-
 #ifdef HAVE_LIBSQLITE3
 
 class test_sqlite3_db : public arg3::db::sqlite3_db
 {
-public:
+   public:
     test_sqlite3_db() : sqlite3_db(TESTDB)
     {
     }
@@ -41,7 +35,7 @@ extern test_sqlite3_db sqlite_testdb;
 
 class test_mysql_db : public arg3::db::mysql_db
 {
-public:
+   public:
     test_mysql_db() : mysql_db("test")
     {
     }
@@ -66,16 +60,26 @@ extern arg3::db::sqldb *testdb;
 
 class user : public arg3::db::base_record<user>
 {
-public:
-    user(arg3::db::sqldb *db = testdb) : base_record(db, "users", "id") {}
+   public:
+    user(arg3::db::sqldb *db = testdb) : base_record(db, "users", "id")
+    {
+    }
 
-    user(const arg3::db::row &values, arg3::db::sqldb *db = testdb) : base_record(db, "users", "id", values) {}
+    user(const arg3::db::row &values, arg3::db::sqldb *db = testdb) : base_record(db, "users", "id", values)
+    {
+    }
 
-    user(long long id,  arg3::db::sqldb *db = testdb) : base_record(db, "users", "id", id) {}
+    user(long long id, arg3::db::sqldb *db = testdb) : base_record(db, "users", "id", id)
+    {
+    }
 
-    user(const user &other) : base_record(other) {}
+    user(const user &other) : base_record(other)
+    {
+    }
 
-    user(user &&other) : base_record(std::move(other)) {}
+    user(user &&other) : base_record(std::move(other))
+    {
+    }
 
     ~user()
     {
@@ -87,7 +91,7 @@ public:
         return *this;
     }
 
-    user &operator=(user && other)
+    user &operator=(user &&other)
     {
         base_record<user>::operator=(std::move(other));
         return *this;

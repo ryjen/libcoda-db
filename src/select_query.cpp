@@ -9,52 +9,66 @@ namespace arg3
 {
     namespace db
     {
-
-        select_query::select_query(sqldb *db, const string &tableName,
-                                   const vector<string> &columns) : base_query(db, tableName), columns_(columns)
-        {}
-
-        select_query::select_query(sqldb *db, const string &tableName) : base_query(db, tableName), columns_()
-        {}
-
-        select_query::select_query(const select_query &other) : base_query(other), where_(other.where_),
-            limit_(other.limit_), orderBy_(other.orderBy_), groupBy_(other.groupBy_), columns_(other.columns_)
+        select_query::select_query(sqldb *db, const string &tableName, const vector<string> &columns)
+            : query(db), columns_(columns), tableName_(tableName)
         {
         }
 
-        select_query::select_query(shared_ptr<schema> schema) : base_query(schema), columns_(schema->column_names())
-        {}
+        select_query::select_query(sqldb *db, const string &tableName) : query(db), columns_(), tableName_(tableName)
+        {
+        }
+        select_query::select_query(const select_query &other)
+            : query(other),
+              where_(other.where_),
+              limit_(other.limit_),
+              orderBy_(other.orderBy_),
+              groupBy_(other.groupBy_),
+              columns_(other.columns_),
+              tableName_(other.tableName_)
+        {
+        }
 
-        select_query::select_query(select_query &&other) : base_query(std::move(other)), where_(std::move(other.where_)),
-            limit_(std::move(other.limit_)), orderBy_(std::move(other.orderBy_)), groupBy_(std::move(other.groupBy_)), columns_(std::move(other.columns_))
+        select_query::select_query(shared_ptr<schema> schema) : select_query(schema->db(), schema->table_name(), schema->column_names())
+        {
+        }
+        select_query::select_query(select_query &&other)
+            : query(std::move(other)),
+              where_(std::move(other.where_)),
+              limit_(std::move(other.limit_)),
+              orderBy_(std::move(other.orderBy_)),
+              groupBy_(std::move(other.groupBy_)),
+              columns_(std::move(other.columns_)),
+              tableName_(std::move(other.tableName_))
         {
         }
 
         select_query::~select_query()
-        {}
-
+        {
+        }
         select_query &select_query::operator=(const select_query &other)
         {
-            base_query::operator=(other);
+            query::operator=(other);
             where_ = other.where_;
             limit_ = other.limit_;
             orderBy_ = other.orderBy_;
             groupBy_ = other.groupBy_;
 
             columns_ = other.columns_;
+            tableName_ = other.tableName_;
 
             return *this;
         }
 
-        select_query &select_query::operator=(select_query && other)
+        select_query &select_query::operator=(select_query &&other)
         {
-            base_query::operator=(std::move(other));
+            query::operator=(std::move(other));
             where_ = std::move(other.where_);
             limit_ = std::move(other.limit_);
             orderBy_ = std::move(other.orderBy_);
             groupBy_ = std::move(other.groupBy_);
 
             columns_ = std::move(other.columns_);
+            tableName_ = std::move(other.tableName_);
 
             return *this;
         }
@@ -63,22 +77,27 @@ namespace arg3
         {
             return columns_;
         }
-
+        string select_query::table_name() const
+        {
+            return tableName_;
+        }
+        select_query &select_query::table_name(const string &value)
+        {
+            tableName_ = value;
+            return *this;
+        }
         string select_query::limit() const
         {
             return limit_;
         }
-
         string select_query::group_by() const
         {
             return groupBy_;
         }
-
         string select_query::order_by() const
         {
             return orderBy_;
         }
-
         select_query &select_query::where(const where_clause &value)
         {
             where_ = value;
@@ -112,7 +131,6 @@ namespace arg3
             return *this;
         }
 
-
         string select_query::to_string() const
         {
             ostringstream buf;
@@ -123,23 +141,19 @@ namespace arg3
 
             buf << " FROM " << tableName_;
 
-            if (!where_.empty())
-            {
+            if (!where_.empty()) {
                 buf << " WHERE " << where_.to_string();
             }
 
-            if (!orderBy_.empty())
-            {
+            if (!orderBy_.empty()) {
                 buf << " ORDER BY " << orderBy_;
             }
 
-            if (!limit_.empty())
-            {
+            if (!limit_.empty()) {
                 buf << " LIMIT " << limit_;
             }
 
-            if (!groupBy_.empty())
-            {
+            if (!groupBy_.empty()) {
                 buf << " GROUP BY " << groupBy_;
             }
 
@@ -150,9 +164,9 @@ namespace arg3
         {
             auto cols(columns_);
 
-            columns_ = { "count(*)" };
+            columns_ = {"count(*)"};
 
-            prepare();
+            prepare(to_string());
 
             int value = execute_scalar<int>();
 
@@ -163,15 +177,14 @@ namespace arg3
 
         resultset select_query::execute()
         {
-            prepare();
+            prepare(to_string());
 
             return stmt_->results();
-
         }
 
-        void select_query::execute(std::function<void (const resultset &rs)> funk)
+        void select_query::execute(std::function<void(const resultset &rs)> funk)
         {
-            prepare();
+            prepare(to_string());
 
             auto rs = stmt_->results();
 
@@ -180,7 +193,7 @@ namespace arg3
 
         void select_query::reset()
         {
-            base_query::reset();
+            query::reset();
             stmt_ = nullptr;
         }
     }

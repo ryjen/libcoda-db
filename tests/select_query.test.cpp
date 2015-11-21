@@ -15,13 +15,10 @@ resultset get_results()
     return query.execute();
 }
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("select query", []()
-    {
-        before_each([]()
-        {
+    describe("select query", []() {
+        before_each([]() {
             setup_testdb();
 
             user user1;
@@ -31,7 +28,6 @@ go_bandit([]()
             user1.set("last_name", "Jenkins");
 
             user1.save();
-
 
             user user2;
 
@@ -43,48 +39,42 @@ go_bandit([]()
             user2.save();
         });
 
-        after_each([]()
-        {
-            teardown_testdb();
-        });
+        after_each([]() { teardown_testdb(); });
 
-        it("has database info", []()
-        {
+        it("has database info", []() {
             select_query query(testdb, "users");
 
             Assert::That(query.db(), Equals(testdb));
 
-            Assert::That(query.tablename(), Equals("users"));
+            Assert::That(query.table_name(), Equals("users"));
         });
 
-        it("can be constructed with a schema", []()
-        {
+        it("can be constructed with a schema", []() {
             schema_factory factory(testdb);
 
             select_query query(factory.get("users"));
 
-            Assert::That(query.tablename(), Equals("users"));
+            Assert::That(query.table_name(), Equals("users"));
         });
 
-        it("can be copied and moved", []()
-        {
-            select_query query(testdb, "users", { "id" });
+        it("can be copied and moved", []() {
+            select_query query(testdb, "users", {"id"});
 
             select_query other(query);
 
-            Assert::That(to_string(query), Equals(to_string(other)));
+            Assert::That(query.to_string(), Equals(other.to_string()));
 
             select_query moved(std::move(query));
 
             Assert::That(query.is_valid(), Equals(false));
 
-            Assert::That(to_string(moved), Equals(to_string(other)));
+            Assert::That(moved.to_string(), Equals(other.to_string()));
 
             select_query other2(testdb, "other_users");
 
             other2 = other;
 
-            Assert::That(to_string(other), Equals(to_string(other2)));
+            Assert::That(other.to_string(), Equals(other2.to_string()));
 
             select_query moved2(testdb, "moved_users");
 
@@ -92,46 +82,36 @@ go_bandit([]()
 
             Assert::That(other2.is_valid(), Equals(false));
 
-            Assert::That(to_string(moved2), Equals(to_string(other)));
+            Assert::That(moved2.to_string(), Equals(other.to_string()));
         });
 
-        it("has validity", []()
-        {
+        it("has validity", []() {
             auto rs = get_results();
 
-            for (auto row : rs)
-            {
+            for (auto row : rs) {
                 Assert::That(row.is_valid(), Equals(true));
             }
             Assert::That(rs.is_valid(), Equals(true));
         });
 
-        it("can use callbacks", []()
-        {
+        it("can use callbacks", []() {
             select_query query(testdb, "users");
 
-            query.execute([](const resultset & rs)
-            {
+            query.execute([](const resultset &rs) {
                 AssertThat(rs.is_valid(), IsTrue());
 
-                rs.for_each([](const row & r)
-                {
+                rs.for_each([](const row &r) {
                     AssertThat(r.is_valid(), IsTrue());
 
-                    r.for_each([](const column & c)
-                    {
-                        AssertThat(c.is_valid(), IsTrue());
-                    });
+                    r.for_each([](const column &c) { AssertThat(c.is_valid(), IsTrue()); });
                 });
             });
         });
 
-        it("can be used with a where clause", []()
-        {
+        it("can be used with a where clause", []() {
             auto query = select_query(testdb, "users");
 
-            try
-            {
+            try {
                 query.where("first_name=? OR last_name=?");
 
                 query.bind(1, "Bryan");
@@ -164,17 +144,14 @@ go_bandit([]()
                 lastName = row->column("last_name").to_string();
 
                 Assert::That(lastName, Equals("Smith"));
-            }
-            catch (const database_exception &e)
-            {
+            } catch (const database_exception &e) {
                 cout << query.last_error() << endl;
                 throw e;
             }
         });
 
-        it("can execute scalar", []()
-        {
-            vector<string> columns = { "first_name"};
+        it("can execute scalar", []() {
+            vector<string> columns = {"first_name"};
 
             auto query = select_query(testdb, "users", columns);
 
@@ -187,9 +164,7 @@ go_bandit([]()
             Assert::That(value, Equals("Bryan"));
         });
 
-
-        it("can be binded", []()
-        {
+        it("can be binded", []() {
             select_query query(testdb, "users");
 
             // sneaky, bind first, should be able to handle it
@@ -199,8 +174,7 @@ go_bandit([]()
 
             query.where("first_name=? and last_name=?");
 
-            query.execute([](const resultset & rs)
-            {
+            query.execute([](const resultset &rs) {
                 Assert::That(rs.is_valid(), Equals(true));
 
                 auto u = rs.begin()->column("first_name");

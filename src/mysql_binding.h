@@ -1,7 +1,9 @@
-#ifndef ARG3_DB_MYSQL_BINDING_H_
-#define ARG3_DB_MYSQL_BINDING_H_
+#ifndef ARG3_DB_MYSQL_BINDING_H
+#define ARG3_DB_MYSQL_BINDING_H
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
@@ -20,14 +22,16 @@ namespace arg3
         class mysql_binding : public bindable
         {
             friend class mysql_column;
-        private:
+
+           private:
             MYSQL_BIND *value_;
             size_t size_;
             void copy_value(const MYSQL_BIND *other, size_t size);
             void clear_value();
             void clear_value(size_t index);
             void reallocate_value(size_t index);
-        public:
+
+           public:
             mysql_binding();
             mysql_binding(size_t size);
             mysql_binding(const MYSQL_BIND &value);
@@ -36,7 +40,7 @@ namespace arg3
             mysql_binding(const mysql_binding &other);
             mysql_binding(mysql_binding &&other);
             mysql_binding &operator=(const mysql_binding &other);
-            mysql_binding &operator=(mysql_binding && other);
+            mysql_binding &operator=(mysql_binding &&other);
             virtual ~mysql_binding();
 
             void bind_result(MYSQL_STMT *stmt) const;
@@ -70,13 +74,12 @@ namespace arg3
             mysql_binding &bind(size_t index, const sql_blob &value);
             mysql_binding &bind(size_t index, const sql_null_type &value);
             mysql_binding &bind_value(size_t index, const sql_value &v);
-            mysql_binding &bind(size_t index, const void *data, size_t size, void(* pFree)(void *));
+            mysql_binding &bind(size_t index, const void *data, size_t size, void (*pFree)(void *));
 
             void bind_params(MYSQL_STMT *stmt) const;
 
             void reset();
         };
-
     }
 }
 

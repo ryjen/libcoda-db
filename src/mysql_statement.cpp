@@ -1,5 +1,6 @@
+#ifdef HAVE_CONFIG_H
 #include "config.h"
-
+#endif
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
@@ -11,9 +12,7 @@ namespace arg3
 {
     namespace db
     {
-
-        struct mysql_stmt_delete
-        {
+        struct mysql_stmt_delete {
             void operator()(MYSQL_STMT *p) const
             {
                 mysql_stmt_close(p);
@@ -21,7 +20,8 @@ namespace arg3
         };
 
         mysql_statement::mysql_statement(mysql_db *db) : db_(db), bindings_(), stmt_(nullptr)
-        {}
+        {
+        }
 
         mysql_statement::mysql_statement(mysql_statement &&other)
         {
@@ -32,7 +32,7 @@ namespace arg3
             other.stmt_ = nullptr;
         }
 
-        mysql_statement &mysql_statement::operator=(mysql_statement && other)
+        mysql_statement &mysql_statement::operator=(mysql_statement &&other)
         {
             db_ = other.db_;
             bindings_ = other.bindings_;
@@ -51,15 +51,13 @@ namespace arg3
 
         void mysql_statement::prepare(const string &sql)
         {
-            if (db_ == NULL || !db_->is_open())
-            {
+            if (db_ == NULL || !db_->is_open()) {
                 throw database_exception("database is not open");
             }
 
             stmt_ = shared_ptr<MYSQL_STMT>(mysql_stmt_init(db_->db_), mysql_stmt_delete());
 
-            if (mysql_stmt_prepare(stmt_.get(), sql.c_str(), sql.length()))
-                throw database_exception(db_->last_error());
+            if (mysql_stmt_prepare(stmt_.get(), sql.c_str(), sql.length())) throw database_exception(db_->last_error());
         }
 
         bool mysql_statement::is_valid() const
@@ -121,8 +119,7 @@ namespace arg3
 
         resultset mysql_statement::results()
         {
-            if (stmt_ == nullptr)
-                throw database_exception("statement not prepared");
+            if (stmt_ == nullptr) throw database_exception("statement not prepared");
 
             bindings_.bind_params(stmt_.get());
 
@@ -138,8 +135,7 @@ namespace arg3
 
             bindings_.bind_params(stmt_.get());
 
-            if (mysql_stmt_execute(stmt_.get()))
-            {
+            if (mysql_stmt_execute(stmt_.get())) {
                 return false;
             }
             return true;
@@ -154,8 +150,7 @@ namespace arg3
 
         string mysql_statement::last_error()
         {
-            if (stmt_ == nullptr)
-                throw database_exception("statement not prepared");
+            if (stmt_ == nullptr) throw database_exception("statement not prepared");
 
             return last_stmt_error(stmt_.get());
         }
@@ -164,24 +159,20 @@ namespace arg3
         {
             bindings_.reset();
 
-            if (stmt_ != nullptr)
-            {
+            if (stmt_ != nullptr) {
                 mysql_stmt_free_result(stmt_.get());
 
                 stmt_ = nullptr;
             }
-
         }
 
         void mysql_statement::reset()
         {
             bindings_.reset();
 
-            if (stmt_ == nullptr)
-                return;
+            if (stmt_ == nullptr) return;
 
-            if (mysql_stmt_reset(stmt_.get()))
-                throw database_exception(last_error());
+            if (mysql_stmt_reset(stmt_.get())) throw database_exception(last_error());
         }
 
         long long mysql_statement::last_insert_id()

@@ -1,11 +1,11 @@
-#include "schema.h"
+
 #include <cassert>
-#include  "sqldb.h"
+#include "schema.h"
+#include "sqldb.h"
 #include "resultset.h"
 
 namespace arg3
 {
-
     namespace db
     {
         ostream &operator<<(ostream &os, const column_definition &def)
@@ -14,14 +14,17 @@ namespace arg3
             return os;
         }
 
-        schema::schema(sqldb *db, const string &tablename) : db_(db), tableName_(tablename) {}
+        schema::schema(sqldb *db, const string &tablename) : db_(db), tableName_(tablename)
+        {
+        }
 
         schema::~schema()
         {
         }
 
         schema::schema(const schema &other) : db_(other.db_), tableName_(other.tableName_), columns_(other.columns_)
-        {}
+        {
+        }
 
         schema::schema(schema &&other) : db_(other.db_), tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))
         {
@@ -38,7 +41,7 @@ namespace arg3
             return *this;
         }
 
-        schema &schema::operator=(schema && other)
+        schema &schema::operator=(schema &&other)
         {
             columns_ = std::move(other.columns_);
             db_ = std::move(other.db_);
@@ -75,8 +78,7 @@ namespace arg3
         {
             vector<string> names;
 
-            for (auto & c : columns_)
-            {
+            for (auto &c : columns_) {
                 names.push_back(c.name);
             }
             return names;
@@ -86,10 +88,8 @@ namespace arg3
         {
             vector<string> names;
 
-            for (auto & c : columns_)
-            {
-                if (c.pk)
-                    names.push_back(c.name);
+            for (auto &c : columns_) {
+                if (c.pk) names.push_back(c.name);
             }
 
             return names;
@@ -110,5 +110,4 @@ namespace arg3
             return columns_[index];
         }
     };
-
 }

@@ -1,5 +1,5 @@
 #include "sql_value.h"
-#include "base_query.h"
+#include "query.h"
 #include "sqldb.h"
 #include "exception.h"
 #include <sstream>
@@ -10,17 +10,14 @@ namespace std
     {
         return value.to_string();
     }
-
     string to_string(const arg3::db::sql_null_type &value)
     {
         return "NULL";
     }
-
     string to_string(const arg3::db::sql_blob &value)
     {
         return value.to_string();
     }
-
     string to_string(const std::string &value)
     {
         return value;
@@ -36,16 +33,16 @@ namespace arg3
         const sql_null_type sql_null = sql_null_type::instance;
 
         sql_blob::sql_blob(const void *ptr, size_t size, sql_blob::cleanup_method cleanup) : p_(ptr), s_(size), destruct_(cleanup)
-        {}
+        {
+        }
 
         sql_blob::sql_blob(const void *ptr, size_t size) : p_(ptr), s_(size), destruct_(NULL)
-        {}
-
+        {
+        }
         sql_blob::sql_blob(const sql_blob &other) : p_(NULL), destruct_(NULL)
         {
             copy(other);
         }
-
         sql_blob::sql_blob(sql_blob &&other) : p_(other.p_), s_(other.s_), destruct_(other.destruct_)
         {
             other.p_ = NULL;
@@ -58,7 +55,7 @@ namespace arg3
             return *this;
         }
 
-        sql_blob &sql_blob::operator=(sql_blob && other)
+        sql_blob &sql_blob::operator=(sql_blob &&other)
         {
             p_ = other.p_;
             s_ = other.s_;
@@ -73,8 +70,7 @@ namespace arg3
 
         void sql_blob::clear()
         {
-            if (p_ != NULL && destruct_ != NULL)
-            {
+            if (p_ != NULL && destruct_ != NULL) {
                 destruct_(const_cast<void *>(p_));
                 p_ = NULL;
             }
@@ -84,12 +80,10 @@ namespace arg3
         {
             clear();
         }
-
         void sql_blob::copy(const sql_blob &other)
         {
             clear();
-            if (other.s_ > 0)
-            {
+            if (other.s_ > 0) {
                 void *buf = calloc(1, other.s_);
                 memcpy(buf, other.p_, other.s_);
                 p_ = buf;
@@ -106,7 +100,6 @@ namespace arg3
         {
             return s_;
         }
-
         string sql_blob::to_string() const
         {
             if (p_ == NULL) return "0x0";
@@ -121,27 +114,23 @@ namespace arg3
         {
             return destruct_;
         }
-
-        sql_value::sql_value()  : value_(nullptr)
+        sql_value::sql_value() : value_(nullptr)
         {
         }
-
         sql_value::sql_value(const sql_value &other) : value_(other.value_)
         {
         }
-
-        sql_value::sql_value( sql_value &&other) : value_(std::move(other.value_))
+        sql_value::sql_value(sql_value &&other) : value_(std::move(other.value_))
         {
             other.value_ = nullptr;
         }
-
         sql_value &sql_value::operator=(const sql_value &other)
         {
             value_ = other.value_;
             return *this;
         }
 
-        sql_value &sql_value::operator=(sql_value && other)
+        sql_value &sql_value::operator=(sql_value &&other)
         {
             value_ = std::move(other.value_);
             other.value_ = nullptr;
@@ -151,39 +140,27 @@ namespace arg3
         sql_value::~sql_value()
         {
         }
-
         string sql_value::to_string() const
         {
             return value_.to_string();
         }
-
-        bool sql_value::is_valid() const {
+        bool sql_value::is_valid() const
+        {
             return !value_.is_null();
         }
-
         void sql_value::bind_to(bindable *obj, int index) const
         {
-            if (value_.is_null())
-            {
+            if (value_.is_null()) {
                 obj->bind(index, sql_null);
-            }
-            else if (value_.is_numeric())
-            {
-                if (value_.is_real())
-                {
+            } else if (value_.is_numeric()) {
+                if (value_.is_real()) {
                     obj->bind(index, value_.to_double(DOUBLE_DEFAULT));
-                }
-                else
-                {
+                } else {
                     obj->bind(index, value_.to_llong(INT_DEFAULT));
                 }
-            }
-            else if (value_.is_string())
-            {
+            } else if (value_.is_string()) {
                 obj->bind(index, value_.to_string());
-            }
-            else
-            {
+            } else {
                 obj->bind(index, value_.to_pointer(), value_.size(), NULL);
             }
         }
@@ -236,62 +213,50 @@ namespace arg3
         {
             return !operator==(other);
         }
-
         sql_value::operator std::string() const
         {
             return to_string();
         }
-
         sql_value::operator bool() const
         {
             return to_bool();
         }
-
         bool sql_value::to_bool(const bool def) const
         {
             return value_.to_bool();
         }
-
         sql_value::operator int() const
         {
             return to_int();
         }
-
         int sql_value::to_int(const int def) const
         {
             return value_.to_int(def);
         }
-
         sql_value::operator long long() const
         {
             return to_llong();
         }
-
         long long sql_value::to_llong(const long long def) const
         {
             return value_.to_llong(def);
         }
-
         sql_value::operator double() const
         {
             return to_double();
         }
-
         double sql_value::to_double(const double def) const
         {
             return value_.to_double(def);
         }
-
         sql_value::operator sql_blob() const
         {
             return to_blob();
         }
-
         sql_blob sql_value::to_blob() const
         {
             return sql_blob(value_.to_pointer(), value_.size(), NULL);
         }
-
         std::ostream &operator<<(std::ostream &out, const sql_value &value)
         {
             out << value.value_;
@@ -311,7 +276,5 @@ namespace arg3
 
             return out;
         }
-
-
     }
 }

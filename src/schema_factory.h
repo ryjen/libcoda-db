@@ -1,5 +1,5 @@
-#ifndef ARG3_DB_SCHEMA_FACTORY_H_
-#define ARG3_DB_SCHEMA_FACTORY_H_
+#ifndef ARG3_DB_SCHEMA_FACTORY_H
+#define ARG3_DB_SCHEMA_FACTORY_H
 
 #include <unordered_map>
 #include <functional>
@@ -21,18 +21,19 @@ namespace arg3
          */
         class schema_factory
         {
-        private:
+           private:
             std::unordered_map<string, std::shared_ptr<schema>> schema_cache_;
 
             sqldb *db_;
 
             shared_ptr<schema> create(const string &tableName);
-        public:
+
+           public:
             schema_factory(sqldb *db);
 
             schema_factory(schema_factory &&other);
 
-            schema_factory &operator=(schema_factory && other);
+            schema_factory &operator=(schema_factory &&other);
 
             schema_factory(const schema_factory &other);
 
@@ -41,8 +42,6 @@ namespace arg3
 
             void clear(const string &tablename);
         };
-
-
     }
 }
 #endif

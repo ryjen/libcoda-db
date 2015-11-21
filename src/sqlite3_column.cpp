@@ -1,4 +1,6 @@
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #ifdef HAVE_LIBSQLITE3
 
@@ -8,7 +10,6 @@ namespace arg3
 {
     namespace db
     {
-
         sqlite3_column::sqlite3_column(shared_ptr<sqlite3_stmt> stmt, int column) : stmt_(stmt), column_(column)
         {
         }
@@ -18,9 +19,11 @@ namespace arg3
             other.stmt_ = nullptr;
         }
 
-        sqlite3_column::~sqlite3_column() {}
+        sqlite3_column::~sqlite3_column()
+        {
+        }
 
-        sqlite3_column &sqlite3_column::operator=(sqlite3_column && other)
+        sqlite3_column &sqlite3_column::operator=(sqlite3_column &&other)
         {
             stmt_ = other.stmt_;
 
@@ -34,10 +37,9 @@ namespace arg3
             return stmt_ != nullptr;
         }
 
-        void sqlite3_column::assert_value() const throw (no_such_column_exception)
+        void sqlite3_column::assert_value() const throw(no_such_column_exception)
         {
-            if (!is_valid())
-            {
+            if (!is_valid()) {
                 throw no_such_column_exception();
             }
         }
@@ -92,17 +94,16 @@ namespace arg3
         {
             assert_value();
 
-            switch (sqlite3_column_type(stmt_.get(), column_))
-            {
-            case SQLITE_INTEGER:
-                return sql_value(to_llong());
-            case SQLITE_TEXT:
-            default:
-                return sql_value(to_string());
-            case SQLITE_FLOAT:
-                return sql_value(to_double());
-            case SQLITE_BLOB:
-                return sql_value(to_blob());
+            switch (sqlite3_column_type(stmt_.get(), column_)) {
+                case SQLITE_INTEGER:
+                    return sql_value(to_llong());
+                case SQLITE_TEXT:
+                default:
+                    return sql_value(to_string());
+                case SQLITE_FLOAT:
+                    return sql_value(to_double());
+                case SQLITE_BLOB:
+                    return sql_value(to_blob());
             }
         }
 
@@ -119,8 +120,7 @@ namespace arg3
 
             const unsigned char *textValue = sqlite3_column_text(stmt_.get(), column_);
 
-            if (textValue == NULL)
-                return string();
+            if (textValue == NULL) return string();
 
             return reinterpret_cast<const char *>(textValue);
         }
@@ -138,36 +138,36 @@ namespace arg3
             name_ = sqlite3_column_name(stmt.get(), column);
             type_ = sqlite3_column_type(stmt.get(), column);
 
-            switch (sqlite3_column_type(stmt.get(), column))
-            {
-            case SQLITE_INTEGER:
-                value_ = sqlite3_column_int64(stmt.get(), column);
-                break;
-            case SQLITE_TEXT:
-            default:
-            {
-                const unsigned char *textValue = sqlite3_column_text(stmt.get(), column);
-                if (textValue != NULL)
-                    value_ = std::string(reinterpret_cast<const char *>(textValue));
-                break;
-            }
-            case SQLITE_FLOAT:
-                value_ = sqlite3_column_double(stmt.get(), column);
-                break;
-            case SQLITE_BLOB:
-                value_ = sql_blob(sqlite3_column_blob(stmt.get(), column), sqlite3_column_bytes(stmt.get(), column), NULL);
-                break;
+            switch (sqlite3_column_type(stmt.get(), column)) {
+                case SQLITE_INTEGER:
+                    value_ = sqlite3_column_int64(stmt.get(), column);
+                    break;
+                case SQLITE_TEXT:
+                default: {
+                    const unsigned char *textValue = sqlite3_column_text(stmt.get(), column);
+                    if (textValue != NULL) value_ = std::string(reinterpret_cast<const char *>(textValue));
+                    break;
+                }
+                case SQLITE_FLOAT:
+                    value_ = sqlite3_column_double(stmt.get(), column);
+                    break;
+                case SQLITE_BLOB:
+                    value_ = sql_blob(sqlite3_column_blob(stmt.get(), column), sqlite3_column_bytes(stmt.get(), column), NULL);
+                    break;
             }
         }
 
 
-        sqlite3_cached_column::sqlite3_cached_column(sqlite3_cached_column &&other) : name_(std::move(other.name_)),
-            value_(std::move(other.value_)), type_(other.type_)
-        {}
+        sqlite3_cached_column::sqlite3_cached_column(sqlite3_cached_column &&other)
+            : name_(std::move(other.name_)), value_(std::move(other.value_)), type_(other.type_)
+        {
+        }
 
-        sqlite3_cached_column::~sqlite3_cached_column() {}
+        sqlite3_cached_column::~sqlite3_cached_column()
+        {
+        }
 
-        sqlite3_cached_column &sqlite3_cached_column::operator=(sqlite3_cached_column && other)
+        sqlite3_cached_column &sqlite3_cached_column::operator=(sqlite3_cached_column &&other)
         {
             name_ = std::move(other.name_);
             type_ = other.type_;

@@ -9,7 +9,8 @@ namespace arg3
     namespace db
     {
         row::row() : impl_(nullptr)
-        {}
+        {
+        }
 
         row::row(shared_ptr<row_impl> impl) : impl_(impl)
         {
@@ -17,7 +18,8 @@ namespace arg3
         }
 
         row::row(const row &other) : impl_(other.impl_)
-        {}
+        {
+        }
 
         row::row(row &&other) : impl_(std::move(other.impl_))
         {
@@ -35,7 +37,7 @@ namespace arg3
             return *this;
         }
 
-        row &row::operator=(row && other)
+        row &row::operator=(row &&other)
         {
             impl_ = std::move(other.impl_);
             other.impl_ = nullptr;
@@ -116,10 +118,9 @@ namespace arg3
             return impl_ != nullptr && impl_->is_valid();
         }
 
-        void row::for_each(std::function<void (const db::column &)> funk) const
+        void row::for_each(std::function<void(const db::column &)> funk) const
         {
-            for (auto & c : *this)
-            {
+            for (auto &c : *this) {
                 funk(c);
             }
         }

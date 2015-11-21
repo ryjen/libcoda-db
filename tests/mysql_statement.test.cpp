@@ -1,8 +1,10 @@
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #undef VERSION
 
-#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
+#if defined(HAVE_LIBMYSQLCLIENT)
 
 #include <bandit/bandit.h>
 #include "db.test.h"
@@ -14,12 +16,9 @@ using namespace std;
 
 using namespace arg3::db;
 
-go_bandit([]()
-{
-    describe("mysql statement", []()
-    {
-        before_each([]()
-        {
+go_bandit([]() {
+    describe("mysql statement", []() {
+        before_each([]() {
             mysql_testdb.setup();
 
             user user1(&mysql_testdb);
@@ -42,12 +41,8 @@ go_bandit([]()
             user2.save();
         });
 
-        after_each([]()
-        {
-            mysql_testdb.teardown();
-        });
-        it("is movable", []()
-        {
+        after_each([]() { mysql_testdb.teardown(); });
+        it("is movable", []() {
             mysql_statement stmt(&mysql_testdb);
 
             mysql_statement other(std::move(stmt));
@@ -63,8 +58,7 @@ go_bandit([]()
             AssertThrows(database_exception, other.prepare("select * from users"));
         });
 
-        it("can handle an error", []()
-        {
+        it("can handle an error", []() {
             mysql_statement stmt(&mysql_testdb);
 
             AssertThrows(database_exception, stmt.prepare("update users set asdfsdf='1'"));

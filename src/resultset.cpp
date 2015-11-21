@@ -8,7 +8,6 @@ namespace arg3
 {
     namespace db
     {
-
         resultset::resultset(shared_ptr<resultset_impl> impl) : impl_(impl)
         {
             assert(impl_ != nullptr);
@@ -23,7 +22,7 @@ namespace arg3
             other.impl_ = nullptr;
         }
 
-        resultset &resultset::operator=(resultset && other)
+        resultset &resultset::operator=(resultset &&other)
         {
             impl_ = std::move(other.impl_);
             other.impl_ = nullptr;
@@ -62,10 +61,9 @@ namespace arg3
             return impl_->size();
         }
 
-        void resultset::for_each(std::function<void (const row &row)> funk) const
+        void resultset::for_each(std::function<void(const row &row)> funk) const
         {
-            for (auto & row : *this)
-            {
+            for (auto &row : *this) {
                 funk(row);
             }
         }

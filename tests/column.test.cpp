@@ -21,27 +21,18 @@ column get_user_column(const string &name)
     return row->column(name);
 }
 
-go_bandit([]()
-{
-    describe("column", []()
-    {
-        before_each([]()
-        {
-            setup_testdb();
-        });
+go_bandit([]() {
+    describe("column", []() {
+        before_each([]() { setup_testdb(); });
 
-        after_each([]()
-        {
-            teardown_testdb();
-        });
-        before_each([]()
-        {
+        after_each([]() { teardown_testdb(); });
+        before_each([]() {
             user u;
             u.set("first_name", "Bob");
             u.set("last_name", "Jenkins");
             u.set("dval", 123.321);
 
-            int *data = (int *) calloc(1, sizeof(int));
+            int *data = (int *)calloc(1, sizeof(int));
 
             *data = 4;
 
@@ -50,8 +41,7 @@ go_bandit([]()
             u.save();
         });
 
-        it("is copyable", []()
-        {
+        it("is copyable", []() {
             auto col = get_user_column("first_name");
 
             column other(col);
@@ -61,8 +51,7 @@ go_bandit([]()
             AssertThat(other.to_string(), Equals(col.to_string()));
         });
 
-        it("is movable", []()
-        {
+        it("is movable", []() {
             auto col = get_user_column("first_name");
 
             auto val = col.to_string();
@@ -84,15 +73,13 @@ go_bandit([]()
             AssertThat(last.to_string(), Equals(val));
         });
 
-        it("can be a blob", []()
-        {
+        it("can be a blob", []() {
             auto col = get_user_column("data");
 
             AssertThat(col.to_blob().size(), Equals(4));
         });
 
-        it("can be a double", []()
-        {
+        it("can be a double", []() {
             auto col = get_user_column("dval");
 
             AssertThat(col.to_double(), Equals(123.321));
@@ -102,8 +89,7 @@ go_bandit([]()
             AssertThat(val, Equals(123.321));
         });
 
-        it("can be an int64", []()
-        {
+        it("can be an int64", []() {
             auto col = get_user_column("id");
 
             AssertThat(col.to_llong() > 0, IsTrue());

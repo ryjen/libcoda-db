@@ -8,32 +8,22 @@ using namespace std;
 
 using namespace arg3::db;
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("a user record", []()
-    {
-        before_each([]()
-        {
-            setup_testdb();
-        });
+    describe("a user record", []() {
+        before_each([]() { setup_testdb(); });
 
-        after_each([]()
-        {
-            teardown_testdb();
-        });
-        it("should save", []()
-        {
-            try
-            {
+        after_each([]() { teardown_testdb(); });
+        it("should save", []() {
+            try {
                 user user1;
                 user1.set("first_name", "Ryan");
                 user1.set("last_name", "Jennings");
 
-                //long long insertId = 0;
+                // long long insertId = 0;
                 AssertThat(user1.save(), IsTrue());
 
-                Assert::That(user1.refresh(), IsTrue()); // load values back up from db
+                Assert::That(user1.refresh(), IsTrue());  // load values back up from db
 
                 AssertThat(user1.get("first_name"), Equals("Ryan"));
 
@@ -42,21 +32,17 @@ go_bandit([]()
 
                 AssertThat(user1.save(), IsTrue());
 
-                AssertThat(user1.refresh(), IsTrue()); // load values back up from db
+                AssertThat(user1.refresh(), IsTrue());  // load values back up from db
 
                 AssertThat(user1.get("first_name"), Equals("Bryan"));
-            }
-            catch (const database_exception &e)
-            {
+            } catch (const database_exception &e) {
                 cerr << "Error1: " << testdb->last_error() << endl;
                 throw e;
             }
         });
 
-        it("should find by id", []()
-        {
-            try
-            {
+        it("should find by id", []() {
+            try {
                 user u1;
 
                 u1.set("first_name", "test");
@@ -71,16 +57,13 @@ go_bandit([]()
                 AssertThat(u2->is_valid(), IsTrue());
 
                 AssertThat(u2->id(), Equals(lastId));
-            }
-            catch (const std::exception &e)
-            {
+            } catch (const std::exception &e) {
                 cerr << "Error2: " << e.what() << endl;
                 throw e;
             }
         });
 
-        it("can find all", []()
-        {
+        it("can find all", []() {
             user u1;
             u1.set("first_name", "Barry");
             u1.set("last_name", "White");
@@ -99,8 +82,7 @@ go_bandit([]()
             AssertThat(results.size(), Equals(2));
         });
 
-        it("can find by a column", []()
-        {
+        it("can find by a column", []() {
             user u1;
 
             u1.set("first_name", "John");
@@ -115,8 +97,7 @@ go_bandit([]()
             AssertThat(res[0]->get("first_name"), Equals("John"));
         });
 
-        it("can refresh by a column", []()
-        {
+        it("can refresh by a column", []() {
             user u1;
 
             u1.set("first_name", "Bender");
@@ -133,8 +114,7 @@ go_bandit([]()
             AssertThat(u2.get("last_name"), Equals("Robot"));
         });
 
-        it("can have no column", []()
-        {
+        it("can have no column", []() {
             user user1;
 
             auto val = user1.get("missing");
@@ -142,8 +122,7 @@ go_bandit([]()
             AssertThat(val, Equals(sql_null));
         });
 
-        it("cannnot refresh invalid", []()
-        {
+        it("cannnot refresh invalid", []() {
             user user1(14323432);
 
             AssertThat(user1.refresh(), Equals(false));

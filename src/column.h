@@ -1,8 +1,8 @@
 /*!
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
-#ifndef _ARG3_DB_COLUMN_VALUE_H_
-#define _ARG3_DB_COLUMN_VALUE_H_
+#ifndef ARG3_DB_COLUMN_VALUE_H
+#define ARG3_DB_COLUMN_VALUE_H
 
 #include <string>
 #include <cassert>
@@ -21,13 +21,12 @@ namespace arg3
          */
         class column_impl
         {
-        public:
-
+           public:
             column_impl() = default;
             column_impl(const column_impl &other) = default;
             column_impl(column_impl &&other) = default;
             column_impl &operator=(const column_impl &other) = default;
-            column_impl &operator=(column_impl && other) = default;
+            column_impl &operator=(column_impl &&other) = default;
             virtual ~column_impl() = default;
 
             virtual bool is_valid() const = 0;
@@ -47,7 +46,6 @@ namespace arg3
             virtual sql_value to_value() const = 0;
 
             virtual string name() const = 0;
-
         };
 
         /*!
@@ -55,11 +53,14 @@ namespace arg3
          */
         class column
         {
-            template<class A, class B, class C> friend class row_iterator;
-        private:
+            template <class A, class B, class C>
+            friend class row_iterator;
+
+           private:
             shared_ptr<column_impl> impl_;
             column();
-        public:
+
+           public:
             column(shared_ptr<column_impl> impl);
 
             virtual ~column() = default;
@@ -70,7 +71,7 @@ namespace arg3
 
             column &operator=(const column &other);
 
-            column &operator=(column && other);
+            column &operator=(column &&other);
 
             bool is_valid() const;
 
@@ -100,7 +101,6 @@ namespace arg3
 
             shared_ptr<column_impl> impl() const;
         };
-
     }
 }
 

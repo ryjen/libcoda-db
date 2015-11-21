@@ -8,26 +8,17 @@ using namespace std;
 
 using namespace arg3::db;
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("schema factory", []()
-    {
-        before_each([]()
-        {
-            setup_testdb();
-        });
+    describe("schema factory", []() {
+        before_each([]() { setup_testdb(); });
 
-        after_each([]()
-        {
-            teardown_testdb();
-        });
+        after_each([]() { teardown_testdb(); });
 
-        it("has the rule of five", []()
-        {
+        it("has the rule of five", []() {
             auto schemas = testdb->schemas();
 
-            schema_factory other((sqldb *) 1);
+            schema_factory other((sqldb *)1);
 
             other = *schemas;
 
@@ -37,7 +28,7 @@ go_bandit([]()
 
             Assert::That(s->is_valid(), Equals(true));
 
-            schema_factory moved((sqldb *) 1);
+            schema_factory moved((sqldb *)1);
 
             moved = std::move(other);
 
@@ -57,4 +48,3 @@ go_bandit([]()
 
 
 });
-

@@ -1,5 +1,6 @@
+#ifdef HAVE_CONFIG_H
 #include "config.h"
-
+#endif
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
@@ -37,7 +38,7 @@ namespace arg3
             res_ = nullptr;
         }
 
-        mysql_resultset &mysql_resultset::operator=(mysql_resultset && other)
+        mysql_resultset &mysql_resultset::operator=(mysql_resultset &&other)
         {
             res_ = other.res_;
             db_ = other.db_;
@@ -58,21 +59,16 @@ namespace arg3
         {
             assert(db_ != NULL);
 
-            if (!is_valid() || !db_->is_open())
-                return false;
+            if (!is_valid() || !db_->is_open()) return false;
 
             bool value = (row_ = mysql_fetch_row(res_.get())) != NULL;
 
-            if (!value && !mysql_more_results(db_->db_))
-            {
+            if (!value && !mysql_more_results(db_->db_)) {
                 MYSQL_RES *temp;
-                if ((temp = mysql_use_result(db_->db_)) != NULL)
-                {
+                if ((temp = mysql_use_result(db_->db_)) != NULL) {
                     res_ = shared_ptr<MYSQL_RES>(temp, mysql_res_delete());
                     value = (row_ = mysql_fetch_row(temp)) != NULL;
-                }
-                else
-                {
+                } else {
                     res_ = nullptr;
                 }
             }
@@ -101,16 +97,15 @@ namespace arg3
 
         /* Statement version */
 
-        mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, shared_ptr<MYSQL_STMT> stmt) : stmt_(stmt), metadata_(NULL), db_(db),
-            bindings_(nullptr), status_(-1)
+        mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, shared_ptr<MYSQL_STMT> stmt)
+            : stmt_(stmt), metadata_(NULL), db_(db), bindings_(nullptr), status_(-1)
         {
             assert(stmt_ != nullptr);
             assert(db_ != NULL);
         }
 
-        mysql_stmt_resultset::mysql_stmt_resultset(mysql_stmt_resultset &&other) : stmt_(other.stmt_), metadata_(other.metadata_),
-            db_(other.db_),
-            bindings_(other.bindings_), status_(other.status_)
+        mysql_stmt_resultset::mysql_stmt_resultset(mysql_stmt_resultset &&other)
+            : stmt_(other.stmt_), metadata_(other.metadata_), db_(other.db_), bindings_(other.bindings_), status_(other.status_)
         {
             other.db_ = NULL;
             other.stmt_ = nullptr;
@@ -123,7 +118,7 @@ namespace arg3
             metadata_ = nullptr;
         }
 
-        mysql_stmt_resultset &mysql_stmt_resultset::operator=(mysql_stmt_resultset && other)
+        mysql_stmt_resultset &mysql_stmt_resultset::operator=(mysql_stmt_resultset &&other)
         {
             stmt_ = other.stmt_;
             db_ = other.db_;
@@ -139,19 +134,16 @@ namespace arg3
 
         void mysql_stmt_resultset::prepare_results()
         {
-            if (stmt_ == nullptr || !stmt_ || bindings_ != NULL || status_ != -1)
-                return;
+            if (stmt_ == nullptr || !stmt_ || bindings_ != NULL || status_ != -1) return;
 
-            if ((status_ = mysql_stmt_execute(stmt_.get())))
-            {
+            if ((status_ = mysql_stmt_execute(stmt_.get()))) {
                 throw database_exception(last_stmt_error(stmt_.get()));
             }
 
             // get information about the results
             MYSQL_RES *temp = mysql_stmt_result_metadata(stmt_.get());
 
-            if (temp == NULL)
-                throw database_exception("No result data found.");
+            if (temp == NULL) throw database_exception("No result data found.");
 
             metadata_ = shared_ptr<MYSQL_RES>(temp, mysql_res_delete());
 
@@ -171,37 +163,30 @@ namespace arg3
 
         bool mysql_stmt_resultset::next()
         {
-            if (!is_valid())
-                return false;
+            if (!is_valid()) return false;
 
-            if (status_ == -1)
-            {
+            if (status_ == -1) {
                 prepare_results();
 
-                if (status_ == -1)
-                    return false;
+                if (status_ == -1) return false;
             }
 
             int res = mysql_stmt_fetch(stmt_.get());
 
-            if (res == 1 || res == MYSQL_DATA_TRUNCATED)
-                throw database_exception(last_stmt_error(stmt_.get()));
+            if (res == 1 || res == MYSQL_DATA_TRUNCATED) throw database_exception(last_stmt_error(stmt_.get()));
 
-            if (res == MYSQL_NO_DATA)
-            {
+            if (res == MYSQL_NO_DATA) {
                 return false;
             }
 
             return true;
-
         }
 
         void mysql_stmt_resultset::reset()
         {
             assert(is_valid());
 
-            if (mysql_stmt_reset(stmt_.get()))
-                throw database_exception(last_stmt_error(stmt_.get()));
+            if (mysql_stmt_reset(stmt_.get())) throw database_exception(last_stmt_error(stmt_.get()));
 
             status_ = -1;
         }
@@ -213,7 +198,7 @@ namespace arg3
             if (db_->cache_level() == sqldb::CACHE_ROW)
                 return row(make_shared<mysql_cached_row>(db_, metadata_, *bindings_.get()));
             else
-                return row(make_shared<mysql_stmt_row>(db_, metadata_, bindings_ ));
+                return row(make_shared<mysql_stmt_row>(db_, metadata_, bindings_));
         }
 
         size_t mysql_stmt_resultset::size() const
@@ -230,16 +215,14 @@ namespace arg3
         {
             assert(is_valid());
 
-            if (mysql_stmt_execute(stmt.get()))
-            {
+            if (mysql_stmt_execute(stmt.get())) {
                 throw database_exception(last_stmt_error(stmt.get()));
             }
 
             // get information about the results
             MYSQL_RES *temp = mysql_stmt_result_metadata(stmt.get());
 
-            if (temp == NULL)
-                throw database_exception("No result data found.");
+            if (temp == NULL) throw database_exception("No result data found.");
 
             auto metadata = shared_ptr<MYSQL_RES>(temp, mysql_res_delete());
 
@@ -253,8 +236,7 @@ namespace arg3
 
             int res = mysql_stmt_fetch(stmt.get());
 
-            while (res == 0)
-            {
+            while (res == 0) {
                 rows_.push_back(make_shared<mysql_cached_row>(db, metadata, bindings));
 
                 res = mysql_stmt_fetch(stmt.get());
@@ -265,21 +247,16 @@ namespace arg3
         {
             MYSQL_ROW row = mysql_fetch_row(res.get());
 
-            if (row != NULL)
-            {
+            if (row != NULL) {
                 rows_.push_back(make_shared<mysql_cached_row>(db, res, row));
 
-                while (mysql_more_results(db->db_) && (row = mysql_fetch_row(res.get())) != NULL)
-                {
+                while (mysql_more_results(db->db_) && (row = mysql_fetch_row(res.get())) != NULL) {
                     rows_.push_back(make_shared<mysql_cached_row>(db, res, row));
                 }
-            }
-            else
-            {
+            } else {
                 MYSQL_RES *temp;
 
-                while ((temp = mysql_use_result(db->db_)) != NULL && (row = mysql_fetch_row(temp)))
-                {
+                while ((temp = mysql_use_result(db->db_)) != NULL && (row = mysql_fetch_row(temp))) {
                     rows_.push_back(make_shared<mysql_cached_row>(db, shared_ptr<MYSQL_RES>(temp, mysql_res_delete()), row));
                 }
             }
@@ -294,7 +271,7 @@ namespace arg3
         {
         }
 
-        mysql_cached_resultset &mysql_cached_resultset::operator=(mysql_cached_resultset && other)
+        mysql_cached_resultset &mysql_cached_resultset::operator=(mysql_cached_resultset &&other)
         {
             rows_ = std::move(other.rows_);
             currentRow_ = other.currentRow_;
@@ -312,8 +289,7 @@ namespace arg3
 
         bool mysql_cached_resultset::next()
         {
-            if (rows_.empty())
-            {
+            if (rows_.empty()) {
                 return false;
             }
 

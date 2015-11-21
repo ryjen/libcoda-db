@@ -8,24 +8,15 @@ using namespace std;
 
 using namespace arg3::db;
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("schema", []()
-    {
-        before_each([]()
-        {
-            setup_testdb();
-        });
+    describe("schema", []() {
+        before_each([]() { setup_testdb(); });
 
-        after_each([]()
-        {
-            teardown_testdb();
-        });
+        after_each([]() { teardown_testdb(); });
 
 
-        it("has primary keys", []()
-        {
+        it("has primary keys", []() {
             user u;
 
             auto keys = u.schema()->primary_keys();
@@ -35,8 +26,7 @@ go_bandit([]()
             Assert::That(keys[0], Equals("id"));
         });
 
-        it("has operators", []()
-        {
+        it("has operators", []() {
             schema s(testdb, "users");
 
             s.init();
@@ -62,8 +52,7 @@ go_bandit([]()
             Assert::That(other.is_valid(), Equals(false));
         });
 
-        it("has columns", []()
-        {
+        it("has columns", []() {
             schema s(testdb, "users");
 
             s.init();
@@ -81,4 +70,3 @@ go_bandit([]()
 
 
 });
-

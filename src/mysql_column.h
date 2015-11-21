@@ -1,7 +1,9 @@
-#ifndef ARG3_DB_MYSQL_COLUMN_H_
-#define ARG3_DB_MYSQL_COLUMN_H_
+#ifndef ARG3_DB_MYSQL_COLUMN_H
+#define ARG3_DB_MYSQL_COLUMN_H
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
@@ -19,19 +21,19 @@ namespace arg3
          */
         class mysql_column : public column_impl
         {
-        private:
+           private:
             string name_;
             MYSQL_ROW value_;
             shared_ptr<MYSQL_RES> res_;
             size_t index_;
-        public:
 
+           public:
             mysql_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
             mysql_column(const mysql_column &other);
             mysql_column(mysql_column &&other);
             virtual ~mysql_column();
             mysql_column &operator=(const mysql_column &other);
-            mysql_column &operator=(mysql_column && other);
+            mysql_column &operator=(mysql_column &&other);
 
             bool is_valid() const;
 
@@ -54,7 +56,6 @@ namespace arg3
             int type() const;
 
             string name() const;
-
         };
 
         /*!
@@ -62,18 +63,18 @@ namespace arg3
          */
         class mysql_stmt_column : public column_impl
         {
-        private:
+           private:
             string name_;
             shared_ptr<mysql_binding> value_;
             size_t position_;
-        public:
 
+           public:
             mysql_stmt_column(const string &name, shared_ptr<mysql_binding> bindings, size_t position);
             mysql_stmt_column(const mysql_stmt_column &other);
             mysql_stmt_column(mysql_stmt_column &&other);
             virtual ~mysql_stmt_column();
             mysql_stmt_column &operator=(const mysql_stmt_column &other);
-            mysql_stmt_column &operator=(mysql_stmt_column && other);
+            mysql_stmt_column &operator=(mysql_stmt_column &&other);
 
             bool is_valid() const;
 
@@ -94,7 +95,6 @@ namespace arg3
             int type() const;
 
             string name() const;
-
         };
 
         /*!
@@ -102,18 +102,19 @@ namespace arg3
          */
         class mysql_cached_column : public column_impl
         {
-        private:
+           private:
             string name_;
             sql_value value_;
             int type_;
-        public:
+
+           public:
             mysql_cached_column(const string &name, mysql_binding &bindings, size_t position);
             mysql_cached_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
             mysql_cached_column(const mysql_cached_column &other);
             mysql_cached_column(mysql_cached_column &&other);
             virtual ~mysql_cached_column();
             mysql_cached_column &operator=(const mysql_cached_column &other);
-            mysql_cached_column &operator=(mysql_cached_column && other);
+            mysql_cached_column &operator=(mysql_cached_column &&other);
 
             bool is_valid() const;
 

@@ -1,8 +1,10 @@
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #undef VERSION
 
-#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
+#if defined(HAVE_LIBMYSQLCLIENT)
 
 #include <bandit/bandit.h>
 #include "db.test.h"
@@ -15,22 +17,13 @@ using namespace std;
 using namespace arg3::db;
 
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("mysql database", []()
-    {
-        before_each([]()
-        {
-            mysql_testdb.setup();
-        });
-        after_each([]()
-        {
-            mysql_testdb.teardown();
-        });
+    describe("mysql database", []() {
+        before_each([]() { mysql_testdb.setup(); });
+        after_each([]() { mysql_testdb.teardown(); });
 
-        it("is copyable", []()
-        {
+        it("is copyable", []() {
             mysql_db db(mysql_testdb);
 
             Assert::That(db.is_open(), IsFalse());
@@ -53,8 +46,7 @@ go_bandit([]()
 
         });
 
-        it("is movable", []()
-        {
+        it("is movable", []() {
             mysql_db other(mysql_testdb);
 
             other.open();
@@ -76,8 +68,7 @@ go_bandit([]()
             other.close();
         });
 
-        it("can handle bad parameters", []()
-        {
+        it("can handle bad parameters", []() {
             mysql_db db("zzzzz", "zzzzz", "zzzz", "zzzzz", 0);
 
             AssertThrows(database_exception, db.open());

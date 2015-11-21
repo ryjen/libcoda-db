@@ -1,11 +1,13 @@
 /*!
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #include <algorithm>
 #include "sqldb.h"
-#include "base_query.h"
+#include "query.h"
 #include "exception.h"
 #include "resultset.h"
 #include "sqlite3_db.h"
@@ -28,43 +30,32 @@ namespace arg3
             value = url_s;
 
             const string prot_end("://");
-            string::const_iterator prot_i = search(url_s.begin(), url_s.end(),
-                                                   prot_end.begin(), prot_end.end());
+            string::const_iterator prot_i = search(url_s.begin(), url_s.end(), prot_end.begin(), prot_end.end());
             protocol.reserve(distance(url_s.begin(), prot_i));
-            transform(url_s.begin(), prot_i,
-                      back_inserter(protocol),
-                      ptr_fun<int, int>(tolower)); // protocol is icase
-            if ( prot_i == url_s.end() )
-                return;
+            transform(url_s.begin(), prot_i, back_inserter(protocol), ptr_fun<int, int>(tolower));  // protocol is icase
+            if (prot_i == url_s.end()) return;
             advance(prot_i, prot_end.length());
 
             string::const_iterator user_i = find(prot_i, url_s.end(), '@');
             string::const_iterator path_i;
 
-            if (user_i != url_s.end())
-            {
+            if (user_i != url_s.end()) {
                 string::const_iterator pwd_i = find(prot_i, user_i, ':');
 
-                if (pwd_i != user_i)
-                {
+                if (pwd_i != user_i) {
                     password.assign(pwd_i, user_i);
                     user.assign(prot_i, pwd_i);
-                }
-                else
-                {
+                } else {
                     user.assign(prot_i, user_i);
                 }
                 path_i = user_i;
-            }
-            else path_i = find(prot_i, url_s.end(), '/');
+            } else
+                path_i = find(prot_i, url_s.end(), '/');
             host.reserve(distance(prot_i, path_i));
-            transform(prot_i, path_i,
-                      back_inserter(host),
-                      ptr_fun<int, int>(tolower)); // host is icase
+            transform(prot_i, path_i, back_inserter(host), ptr_fun<int, int>(tolower));  // host is icase
             string::const_iterator query_i = find(path_i, url_s.end(), '?');
             path.assign(path_i, query_i);
-            if ( query_i != url_s.end() )
-                ++query_i;
+            if (query_i != url_s.end()) ++query_i;
             query.assign(query_i, url_s.end());
         }
 
@@ -72,43 +63,36 @@ namespace arg3
         {
             db::uri uri(uristr);
 #ifdef HAVE_LIBSQLITE3
-            if ("file" == uri.protocol)
-                return make_shared<sqlite3_db>(uri);
+            if ("file" == uri.protocol) return make_shared<sqlite3_db>(uri);
 #endif
 #ifdef HAVE_LIBMYSQLCLIENT
-           if ("mysql" == uri.protocol)
-                return make_shared<mysql_db>(uri);
+            if ("mysql" == uri.protocol) return make_shared<mysql_db>(uri);
 #endif
-           throw database_exception("unknown database " + uri.value);
+            throw database_exception("unknown database " + uri.value);
         }
 
         sqldb::sqldb() : logLevel_(LOG_NONE), cacheLevel_(CACHE_NONE)
-        {}
-
+        {
+        }
         resultset sqldb::execute(const string &sql)
         {
             return execute(sql, cache_level() == sqldb::CACHE_RESULTSET);
         }
-
         void sqldb::set_log_level(LogLevel level)
         {
             logLevel_ = level;
         }
-
         void sqldb::set_cache_level(CacheLevel level)
         {
             cacheLevel_ = level;
         }
-
         sqldb::CacheLevel sqldb::cache_level() const
         {
             return cacheLevel_;
         }
-
         void sqldb::log(LogLevel level, const string &message)
         {
-            if (logLevel_ >= level)
-                cout << "sqldb: " << message << endl;
+            if (logLevel_ >= level) cout << "sqldb: " << message << endl;
         }
     }
 }

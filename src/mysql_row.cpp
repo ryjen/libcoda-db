@@ -1,5 +1,6 @@
+#ifdef HAVE_CONFIG_H
 #include "config.h"
-
+#endif
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
@@ -12,7 +13,6 @@ namespace arg3
 {
     namespace db
     {
-
         mysql_row::mysql_row(mysql_db *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row) : row_impl(), row_(row), res_(res), db_(db)
         {
             assert(db_ != NULL);
@@ -25,7 +25,8 @@ namespace arg3
         }
 
         mysql_row::mysql_row(const mysql_row &other) : row_impl(other), row_(other.row_), res_(other.res_), db_(other.db_), size_(other.size_)
-        {}
+        {
+        }
 
         mysql_row::mysql_row(mysql_row &&other) : row_impl(std::move(other)), row_(other.row_), res_(other.res_), db_(other.db_), size_(other.size_)
         {
@@ -34,7 +35,9 @@ namespace arg3
             other.res_ = nullptr;
         }
 
-        mysql_row::~mysql_row() {}
+        mysql_row::~mysql_row()
+        {
+        }
 
         mysql_row &mysql_row::operator=(const mysql_row &other)
         {
@@ -46,7 +49,7 @@ namespace arg3
             return *this;
         }
 
-        mysql_row &mysql_row::operator=(mysql_row && other)
+        mysql_row &mysql_row::operator=(mysql_row &&other)
         {
             row_ = other.row_;
             res_ = other.res_;
@@ -61,18 +64,16 @@ namespace arg3
 
         row_impl::column_type mysql_row::column(size_t nPosition) const
         {
-            if (!is_valid())
-                throw database_exception("invalid row");
+            if (!is_valid()) throw database_exception("invalid row");
 
-            if (nPosition >= size())
-            {
+            if (nPosition >= size()) {
                 throw database_exception("invalid index for row column");
             }
 
             if (db_->cache_level() == sqldb::CACHE_COLUMN)
-                return row_impl::column_type(make_shared<mysql_cached_column>( res_, row_, nPosition ));
+                return row_impl::column_type(make_shared<mysql_cached_column>(res_, row_, nPosition));
             else
-                return row_impl::column_type( make_shared<mysql_column>( res_, row_, nPosition ) );
+                return row_impl::column_type(make_shared<mysql_column>(res_, row_, nPosition));
         }
 
         row_impl::column_type mysql_row::column(const string &name) const
@@ -81,12 +82,10 @@ namespace arg3
 
             assert(res_ != nullptr);
 
-            for (size_t i = 0; i < size_; i++)
-            {
+            for (size_t i = 0; i < size_; i++) {
                 auto field = mysql_fetch_field_direct(res_.get(), i);
 
-                if (field != NULL && field->name != NULL && name == field->name)
-                {
+                if (field != NULL && field->name != NULL && name == field->name) {
                     return column(i);
                 }
             }
@@ -97,15 +96,13 @@ namespace arg3
         {
             assert(res_ != nullptr);
 
-            if (nPosition >= size())
-            {
+            if (nPosition >= size()) {
                 throw database_exception("invalid index for row column");
             }
 
             auto field = mysql_fetch_field_direct(res_.get(), nPosition);
 
-            if (field == NULL || field->name == NULL)
-                return string();
+            if (field == NULL || field->name == NULL) return string();
 
             return field->name;
         }
@@ -124,26 +121,30 @@ namespace arg3
         /* statement version */
 
 
-        mysql_stmt_row::mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields) : row_impl(), fields_(fields), metadata_(metadata),
-            db_(db)
+        mysql_stmt_row::mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields)
+            : row_impl(), fields_(fields), metadata_(metadata), db_(db)
         {
             assert(db_ != NULL);
 
-            if (metadata_ != nullptr)
-                size_ = mysql_num_fields(metadata_.get());
+            if (metadata_ != nullptr) size_ = mysql_num_fields(metadata_.get());
         }
 
-        mysql_stmt_row::mysql_stmt_row(const mysql_stmt_row &other) : row_impl(other), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_), size_(other.size_)
-        {}
+        mysql_stmt_row::mysql_stmt_row(const mysql_stmt_row &other)
+            : row_impl(other), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_), size_(other.size_)
+        {
+        }
 
-        mysql_stmt_row::mysql_stmt_row(mysql_stmt_row &&other) : row_impl(std::move(other)), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_), size_(other.size_)
+        mysql_stmt_row::mysql_stmt_row(mysql_stmt_row &&other)
+            : row_impl(std::move(other)), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_), size_(other.size_)
         {
             other.fields_ = nullptr;
             other.db_ = NULL;
             other.metadata_ = nullptr;
         }
 
-        mysql_stmt_row::~mysql_stmt_row() {}
+        mysql_stmt_row::~mysql_stmt_row()
+        {
+        }
 
         mysql_stmt_row &mysql_stmt_row::operator=(const mysql_stmt_row &other)
         {
@@ -155,7 +156,7 @@ namespace arg3
             return *this;
         }
 
-        mysql_stmt_row &mysql_stmt_row::operator=(mysql_stmt_row && other)
+        mysql_stmt_row &mysql_stmt_row::operator=(mysql_stmt_row &&other)
         {
             fields_ = other.fields_;
             metadata_ = other.metadata_;
@@ -172,20 +173,18 @@ namespace arg3
         {
             assert(fields_ != nullptr);
 
-            if (!is_valid())
-            {
+            if (!is_valid()) {
                 throw database_exception("invalid row");
             }
 
-            if (nPosition >= size())
-            {
+            if (nPosition >= size()) {
                 throw database_exception("invalid index for row column");
             }
 
             if (db_->cache_level() == sqldb::CACHE_COLUMN)
-                return row_impl::column_type(make_shared<mysql_cached_column>( column_name(nPosition), *fields_.get(), nPosition));
+                return row_impl::column_type(make_shared<mysql_cached_column>(column_name(nPosition), *fields_.get(), nPosition));
             else
-                return row_impl::column_type(make_shared<mysql_stmt_column>( column_name(nPosition), fields_, nPosition ) );
+                return row_impl::column_type(make_shared<mysql_stmt_column>(column_name(nPosition), fields_, nPosition));
         }
 
         row_impl::column_type mysql_stmt_row::column(const string &name) const
@@ -194,17 +193,14 @@ namespace arg3
 
             assert(metadata_ != nullptr);
 
-            if (!is_valid())
-            {
+            if (!is_valid()) {
                 throw database_exception("invalid row");
             }
 
-            for (size_t i = 0; i < size(); i++)
-            {
+            for (size_t i = 0; i < size(); i++) {
                 auto field = mysql_fetch_field_direct(metadata_.get(), i);
 
-                if (field != NULL && field->name != NULL && name == field->name)
-                {
+                if (field != NULL && field->name != NULL && name == field->name) {
                     return column(i);
                 }
             }
@@ -215,15 +211,13 @@ namespace arg3
         {
             assert(metadata_ != nullptr);
 
-            if (nPosition >= size())
-            {
+            if (nPosition >= size()) {
                 throw database_exception("invalid index for row column");
             }
 
             auto field = mysql_fetch_field_direct(metadata_.get(), nPosition);
 
-            if (field == NULL || field->name == NULL)
-                return string();
+            if (field == NULL || field->name == NULL) return string();
 
             return field->name;
         }
@@ -246,16 +240,13 @@ namespace arg3
 
             size_t size = mysql_num_fields(metadata.get());
 
-            for (size_t i = 0; i < size; i++)
-            {
+            for (size_t i = 0; i < size; i++) {
                 auto field = mysql_fetch_field_direct(metadata.get(), i);
 
-                if (field == NULL || field->name == NULL)
-                    continue;
+                if (field == NULL || field->name == NULL) continue;
 
                 columns_.push_back(make_shared<mysql_cached_column>(field->name, fields, i));
             }
-
         }
 
         mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row)
@@ -266,16 +257,14 @@ namespace arg3
 
             size_t size = mysql_num_fields(res.get());
 
-            for (size_t i = 0; i < size; i++)
-            {
+            for (size_t i = 0; i < size; i++) {
                 columns_.push_back(make_shared<mysql_cached_column>(res, row, i));
             }
         }
 
         row_impl::column_type mysql_cached_row::column(size_t nPosition) const
         {
-            if (nPosition >= columns_.size())
-            {
+            if (nPosition >= columns_.size()) {
                 throw database_exception("invalid index for row column");
             }
 
@@ -286,18 +275,15 @@ namespace arg3
         {
             assert(!name.empty());
 
-            for (size_t i = 0; i < columns_.size(); i++)
-            {
-                if (name == column_name(i))
-                    return column(i);
+            for (size_t i = 0; i < columns_.size(); i++) {
+                if (name == column_name(i)) return column(i);
             }
             throw database_exception("unknown column '" + name + "'");
         }
 
         string mysql_cached_row::column_name(size_t nPosition) const
         {
-            if (nPosition >= columns_.size())
-            {
+            if (nPosition >= columns_.size()) {
                 throw database_exception("invalid index for row column");
             }
             return columns_[nPosition]->name();

@@ -9,13 +9,10 @@ using namespace std;
 
 using namespace arg3::db;
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("modify query", []()
-    {
-        before_each([]()
-        {
+    describe("modify query", []() {
+        before_each([]() {
             setup_testdb();
 
             user user1;
@@ -25,7 +22,6 @@ go_bandit([]()
             user1.set("last_name", "Jenkins");
 
             user1.save();
-
 
             user user2;
 
@@ -37,38 +33,33 @@ go_bandit([]()
             user2.save();
         });
 
-        after_each([]()
-        {
-            teardown_testdb();
-        });
+        after_each([]() { teardown_testdb(); });
 
-        it("can be constructed", []()
-        {
+        it("can be constructed", []() {
             modify_query query(testdb, "users");
 
-            Assert::That(to_string(query), Equals("REPLACE INTO users DEFAULT VALUES"));
+            Assert::That(query.to_string(), Equals("REPLACE INTO users DEFAULT VALUES"));
 
             modify_query other(query);
 
-            Assert::That(to_string(query), Equals(to_string(other)));
+            Assert::That(query.to_string(), Equals(other.to_string()));
 
             modify_query moved(std::move(query));
 
             Assert::That(query.is_valid(), Equals(false));
 
-            Assert::That(to_string(moved), Equals(to_string(other)));
+            Assert::That(moved.to_string(), Equals(other.to_string()));
 
         });
 
-        it("can be assigned", []()
-        {
+        it("can be assigned", []() {
             modify_query query(testdb, "users");
 
             modify_query other(testdb, "other_users");
 
             other = query;
 
-            Assert::That(to_string(query), Equals(to_string(other)));
+            Assert::That(query.to_string(), Equals(other.to_string()));
 
             modify_query moved(testdb, "moved_users");
 
@@ -76,12 +67,11 @@ go_bandit([]()
 
             Assert::That(query.is_valid(), Equals(false));
 
-            Assert::That(to_string(moved), Equals(to_string(other)));
+            Assert::That(moved.to_string(), Equals(other.to_string()));
         });
 
-        it("can modify", []()
-        {
-            modify_query query(testdb, "users", { "id", "first_name", "last_name" });
+        it("can modify", []() {
+            modify_query query(testdb, "users", {"id", "first_name", "last_name"});
 
             query.bind(1, 1);
             query.bind(2, "blah");
@@ -94,12 +84,10 @@ go_bandit([]()
             Assert::That(u1.refresh(), Equals(true));
         });
 
-        it("can be batch executed", []()
-        {
-            modify_query query(testdb, "users", { "id", "first_name", "last_name" });
+        it("can be batch executed", []() {
+            modify_query query(testdb, "users", {"id", "first_name", "last_name"});
 
-            for (int i = 0; i < 3; i++)
-            {
+            for (int i = 0; i < 3; i++) {
                 char buf[100] = {0};
 
                 query.bind(1, i + 5);

@@ -1,8 +1,10 @@
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #undef VERSION
 
-#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
+#if defined(HAVE_LIBMYSQLCLIENT)
 
 #include <bandit/bandit.h>
 #include "db.test.h"
@@ -31,8 +33,8 @@ shared_ptr<resultset_impl> get_stmt_resultset()
 }
 
 
-template<typename T>
-void test_move_resultset(std::function < shared_ptr<resultset_impl>()> funk)
+template <typename T>
+void test_move_resultset(std::function<shared_ptr<resultset_impl>()> funk)
 {
     auto f1 = funk();
 
@@ -42,7 +44,7 @@ void test_move_resultset(std::function < shared_ptr<resultset_impl>()> funk)
 
     auto f2Value = f2->size();
 
-    T c2 (std::move( *static_pointer_cast<T>(f1)));
+    T c2(std::move(*static_pointer_cast<T>(f1)));
 
     Assert::That(c2.is_valid(), IsTrue());
 
@@ -55,7 +57,7 @@ void test_move_resultset(std::function < shared_ptr<resultset_impl>()> funk)
     Assert::That(c2.size() == f2Value, IsTrue());
 }
 
-template<typename T>
+template <typename T>
 void test_resultset_row(std::function<shared_ptr<resultset_impl>()> funk)
 {
     auto r = funk();
@@ -67,13 +69,10 @@ void test_resultset_row(std::function<shared_ptr<resultset_impl>()> funk)
     Assert::That(r->current_row().size() > 0, IsTrue());
 }
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("mysql row", []()
-    {
-        before_each([]()
-        {
+    describe("mysql row", []() {
+        before_each([]() {
             mysql_testdb.setup();
 
             user user1(&mysql_testdb);
@@ -96,66 +95,39 @@ go_bandit([]()
             user2.save();
         });
 
-        after_each([]()
-        {
-            mysql_testdb.teardown();
-        });
+        after_each([]() { mysql_testdb.teardown(); });
 
-        describe("is movable", []()
-        {
+        describe("is movable", []() {
 
-            if (mysql_testdb.cache_level() == sqldb::CACHE_RESULTSET)
-            {
-                it("as cached results", []()
-                {
-                    test_move_resultset<mysql_cached_resultset>(get_stmt_resultset);
-                });
+            if (mysql_testdb.cache_level() == sqldb::CACHE_RESULTSET) {
+                it("as cached results", []() { test_move_resultset<mysql_cached_resultset>(get_stmt_resultset); });
 
-            }
-            else
-            {
-                it("as statement results", []()
-                {
-                    test_move_resultset<mysql_stmt_resultset>(get_stmt_resultset);
-                });
+            } else {
+                it("as statement results", []() { test_move_resultset<mysql_stmt_resultset>(get_stmt_resultset); });
 
-                it("as results", []()
-                {
-                    test_move_resultset<mysql_resultset>(get_resultset);
-                });
+                it("as results", []() { test_move_resultset<mysql_resultset>(get_resultset); });
             }
 
 
         });
 
-        describe("can get a row", []()
-        {
-            if (mysql_testdb.cache_level() == sqldb::CACHE_RESULTSET)
-            {
-                it("as cached results", []()
-                {
+        describe("can get a row", []() {
+            if (mysql_testdb.cache_level() == sqldb::CACHE_RESULTSET) {
+                it("as cached results", []() {
                     test_resultset_row<mysql_cached_resultset>(get_stmt_resultset);
 
                 });
-            }
-            else
-            {
-                it("as statement results", []()
-                {
+            } else {
+                it("as statement results", []() {
                     test_resultset_row<mysql_stmt_resultset>(get_stmt_resultset);
 
                 });
 
-                it("as results", []()
-                {
-                    test_resultset_row<mysql_resultset>(get_resultset);
-                });
-
+                it("as results", []() { test_resultset_row<mysql_resultset>(get_resultset); });
             }
         });
 
-        it("can handle a bad query", []()
-        {
+        it("can handle a bad query", []() {
             AssertThrows(database_exception, mysql_testdb.execute("select * from asdfasdfasdf"));
 
             select_query query(&mysql_testdb, "asdfasdfasdf");

@@ -8,7 +8,6 @@ namespace arg3
 {
     namespace db
     {
-
         sqlite3_row::sqlite3_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt) : row_impl(), stmt_(stmt), db_(db)
         {
             assert(db_ != NULL);
@@ -24,10 +23,12 @@ namespace arg3
             other.db_ = NULL;
         }
 
-        sqlite3_row::~sqlite3_row() {}
+        sqlite3_row::~sqlite3_row()
+        {
+        }
 
 
-        sqlite3_row &sqlite3_row::operator=(sqlite3_row && other)
+        sqlite3_row &sqlite3_row::operator=(sqlite3_row &&other)
         {
             stmt_ = other.stmt_;
             db_ = other.db_;
@@ -45,19 +46,17 @@ namespace arg3
             if (db_->cache_level() == sqldb::CACHE_COLUMN)
                 return row_impl::column_type(make_shared<sqlite3_cached_column>(stmt_, nPosition));
             else
-                return row_impl::column_type(make_shared<sqlite3_column>(stmt_, nPosition ) );
+                return row_impl::column_type(make_shared<sqlite3_column>(stmt_, nPosition));
         }
 
         row_impl::column_type sqlite3_row::column(const string &name) const
         {
             assert(!name.empty());
 
-            for (size_t i = 0; i < size_; i++)
-            {
+            for (size_t i = 0; i < size_; i++) {
                 const char *col_name = sqlite3_column_name(stmt_.get(), i);
 
-                if (name == col_name)
-                {
+                if (name == col_name) {
                     return column(i);
                 }
             }
@@ -92,8 +91,7 @@ namespace arg3
 
             int size = sqlite3_column_count(stmt.get());
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 columns_.push_back(make_shared<sqlite3_cached_column>(stmt, i));
             }
         }
@@ -102,9 +100,11 @@ namespace arg3
             other.columns_.clear();
         }
 
-        sqlite3_cached_row::~sqlite3_cached_row() {}
+        sqlite3_cached_row::~sqlite3_cached_row()
+        {
+        }
 
-        sqlite3_cached_row &sqlite3_cached_row::operator=(sqlite3_cached_row && other)
+        sqlite3_cached_row &sqlite3_cached_row::operator=(sqlite3_cached_row &&other)
         {
             columns_ = other.columns_;
             other.columns_.clear();
@@ -116,17 +116,15 @@ namespace arg3
         {
             assert(nPosition < size());
 
-            return row_impl::column_type( columns_[nPosition] );
+            return row_impl::column_type(columns_[nPosition]);
         }
 
         row_impl::column_type sqlite3_cached_row::column(const string &name) const
         {
             assert(!name.empty());
 
-            for (size_t i = 0; i < columns_.size(); i++)
-            {
-                if (name == column_name(i))
-                {
+            for (size_t i = 0; i < columns_.size(); i++) {
+                if (name == column_name(i)) {
                     return column(i);
                 }
             }
@@ -153,4 +151,3 @@ namespace arg3
 }
 
 #endif
-

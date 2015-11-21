@@ -1,4 +1,3 @@
-#ifdef TEST_SQLITE
 
 #include <bandit/bandit.h>
 #include "db.test.h"
@@ -12,24 +11,15 @@ using namespace std;
 
 using namespace arg3::db;
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("sqlite3 statement", []()
-    {
-        before_each([]()
-        {
-            sqlite_testdb.setup();
-        });
+    describe("sqlite3 statement", []() {
+        before_each([]() { sqlite_testdb.setup(); });
 
-        after_each([]()
-        {
-            sqlite_testdb.teardown();
-        });
+        after_each([]() { sqlite_testdb.teardown(); });
 
 
-        it("is movable", []()
-        {
+        it("is movable", []() {
             sqlite3_statement stmt(&sqlite_testdb);
 
             stmt.prepare("select * from users");
@@ -53,8 +43,7 @@ go_bandit([]()
             AssertThat(s2.is_valid(), IsFalse());
         });
 
-        it("throws exceptions", []()
-        {
+        it("throws exceptions", []() {
             sqlite3_statement stmt(NULL);
 
             AssertThrows(database_exception, stmt.prepare("select * from users"));
@@ -83,8 +72,7 @@ go_bandit([]()
 
         });
 
-        it("can reset", []()
-        {
+        it("can reset", []() {
             sqlite3_statement stmt(&sqlite_testdb);
 
             stmt.prepare("select * from users");
@@ -101,8 +89,6 @@ go_bandit([]()
     });
 
 });
-
-#endif
 
 #endif
 

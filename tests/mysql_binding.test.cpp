@@ -1,8 +1,10 @@
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #undef VERSION
 
-#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
+#if defined(HAVE_LIBMYSQLCLIENT)
 
 #include <bandit/bandit.h>
 #include "db.test.h"
@@ -14,13 +16,10 @@ using namespace std;
 
 using namespace arg3::db;
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("mysql binding", []()
-    {
-        before_each([]()
-        {
+    describe("mysql binding", []() {
+        before_each([]() {
             mysql_testdb.setup();
 
             user user1(&mysql_testdb);
@@ -43,13 +42,9 @@ go_bandit([]()
             user2.save();
         });
 
-        after_each([]()
-        {
-            mysql_testdb.teardown();
-        });
+        after_each([]() { mysql_testdb.teardown(); });
 
-        it("has a size contructor", []()
-        {
+        it("has a size contructor", []() {
             mysql_binding b(3);
 
             Assert::That(b.size(), Equals(3));
@@ -59,11 +54,9 @@ go_bandit([]()
             Assert::That(b.to_value(1), Equals(sql_null));
         });
 
-        describe("is copyable", []()
-        {
+        describe("is copyable", []() {
 
-            it("from a raw mysql binding", []()
-            {
+            it("from a raw mysql binding", []() {
                 mysql_binding b;
 
                 b.bind(1, 24);
@@ -75,8 +68,7 @@ go_bandit([]()
                 Assert::That(other.to_int(0), Equals(24));
             });
 
-            it("from another", []()
-            {
+            it("from another", []() {
 
                 mysql_binding b;
 
@@ -98,8 +90,7 @@ go_bandit([]()
             });
         });
 
-        it("is movable", []()
-        {
+        it("is movable", []() {
             mysql_binding b;
 
             b.bind(1, 24);
@@ -124,8 +115,7 @@ go_bandit([]()
 
         });
 
-        it("can handle a bad bind", []()
-        {
+        it("can handle a bad bind", []() {
             select_query query(&mysql_testdb, "users");
 
             query.where("id = ? and first_name = ?");
@@ -133,7 +123,7 @@ go_bandit([]()
             query.bind(3, "someId");
 
             // TODO: why this test fails?
-            //AssertThrows(binding_error, query.execute().next());
+            // AssertThrows(binding_error, query.execute().next());
         });
 
     });

@@ -1,10 +1,10 @@
 /*!
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
-#ifndef _ARG3_DB_SELECT_QUERY_H_
-#define _ARG3_DB_SELECT_QUERY_H_
+#ifndef ARG3_DB_SELECT_QUERY_H
+#define ARG3_DB_SELECT_QUERY_H
 
-#include "base_query.h"
+#include "query.h"
 #include "resultset.h"
 #include "where_clause.h"
 
@@ -17,19 +17,20 @@ namespace arg3
         /*!
          * a query to select values from a table
          */
-        class select_query : public base_query
+        class select_query : public query
         {
-        public:
-
+           public:
             friend class resultset;
-        private:
+
+           private:
             where_clause where_;
             string limit_;
             string orderBy_;
             string groupBy_;
             vector<string> columns_;
-        public:
+            string tableName_;
 
+           public:
             select_query(sqldb *db, const string &tableName, const vector<string> &columns);
 
             select_query(sqldb *db, const string &tableName);
@@ -52,7 +53,7 @@ namespace arg3
 
             select_query &operator=(const select_query &other);
 
-            select_query &operator=(select_query && other);
+            select_query &operator=(select_query &&other);
 
             select_query &where(const where_clause &value);
 
@@ -68,22 +69,25 @@ namespace arg3
 
             resultset execute();
 
-            void execute(std::function<void (const resultset &)>);
+            void execute(std::function<void(const resultset &)>);
 
             int count();
 
             void reset();
 
+            string table_name() const;
+
+            select_query &table_name(const string &value);
+
             /*!
              * return the first column in the first row of the result set
              */
-            template<typename T>
+            template <typename T>
             T execute_scalar()
             {
                 auto rs = execute();
 
-                if (!rs.is_valid() || rs.begin() == rs.end())
-                    return T();
+                if (!rs.is_valid() || rs.begin() == rs.end()) return T();
 
                 auto row = rs.begin();
 
@@ -91,9 +95,7 @@ namespace arg3
 
                 return *col;
             }
-
         };
-
     }
 }
 

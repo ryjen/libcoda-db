@@ -1,7 +1,9 @@
-#ifndef ARG3_DB_SQLITE_ROW_H_
-#define ARG3_DB_SQLITE_ROW_H_
+#ifndef ARG3_DB_SQLITE_ROW_H
+#define ARG3_DB_SQLITE_ROW_H
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #ifdef HAVE_LIBSQLITE3
 
@@ -15,7 +17,6 @@ namespace arg3
 {
     namespace db
     {
-
         class sqlite3_db;
 
         /*!
@@ -24,17 +25,19 @@ namespace arg3
         class sqlite3_row : public row_impl
         {
             friend class sqlite3_resultset;
-        private:
+
+           private:
             shared_ptr<sqlite3_stmt> stmt_;
             sqlite3_db *db_;
             size_t size_;
-        public:
+
+           public:
             sqlite3_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt);
             virtual ~sqlite3_row();
             sqlite3_row(const sqlite3_row &other) = delete;
             sqlite3_row(sqlite3_row &&other);
             sqlite3_row &operator=(const sqlite3_row &other) = delete;
-            sqlite3_row &operator=(sqlite3_row && other);
+            sqlite3_row &operator=(sqlite3_row &&other);
 
             string column_name(size_t nPosition) const;
             column_type column(size_t nPosition) const;
@@ -49,15 +52,17 @@ namespace arg3
         class sqlite3_cached_row : public row_impl
         {
             friend class sqlite3_resultset;
-        private:
+
+           private:
             vector<shared_ptr<sqlite3_cached_column>> columns_;
-        public:
+
+           public:
             sqlite3_cached_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt);
             virtual ~sqlite3_cached_row();
             sqlite3_cached_row(const sqlite3_cached_row &other) = delete;
             sqlite3_cached_row(sqlite3_cached_row &&other);
             sqlite3_cached_row &operator=(const sqlite3_cached_row &other) = delete;
-            sqlite3_cached_row &operator=(sqlite3_cached_row && other);
+            sqlite3_cached_row &operator=(sqlite3_cached_row &&other);
 
             string column_name(size_t nPosition) const;
             column_type column(size_t nPosition) const;
@@ -71,4 +76,3 @@ namespace arg3
 #endif
 
 #endif
-

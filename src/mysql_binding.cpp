@@ -1,5 +1,6 @@
+#ifdef HAVE_CONFIG_H
 #include "config.h"
-
+#endif
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
@@ -14,13 +15,11 @@ namespace arg3
 {
     namespace db
     {
-
-
         // small util method to make a c pointer for a type
-        template<typename T>
+        template <typename T>
         void *to_ptr(T value)
         {
-            T *ptr = (T *) calloc(1, sizeof(T));
+            T *ptr = (T *)calloc(1, sizeof(T));
 
             *ptr = value;
 
@@ -29,11 +28,13 @@ namespace arg3
 
         extern string last_stmt_error(MYSQL_STMT *stmt);
 
-        mysql_binding::mysql_binding() : value_(NULL), size_(0) {}
+        mysql_binding::mysql_binding() : value_(NULL), size_(0)
+        {
+        }
 
         mysql_binding::mysql_binding(size_t size) : value_(NULL), size_(size)
         {
-            value_ = (MYSQL_BIND *) calloc(size, sizeof(MYSQL_BIND));
+            value_ = (MYSQL_BIND *)calloc(size, sizeof(MYSQL_BIND));
         }
 
         mysql_binding::mysql_binding(const MYSQL_BIND &value) : value_(NULL), size_(1)
@@ -47,41 +48,39 @@ namespace arg3
 
         mysql_binding::mysql_binding(MYSQL_FIELD *fields, size_t size) : size_(size)
         {
-            value_ = (MYSQL_BIND *) calloc(size, sizeof(MYSQL_BIND));
+            value_ = (MYSQL_BIND *)calloc(size, sizeof(MYSQL_BIND));
 
-            for (size_t i = 0; i < size; i++)
-            {
+            for (size_t i = 0; i < size; i++) {
                 // get the right field types for mysql_stmt_bind_result()
-                switch (fields[i].type)
-                {
-                case MYSQL_TYPE_INT24:
-                    value_[i].buffer_type = MYSQL_TYPE_LONGLONG;
-                    break;
-                case MYSQL_TYPE_DECIMAL:
-                case MYSQL_TYPE_NEWDECIMAL:
-                    value_[i].buffer_type = MYSQL_TYPE_DOUBLE;
-                    break;
-                case MYSQL_TYPE_BIT:
-                    value_[i].buffer_type = MYSQL_TYPE_TINY;
-                    break;
-                case MYSQL_TYPE_YEAR:
-                    break;
-                case MYSQL_TYPE_VAR_STRING:
-                    value_[i].buffer_type = MYSQL_TYPE_STRING;
-                    break;
-                case MYSQL_TYPE_SET:
-                case MYSQL_TYPE_ENUM:
-                case MYSQL_TYPE_GEOMETRY:
-                    break;
-                default:
-                    value_[i].buffer_type = fields[i].type;
-                    break;
+                switch (fields[i].type) {
+                    case MYSQL_TYPE_INT24:
+                        value_[i].buffer_type = MYSQL_TYPE_LONGLONG;
+                        break;
+                    case MYSQL_TYPE_DECIMAL:
+                    case MYSQL_TYPE_NEWDECIMAL:
+                        value_[i].buffer_type = MYSQL_TYPE_DOUBLE;
+                        break;
+                    case MYSQL_TYPE_BIT:
+                        value_[i].buffer_type = MYSQL_TYPE_TINY;
+                        break;
+                    case MYSQL_TYPE_YEAR:
+                        break;
+                    case MYSQL_TYPE_VAR_STRING:
+                        value_[i].buffer_type = MYSQL_TYPE_STRING;
+                        break;
+                    case MYSQL_TYPE_SET:
+                    case MYSQL_TYPE_ENUM:
+                    case MYSQL_TYPE_GEOMETRY:
+                        break;
+                    default:
+                        value_[i].buffer_type = fields[i].type;
+                        break;
                 }
-                value_[i].is_null = (my_bool *) calloc(1, sizeof(my_bool));
+                value_[i].is_null = (my_bool *)calloc(1, sizeof(my_bool));
                 value_[i].is_unsigned = 0;
                 value_[i].error = 0;
                 value_[i].buffer_length = fields[i].length;
-                value_[i].length = (unsigned long *) calloc(1, sizeof(unsigned long));
+                value_[i].length = (unsigned long *)calloc(1, sizeof(unsigned long));
                 value_[i].buffer = calloc(1, fields[i].length);
             }
         }
@@ -90,20 +89,16 @@ namespace arg3
         {
             assert(i < size_);
 
-            if (value_[i].buffer)
-            {
+            if (value_[i].buffer) {
                 free(value_[i].buffer);
             }
-            if (value_[i].length)
-            {
+            if (value_[i].length) {
                 free(value_[i].length);
             }
-            if (value_[i].is_null)
-            {
+            if (value_[i].is_null) {
                 free(value_[i].is_null);
             }
-            if (value_[i].error)
-            {
+            if (value_[i].error) {
                 free(value_[i].error);
             }
             memset(&value_[i], 0, sizeof(value_[i]));
@@ -111,10 +106,8 @@ namespace arg3
 
         void mysql_binding::clear_value()
         {
-            if (value_)
-            {
-                for (size_t i = 0; i < size_; i++)
-                {
+            if (value_) {
+                for (size_t i = 0; i < size_; i++) {
                     clear_value(i);
                 }
                 free(value_);
@@ -127,35 +120,29 @@ namespace arg3
         {
             clear_value();
 
-            value_ = (MYSQL_BIND *) calloc(size, sizeof(MYSQL_BIND));
+            value_ = (MYSQL_BIND *)calloc(size, sizeof(MYSQL_BIND));
 
-            for (size_t i = 0; i < size; i++)
-            {
+            for (size_t i = 0; i < size; i++) {
                 const MYSQL_BIND *other = &others[i];
                 MYSQL_BIND *value = &value_[i];
 
-                if (other->length)
-                {
-                    value->length = (unsigned long *) calloc(1, sizeof(unsigned long));
+                if (other->length) {
+                    value->length = (unsigned long *)calloc(1, sizeof(unsigned long));
                     memmove(value->length, other->length, sizeof(unsigned long));
-
                 }
 
-                if (other->buffer_length > 0 && other->buffer)
-                {
+                if (other->buffer_length > 0 && other->buffer) {
                     value->buffer = calloc(1, other->buffer_length);
                     memmove(value->buffer, other->buffer, other->buffer_length);
                 }
 
-                if (other->is_null)
-                {
-                    value->is_null = (my_bool * ) calloc(1, sizeof(my_bool));
+                if (other->is_null) {
+                    value->is_null = (my_bool *)calloc(1, sizeof(my_bool));
                     memmove(value->is_null, other->is_null, sizeof(my_bool));
                 }
 
-                if (other->error)
-                {
-                    value->error = (my_bool *) calloc(1, sizeof(my_bool));
+                if (other->error) {
+                    value->error = (my_bool *)calloc(1, sizeof(my_bool));
                     memmove(value->error, other->error, sizeof(my_bool));
                 }
 
@@ -171,7 +158,7 @@ namespace arg3
         {
             copy_value(other.value_, other.size_);
         }
-        mysql_binding::mysql_binding(mysql_binding && other)
+        mysql_binding::mysql_binding(mysql_binding &&other)
         {
             value_ = other.value_;
             size_ = other.size_;
@@ -185,7 +172,7 @@ namespace arg3
             return *this;
         }
 
-        mysql_binding &mysql_binding::operator=(mysql_binding && other)
+        mysql_binding &mysql_binding::operator=(mysql_binding &&other)
         {
             value_ = other.value_;
             size_ = other.size_;
@@ -207,8 +194,7 @@ namespace arg3
 
         void mysql_binding::bind_result(MYSQL_STMT *stmt) const
         {
-            if (mysql_stmt_bind_result(stmt, value_) != 0)
-            {
+            if (mysql_stmt_bind_result(stmt, value_) != 0) {
                 throw binding_error(last_stmt_error(stmt));
             }
         }
@@ -256,77 +242,65 @@ namespace arg3
         {
             assert(index < size_);
 
-            if (value_[index].buffer == NULL)
-                return sql_null;
+            if (value_[index].buffer == NULL) return sql_null;
 
-            switch (value_[index].buffer_type)
-            {
-            case MYSQL_TYPE_TINY:
-            case MYSQL_TYPE_SHORT:
-            case MYSQL_TYPE_LONG:
-            case MYSQL_TYPE_INT24:
-            {
-                int *p = static_cast<int *>(value_[index].buffer);
-                if (p == NULL) return sql_null;
-                return *p;
-            }
-            case MYSQL_TYPE_LONGLONG:
-            {
-                long long *p = static_cast<long long *>(value_[index].buffer);
-
-                if (p == NULL) return sql_null;
-
-                return *p;
-            }
-            case MYSQL_TYPE_NULL:
-                return sql_null;
-            case MYSQL_TYPE_TIME:
-            case MYSQL_TYPE_DATE:
-            case MYSQL_TYPE_TIMESTAMP:
-            case MYSQL_TYPE_DATETIME:
-            {
-                struct tm *tp;
-
-                if ((tp = getdate(static_cast<char *>(value_[index].buffer))))
-                {
-                    return (long long) mktime(tp);
-                }
-                else
-                {
+            switch (value_[index].buffer_type) {
+                case MYSQL_TYPE_TINY:
+                case MYSQL_TYPE_SHORT:
+                case MYSQL_TYPE_LONG:
+                case MYSQL_TYPE_INT24: {
                     int *p = static_cast<int *>(value_[index].buffer);
                     if (p == NULL) return sql_null;
                     return *p;
                 }
-            }
-            default:
-            {
-                char *p = static_cast<char *>(value_[index].buffer);
+                case MYSQL_TYPE_LONGLONG: {
+                    long long *p = static_cast<long long *>(value_[index].buffer);
 
-                if (p == NULL) return sql_null;
+                    if (p == NULL) return sql_null;
 
-                return p;
-            }
-            case MYSQL_TYPE_FLOAT:
-            case MYSQL_TYPE_DOUBLE:
-            {
-                double *p = static_cast<double *>(value_[index].buffer);
-
-                if (p == NULL) return sql_null;
-
-                return *p;
-            }
-            case MYSQL_TYPE_BLOB:
-            {
-                if (value_[index].length)
-                {
-                    void *buf = calloc(1, *value_[index].length);
-                    memmove(buf, value_[index].buffer, *value_[index].length);
-
-                    return sql_blob(buf, *value_[index].length, free);
+                    return *p;
                 }
+                case MYSQL_TYPE_NULL:
+                    return sql_null;
+                case MYSQL_TYPE_TIME:
+                case MYSQL_TYPE_DATE:
+                case MYSQL_TYPE_TIMESTAMP:
+                case MYSQL_TYPE_DATETIME: {
+                    struct tm *tp;
 
-                return sql_blob(NULL, 0, NULL);
-            }
+                    if ((tp = getdate(static_cast<char *>(value_[index].buffer)))) {
+                        return (long long)mktime(tp);
+                    } else {
+                        int *p = static_cast<int *>(value_[index].buffer);
+                        if (p == NULL) return sql_null;
+                        return *p;
+                    }
+                }
+                default: {
+                    char *p = static_cast<char *>(value_[index].buffer);
+
+                    if (p == NULL) return sql_null;
+
+                    return p;
+                }
+                case MYSQL_TYPE_FLOAT:
+                case MYSQL_TYPE_DOUBLE: {
+                    double *p = static_cast<double *>(value_[index].buffer);
+
+                    if (p == NULL) return sql_null;
+
+                    return *p;
+                }
+                case MYSQL_TYPE_BLOB: {
+                    if (value_[index].length) {
+                        void *buf = calloc(1, *value_[index].length);
+                        memmove(buf, value_[index].buffer, *value_[index].length);
+
+                        return sql_blob(buf, *value_[index].length, free);
+                    }
+
+                    return sql_blob(NULL, 0, NULL);
+                }
             }
         }
 
@@ -348,24 +322,19 @@ namespace arg3
         {
             assert(index > 0);
 
-            if (index <= size_)
-            {
+            if (index <= size_) {
                 clear_value(index - 1);
                 return;
             }
 
             // dynamic array of parameter values
-            if (value_ == NULL)
-            {
+            if (value_ == NULL) {
                 value_ = static_cast<MYSQL_BIND *>(calloc(index, sizeof(MYSQL_BIND)));
-            }
-            else
-            {
+            } else {
                 value_ = static_cast<MYSQL_BIND *>(realloc(value_, sizeof(MYSQL_BIND) * (index)));
 
                 // make sure new values are initialized
-                for (size_t i = size_; i < index; i++)
-                {
+                for (size_t i = size_; i < index; i++) {
                     memset(&value_[i], 0, sizeof(MYSQL_BIND));
                 }
             }
@@ -436,7 +405,6 @@ namespace arg3
 
         mysql_binding &mysql_binding::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
         {
-
             reallocate_value(index);
             value_[index - 1].buffer_type = MYSQL_TYPE_BLOB;
             void *ptr = calloc(1, size);
@@ -455,9 +423,7 @@ namespace arg3
 
         void mysql_binding::bind_params(MYSQL_STMT *stmt) const
         {
-            if (mysql_stmt_bind_param(stmt, value_))
-                throw binding_error(last_stmt_error(stmt));
-
+            if (mysql_stmt_bind_param(stmt, value_)) throw binding_error(last_stmt_error(stmt));
         }
 
         size_t mysql_binding::size() const
@@ -469,7 +435,6 @@ namespace arg3
         {
             clear_value();
         }
-
     }
 }
 

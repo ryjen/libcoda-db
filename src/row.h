@@ -1,6 +1,6 @@
 
-#ifndef _ARG3_DB_ROW_H_
-#define _ARG3_DB_ROW_H_
+#ifndef ARG3_DB_ROW_H
+#define ARG3_DB_ROW_H
 
 #include "column.h"
 #include <iterator>
@@ -15,13 +15,13 @@ namespace arg3
          */
         class row_impl
         {
-        public:
+           public:
             typedef arg3::db::column column_type;
             row_impl() = default;
             row_impl(const row_impl &other) = default;
             row_impl(row_impl &&other) = default;
             row_impl &operator=(const row_impl &other) = default;
-            row_impl &operator=(row_impl && other) = default;
+            row_impl &operator=(row_impl &&other) = default;
             virtual ~row_impl() = default;
 
             virtual string column_name(size_t nPosition) const = 0;
@@ -38,10 +38,10 @@ namespace arg3
         /*!
          * iterator for columns in a row
          */
-        template<class ValueType, class NonConst, class RowType>
+        template <class ValueType, class NonConst, class RowType>
         class row_iterator : public std::iterator<std::random_access_iterator_tag, ValueType>
         {
-        protected:
+           protected:
             shared_ptr<RowType> row_;
             int position_;
             NonConst currentValue_;
@@ -49,17 +49,15 @@ namespace arg3
             {
                 assert(row_ != nullptr);
 
-                if (index >= 0 && index < row_->size())
-                    currentValue_ = row_->column(index);
+                if (index >= 0 && index < row_->size()) currentValue_ = row_->column(index);
             }
-        public:
-            row_iterator() : row_(nullptr),
-                position_(-1)
+
+           public:
+            row_iterator() : row_(nullptr), position_(-1)
             {
             }
 
-            row_iterator(shared_ptr<RowType> pRow, int nPosition) : row_(pRow),
-                position_(nPosition)
+            row_iterator(shared_ptr<RowType> pRow, int nPosition) : row_(pRow), position_(nPosition)
             {
             }
 
@@ -72,7 +70,9 @@ namespace arg3
                 other.row_ = nullptr;
             }
 
-            virtual ~row_iterator() {}
+            virtual ~row_iterator()
+            {
+            }
 
             row_iterator &operator=(const row_iterator &other)
             {
@@ -82,7 +82,7 @@ namespace arg3
                 return *this;
             }
 
-            row_iterator &operator=(row_iterator && other)
+            row_iterator &operator=(row_iterator &&other)
             {
                 row_ = std::move(other.row_);
                 position_ = other.position_;
@@ -111,8 +111,7 @@ namespace arg3
 
             row_iterator &operator++()
             {
-                if (position_ < row_->size())
-                    ++position_;
+                if (position_ < row_->size()) ++position_;
                 return *this;
             }
 
@@ -125,8 +124,7 @@ namespace arg3
 
             row_iterator &operator--()
             {
-                if (position_ > 0)
-                    --position_;
+                if (position_ > 0) --position_;
                 return *this;
             }
 
@@ -214,9 +212,10 @@ namespace arg3
          */
         class row
         {
-        private:
+           private:
             shared_ptr<row_impl> impl_;
-        public:
+
+           public:
             typedef arg3::db::column column_type;
             typedef row_iterator<column_type, column_type, row_impl> iterator;
             typedef row_iterator<const column_type, column_type, const row_impl> const_iterator;
@@ -228,9 +227,9 @@ namespace arg3
             virtual ~row();
 
             row &operator=(const row &other);
-            row &operator=(row && other);
+            row &operator=(row &&other);
 
-            //Methods
+            // Methods
             iterator begin();
 
             const_iterator begin() const;
@@ -259,11 +258,10 @@ namespace arg3
 
             bool is_valid() const;
 
-            void for_each(std::function<void (const db::column &)> funk) const;
+            void for_each(std::function<void(const db::column &)> funk) const;
 
             shared_ptr<row_impl> impl() const;
         };
-
     }
 }
 

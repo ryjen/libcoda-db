@@ -9,21 +9,15 @@ using namespace std;
 
 using namespace arg3::db;
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("a delete query", []()
-    {
+    describe("a delete query", []() {
         user user1;
         user user2;
 
-        before_each([]()
-        {
-            setup_testdb();
-        });
+        before_each([]() { setup_testdb(); });
 
-        before_each([&]()
-        {
+        before_each([&]() {
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
@@ -35,19 +29,14 @@ go_bandit([]()
             user2.save();
         });
 
-        after_each([&]()
-        {
+        after_each([&]() {
             user1.de1ete();
             user2.de1ete();
         });
 
-        after_each([]()
-        {
-            teardown_testdb();
-        });
+        after_each([]() { teardown_testdb(); });
 
-        it("can delete", []()
-        {
+        it("can delete", []() {
             delete_query query(testdb, "users");
 
             query.where("first_name = ?");
@@ -56,11 +45,10 @@ go_bandit([]()
 
             AssertThat(query.execute(), Equals(1));
 
-            //AssertThat(query.last_number_of_changes(), Equals(1));
+            // AssertThat(query.last_number_of_changes(), Equals(1));
         });
 
-        it("is copyable by constructor", []()
-        {
+        it("is copyable by constructor", []() {
             delete_query query(testdb, "users");
 
             query.where("first_name = ?");
@@ -72,8 +60,7 @@ go_bandit([]()
             AssertThat(other.to_string(), Equals(query.to_string()));
         });
 
-        it("is movable by constructor", []()
-        {
+        it("is movable by constructor", []() {
             delete_query query(testdb, "users");
 
             query.where("first_name = ?");
@@ -85,8 +72,7 @@ go_bandit([]()
             AssertThat(other.is_valid(), IsTrue());
         });
 
-        it("is copyable from assignment", []()
-        {
+        it("is copyable from assignment", []() {
             delete_query query(testdb, "users");
 
             query.where("first_name = ?");
@@ -99,11 +85,10 @@ go_bandit([]()
 
             AssertThat(other.is_valid(), IsTrue());
             AssertThat(query.is_valid(), IsTrue());
-            AssertThat(other.tablename(), Equals("users"));
+            AssertThat(other.table_name(), Equals("users"));
         });
 
-        it("is movable from assignment", []()
-        {
+        it("is movable from assignment", []() {
             delete_query query(testdb, "users");
 
             query.where("first_name = ?");
@@ -115,11 +100,10 @@ go_bandit([]()
 
             AssertThat(query.is_valid(), IsFalse());
             AssertThat(other.is_valid(), IsTrue());
-            AssertThat(other.tablename(), Equals("users"));
+            AssertThat(other.table_name(), Equals("users"));
         });
 
-        it("can delete from where clause", []()
-        {
+        it("can delete from where clause", []() {
             delete_query query(testdb, "users");
 
             where_clause where("first_name = ?");
@@ -131,8 +115,7 @@ go_bandit([]()
             AssertThat(query.execute(), Equals(1));
         });
 
-        it("can be batch executed", []()
-        {
+        it("can be batch executed", []() {
             delete_query query(testdb, "users");
 
             query.where("first_name = ?");
@@ -146,8 +129,7 @@ go_bandit([]()
             AssertThat(query.execute(), Equals(1));
         });
 
-        it("can be deleted from a record", []()
-        {
+        it("can be deleted from a record", []() {
             user u;
 
             u.set("first_name", "Harold");
@@ -163,4 +145,3 @@ go_bandit([]()
     });
 
 });
-

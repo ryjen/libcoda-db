@@ -8,39 +8,55 @@ namespace arg3
 {
     namespace db
     {
-        modify_query::modify_query(sqldb *db, const string &tableName,
-                                   const vector<string> &columns) : base_query(db, tableName), columns_(columns)
-        {}
+        modify_query::modify_query(sqldb *db, const string &tableName, const vector<string> &columns)
+            : query(db), columns_(columns), tableName_(tableName)
+        {
+        }
 
-        modify_query::modify_query(sqldb *db, const string &tableName) : base_query(db, tableName)
-        {}
-
+        modify_query::modify_query(sqldb *db, const string &tableName) : query(db), tableName_(tableName)
+        {
+        }
         modify_query::modify_query(shared_ptr<schema> schema) : modify_query(schema->db(), schema->table_name(), schema->column_names())
-        {}
+        {
+        }
 
-        modify_query::modify_query(const modify_query &other) : base_query(other), columns_(other.columns_)
-        {}
+        modify_query::modify_query(const modify_query &other) : query(other), columns_(other.columns_), tableName_(other.tableName_)
+        {
+        }
+        modify_query::modify_query(modify_query &&other)
+            : query(std::move(other)), columns_(std::move(other.columns_)), tableName_(std::move(other.tableName_))
+        {
+        }
 
-        modify_query::modify_query(modify_query &&other) : base_query(std::move(other)), columns_(std::move(other.columns_))
-        {}
-
-        modify_query::~modify_query() {}
-
+        modify_query::~modify_query()
+        {
+        }
         modify_query &modify_query::operator=(const modify_query &other)
         {
-            base_query::operator=(other);
+            query::operator=(other);
             columns_ = other.columns_;
+            tableName_ = other.tableName_;
             return *this;
         }
 
-        modify_query &modify_query::operator=(modify_query && other)
+        modify_query &modify_query::operator=(modify_query &&other)
         {
-            base_query::operator=(std::move(other));
+            query::operator=(std::move(other));
             columns_ = std::move(other.columns_);
+            tableName_ = std::move(other.tableName_);
 
             return *this;
         }
 
+        string modify_query::table_name() const
+        {
+            return tableName_;
+        }
+        modify_query &modify_query::table_name(const string &value)
+        {
+            tableName_ = value;
+            return *this;
+        }
         string modify_query::to_insert_string() const
         {
             ostringstream buf;
@@ -70,16 +86,16 @@ namespace arg3
 
             buf << "UPDATE " << tableName_;
 
-            if(columns_.size() > 0) {
+            if (columns_.size() > 0) {
                 buf << " SET ";
 
-                for(int i = 0, size = columns_.size(); i < size; i++) {
+                for (int i = 0, size = columns_.size(); i < size; i++) {
                     buf << columns_[i] << " = ?";
                     if (i + 1 < size) {
                         buf << ", ";
                     }
                 }
-            } 
+            }
 
             buf << " WHERE " << idColumnName << " = ?";
 
@@ -92,8 +108,7 @@ namespace arg3
 
             buf << "REPLACE INTO " << tableName_;
 
-            if (columns_.size() > 0)
-            {
+            if (columns_.size() > 0) {
                 buf << "(";
 
                 buf << join_csv(columns_);
@@ -103,9 +118,7 @@ namespace arg3
                 buf << join_csv('?', columns_.size());
 
                 buf << ")";
-            }
-            else
-            {
+            } else {
                 buf << " DEFAULT VALUES";
             }
 
@@ -115,22 +128,18 @@ namespace arg3
         int modify_query::executeUpdate(const std::string &idColumnName, bool batch)
         {
             prepare(to_update_string(idColumnName));
-             
+
             bool success = stmt_->result();
 
             int res = 0;
 
-            if (success)
-            {
+            if (success) {
                 res = stmt_->last_number_of_changes();
             }
-            if (!batch)
-            {
+            if (!batch) {
                 stmt_->finish();
                 stmt_ = nullptr;
-            }
-            else
-            {
+            } else {
                 reset();
             }
 
@@ -145,19 +154,14 @@ namespace arg3
 
             int res = 0;
 
-            if (success)
-            {
+            if (success) {
                 res = stmt_->last_number_of_changes();
-                if (insertId)
-                    *insertId = stmt_->last_insert_id();
+                if (insertId) *insertId = stmt_->last_insert_id();
             }
-            if (!batch)
-            {
+            if (!batch) {
                 stmt_->finish();
                 stmt_ = nullptr;
-            }
-            else
-            {
+            } else {
                 reset();
             }
 
@@ -166,25 +170,20 @@ namespace arg3
 
         int modify_query::execute(long long *insertId, bool batch)
         {
-            prepare();
+            prepare(to_string());
 
             bool success = stmt_->result();
 
             int res = 0;
 
-            if (success)
-            {
+            if (success) {
                 res = stmt_->last_number_of_changes();
-                if (insertId)
-                    *insertId = stmt_->last_insert_id();
+                if (insertId) *insertId = stmt_->last_insert_id();
             }
-            if (!batch)
-            {
+            if (!batch) {
                 stmt_->finish();
                 stmt_ = nullptr;
-            }
-            else
-            {
+            } else {
                 reset();
             }
 

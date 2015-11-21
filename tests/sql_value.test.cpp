@@ -7,12 +7,9 @@ using namespace std;
 
 using namespace arg3::db;
 
-go_bandit([]()
-{
-    describe("sql value", []()
-    {
-        it("has equality", []()
-        {
+go_bandit([]() {
+    describe("sql value", []() {
+        it("has equality", []() {
             sql_value v = "1234";
 
             Assert::That(v, Equals(1234));
@@ -30,8 +27,7 @@ go_bandit([]()
             AssertThat(a, !Equals(c));
         });
 
-        it("can be moved", []()
-        {
+        it("can be moved", []() {
 
             sql_value v = 1234;
 
@@ -42,8 +38,7 @@ go_bandit([]()
             AssertThat(other == 1234, IsTrue());
         });
 
-        it("can be converted", []()
-        {
+        it("can be converted", []() {
             sql_value v = 1234;
 
             double d = v;
@@ -67,8 +62,7 @@ go_bandit([]()
             AssertThat(blob.ptr() == NULL, IsTrue());
         });
 
-        it("can be converted without error", []()
-        {
+        it("can be converted without error", []() {
             sql_value v = "asdfb";
 
             double d = v;
@@ -103,25 +97,18 @@ go_bandit([]()
 
     });
 
-    describe("sql null", []()
-    {
-        it("can be a string", []()
-        {
-            AssertThat(to_string(sql_null), Equals("NULL"));
-        });
+    describe("sql null", []() {
+        it("can be a string", []() { AssertThat(to_string(sql_null), Equals("NULL")); });
 
-        it("can be a sql value", []()
-        {
+        it("can be a sql value", []() {
             sql_value value = sql_null;
 
             AssertThat(value, Equals(sql_null));
         });
     });
 
-    describe("sql blob", []()
-    {
-        it("can be a string", []()
-        {
+    describe("sql blob", []() {
+        it("can be a string", []() {
             sql_blob blob(NULL, 0);
 
             AssertThat(to_string(blob), Equals("0x0"));
@@ -135,8 +122,7 @@ go_bandit([]()
             AssertThat(to_string(other), Equals(string(buf)));
         });
 
-        it("can be moved", []()
-        {
+        it("can be moved", []() {
             int a = 1234;
 
             sql_blob b(&a, sizeof(int));
@@ -159,4 +145,3 @@ go_bandit([]()
     });
 
 });
-

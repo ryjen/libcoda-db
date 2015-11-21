@@ -1,5 +1,5 @@
-#ifndef ARG3_DB_SQL_VALUE_H_
-#define ARG3_DB_SQL_VALUE_H_
+#ifndef ARG3_DB_SQL_VALUE_H
+#define ARG3_DB_SQL_VALUE_H
 
 #include "variant.h"
 #include <iostream>
@@ -23,22 +23,24 @@ namespace arg3
          */
         class sql_blob
         {
-        public:
+           public:
             friend std::ostream &operator<<(std::ostream &out, const sql_blob &value);
             typedef void (*cleanup_method)(void *);
-        private:
+
+           private:
             const void *p_;
             size_t s_;
             cleanup_method destruct_;
             void copy(const sql_blob &other);
             void clear();
-        public:
+
+           public:
             sql_blob(const void *ptr, size_t size, cleanup_method cleanup);
             sql_blob(const void *ptr, size_t size);
             sql_blob(const sql_blob &other);
             sql_blob(sql_blob &&other);
             sql_blob &operator=(const sql_blob &other);
-            sql_blob &operator=(sql_blob && other);
+            sql_blob &operator=(sql_blob &&other);
             virtual ~sql_blob();
             const void *ptr() const;
             size_t size() const;
@@ -51,10 +53,13 @@ namespace arg3
          */
         class sql_null_type
         {
-        public:
+           public:
             static const sql_null_type instance;
-        private:
-            sql_null_type() {}
+
+           private:
+            sql_null_type()
+            {
+            }
         };
 
         /*!
@@ -74,10 +79,12 @@ namespace arg3
             friend bool operator==(long long other, const sql_value &value);
             friend bool operator==(double other, const sql_value &value);
             friend bool operator==(const sql_null_type &other, const sql_value &value);
-        private:
+
+           private:
             // nifty variable template class
             arg3::variant value_;
-        public:
+
+           public:
             sql_value();
 
             sql_value(const sql_value &other);
@@ -86,23 +93,37 @@ namespace arg3
 
             sql_value &operator=(const sql_value &other);
 
-            sql_value &operator=(sql_value && other);
+            sql_value &operator=(sql_value &&other);
 
             ~sql_value();
 
-            sql_value(const std::string &value) : value_(value) {}
+            sql_value(const std::string &value) : value_(value)
+            {
+            }
 
-            sql_value(const char *value) : value_(value) {}
+            sql_value(const char *value) : value_(value)
+            {
+            }
 
-            sql_value(int value) : value_(value) {}
+            sql_value(int value) : value_(value)
+            {
+            }
 
-            sql_value(long long value) : value_(value) {}
+            sql_value(long long value) : value_(value)
+            {
+            }
 
-            sql_value(double value) : value_(value) {}
+            sql_value(double value) : value_(value)
+            {
+            }
 
-            sql_value(const sql_null_type &value) : value_(nullptr) {}
+            sql_value(const sql_null_type &value) : value_(nullptr)
+            {
+            }
 
-            sql_value(const sql_blob &value) : value_(value.ptr(), value.size()) {}
+            sql_value(const sql_blob &value) : value_(value.ptr(), value.size())
+            {
+            }
 
             operator std::string() const;
 
@@ -155,7 +176,6 @@ namespace arg3
             bool operator!=(const double &other) const;
 
             bool operator!=(const std::string &other) const;
-
         };
 
         std::ostream &operator<<(std::ostream &out, const sql_value &value);
@@ -230,10 +250,9 @@ namespace std
 
     string to_string(const arg3::db::sql_null_type &value);
     string to_string(const arg3::db::sql_blob &value);
-    string to_string(const std::string &value); // yep
+    string to_string(const std::string &value);  // yep
     string to_string(const arg3::db::sql_value &value);
 }
-
 
 
 #endif

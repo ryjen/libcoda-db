@@ -17,18 +17,15 @@ Building
 I use [autotools](http://en.wikipedia.org/wiki/GNU_build_system).
 
 ```bash
-./configure --prefix=/usr/local
-
-make
+./configure $(brew diy --version=0.1.0 arg3db)
+make install
+brew link arg3db
 ```
 
 Coding Style
 ============
 
-- class/struct/method names are all lower case with underscores separating words
-- non public members are camel case with and underscore at end of the name
-- macros, enums and constants are all upper case with underscores seperating words
-- braces on a new line
+I don't like camel case classes/structs/methods/functions in c++.  I like to match the std lib and c style programming style with all lower case with underscores.  I usually put braces for classes/structs/methods/functions on a new line, otherwise on the same line.
 
 Model
 =====
@@ -90,7 +87,7 @@ public:
 
     // custom find method using the schema functions
     vector<shared_ptr<user>> find_by_first_name(const string &value) {
-        return arg3::db::find_by<user>(sch3ma(), "first_name", value);
+        return arg3::db::find_by<user>(this->schema(), "first_name", value);
     }
 };
 ```
@@ -202,6 +199,9 @@ query.execute(handler);
 TODO
 ====
 
+* named parameter indexing? also a better plan for handling a bad parameter index (other than assert)
+* make base_query more of a generic raw sql query, remove tablename dependency
+* ~~Don't force usage of REPLACE query, implement more efficient UPSERT~~ (added executeInsert and executeUpdate)
 * More tests, at least 95% test coverage
 * More database implementations
 

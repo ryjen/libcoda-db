@@ -1,8 +1,8 @@
 /*!
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
-#ifndef _ARG3_DB_SQLDB_H_
-#define _ARG3_DB_SQLDB_H_
+#ifndef ARG3_DB_SQLDB_H
+#define ARG3_DB_SQLDB_H
 
 #include <string>
 #include <sstream>
@@ -19,9 +19,8 @@ namespace arg3
     {
         class resultset;
 
-        struct uri
-        {
-        public:
+        struct uri {
+           public:
             uri(const std::string &url)
             {
                 parse(url);
@@ -42,25 +41,16 @@ namespace arg3
          */
         class sqldb
         {
-        public:
+           public:
+            typedef enum { LOG_NONE, LOG_INFO, LOG_DEBUG, LOG_VERBOSE } LogLevel;
 
-            typedef enum
-            {
-                LOG_NONE, LOG_INFO, LOG_DEBUG, LOG_VERBOSE
-            }
-            LogLevel;
-
-            typedef enum
-            {
-                CACHE_NONE, CACHE_RESULTSET, CACHE_ROW, CACHE_COLUMN
-            }
-            CacheLevel;
+            typedef enum { CACHE_NONE, CACHE_RESULTSET, CACHE_ROW, CACHE_COLUMN } CacheLevel;
 
             sqldb();
             sqldb(const sqldb &other) = default;
             sqldb(sqldb &&other) = default;
             sqldb &operator=(const sqldb &other) = default;
-            sqldb &operator=(sqldb && other) = default;
+            sqldb &operator=(sqldb &&other) = default;
             virtual ~sqldb() = default;
 
             virtual bool is_open() const = 0;
@@ -95,11 +85,10 @@ namespace arg3
 
             CacheLevel cache_level() const;
 
-        private:
+           private:
             LogLevel logLevel_;
             CacheLevel cacheLevel_;
         };
-
     }
 }
 

@@ -1,5 +1,5 @@
-#ifndef ARG3_DB_STATEMENT_H_
-#define ARG3_DB_STATEMENT_H_
+#ifndef ARG3_DB_STATEMENT_H
+#define ARG3_DB_STATEMENT_H
 
 #include "bindable.h"
 #include "resultset.h"
@@ -13,7 +13,7 @@ namespace arg3
          */
         class statement : public bindable
         {
-        public:
+           public:
             virtual void prepare(const std::string &sql) = 0;
             virtual void finish() = 0;
             virtual void reset() = 0;

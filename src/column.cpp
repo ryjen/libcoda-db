@@ -5,7 +5,8 @@ namespace arg3
     namespace db
     {
         column::column()
-        {}
+        {
+        }
 
         column::column(shared_ptr<column_impl> impl) : impl_(impl)
         {
@@ -13,7 +14,8 @@ namespace arg3
         }
 
         column::column(const column &other) : impl_(other.impl_)
-        {}
+        {
+        }
 
         column::column(column &&other) : impl_(std::move(other.impl_))
         {
@@ -27,7 +29,7 @@ namespace arg3
             return *this;
         }
 
-        column &column::operator=(column && other)
+        column &column::operator=(column &&other)
         {
             impl_ = std::move(other.impl_);
             other.impl_ = nullptr;

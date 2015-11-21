@@ -1,9 +1,12 @@
-#ifndef ARG3_DB_SQLITE_STATEMENT_H_
-#define ARG3_DB_SQLITE_STATEMENT_H_
+#ifndef ARG3_DB_SQLITE_STATEMENT_H
+#define ARG3_DB_SQLITE_STATEMENT_H
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #ifdef HAVE_LIBSQLITE3
+
 #include <sqlite3.h>
 #include "statement.h"
 
@@ -11,7 +14,6 @@ namespace arg3
 {
     namespace db
     {
-
         class sqlite3_db;
 
         /*!
@@ -19,15 +21,16 @@ namespace arg3
          */
         class sqlite3_statement : public statement
         {
-        private:
+           private:
             sqlite3_db *db_;
             shared_ptr<sqlite3_stmt> stmt_;
-        public:
+
+           public:
             sqlite3_statement(sqlite3_db *db);
             sqlite3_statement(const sqlite3_statement &other) = delete;
             sqlite3_statement(sqlite3_statement &&other);
             sqlite3_statement &operator=(const sqlite3_statement &other) = delete;
-            sqlite3_statement &operator=(sqlite3_statement && other);
+            sqlite3_statement &operator=(sqlite3_statement &&other);
             virtual ~sqlite3_statement();
             void prepare(const std::string &sql);
             bool is_valid() const;
@@ -45,13 +48,11 @@ namespace arg3
             sqlite3_statement &bind(size_t index, const sql_blob &value);
             sqlite3_statement &bind(size_t index, const sql_null_type &value);
             sqlite3_statement &bind_value(size_t index, const sql_value &v);
-            sqlite3_statement &bind(size_t index, const void *data, size_t size, void(* pFree)(void *));
+            sqlite3_statement &bind(size_t index, const void *data, size_t size, void (*pFree)(void *));
         };
 
-        struct sqlite3_stmt_delete
-        {
+        struct sqlite3_stmt_delete {
             void operator()(sqlite3_stmt *p) const;
-
         };
     }
 }
@@ -59,4 +60,3 @@ namespace arg3
 #endif
 
 #endif
-

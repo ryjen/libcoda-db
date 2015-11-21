@@ -2,8 +2,8 @@
  * implementation of a database record
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
-#ifndef _ARG3_DB_BASE_RECORD_H_
-#define _ARG3_DB_BASE_RECORD_H_
+#ifndef ARG3_DB_BASE_RECORD_H
+#define ARG3_DB_BASE_RECORD_H
 
 #include "select_query.h"
 #include "modify_query.h"
@@ -18,22 +18,20 @@ namespace arg3
         class record_db;
         class row;
 
-        template<typename T> class base_record;
+        template <typename T>
+        class base_record;
 
-        template<typename T>
+        template <typename T>
         inline void find_all(shared_ptr<schema> schema, typename base_record<T>::callback funk)
         {
             select_query query(schema);
 
             auto results = query.execute();
 
-            if (!results.is_valid())
-                return;
+            if (!results.is_valid()) return;
 
-            for (auto & row : results)
-            {
-                if (row.is_valid())
-                {
+            for (auto &row : results) {
+                if (row.is_valid()) {
                     auto record = make_shared<T>();
                     record->init(row);
                     funk(record);
@@ -42,21 +40,18 @@ namespace arg3
         }
 
 
-        template<typename T>
+        template <typename T>
         inline vector<shared_ptr<T>> find_all(shared_ptr<schema> schema)
         {
             /* convert sql rows to objects */
             vector<shared_ptr<T>> items;
 
-            db::find_all<T>(schema, [&](shared_ptr<T> record)
-            {
-                items.push_back(record);
-            });
+            db::find_all<T>(schema, [&](shared_ptr<T> record) { items.push_back(record); });
 
             return items;
         }
 
-        template<typename T>
+        template <typename T>
         inline void find_by(shared_ptr<schema> schema, const string &name, const sql_value &value, typename base_record<T>::callback funk)
         {
             select_query query(schema);
@@ -67,13 +62,10 @@ namespace arg3
 
             auto results = query.execute();
 
-            if (!results.is_valid())
-                return;
+            if (!results.is_valid()) return;
 
-            for (auto & row : results)
-            {
-                if (row.is_valid())
-                {
+            for (auto &row : results) {
+                if (row.is_valid()) {
                     auto record = make_shared<T>();
                     record->init(row);
                     funk(record);
@@ -81,17 +73,13 @@ namespace arg3
             }
         }
 
-        template<typename T>
+        template <typename T>
         inline vector<shared_ptr<T>> find_by(shared_ptr<schema> schema, const string &name, const sql_value &value)
         {
-
             /* convert sql rows to objects */
             vector<shared_ptr<T>> items;
 
-            db::find_by<T>(schema, name, value, [&](shared_ptr<T> record)
-            {
-                items.push_back(record);
-            });
+            db::find_by<T>(schema, name, value, [&](shared_ptr<T> record) { items.push_back(record); });
 
             return items;
         }
@@ -99,27 +87,27 @@ namespace arg3
         /*!
          * an active-record (ish) pattern
          */
-        template<typename T>
+        template <typename T>
         class base_record
         {
-        public:
-
+           public:
             typedef arg3::db::schema schema_type;
 
-            typedef std::function<void (shared_ptr<T>)> callback;
+            typedef std::function<void(shared_ptr<T>)> callback;
 
-        private:
+           private:
             std::shared_ptr<schema_type> schema_;
             std::unordered_map<string, sql_value> values_;
             string idColumnName_;
-        public:
 
+           public:
             /*!
              * @param db the database the record uses
              * @param tablename the table in the database to use
              * @param idColumnName the name of the id column in the table
              */
-            base_record(sqldb *db, const string &tablename, const string &idColumnName) : schema_(db->schemas()->get(tablename)), idColumnName_(idColumnName)
+            base_record(sqldb *db, const string &tablename, const string &idColumnName)
+                : schema_(db->schemas()->get(tablename)), idColumnName_(idColumnName)
             {
                 assert(schema_ != nullptr);
             }
@@ -138,11 +126,12 @@ namespace arg3
              * @param columnName the name of the column the id column in the schema
              * @param value the value of the id column
              */
-            template<typename V>
-            base_record(std::shared_ptr<schema_type> schema, const string &columnName, V value) : base_record(schema, columnName)
+            template <typename V>
+            base_record(std::shared_ptr<schema_type> schema, const string &columnName, V value)
+                : base_record(schema, columnName)
             {
                 set(idColumnName_, value);
-                refresh(); // load up from database
+                refresh();  // load up from database
             }
 
             /*!
@@ -151,8 +140,9 @@ namespace arg3
              * @param columnName the name of the id column in the table
              * @param value the value of the id column
              */
-            template<typename V>
-            base_record(sqldb *db, const string &tableName, const string &columnName, V value) : base_record(db, tableName, columnName)
+            template <typename V>
+            base_record(sqldb *db, const string &tableName, const string &columnName, V value)
+                : base_record(db, tableName, columnName)
             {
                 set(idColumnName_, value);
                 refresh();
@@ -178,12 +168,14 @@ namespace arg3
              * copy constructor
              */
             base_record(const base_record &other) : schema_(other.schema_), values_(other.values_), idColumnName_(other.idColumnName_)
-            {}
+            {
+            }
 
             /*!
              * move constructor
              */
-            base_record(base_record &&other) : schema_(std::move(other.schema_)), values_(std::move(other.values_)), idColumnName_(std::move(other.idColumnName_))
+            base_record(base_record &&other)
+                : schema_(std::move(other.schema_)), values_(std::move(other.values_)), idColumnName_(std::move(other.idColumnName_))
             {
                 other.schema_ = nullptr;
             }
@@ -207,7 +199,7 @@ namespace arg3
             /*!
              * move assignment operator
              */
-            base_record &operator=(base_record && other)
+            base_record &operator=(base_record &&other)
             {
                 values_ = std::move(other.values_);
                 schema_ = std::move(other.schema_);
@@ -241,8 +233,7 @@ namespace arg3
             {
                 if (!values.is_valid()) return;
 
-                for (auto v = values.begin(); v != values.end(); v++)
-                {
+                for (auto v = values.begin(); v != values.end(); v++) {
                     set(v.name(), v->to_value());
                 }
 
@@ -250,7 +241,8 @@ namespace arg3
             }
 
             virtual void on_record_init(const row &values)
-            {}
+            {
+            }
 
             /*!
              * check if the record internals are valid
@@ -273,8 +265,7 @@ namespace arg3
              */
             shared_ptr<schema_type> schema() const
             {
-                if (!schema_->is_valid())
-                    schema_->init();
+                if (!schema_->is_valid()) schema_->init();
 
                 return schema_;
             }
@@ -287,11 +278,10 @@ namespace arg3
                 int index = 1;
                 bool rval = false;
                 bool exists = has(idColumnName_);
-                
-                if (exists)
-                {
+
+                if (exists) {
                     select_query query(schema());
-                
+
                     query.where(idColumnName_ + " = ?");
 
                     query.bind_value(1, get(idColumnName_));
@@ -300,10 +290,9 @@ namespace arg3
                 }
 
                 modify_query query(schema());
-                
+
                 // bind the column values
-                for (auto & column : schema()->columns())
-                {
+                for (auto &column : schema()->columns()) {
                     auto value = get(column.name);
 
                     query.bind_value(index, value);
@@ -315,17 +304,13 @@ namespace arg3
                     query.bind_value(index++, get(idColumnName_));
 
                     rval = query.executeUpdate(idColumnName_);
-                } 
-                else 
-                {
+                } else {
                     long long id;
 
                     rval = query.executeInsert(&id);
 
-                    if (rval)
-                    {
-                        if (insertId)
-                            *insertId = id;
+                    if (rval) {
+                        if (insertId) *insertId = id;
 
                         set(idColumnName_, id);
                     }
@@ -340,8 +325,7 @@ namespace arg3
              */
             sql_value get(const string &name) const
             {
-                if (!has(name))
-                {
+                if (!has(name)) {
                     return sql_null;
                 }
 
@@ -401,8 +385,7 @@ namespace arg3
 
                 auto it = results.begin();
 
-                if (it != results.end())
-                {
+                if (it != results.end()) {
                     return make_shared<T>(*it);
                 }
 
@@ -445,8 +428,7 @@ namespace arg3
 
                 auto result = query.execute();
 
-                if (!result.next())
-                    return false;
+                if (!result.next()) return false;
 
                 init(*result);
 
@@ -467,10 +449,7 @@ namespace arg3
                 return query.execute();
             }
         };
-
-
     }
-
 }
 
 #endif

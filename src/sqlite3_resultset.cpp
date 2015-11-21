@@ -10,7 +10,6 @@ namespace arg3
     {
         sqlite3_resultset::sqlite3_resultset(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt) : stmt_(stmt), db_(db), status_(-1)
         {
-
         }
 
         sqlite3_resultset::sqlite3_resultset(sqlite3_resultset &&other) : stmt_(other.stmt_), db_(other.db_), status_(other.status_)
@@ -19,9 +18,11 @@ namespace arg3
             other.stmt_ = nullptr;
         }
 
-        sqlite3_resultset::~sqlite3_resultset() {}
+        sqlite3_resultset::~sqlite3_resultset()
+        {
+        }
 
-        sqlite3_resultset &sqlite3_resultset::operator=(sqlite3_resultset && other)
+        sqlite3_resultset &sqlite3_resultset::operator=(sqlite3_resultset &&other)
         {
             stmt_ = other.stmt_;
             db_ = other.db_;
@@ -44,11 +45,9 @@ namespace arg3
 
         bool sqlite3_resultset::next()
         {
-            if (!is_valid())
-                return false;
+            if (!is_valid()) return false;
 
-            if (status_ == SQLITE_DONE)
-                return false;
+            if (status_ == SQLITE_DONE) return false;
 
             status_ = sqlite3_step(stmt_.get());
 
@@ -57,8 +56,7 @@ namespace arg3
 
         void sqlite3_resultset::reset()
         {
-            if (sqlite3_reset(stmt_.get()) != SQLITE_OK)
-                throw database_exception(db_->last_error());
+            if (sqlite3_reset(stmt_.get()) != SQLITE_OK) throw database_exception(db_->last_error());
         }
 
         row sqlite3_resultset::current_row()
@@ -75,22 +73,24 @@ namespace arg3
         {
             int status = sqlite3_step(stmt.get());
 
-            while (status == SQLITE_ROW)
-            {
+            while (status == SQLITE_ROW) {
                 rows_.push_back(make_shared<sqlite3_cached_row>(db, stmt));
 
                 status = sqlite3_step(stmt.get());
             }
         }
 
-        sqlite3_cached_resultset::sqlite3_cached_resultset(sqlite3_cached_resultset &&other) : db_(other.db_), rows_(other.rows_), currentRow_(other.currentRow_)
+        sqlite3_cached_resultset::sqlite3_cached_resultset(sqlite3_cached_resultset &&other)
+            : db_(other.db_), rows_(other.rows_), currentRow_(other.currentRow_)
         {
             other.db_ = NULL;
         }
 
-        sqlite3_cached_resultset::~sqlite3_cached_resultset() {}
+        sqlite3_cached_resultset::~sqlite3_cached_resultset()
+        {
+        }
 
-        sqlite3_cached_resultset &sqlite3_cached_resultset::operator=(sqlite3_cached_resultset && other)
+        sqlite3_cached_resultset &sqlite3_cached_resultset::operator=(sqlite3_cached_resultset &&other)
         {
             db_ = other.db_;
             rows_ = other.rows_;
@@ -128,9 +128,7 @@ namespace arg3
             else
                 return row();
         }
-
     }
 }
 
 #endif
-

@@ -1,5 +1,5 @@
-#ifndef ARG3_DB_WHERE_CLAUSE_H_
-#define ARG3_DB_WHERE_CLAUSE_H_
+#ifndef ARG3_DB_WHERE_CLAUSE_H
+#define ARG3_DB_WHERE_CLAUSE_H
 
 #include <vector>
 #include <string>
@@ -16,18 +16,18 @@ namespace arg3
          */
         class where_clause
         {
-        private:
+           private:
             string value_;
             vector<where_clause> and_;
             vector<where_clause> or_;
 
-        public:
+           public:
             where_clause();
             explicit where_clause(const string &value);
             where_clause(const where_clause &other);
             where_clause(where_clause &&other);
             where_clause &operator=(const where_clause &other);
-            where_clause &operator=(where_clause && other);
+            where_clause &operator=(where_clause &&other);
 
             virtual ~where_clause();
 
@@ -43,17 +43,15 @@ namespace arg3
             bool empty() const;
 
             void reset();
-
         };
 
         // user defined literal for expressions like "this = ?"_w && "that = ?"_w
-        where_clause operator"" _w ( const char *cstr, size_t len );
+        where_clause operator"" _w(const char *cstr, size_t len);
 
         inline where_clause where(const string &str)
         {
             return where_clause(str);
         }
-
     }
 }
 

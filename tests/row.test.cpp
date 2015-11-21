@@ -17,27 +17,20 @@ row get_first_user_row()
 
     auto i = rs.begin();
 
-    if (i == rs.end())
-        throw database_exception("No rows in users table");
+    if (i == rs.end()) throw database_exception("No rows in users table");
 
     return *i;
 }
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("a row", []()
-    {
+    describe("a row", []() {
         user user1;
         user user2;
 
-        before_each([]()
-        {
-            setup_testdb();
-        });
+        before_each([]() { setup_testdb(); });
 
-        before_each([&]()
-        {
+        before_each([&]() {
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
@@ -49,19 +42,14 @@ go_bandit([]()
             user2.save();
         });
 
-        after_each([&]()
-        {
+        after_each([&]() {
             user1.de1ete();
             user2.de1ete();
         });
 
-        after_each([]()
-        {
-            teardown_testdb();
-        });
+        after_each([]() { teardown_testdb(); });
 
-        it("can be movable", []()
-        {
+        it("can be movable", []() {
             auto r = get_first_user_row();
 
             row other(std::move(r));
@@ -71,8 +59,7 @@ go_bandit([]()
             AssertThat(other.empty(), IsFalse());
         });
 
-        it("can be copied", []()
-        {
+        it("can be copied", []() {
             select_query q(testdb, "users");
 
             auto rs = q.execute();
@@ -90,27 +77,21 @@ go_bandit([]()
             AssertThat(other.column_name(0), Equals("id"));
         });
 
-        it("can use for each", []()
-        {
+        it("can use for each", []() {
             select_query query(testdb, "users");
 
             auto rs = query.execute();
 
             auto r = rs.begin();
 
-            r->for_each([](const arg3::db::column & c)
-            {
-                Assert::That(c.is_valid(), IsTrue());
-            });
+            r->for_each([](const arg3::db::column& c) { Assert::That(c.is_valid(), IsTrue()); });
         });
 
-        it("has an iterator", []()
-        {
+        it("has an iterator", []() {
 
             auto schema = testdb->schemas()->get("users");
 
-            if (!schema->is_valid())
-                schema->init();
+            if (!schema->is_valid()) schema->init();
 
             select_query query(testdb, "users");
 
@@ -126,15 +107,13 @@ go_bandit([]()
 
             AssertThat(ci.name(), Equals(columns[0]));
 
-            for (; ci < r.cend(); ci++)
-            {
+            for (; ci < r.cend(); ci++) {
                 AssertThat(ci->is_valid(), IsTrue());
             }
 
-            //AssertThat(ci.name(), Equals(columns[columns.size() - 1]));
+            // AssertThat(ci.name(), Equals(columns[columns.size() - 1]));
 
-            for (auto & c : r)
-            {
+            for (auto& c : r) {
                 AssertThat(c.is_valid(), IsTrue());
             }
 
@@ -142,4 +121,3 @@ go_bandit([]()
     });
 
 });
-

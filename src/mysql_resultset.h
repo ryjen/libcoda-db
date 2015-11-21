@@ -1,7 +1,9 @@
-#ifndef ARG3_DB_MYSQL_RESULTSET_H_
-#define ARG3_DB_MYSQL_RESULTSET_H_
+#ifndef ARG3_DB_MYSQL_RESULTSET_H
+#define ARG3_DB_MYSQL_RESULTSET_H
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
@@ -13,7 +15,6 @@ namespace arg3
 {
     namespace db
     {
-
         class mysql_db;
         class mysql_binding;
 
@@ -25,12 +26,15 @@ namespace arg3
             friend class select_query;
             friend class row;
             friend class sqldb;
-            template<typename, typename> friend class resultset_iterator;
-        private:
+            template <typename, typename>
+            friend class resultset_iterator;
+
+           private:
             shared_ptr<MYSQL_RES> res_;
             MYSQL_ROW row_;
             mysql_db *db_;
-        public:
+
+           public:
             mysql_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res);
 
             mysql_resultset(const mysql_resultset &other) = delete;
@@ -38,7 +42,7 @@ namespace arg3
             virtual ~mysql_resultset();
 
             mysql_resultset &operator=(const mysql_resultset &other) = delete;
-            mysql_resultset &operator=(mysql_resultset && other);
+            mysql_resultset &operator=(mysql_resultset &&other);
 
             bool is_valid() const;
             row current_row();
@@ -55,15 +59,18 @@ namespace arg3
             friend class select_query;
             friend class row;
             friend class sqldb;
-            template<typename, typename> friend class resultset_iterator;
-        private:
+            template <typename, typename>
+            friend class resultset_iterator;
+
+           private:
             shared_ptr<MYSQL_STMT> stmt_;
             shared_ptr<MYSQL_RES> metadata_;
             mysql_db *db_;
             shared_ptr<mysql_binding> bindings_;
             int status_;
             void prepare_results();
-        public:
+
+           public:
             mysql_stmt_resultset(mysql_db *db, shared_ptr<MYSQL_STMT> stmt);
 
             mysql_stmt_resultset(const mysql_stmt_resultset &other) = delete;
@@ -71,7 +78,7 @@ namespace arg3
             virtual ~mysql_stmt_resultset();
 
             mysql_stmt_resultset &operator=(const mysql_stmt_resultset &other) = delete;
-            mysql_stmt_resultset &operator=(mysql_stmt_resultset && other);
+            mysql_stmt_resultset &operator=(mysql_stmt_resultset &&other);
 
             bool is_valid() const;
 
@@ -92,11 +99,14 @@ namespace arg3
             friend class select_query;
             friend class row;
             friend class sqldb;
-            template<typename, typename> friend class resultset_iterator;
-        private:
+            template <typename, typename>
+            friend class resultset_iterator;
+
+           private:
             vector<shared_ptr<row_impl>> rows_;
             int currentRow_;
-        public:
+
+           public:
             mysql_cached_resultset(sqldb *db, shared_ptr<MYSQL_STMT> stmt);
             mysql_cached_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res);
 
@@ -105,7 +115,7 @@ namespace arg3
             virtual ~mysql_cached_resultset();
 
             mysql_cached_resultset &operator=(const mysql_cached_resultset &other) = delete;
-            mysql_cached_resultset &operator=(mysql_cached_resultset && other);
+            mysql_cached_resultset &operator=(mysql_cached_resultset &&other);
 
             bool is_valid() const;
 
@@ -118,11 +128,9 @@ namespace arg3
             size_t size() const;
         };
 
-        struct mysql_res_delete
-        {
+        struct mysql_res_delete {
             void operator()(MYSQL_RES *p) const;
         };
-
     }
 }
 

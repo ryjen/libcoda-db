@@ -1,8 +1,10 @@
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #undef VERSION
 
-#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
+#if defined(HAVE_LIBMYSQLCLIENT)
 
 #include <bandit/bandit.h>
 #include "db.test.h"
@@ -18,20 +20,17 @@ shared_ptr<column_impl> get_results_column(size_t index, size_t iterations)
 {
     auto rs = mysql_testdb.execute("select * from users");
 
-    if (iterations > 0 && iterations >= rs.size())
-    {
+    if (iterations > 0 && iterations >= rs.size()) {
         throw database_exception("not enough rows");
     }
 
     auto i = rs.begin();
 
-    if (iterations > 0)
-    {
+    if (iterations > 0) {
         i += iterations;
     }
 
-    if (index >= i->size())
-        throw database_exception("invalid column index");
+    if (index >= i->size()) throw database_exception("invalid column index");
 
     auto c = i->column(index);
 
@@ -44,34 +43,31 @@ shared_ptr<column_impl> get_stmt_column(size_t index, size_t iterations)
 
     auto rs = query.execute();
 
-    if (iterations > 0 && iterations >= rs.size())
-    {
+    if (iterations > 0 && iterations >= rs.size()) {
         throw database_exception("not enough rows");
     }
 
     auto i = rs.begin();
 
-    if (iterations > 0)
-    {
+    if (iterations > 0) {
         i += iterations;
     }
 
-    if (index >= i->size())
-        throw database_exception("invalid column index");
+    if (index >= i->size()) throw database_exception("invalid column index");
 
     auto c = i->column(index);
 
     return c.impl();
 }
 
-template<typename T>
+template <typename T>
 void test_copy_column(std::function<shared_ptr<column_impl>(size_t, size_t)> funk)
 {
     auto f1 = funk(0, 0);
 
     auto f2 = funk(1, 0);
 
-    T c2 (*static_pointer_cast<T>(f1));
+    T c2(*static_pointer_cast<T>(f1));
 
     Assert::That(c2.is_valid(), IsTrue());
 
@@ -84,8 +80,8 @@ void test_copy_column(std::function<shared_ptr<column_impl>(size_t, size_t)> fun
     AssertThat(c2.to_value() == f2->to_value(), IsTrue());
 }
 
-template<typename T>
-void test_move_column(std::function < shared_ptr<column_impl>(size_t, size_t)> funk)
+template <typename T>
+void test_move_column(std::function<shared_ptr<column_impl>(size_t, size_t)> funk)
 {
     auto f1 = funk(0, 0);
 
@@ -95,7 +91,7 @@ void test_move_column(std::function < shared_ptr<column_impl>(size_t, size_t)> f
 
     auto f2Value = f2->to_value();
 
-    T c2 (std::move(*static_pointer_cast<T>(f1)));
+    T c2(std::move(*static_pointer_cast<T>(f1)));
 
     Assert::That(c2.is_valid(), IsTrue());
 
@@ -108,13 +104,10 @@ void test_move_column(std::function < shared_ptr<column_impl>(size_t, size_t)> f
     Assert::That(c2.to_value() == f2Value, IsTrue());
 }
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("mysql column", []()
-    {
-        before_each([]()
-        {
+    describe("mysql column", []() {
+        before_each([]() {
             mysql_testdb.setup();
 
             user user1(&mysql_testdb);
@@ -146,84 +139,48 @@ go_bandit([]()
             user2.save();
         });
 
-        after_each([]()
-        {
-            mysql_testdb.teardown();
-        });
+        after_each([]() { mysql_testdb.teardown(); });
 
-        describe("is copyable", []()
-        {
-            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE)
-            {
-                it("as cached results", []()
-                {
-                    test_copy_column<mysql_cached_column>(get_stmt_column);
-                });
-            }
-            else
-            {
-                it("as statement results", []()
-                {
-                    test_copy_column<mysql_stmt_column>(get_stmt_column);
-                });
+        describe("is copyable", []() {
+            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE) {
+                it("as cached results", []() { test_copy_column<mysql_cached_column>(get_stmt_column); });
+            } else {
+                it("as statement results", []() { test_copy_column<mysql_stmt_column>(get_stmt_column); });
 
-                it("as results", []()
-                {
-                    test_copy_column<mysql_column>(get_results_column);
-                });
+                it("as results", []() { test_copy_column<mysql_column>(get_results_column); });
             }
 
         });
 
-        describe("is movable", []()
-        {
+        describe("is movable", []() {
 
-            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE)
-            {
-                it("as cached results", []()
-                {
-                    test_move_column<mysql_cached_column>(get_stmt_column);
-                });
+            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE) {
+                it("as cached results", []() { test_move_column<mysql_cached_column>(get_stmt_column); });
 
-            }
-            else
-            {
-                it("as statement results", []()
-                {
-                    test_move_column<mysql_stmt_column>(get_stmt_column);
-                });
+            } else {
+                it("as statement results", []() { test_move_column<mysql_stmt_column>(get_stmt_column); });
 
-                it("as results", []()
-                {
-                    test_move_column<mysql_column>(get_results_column);
-                });
+                it("as results", []() { test_move_column<mysql_column>(get_results_column); });
             }
 
 
         });
 
-        describe("has a name", []()
-        {
-            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE)
-            {
-                it("as cached results", []()
-                {
+        describe("has a name", []() {
+            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE) {
+                it("as cached results", []() {
                     auto c = get_stmt_column(0, 0);
 
                     Assert::That(c->name(), Equals("id"));
                 });
-            }
-            else
-            {
-                it("as statement results", []()
-                {
+            } else {
+                it("as statement results", []() {
                     auto c = get_stmt_column(0, 0);
 
                     Assert::That(c->name(), Equals("id"));
                 });
 
-                it("as results", []()
-                {
+                it("as results", []() {
                     auto c = get_results_column(0, 0);
 
                     Assert::That(c->name(), Equals("id"));
@@ -231,12 +188,9 @@ go_bandit([]()
             }
         });
 
-        describe("can return a blob", []()
-        {
-            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE)
-            {
-                it("as cached results", []()
-                {
+        describe("can return a blob", []() {
+            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE) {
+                it("as cached results", []() {
                     auto c = get_stmt_column(4, 0);
 
                     Assert::That(static_pointer_cast<mysql_cached_column>(c)->type(), Equals(MYSQL_TYPE_BLOB));
@@ -245,11 +199,8 @@ go_bandit([]()
 
                     Assert::That(b.size(), Equals(4 * sizeof(int)));
                 });
-            }
-            else
-            {
-                it("as statement results", []()
-                {
+            } else {
+                it("as statement results", []() {
                     auto c = get_stmt_column(4, 0);
 
                     Assert::That(static_pointer_cast<mysql_stmt_column>(c)->type(), Equals(MYSQL_TYPE_BLOB));
@@ -259,8 +210,7 @@ go_bandit([]()
                     Assert::That(b.size(), Equals(4 * sizeof(int)));
                 });
 
-                it("as results", []()
-                {
+                it("as results", []() {
                     auto c = get_results_column(4, 0);
 
                     Assert::That(static_pointer_cast<mysql_column>(c)->type(), Equals(MYSQL_TYPE_BLOB));
@@ -272,12 +222,9 @@ go_bandit([]()
             }
         });
 
-        describe("can return a double", []()
-        {
-            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE)
-            {
-                it("as cached results", []()
-                {
+        describe("can return a double", []() {
+            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE) {
+                it("as cached results", []() {
 
                     auto c = get_stmt_column(3, 0);
 
@@ -290,11 +237,8 @@ go_bandit([]()
                     Assert::That(c->to_double(), Equals(DOUBLE_DEFAULT));
 
                 });
-            }
-            else
-            {
-                it("as statement results", []()
-                {
+            } else {
+                it("as statement results", []() {
                     auto c = get_stmt_column(3, 0);
 
                     Assert::That(static_pointer_cast<mysql_stmt_column>(c)->type(), Equals(MYSQL_TYPE_DOUBLE));
@@ -305,8 +249,7 @@ go_bandit([]()
                     Assert::That(c->to_double(), Equals(DOUBLE_DEFAULT));
                 });
 
-                it("as results", []()
-                {
+                it("as results", []() {
                     auto c = get_results_column(3, 0);
 
                     Assert::That(static_pointer_cast<mysql_column>(c)->type(), Equals(MYSQL_TYPE_DOUBLE));
@@ -319,13 +262,10 @@ go_bandit([]()
             }
         });
 
-        describe("can return an int", []()
-        {
+        describe("can return an int", []() {
 
-            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE)
-            {
-                it("as cached results", []()
-                {
+            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE) {
+                it("as cached results", []() {
                     auto c = get_stmt_column(3, 0);
 
                     Assert::That(c->to_int(), Equals(3));
@@ -334,11 +274,8 @@ go_bandit([]()
 
                     Assert::That(c->to_int(), Equals(INT_DEFAULT));
                 });
-            }
-            else
-            {
-                it("as statement results", []()
-                {
+            } else {
+                it("as statement results", []() {
                     auto c = get_stmt_column(3, 0);
 
                     Assert::That(c->to_int(), Equals(3));
@@ -348,8 +285,7 @@ go_bandit([]()
                     Assert::That(c->to_int(), Equals(INT_DEFAULT));
                 });
 
-                it("as results", []()
-                {
+                it("as results", []() {
                     auto c = get_results_column(3, 0);
 
                     Assert::That(c->to_int(), Equals(3));
@@ -361,13 +297,10 @@ go_bandit([]()
             }
         });
 
-        describe("can return an long long int", []()
-        {
+        describe("can return an long long int", []() {
 
-            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE)
-            {
-                it("as cached results", []()
-                {
+            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE) {
+                it("as cached results", []() {
                     auto c = get_stmt_column(3, 0);
 
                     Assert::That(c->to_llong(), Equals(3));
@@ -376,11 +309,8 @@ go_bandit([]()
 
                     Assert::That(c->to_llong(), Equals(INT_DEFAULT));
                 });
-            }
-            else
-            {
-                it("as statement results", []()
-                {
+            } else {
+                it("as statement results", []() {
                     auto c = get_stmt_column(3, 0);
 
                     Assert::That(c->to_llong(), Equals(3));
@@ -390,8 +320,7 @@ go_bandit([]()
                     Assert::That(c->to_llong(), Equals(INT_DEFAULT));
                 });
 
-                it("as results", []()
-                {
+                it("as results", []() {
                     auto c = get_results_column(3, 0);
 
                     Assert::That(c->to_llong(), Equals(3));
@@ -403,12 +332,9 @@ go_bandit([]()
             }
         });
 
-        describe("can return a bool", []()
-        {
-            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE)
-            {
-                it("as cached results", []()
-                {
+        describe("can return a bool", []() {
+            if (mysql_testdb.cache_level() != sqldb::CACHE_NONE) {
+                it("as cached results", []() {
                     auto c = get_stmt_column(2, 0);
 
                     Assert::That(c->to_bool(), IsTrue());
@@ -421,11 +347,8 @@ go_bandit([]()
 
                     Assert::That(c->to_bool(), IsFalse());
                 });
-            }
-            else
-            {
-                it("as statement results", []()
-                {
+            } else {
+                it("as statement results", []() {
                     auto c = get_stmt_column(2, 0);
 
                     Assert::That(c->to_bool(), IsTrue());
@@ -439,8 +362,7 @@ go_bandit([]()
                     Assert::That(c->to_bool(), IsFalse());
                 });
 
-                it("as results", []()
-                {
+                it("as results", []() {
                     auto c = get_results_column(2, 0);
 
                     Assert::That(c->to_bool(), IsTrue());

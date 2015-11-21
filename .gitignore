@@ -25,3 +25,10 @@ coverage.info
 *~
 arg3db.pc
 *.tar.gz
+CMakeCache.txt
+CMakeFiles
+CTestTestfile.cmake
+cmake_install.cmake
+build
+arg3db_test
+*.bak

@@ -1,5 +1,5 @@
-#ifndef _ARG3_DB_SCHEMA_H_
-#define _ARG3_DB_SCHEMA_H_
+#ifndef ARG3_DB_SCHEMA_H
+#define ARG3_DB_SCHEMA_H
 
 #include <string>
 #include <vector>
@@ -8,7 +8,6 @@ using namespace std;
 
 namespace arg3
 {
-
     namespace db
     {
         class sqldb;
@@ -16,8 +15,7 @@ namespace arg3
         /*!
          * Definition of a column in a schema
          */
-        struct column_definition
-        {
+        struct column_definition {
             string name;
             bool pk;
             int type;
@@ -31,11 +29,12 @@ namespace arg3
          */
         class schema
         {
-        private:
+           private:
             sqldb *db_;
             string tableName_;
             vector<column_definition> columns_;
-        public:
+
+           public:
             schema(sqldb *db, const string &tablename);
 
             virtual ~schema();
@@ -45,7 +44,7 @@ namespace arg3
             schema(schema &&other);
 
             schema &operator=(const schema &other);
-            schema &operator=(schema && other);
+            schema &operator=(schema &&other);
 
             virtual void init();
 
@@ -63,7 +62,6 @@ namespace arg3
 
             sqldb *db() const;
         };
-
     }
 }
 

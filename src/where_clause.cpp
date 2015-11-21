@@ -6,20 +6,30 @@ namespace arg3
 {
     namespace db
     {
-        where_clause operator "" _w( const char *cstr, size_t len )
+        where_clause operator"" _w(const char *cstr, size_t len)
         {
-           return where_clause(string(cstr, len));
+            return where_clause(string(cstr, len));
         }
 
-        where_clause::where_clause() {}
+        where_clause::where_clause()
+        {
+        }
 
-        where_clause::where_clause(const string &value) : value_(value) {}
+        where_clause::where_clause(const string &value) : value_(value)
+        {
+        }
 
-        where_clause::where_clause(const where_clause &other) : value_(other.value_), and_(other.and_), or_(other.or_) {}
+        where_clause::where_clause(const where_clause &other) : value_(other.value_), and_(other.and_), or_(other.or_)
+        {
+        }
 
-        where_clause::where_clause(where_clause &&other) : value_(std::move(other.value_)), and_(std::move(other.and_)), or_(std::move(other.or_)) {}
+        where_clause::where_clause(where_clause &&other) : value_(std::move(other.value_)), and_(std::move(other.and_)), or_(std::move(other.or_))
+        {
+        }
 
-        where_clause::~where_clause() {}
+        where_clause::~where_clause()
+        {
+        }
 
         where_clause &where_clause::operator=(const where_clause &other)
         {
@@ -30,12 +40,12 @@ namespace arg3
             return *this;
         }
 
-        where_clause &where_clause::operator=(where_clause && other)
+        where_clause &where_clause::operator=(where_clause &&other)
         {
-            value_ = std::move( other.value_ );
+            value_ = std::move(other.value_);
             and_ = std::move(other.and_);
             or_ = std::move(other.or_);
-            
+
             return *this;
         }
 
@@ -45,20 +55,16 @@ namespace arg3
 
             buf << value_;
 
-            if (and_.size() > 0)
-            {
+            if (and_.size() > 0) {
                 buf << " AND ";
-                for (auto & w : and_)
-                {
+                for (auto &w : and_) {
                     buf << w.to_string();
                 }
             }
 
-            if (or_.size() > 0)
-            {
+            if (or_.size() > 0) {
                 buf << " OR ";
-                for (auto & w : or_)
-                {
+                for (auto &w : or_) {
                     buf << w.to_string();
                 }
             }

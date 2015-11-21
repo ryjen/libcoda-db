@@ -133,18 +133,18 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libarg3db_la_DEPENDENCIES = ../libs/variant/src/libarg3variant.la
-am_libarg3db_la_OBJECTS = libarg3db_la-base_query.lo \
-	libarg3db_la-column.lo libarg3db_la-delete_query.lo \
-	libarg3db_la-modify_query.lo libarg3db_la-mysql_column.lo \
-	libarg3db_la-mysql_binding.lo libarg3db_la-mysql_db.lo \
-	libarg3db_la-mysql_resultset.lo libarg3db_la-mysql_row.lo \
-	libarg3db_la-mysql_statement.lo libarg3db_la-resultset.lo \
-	libarg3db_la-row.lo libarg3db_la-schema.lo \
-	libarg3db_la-schema_factory.lo libarg3db_la-select_query.lo \
-	libarg3db_la-sql_value.lo libarg3db_la-sqldb.lo \
-	libarg3db_la-sqlite3_column.lo libarg3db_la-sqlite3_db.lo \
-	libarg3db_la-sqlite3_resultset.lo libarg3db_la-sqlite3_row.lo \
-	libarg3db_la-sqlite3_statement.lo libarg3db_la-where_clause.lo
+am_libarg3db_la_OBJECTS = libarg3db_la-query.lo libarg3db_la-column.lo \
+	libarg3db_la-delete_query.lo libarg3db_la-modify_query.lo \
+	libarg3db_la-mysql_column.lo libarg3db_la-mysql_binding.lo \
+	libarg3db_la-mysql_db.lo libarg3db_la-mysql_resultset.lo \
+	libarg3db_la-mysql_row.lo libarg3db_la-mysql_statement.lo \
+	libarg3db_la-resultset.lo libarg3db_la-row.lo \
+	libarg3db_la-schema.lo libarg3db_la-schema_factory.lo \
+	libarg3db_la-select_query.lo libarg3db_la-sql_value.lo \
+	libarg3db_la-sqldb.lo libarg3db_la-sqlite3_column.lo \
+	libarg3db_la-sqlite3_db.lo libarg3db_la-sqlite3_resultset.lo \
+	libarg3db_la-sqlite3_row.lo libarg3db_la-sqlite3_statement.lo \
+	libarg3db_la-where_clause.lo
 libarg3db_la_OBJECTS = $(am_libarg3db_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -349,13 +349,13 @@ top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libarg3db.la
 libarg3db_la_LDFLAGS = $(LIBARG3DB_LA_LDFLAGS) -version-info 0:0:0
 libarg3db_la_LIBADD = ../libs/variant/src/libarg3variant.la
-libarg3db_la_SOURCES = base_query.cpp column.cpp delete_query.cpp modify_query.cpp mysql_column.cpp mysql_binding.cpp mysql_db.cpp \
+libarg3db_la_SOURCES = query.cpp column.cpp delete_query.cpp modify_query.cpp mysql_column.cpp mysql_binding.cpp mysql_db.cpp \
 	mysql_resultset.cpp mysql_row.cpp mysql_statement.cpp resultset.cpp row.cpp schema.cpp schema_factory.cpp select_query.cpp \
 	sql_value.cpp sqldb.cpp sqlite3_column.cpp sqlite3_db.cpp sqlite3_resultset.cpp sqlite3_row.cpp sqlite3_statement.cpp \
 	where_clause.cpp
 
 libarg3db_la_CXXFLAGS = $(LIBARG3DB_LA_CXXFLAGS) $(COVERAGE_CFLAGS) -I../libs/variant/src
-pkginclude_HEADERS = base_query.h base_record.h bindable.h column.h delete_query.h exception.h modify_query.h \
+pkginclude_HEADERS = query.h base_record.h bindable.h column.h delete_query.h exception.h modify_query.h \
 	mysql_binding.h mysql_column.h mysql_db.h mysql_resultset.h mysql_row.h mysql_statement.h resultset.h row.h schema.h schema_factory.h \
 	select_query.h sql_value.h sqldb.h sqlite3_column.h sqlite3_db.h sqlite3_resultset.h sqlite3_row.h sqlite3_statement.h \
 	statement.h where_clause.h
@@ -438,7 +438,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_la-base_query.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_la-column.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_la-delete_query.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_la-modify_query.Plo@am__quote@
@@ -448,6 +447,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_la-mysql_resultset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_la-mysql_row.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_la-mysql_statement.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_la-query.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_la-resultset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_la-row.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libarg3db_la-schema.Plo@am__quote@
@@ -483,12 +483,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
 
-libarg3db_la-base_query.lo: base_query.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libarg3db_la_CXXFLAGS) $(CXXFLAGS) -MT libarg3db_la-base_query.lo -MD -MP -MF $(DEPDIR)/libarg3db_la-base_query.Tpo -c -o libarg3db_la-base_query.lo `test -f 'base_query.cpp' || echo '$(srcdir)/'`base_query.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libarg3db_la-base_query.Tpo $(DEPDIR)/libarg3db_la-base_query.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='base_query.cpp' object='libarg3db_la-base_query.lo' libtool=yes @AMDEPBACKSLASH@
+libarg3db_la-query.lo: query.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libarg3db_la_CXXFLAGS) $(CXXFLAGS) -MT libarg3db_la-query.lo -MD -MP -MF $(DEPDIR)/libarg3db_la-query.Tpo -c -o libarg3db_la-query.lo `test -f 'query.cpp' || echo '$(srcdir)/'`query.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libarg3db_la-query.Tpo $(DEPDIR)/libarg3db_la-query.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='query.cpp' object='libarg3db_la-query.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libarg3db_la_CXXFLAGS) $(CXXFLAGS) -c -o libarg3db_la-base_query.lo `test -f 'base_query.cpp' || echo '$(srcdir)/'`base_query.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libarg3db_la_CXXFLAGS) $(CXXFLAGS) -c -o libarg3db_la-query.lo `test -f 'query.cpp' || echo '$(srcdir)/'`query.cpp
 
 libarg3db_la-column.lo: column.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libarg3db_la_CXXFLAGS) $(CXXFLAGS) -MT libarg3db_la-column.lo -MD -MP -MF $(DEPDIR)/libarg3db_la-column.Tpo -c -o libarg3db_la-column.lo `test -f 'column.cpp' || echo '$(srcdir)/'`column.cpp

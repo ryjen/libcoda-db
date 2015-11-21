@@ -1,6 +1,6 @@
 
-#ifndef _ARG3_DB_RESULTSET_H_
-#define _ARG3_DB_RESULTSET_H_
+#ifndef ARG3_DB_RESULTSET_H
+#define ARG3_DB_RESULTSET_H
 
 #include "row.h"
 #include "exception.h"
@@ -17,15 +17,16 @@ namespace arg3
          */
         class resultset_impl
         {
-        protected:
+           protected:
             resultset_impl() = default;
-        public:
+
+           public:
             resultset_impl(const resultset_impl &other) = delete;
             resultset_impl(resultset_impl &&other) = default;
             virtual ~resultset_impl() = default;
 
             resultset_impl &operator=(const resultset_impl &other) = delete;
-            resultset_impl &operator=(resultset_impl && other) = default;
+            resultset_impl &operator=(resultset_impl &&other) = default;
 
             virtual bool is_valid() const = 0;
 
@@ -41,33 +42,35 @@ namespace arg3
         /*!
          * an iterator for a rows in a set of results
          */
-        template<typename ValueType, typename NonConst>
+        template <typename ValueType, typename NonConst>
         class resultset_iterator : public std::iterator<std::input_iterator_tag, ValueType>
         {
-        private:
+           private:
             shared_ptr<resultset_impl> rs_;
             int pos_;
             NonConst value_;
-        public:
 
+           public:
             resultset_iterator(shared_ptr<resultset_impl> rset, int position) : rs_(rset), pos_(position), value_(rset->current_row())
             {
             }
 
             resultset_iterator(const resultset_iterator &other) : rs_(other.rs_), pos_(other.pos_), value_(other.value_)
-            {}
+            {
+            }
 
 
-            resultset_iterator(resultset_iterator &&other) : rs_(std::move(other.rs_)), pos_(other.pos_),
-                value_(std::move(other.value_))
+            resultset_iterator(resultset_iterator &&other) : rs_(std::move(other.rs_)), pos_(other.pos_), value_(std::move(other.value_))
             {
                 other.rs_ = nullptr;
                 other.pos_ = -1;
             }
 
-            ~resultset_iterator() {}
+            ~resultset_iterator()
+            {
+            }
 
-            resultset_iterator &operator=(resultset_iterator && other)
+            resultset_iterator &operator=(resultset_iterator &&other)
             {
                 rs_ = std::move(other.rs_);
                 pos_ = other.pos_;
@@ -85,23 +88,18 @@ namespace arg3
 
             resultset_iterator &operator++()
             {
-                if (pos_ == -1 || rs_ == nullptr)
-                    return *this;
+                if (pos_ == -1 || rs_ == nullptr) return *this;
 
                 bool res = rs_->next();
 
-                if (res)
-                {
+                if (res) {
                     pos_++;
                     value_ = rs_->current_row();
-                }
-                else
-                {
+                } else {
                     pos_ = -1;
                 }
 
                 return *this;
-
             }
 
 
@@ -128,8 +126,7 @@ namespace arg3
 
             resultset_iterator &operator+=(int n)
             {
-                for (int i = 0; i < n; i++)
-                    operator++();
+                for (int i = 0; i < n; i++) operator++();
                 return *this;
             }
 
@@ -169,7 +166,6 @@ namespace arg3
             {
                 return operator>(other) || operator==(other);
             }
-
         };
 
         /*!
@@ -177,10 +173,10 @@ namespace arg3
          */
         class resultset
         {
-        private:
+           private:
             shared_ptr<resultset_impl> impl_;
-        public:
 
+           public:
             resultset(shared_ptr<resultset_impl> impl);
 
             resultset(const resultset &other) = delete;
@@ -188,7 +184,7 @@ namespace arg3
             virtual ~resultset();
 
             resultset &operator=(const resultset &other) = delete;
-            resultset &operator=(resultset && other);
+            resultset &operator=(resultset &&other);
 
             typedef resultset_iterator<row, row> iterator;
             typedef resultset_iterator<const row, row> const_iterator;
@@ -213,14 +209,11 @@ namespace arg3
 
             size_t size() const;
 
-            void for_each(std::function<void (const row &)> funk) const;
+            void for_each(std::function<void(const row &)> funk) const;
 
             shared_ptr<resultset_impl> impl() const;
         };
-
     }
-
-
 }
 
 #endif

@@ -7,25 +7,21 @@ using namespace std;
 
 using namespace arg3::db;
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("where clause", []()
-    {
+    describe("where clause", []() {
 
-        it("can and and or", []()
-        {
+        it("can and and or", []() {
             where_clause w("this");
 
-            w  && "that";
+            w && "that";
 
             w || "blah";
 
             AssertThat(w.to_string(), Equals("this AND that OR blah"));
         });
 
-        it("can operate with other clauses", []()
-        {
+        it("can operate with other clauses", []() {
             where_clause w1("this");
 
             where_clause w2("that");
@@ -36,34 +32,33 @@ go_bandit([]()
 
             w1 || w2;
 
-            string value = (string) w1;
+            string value = (string)w1;
 
             AssertThat(value, Equals("this OR that"));
 
-            w3 && w4;
+            w3&& w4;
 
             AssertThat(w3.to_string(), Equals("blah AND bleh"));
         });
 
-        it("can operate on empty", []()
-        {
+        it("can operate on empty", []() {
             where_clause w1;
 
             where_clause w2;
 
-            w1  && "blah";
+            w1 && "blah";
 
-            string value = (string) w1;
+            string value = (string)w1;
 
             AssertThat(value, Equals("blah"));
 
-            w2 ||  "bleh";
+            w2 || "bleh";
 
             AssertThat(w2.to_string(), Equals("bleh"));
 
             where_clause w3;
 
-            w3  && w1;
+            w3&& w1;
 
             AssertThat(w3.to_string(), Equals(w1.to_string()));
 
@@ -74,8 +69,7 @@ go_bandit([]()
             AssertThat(w4.to_string(), Equals(w1.to_string()));
         });
 
-        it("can reset", []()
-        {
+        it("can reset", []() {
             where_clause w("this");
 
             w || "that";

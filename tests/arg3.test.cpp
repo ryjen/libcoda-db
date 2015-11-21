@@ -1,38 +1,52 @@
-
 #include <bandit/bandit.h>
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "db.test.h"
 
 using namespace bandit;
 
-int main(int argc, char *argv[])
-{
-#ifdef TEST_SQLITE
-#ifdef HAVE_LIBSQLITE3
-    testdb = &sqlite_testdb;
-#else
-    cout << "Sqlite not supported" << endl;
-    return 1;
-#endif
-#elif defined(TEST_MYSQL)
-#ifdef HAVE_LIBMYSQLCLIENT
-    testdb = &mysql_testdb;
-#else
-    cout << "Mysql not supported" << endl;
-    return 1;
-#endif
+#if !defined(HAVE_LIBMYSQLCLIENT) && !defined(HAVE_LIBSQLITE3)
+#error "Mysql or sqlite is not installed on the system"
 #endif
 
-    	if (testdb) {
-    		testdb->set_log_level(arg3::db::sqldb::LOG_DEBUG);
-		}	
-		if (!bandit::run(argc, argv)) {
-			if (testdb) {
-				testdb->set_cache_level(arg3::db::sqldb::CACHE_RESULTSET);
-				cout << "setting cache level" << endl;
-				return bandit::run(argc, argv);
-			}
-		  return 0;
-		}
-		
+int run_db_test(int argc, char *argv[]) {
+	if (!testdb) {
 		return 1;
+	}
+
+	// run the uncached test
+	if (bandit::run(argc, argv)) {
+		return 1;
+	}
+	
+	// run the cached test
+	testdb->set_cache_level(arg3::db::sqldb::CACHE_RESULTSET);
+	cout << "setting cache level" << endl;
+	return bandit::run(argc, argv);
+}
+
+int main(int argc, char *argv[])
+{
+#ifdef HAVE_LIBSQLITE3
+    testdb = &sqlite_testdb;
+    if (run_db_test(argc, argv)) {
+	    return 1;
+    }
+#else
+    cout << "Sqlite not supported" << endl;
+#endif
+        
+#ifdef HAVE_LIBMYSQLCLIENT
+    testdb = &mysql_testdb;
+    if(run_db_test(argc, argv)) {
+	    return 1;
+    }
+#else
+    cout << "Mysql not supported" << endl;
+#endif
+
+    return 0;
 }

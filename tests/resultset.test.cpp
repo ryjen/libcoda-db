@@ -8,22 +8,18 @@ using namespace std;
 
 using namespace arg3::db;
 
-go_bandit([]()
-{
+go_bandit([]() {
 
-    describe("resultset", []()
-    {
+    describe("resultset", []() {
         user user1;
         user user2;
 
-        before_each([]()
-        {
+        before_each([]() {
             setup_testdb();
 
         });
 
-        before_each([&]()
-        {
+        before_each([&]() {
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
@@ -35,19 +31,14 @@ go_bandit([]()
             user2.save();
         });
 
-        after_each([&]()
-        {
+        after_each([&]() {
             user1.de1ete();
             user2.de1ete();
         });
 
-        after_each([]()
-        {
-            teardown_testdb();
-        });
+        after_each([]() { teardown_testdb(); });
 
-        it("is movable", []()
-        {
+        it("is movable", []() {
             auto rs = testdb->execute("select * from users");
 
             Assert::That(rs.is_valid(), Equals(true));
@@ -59,8 +50,7 @@ go_bandit([]()
             Assert::That(rs.is_valid(), Equals(false));
         });
 
-        it("has a current row", []()
-        {
+        it("has a current row", []() {
             select_query q(testdb, "users");
 
             auto rs = q.execute();
@@ -79,34 +69,28 @@ go_bandit([]()
 
         });
 
-        it("can use for each", []()
-        {
+        it("can use for each", []() {
             select_query q(testdb, "users");
 
             auto rs = q.execute();
 
-            rs.for_each([](const row & row)
-            {
+            rs.for_each([](const row& row) {
                 AssertThat(row.is_valid(), IsTrue());
 
-                row.for_each([](const column & c)
-                {
-                    AssertThat(c.is_valid(), IsTrue());
-                });
+                row.for_each([](const column& c) { AssertThat(c.is_valid(), IsTrue()); });
             });
         });
 
-        it("can be reset", []()
-        {
+        it("can be reset", []() {
             select_query q(testdb, "users");
 
             auto rs = q.execute();
 
-			if (testdb->cache_level() != sqldb::CACHE_NONE) { 
-            	Assert::That(rs.size(), Equals(2));
-			} else {
-            	Assert::That(rs.size(), Equals(5));
-			}
+            if (testdb->cache_level() != sqldb::CACHE_NONE) {
+                Assert::That(rs.size(), Equals(2));
+            } else {
+                Assert::That(rs.size(), Equals(5));
+            }
 
             auto i = rs.begin();
 
@@ -120,14 +104,11 @@ go_bandit([]()
 
             rs.reset();
 
-            if (rs.next())
-
-                Assert::That(rs.current_row().column(1).to_string(), Equals("Bryan"));
+            if (rs.next()) Assert::That(rs.current_row().column(1).to_string(), Equals("Bryan"));
 
         });
 
-        it("can construct iterators", []()
-        {
+        it("can construct iterators", []() {
             select_query q(testdb, "users");
 
             auto rs = q.execute();
@@ -149,8 +130,7 @@ go_bandit([]()
 
         });
 
-        it("can operate on iterators", []()
-        {
+        it("can operate on iterators", []() {
             select_query q(testdb, "users");
 
             auto rs = q.execute();
@@ -190,4 +170,3 @@ go_bandit([]()
     });
 
 });
-

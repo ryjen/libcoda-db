@@ -13,31 +13,26 @@ using namespace std;
 
 using namespace arg3::db;
 
-#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
-
-test_mysql_db mysql_testdb;
-sqldb *testdb = &mysql_testdb;
-
-#elif defined(TEST_SQLITE) && defined(HAVE_LIBSQLITE3)
-test_sqlite3_db sqlite_testdb;
-sqldb *testdb = &sqlite_testdb;
-#else
 sqldb *testdb = NULL;
+
+#if defined(HAVE_LIBMYSQLCLIENT)
+test_mysql_db mysql_testdb;
+#endif
+
+#if defined(HAVE_LIBSQLITE3)
+test_sqlite3_db sqlite_testdb;
 #endif
 
 void setup_testdb()
 {
-    try
-    {
-#if defined(TEST_SQLITE) && defined(HAVE_LIBSQLITE3)
+    try {
+#if defined(HAVE_LIBSQLITE3)
         sqlite_testdb.setup();
 #endif
-#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
+#if defined(HAVE_LIBMYSQLCLIENT)
         mysql_testdb.setup();
 #endif
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
         std::cout << e.what() << std::endl;
         throw e;
     }
@@ -45,19 +40,21 @@ void setup_testdb()
 
 void teardown_testdb()
 {
-#if defined(TEST_SQLITE) && defined(HAVE_LIBSQLITE3)
+#if defined(HAVE_LIBSQLITE3)
     sqlite_testdb.teardown();
 #endif
-#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
+#if defined(HAVE_LIBMYSQLCLIENT)
     mysql_testdb.teardown();
 #endif
 }
 
-#if defined(TEST_SQLITE) && defined(HAVE_LIBSQLITE3)
+#if defined(HAVE_LIBSQLITE3)
 void test_sqlite3_db::setup()
 {
     open();
-    execute("create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45), dval real, data blob)");
+    execute(
+        "create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45), dval real, data "
+        "blob)");
 }
 
 void test_sqlite3_db::teardown()
@@ -68,11 +65,13 @@ void test_sqlite3_db::teardown()
 }
 #endif
 
-#if defined(TEST_MYSQL) && defined(HAVE_LIBMYSQLCLIENT)
+#if defined(HAVE_LIBMYSQLCLIENT)
 void test_mysql_db::setup()
 {
     open();
-    execute("create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45), dval real, data blob)");
+    execute(
+        "create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45), dval real, data "
+        "blob)");
 }
 
 void test_mysql_db::teardown()
@@ -83,39 +82,26 @@ void test_mysql_db::teardown()
 }
 #endif
 
-go_bandit([]()
-{
-    describe("database", []()
-    {
-        before_each([]()
-        {
-            setup_testdb();
-        });
+go_bandit([]() {
+    describe("database", []() {
+        before_each([]() { setup_testdb(); });
 
-        after_each([]()
-        {
-            teardown_testdb();
-        });
-        it("can_parse_uri", []()
-        {
-            try
-            {
+        after_each([]() { teardown_testdb(); });
+        it("can_parse_uri", []() {
+            try {
 #ifdef HAVE_LIBSQLITE3
                 auto file = get_db_from_uri("file://test.db");
 
                 AssertThat(file.get() != NULL, IsTrue());
 #endif
 #ifdef HAVE_LIBMYSQLCLIENT
-								auto mysql = get_db_from_uri("mysql://localhost:4000/test");
-								AssertThat(mysql.get() != NULL, IsTrue());
+                auto mysql = get_db_from_uri("mysql://localhost:4000/test");
+                AssertThat(mysql.get() != NULL, IsTrue());
 #endif
-						}
-            catch (const std::exception &e)
-            {
+            } catch (const std::exception &e) {
                 cerr << e.what() << endl;
                 throw e;
             }
         });
     });
 });
-

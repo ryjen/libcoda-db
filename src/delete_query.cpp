@@ -6,35 +6,38 @@ namespace arg3
 {
     namespace db
     {
-        delete_query::delete_query(sqldb *db, const string &tableName) : base_query(db, tableName)
-        {}
-
-        delete_query::delete_query(shared_ptr<schema> schema) : base_query(schema->db(), schema->table_name())
-        {}
-
-        delete_query::delete_query(const delete_query &other) : base_query(other), where_(other.where_)
+        delete_query::delete_query(sqldb *db, const string &tableName) : query(db), tableName_(tableName)
+        {
+        }
+        delete_query::delete_query(shared_ptr<schema> schema) : delete_query(schema->db(), schema->table_name())
+        {
+        }
+        delete_query::delete_query(const delete_query &other) : query(other), where_(other.where_), tableName_(other.tableName_)
         {
         }
 
-        delete_query::delete_query(delete_query &&other) : base_query(std::move(other)), where_(std::move(other.where_))
+        delete_query::delete_query(delete_query &&other)
+            : query(std::move(other)), where_(std::move(other.where_)), tableName_(std::move(other.tableName_))
         {
         }
 
         delete_query::~delete_query()
-        {}
-
+        {
+        }
         delete_query &delete_query::operator=(const delete_query &other)
         {
-            base_query::operator=(other);
+            query::operator=(other);
             where_ = other.where_;
+            tableName_ = other.tableName_;
 
             return *this;
         }
 
-        delete_query &delete_query::operator=(delete_query && other)
+        delete_query &delete_query::operator=(delete_query &&other)
         {
-            base_query::operator=(std::move(other));
+            query::operator=(std::move(other));
             where_ = std::move(other.where_);
+            tableName_ = std::move(other.tableName_);
 
             return *this;
         }
@@ -53,14 +56,23 @@ namespace arg3
             return *this;
         }
 
+        string delete_query::table_name() const
+        {
+            return tableName_;
+        }
+        delete_query &delete_query::table_name(const string &value)
+        {
+            tableName_ = value;
+            return *this;
+        }
+
         string delete_query::to_string() const
         {
             ostringstream buf;
 
             buf << "DELETE FROM " << tableName_;
 
-            if (!where_.empty())
-            {
+            if (!where_.empty()) {
                 buf << " WHERE " << where_.to_string();
             }
 
@@ -73,13 +85,10 @@ namespace arg3
 
             int res = stmt_->result() ? stmt_->last_number_of_changes() : 0;
 
-            if (!batch)
-            {
+            if (!batch) {
                 stmt_->finish();
                 stmt_ = nullptr;
-            }
-            else
-            {
+            } else {
                 reset();
             }
 

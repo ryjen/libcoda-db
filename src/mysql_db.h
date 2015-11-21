@@ -1,7 +1,9 @@
-#ifndef ARG3_DB_MYSQL_SQLDB_H_
-#define ARG3_DB_MYSQL_SQLDB_H_
+#ifndef ARG3_DB_MYSQL_SQLDB_H
+#define ARG3_DB_MYSQL_SQLDB_H
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
@@ -21,21 +23,25 @@ namespace arg3
             friend class mysql_statement;
             friend class mysql_resultset;
             friend class mysql_cached_resultset;
-        protected:
+
+           protected:
             MYSQL *db_;
-        private:
+
+           private:
             string dbName_;
             string user_;
             string password_;
             string host_;
             int port_;
             schema_factory schema_factory_;
-        public:
-            mysql_db(const string &dbName, const string &user = "root", const string &password = "", const string &host = "127.0.0.1", int port = 3306);
+
+           public:
+            mysql_db(const string &dbName, const string &user = "root", const string &password = "", const string &host = "127.0.0.1",
+                     int port = 3306);
             mysql_db(const mysql_db &other);
             mysql_db(mysql_db &&other);
             mysql_db &operator=(const mysql_db &other);
-            mysql_db &operator=(mysql_db && other);
+            mysql_db &operator=(mysql_db &&other);
             virtual ~mysql_db();
 
             bool is_open() const;

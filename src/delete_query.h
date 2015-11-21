@@ -1,7 +1,7 @@
 #ifndef ARG3_DB_DELETE_QUERY_H_
 #define ARG3_DB_DELETE_QUERY_H_
 
-#include "base_query.h"
+#include "query.h"
 #include "where_clause.h"
 
 namespace arg3
@@ -11,9 +11,9 @@ namespace arg3
         /*!
          * a query to delete from a table
          */
-        class delete_query : public base_query
+        class delete_query : public query
         {
-        public:
+           public:
             delete_query(sqldb *db, const string &tableName);
 
             delete_query(shared_ptr<schema> schema);
@@ -26,7 +26,7 @@ namespace arg3
 
             delete_query &operator=(const delete_query &other);
 
-            delete_query &operator=(delete_query && other);
+            delete_query &operator=(delete_query &&other);
 
             string to_string() const;
 
@@ -36,9 +36,13 @@ namespace arg3
 
             delete_query &where(const string &value);
 
-        private:
+            string table_name() const;
 
+            delete_query &table_name(const string &value);
+
+           private:
             where_clause where_;
+            string tableName_;
         };
     }
 }

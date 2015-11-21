@@ -1,4 +1,6 @@
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
@@ -10,10 +12,8 @@ namespace arg3
 {
     namespace db
     {
-
         string last_stmt_error(MYSQL_STMT *stmt)
         {
-
             if (!stmt) return "invalid";
 
             ostringstream buf;
@@ -24,21 +24,32 @@ namespace arg3
             return buf.str();
         }
 
-        mysql_db::mysql_db(const string &dbName, const string &user, const string &password, const string &host, int port) : sqldb(), db_(NULL),
-            dbName_(dbName), user_(user), password_(password), host_(host), port_(port), schema_factory_(this)
+        mysql_db::mysql_db(const string &dbName, const string &user, const string &password, const string &host, int port)
+            : sqldb(), db_(NULL), dbName_(dbName), user_(user), password_(password), host_(host), port_(port), schema_factory_(this)
         {
         }
 
-        mysql_db::mysql_db(const mysql_db &other) : sqldb(other), db_(NULL),
-            dbName_(other.dbName_), user_(other.user_), password_(other.password_), host_(other.host_),
-            port_(other.port_), schema_factory_(other.schema_factory_)
+        mysql_db::mysql_db(const mysql_db &other)
+            : sqldb(other),
+              db_(NULL),
+              dbName_(other.dbName_),
+              user_(other.user_),
+              password_(other.password_),
+              host_(other.host_),
+              port_(other.port_),
+              schema_factory_(other.schema_factory_)
         {
-
         }
 
-        mysql_db::mysql_db(mysql_db &&other) : sqldb(other), db_(other.db_),
-            dbName_(std::move(other.dbName_)), user_(std::move(other.user_)), password_(std::move(other.password_)),
-            host_(std::move(other.host_)), port_(other.port_), schema_factory_(std::move(other.schema_factory_))
+        mysql_db::mysql_db(mysql_db &&other)
+            : sqldb(other),
+              db_(other.db_),
+              dbName_(std::move(other.dbName_)),
+              user_(std::move(other.user_)),
+              password_(std::move(other.password_)),
+              host_(std::move(other.host_)),
+              port_(other.port_),
+              schema_factory_(std::move(other.schema_factory_))
         {
             other.db_ = NULL;
         }
@@ -56,7 +67,7 @@ namespace arg3
             return *this;
         }
 
-        mysql_db &mysql_db::operator=(mysql_db && other)
+        mysql_db &mysql_db::operator=(mysql_db &&other)
         {
             db_ = other.db_;
             dbName_ = std::move(other.dbName_);
@@ -89,7 +100,6 @@ namespace arg3
 
         void mysql_db::set_connection_string(const string &value)
         {
-
         }
 
         void mysql_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
@@ -98,8 +108,7 @@ namespace arg3
 
             auto rs = execute("show columns from " + tableName);
 
-            for (auto & row : rs)
-            {
+            for (auto &row : rs) {
                 column_definition def;
 
                 // column name
@@ -117,20 +126,13 @@ namespace arg3
 
 
                 // yes, this is pretty immature
-                if (type.find("int") != string::npos)
-                {
+                if (type.find("int") != string::npos) {
                     def.type = MYSQL_TYPE_LONG;
-                }
-                else if (type.find("double") != string::npos)
-                {
+                } else if (type.find("double") != string::npos) {
                     def.type = MYSQL_TYPE_DOUBLE;
-                }
-                else if (type.find("blob") != string::npos)
-                {
+                } else if (type.find("blob") != string::npos) {
                     def.type = MYSQL_TYPE_BLOB;
-                }
-                else
-                {
+                } else {
                     def.type = MYSQL_TYPE_STRING;
                 }
 
@@ -144,8 +146,7 @@ namespace arg3
 
             db_ = mysql_init(NULL);
 
-            if (mysql_real_connect(db_, host_.c_str(), user_.c_str(), password_.c_str(), dbName_.c_str(), port_, NULL, 0) == NULL)
-            {
+            if (mysql_real_connect(db_, host_.c_str(), user_.c_str(), password_.c_str(), dbName_.c_str(), port_, NULL, 0) == NULL) {
                 mysql_close(db_);
                 db_ = NULL;
                 throw database_exception("No connection could be made to the database");
@@ -159,8 +160,7 @@ namespace arg3
 
         void mysql_db::close()
         {
-            if (db_ != NULL)
-            {
+            if (db_ != NULL) {
                 mysql_close(db_);
                 db_ = NULL;
             }
@@ -198,13 +198,11 @@ namespace arg3
 
             MYSQL_RES *res;
 
-            if (mysql_real_query(db_, sql.c_str(), sql.length()))
-                throw database_exception(last_error());
+            if (mysql_real_query(db_, sql.c_str(), sql.length())) throw database_exception(last_error());
 
             res = mysql_store_result(db_);
 
-            if (res == NULL && mysql_field_count(db_) != 0)
-            {
+            if (res == NULL && mysql_field_count(db_) != 0) {
                 throw database_exception(last_error());
             }
 

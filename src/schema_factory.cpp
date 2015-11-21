@@ -7,7 +7,6 @@ namespace arg3
 {
     namespace db
     {
-
         shared_ptr<schema> schema_factory::create(const string &tableName)
         {
             shared_ptr<schema> p = make_shared<schema>(db_, tableName);
@@ -26,7 +25,6 @@ namespace arg3
 
         schema_factory::schema_factory(const schema_factory &other) : schema_cache_(other.schema_cache_), db_(other.db_)
         {
-
         }
 
         schema_factory::schema_factory(sqldb *db) : db_(db)
@@ -35,9 +33,10 @@ namespace arg3
         }
 
         schema_factory::schema_factory(schema_factory &&other) : schema_cache_(std::move(other.schema_cache_)), db_(other.db_)
-        {}
+        {
+        }
 
-        schema_factory &schema_factory::operator=(schema_factory && other)
+        schema_factory &schema_factory::operator=(schema_factory &&other)
         {
             schema_cache_ = std::move(other.schema_cache_);
             db_ = other.db_;
@@ -51,12 +50,9 @@ namespace arg3
         {
             auto i = schema_cache_.find(tableName);
 
-            if (i == schema_cache_.end())
-            {
+            if (i == schema_cache_.end()) {
                 return create(tableName);
-            }
-            else
-            {
+            } else {
                 return i->second;
             }
         }
