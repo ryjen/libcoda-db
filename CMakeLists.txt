@@ -6,7 +6,7 @@ option(CODE_COVERAGE "Enable code coverage testing." OFF)
 option(MEMORY_CHECK "Enable testing for memory leaks." OFF)
 
 # define project name
-project (arg3db)
+project (arg3db VERSION 0.5.0)
 
 # set path to custom modules
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
@@ -21,8 +21,8 @@ if(CODE_COVERAGE)
 endif()
 
 # add config header file
-configure_file(${PROJECT_SOURCE_DIR}/cmake/config.h.in ${PROJECT_SOURCE_DIR}/src/config.h)
-add_definitions(-DHAVE_CONFIG_H)
+include(CreateConfigHeader)
+create_config_header()
 
 # add packge config file
 include(CreatePackage)
