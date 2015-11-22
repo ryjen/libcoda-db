@@ -14,38 +14,52 @@ Use in production at your own risk, I'm not finished testing this bad boy.
 Building
 ========
 
-I use [autotools](http://en.wikipedia.org/wiki/GNU_build_system).
+You can use [cmake](http://cmake.org] or the legacy [autotools](http://en.wikipedia.org/wiki/GNU_build_system) systems to build.
 
 ```bash
-./configure $(brew diy --version=0.1.0 arg3db)
+mkdir debug
+cd debug
+
+# where to install (customize)
+INSTALL_PREFIX=$(brew --cellar)/arg3db/0.5.0
+
+# use cmake for debug build with valgrind, lcov
+cmake -DMEMORY_CHECK=ON -DCODE_COVERAGE -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX ..
+# or autotools
+./configure --prefix=$INSTALL_PREFIX --enable-coverage
+
+make
+make test
 make install
+
+# osx homebrew
 brew link arg3db
 ```
 
 Coding Style
 ============
 
-I don't like camel case classes/structs/methods/functions in c++.  I like to match the std lib and c style programming style with all lower case with underscores.  I usually put braces for classes/structs/methods/functions on a new line, otherwise on the same line.
+I don't like camel case classes/structs/methods/functions in c++.  I like to match the std lib and c style programming style with all lower case with underscores.  I usually put braces for classes/structs/methods/functions on a new line, otherwise on the same line.  Globals, constants, enums are uppercase underscored.  private member variables end with an open underscore.
 
 Model
 =====
-<pre>
-/* database interfaces */
-<b>sqldb</b>                                 - interface for a specific database
-  └ <b>statement</b>                         - interface for a prepared statement
-        └ <b>resultset</b>                   - results of a statement
-              └ <b>row</b>                   - an single result
-                   └ <b>column</b>           - a field in a row containing a value
 
-/* implementations using the above*/
-<b>schema</b>                                - a definition of a table
-<b>schema_factory</b>                        - cached schemas
-<b>base_record</b>                           - the active record (ish) implementation
-<b>select_query</b>                          - builds select queries
-<b>modify_query</b>                          - builds update/insert queries
-<b>delete_query</b>                          - builds delete queries
-<b>sql_value</b>                             - storage and conversion for basic sql types
-</pre>
+            /* database interfaces */
+            **sqldb**                                 - interface for a specific database
+              └ **statement**                         - interface for a prepared statement
+                    └ **resultset**                   - results of a statement
+                          └ **row**                   - an single result
+                               └ **column**           - a field in a row containing a value
+
+            /* implementations using the above*/
+            **schema**                                - a definition of a table
+            **schema_factory**                        - cached schemas
+            **base_record**                           - the active record (ish) implementation
+            **select_query**                          - builds select queries
+            **modify_query**                          - builds update/insert queries
+            **delete_query**                          - builds delete queries
+            **sql_value**                             - storage and conversion for basic sql types
+
 
 Records
 =======
@@ -200,9 +214,9 @@ TODO
 ====
 
 * named parameter indexing? also a better plan for handling a bad parameter index (other than assert)
-* make base_query more of a generic raw sql query, remove tablename dependency
+* ~~make base_query more of a generic raw sql query, remove tablename dependency~~
 * ~~Don't force usage of REPLACE query, implement more efficient UPSERT~~ (added executeInsert and executeUpdate)
 * More tests, at least 95% test coverage
-* More database implementations
+* More database implementations (postgres!)
 
 

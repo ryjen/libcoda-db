@@ -12,13 +12,8 @@ project (arg3db VERSION 0.5.0)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 # check for libraries
-include(FindMySQL)
-include(FindSQLite3)
-
-if(CODE_COVERAGE)
-	include(CodeCoverage)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_COVERAGE}")
-endif()
+find_package(MySQL)
+find_package(SQLite3)
 
 # add config header file
 include(CreateConfigHeader)
@@ -44,7 +39,10 @@ else ()
 endif()
 
 # add target for code coverage
+
 if(CODE_COVERAGE)
+	include(CodeCoverage)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_COVERAGE}")
 	setup_target_for_coverage(${PROJECT_NAME}-coverage ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test ${PROJECT_SOURCE_DIR}/coverage)
 endif()
 
