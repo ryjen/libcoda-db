@@ -1,28 +1,32 @@
 cmake_minimum_required (VERSION 3.1)
 set(CMAKE_CXX_STANDARD 11)
 
-# set path to custom modules
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-
 # add options for testing
 option(CODE_COVERAGE "Enable code coverage testing." OFF)
 option(MEMORY_CHECK "Enable testing for memory leaks." OFF)
+
+# define project name
+project (arg3db)
+
+# set path to custom modules
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
+# check for libraries
+include(FindMySQL)
+include(FindSQLite3)
 
 if(CODE_COVERAGE)
 	include(CodeCoverage)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_COVERAGE}")
 endif()
 
-# define project name
-project (arg3db)
-
-# check for libraries
-include(FindMySQL)
-include(FindSQLite3)
-
 # add config header file
-configure_file(${CMAKE_SOURCE_DIR}/cmake/config.h.in ${CMAKE_SOURCE_DIR}/src/config.h)
+configure_file(${PROJECT_SOURCE_DIR}/cmake/config.h.in ${PROJECT_SOURCE_DIR}/src/config.h)
 add_definitions(-DHAVE_CONFIG_H)
+
+# add packge config file
+include(CreatePackage)
+create_package("A c++11 database interface.")
 
 # add directories
 add_subdirectory(libs/variant)
@@ -34,13 +38,13 @@ enable_testing()
 
 if (MEMORY_CHECK)
 	include(MemCheckTest)
-	add_memcheck_test(db-test ${CMAKE_BINARY_DIR}/tests/arg3db_test)
+	add_memcheck_test(${PROJECT_NAME}-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test)
 else ()
-	add_test(db-test ${CMAKE_BINARY_DIR}/tests/arg3db_test)
+	add_test(db-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test)
 endif()
 
 # add target for code coverage
 if(CODE_COVERAGE)
-	setup_target_for_coverage(db-coverage ${CMAKE_BINARY_DIR}/tests/arg3db_test ${CMAKE_SOURCE_DIR}/coverage)
+	setup_target_for_coverage(${PROJECT_NAME}-coverage ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test ${PROJECT_SOURCE_DIR}/coverage)
 endif()
 
