@@ -257,13 +257,10 @@ namespace arg3
                     return sql_null;
                 case MYSQL_TYPE_TIME:
                 case MYSQL_TYPE_DATE:
-                case MYSQL_TYPE_TIME2:
                 case MYSQL_TYPE_YEAR:
                 case MYSQL_TYPE_NEWDATE:
                 case MYSQL_TYPE_TIMESTAMP:
-                case MYSQL_TYPE_DATETIME:
-                case MYSQL_TYPE_TIMESTAMP2:
-                case MYSQL_TYPE_DATETIME2: {
+                case MYSQL_TYPE_DATETIME: {
                     struct tm *tp;
 
                     if ((tp = getdate(static_cast<char *>(value_[index].buffer)))) {
@@ -277,12 +274,12 @@ namespace arg3
                 case MYSQL_TYPE_VAR_STRING:
                 case MYSQL_TYPE_VARCHAR:
                 case MYSQL_TYPE_DECIMAL:
-                case MYSQL_TYPE_JSON:
                 case MYSQL_TYPE_SET:
                 case MYSQL_TYPE_ENUM:
                 case MYSQL_TYPE_GEOMETRY:
                 case MYSQL_TYPE_NEWDECIMAL:
-                case MYSQL_TYPE_STRING: {
+                case MYSQL_TYPE_STRING:
+                default: {
                     return static_cast<const char *>(value_[index].buffer);
                 }
                 case MYSQL_TYPE_FLOAT:
