@@ -102,7 +102,7 @@ namespace arg3
                     value_ = sqlite3_column_double(stmt.get(), column);
                     break;
                 case SQLITE_BLOB:
-                    value_ = sql_blob(sqlite3_column_blob(stmt.get(), column), sqlite3_column_bytes(stmt.get(), column), NULL);
+                    value_ = sql_blob(sqlite3_column_blob(stmt.get(), column), sqlite3_column_bytes(stmt.get(), column));
                     break;
             }
         }
