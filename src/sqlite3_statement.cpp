@@ -88,29 +88,22 @@ namespace arg3
             if (sqlite3_bind_text(stmt_.get(), index, value.c_str(), len, SQLITE_TRANSIENT) != SQLITE_OK) throw binding_error(db_->last_error());
             return *this;
         }
+        sqlite3_statement &sqlite3_statement::bind(size_t index, const std::wstring &value, int len)
+        {
+            if (sqlite3_bind_text16(stmt_.get(), index, value.c_str(), len, SQLITE_TRANSIENT) != SQLITE_OK) throw binding_error(db_->last_error());
+            return *this;
+        }
         sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_blob &value)
         {
-            if (sqlite3_bind_blob(stmt_.get(), index, value.ptr(), value.size(), value.destructor() != NULL ? SQLITE_TRANSIENT : SQLITE_STATIC) !=
+            if (sqlite3_bind_blob(stmt_.get(), index, value.value(), value.size(), value.is_transient() ? SQLITE_TRANSIENT : SQLITE_STATIC) !=
                 SQLITE_OK)
                 throw binding_error(db_->last_error());
             return *this;
         }
 
-        sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_null_type &value)
+        sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_null_t &value)
         {
             if (sqlite3_bind_null(stmt_.get(), index) != SQLITE_OK) throw binding_error(db_->last_error());
-            return *this;
-        }
-
-        sqlite3_statement &sqlite3_statement::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
-        {
-            if (sqlite3_bind_blob(stmt_.get(), index, data, size, pFree) != SQLITE_OK) throw binding_error(db_->last_error());
-            return *this;
-        }
-
-        sqlite3_statement &sqlite3_statement::bind_value(size_t index, const sql_value &value)
-        {
-            value.bind_to(this, index);
             return *this;
         }
 

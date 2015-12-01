@@ -32,3 +32,6 @@ cmake_install.cmake
 build
 arg3db_test
 *.bak
+debug
+release
+Testing

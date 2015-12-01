@@ -62,13 +62,9 @@ go_bandit([]() {
 
             AssertThrows(binding_error, stmt.bind(1, "12134123"));
 
-            AssertThrows(binding_error, stmt.bind(1, sql_blob(NULL, 0)));
+            AssertThrows(binding_error, stmt.bind(1, sql_blob()));
 
             AssertThrows(binding_error, stmt.bind(1, sql_null));
-
-            AssertThrows(binding_error, stmt.bind(1, NULL, 0, NULL));
-
-            AssertThrows(binding_error, stmt.bind_value(1, sql_value(1234)));
 
         });
 
@@ -91,4 +87,3 @@ go_bandit([]() {
 });
 
 #endif
-

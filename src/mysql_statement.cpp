@@ -19,14 +19,13 @@ namespace arg3
             }
         };
 
-        mysql_statement::mysql_statement(mysql_db *db) : db_(db), bindings_(), stmt_(nullptr)
+        mysql_statement::mysql_statement(mysql_db *db) : db_(db), stmt_(nullptr)
         {
         }
 
         mysql_statement::mysql_statement(mysql_statement &&other)
         {
             db_ = other.db_;
-            bindings_ = other.bindings_;
             stmt_ = other.stmt_;
             other.db_ = NULL;
             other.stmt_ = nullptr;
@@ -35,7 +34,6 @@ namespace arg3
         mysql_statement &mysql_statement::operator=(mysql_statement &&other)
         {
             db_ = other.db_;
-            bindings_ = other.bindings_;
             stmt_ = other.stmt_;
 
             other.db_ = NULL;
@@ -91,29 +89,23 @@ namespace arg3
             bindings_.bind(index, value, len);
             return *this;
         }
+
+        mysql_statement &mysql_statement::bind(size_t index, const std::wstring &value, int len)
+        {
+            bindings_.bind(index, value, len);
+            return *this;
+        }
+
         mysql_statement &mysql_statement::bind(size_t index, const sql_blob &value)
         {
             bindings_.bind(index, value);
 
             return *this;
         }
-        mysql_statement &mysql_statement::bind(size_t index, const sql_null_type &value)
+        mysql_statement &mysql_statement::bind(size_t index, const sql_null_t &value)
         {
             bindings_.bind(index, value);
 
-            return *this;
-        }
-
-        mysql_statement &mysql_statement::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
-        {
-            bindings_.bind(index, data, size, pFree);
-
-            return *this;
-        }
-
-        mysql_statement &mysql_statement::bind_value(size_t index, const sql_value &value)
-        {
-            value.bind_to(this, index);
             return *this;
         }
 

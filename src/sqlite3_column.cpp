@@ -44,85 +44,33 @@ namespace arg3
             }
         }
 
-        sql_blob sqlite3_column::to_blob() const
-        {
-            assert_value();
-
-            return sql_blob(sqlite3_column_blob(stmt_.get(), column_), sqlite3_column_bytes(stmt_.get(), column_), NULL);
-        }
-
-        double sqlite3_column::to_double() const
-        {
-            assert_value();
-
-            return sqlite3_column_double(stmt_.get(), column_);
-        }
-        bool sqlite3_column::to_bool() const
-        {
-            assert_value();
-
-            return sqlite3_column_int(stmt_.get(), column_);
-        }
-        int sqlite3_column::to_int() const
-        {
-            assert_value();
-
-            return sqlite3_column_int(stmt_.get(), column_);
-        }
-
-        long long sqlite3_column::to_llong() const
-        {
-            assert_value();
-
-            return sqlite3_column_int64(stmt_.get(), column_);
-        }
-
-        const unsigned char *sqlite3_column::to_text() const
-        {
-            assert_value();
-
-            return sqlite3_column_text(stmt_.get(), column_);
-        }
-
-        const wchar_t *sqlite3_column::to_text16() const
-        {
-            assert_value();
-            return static_cast<const wchar_t *>(sqlite3_column_text16(stmt_.get(), column_));
-        }
-
         sql_value sqlite3_column::to_value() const
         {
             assert_value();
 
             switch (sqlite3_column_type(stmt_.get(), column_)) {
                 case SQLITE_INTEGER:
-                    return sql_value(to_llong());
-                case SQLITE_TEXT:
-                default:
-                    return sql_value(to_string());
+                    return sqlite3_column_int64(stmt_.get(), column_);
+                case SQLITE3_TEXT:
+                default: {
+                    const unsigned char *textValue = sqlite3_column_text(stmt_.get(), column_);
+                    if (textValue != NULL) {
+                        return reinterpret_cast<const char *>(textValue);
+                    }
+                    return sql_value();
+                }
                 case SQLITE_FLOAT:
-                    return sql_value(to_double());
+                    return sqlite3_column_double(stmt_.get(), column_);
                 case SQLITE_BLOB:
-                    return sql_value(to_blob());
+                    return sql_blob(sqlite3_column_blob(stmt_.get(), column_), sqlite3_column_bytes(stmt_.get(), column_));
             }
         }
 
-        int sqlite3_column::type() const
+        int sqlite3_column::sql_type() const
         {
             assert_value();
 
             return sqlite3_column_type(stmt_.get(), column_);
-        }
-
-        string sqlite3_column::to_string() const
-        {
-            assert_value();
-
-            const unsigned char *textValue = sqlite3_column_text(stmt_.get(), column_);
-
-            if (textValue == NULL) return string();
-
-            return reinterpret_cast<const char *>(textValue);
         }
 
         string sqlite3_column::name() const
@@ -145,7 +93,9 @@ namespace arg3
                 case SQLITE_TEXT:
                 default: {
                     const unsigned char *textValue = sqlite3_column_text(stmt.get(), column);
-                    if (textValue != NULL) value_ = std::string(reinterpret_cast<const char *>(textValue));
+                    if (textValue != NULL) {
+                        value_ = reinterpret_cast<const char *>(textValue);
+                    }
                     break;
                 }
                 case SQLITE_FLOAT:
@@ -181,42 +131,14 @@ namespace arg3
             return true;
         }
 
-        sql_blob sqlite3_cached_column::to_blob() const
-        {
-            return value_;
-        }
-
-        double sqlite3_cached_column::to_double() const
-        {
-            return value_;
-        }
-        bool sqlite3_cached_column::to_bool() const
-        {
-            return value_;
-        }
-        int sqlite3_cached_column::to_int() const
-        {
-            return value_;
-        }
-
-        long long sqlite3_cached_column::to_llong() const
-        {
-            return value_;
-        }
-
         sql_value sqlite3_cached_column::to_value() const
         {
             return value_;
         }
 
-        int sqlite3_cached_column::type() const
+        int sqlite3_cached_column::sql_type() const
         {
             return type_;
-        }
-
-        string sqlite3_cached_column::to_string() const
-        {
-            return value_;
         }
 
         string sqlite3_cached_column::name() const

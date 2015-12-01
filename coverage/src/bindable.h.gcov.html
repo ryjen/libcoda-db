@@ -4,7 +4,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>LCOV - Code Coverage - src/bindable.h</title>
+  <title>LCOV - coverage.info.cleaned - src/bindable.h</title>
   <link rel="stylesheet" type="text/css" href="../gcov.css">
 </head>
 
@@ -28,29 +28,21 @@
           </tr>
           <tr>
             <td class="headerItem">Test:</td>
-            <td class="headerValue">Code Coverage</td>
+            <td class="headerValue">coverage.info.cleaned</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">0</td>
             <td class="headerCovTableEntry">1</td>
-            <td class="headerCovTableEntryLo">0.0 %</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-05-04 23:02:43</td>
+            <td class="headerValue">2015-11-29 13:17:37</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">0</td>
             <td class="headerCovTableEntry">1</td>
-            <td class="headerCovTableEntryLo">0.0 %</td>
-          </tr>
-          <tr>
-            <td class="headerItem">Legend:</td>
-            <td class="headerValueLeg">            Lines:
-            <span class="coverLegendCov">hit</span>
-            <span class="coverLegendNoCov">not hit</span>
-</td>
-            <td></td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -68,8 +60,8 @@
       <td>
 <pre class="sourceHeading">          Line data    Source code</pre>
 <pre class="source">
-<a name="1"><span class="lineNum">       1 </span>            : #ifndef ARG3_DB_BINDABLE_H_</a>
-<span class="lineNum">       2 </span>            : #define ARG3_DB_BINDABLE_H_
+<a name="1"><span class="lineNum">       1 </span>            : #ifndef ARG3_DB_BINDABLE_H</a>
+<span class="lineNum">       2 </span>            : #define ARG3_DB_BINDABLE_H
 <span class="lineNum">       3 </span>            : 
 <span class="lineNum">       4 </span>            : #include &quot;sql_value.h&quot;
 <span class="lineNum">       5 </span>            : 
@@ -80,23 +72,22 @@
 <span class="lineNum">      10 </span>            :         /*!
 <a name="11"><span class="lineNum">      11 </span>            :          * represents something that can have a sql value binded to it</a>
 <span class="lineNum">      12 </span>            :          */
-<span class="lineNum">      13 </span><span class="lineNoCov">          0 :         class bindable</span>
+<span class="lineNum">      13 </span><span class="lineCov">       4614 :         class bindable</span>
 <span class="lineNum">      14 </span>            :         {
-<span class="lineNum">      15 </span>            :         public:
+<span class="lineNum">      15 </span>            :            public:
 <span class="lineNum">      16 </span>            :             virtual bindable &amp;bind(size_t index, int value) = 0;
 <span class="lineNum">      17 </span>            :             virtual bindable &amp;bind(size_t index, long long value) = 0;
 <span class="lineNum">      18 </span>            :             virtual bindable &amp;bind(size_t index, double value) = 0;
 <span class="lineNum">      19 </span>            :             virtual bindable &amp;bind(size_t index, const std::string &amp;value, int len = -1) = 0;
 <span class="lineNum">      20 </span>            :             virtual bindable &amp;bind(size_t index, const sql_blob &amp;value) = 0;
 <span class="lineNum">      21 </span>            :             virtual bindable &amp;bind(size_t index, const sql_null_type &amp;value) = 0;
-<span class="lineNum">      22 </span>            :             virtual bindable &amp;bind(size_t index, const void *data, size_t size, void(* pFree)(void *)) = 0;
+<span class="lineNum">      22 </span>            :             virtual bindable &amp;bind(size_t index, const void *data, size_t size, void (*pFree)(void *)) = 0;
 <span class="lineNum">      23 </span>            :             virtual bindable &amp;bind_value(size_t index, const sql_value &amp;v) = 0;
 <span class="lineNum">      24 </span>            :         };
-<span class="lineNum">      25 </span>            : 
-<span class="lineNum">      26 </span>            :     }
-<span class="lineNum">      27 </span>            : }
-<span class="lineNum">      28 </span>            : 
-<span class="lineNum">      29 </span>            : #endif
+<span class="lineNum">      25 </span>            :     }
+<span class="lineNum">      26 </span>            : }
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #endif
 </pre>
       </td>
     </tr>
@@ -105,7 +96,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
   </table>
   <br>
 

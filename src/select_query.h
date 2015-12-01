@@ -93,7 +93,7 @@ namespace arg3
 
                 auto col = row->begin();
 
-                return *col;
+                return col->to_value();
             }
         };
     }

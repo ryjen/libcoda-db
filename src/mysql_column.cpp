@@ -59,121 +59,89 @@ namespace arg3
             return value_ != NULL;
         }
 
-        sql_blob mysql_column::to_blob() const
-        {
-            assert(res_ != nullptr && value_ != NULL);
-
-            if (value_[index_] == NULL) {
-                return sql_blob(NULL, 0, NULL);
-            }
-            auto lengths = mysql_fetch_lengths(res_.get());
-
-            void *buf = calloc(1, lengths[index_]);
-            memmove(buf, value_[index_], lengths[index_]);
-
-            return sql_blob(buf, lengths[index_], free);
-        }
-
-        double mysql_column::to_double() const
-        {
-            if (value_[index_] == NULL) return DOUBLE_DEFAULT;
-
-            try {
-                return std::stod(value_[index_]);
-            } catch (const std::exception &e) {
-                return DOUBLE_DEFAULT;
-            }
-        }
-        bool mysql_column::to_bool() const
-        {
-            if (value_[index_] == NULL) return BOOL_DEFAULT;
-            try {
-                if (!strcasecmp(value_[index_], "true") || !strcasecmp(value_[index_], "yes")) return true;
-                if (!strcasecmp(value_[index_], "false") || !strcasecmp(value_[index_], "no")) return false;
-
-                return std::stoi(value_[index_]) != 0;
-            } catch (const std::exception &e) {
-                return BOOL_DEFAULT;
-            }
-        }
-        int mysql_column::to_int() const
-        {
-            if (value_[index_] == NULL) return INT_DEFAULT;
-            try {
-                return std::stoi(value_[index_]);
-            } catch (const std::exception &e) {
-                return INT_DEFAULT;
-            }
-        }
-
-        long long mysql_column::to_llong() const
-        {
-            if (value_[index_] == NULL) return INT_DEFAULT;
-
-            try {
-                return std::stoll(value_[index_]);
-            } catch (const std::exception &e) {
-                return INT_DEFAULT;
-            }
-        }
-
-        time_t mysql_column::to_timestamp() const
-        {
-            if (value_[index_] == NULL) return INT_DEFAULT;
-
-            struct tm *tp;
-
-            if ((tp = getdate(value_[index_]))) {
-                return mktime(tp);
-            }
-
-            return INT_DEFAULT;
-        }
-
         sql_value mysql_column::to_value() const
         {
             auto field = mysql_fetch_field_direct(res_.get(), index_);
 
+            if (value_[index_] == NULL) {
+                return sql_value();
+            }
+
             switch (field->type) {
+                case MYSQL_TYPE_BIT:
                 case MYSQL_TYPE_TINY:
                 case MYSQL_TYPE_SHORT:
-                case MYSQL_TYPE_LONG:
+                case MYSQL_TYPE_LONG: {
+                    try {
+                        return std::stoi(value_[index_]);
+                    } catch (const std::exception &e) {
+                        return sql_value();
+                    }
+                }
                 case MYSQL_TYPE_INT24:
-                case MYSQL_TYPE_LONGLONG:
-                    return to_llong();
+                case MYSQL_TYPE_LONGLONG: {
+                    try {
+                        return std::stoll(value_[index_]);
+                    } catch (const std::exception &e) {
+                        return sql_value();
+                    }
+                }
+                case MYSQL_TYPE_DECIMAL:
+                case MYSQL_TYPE_VARCHAR:
+                case MYSQL_TYPE_JSON:
+                case MYSQL_TYPE_VAR_STRING:
+                case MYSQL_TYPE_NEWDECIMAL:
+                case MYSQL_TYPE_GEOMETRY:
+                case MYSQL_TYPE_ENUM:
+                case MYSQL_TYPE_SET:
+                case MYSQL_TYPE_STRING:
+                    return value_[index_];
+
+
+                case MYSQL_TYPE_NEWDATE:
                 case MYSQL_TYPE_DATE:
                 case MYSQL_TYPE_DATETIME:
                 case MYSQL_TYPE_TIMESTAMP:
-                case MYSQL_TYPE_TIME:
-                    return (long long)to_timestamp();
-                default:
-                    return to_string();
+                case MYSQL_TYPE_TIMESTAMP2:
+                case MYSQL_TYPE_DATETIME2:
+                case MYSQL_TYPE_YEAR:
+                case MYSQL_TYPE_TIME2:
+                case MYSQL_TYPE_TIME: {
+                    struct tm *tp;
+
+                    if ((tp = getdate(value_[index_]))) {
+                        return mktime(tp);
+                    }
+
+                    return sql_value();
+                }
                 case MYSQL_TYPE_FLOAT:
-                case MYSQL_TYPE_DOUBLE:
-                    return to_double();
-                case MYSQL_TYPE_BLOB:
-                    return to_blob();
+                case MYSQL_TYPE_DOUBLE: {
+                    try {
+                        return std::stod(value_[index_]);
+                    } catch (const std::exception &e) {
+                        return sql_value();
+                    }
+                }
+                case MYSQL_TYPE_TINY_BLOB:
+                case MYSQL_TYPE_MEDIUM_BLOB:
+                case MYSQL_TYPE_LONG_BLOB:
+                case MYSQL_TYPE_BLOB: {
+                    auto lengths = mysql_fetch_lengths(res_.get());
+                    return sql_blob(value_[index_], lengths[index_]);
+                }
                 case MYSQL_TYPE_NULL:
                     return sql_null;
             }
         }
 
-        int mysql_column::type() const
+        int mysql_column::sql_type() const
         {
             assert(res_ != nullptr);
 
             auto field = mysql_fetch_field_direct(res_.get(), index_);
 
             return field->type;
-        }
-
-        string mysql_column::to_string() const
-        {
-            assert(value_ != NULL);
-
-            if (value_[index_] == NULL) return string();
-
-            return value_[index_];
         }
 
         string mysql_column::name() const
@@ -230,39 +198,6 @@ namespace arg3
             return value_ != nullptr;
         }
 
-        sql_blob mysql_stmt_column::to_blob() const
-        {
-            assert(value_ != nullptr);
-
-            return value_->to_blob(position_);
-        }
-
-        double mysql_stmt_column::to_double() const
-        {
-            assert(value_ != nullptr);
-
-            return value_->to_double(position_, DOUBLE_DEFAULT);
-        }
-        bool mysql_stmt_column::to_bool() const
-        {
-            assert(value_ != nullptr);
-
-            return value_->to_bool(position_, BOOL_DEFAULT);
-        }
-        int mysql_stmt_column::to_int() const
-        {
-            assert(value_ != nullptr);
-
-            return value_->to_int(position_, INT_DEFAULT);
-        }
-
-        long long mysql_stmt_column::to_llong() const
-        {
-            assert(value_ != nullptr);
-
-            return value_->to_llong(position_, INT_DEFAULT);
-        }
-
         sql_value mysql_stmt_column::to_value() const
         {
             assert(value_ != nullptr);
@@ -270,18 +205,11 @@ namespace arg3
             return value_->to_value(position_);
         }
 
-        int mysql_stmt_column::type() const
+        int mysql_stmt_column::sql_type() const
         {
             assert(value_ != nullptr);
 
-            return value_->type(position_);
-        }
-
-        string mysql_stmt_column::to_string() const
-        {
-            assert(value_ != nullptr);
-
-            return value_->to_string(position_);
+            return value_->sql_type(position_);
         }
 
         string mysql_stmt_column::name() const
@@ -294,7 +222,7 @@ namespace arg3
 
 
         mysql_cached_column::mysql_cached_column(const string &name, mysql_binding &bindings, size_t position)
-            : name_(name), value_(bindings.to_value(position)), type_(bindings.type(position))
+            : name_(name), value_(bindings.to_value(position)), type_(bindings.sql_type(position))
         {
         }
 
@@ -302,64 +230,73 @@ namespace arg3
         {
             assert(res != nullptr);
 
+            set_value(res, pValue, index);
+        }
+
+        void mysql_cached_column::set_value(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index)
+        {
             auto field = mysql_fetch_field_direct(res.get(), index);
 
             type_ = field->type;
 
             if (field->name) name_ = field->name;
 
+            if (pValue[index] == NULL) {
+                value_ = sql_null;
+                return;
+            }
+
             switch (field->type) {
+                case MYSQL_TYPE_BIT:
                 case MYSQL_TYPE_TINY:
                 case MYSQL_TYPE_SHORT:
                 case MYSQL_TYPE_LONG:
                 case MYSQL_TYPE_INT24:
                 case MYSQL_TYPE_LONGLONG:
-                    if (pValue[index])
-                        value_ = std::stoll(pValue[index]);
-                    else
-                        value_ = sql_null;
+                    value_ = std::stoll(pValue[index]);
                     break;
                 case MYSQL_TYPE_NULL:
                     value_ = sql_null;
                     break;
                 case MYSQL_TYPE_TIME:
+                case MYSQL_TYPE_TIME2:
+                case MYSQL_TYPE_YEAR:
+                case MYSQL_TYPE_NEWDATE:
                 case MYSQL_TYPE_DATE:
+                case MYSQL_TYPE_DATETIME2:
+                case MYSQL_TYPE_TIMESTAMP2:
                 case MYSQL_TYPE_DATETIME:
                 case MYSQL_TYPE_TIMESTAMP: {
                     struct tm *tp;
 
-                    if (pValue[index] && (tp = getdate(pValue[index]))) {
+                    if ((tp = getdate(pValue[index]))) {
                         long long epoch = mktime(tp);
                         value_ = epoch;
-                    } else {
-                        value_ = sql_null;
                     }
                     break;
                 }
-                default: {
-                    auto textValue = pValue[index];
-
-                    if (textValue == NULL)
-                        value_ = sql_null;
-                    else
-                        value_ = textValue;
+                case MYSQL_TYPE_VARCHAR:
+                case MYSQL_TYPE_VAR_STRING:
+                case MYSQL_TYPE_JSON:
+                case MYSQL_TYPE_GEOMETRY:
+                case MYSQL_TYPE_SET:
+                case MYSQL_TYPE_ENUM:
+                case MYSQL_TYPE_DECIMAL:
+                case MYSQL_TYPE_NEWDECIMAL:
+                case MYSQL_TYPE_STRING: {
+                    value_ = pValue[index];
                     break;
                 }
                 case MYSQL_TYPE_FLOAT:
                 case MYSQL_TYPE_DOUBLE:
-                    if (pValue[index])
-                        value_ = std::stod(pValue[index]);
-                    else
-                        value_ = sql_null;
+                    value_ = std::stod(pValue[index]);
                     break;
+                case MYSQL_TYPE_TINY_BLOB:
+                case MYSQL_TYPE_MEDIUM_BLOB:
+                case MYSQL_TYPE_LONG_BLOB:
                 case MYSQL_TYPE_BLOB: {
                     auto lengths = mysql_fetch_lengths(res.get());
-
-                    void *buf = calloc(1, lengths[index]);
-
-                    memmove(buf, pValue[index], lengths[index]);
-
-                    value_ = sql_blob(buf, lengths[index], free);
+                    value_ = sql_blob(pValue[index], lengths[index]);
                     break;
                 }
             }
@@ -400,42 +337,14 @@ namespace arg3
             return true;
         }
 
-        sql_blob mysql_cached_column::to_blob() const
-        {
-            return value_;
-        }
-
-        double mysql_cached_column::to_double() const
-        {
-            return value_.to_double(DOUBLE_DEFAULT);
-        }
-        bool mysql_cached_column::to_bool() const
-        {
-            return value_.to_bool(BOOL_DEFAULT);
-        }
-        int mysql_cached_column::to_int() const
-        {
-            return value_.to_int(INT_DEFAULT);
-        }
-
-        long long mysql_cached_column::to_llong() const
-        {
-            return value_.to_llong(INT_DEFAULT);
-        }
-
         sql_value mysql_cached_column::to_value() const
         {
             return value_;
         }
 
-        int mysql_cached_column::type() const
+        int mysql_cached_column::sql_type() const
         {
             return type_;
-        }
-
-        string mysql_cached_column::to_string() const
-        {
-            return value_;
         }
 
         string mysql_cached_column::name() const

@@ -44,73 +44,11 @@ namespace arg3
             return impl_->is_valid();
         }
 
-        sql_blob column::to_blob() const
-        {
-            assert(impl_ != nullptr);
-
-            return impl_->to_blob();
-        }
-
-        double column::to_double() const
-        {
-            assert(impl_ != nullptr);
-
-            return impl_->to_double();
-        }
-
-        int column::to_int() const
-        {
-            assert(impl_ != nullptr);
-
-            return impl_->to_int();
-        }
-
-        bool column::to_bool() const
-        {
-            assert(impl_ != nullptr);
-
-            return impl_->to_bool();
-        }
-
-        long long column::to_llong() const
-        {
-            assert(impl_ != nullptr);
-
-            return impl_->to_llong();
-        }
-
-        string column::to_string() const
-        {
-            assert(impl_ != nullptr);
-
-            return impl_->to_string();
-        }
-
         sql_value column::to_value() const
         {
             assert(impl_ != nullptr);
 
             return impl_->to_value();
-        }
-
-        column::operator string() const
-        {
-            return to_string();
-        }
-
-        column::operator int() const
-        {
-            return to_int();
-        }
-
-        column::operator long long() const
-        {
-            return to_llong();
-        }
-
-        column::operator double() const
-        {
-            return to_double();
         }
 
         string column::name() const

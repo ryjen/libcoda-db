@@ -78,6 +78,11 @@ namespace arg3
             query &bind(size_t index, const string &value, int len = -1);
 
             /*!
+             * binds a wide character string to a parameterized query
+             */
+            query &bind(size_t index, const wstring &value, int len = -1);
+
+            /*!
              * binds an integer to a parameterized query
              */
             query &bind(size_t index, int value);
@@ -98,11 +103,6 @@ namespace arg3
             query &bind(size_t index, double value);
 
             /*!
-             * binds bytes to a parameterized query
-             */
-            query &bind(size_t index, const void *data, size_t size, void (*pFree)(void *));
-
-            /*!
              * binds a sql_blob type to a parameterized query
              */
             query &bind(size_t index, const sql_blob &value);
@@ -110,7 +110,7 @@ namespace arg3
             /*!
              * binds a null type to a parameterized query
              */
-            query &bind(size_t index, const sql_null_type &value);
+            query &bind(size_t index, const sql_null_t &value);
 
             /*!
              * binds an arbitrary sql value to a parameterized query

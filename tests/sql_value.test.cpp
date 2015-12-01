@@ -16,9 +16,9 @@ go_bandit([]() {
 
             Assert::That(v, Equals("1234"));
 
-            sql_value a = "1234";
+            sql_value a = "12345";
 
-            sql_value b = 1234;
+            sql_value b = 12345;
 
             Assert::That(a, Equals(b));
 
@@ -59,9 +59,12 @@ go_bandit([]() {
 
             sql_blob blob = v;
 
-            AssertThat(blob.ptr() == NULL, IsTrue());
+            AssertThat(blob.value() == NULL, IsTrue());
         });
 
+        /*
+         * Not sure I want this test case anymore... conversion errors should be raised
+         *
         it("can be converted without error", []() {
             sql_value v = "asdfb";
 
@@ -93,6 +96,12 @@ go_bandit([]() {
 
             AssertThat(i, Equals(0));
 
+        });*/
+
+        it("throws errors on conversion", []() {
+            sql_value v = "asdfcv";
+
+            AssertThrows(arg3::illegal_conversion, v.to_double());
         });
 
     });
@@ -109,7 +118,7 @@ go_bandit([]() {
 
     describe("sql blob", []() {
         it("can be a string", []() {
-            sql_blob blob(NULL, 0);
+            sql_blob blob;
 
             AssertThat(to_string(blob), Equals("0x0"));
 
@@ -117,7 +126,7 @@ go_bandit([]() {
 
             char buf[100];
 
-            sprintf(buf, "%p", &blob);
+            sprintf(buf, "%p", other.value());
 
             AssertThat(to_string(other), Equals(string(buf)));
         });
@@ -129,17 +138,21 @@ go_bandit([]() {
 
             sql_blob other(std::move(b));
 
-            AssertThat(b.ptr() == &a, IsFalse());
+            AssertThat(b.is_null(), IsTrue());
 
-            AssertThat(other.ptr() == &a, IsTrue());
+            int* x = static_cast<int*>(other.value());
 
-            sql_blob moved(NULL, 0);
+            AssertThat(*x == a, IsTrue());
+
+            sql_blob moved;
 
             moved = std::move(other);
 
-            AssertThat(other.ptr() == &a, IsFalse());
+            AssertThat(other.is_null(), IsTrue());
 
-            AssertThat(moved.ptr() == &a, IsTrue());
+            x = static_cast<int*>(moved.value());
+
+            AssertThat(*x == a, IsTrue());
         });
 
     });

@@ -112,17 +112,17 @@ namespace arg3
                 column_definition def;
 
                 // column name
-                def.name = row["Field"].to_string();
+                def.name = row["Field"].to_value().to_string();
 
                 if (def.name.empty()) {
                     continue;
                 }
 
                 // primary key check
-                def.pk = row["Key"].to_string() == "PRI";
+                def.pk = row["Key"].to_value() == "PRI";
 
                 // find type
-                string type = row["Type"].to_string();
+                string type = row["Type"].to_value();
 
 
                 // yes, this is pretty immature

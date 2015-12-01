@@ -57,13 +57,13 @@ namespace arg3
                 column_definition def;
 
                 // column name
-                def.name = row["name"].to_string();
+                def.name = row["name"].to_value().to_string();
 
                 // primary key check
-                def.pk = row["pk"].to_bool();
+                def.pk = row["pk"].to_value().to_bool();
 
                 // find type
-                string type = row["type"].to_string();
+                string type = row["type"].to_value();
 
                 if (type.find("integer") != string::npos) {
                     def.type = SQLITE_INTEGER;

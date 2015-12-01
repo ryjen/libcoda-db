@@ -65,7 +65,7 @@ go_bandit([]() {
 
                 Assert::That(b.size(), Equals(other.size()));
 
-                Assert::That(other.to_int(0), Equals(24));
+                Assert::That(other.to_value(0), Equals(24));
             });
 
             it("from another", []() {
@@ -78,7 +78,7 @@ go_bandit([]() {
 
                 Assert::That(b.size(), Equals(other.size()));
 
-                Assert::That(other.to_int(0), Equals(24));
+                Assert::That(other.to_value(0), Equals(24));
 
                 mysql_binding c;
 
@@ -86,7 +86,7 @@ go_bandit([]() {
 
                 Assert::That(c.size(), Equals(other.size()));
 
-                Assert::That(c.to_int(0), Equals(other.to_int(0)));
+                Assert::That(c.to_value(0), Equals(other.to_value(0)));
             });
         });
 
@@ -101,7 +101,7 @@ go_bandit([]() {
 
             Assert::That(other.size() > 0, IsTrue());
 
-            Assert::That(other.to_int(0), Equals(24));
+            Assert::That(other.to_value(0), Equals(24));
 
             mysql_binding c;
 
@@ -111,7 +111,7 @@ go_bandit([]() {
 
             Assert::That(c.size() > 0, IsTrue());
 
-            Assert::That(c.to_int(0), Equals(24));
+            Assert::That(c.to_value(0), Equals(24));
 
         });
 

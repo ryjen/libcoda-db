@@ -97,13 +97,13 @@ go_bandit([]() {
         it("can use callbacks", []() {
             select_query query(testdb, "users");
 
-            query.execute([](const resultset &rs) {
+            query.execute([](const resultset& rs) {
                 AssertThat(rs.is_valid(), IsTrue());
 
-                rs.for_each([](const row &r) {
+                rs.for_each([](const row& r) {
                     AssertThat(r.is_valid(), IsTrue());
 
-                    r.for_each([](const column &c) { AssertThat(c.is_valid(), IsTrue()); });
+                    r.for_each([](const column& c) { AssertThat(c.is_valid(), IsTrue()); });
                 });
             });
         });
@@ -123,7 +123,7 @@ go_bandit([]() {
 
                 Assert::That(row != results.end(), Equals(true));
 
-                string lastName = row->column("last_name").to_string();
+                string lastName = row->column("last_name").to_value();
 
                 Assert::That(lastName, Equals("Jenkins"));
 
@@ -141,10 +141,10 @@ go_bandit([]() {
 
                 Assert::That(row != results.end(), Equals(true));
 
-                lastName = row->column("last_name").to_string();
+                lastName = row->column("last_name").to_value().to_string();
 
                 Assert::That(lastName, Equals("Smith"));
-            } catch (const database_exception &e) {
+            } catch (const database_exception& e) {
                 cout << query.last_error() << endl;
                 throw e;
             }
@@ -174,12 +174,12 @@ go_bandit([]() {
 
             query.where("first_name=? and last_name=?");
 
-            query.execute([](const resultset &rs) {
+            query.execute([](const resultset& rs) {
                 Assert::That(rs.is_valid(), Equals(true));
 
                 auto u = rs.begin()->column("first_name");
 
-                Assert::That(u.to_string(), Equals("Bryan"));
+                Assert::That(u.to_value(), Equals("Bryan"));
             });
 
         });

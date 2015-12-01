@@ -37,23 +37,9 @@ namespace arg3
 
             bool is_valid() const;
 
-            sql_blob to_blob() const;
-
-            time_t to_timestamp() const;
-
-            double to_double() const;
-
-            int to_int() const;
-
-            bool to_bool() const;
-
-            long long to_llong() const;
-
-            string to_string() const;
-
             sql_value to_value() const;
 
-            int type() const;
+            int sql_type() const;
 
             string name() const;
         };
@@ -78,21 +64,9 @@ namespace arg3
 
             bool is_valid() const;
 
-            sql_blob to_blob() const;
-
-            double to_double() const;
-
-            int to_int() const;
-
-            bool to_bool() const;
-
-            long long to_llong() const;
-
-            string to_string() const;
-
             sql_value to_value() const;
 
-            int type() const;
+            int sql_type() const;
 
             string name() const;
         };
@@ -107,6 +81,8 @@ namespace arg3
             sql_value value_;
             int type_;
 
+            void set_value(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
+
            public:
             mysql_cached_column(const string &name, mysql_binding &bindings, size_t position);
             mysql_cached_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
@@ -118,21 +94,9 @@ namespace arg3
 
             bool is_valid() const;
 
-            sql_blob to_blob() const;
-
-            double to_double() const;
-
-            int to_int() const;
-
-            bool to_bool() const;
-
-            long long to_llong() const;
-
-            string to_string() const;
-
             sql_value to_value() const;
 
-            int type() const;
+            int sql_type() const;
 
             string name() const;
         };

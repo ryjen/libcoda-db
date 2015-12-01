@@ -1,0 +1,531 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info.cleaned - src/base_record.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - base_record.h<span style="font-size: 80%;"> (source / <a href="base_record.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info.cleaned</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">115</td>
+            <td class="headerCovTableEntry">119</td>
+            <td class="headerCovTableEntryHi">96.6 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-11-29 13:17:37</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">26</td>
+            <td class="headerCovTableEntry">28</td>
+            <td class="headerCovTableEntryHi">92.9 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*!</a>
+<span class="lineNum">       2 </span>            :  * implementation of a database record
+<span class="lineNum">       3 </span>            :  * @copyright ryan jennings (arg3.com), 2013 under LGPL
+<span class="lineNum">       4 </span>            :  */
+<span class="lineNum">       5 </span>            : #ifndef ARG3_DB_BASE_RECORD_H
+<span class="lineNum">       6 </span>            : #define ARG3_DB_BASE_RECORD_H
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &quot;select_query.h&quot;
+<span class="lineNum">       9 </span>            : #include &quot;modify_query.h&quot;
+<span class="lineNum">      10 </span>            : #include &quot;delete_query.h&quot;
+<span class="lineNum">      11 </span>            : #include &quot;schema.h&quot;
+<span class="lineNum">      12 </span>            : #include &lt;memory&gt;
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : namespace arg3
+<span class="lineNum">      15 </span>            : {
+<span class="lineNum">      16 </span>            :     namespace db
+<span class="lineNum">      17 </span>            :     {
+<span class="lineNum">      18 </span>            :         class record_db;
+<span class="lineNum">      19 </span>            :         class row;
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            :         template &lt;typename T&gt;
+<span class="lineNum">      22 </span>            :         class base_record;
+<a name="23"><span class="lineNum">      23 </span>            : </a>
+<span class="lineNum">      24 </span>            :         template &lt;typename T&gt;
+<span class="lineNum">      25 </span>            :         inline void find_all(shared_ptr&lt;schema&gt; schema, typename base_record&lt;T&gt;::callback funk)
+<span class="lineNum">      26 </span>            :         {
+<span class="lineNum">      27 </span><span class="lineCov">          8 :             select_query query(schema);</span>
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span><span class="lineCov">          4 :             auto results = query.execute();</span>
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span><span class="lineCov">          8 :             if (!results.is_valid()) return;</span>
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span><span class="lineCov">         80 :             for (auto &amp;row : results) {</span>
+<span class="lineNum">      34 </span><span class="lineCov">         16 :                 if (row.is_valid()) {</span>
+<span class="lineNum">      35 </span><span class="lineCov">          8 :                     auto record = make_shared&lt;T&gt;();</span>
+<span class="lineNum">      36 </span><span class="lineCov">          8 :                     record-&gt;init(row);</span>
+<span class="lineNum">      37 </span><span class="lineCov">         16 :                     funk(record);</span>
+<span class="lineNum">      38 </span><span class="lineCov">          8 :                 }</span>
+<span class="lineNum">      39 </span>            :             }
+<span class="lineNum">      40 </span><span class="lineCov">         12 :         }</span>
+<span class="lineNum">      41 </span>            : 
+<a name="42"><span class="lineNum">      42 </span>            : </a>
+<span class="lineNum">      43 </span>            :         template &lt;typename T&gt;
+<span class="lineNum">      44 </span>            :         inline vector&lt;shared_ptr&lt;T&gt;&gt; find_all(shared_ptr&lt;schema&gt; schema)
+<span class="lineNum">      45 </span>            :         {
+<span class="lineNum">      46 </span>            :             /* convert sql rows to objects */
+<a name="47"><span class="lineNum">      47 </span><span class="lineCov">          4 :             vector&lt;shared_ptr&lt;T&gt;&gt; items;</span></a>
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span><span class="lineCov">         20 :             db::find_all&lt;T&gt;(schema, [&amp;](shared_ptr&lt;T&gt; record) { items.push_back(record); });</span>
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span><span class="lineCov">          4 :             return items;</span>
+<span class="lineNum">      52 </span><span class="lineCov">          8 :         }</span>
+<a name="53"><span class="lineNum">      53 </span>            : </a>
+<span class="lineNum">      54 </span>            :         template &lt;typename T&gt;
+<span class="lineNum">      55 </span>            :         inline void find_by(shared_ptr&lt;schema&gt; schema, const string &amp;name, const sql_value &amp;value, typename base_record&lt;T&gt;::callback funk)
+<span class="lineNum">      56 </span>            :         {
+<span class="lineNum">      57 </span><span class="lineCov">          8 :             select_query query(schema);</span>
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span><span class="lineCov">         12 :             query.where(name + &quot; = ?&quot;);</span>
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span><span class="lineCov">          4 :             query.bind_value(1, value);</span>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span><span class="lineCov">          4 :             auto results = query.execute();</span>
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span><span class="lineCov">          8 :             if (!results.is_valid()) return;</span>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span><span class="lineCov">         52 :             for (auto &amp;row : results) {</span>
+<span class="lineNum">      68 </span><span class="lineCov">          8 :                 if (row.is_valid()) {</span>
+<span class="lineNum">      69 </span><span class="lineCov">          4 :                     auto record = make_shared&lt;T&gt;();</span>
+<span class="lineNum">      70 </span><span class="lineCov">          4 :                     record-&gt;init(row);</span>
+<span class="lineNum">      71 </span><span class="lineCov">          8 :                     funk(record);</span>
+<span class="lineNum">      72 </span><span class="lineCov">          4 :                 }</span>
+<span class="lineNum">      73 </span>            :             }
+<span class="lineNum">      74 </span><span class="lineCov">         12 :         }</span>
+<a name="75"><span class="lineNum">      75 </span>            : </a>
+<span class="lineNum">      76 </span>            :         template &lt;typename T&gt;
+<span class="lineNum">      77 </span>            :         inline vector&lt;shared_ptr&lt;T&gt;&gt; find_by(shared_ptr&lt;schema&gt; schema, const string &amp;name, const sql_value &amp;value)
+<span class="lineNum">      78 </span>            :         {
+<span class="lineNum">      79 </span>            :             /* convert sql rows to objects */
+<a name="80"><span class="lineNum">      80 </span><span class="lineCov">          4 :             vector&lt;shared_ptr&lt;T&gt;&gt; items;</span></a>
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span><span class="lineCov">         16 :             db::find_by&lt;T&gt;(schema, name, value, [&amp;](shared_ptr&lt;T&gt; record) { items.push_back(record); });</span>
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span><span class="lineCov">          4 :             return items;</span>
+<span class="lineNum">      85 </span><span class="lineCov">          8 :         }</span>
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span>            :         /*!
+<span class="lineNum">      88 </span>            :          * an active-record (ish) pattern
+<span class="lineNum">      89 </span>            :          */
+<span class="lineNum">      90 </span>            :         template &lt;typename T&gt;
+<span class="lineNum">      91 </span>            :         class base_record
+<span class="lineNum">      92 </span>            :         {
+<span class="lineNum">      93 </span>            :            public:
+<span class="lineNum">      94 </span>            :             typedef arg3::db::schema schema_type;
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span>            :             typedef std::function&lt;void(shared_ptr&lt;T&gt;)&gt; callback;
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            :            private:
+<span class="lineNum">      99 </span>            :             std::shared_ptr&lt;schema_type&gt; schema_;
+<span class="lineNum">     100 </span>            :             std::unordered_map&lt;string, sql_value&gt; values_;
+<span class="lineNum">     101 </span>            :             string idColumnName_;
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span>            :            public:
+<span class="lineNum">     104 </span>            :             /*!
+<span class="lineNum">     105 </span>            :              * @param db the database the record uses
+<span class="lineNum">     106 </span>            :              * @param tablename the table in the database to use
+<a name="107"><span class="lineNum">     107 </span>            :              * @param idColumnName the name of the id column in the table</a>
+<span class="lineNum">     108 </span>            :              */
+<span class="lineNum">     109 </span><span class="lineCov">        472 :             base_record(sqldb *db, const string &amp;tablename, const string &amp;idColumnName)</span>
+<span class="lineNum">     110 </span><span class="lineCov">        944 :                 : schema_(db-&gt;schemas()-&gt;get(tablename)), idColumnName_(idColumnName)</span>
+<span class="lineNum">     111 </span><span class="lineCov">        472 :             {</span>
+<span class="lineNum">     112 </span><span class="lineCov">        944 :                 assert(schema_ != nullptr);</span>
+<span class="lineNum">     113 </span><span class="lineCov">        472 :             }</span>
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span>            :             /*!
+<span class="lineNum">     116 </span>            :              * @param schema the schema to operate on
+<span class="lineNum">     117 </span>            :              * @param columnName the name of the id column in the schema
+<span class="lineNum">     118 </span>            :              */
+<span class="lineNum">     119 </span>            :             base_record(std::shared_ptr&lt;schema_type&gt; schema, const string &amp;columnName) : schema_(schema), idColumnName_(columnName)
+<span class="lineNum">     120 </span>            :             {
+<span class="lineNum">     121 </span>            :                 assert(schema_ != nullptr);
+<span class="lineNum">     122 </span>            :             }
+<span class="lineNum">     123 </span>            : 
+<span class="lineNum">     124 </span>            :             /*!
+<span class="lineNum">     125 </span>            :              * @param schema the schema to operate on
+<span class="lineNum">     126 </span>            :              * @param columnName the name of the column the id column in the schema
+<span class="lineNum">     127 </span>            :              * @param value the value of the id column
+<span class="lineNum">     128 </span>            :              */
+<span class="lineNum">     129 </span>            :             template &lt;typename V&gt;
+<span class="lineNum">     130 </span>            :             base_record(std::shared_ptr&lt;schema_type&gt; schema, const string &amp;columnName, V value)
+<span class="lineNum">     131 </span>            :                 : base_record(schema, columnName)
+<span class="lineNum">     132 </span>            :             {
+<span class="lineNum">     133 </span>            :                 set(idColumnName_, value);
+<span class="lineNum">     134 </span>            :                 refresh();  // load up from database
+<span class="lineNum">     135 </span>            :             }
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span>            :             /*!
+<span class="lineNum">     138 </span>            :              * @param db the database to operate on
+<span class="lineNum">     139 </span>            :              * @param tableName the name of the table in the database
+<span class="lineNum">     140 </span>            :              * @param columnName the name of the id column in the table
+<span class="lineNum">     141 </span>            :              * @param value the value of the id column
+<a name="142"><span class="lineNum">     142 </span>            :              */</a>
+<span class="lineNum">     143 </span>            :             template &lt;typename V&gt;
+<span class="lineNum">     144 </span>            :             base_record(sqldb *db, const string &amp;tableName, const string &amp;columnName, V value)
+<span class="lineNum">     145 </span><span class="lineCov">          8 :                 : base_record(db, tableName, columnName)</span>
+<span class="lineNum">     146 </span>            :             {
+<span class="lineNum">     147 </span><span class="lineCov">         24 :                 set(idColumnName_, value);</span>
+<span class="lineNum">     148 </span><span class="lineCov">          8 :                 refresh();</span>
+<span class="lineNum">     149 </span><span class="lineCov">          8 :             }</span>
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span>            :             /*!
+<span class="lineNum">     152 </span>            :              * construct with values from a database row
+<span class="lineNum">     153 </span>            :              */
+<span class="lineNum">     154 </span>            :             base_record(std::shared_ptr&lt;schema_type&gt; schema, const string &amp;columnName, const row &amp;values) : base_record(schema, columnName)
+<span class="lineNum">     155 </span>            :             {
+<span class="lineNum">     156 </span>            :                 init(values);
+<span class="lineNum">     157 </span>            :             }
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span>            :             /*!
+<a name="160"><span class="lineNum">     160 </span>            :              * construct with values from a database row</a>
+<span class="lineNum">     161 </span>            :              */
+<span class="lineNum">     162 </span><span class="lineCov">          4 :             base_record(sqldb *db, const string &amp;tableName, const string &amp;columnName, const row &amp;values) : base_record(db, tableName, columnName)</span>
+<span class="lineNum">     163 </span>            :             {
+<span class="lineNum">     164 </span><span class="lineCov">          4 :                 init(values);</span>
+<span class="lineNum">     165 </span><span class="lineCov">          4 :             }</span>
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span>            :             /*!
+<span class="lineNum">     168 </span>            :              * copy constructor
+<span class="lineNum">     169 </span>            :              */
+<span class="lineNum">     170 </span>            :             base_record(const base_record &amp;other) : schema_(other.schema_), values_(other.values_), idColumnName_(other.idColumnName_)
+<span class="lineNum">     171 </span>            :             {
+<span class="lineNum">     172 </span>            :             }
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span>            :             /*!
+<span class="lineNum">     175 </span>            :              * move constructor
+<span class="lineNum">     176 </span>            :              */
+<span class="lineNum">     177 </span>            :             base_record(base_record &amp;&amp;other)
+<span class="lineNum">     178 </span>            :                 : schema_(std::move(other.schema_)), values_(std::move(other.values_)), idColumnName_(std::move(other.idColumnName_))
+<span class="lineNum">     179 </span>            :             {
+<span class="lineNum">     180 </span>            :                 other.schema_ = nullptr;
+<a name="181"><span class="lineNum">     181 </span>            :             }</a>
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span>            :             virtual ~base_record()
+<span class="lineNum">     184 </span><span class="lineCov">        472 :             {</span>
+<span class="lineNum">     185 </span><span class="lineCov">        472 :             }</span>
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span>            :             /*!
+<span class="lineNum">     188 </span>            :              * assignment operator
+<span class="lineNum">     189 </span>            :              */
+<span class="lineNum">     190 </span>            :             base_record &amp;operator=(const base_record &amp;other)
+<span class="lineNum">     191 </span>            :             {
+<span class="lineNum">     192 </span>            :                 values_ = other.values_;
+<span class="lineNum">     193 </span>            :                 schema_ = other.schema_;
+<span class="lineNum">     194 </span>            :                 idColumnName_ = other.idColumnName_;
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span>            :                 return *this;
+<span class="lineNum">     197 </span>            :             }
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span>            :             /*!
+<span class="lineNum">     200 </span>            :              * move assignment operator
+<span class="lineNum">     201 </span>            :              */
+<span class="lineNum">     202 </span>            :             base_record &amp;operator=(base_record &amp;&amp;other)
+<span class="lineNum">     203 </span>            :             {
+<span class="lineNum">     204 </span>            :                 values_ = std::move(other.values_);
+<span class="lineNum">     205 </span>            :                 schema_ = std::move(other.schema_);
+<span class="lineNum">     206 </span>            :                 idColumnName_ = std::move(other.idColumnName_);
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span>            :                 other.schema_ = nullptr;
+<span class="lineNum">     209 </span>            : 
+<span class="lineNum">     210 </span>            :                 return *this;
+<span class="lineNum">     211 </span>            :             }
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span>            :             /*!
+<a name="214"><span class="lineNum">     214 </span>            :              * sets the id column of the record</a>
+<span class="lineNum">     215 </span>            :              */
+<span class="lineNum">     216 </span>            :             void set_id(const sql_value &amp;value)
+<span class="lineNum">     217 </span>            :             {
+<span class="lineNum">     218 </span><span class="lineCov">        356 :                 set(idColumnName_, value);</span>
+<span class="lineNum">     219 </span><span class="lineCov">        356 :             }</span>
+<span class="lineNum">     220 </span>            : 
+<span class="lineNum">     221 </span>            :             /*!
+<a name="222"><span class="lineNum">     222 </span>            :              * returns the value of the id column in the record</a>
+<span class="lineNum">     223 </span>            :              */
+<span class="lineNum">     224 </span>            :             sql_value id() const
+<span class="lineNum">     225 </span>            :             {
+<span class="lineNum">     226 </span><span class="lineCov">        152 :                 return get(idColumnName_);</span>
+<span class="lineNum">     227 </span>            :             }
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span>            :             /*!
+<a name="230"><span class="lineNum">     230 </span>            :              * initializes with values from a database row</a>
+<span class="lineNum">     231 </span>            :              */
+<span class="lineNum">     232 </span>            :             void init(const row &amp;values)
+<span class="lineNum">     233 </span>            :             {
+<span class="lineNum">     234 </span><span class="lineCov">         36 :                 if (!values.is_valid()) return;</span>
+<span class="lineNum">     235 </span>            : 
+<span class="lineNum">     236 </span><span class="lineCov">       1080 :                 for (auto v = values.begin(); v != values.end(); v++) {</span>
+<span class="lineNum">     237 </span><span class="lineCov">        900 :                     set(v.name(), v-&gt;to_value());</span>
+<span class="lineNum">     238 </span><span class="lineCov">        180 :                 }</span>
+<span class="lineNum">     239 </span>            : 
+<span class="lineNum">     240 </span><span class="lineCov">         36 :                 on_record_init(values);</span>
+<a name="241"><span class="lineNum">     241 </span><span class="lineCov">         72 :             }</span></a>
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span>            :             virtual void on_record_init(const row &amp;values)
+<span class="lineNum">     244 </span>            :             {
+<span class="lineNum">     245 </span><span class="lineCov">         36 :             }</span>
+<span class="lineNum">     246 </span>            : 
+<span class="lineNum">     247 </span>            :             /*!
+<a name="248"><span class="lineNum">     248 </span>            :              * check if the record internals are valid</a>
+<span class="lineNum">     249 </span>            :              */
+<span class="lineNum">     250 </span>            :             bool is_valid() const
+<span class="lineNum">     251 </span>            :             {
+<span class="lineNum">     252 </span><span class="lineCov">          8 :                 return schema()-&gt;is_valid();</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     254 </span>            : 
+<span class="lineNum">     255 </span>            :             /*!
+<span class="lineNum">     256 </span>            :              * returns the name of the id column for this record
+<span class="lineNum">     257 </span>            :              */
+<span class="lineNum">     258 </span>            :             string id_column_name() const
+<span class="lineNum">     259 </span>            :             {
+<span class="lineNum">     260 </span>            :                 return idColumnName_;
+<span class="lineNum">     261 </span>            :             }
+<span class="lineNum">     262 </span>            : 
+<span class="lineNum">     263 </span>            :             /*!
+<a name="264"><span class="lineNum">     264 </span>            :              * returns the schema for this record</a>
+<span class="lineNum">     265 </span>            :              */
+<span class="lineNum">     266 </span>            :             shared_ptr&lt;schema_type&gt; schema() const
+<span class="lineNum">     267 </span>            :             {
+<span class="lineNum">     268 </span><span class="lineCov">       2022 :                 if (!schema_-&gt;is_valid()) schema_-&gt;init();</span>
+<span class="lineNum">     269 </span>            : 
+<span class="lineNum">     270 </span><span class="lineCov">       1780 :                 return schema_;</span>
+<span class="lineNum">     271 </span>            :             }
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span>            :             /*!
+<a name="274"><span class="lineNum">     274 </span>            :              * saves this instance</a>
+<span class="lineNum">     275 </span>            :              */
+<span class="lineNum">     276 </span>            :             bool save(long long *insertId = NULL)
+<span class="lineNum">     277 </span>            :             {
+<span class="lineNum">     278 </span><span class="lineCov">        552 :                 int index = 1;</span>
+<span class="lineNum">     279 </span><span class="lineCov">        552 :                 bool rval = false;</span>
+<span class="lineNum">     280 </span><span class="lineCov">        552 :                 bool exists = has(idColumnName_);</span>
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span><span class="lineCov">        552 :                 if (exists) {</span>
+<span class="lineNum">     283 </span><span class="lineCov">        960 :                     select_query query(schema());</span>
+<span class="lineNum">     284 </span>            : 
+<span class="lineNum">     285 </span><span class="lineCov">       1440 :                     query.where(idColumnName_ + &quot; = ?&quot;);</span>
+<span class="lineNum">     286 </span>            : 
+<span class="lineNum">     287 </span><span class="lineCov">       1440 :                     query.bind_value(1, get(idColumnName_));</span>
+<span class="lineNum">     288 </span>            : 
+<span class="lineNum">     289 </span><span class="lineCov">        960 :                     exists = query.count() &gt; 0;</span>
+<span class="lineNum">     290 </span><span class="lineCov">        480 :                 }</span>
+<span class="lineNum">     291 </span>            : 
+<span class="lineNum">     292 </span><span class="lineCov">       1104 :                 modify_query query(schema());</span>
+<span class="lineNum">     293 </span>            : 
+<span class="lineNum">     294 </span>            :                 // bind the column values
+<span class="lineNum">     295 </span><span class="lineCov">      13800 :                 for (auto &amp;column : schema()-&gt;columns()) {</span>
+<span class="lineNum">     296 </span><span class="lineCov">       2760 :                     auto value = get(column.name);</span>
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span><span class="lineCov">       2760 :                     query.bind_value(index, value);</span>
+<span class="lineNum">     299 </span>            : 
+<span class="lineNum">     300 </span><span class="lineCov">       2760 :                     index++;</span>
+<span class="lineNum">     301 </span><span class="lineCov">       2760 :                 }</span>
+<span class="lineNum">     302 </span>            : 
+<span class="lineNum">     303 </span><span class="lineCov">        552 :                 if (exists) {</span>
+<span class="lineNum">     304 </span><span class="lineCov">         12 :                     query.bind_value(index++, get(idColumnName_));</span>
+<span class="lineNum">     305 </span>            : 
+<span class="lineNum">     306 </span><span class="lineCov">          8 :                     rval = query.executeUpdate(idColumnName_);</span>
+<span class="lineNum">     307 </span><span class="lineCov">          4 :                 } else {</span>
+<span class="lineNum">     308 </span>            :                     long long id;
+<span class="lineNum">     309 </span>            : 
+<span class="lineNum">     310 </span><span class="lineCov">       1096 :                     rval = query.executeInsert(&amp;id);</span>
+<span class="lineNum">     311 </span>            : 
+<span class="lineNum">     312 </span><span class="lineCov">        548 :                     if (rval) {</span>
+<span class="lineNum">     313 </span><span class="lineCov">        548 :                         if (insertId) *insertId = id;</span>
+<span class="lineNum">     314 </span>            : 
+<span class="lineNum">     315 </span><span class="lineCov">       1644 :                         set(idColumnName_, id);</span>
+<span class="lineNum">     316 </span><span class="lineCov">        548 :                     }</span>
+<span class="lineNum">     317 </span>            :                 }
+<span class="lineNum">     318 </span>            : 
+<span class="lineNum">     319 </span><span class="lineCov">        552 :                 return rval;</span>
+<span class="lineNum">     320 </span><span class="lineCov">        552 :             }</span>
+<span class="lineNum">     321 </span>            : 
+<span class="lineNum">     322 </span>            : 
+<span class="lineNum">     323 </span>            :             /*!
+<a name="324"><span class="lineNum">     324 </span>            :              * gets a value specified by column name</a>
+<span class="lineNum">     325 </span>            :              */
+<span class="lineNum">     326 </span>            :             sql_value get(const string &amp;name) const
+<span class="lineNum">     327 </span>            :             {
+<span class="lineNum">     328 </span><span class="lineCov">       3444 :                 if (!has(name)) {</span>
+<span class="lineNum">     329 </span><span class="lineCov">        830 :                     return sql_null;</span>
+<span class="lineNum">     330 </span>            :                 }
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span><span class="lineCov">       2614 :                 return values_.at(name);</span>
+<span class="lineNum">     333 </span><span class="lineCov">       3444 :             }</span>
+<span class="lineNum">     334 </span>            : 
+<span class="lineNum">     335 </span>            :             /*!
+<a name="336"><span class="lineNum">     336 </span>            :              * check for the existance of a column by name</a>
+<span class="lineNum">     337 </span>            :              */
+<span class="lineNum">     338 </span>            :             bool has(const string &amp;name) const
+<span class="lineNum">     339 </span>            :             {
+<span class="lineNum">     340 </span><span class="lineCov">      11984 :                 return values_.size() &gt; 0 &amp;&amp; values_.count(name) &gt; 0;</span>
+<span class="lineNum">     341 </span>            :             }
+<span class="lineNum">     342 </span>            : 
+<span class="lineNum">     343 </span>            :             /*!
+<a name="344"><span class="lineNum">     344 </span>            :              * sets a string for a column name</a>
+<span class="lineNum">     345 </span>            :              */
+<span class="lineNum">     346 </span>            :             void set(const string &amp;name, const sql_value &amp;value)
+<span class="lineNum">     347 </span>            :             {
+<span class="lineNum">     348 </span><span class="lineCov">       2542 :                 values_[name] = value;</span>
+<span class="lineNum">     349 </span><span class="lineCov">       2542 :             }</span>
+<span class="lineNum">     350 </span>            : 
+<span class="lineNum">     351 </span>            :             /*!
+<span class="lineNum">     352 </span>            :              * unsets / removes a column
+<span class="lineNum">     353 </span>            :              */
+<span class="lineNum">     354 </span>            :             void unset(const string &amp;name)
+<span class="lineNum">     355 </span>            :             {
+<span class="lineNum">     356 </span>            :                 values_.erase(name);
+<span class="lineNum">     357 </span>            :             }
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span>            :             /*!
+<span class="lineNum">     360 </span>            :              * looks up and returns all objects of a base_record type
+<a name="361"><span class="lineNum">     361 </span>            :              */</a>
+<span class="lineNum">     362 </span>            : 
+<span class="lineNum">     363 </span>            :             vector&lt;shared_ptr&lt;T&gt;&gt; find_all()
+<span class="lineNum">     364 </span>            :             {
+<span class="lineNum">     365 </span><span class="lineCov">          8 :                 return arg3::db::find_all&lt;T&gt;(schema());</span>
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     367 </span>            : 
+<span class="lineNum">     368 </span>            :             void find_all(callback funk)
+<span class="lineNum">     369 </span>            :             {
+<span class="lineNum">     370 </span>            :                 arg3::db::find_all&lt;T&gt;(schema(), funk);
+<span class="lineNum">     371 </span>            :             }
+<span class="lineNum">     372 </span>            : 
+<span class="lineNum">     373 </span>            :             /*!
+<a name="374"><span class="lineNum">     374 </span>            :              * finds a single record by its id column</a>
+<span class="lineNum">     375 </span>            :              */
+<span class="lineNum">     376 </span>            :             shared_ptr&lt;T&gt; find_by_id(const sql_value &amp;value)
+<span class="lineNum">     377 </span>            :             {
+<span class="lineNum">     378 </span><span class="lineCov">          8 :                 select_query query(schema());</span>
+<span class="lineNum">     379 </span>            : 
+<span class="lineNum">     380 </span><span class="lineCov">         12 :                 query.where(idColumnName_ + &quot; = ?&quot;);</span>
+<span class="lineNum">     381 </span>            : 
+<span class="lineNum">     382 </span><span class="lineCov">          4 :                 query.bind_value(1, value);</span>
+<span class="lineNum">     383 </span>            : 
+<span class="lineNum">     384 </span><span class="lineCov">          4 :                 auto results = query.execute();</span>
+<span class="lineNum">     385 </span>            : 
+<span class="lineNum">     386 </span><span class="lineCov">          4 :                 auto it = results.begin();</span>
+<span class="lineNum">     387 </span>            : 
+<span class="lineNum">     388 </span><span class="lineCov">         12 :                 if (it != results.end()) {</span>
+<span class="lineNum">     389 </span><span class="lineCov">          8 :                     return make_shared&lt;T&gt;(*it);</span>
+<span class="lineNum">     390 </span>            :                 }
+<span class="lineNum">     391 </span>            : 
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :                 throw record_not_found_exception();</span>
+<span class="lineNum">     393 </span><span class="lineCov">          4 :             }</span>
+<span class="lineNum">     394 </span>            : 
+<span class="lineNum">     395 </span>            :             /*!
+<a name="396"><span class="lineNum">     396 </span>            :              * find records by a column and its value</a>
+<span class="lineNum">     397 </span>            :              */
+<span class="lineNum">     398 </span>            :             vector&lt;shared_ptr&lt;T&gt;&gt; find_by(const string &amp;name, const sql_value &amp;value)
+<span class="lineNum">     399 </span>            :             {
+<span class="lineNum">     400 </span><span class="lineCov">          8 :                 return arg3::db::find_by&lt;T&gt;(schema(), name, value);</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     402 </span>            : 
+<span class="lineNum">     403 </span>            :             void find_by(const string &amp;name, const sql_value &amp;value, callback funk)
+<span class="lineNum">     404 </span>            :             {
+<span class="lineNum">     405 </span>            :                 arg3::db::find_by&lt;T&gt;(schema(), name, value, funk);
+<span class="lineNum">     406 </span>            :             }
+<span class="lineNum">     407 </span>            : 
+<span class="lineNum">     408 </span>            :             /*!
+<a name="409"><span class="lineNum">     409 </span>            :              * refreshes from the database</a>
+<span class="lineNum">     410 </span>            :              */
+<span class="lineNum">     411 </span>            :             bool refresh()
+<span class="lineNum">     412 </span>            :             {
+<span class="lineNum">     413 </span><span class="lineCov">         24 :                 return refresh_by(idColumnName_);</span>
+<span class="lineNum">     414 </span>            :             }
+<span class="lineNum">     415 </span>            : 
+<span class="lineNum">     416 </span>            :             /*!
+<a name="417"><span class="lineNum">     417 </span>            :              * refreshes by a column name</a>
+<span class="lineNum">     418 </span>            :              */
+<span class="lineNum">     419 </span>            :             bool refresh_by(const string &amp;name)
+<span class="lineNum">     420 </span>            :             {
+<span class="lineNum">     421 </span><span class="lineCov">         56 :                 select_query query(schema());</span>
+<span class="lineNum">     422 </span>            : 
+<span class="lineNum">     423 </span><span class="lineCov">         84 :                 query.where(name + &quot; = ?&quot;);</span>
+<span class="lineNum">     424 </span>            : 
+<span class="lineNum">     425 </span><span class="lineCov">         84 :                 query.limit(&quot;1&quot;);</span>
+<span class="lineNum">     426 </span>            : 
+<span class="lineNum">     427 </span><span class="lineCov">         84 :                 query.bind_value(1, get(name));</span>
+<span class="lineNum">     428 </span>            : 
+<span class="lineNum">     429 </span><span class="lineCov">         28 :                 auto result = query.execute();</span>
+<span class="lineNum">     430 </span>            : 
+<span class="lineNum">     431 </span><span class="lineCov">         64 :                 if (!result.next()) return false;</span>
+<span class="lineNum">     432 </span>            : 
+<span class="lineNum">     433 </span><span class="lineCov">         60 :                 init(*result);</span>
+<span class="lineNum">     434 </span>            : 
+<span class="lineNum">     435 </span><span class="lineCov">         20 :                 return true;</span>
+<span class="lineNum">     436 </span><span class="lineCov">         28 :             }</span>
+<span class="lineNum">     437 </span>            : 
+<span class="lineNum">     438 </span>            :             /*!
+<a name="439"><span class="lineNum">     439 </span>            :              * deletes this record from the database</a>
+<span class="lineNum">     440 </span>            :              */
+<span class="lineNum">     441 </span>            :             bool de1ete()
+<span class="lineNum">     442 </span>            :             {
+<span class="lineNum">     443 </span><span class="lineCov">        296 :                 delete_query query(schema());</span>
+<span class="lineNum">     444 </span>            : 
+<span class="lineNum">     445 </span><span class="lineCov">        444 :                 query.where(idColumnName_ + &quot; = ?&quot;);</span>
+<span class="lineNum">     446 </span>            : 
+<span class="lineNum">     447 </span><span class="lineCov">        444 :                 query.bind_value(1, id());</span>
+<span class="lineNum">     448 </span>            : 
+<span class="lineNum">     449 </span><span class="lineCov">        296 :                 return query.execute();</span>
+<span class="lineNum">     450 </span><span class="lineCov">        148 :             }</span>
+<span class="lineNum">     451 </span>            :         };
+<span class="lineNum">     452 </span>            :     }
+<span class="lineNum">     453 </span>            : }
+<span class="lineNum">     454 </span>            : 
+<span class="lineNum">     455 </span>            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

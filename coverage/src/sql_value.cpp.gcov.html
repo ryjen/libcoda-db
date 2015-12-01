@@ -4,7 +4,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>LCOV - Code Coverage - src/sql_value.cpp</title>
+  <title>LCOV - coverage.info.cleaned - src/sql_value.cpp</title>
   <link rel="stylesheet" type="text/css" href="../gcov.css">
 </head>
 
@@ -28,29 +28,21 @@
           </tr>
           <tr>
             <td class="headerItem">Test:</td>
-            <td class="headerValue">Code Coverage</td>
+            <td class="headerValue">coverage.info.cleaned</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">79</td>
-            <td class="headerCovTableEntry">111</td>
-            <td class="headerCovTableEntryLo">71.2 %</td>
+            <td class="headerCovTableEntry">83</td>
+            <td class="headerCovTableEntry">117</td>
+            <td class="headerCovTableEntryLo">70.9 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-10-18 13:30:40</td>
+            <td class="headerValue">2015-11-29 13:17:37</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">44</td>
+            <td class="headerCovTableEntry">43</td>
             <td class="headerCovTableEntry">63</td>
-            <td class="headerCovTableEntryLo">69.8 %</td>
-          </tr>
-          <tr>
-            <td class="headerItem">Legend:</td>
-            <td class="headerValueLeg">            Lines:
-            <span class="coverLegendCov">hit</span>
-            <span class="coverLegendNoCov">not hit</span>
-</td>
-            <td></td>
+            <td class="headerCovTableEntryLo">68.3 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -69,7 +61,7 @@
 <pre class="sourceHeading">          Line data    Source code</pre>
 <pre class="source">
 <a name="1"><span class="lineNum">       1 </span>            : #include &quot;sql_value.h&quot;</a>
-<span class="lineNum">       2 </span>            : #include &quot;base_query.h&quot;
+<span class="lineNum">       2 </span>            : #include &quot;query.h&quot;
 <span class="lineNum">       3 </span>            : #include &quot;sqldb.h&quot;
 <span class="lineNum">       4 </span>            : #include &quot;exception.h&quot;
 <span class="lineNum">       5 </span>            : #include &lt;sstream&gt;
@@ -78,309 +70,276 @@
 <span class="lineNum">       8 </span>            : {
 <span class="lineNum">       9 </span>            :     string to_string(const arg3::db::sql_value &amp;value)
 <span class="lineNum">      10 </span>            :     {
-<span class="lineNum">      11 </span><span class="lineNoCov">          0 :         return value.to_string();</span>
-<a name="12"><span class="lineNum">      12 </span>            :     }</a>
-<span class="lineNum">      13 </span>            : 
-<span class="lineNum">      14 </span>            :     string to_string(const arg3::db::sql_null_type &amp;value)
-<span class="lineNum">      15 </span>            :     {
-<span class="lineNum">      16 </span><span class="lineCov">          4 :         return &quot;NULL&quot;;</span>
-<a name="17"><span class="lineNum">      17 </span>            :     }</a>
-<span class="lineNum">      18 </span>            : 
-<span class="lineNum">      19 </span>            :     string to_string(const arg3::db::sql_blob &amp;value)
-<span class="lineNum">      20 </span>            :     {
-<span class="lineNum">      21 </span><span class="lineCov">          8 :         return value.to_string();</span>
-<a name="22"><span class="lineNum">      22 </span>            :     }</a>
-<span class="lineNum">      23 </span>            : 
-<span class="lineNum">      24 </span>            :     string to_string(const std::string &amp;value)
-<span class="lineNum">      25 </span>            :     {
-<span class="lineNum">      26 </span><span class="lineNoCov">          0 :         return value;</span>
-<span class="lineNum">      27 </span>            :     }
-<span class="lineNum">      28 </span>            : }
-<span class="lineNum">      29 </span>            : 
-<span class="lineNum">      30 </span>            : namespace arg3
-<span class="lineNum">      31 </span>            : {
-<a name="32"><span class="lineNum">      32 </span>            :     namespace db</a>
-<span class="lineNum">      33 </span>            :     {
-<a name="34"><span class="lineNum">      34 </span><span class="lineCov">          4 :         const sql_null_type sql_null_type::instance;</span></a>
-<span class="lineNum">      35 </span>            : 
-<a name="36"><span class="lineNum">      36 </span><span class="lineCov">          4 :         const sql_null_type sql_null = sql_null_type::instance;</span></a>
-<span class="lineNum">      37 </span>            : 
-<span class="lineNum">      38 </span>            :         sql_blob::sql_blob(const void *ptr, size_t size, sql_blob::cleanup_method cleanup) : p_(ptr), s_(size), destruct_(cleanup)
-<a name="39"><span class="lineNum">      39 </span><span class="lineCov">        464 :         {}</span></a>
-<span class="lineNum">      40 </span>            : 
-<span class="lineNum">      41 </span>            :         sql_blob::sql_blob(const void *ptr, size_t size) : p_(ptr), s_(size), destruct_(NULL)
-<a name="42"><span class="lineNum">      42 </span><span class="lineCov">         36 :         {}</span></a>
-<span class="lineNum">      43 </span>            : 
-<span class="lineNum">      44 </span>            :         sql_blob::sql_blob(const sql_blob &amp;other) : p_(NULL), destruct_(NULL)
-<span class="lineNum">      45 </span><span class="lineNoCov">          0 :         {</span>
-<span class="lineNum">      46 </span><span class="lineNoCov">          0 :             copy(other);</span>
-<a name="47"><span class="lineNum">      47 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">      48 </span>            : 
-<span class="lineNum">      49 </span>            :         sql_blob::sql_blob(sql_blob &amp;&amp;other) : p_(other.p_), s_(other.s_), destruct_(other.destruct_)
-<span class="lineNum">      50 </span><span class="lineCov">          4 :         {</span>
-<span class="lineNum">      51 </span><span class="lineCov">          4 :             other.p_ = NULL;</span>
-<span class="lineNum">      52 </span><span class="lineCov">          4 :             other.s_ = 0;</span>
-<a name="53"><span class="lineNum">      53 </span><span class="lineCov">          4 :             other.destruct_ = NULL;</span></a>
-<span class="lineNum">      54 </span><span class="lineCov">          8 :         }</span>
-<span class="lineNum">      55 </span>            :         sql_blob &amp;sql_blob::operator=(const sql_blob &amp;other)
-<span class="lineNum">      56 </span>            :         {
-<span class="lineNum">      57 </span><span class="lineNoCov">          0 :             copy(other);</span>
-<span class="lineNum">      58 </span><span class="lineNoCov">          0 :             return *this;</span>
-<a name="59"><span class="lineNum">      59 </span>            :         }</a>
-<span class="lineNum">      60 </span>            : 
-<span class="lineNum">      61 </span>            :         sql_blob &amp;sql_blob::operator=(sql_blob &amp;&amp; other)
-<span class="lineNum">      62 </span>            :         {
-<span class="lineNum">      63 </span><span class="lineCov">          4 :             p_ = other.p_;</span>
-<span class="lineNum">      64 </span><span class="lineCov">          4 :             s_ = other.s_;</span>
-<span class="lineNum">      65 </span><span class="lineCov">          4 :             destruct_ = other.destruct_;</span>
-<span class="lineNum">      66 </span>            : 
-<span class="lineNum">      67 </span><span class="lineCov">          4 :             other.p_ = NULL;</span>
-<span class="lineNum">      68 </span><span class="lineCov">          4 :             other.s_ = 0;</span>
-<span class="lineNum">      69 </span><span class="lineCov">          4 :             other.destruct_ = NULL;</span>
+<a name="11"><span class="lineNum">      11 </span><span class="lineNoCov">          0 :         return value.to_string();</span></a>
+<span class="lineNum">      12 </span>            :     }
+<span class="lineNum">      13 </span>            :     string to_string(const arg3::db::sql_null_type &amp;value)
+<span class="lineNum">      14 </span>            :     {
+<a name="15"><span class="lineNum">      15 </span><span class="lineCov">          4 :         return &quot;NULL&quot;;</span></a>
+<span class="lineNum">      16 </span>            :     }
+<span class="lineNum">      17 </span>            :     string to_string(const arg3::db::sql_blob &amp;value)
+<span class="lineNum">      18 </span>            :     {
+<a name="19"><span class="lineNum">      19 </span><span class="lineCov">          8 :         return value.to_string();</span></a>
+<span class="lineNum">      20 </span>            :     }
+<span class="lineNum">      21 </span>            :     string to_string(const std::string &amp;value)
+<span class="lineNum">      22 </span>            :     {
+<span class="lineNum">      23 </span><span class="lineNoCov">          0 :         return value;</span>
+<span class="lineNum">      24 </span>            :     }
+<span class="lineNum">      25 </span>            : }
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span>            : namespace arg3
+<span class="lineNum">      28 </span>            : {
+<a name="29"><span class="lineNum">      29 </span>            :     namespace db</a>
+<span class="lineNum">      30 </span>            :     {
+<span class="lineNum">      31 </span><span class="lineCov">          1 :         const sql_null_type sql_null_type::instance;</span>
+<span class="lineNum">      32 </span>            : 
+<a name="33"><span class="lineNum">      33 </span>            :         const sql_null_type sql_null = sql_null_type::instance;</a>
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span><span class="lineCov">        336 :         sql_blob::sql_blob(const void *ptr, size_t size, sql_blob::cleanup_method cleanup) : p_(ptr), s_(size), destruct_(cleanup)</span>
+<span class="lineNum">      36 </span><span class="lineCov">        672 :         {</span>
+<a name="37"><span class="lineNum">      37 </span><span class="lineCov">        672 :         }</span></a>
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span><span class="lineCov">         20 :         sql_blob::sql_blob(const void *ptr, size_t size) : p_(ptr), s_(size), destruct_(NULL)</span>
+<a name="40"><span class="lineNum">      40 </span><span class="lineCov">         40 :         {</span></a>
+<span class="lineNum">      41 </span><span class="lineCov">         40 :         }</span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :         sql_blob::sql_blob(const sql_blob &amp;other) : p_(NULL), destruct_(NULL)</span>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :         {</span>
+<a name="44"><span class="lineNum">      44 </span><span class="lineNoCov">          0 :             copy(other);</span></a>
+<span class="lineNum">      45 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      46 </span><span class="lineCov">          4 :         sql_blob::sql_blob(sql_blob &amp;&amp;other) : p_(other.p_), s_(other.s_), destruct_(other.destruct_)</span>
+<span class="lineNum">      47 </span><span class="lineCov">          8 :         {</span>
+<span class="lineNum">      48 </span><span class="lineCov">          4 :             other.p_ = NULL;</span>
+<span class="lineNum">      49 </span><span class="lineCov">          4 :             other.s_ = 0;</span>
+<a name="50"><span class="lineNum">      50 </span><span class="lineCov">          4 :             other.destruct_ = NULL;</span></a>
+<span class="lineNum">      51 </span><span class="lineCov">          8 :         }</span>
+<span class="lineNum">      52 </span>            :         sql_blob &amp;sql_blob::operator=(const sql_blob &amp;other)
+<span class="lineNum">      53 </span>            :         {
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :             copy(other);</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :             return *this;</span>
+<a name="56"><span class="lineNum">      56 </span>            :         }</a>
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            :         sql_blob &amp;sql_blob::operator=(sql_blob &amp;&amp;other)
+<span class="lineNum">      59 </span>            :         {
+<span class="lineNum">      60 </span><span class="lineCov">          4 :             p_ = other.p_;</span>
+<span class="lineNum">      61 </span><span class="lineCov">          4 :             s_ = other.s_;</span>
+<span class="lineNum">      62 </span><span class="lineCov">          4 :             destruct_ = other.destruct_;</span>
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span><span class="lineCov">          4 :             other.p_ = NULL;</span>
+<span class="lineNum">      65 </span><span class="lineCov">          4 :             other.s_ = 0;</span>
+<span class="lineNum">      66 </span><span class="lineCov">          4 :             other.destruct_ = NULL;</span>
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span><span class="lineCov">          4 :             return *this;</span>
+<a name="69"><span class="lineNum">      69 </span>            :         }</a>
 <span class="lineNum">      70 </span>            : 
-<span class="lineNum">      71 </span><span class="lineCov">          4 :             return *this;</span>
-<a name="72"><span class="lineNum">      72 </span>            :         }</a>
-<span class="lineNum">      73 </span>            : 
-<span class="lineNum">      74 </span>            :         void sql_blob::clear()
-<span class="lineNum">      75 </span>            :         {
-<span class="lineNum">      76 </span><span class="lineCov">        490 :             if (p_ != NULL &amp;&amp; destruct_ != NULL)</span>
-<span class="lineNum">      77 </span>            :             {
-<span class="lineNum">      78 </span><span class="lineCov">        147 :                 destruct_(const_cast&lt;void *&gt;(p_));</span>
-<span class="lineNum">      79 </span><span class="lineCov">        147 :                 p_ = NULL;</span>
-<span class="lineNum">      80 </span><span class="lineCov">        147 :             }</span>
-<a name="81"><span class="lineNum">      81 </span><span class="lineCov">        254 :         }</span></a>
-<span class="lineNum">      82 </span>            : 
-<span class="lineNum">      83 </span>            :         sql_blob::~sql_blob()
-<span class="lineNum">      84 </span><span class="lineCov">        508 :         {</span>
-<span class="lineNum">      85 </span><span class="lineCov">        254 :             clear();</span>
-<a name="86"><span class="lineNum">      86 </span><span class="lineCov">        508 :         }</span></a>
-<span class="lineNum">      87 </span>            : 
-<span class="lineNum">      88 </span>            :         void sql_blob::copy(const sql_blob &amp;other)
-<span class="lineNum">      89 </span>            :         {
-<span class="lineNum">      90 </span><span class="lineNoCov">          0 :             clear();</span>
-<span class="lineNum">      91 </span><span class="lineNoCov">          0 :             if (other.s_ &gt; 0)</span>
-<span class="lineNum">      92 </span>            :             {
-<span class="lineNum">      93 </span><span class="lineNoCov">          0 :                 void *buf = calloc(1, other.s_);</span>
-<span class="lineNum">      94 </span><span class="lineNoCov">          0 :                 memcpy(buf, other.p_, other.s_);</span>
-<span class="lineNum">      95 </span><span class="lineNoCov">          0 :                 p_ = buf;</span>
-<span class="lineNum">      96 </span><span class="lineNoCov">          0 :             }</span>
-<span class="lineNum">      97 </span><span class="lineNoCov">          0 :             s_ = other.s_;</span>
-<span class="lineNum">      98 </span><span class="lineNoCov">          0 :             destruct_ = other.destruct_;</span>
-<a name="99"><span class="lineNum">      99 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     100 </span>            : 
-<span class="lineNum">     101 </span>            :         const void *sql_blob::ptr() const
-<span class="lineNum">     102 </span>            :         {
-<a name="103"><span class="lineNum">     103 </span><span class="lineCov">        267 :             return p_;</span></a>
-<span class="lineNum">     104 </span>            :         }
-<span class="lineNum">     105 </span>            :         size_t sql_blob::size() const
-<span class="lineNum">     106 </span>            :         {
-<span class="lineNum">     107 </span><span class="lineCov">        254 :             return s_;</span>
-<a name="108"><span class="lineNum">     108 </span>            :         }</a>
-<span class="lineNum">     109 </span>            : 
-<span class="lineNum">     110 </span>            :         string sql_blob::to_string() const
-<span class="lineNum">     111 </span>            :         {
-<span class="lineNum">     112 </span><span class="lineCov">         12 :             if (p_ == NULL) return &quot;0x0&quot;;</span>
-<span class="lineNum">     113 </span>            : 
-<span class="lineNum">     114 </span><span class="lineCov">          4 :             ostringstream os;</span>
-<span class="lineNum">     115 </span><span class="lineCov">          4 :             os &lt;&lt; hex;</span>
-<span class="lineNum">     116 </span><span class="lineCov">          4 :             os &lt;&lt; p_;</span>
-<span class="lineNum">     117 </span><span class="lineCov">          4 :             return os.str();</span>
-<a name="118"><span class="lineNum">     118 </span><span class="lineCov">         12 :         }</span></a>
-<span class="lineNum">     119 </span>            : 
-<span class="lineNum">     120 </span>            :         sql_blob::cleanup_method sql_blob::destructor() const
-<span class="lineNum">     121 </span>            :         {
-<span class="lineNum">     122 </span><span class="lineCov">          2 :             return destruct_;</span>
-<a name="123"><span class="lineNum">     123 </span>            :         }</a>
-<span class="lineNum">     124 </span>            : 
-<span class="lineNum">     125 </span>            :         sql_value::sql_value()  : value_(nullptr)
-<span class="lineNum">     126 </span><span class="lineCov">       3721 :         {</span>
-<a name="127"><span class="lineNum">     127 </span><span class="lineCov">       7442 :         }</span></a>
-<span class="lineNum">     128 </span>            : 
-<span class="lineNum">     129 </span>            :         sql_value::sql_value(const sql_value &amp;other) : value_(other.value_)
-<span class="lineNum">     130 </span><span class="lineCov">       4543 :         {</span>
-<a name="131"><span class="lineNum">     131 </span><span class="lineCov">       9086 :         }</span></a>
+<span class="lineNum">      71 </span>            :         void sql_blob::clear()
+<span class="lineNum">      72 </span>            :         {
+<span class="lineNum">      73 </span><span class="lineCov">        700 :             if (p_ != NULL &amp;&amp; destruct_ != NULL) {</span>
+<span class="lineNum">      74 </span><span class="lineCov">        183 :                 destruct_(const_cast&lt;void *&gt;(p_));</span>
+<span class="lineNum">      75 </span><span class="lineCov">        183 :                 p_ = NULL;</span>
+<span class="lineNum">      76 </span><span class="lineCov">        183 :             }</span>
+<a name="77"><span class="lineNum">      77 </span><span class="lineCov">        360 :         }</span></a>
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span>            :         sql_blob::~sql_blob()
+<span class="lineNum">      80 </span><span class="lineCov">        720 :         {</span>
+<a name="81"><span class="lineNum">      81 </span><span class="lineCov">        360 :             clear();</span></a>
+<span class="lineNum">      82 </span><span class="lineCov">        720 :         }</span>
+<span class="lineNum">      83 </span>            :         void sql_blob::copy(const sql_blob &amp;other)
+<span class="lineNum">      84 </span>            :         {
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :             clear();</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :             if (other.s_ &gt; 0) {</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :                 void *buf = calloc(1, other.s_);</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :                 memcpy(buf, other.p_, other.s_);</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :                 p_ = buf;</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :             s_ = other.s_;</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :             destruct_ = other.destruct_;</span>
+<a name="93"><span class="lineNum">      93 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span>            :         const void *sql_blob::ptr() const
+<span class="lineNum">      96 </span>            :         {
+<a name="97"><span class="lineNum">      97 </span><span class="lineCov">        401 :             return p_;</span></a>
+<span class="lineNum">      98 </span>            :         }
+<span class="lineNum">      99 </span>            :         size_t sql_blob::size() const
+<span class="lineNum">     100 </span>            :         {
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">        392 :             return s_;</span></a>
+<span class="lineNum">     102 </span>            :         }
+<span class="lineNum">     103 </span>            :         string sql_blob::to_string() const
+<span class="lineNum">     104 </span>            :         {
+<span class="lineNum">     105 </span><span class="lineCov">         12 :             if (p_ == NULL) return &quot;0x0&quot;;</span>
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span><span class="lineCov">          4 :             ostringstream os;</span>
+<span class="lineNum">     108 </span><span class="lineCov">          4 :             os &lt;&lt; hex;</span>
+<span class="lineNum">     109 </span><span class="lineCov">          4 :             os &lt;&lt; p_;</span>
+<span class="lineNum">     110 </span><span class="lineCov">          4 :             return os.str();</span>
+<a name="111"><span class="lineNum">     111 </span><span class="lineCov">         12 :         }</span></a>
+<span class="lineNum">     112 </span>            : 
+<span class="lineNum">     113 </span>            :         sql_blob::cleanup_method sql_blob::destructor() const
+<span class="lineNum">     114 </span>            :         {
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">          4 :             return destruct_;</span></a>
+<span class="lineNum">     116 </span>            :         }
+<span class="lineNum">     117 </span><span class="lineCov">       5590 :         sql_value::sql_value() : value_(nullptr)</span>
+<a name="118"><span class="lineNum">     118 </span><span class="lineCov">       5590 :         {</span></a>
+<span class="lineNum">     119 </span><span class="lineCov">      11180 :         }</span>
+<span class="lineNum">     120 </span><span class="lineCov">       6635 :         sql_value::sql_value(const sql_value &amp;other) : value_(other.value_)</span>
+<a name="121"><span class="lineNum">     121 </span><span class="lineCov">       6635 :         {</span></a>
+<span class="lineNum">     122 </span><span class="lineCov">      13270 :         }</span>
+<span class="lineNum">     123 </span><span class="lineCov">          5 :         sql_value::sql_value(sql_value &amp;&amp;other) : value_(std::move(other.value_))</span>
+<span class="lineNum">     124 </span><span class="lineCov">          5 :         {</span>
+<a name="125"><span class="lineNum">     125 </span><span class="lineCov">         15 :             other.value_ = nullptr;</span></a>
+<span class="lineNum">     126 </span><span class="lineCov">         10 :         }</span>
+<span class="lineNum">     127 </span>            :         sql_value &amp;sql_value::operator=(const sql_value &amp;other)
+<span class="lineNum">     128 </span>            :         {
+<span class="lineNum">     129 </span><span class="lineCov">       2543 :             value_ = other.value_;</span>
+<span class="lineNum">     130 </span><span class="lineCov">       2543 :             return *this;</span>
+<a name="131"><span class="lineNum">     131 </span>            :         }</a>
 <span class="lineNum">     132 </span>            : 
-<span class="lineNum">     133 </span><span class="lineCov">          5 :         sql_value::sql_value( sql_value &amp;&amp;other) : value_(std::move(other.value_))</span>
-<span class="lineNum">     134 </span><span class="lineCov">         10 :         {</span>
-<span class="lineNum">     135 </span><span class="lineCov">         15 :             other.value_ = nullptr;</span>
-<a name="136"><span class="lineNum">     136 </span><span class="lineCov">         10 :         }</span></a>
-<span class="lineNum">     137 </span>            : 
-<span class="lineNum">     138 </span>            :         sql_value &amp;sql_value::operator=(const sql_value &amp;other)
-<span class="lineNum">     139 </span>            :         {
-<span class="lineNum">     140 </span><span class="lineCov">       1807 :             value_ = other.value_;</span>
-<span class="lineNum">     141 </span><span class="lineCov">       1807 :             return *this;</span>
-<a name="142"><span class="lineNum">     142 </span>            :         }</a>
-<span class="lineNum">     143 </span>            : 
-<span class="lineNum">     144 </span>            :         sql_value &amp;sql_value::operator=(sql_value &amp;&amp; other)
-<span class="lineNum">     145 </span>            :         {
-<span class="lineNum">     146 </span><span class="lineCov">       2489 :             value_ = std::move(other.value_);</span>
-<span class="lineNum">     147 </span><span class="lineCov">       4978 :             other.value_ = nullptr;</span>
-<span class="lineNum">     148 </span><span class="lineCov">       2489 :             return *this;</span>
-<a name="149"><span class="lineNum">     149 </span><span class="lineNoCov">          0 :         }</span></a>
-<span class="lineNum">     150 </span>            : 
-<span class="lineNum">     151 </span>            :         sql_value::~sql_value()
-<span class="lineNum">     152 </span><span class="lineCov">      13747 :         {</span>
-<a name="153"><span class="lineNum">     153 </span><span class="lineCov">      27494 :         }</span></a>
-<span class="lineNum">     154 </span>            : 
-<span class="lineNum">     155 </span>            :         string sql_value::to_string() const
-<span class="lineNum">     156 </span>            :         {
-<span class="lineNum">     157 </span><span class="lineCov">         51 :             return value_.to_string();</span>
-<a name="158"><span class="lineNum">     158 </span>            :         }</a>
-<span class="lineNum">     159 </span>            : 
-<span class="lineNum">     160 </span>            :         void sql_value::bind_to(bindable *obj, int index) const
-<span class="lineNum">     161 </span>            :         {
-<span class="lineNum">     162 </span><span class="lineCov">       4538 :             if (value_.is_null())</span>
-<span class="lineNum">     163 </span>            :             {
-<span class="lineNum">     164 </span><span class="lineCov">       1420 :                 obj-&gt;bind(index, sql_null);</span>
-<span class="lineNum">     165 </span><span class="lineCov">       1420 :             }</span>
-<span class="lineNum">     166 </span><span class="lineCov">       3118 :             else if (value_.is_numeric())</span>
-<span class="lineNum">     167 </span>            :             {
-<span class="lineNum">     168 </span><span class="lineCov">       1258 :                 if (value_.is_real())</span>
-<span class="lineNum">     169 </span>            :                 {
-<span class="lineNum">     170 </span><span class="lineCov">        216 :                     obj-&gt;bind(index, value_.to_double(DOUBLE_DEFAULT));</span>
-<span class="lineNum">     171 </span><span class="lineCov">        216 :                 }</span>
-<span class="lineNum">     172 </span>            :                 else
-<span class="lineNum">     173 </span>            :                 {
-<span class="lineNum">     174 </span><span class="lineCov">       1042 :                     obj-&gt;bind(index, value_.to_llong(INT_DEFAULT));</span>
-<span class="lineNum">     175 </span>            :                 }
-<span class="lineNum">     176 </span><span class="lineCov">       1256 :             }</span>
-<span class="lineNum">     177 </span><span class="lineCov">       1860 :             else if (value_.is_string())</span>
-<span class="lineNum">     178 </span>            :             {
-<span class="lineNum">     179 </span><span class="lineCov">       3448 :                 obj-&gt;bind(index, value_.to_string());</span>
-<span class="lineNum">     180 </span><span class="lineCov">       1724 :             }</span>
-<span class="lineNum">     181 </span>            :             else
-<span class="lineNum">     182 </span>            :             {
-<span class="lineNum">     183 </span><span class="lineCov">        136 :                 obj-&gt;bind(index, value_.to_pointer(), value_.size(), NULL);</span>
-<span class="lineNum">     184 </span>            :             }
-<a name="185"><span class="lineNum">     185 </span><span class="lineCov">       4536 :         }</span></a>
-<span class="lineNum">     186 </span>            : 
-<span class="lineNum">     187 </span>            :         bool sql_value::operator==(const sql_null_type &amp;other) const
-<span class="lineNum">     188 </span>            :         {
-<a name="189"><span class="lineNum">     189 </span><span class="lineNoCov">          0 :             return value_.is_null();</span></a>
-<span class="lineNum">     190 </span>            :         }
-<span class="lineNum">     191 </span>            :         bool sql_value::operator==(const sql_value &amp;other) const
-<span class="lineNum">     192 </span>            :         {
-<a name="193"><span class="lineNum">     193 </span><span class="lineCov">         24 :             return other.value_ == value_;</span></a>
-<span class="lineNum">     194 </span>            :         }
-<span class="lineNum">     195 </span>            :         bool sql_value::operator==(const int &amp;other) const
-<span class="lineNum">     196 </span>            :         {
-<a name="197"><span class="lineNum">     197 </span><span class="lineCov">          4 :             return other == value_;</span></a>
-<span class="lineNum">     198 </span>            :         }
-<span class="lineNum">     199 </span>            :         bool sql_value::operator==(const long long &amp;other) const
-<span class="lineNum">     200 </span>            :         {
-<a name="201"><span class="lineNum">     201 </span><span class="lineNoCov">          0 :             return other == value_;</span></a>
-<span class="lineNum">     202 </span>            :         }
-<span class="lineNum">     203 </span>            :         bool sql_value::operator==(const double &amp;other) const
-<span class="lineNum">     204 </span>            :         {
-<a name="205"><span class="lineNum">     205 </span><span class="lineNoCov">          0 :             return other == value_;</span></a>
-<span class="lineNum">     206 </span>            :         }
-<span class="lineNum">     207 </span>            :         bool sql_value::operator==(const std::string &amp;other) const
-<span class="lineNum">     208 </span>            :         {
-<a name="209"><span class="lineNum">     209 </span><span class="lineNoCov">          0 :             return other == value_;</span></a>
-<span class="lineNum">     210 </span>            :         }
-<span class="lineNum">     211 </span>            :         bool sql_value::operator!=(const sql_null_type &amp;other) const
-<span class="lineNum">     212 </span>            :         {
-<a name="213"><span class="lineNum">     213 </span><span class="lineNoCov">          0 :             return !operator==(other);</span></a>
-<span class="lineNum">     214 </span>            :         }
-<span class="lineNum">     215 </span>            :         bool sql_value::operator!=(const sql_value &amp;other) const
-<span class="lineNum">     216 </span>            :         {
-<a name="217"><span class="lineNum">     217 </span><span class="lineCov">          4 :             return !operator==(other);</span></a>
-<span class="lineNum">     218 </span>            :         }
-<span class="lineNum">     219 </span>            :         bool sql_value::operator!=(const int &amp;other) const
-<span class="lineNum">     220 </span>            :         {
-<a name="221"><span class="lineNum">     221 </span><span class="lineNoCov">          0 :             return !operator==(other);</span></a>
-<span class="lineNum">     222 </span>            :         }
-<span class="lineNum">     223 </span>            :         bool sql_value::operator!=(const long long &amp;other) const
-<span class="lineNum">     224 </span>            :         {
-<a name="225"><span class="lineNum">     225 </span><span class="lineNoCov">          0 :             return !operator==(other);</span></a>
-<span class="lineNum">     226 </span>            :         }
-<span class="lineNum">     227 </span>            :         bool sql_value::operator!=(const double &amp;other) const
-<span class="lineNum">     228 </span>            :         {
-<a name="229"><span class="lineNum">     229 </span><span class="lineNoCov">          0 :             return !operator==(other);</span></a>
-<span class="lineNum">     230 </span>            :         }
-<span class="lineNum">     231 </span>            :         bool sql_value::operator!=(const std::string &amp;other) const
-<span class="lineNum">     232 </span>            :         {
-<span class="lineNum">     233 </span><span class="lineNoCov">          0 :             return !operator==(other);</span>
-<a name="234"><span class="lineNum">     234 </span>            :         }</a>
-<span class="lineNum">     235 </span>            : 
-<span class="lineNum">     236 </span>            :         sql_value::operator std::string() const
+<span class="lineNum">     133 </span>            :         sql_value &amp;sql_value::operator=(sql_value &amp;&amp;other)
+<span class="lineNum">     134 </span>            :         {
+<span class="lineNum">     135 </span><span class="lineCov">       3754 :             value_ = std::move(other.value_);</span>
+<span class="lineNum">     136 </span><span class="lineCov">       7508 :             other.value_ = nullptr;</span>
+<span class="lineNum">     137 </span><span class="lineCov">       3754 :             return *this;</span>
+<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span>            :         sql_value::~sql_value()
+<a name="141"><span class="lineNum">     141 </span><span class="lineCov">      20277 :         {</span></a>
+<span class="lineNum">     142 </span><span class="lineCov">      40554 :         }</span>
+<span class="lineNum">     143 </span>            :         string sql_value::to_string() const
+<span class="lineNum">     144 </span>            :         {
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">         57 :             return value_.to_string();</span></a>
+<span class="lineNum">     146 </span>            :         }
+<span class="lineNum">     147 </span>            :         bool sql_value::is_valid() const
+<span class="lineNum">     148 </span>            :         {
+<a name="149"><span class="lineNum">     149 </span><span class="lineNoCov">          0 :             return !value_.is_null();</span></a>
+<span class="lineNum">     150 </span>            :         }
+<span class="lineNum">     151 </span>            :         void sql_value::bind_to(bindable *obj, int index) const
+<span class="lineNum">     152 </span>            :         {
+<span class="lineNum">     153 </span><span class="lineCov">       6948 :             if (value_.is_null()) {</span>
+<span class="lineNum">     154 </span><span class="lineCov">       1660 :                 obj-&gt;bind(index, sql_null);</span>
+<span class="lineNum">     155 </span><span class="lineCov">       6948 :             } else if (value_.is_numeric()) {</span>
+<span class="lineNum">     156 </span><span class="lineCov">       2724 :                 if (value_.is_real()) {</span>
+<span class="lineNum">     157 </span><span class="lineCov">        424 :                     obj-&gt;bind(index, value_.to_double(DOUBLE_DEFAULT));</span>
+<span class="lineNum">     158 </span><span class="lineCov">        424 :                 } else {</span>
+<span class="lineNum">     159 </span><span class="lineCov">       2300 :                     obj-&gt;bind(index, value_.to_llong(INT_DEFAULT));</span>
+<span class="lineNum">     160 </span>            :                 }
+<span class="lineNum">     161 </span><span class="lineCov">       5284 :             } else if (value_.is_string()) {</span>
+<span class="lineNum">     162 </span><span class="lineCov">       4600 :                 obj-&gt;bind(index, value_.to_string());</span>
+<span class="lineNum">     163 </span><span class="lineCov">       2300 :             } else {</span>
+<span class="lineNum">     164 </span><span class="lineCov">        264 :                 obj-&gt;bind(index, value_.to_pointer(), value_.size(), NULL);</span>
+<span class="lineNum">     165 </span>            :             }
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">       6944 :         }</span></a>
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            :         bool sql_value::operator==(const sql_null_type &amp;other) const
+<span class="lineNum">     169 </span>            :         {
+<a name="170"><span class="lineNum">     170 </span><span class="lineNoCov">          0 :             return value_.is_null();</span></a>
+<span class="lineNum">     171 </span>            :         }
+<span class="lineNum">     172 </span>            :         bool sql_value::operator==(const sql_value &amp;other) const
+<span class="lineNum">     173 </span>            :         {
+<a name="174"><span class="lineNum">     174 </span><span class="lineCov">         40 :             return other.value_ == value_;</span></a>
+<span class="lineNum">     175 </span>            :         }
+<span class="lineNum">     176 </span>            :         bool sql_value::operator==(const int &amp;other) const
+<span class="lineNum">     177 </span>            :         {
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">          4 :             return other == value_;</span></a>
+<span class="lineNum">     179 </span>            :         }
+<span class="lineNum">     180 </span>            :         bool sql_value::operator==(const long long &amp;other) const
+<span class="lineNum">     181 </span>            :         {
+<a name="182"><span class="lineNum">     182 </span><span class="lineNoCov">          0 :             return other == value_;</span></a>
+<span class="lineNum">     183 </span>            :         }
+<span class="lineNum">     184 </span>            :         bool sql_value::operator==(const double &amp;other) const
+<span class="lineNum">     185 </span>            :         {
+<a name="186"><span class="lineNum">     186 </span><span class="lineNoCov">          0 :             return other == value_;</span></a>
+<span class="lineNum">     187 </span>            :         }
+<span class="lineNum">     188 </span>            :         bool sql_value::operator==(const std::string &amp;other) const
+<span class="lineNum">     189 </span>            :         {
+<a name="190"><span class="lineNum">     190 </span><span class="lineNoCov">          0 :             return other == value_;</span></a>
+<span class="lineNum">     191 </span>            :         }
+<span class="lineNum">     192 </span>            :         bool sql_value::operator!=(const sql_null_type &amp;other) const
+<span class="lineNum">     193 </span>            :         {
+<a name="194"><span class="lineNum">     194 </span><span class="lineNoCov">          0 :             return !operator==(other);</span></a>
+<span class="lineNum">     195 </span>            :         }
+<span class="lineNum">     196 </span>            :         bool sql_value::operator!=(const sql_value &amp;other) const
+<span class="lineNum">     197 </span>            :         {
+<a name="198"><span class="lineNum">     198 </span><span class="lineCov">          4 :             return !operator==(other);</span></a>
+<span class="lineNum">     199 </span>            :         }
+<span class="lineNum">     200 </span>            :         bool sql_value::operator!=(const int &amp;other) const
+<span class="lineNum">     201 </span>            :         {
+<a name="202"><span class="lineNum">     202 </span><span class="lineNoCov">          0 :             return !operator==(other);</span></a>
+<span class="lineNum">     203 </span>            :         }
+<span class="lineNum">     204 </span>            :         bool sql_value::operator!=(const long long &amp;other) const
+<span class="lineNum">     205 </span>            :         {
+<a name="206"><span class="lineNum">     206 </span><span class="lineNoCov">          0 :             return !operator==(other);</span></a>
+<span class="lineNum">     207 </span>            :         }
+<span class="lineNum">     208 </span>            :         bool sql_value::operator!=(const double &amp;other) const
+<span class="lineNum">     209 </span>            :         {
+<a name="210"><span class="lineNum">     210 </span><span class="lineNoCov">          0 :             return !operator==(other);</span></a>
+<span class="lineNum">     211 </span>            :         }
+<span class="lineNum">     212 </span>            :         bool sql_value::operator!=(const std::string &amp;other) const
+<span class="lineNum">     213 </span>            :         {
+<a name="214"><span class="lineNum">     214 </span><span class="lineNoCov">          0 :             return !operator==(other);</span></a>
+<span class="lineNum">     215 </span>            :         }
+<span class="lineNum">     216 </span>            :         sql_value::operator std::string() const
+<span class="lineNum">     217 </span>            :         {
+<a name="218"><span class="lineNum">     218 </span><span class="lineCov">         35 :             return to_string();</span></a>
+<span class="lineNum">     219 </span>            :         }
+<span class="lineNum">     220 </span>            :         sql_value::operator bool() const
+<span class="lineNum">     221 </span>            :         {
+<a name="222"><span class="lineNum">     222 </span><span class="lineCov">         16 :             return to_bool();</span></a>
+<span class="lineNum">     223 </span>            :         }
+<span class="lineNum">     224 </span>            :         bool sql_value::to_bool(const bool def) const
+<span class="lineNum">     225 </span>            :         {
+<a name="226"><span class="lineNum">     226 </span><span class="lineCov">         28 :             return value_.to_bool();</span></a>
+<span class="lineNum">     227 </span>            :         }
+<span class="lineNum">     228 </span>            :         sql_value::operator int() const
+<span class="lineNum">     229 </span>            :         {
+<a name="230"><span class="lineNum">     230 </span><span class="lineCov">         60 :             return to_int();</span></a>
+<span class="lineNum">     231 </span>            :         }
+<span class="lineNum">     232 </span>            :         int sql_value::to_int(const int def) const
+<span class="lineNum">     233 </span>            :         {
+<a name="234"><span class="lineNum">     234 </span><span class="lineCov">        464 :             return value_.to_int(def);</span></a>
+<span class="lineNum">     235 </span>            :         }
+<span class="lineNum">     236 </span>            :         sql_value::operator long long() const
 <span class="lineNum">     237 </span>            :         {
-<span class="lineNum">     238 </span><span class="lineCov">         31 :             return to_string();</span>
-<a name="239"><span class="lineNum">     239 </span>            :         }</a>
-<span class="lineNum">     240 </span>            : 
-<span class="lineNum">     241 </span>            :         sql_value::operator bool() const
-<span class="lineNum">     242 </span>            :         {
-<span class="lineNum">     243 </span><span class="lineCov">         16 :             return to_bool();</span>
-<a name="244"><span class="lineNum">     244 </span>            :         }</a>
-<span class="lineNum">     245 </span>            : 
-<span class="lineNum">     246 </span>            :         bool sql_value::to_bool(const bool def) const
-<span class="lineNum">     247 </span>            :         {
-<span class="lineNum">     248 </span><span class="lineCov">         22 :             return value_.to_bool();</span>
-<a name="249"><span class="lineNum">     249 </span>            :         }</a>
-<span class="lineNum">     250 </span>            : 
-<span class="lineNum">     251 </span>            :         sql_value::operator int() const
-<span class="lineNum">     252 </span>            :         {
-<span class="lineNum">     253 </span><span class="lineCov">          5 :             return to_int();</span>
-<a name="254"><span class="lineNum">     254 </span>            :         }</a>
-<span class="lineNum">     255 </span>            : 
-<span class="lineNum">     256 </span>            :         int sql_value::to_int(const int def) const
+<a name="238"><span class="lineNum">     238 </span><span class="lineCov">         10 :             return to_llong();</span></a>
+<span class="lineNum">     239 </span>            :         }
+<span class="lineNum">     240 </span>            :         long long sql_value::to_llong(const long long def) const
+<span class="lineNum">     241 </span>            :         {
+<a name="242"><span class="lineNum">     242 </span><span class="lineCov">         22 :             return value_.to_llong(def);</span></a>
+<span class="lineNum">     243 </span>            :         }
+<span class="lineNum">     244 </span>            :         sql_value::operator double() const
+<span class="lineNum">     245 </span>            :         {
+<a name="246"><span class="lineNum">     246 </span><span class="lineCov">         10 :             return to_double();</span></a>
+<span class="lineNum">     247 </span>            :         }
+<span class="lineNum">     248 </span>            :         double sql_value::to_double(const double def) const
+<span class="lineNum">     249 </span>            :         {
+<a name="250"><span class="lineNum">     250 </span><span class="lineCov">         18 :             return value_.to_double(def);</span></a>
+<span class="lineNum">     251 </span>            :         }
+<span class="lineNum">     252 </span>            :         sql_value::operator sql_blob() const
+<span class="lineNum">     253 </span>            :         {
+<a name="254"><span class="lineNum">     254 </span><span class="lineCov">         13 :             return to_blob();</span></a>
+<span class="lineNum">     255 </span>            :         }
+<span class="lineNum">     256 </span>            :         sql_blob sql_value::to_blob() const
 <span class="lineNum">     257 </span>            :         {
-<span class="lineNum">     258 </span><span class="lineCov">         23 :             return value_.to_int(def);</span>
-<a name="259"><span class="lineNum">     259 </span>            :         }</a>
-<span class="lineNum">     260 </span>            : 
-<span class="lineNum">     261 </span>            :         sql_value::operator long long() const
-<span class="lineNum">     262 </span>            :         {
-<span class="lineNum">     263 </span><span class="lineCov">         10 :             return to_llong();</span>
-<a name="264"><span class="lineNum">     264 </span>            :         }</a>
-<span class="lineNum">     265 </span>            : 
-<span class="lineNum">     266 </span>            :         long long sql_value::to_llong(const long long def) const
-<span class="lineNum">     267 </span>            :         {
-<span class="lineNum">     268 </span><span class="lineCov">         18 :             return value_.to_llong(def);</span>
-<a name="269"><span class="lineNum">     269 </span>            :         }</a>
+<a name="258"><span class="lineNum">     258 </span><span class="lineCov">         14 :             return sql_blob(value_.to_pointer(), value_.size(), NULL);</span></a>
+<span class="lineNum">     259 </span>            :         }
+<span class="lineNum">     260 </span>            :         std::ostream &amp;operator&lt;&lt;(std::ostream &amp;out, const sql_value &amp;value)
+<span class="lineNum">     261 </span>            :         {
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :             out &lt;&lt; value.value_;</span>
+<span class="lineNum">     263 </span>            : 
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :             return out;</span>
+<a name="265"><span class="lineNum">     265 </span>            :         }</a>
+<span class="lineNum">     266 </span>            : 
+<span class="lineNum">     267 </span>            :         std::ostream &amp;operator&lt;&lt;(std::ostream &amp;out, const sql_null_type &amp;value)
+<span class="lineNum">     268 </span>            :         {
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :             out &lt;&lt; &quot;NULL&quot;;</span>
 <span class="lineNum">     270 </span>            : 
-<span class="lineNum">     271 </span>            :         sql_value::operator double() const
-<span class="lineNum">     272 </span>            :         {
-<span class="lineNum">     273 </span><span class="lineCov">         10 :             return to_double();</span>
-<a name="274"><span class="lineNum">     274 </span>            :         }</a>
-<span class="lineNum">     275 </span>            : 
-<span class="lineNum">     276 </span>            :         double sql_value::to_double(const double def) const
-<span class="lineNum">     277 </span>            :         {
-<span class="lineNum">     278 </span><span class="lineCov">         16 :             return value_.to_double(def);</span>
-<a name="279"><span class="lineNum">     279 </span>            :         }</a>
-<span class="lineNum">     280 </span>            : 
-<span class="lineNum">     281 </span>            :         sql_value::operator sql_blob() const
-<span class="lineNum">     282 </span>            :         {
-<span class="lineNum">     283 </span><span class="lineCov">          9 :             return to_blob();</span>
-<a name="284"><span class="lineNum">     284 </span>            :         }</a>
-<span class="lineNum">     285 </span>            : 
-<span class="lineNum">     286 </span>            :         sql_blob sql_value::to_blob() const
-<span class="lineNum">     287 </span>            :         {
-<span class="lineNum">     288 </span><span class="lineCov">         10 :             return sql_blob(value_.to_pointer(), value_.size(), NULL);</span>
-<a name="289"><span class="lineNum">     289 </span>            :         }</a>
-<span class="lineNum">     290 </span>            : 
-<span class="lineNum">     291 </span>            :         std::ostream &amp;operator&lt;&lt;(std::ostream &amp;out, const sql_value &amp;value)
-<span class="lineNum">     292 </span>            :         {
-<span class="lineNum">     293 </span><span class="lineNoCov">          0 :             out &lt;&lt; value.value_;</span>
-<span class="lineNum">     294 </span>            : 
-<span class="lineNum">     295 </span><span class="lineNoCov">          0 :             return out;</span>
-<a name="296"><span class="lineNum">     296 </span>            :         }</a>
-<span class="lineNum">     297 </span>            : 
-<span class="lineNum">     298 </span>            :         std::ostream &amp;operator&lt;&lt;(std::ostream &amp;out, const sql_null_type &amp;value)
-<span class="lineNum">     299 </span>            :         {
-<span class="lineNum">     300 </span><span class="lineNoCov">          0 :             out &lt;&lt; &quot;NULL&quot;;</span>
-<span class="lineNum">     301 </span>            : 
-<a name="302"><span class="lineNum">     302 </span><span class="lineNoCov">          0 :             return out;</span></a>
-<span class="lineNum">     303 </span>            :         }
-<span class="lineNum">     304 </span>            :         std::ostream &amp;operator&lt;&lt;(std::ostream &amp;out, const sql_blob &amp;value)
-<span class="lineNum">     305 </span>            :         {
-<span class="lineNum">     306 </span><span class="lineNoCov">          0 :             out &lt;&lt; hex &lt;&lt; value.p_;</span>
-<span class="lineNum">     307 </span>            : 
-<span class="lineNum">     308 </span><span class="lineNoCov">          0 :             return out;</span>
-<span class="lineNum">     309 </span>            :         }
-<span class="lineNum">     310 </span>            : 
-<span class="lineNum">     311 </span>            : 
-<span class="lineNum">     312 </span>            :     }
-<span class="lineNum">     313 </span>            : }
+<a name="271"><span class="lineNum">     271 </span><span class="lineNoCov">          0 :             return out;</span></a>
+<span class="lineNum">     272 </span>            :         }
+<span class="lineNum">     273 </span>            :         std::ostream &amp;operator&lt;&lt;(std::ostream &amp;out, const sql_blob &amp;value)
+<span class="lineNum">     274 </span>            :         {
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :             out &lt;&lt; hex &lt;&lt; value.p_;</span>
+<span class="lineNum">     276 </span>            : 
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :             return out;</span>
+<span class="lineNum">     278 </span>            :         }
+<span class="lineNum">     279 </span>            :     }
+<span class="lineNum">     280 </span>            : }
 </pre>
       </td>
     </tr>
@@ -389,7 +348,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
   </table>
   <br>
 

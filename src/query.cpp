@@ -88,7 +88,12 @@ namespace arg3
 
             return *this;
         }
+        query &query::bind(size_t index, const wstring &value, int len)
+        {
+            bindings_[assert_binding_index(index)] = len > 0 ? value.substr(0, len) : value;
 
+            return *this;
+        }
         query &query::bind(size_t index, int value)
         {
             bindings_[assert_binding_index(index)] = value;
@@ -110,20 +115,13 @@ namespace arg3
             return *this;
         }
 
-        query &query::bind(size_t index, const sql_null_type &value)
+        query &query::bind(size_t index, const sql_null_t &value)
         {
             return bind(index);
         }
         query &query::bind(size_t index, double value)
         {
             bindings_[assert_binding_index(index)] = value;
-
-            return *this;
-        }
-
-        query &query::bind(size_t index, const void *data, size_t size, void (*pFree)(void *))
-        {
-            bindings_[assert_binding_index(index)] = sql_blob(data, size, pFree);
 
             return *this;
         }

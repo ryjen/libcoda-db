@@ -4,7 +4,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>LCOV - Code Coverage - src/select_query.h</title>
+  <title>LCOV - coverage.info.cleaned - src/select_query.h</title>
   <link rel="stylesheet" type="text/css" href="../gcov.css">
 </head>
 
@@ -28,29 +28,21 @@
           </tr>
           <tr>
             <td class="headerItem">Test:</td>
-            <td class="headerValue">Code Coverage</td>
+            <td class="headerValue">coverage.info.cleaned</td>
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">6</td>
-            <td class="headerCovTableEntry">7</td>
-            <td class="headerCovTableEntryMed">85.7 %</td>
-          </tr>
-          <tr>
-            <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-10-18 13:30:40</td>
-            <td></td>
-            <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">1</td>
-            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">6</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
-            <td class="headerItem">Legend:</td>
-            <td class="headerValueLeg">            Lines:
-            <span class="coverLegendCov">hit</span>
-            <span class="coverLegendNoCov">not hit</span>
-</td>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-11-29 13:17:37</td>
             <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -71,10 +63,10 @@
 <a name="1"><span class="lineNum">       1 </span>            : /*!</a>
 <span class="lineNum">       2 </span>            :  * @copyright ryan jennings (arg3.com), 2013 under LGPL
 <span class="lineNum">       3 </span>            :  */
-<span class="lineNum">       4 </span>            : #ifndef _ARG3_DB_SELECT_QUERY_H_
-<span class="lineNum">       5 </span>            : #define _ARG3_DB_SELECT_QUERY_H_
+<span class="lineNum">       4 </span>            : #ifndef ARG3_DB_SELECT_QUERY_H
+<span class="lineNum">       5 </span>            : #define ARG3_DB_SELECT_QUERY_H
 <span class="lineNum">       6 </span>            : 
-<span class="lineNum">       7 </span>            : #include &quot;base_query.h&quot;
+<span class="lineNum">       7 </span>            : #include &quot;query.h&quot;
 <span class="lineNum">       8 </span>            : #include &quot;resultset.h&quot;
 <span class="lineNum">       9 </span>            : #include &quot;where_clause.h&quot;
 <span class="lineNum">      10 </span>            : 
@@ -87,87 +79,89 @@
 <span class="lineNum">      17 </span>            :         /*!
 <span class="lineNum">      18 </span>            :          * a query to select values from a table
 <span class="lineNum">      19 </span>            :          */
-<span class="lineNum">      20 </span>            :         class select_query : public base_query
+<span class="lineNum">      20 </span>            :         class select_query : public query
 <span class="lineNum">      21 </span>            :         {
-<span class="lineNum">      22 </span>            :         public:
-<span class="lineNum">      23 </span>            : 
-<span class="lineNum">      24 </span>            :             friend class resultset;
-<span class="lineNum">      25 </span>            :         private:
+<span class="lineNum">      22 </span>            :            public:
+<span class="lineNum">      23 </span>            :             friend class resultset;
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span>            :            private:
 <span class="lineNum">      26 </span>            :             where_clause where_;
 <span class="lineNum">      27 </span>            :             string limit_;
 <span class="lineNum">      28 </span>            :             string orderBy_;
 <span class="lineNum">      29 </span>            :             string groupBy_;
 <span class="lineNum">      30 </span>            :             vector&lt;string&gt; columns_;
-<span class="lineNum">      31 </span>            :         public:
+<span class="lineNum">      31 </span>            :             string tableName_;
 <span class="lineNum">      32 </span>            : 
-<span class="lineNum">      33 </span>            :             select_query(sqldb *db, const string &amp;tableName, const vector&lt;string&gt; &amp;columns);
-<span class="lineNum">      34 </span>            : 
-<span class="lineNum">      35 </span>            :             select_query(sqldb *db, const string &amp;tableName);
-<span class="lineNum">      36 </span>            : 
-<span class="lineNum">      37 </span>            :             select_query(shared_ptr&lt;schema&gt; schema);
-<span class="lineNum">      38 </span>            : 
-<span class="lineNum">      39 </span>            :             select_query(const select_query &amp;other);
-<span class="lineNum">      40 </span>            : 
-<span class="lineNum">      41 </span>            :             select_query(select_query &amp;&amp;other);
-<span class="lineNum">      42 </span>            : 
-<span class="lineNum">      43 </span>            :             virtual ~select_query();
-<span class="lineNum">      44 </span>            : 
-<span class="lineNum">      45 </span>            :             vector&lt;string&gt; columns() const;
-<span class="lineNum">      46 </span>            : 
-<span class="lineNum">      47 </span>            :             string limit() const;
-<span class="lineNum">      48 </span>            : 
-<span class="lineNum">      49 </span>            :             string order_by() const;
-<span class="lineNum">      50 </span>            : 
-<span class="lineNum">      51 </span>            :             string group_by() const;
-<span class="lineNum">      52 </span>            : 
-<span class="lineNum">      53 </span>            :             select_query &amp;operator=(const select_query &amp;other);
-<span class="lineNum">      54 </span>            : 
-<span class="lineNum">      55 </span>            :             select_query &amp;operator=(select_query &amp;&amp; other);
-<span class="lineNum">      56 </span>            : 
-<span class="lineNum">      57 </span>            :             select_query &amp;where(const where_clause &amp;value);
-<span class="lineNum">      58 </span>            : 
-<span class="lineNum">      59 </span>            :             select_query &amp;where(const string &amp;value);
-<span class="lineNum">      60 </span>            : 
-<span class="lineNum">      61 </span>            :             select_query &amp;limit(const string &amp;value);
-<span class="lineNum">      62 </span>            : 
-<span class="lineNum">      63 </span>            :             select_query &amp;order_by(const string &amp;value);
-<span class="lineNum">      64 </span>            : 
-<span class="lineNum">      65 </span>            :             select_query &amp;group_by(const string &amp;value);
-<span class="lineNum">      66 </span>            : 
-<span class="lineNum">      67 </span>            :             string to_string() const;
-<span class="lineNum">      68 </span>            : 
-<span class="lineNum">      69 </span>            :             resultset execute();
-<span class="lineNum">      70 </span>            : 
-<span class="lineNum">      71 </span>            :             void execute(std::function&lt;void (const resultset &amp;)&gt;);
-<span class="lineNum">      72 </span>            : 
-<span class="lineNum">      73 </span>            :             int count();
-<span class="lineNum">      74 </span>            : 
-<span class="lineNum">      75 </span>            :             void reset();
-<span class="lineNum">      76 </span>            : 
-<span class="lineNum">      77 </span>            :             /*!
-<span class="lineNum">      78 </span>            :              * return the first column in the first row of the result set
-<a name="79"><span class="lineNum">      79 </span>            :              */</a>
-<span class="lineNum">      80 </span>            :             template&lt;typename T&gt;
-<span class="lineNum">      81 </span>            :             T execute_scalar()
-<span class="lineNum">      82 </span>            :             {
-<span class="lineNum">      83 </span><span class="lineCov">          4 :                 auto rs = execute();</span>
-<span class="lineNum">      84 </span>            : 
-<span class="lineNum">      85 </span><span class="lineCov">         44 :                 if (!rs.is_valid() || rs.begin() == rs.end())</span>
-<span class="lineNum">      86 </span><span class="lineNoCov">          0 :                     return T();</span>
-<span class="lineNum">      87 </span>            : 
-<span class="lineNum">      88 </span><span class="lineCov">          4 :                 auto row = rs.begin();</span>
+<span class="lineNum">      33 </span>            :            public:
+<span class="lineNum">      34 </span>            :             select_query(sqldb *db, const string &amp;tableName, const vector&lt;string&gt; &amp;columns);
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            :             select_query(sqldb *db, const string &amp;tableName);
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            :             select_query(shared_ptr&lt;schema&gt; schema);
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            :             select_query(const select_query &amp;other);
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            :             select_query(select_query &amp;&amp;other);
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            :             virtual ~select_query();
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            :             vector&lt;string&gt; columns() const;
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            :             string limit() const;
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span>            :             string order_by() const;
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            :             string group_by() const;
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span>            :             select_query &amp;operator=(const select_query &amp;other);
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            :             select_query &amp;operator=(select_query &amp;&amp;other);
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            :             select_query &amp;where(const where_clause &amp;value);
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            :             select_query &amp;where(const string &amp;value);
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            :             select_query &amp;limit(const string &amp;value);
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            :             select_query &amp;order_by(const string &amp;value);
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span>            :             select_query &amp;group_by(const string &amp;value);
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span>            :             string to_string() const;
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            :             resultset execute();
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span>            :             void execute(std::function&lt;void(const resultset &amp;)&gt;);
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            :             int count();
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span>            :             void reset();
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            :             string table_name() const;
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            :             select_query &amp;table_name(const string &amp;value);
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span>            :             /*!
+<span class="lineNum">      83 </span>            :              * return the first column in the first row of the result set
+<a name="84"><span class="lineNum">      84 </span>            :              */</a>
+<span class="lineNum">      85 </span>            :             template &lt;typename T&gt;
+<span class="lineNum">      86 </span>            :             T execute_scalar()
+<span class="lineNum">      87 </span>            :             {
+<span class="lineNum">      88 </span><span class="lineCov">        488 :                 auto rs = execute();</span>
 <span class="lineNum">      89 </span>            : 
-<span class="lineNum">      90 </span><span class="lineCov">          8 :                 auto col = row-&gt;begin();</span>
+<span class="lineNum">      90 </span><span class="lineCov">       5368 :                 if (!rs.is_valid() || rs.begin() == rs.end()) return T();</span>
 <span class="lineNum">      91 </span>            : 
-<span class="lineNum">      92 </span><span class="lineCov">         12 :                 return *col;</span>
-<span class="lineNum">      93 </span><span class="lineCov">          8 :             }</span>
-<span class="lineNum">      94 </span>            : 
-<span class="lineNum">      95 </span>            :         };
-<span class="lineNum">      96 </span>            : 
-<span class="lineNum">      97 </span>            :     }
-<span class="lineNum">      98 </span>            : }
-<span class="lineNum">      99 </span>            : 
-<span class="lineNum">     100 </span>            : #endif
+<span class="lineNum">      92 </span><span class="lineCov">        488 :                 auto row = rs.begin();</span>
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span><span class="lineCov">        976 :                 auto col = row-&gt;begin();</span>
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span><span class="lineCov">       1460 :                 return *col;</span>
+<span class="lineNum">      97 </span><span class="lineCov">        976 :             }</span>
+<span class="lineNum">      98 </span>            :         };
+<span class="lineNum">      99 </span>            :     }
+<span class="lineNum">     100 </span>            : }
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span>            : #endif
 </pre>
       </td>
     </tr>
@@ -176,7 +170,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
   </table>
   <br>
 

@@ -36,25 +36,9 @@ namespace arg3
 
             bool is_valid() const;
 
-            sql_blob to_blob() const;
-
-            double to_double() const;
-
-            int to_int() const;
-
-            bool to_bool() const;
-
-            long long to_llong() const;
-
-            const unsigned char *to_text() const;
-
-            string to_string() const;
-
-            const wchar_t *to_text16() const;
-
             sql_value to_value() const;
 
-            int type() const;
+            int sql_type() const;
 
             string name() const;
         };
@@ -79,25 +63,9 @@ namespace arg3
 
             bool is_valid() const;
 
-            sql_blob to_blob() const;
-
-            double to_double() const;
-
-            int to_int() const;
-
-            bool to_bool() const;
-
-            long long to_llong() const;
-
-            const unsigned char *to_text() const;
-
-            string to_string() const;
-
-            const wchar_t *to_text16() const;
-
             sql_value to_value() const;
 
-            int type() const;
+            int sql_type() const;
 
             string name() const;
         };

@@ -116,7 +116,9 @@ go_bandit([]() {
             user1.set("first_name", "Bryan");
             user1.set("last_name", "true");
 
-            sql_blob data(calloc(4, sizeof(int)), 4 * sizeof(int), free);
+            void* ptr = calloc(4, sizeof(int));
+
+            sql_blob data(ptr, 4 * sizeof(int));
 
             user1.set("data", data);
 
@@ -124,6 +126,7 @@ go_bandit([]() {
 
             user1.save();
 
+            free(ptr);
 
             user user2(&mysql_testdb);
 
@@ -193,7 +196,7 @@ go_bandit([]() {
                 it("as cached results", []() {
                     auto c = get_stmt_column(4, 0);
 
-                    Assert::That(static_pointer_cast<mysql_cached_column>(c)->type(), Equals(MYSQL_TYPE_BLOB));
+                    Assert::That(static_pointer_cast<mysql_cached_column>(c)->sql_type(), Equals(MYSQL_TYPE_BLOB));
 
                     sql_blob b = c->to_value();
 
@@ -203,7 +206,7 @@ go_bandit([]() {
                 it("as statement results", []() {
                     auto c = get_stmt_column(4, 0);
 
-                    Assert::That(static_pointer_cast<mysql_stmt_column>(c)->type(), Equals(MYSQL_TYPE_BLOB));
+                    Assert::That(static_pointer_cast<mysql_stmt_column>(c)->sql_type(), Equals(MYSQL_TYPE_BLOB));
 
                     sql_blob b = c->to_value();
 
@@ -213,7 +216,7 @@ go_bandit([]() {
                 it("as results", []() {
                     auto c = get_results_column(4, 0);
 
-                    Assert::That(static_pointer_cast<mysql_column>(c)->type(), Equals(MYSQL_TYPE_BLOB));
+                    Assert::That(static_pointer_cast<mysql_column>(c)->sql_type(), Equals(MYSQL_TYPE_BLOB));
 
                     sql_blob b = c->to_value();
 
@@ -228,36 +231,36 @@ go_bandit([]() {
 
                     auto c = get_stmt_column(3, 0);
 
-                    Assert::That(static_pointer_cast<mysql_cached_column>(c)->type(), Equals(MYSQL_TYPE_DOUBLE));
+                    Assert::That(static_pointer_cast<mysql_cached_column>(c)->sql_type(), Equals(MYSQL_TYPE_DOUBLE));
 
                     Assert::That(c->to_value(), Equals(3.1456));
 
                     c = get_stmt_column(1, 0);
 
-                    Assert::That(c->to_double(), Equals(DOUBLE_DEFAULT));
+                    AssertThrows(arg3::illegal_conversion, c->to_value().to_double());
 
                 });
             } else {
                 it("as statement results", []() {
                     auto c = get_stmt_column(3, 0);
 
-                    Assert::That(static_pointer_cast<mysql_stmt_column>(c)->type(), Equals(MYSQL_TYPE_DOUBLE));
+                    Assert::That(static_pointer_cast<mysql_stmt_column>(c)->sql_type(), Equals(MYSQL_TYPE_DOUBLE));
                     Assert::That(c->to_value(), Equals(3.1456));
 
                     c = get_stmt_column(1, 0);
 
-                    Assert::That(c->to_double(), Equals(DOUBLE_DEFAULT));
+                    AssertThrows(arg3::illegal_conversion, c->to_value().to_double());
                 });
 
                 it("as results", []() {
                     auto c = get_results_column(3, 0);
 
-                    Assert::That(static_pointer_cast<mysql_column>(c)->type(), Equals(MYSQL_TYPE_DOUBLE));
+                    Assert::That(static_pointer_cast<mysql_column>(c)->sql_type(), Equals(MYSQL_TYPE_DOUBLE));
                     Assert::That(c->to_value(), Equals(3.1456));
 
                     c = get_results_column(1, 0);
 
-                    Assert::That(c->to_double(), Equals(DOUBLE_DEFAULT));
+                    AssertThrows(arg3::illegal_conversion, c->to_value().to_double());
                 });
             }
         });
@@ -268,31 +271,31 @@ go_bandit([]() {
                 it("as cached results", []() {
                     auto c = get_stmt_column(3, 0);
 
-                    Assert::That(c->to_int(), Equals(3));
+                    Assert::That(c->to_value(), Equals(3));
 
                     c = get_stmt_column(1, 0);
 
-                    Assert::That(c->to_int(), Equals(INT_DEFAULT));
+                    AssertThrows(arg3::illegal_conversion, c->to_value().to_int());
                 });
             } else {
                 it("as statement results", []() {
                     auto c = get_stmt_column(3, 0);
 
-                    Assert::That(c->to_int(), Equals(3));
+                    Assert::That(c->to_value(), Equals(3));
 
                     c = get_stmt_column(1, 0);
 
-                    Assert::That(c->to_int(), Equals(INT_DEFAULT));
+                    AssertThrows(arg3::illegal_conversion, c->to_value().to_int());
                 });
 
                 it("as results", []() {
                     auto c = get_results_column(3, 0);
 
-                    Assert::That(c->to_int(), Equals(3));
+                    Assert::That(c->to_value(), Equals(3));
 
                     c = get_results_column(1, 0);
 
-                    Assert::That(c->to_int(), Equals(INT_DEFAULT));
+                    AssertThrows(arg3::illegal_conversion, c->to_value().to_int());
                 });
             }
         });
@@ -303,31 +306,31 @@ go_bandit([]() {
                 it("as cached results", []() {
                     auto c = get_stmt_column(3, 0);
 
-                    Assert::That(c->to_llong(), Equals(3));
+                    Assert::That(c->to_value(), Equals(3));
 
                     c = get_stmt_column(1, 0);
 
-                    Assert::That(c->to_llong(), Equals(INT_DEFAULT));
+                    AssertThrows(arg3::illegal_conversion, c->to_value().to_llong());
                 });
             } else {
                 it("as statement results", []() {
                     auto c = get_stmt_column(3, 0);
 
-                    Assert::That(c->to_llong(), Equals(3));
+                    Assert::That(c->to_value(), Equals(3));
 
                     c = get_stmt_column(1, 0);
 
-                    Assert::That(c->to_llong(), Equals(INT_DEFAULT));
+                    AssertThrows(arg3::illegal_conversion, c->to_value().to_llong());
                 });
 
                 it("as results", []() {
                     auto c = get_results_column(3, 0);
 
-                    Assert::That(c->to_llong(), Equals(3));
+                    Assert::That(c->to_value(), Equals(3));
 
                     c = get_results_column(1, 0);
 
-                    Assert::That(c->to_llong(), Equals(INT_DEFAULT));
+                    AssertThrows(arg3::illegal_conversion, c->to_value().to_llong());
                 });
             }
         });
@@ -337,43 +340,43 @@ go_bandit([]() {
                 it("as cached results", []() {
                     auto c = get_stmt_column(2, 0);
 
-                    Assert::That(c->to_bool(), IsTrue());
+                    Assert::That(c->to_value(), IsTrue());
 
                     c = get_stmt_column(1, 0);
 
-                    Assert::That(c->to_bool(), IsFalse());
+                    Assert::That(c->to_value(), IsFalse());
 
                     c = get_stmt_column(2, 1);
 
-                    Assert::That(c->to_bool(), IsFalse());
+                    Assert::That(c->to_value(), IsFalse());
                 });
             } else {
                 it("as statement results", []() {
                     auto c = get_stmt_column(2, 0);
 
-                    Assert::That(c->to_bool(), IsTrue());
+                    Assert::That(c->to_value(), IsTrue());
 
                     c = get_stmt_column(1, 0);
 
-                    Assert::That(c->to_bool(), IsFalse());
+                    Assert::That(c->to_value(), IsFalse());
 
                     c = get_stmt_column(2, 1);
 
-                    Assert::That(c->to_bool(), IsFalse());
+                    Assert::That(c->to_value(), IsFalse());
                 });
 
                 it("as results", []() {
                     auto c = get_results_column(2, 0);
 
-                    Assert::That(c->to_bool(), IsTrue());
+                    Assert::That(c->to_value(), IsTrue());
 
                     c = get_results_column(1, 0);
 
-                    Assert::That(c->to_bool(), IsFalse());
+                    Assert::That(c->to_value(), IsFalse());
 
                     c = get_results_column(2, 1);
 
-                    Assert::That(c->to_bool(), IsFalse());
+                    Assert::That(c->to_value(), IsFalse());
                 });
             }
         });

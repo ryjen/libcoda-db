@@ -24,8 +24,8 @@ namespace arg3
         {
            private:
             mysql_db *db_;
-            mysql_binding bindings_;
             shared_ptr<MYSQL_STMT> stmt_;
+            mysql_binding bindings_;
 
            public:
             mysql_statement(mysql_db *db);
@@ -43,14 +43,14 @@ namespace arg3
             int last_number_of_changes();
             long long last_insert_id();
             string last_error();
+
             mysql_statement &bind(size_t index, int value);
             mysql_statement &bind(size_t index, long long value);
             mysql_statement &bind(size_t index, double value);
             mysql_statement &bind(size_t index, const std::string &value, int len = -1);
+            mysql_statement &bind(size_t index, const std::wstring &value, int len = -1);
             mysql_statement &bind(size_t index, const sql_blob &value);
-            mysql_statement &bind(size_t index, const sql_null_type &value);
-            mysql_statement &bind_value(size_t index, const sql_value &v);
-            mysql_statement &bind(size_t index, const void *data, size_t size, void (*pFree)(void *));
+            mysql_statement &bind(size_t index, const sql_null_t &value);
         };
     }
 }

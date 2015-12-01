@@ -31,18 +31,6 @@ namespace arg3
 
             virtual bool is_valid() const = 0;
 
-            virtual sql_blob to_blob() const = 0;
-
-            virtual double to_double() const = 0;
-
-            virtual int to_int() const = 0;
-
-            virtual bool to_bool() const = 0;
-
-            virtual long long to_llong() const = 0;
-
-            virtual string to_string() const = 0;
-
             virtual sql_value to_value() const = 0;
 
             virtual string name() const = 0;
@@ -75,27 +63,7 @@ namespace arg3
 
             bool is_valid() const;
 
-            sql_blob to_blob() const;
-
-            double to_double() const;
-
-            int to_int() const;
-
-            bool to_bool() const;
-
-            long long to_llong() const;
-
-            string to_string() const;
-
             sql_value to_value() const;
-
-            operator string() const;
-
-            operator int() const;
-
-            operator long long() const;
-
-            operator double() const;
 
             string name() const;
 
