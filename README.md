@@ -178,9 +178,10 @@ else
 /* update a user (UPDATE ...) */
 update_query query(&testdb, "users");
 
-query.where("id = ?");
+/* using where clause literals WHERE .. OR .. */
+query.where("id = ?"_w || "last_name = ?"_w);
 
-query.bind(1, 3432).bind(2, "mark").bind(3, "anthony").bind(4, 1234);
+query.bind(1, 3432).bind(2, "mark").bind(3, "anthony").bind(4, 1234).bind("henry");
 
 query.execute();
 ```
@@ -189,9 +190,9 @@ query.execute();
 /* delete a user (DELETE FROM ...) */
 delete_query query(&testdb, "users");
 
-query.where("id = ?");
+query.where("id = ?"_w && "first_name = ?"_w);
 
-query.bind(1, 1234);
+query.bind(1, 1234).bind(1, "bob");
 
 query.execute();
 
