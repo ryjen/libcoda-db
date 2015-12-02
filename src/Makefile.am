@@ -8,7 +8,7 @@ libarg3db_la_LIBADD = ../libs/variant/src/libarg3variant.la
 libarg3db_la_SOURCES = query.cpp column.cpp delete_query.cpp modify_query.cpp mysql_column.cpp mysql_binding.cpp mysql_db.cpp \
 	mysql_resultset.cpp mysql_row.cpp mysql_statement.cpp resultset.cpp row.cpp schema.cpp schema_factory.cpp select_query.cpp \
 	sql_value.cpp sqldb.cpp sqlite3_column.cpp sqlite3_db.cpp sqlite3_resultset.cpp sqlite3_row.cpp sqlite3_statement.cpp \
-	where_clause.cpp
+	where_clause.cpp log.cpp
 
 libarg3db_la_CXXFLAGS = $(LIBARG3DB_LA_CXXFLAGS) $(COVERAGE_CFLAGS) -I../libs/variant/src
 

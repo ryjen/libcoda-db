@@ -121,5 +121,11 @@ namespace arg3
             and_.clear();
             or_.clear();
         }
+
+        ostream &operator<<(ostream &out, const where_clause &where)
+        {
+            out << where.to_string();
+            return out;
+        }
     }
 }

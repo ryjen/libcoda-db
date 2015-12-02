@@ -71,16 +71,12 @@ namespace arg3
             throw database_exception("unknown database " + uri.value);
         }
 
-        sqldb::sqldb() : logLevel_(LOG_NONE), cacheLevel_(CACHE_NONE)
+        sqldb::sqldb() : cacheLevel_(CACHE_NONE)
         {
         }
         resultset sqldb::execute(const string &sql)
         {
             return execute(sql, cache_level() == sqldb::CACHE_RESULTSET);
-        }
-        void sqldb::set_log_level(LogLevel level)
-        {
-            logLevel_ = level;
         }
         void sqldb::set_cache_level(CacheLevel level)
         {
@@ -89,10 +85,6 @@ namespace arg3
         sqldb::CacheLevel sqldb::cache_level() const
         {
             return cacheLevel_;
-        }
-        void sqldb::log(LogLevel level, const string &message)
-        {
-            if (logLevel_ >= level) cout << "sqldb: " << message << endl;
         }
     }
 }

@@ -12,10 +12,16 @@ namespace arg3
         select_query::select_query(sqldb *db, const string &tableName, const vector<string> &columns)
             : query(db), columns_(columns), tableName_(tableName)
         {
+            if (tableName_.empty()) {
+                throw database_exception("no table name provided to select query");
+            }
         }
 
         select_query::select_query(sqldb *db, const string &tableName) : query(db), columns_(), tableName_(tableName)
         {
+            if (tableName_.empty()) {
+                throw database_exception("no table name provided to select query");
+            }
         }
         select_query::select_query(const select_query &other)
             : query(other),

@@ -87,6 +87,8 @@ go_bandit([]() {
         it("can be batch executed", []() {
             modify_query query(testdb, "users", {"id", "first_name", "last_name"});
 
+            query.set_flags(modify_query::BATCH);
+            
             for (int i = 0; i < 3; i++) {
                 char buf[100] = {0};
 
@@ -100,7 +102,7 @@ go_bandit([]() {
 
                 query.bind(3, buf);
 
-                Assert::That(query.execute(NULL, true), Equals(1));
+                Assert::That(query.execute(), Equals(1));
             }
 
             select_query select(testdb, "users");

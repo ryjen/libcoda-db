@@ -14,6 +14,9 @@ namespace arg3
     {
         sqlite3_db::sqlite3_db(const string &name) : sqldb(), db_(NULL), filename_(name), schema_factory_(this)
         {
+            if (filename_.empty()) {
+                throw database_exception("no file name provided to sqlite3 database");
+            }
         }
 
         sqlite3_db::sqlite3_db(const sqlite3_db &other)
@@ -51,6 +54,10 @@ namespace arg3
 
         void sqlite3_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
         {
+            if (tableName.empty()) {
+                throw database_exception("no table name to query schema");
+            }
+
             auto rs = execute("pragma table_info(" + tableName + ")");
 
             for (auto &row : rs) {
@@ -143,7 +150,9 @@ namespace arg3
         {
             sqlite3_stmt *stmt;
 
-            if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK) throw database_exception(last_error());
+            if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK) {
+                throw database_exception(last_error());
+            }
 
             shared_ptr<resultset_impl> impl;
 

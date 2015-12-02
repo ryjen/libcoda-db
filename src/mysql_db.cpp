@@ -12,16 +12,19 @@ namespace arg3
 {
     namespace db
     {
-        string last_stmt_error(MYSQL_STMT *stmt)
+        namespace helper
         {
-            if (!stmt) return "invalid";
+            string last_stmt_error(MYSQL_STMT *stmt)
+            {
+                if (!stmt) return "invalid";
 
-            ostringstream buf;
+                ostringstream buf;
 
-            buf << mysql_stmt_errno(stmt);
-            buf << ": " << mysql_stmt_error(stmt);
+                buf << mysql_stmt_errno(stmt);
+                buf << ": " << mysql_stmt_error(stmt);
 
-            return buf.str();
+                return buf.str();
+            }
         }
 
         mysql_db::mysql_db(const string &dbName, const string &user, const string &password, const string &host, int port)
@@ -88,9 +91,9 @@ namespace arg3
 
         string mysql_db::connection_string() const
         {
-            char buf[BUFSIZ + 1] = {0};
-            snprintf(buf, BUFSIZ, "mysql://%s@%s:%d/%s", user_.c_str(), host_.c_str(), port_, dbName_.c_str());
-            return buf;
+            ostringstream buf;
+            buf << "mysql://" << user_ << "@" << host_ << ":" << port_ << "/" << dbName_;
+            return buf.str();
         }
 
         schema_factory *mysql_db::schemas()
@@ -147,8 +150,6 @@ namespace arg3
             db_ = mysql_init(NULL);
 
             if (mysql_real_connect(db_, host_.c_str(), user_.c_str(), password_.c_str(), dbName_.c_str(), port_, NULL, 0) == NULL) {
-                mysql_close(db_);
-                db_ = NULL;
                 throw database_exception("No connection could be made to the database");
             }
         }
@@ -168,7 +169,9 @@ namespace arg3
 
         string mysql_db::last_error() const
         {
-            assert(db_ != NULL);
+            if(db_ == NULL) {
+                return string();
+            }
 
             ostringstream buf;
 
@@ -180,21 +183,27 @@ namespace arg3
 
         long long mysql_db::last_insert_id() const
         {
-            assert(db_ != NULL);
+            if(db_ == NULL) {
+                return 0;
+            }
 
             return mysql_insert_id(db_);
         }
 
         int mysql_db::last_number_of_changes() const
         {
-            assert(db_ != NULL);
+            if(db_ == NULL) {
+                return 0;
+            }
 
             return mysql_affected_rows(db_);
         }
 
         resultset mysql_db::execute(const string &sql, bool cache)
         {
-            assert(db_ != NULL);
+            if(db_ == NULL) {
+                throw database_exception("database is not open");
+            }
 
             MYSQL_RES *res;
 

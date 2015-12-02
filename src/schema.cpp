@@ -16,6 +16,13 @@ namespace arg3
 
         schema::schema(sqldb *db, const string &tablename) : db_(db), tableName_(tablename)
         {
+            if (db_ == NULL) {
+                throw database_exception("no database provided for schema");
+            }
+
+            if (tableName_.empty()) {
+                throw database_exception("no table name provided for schema");
+            }
         }
 
         schema::~schema()
@@ -60,11 +67,9 @@ namespace arg3
 
         void schema::init()
         {
-            assert(db_ != NULL);
-
-            assert(db_->is_open());
-
-            assert(!tableName_.empty());
+            if(!db_->is_open()) {
+                throw database_exception("database is not open");
+            }
 
             db_->query_schema(tableName_, columns_);
         }
@@ -89,7 +94,9 @@ namespace arg3
             vector<string> names;
 
             for (auto &c : columns_) {
-                if (c.pk) names.push_back(c.name);
+                if (c.pk) {
+                    names.push_back(c.name);
+                }
             }
 
             return names;

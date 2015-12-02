@@ -28,9 +28,12 @@ namespace arg3
     {
         const nullptr_t sql_null = nullptr;
 
-
         void sql_value::bind_to(bindable *obj, int index) const
         {
+            if (obj == NULL) {
+                throw database_exception("no bindable object for sql value binding");
+            }
+
             if (is_null()) {
                 obj->bind(index, sql_null);
             } else if (is_numeric()) {

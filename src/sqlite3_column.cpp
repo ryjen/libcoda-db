@@ -37,17 +37,11 @@ namespace arg3
             return stmt_ != nullptr;
         }
 
-        void sqlite3_column::assert_value() const throw(no_such_column_exception)
+        sql_value sqlite3_column::to_value() const
         {
             if (!is_valid()) {
                 throw no_such_column_exception();
             }
-        }
-
-        sql_value sqlite3_column::to_value() const
-        {
-            assert_value();
-
             switch (sqlite3_column_type(stmt_.get(), column_)) {
                 case SQLITE_INTEGER:
                     return sqlite3_column_int64(stmt_.get(), column_);
@@ -68,8 +62,9 @@ namespace arg3
 
         int sqlite3_column::sql_type() const
         {
-            assert_value();
-
+            if (!is_valid()) {
+                throw no_such_column_exception();
+            }
             return sqlite3_column_type(stmt_.get(), column_);
         }
 
@@ -83,6 +78,14 @@ namespace arg3
 
         sqlite3_cached_column::sqlite3_cached_column(shared_ptr<sqlite3_stmt> stmt, int column)
         {
+            set_value(stmt, column);
+        }
+
+        void sqlite3_cached_column::set_value(shared_ptr<sqlite3_stmt> stmt, int column)
+        {
+            if (stmt == nullptr) {
+                throw database_exception("no statement provided to sqlite3 column");
+            }
             name_ = sqlite3_column_name(stmt.get(), column);
             type_ = sqlite3_column_type(stmt.get(), column);
 

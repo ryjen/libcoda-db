@@ -29,7 +29,9 @@ namespace arg3
 
         schema_factory::schema_factory(sqldb *db) : db_(db)
         {
-            assert(db != NULL);
+            if (db_ == NULL) {
+                throw database_exception("No database provided for schema factory");
+            }
         }
 
         schema_factory::schema_factory(schema_factory &&other) : schema_cache_(std::move(other.schema_cache_)), db_(other.db_)

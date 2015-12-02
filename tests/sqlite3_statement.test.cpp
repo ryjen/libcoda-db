@@ -44,7 +44,9 @@ go_bandit([]() {
         });
 
         it("throws exceptions", []() {
-            sqlite3_statement stmt(NULL);
+            sqlite3_db db;
+
+            sqlite3_statement stmt(&db);
 
             AssertThrows(database_exception, stmt.prepare("select * from users"));
 

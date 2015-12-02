@@ -33,8 +33,30 @@ namespace arg3
             }
         };
 
-
         shared_ptr<sqldb> get_db_from_uri(const string &uri);
+
+
+        namespace log
+        {
+            /*! levels of logging */
+            typedef enum {
+                /*! logging is disabled */
+                None = 0,
+                /*! only error messages will be logged */
+                Error = 1,
+                /*! warnings and errors will be logged */
+                Warn = 2,
+                /*! info, warning, and error messages will be logged */
+                Info = 3,
+                /*! debug, info, warning and error messages will be logged */
+                Debug = 4,
+                /*! trace, debug, info, warning and error messages will be logged */
+                Trace = 5
+            } Level;
+
+            void set_level(Level level);
+        }
+
 
         /*!
          *  a base class for a specific implementation of a database
@@ -42,8 +64,6 @@ namespace arg3
         class sqldb
         {
            public:
-            typedef enum { LOG_NONE, LOG_INFO, LOG_DEBUG, LOG_VERBOSE } LogLevel;
-
             typedef enum { CACHE_NONE, CACHE_RESULTSET, CACHE_ROW, CACHE_COLUMN } CacheLevel;
 
             sqldb();
@@ -77,18 +97,14 @@ namespace arg3
 
             virtual shared_ptr<statement> create_statement() = 0;
 
-            void set_log_level(LogLevel level);
-
-            void log(LogLevel level, const string &message);
-
             void set_cache_level(CacheLevel level);
 
             CacheLevel cache_level() const;
 
            private:
-            LogLevel logLevel_;
             CacheLevel cacheLevel_;
         };
+
     }
 }
 

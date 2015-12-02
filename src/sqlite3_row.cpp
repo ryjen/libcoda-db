@@ -10,9 +10,13 @@ namespace arg3
     {
         sqlite3_row::sqlite3_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt) : row_impl(), stmt_(stmt), db_(db)
         {
-            assert(db_ != NULL);
+            if (db_ == NULL) {
+                throw database_exception("no database provided to sqlite3 row");
+            }
 
-            assert(stmt_ != nullptr);
+            if (stmt_ == nullptr) {
+                throw database_exception("no statement provided to sqlite3 row");
+            }
 
             size_ = sqlite3_column_count(stmt_.get());
         }
@@ -41,7 +45,9 @@ namespace arg3
 
         row_impl::column_type sqlite3_row::column(size_t nPosition) const
         {
-            assert(nPosition < size());
+            if(nPosition >= size()) {
+                throw no_such_column_exception();
+            }
 
             if (db_->cache_level() == sqldb::CACHE_COLUMN)
                 return row_impl::column_type(make_shared<sqlite3_cached_column>(stmt_, nPosition));
@@ -51,7 +57,9 @@ namespace arg3
 
         row_impl::column_type sqlite3_row::column(const string &name) const
         {
-            assert(!name.empty());
+            if (name.empty()) {
+                throw no_such_column_exception();
+            }
 
             for (size_t i = 0; i < size_; i++) {
                 const char *col_name = sqlite3_column_name(stmt_.get(), i);
@@ -60,12 +68,14 @@ namespace arg3
                     return column(i);
                 }
             }
-            throw database_exception("unknown column '" + name + "'");
+            throw no_such_column_exception(name);
         }
 
         string sqlite3_row::column_name(size_t nPosition) const
         {
-            assert(nPosition < size());
+            if(nPosition >= size()) {
+                throw no_such_column_exception();
+            }
 
             return sqlite3_column_name(stmt_.get(), nPosition);
         }
@@ -85,9 +95,13 @@ namespace arg3
 
         sqlite3_cached_row::sqlite3_cached_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt)
         {
-            assert(db != NULL);
+            if (db == NULL) {
+                throw database_exception("no database provided to sqlite3 row");
+            }
 
-            assert(stmt != nullptr);
+            if (stmt == nullptr) {
+                throw database_exception("no statement provided to sqlite3 row");
+            }
 
             int size = sqlite3_column_count(stmt.get());
 
@@ -114,26 +128,32 @@ namespace arg3
 
         row_impl::column_type sqlite3_cached_row::column(size_t nPosition) const
         {
-            assert(nPosition < size());
+            if(nPosition >= size()) {
+                throw no_such_column_exception();
+            }
 
             return row_impl::column_type(columns_[nPosition]);
         }
 
         row_impl::column_type sqlite3_cached_row::column(const string &name) const
         {
-            assert(!name.empty());
+            if (name.empty()) {
+                throw no_such_column_exception();
+            }
 
             for (size_t i = 0; i < columns_.size(); i++) {
                 if (name == column_name(i)) {
                     return column(i);
                 }
             }
-            throw database_exception("unknown column '" + name + "'");
+            throw no_such_column_exception(name);
         }
 
         string sqlite3_cached_row::column_name(size_t nPosition) const
         {
-            assert(nPosition < size());
+            if(nPosition >= size()) {
+                throw no_such_column_exception();
+            }
 
             return columns_[nPosition]->name();
         }

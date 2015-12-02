@@ -45,6 +45,8 @@ namespace arg3
             void reset();
         };
 
+        ostream &operator<<(ostream &out, const where_clause &where);
+
         // user defined literal for expressions like "this = ?"_w && "that = ?"_w
         where_clause operator"" _w(const char *cstr, size_t len);
 

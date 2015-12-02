@@ -14,7 +14,10 @@ namespace arg3
 {
     namespace db
     {
-        extern string last_stmt_error(MYSQL_STMT *stmt);
+        namespace helper
+        {
+            extern string last_stmt_error(MYSQL_STMT *stmt);
+        }
 
         void mysql_res_delete::operator()(MYSQL_RES *p) const
         {
@@ -24,6 +27,9 @@ namespace arg3
 
         mysql_resultset::mysql_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res) : res_(res), row_(NULL), db_(db)
         {
+            if (db_ == nullptr) {
+                throw database_exception("database not provided to mysql resultset");
+            }
         }
 
         mysql_resultset::mysql_resultset(mysql_resultset &&other) : res_(other.res_), row_(other.row_), db_(other.db_)
@@ -137,7 +143,7 @@ namespace arg3
             if (stmt_ == nullptr || !stmt_ || bindings_ != NULL || status_ != -1) return;
 
             if ((status_ = mysql_stmt_execute(stmt_.get()))) {
-                throw database_exception(last_stmt_error(stmt_.get()));
+                throw database_exception(helper::last_stmt_error(stmt_.get()));
             }
 
             // get information about the results
@@ -173,7 +179,9 @@ namespace arg3
 
             int res = mysql_stmt_fetch(stmt_.get());
 
-            if (res == 1 || res == MYSQL_DATA_TRUNCATED) throw database_exception(last_stmt_error(stmt_.get()));
+            if (res == 1 || res == MYSQL_DATA_TRUNCATED) {
+                throw database_exception(helper::last_stmt_error(stmt_.get()));
+            }
 
             if (res == MYSQL_NO_DATA) {
                 return false;
@@ -186,7 +194,9 @@ namespace arg3
         {
             assert(is_valid());
 
-            if (mysql_stmt_reset(stmt_.get())) throw database_exception(last_stmt_error(stmt_.get()));
+            if (mysql_stmt_reset(stmt_.get())) {
+                throw database_exception(helper::last_stmt_error(stmt_.get()));
+            }
 
             status_ = -1;
         }
@@ -216,7 +226,7 @@ namespace arg3
             assert(is_valid());
 
             if (mysql_stmt_execute(stmt.get())) {
-                throw database_exception(last_stmt_error(stmt.get()));
+                throw database_exception(helper::last_stmt_error(stmt.get()));
             }
 
             // get information about the results

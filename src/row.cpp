@@ -14,7 +14,9 @@ namespace arg3
 
         row::row(shared_ptr<row_impl> impl) : impl_(impl)
         {
-            assert(impl_ != nullptr);
+            if (impl_ == nullptr) {
+                throw database_exception("No implementation provided for row");
+            }
         }
 
         row::row(const row &other) : impl_(other.impl_)

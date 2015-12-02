@@ -1,4 +1,5 @@
 #include "column.h"
+#include "log.h"
 
 namespace arg3
 {
@@ -10,7 +11,9 @@ namespace arg3
 
         column::column(shared_ptr<column_impl> impl) : impl_(impl)
         {
-            assert(impl_ != nullptr);
+            if(impl_ == nullptr) {
+                throw database_exception("no implementation for column");
+            }
         }
 
         column::column(const column &other) : impl_(other.impl_)
@@ -46,15 +49,11 @@ namespace arg3
 
         sql_value column::to_value() const
         {
-            assert(impl_ != nullptr);
-
             return impl_->to_value();
         }
 
         string column::name() const
         {
-            assert(impl_ != nullptr);
-
             return impl_->name();
         }
 

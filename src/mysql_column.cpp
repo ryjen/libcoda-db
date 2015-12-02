@@ -15,8 +15,12 @@ namespace arg3
     {
         mysql_column::mysql_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index) : value_(pValue), res_(res), index_(index)
         {
-            assert(value_ != NULL);
-            assert(res_ != nullptr);
+            if(value_ == nullptr) {
+                throw database_exception("no mysql value provided for column");
+            }
+            if(res_ == nullptr) {
+                throw database_exception("no mysql result provided for column");
+            }
         }
 
         mysql_column::mysql_column(const mysql_column &other) : value_(other.value_), res_(other.res_), index_(other.index_)
@@ -56,15 +60,15 @@ namespace arg3
 
         bool mysql_column::is_valid() const
         {
-            return value_ != NULL;
+            return value_ != nullptr;
         }
 
         sql_value mysql_column::to_value() const
         {
             auto field = mysql_fetch_field_direct(res_.get(), index_);
 
-            if (value_[index_] == NULL) {
-                return sql_value();
+            if (value_[index_] == nullptr || field == nullptr) {
+                throw no_such_column_exception();
             }
 
             switch (field->type) {
@@ -134,9 +138,11 @@ namespace arg3
 
         int mysql_column::sql_type() const
         {
-            assert(res_ != nullptr);
-
             auto field = mysql_fetch_field_direct(res_.get(), index_);
+
+            if (field == nullptr) {
+                return MYSQL_TYPE_NULL;
+            }
 
             return field->type;
         }
@@ -145,7 +151,9 @@ namespace arg3
         {
             auto field = mysql_fetch_field_direct(res_.get(), index_);
 
-            if (field == NULL || field->name == NULL) return string();
+            if (field == NULL || field->name == NULL) {
+                return string();
+            }
 
             return field->name;
         }
@@ -156,6 +164,9 @@ namespace arg3
         mysql_stmt_column::mysql_stmt_column(const string &name, shared_ptr<mysql_binding> bindings, size_t position)
             : name_(name), value_(bindings), position_(position)
         {
+            if (bindings == nullptr) {
+                throw database_exception("no mysql bindings provided for column");
+            }
         }
 
         mysql_stmt_column::mysql_stmt_column(const mysql_stmt_column &other) : name_(other.name_), value_(other.value_), position_(other.position_)
@@ -225,7 +236,9 @@ namespace arg3
 
         mysql_cached_column::mysql_cached_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index)
         {
-            assert(res != nullptr);
+            if(res == nullptr) {
+                throw database_exception("no mysql result provided for column");
+            }
 
             set_value(res, pValue, index);
         }
@@ -234,9 +247,15 @@ namespace arg3
         {
             auto field = mysql_fetch_field_direct(res.get(), index);
 
+            if (field == nullptr) {
+                throw no_such_column_exception();
+            }
+
             type_ = field->type;
 
-            if (field->name) name_ = field->name;
+            if (field->name) {
+                name_ = field->name;
+            }
 
             if (pValue[index] == NULL) {
                 value_ = sql_null;

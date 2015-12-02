@@ -5,6 +5,7 @@
 #include "query.h"
 #include "exception.h"
 #include "sqldb.h"
+#include "log.h"
 #include <cassert>
 
 namespace arg3
@@ -13,6 +14,9 @@ namespace arg3
     {
         query::query(sqldb *db) : db_(db), stmt_(nullptr)
         {
+            if (db_ == nullptr) {
+                throw database_exception("No database provided for query");
+            }
         }
         query::query(const query &other) : db_(other.db_), stmt_(other.stmt_), bindings_(other.bindings_)
         {
@@ -50,19 +54,22 @@ namespace arg3
         {
             return db_;
         }
+
         void query::prepare(const string &sql)
         {
-            assert(db_ != NULL);
-
-            if (stmt_ != nullptr && stmt_->is_valid()) return;
-
-            db_->log(sqldb::LOG_VERBOSE, sql);
-
-            if (stmt_ == nullptr) {
+            if (stmt_ != nullptr) {
+                // check if the statement is already prepared
+                if (stmt_->is_valid()) {
+                    return;
+                }
+            }
+            else {
                 stmt_ = db_->create_statement();
             }
 
-            stmt_->prepare(sql);
+            log::trace("Query: %s", sql.c_str());
+
+            stmt_->prepare(sql); // throws exception on error
 
             for (size_t i = 1; i <= bindings_.size(); i++) {
                 auto &value = bindings_[i - 1];
@@ -73,7 +80,9 @@ namespace arg3
 
         size_t query::assert_binding_index(size_t index)
         {
-            assert(index > 0);
+            if(index == 0) {
+                throw binding_error("parameter index must be greater than zero");
+            }
 
             if (index > bindings_.size()) {
                 bindings_.resize(index);

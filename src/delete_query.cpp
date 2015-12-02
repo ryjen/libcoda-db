@@ -1,6 +1,7 @@
 #include "delete_query.h"
 #include "exception.h"
 #include "sqldb.h"
+#include "log.h"
 
 namespace arg3
 {
@@ -8,6 +9,9 @@ namespace arg3
     {
         delete_query::delete_query(sqldb *db, const string &tableName) : query(db), tableName_(tableName)
         {
+            if (tableName.empty()) {
+                throw database_exception("No table name provided for query");
+            }
         }
         delete_query::delete_query(shared_ptr<schema> schema) : delete_query(schema->db(), schema->table_name())
         {
@@ -62,6 +66,9 @@ namespace arg3
         }
         delete_query &delete_query::table_name(const string &value)
         {
+            if (value.empty()) {
+                throw database_exception("No table name provided for query");
+            }
             tableName_ = value;
             return *this;
         }

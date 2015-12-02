@@ -15,11 +15,17 @@ namespace arg3
     {
         mysql_row::mysql_row(mysql_db *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row) : row_impl(), row_(row), res_(res), db_(db)
         {
-            assert(db_ != NULL);
+            if(db_ == NULL) {
+                throw database_exception("no database provided for mysql row");
+            }
 
-            assert(row_ != NULL);
+            if(row_ == NULL) {
+                throw database_exception("no raw data for mysql row");
+            }
 
-            assert(res_ != nullptr);
+            if (res_ == nullptr) {
+                throw database_exception("no mysql result provided for row");
+            }
 
             size_ = mysql_num_fields(res.get());
         }
@@ -64,10 +70,12 @@ namespace arg3
 
         row_impl::column_type mysql_row::column(size_t nPosition) const
         {
-            if (!is_valid()) throw database_exception("invalid row");
+            if (!is_valid()) {
+                throw database_exception("invalid row");
+            }
 
             if (nPosition >= size()) {
-                throw database_exception("invalid index for row column");
+                throw no_such_column_exception();
             }
 
             if (db_->cache_level() == sqldb::CACHE_COLUMN)
@@ -78,9 +86,13 @@ namespace arg3
 
         row_impl::column_type mysql_row::column(const string &name) const
         {
-            assert(!name.empty());
+            if (!is_valid()) {
+                throw database_exception("invalid mysql row");
+            }
 
-            assert(res_ != nullptr);
+            if(name.empty()) {
+                throw no_such_column_exception();
+            }
 
             for (size_t i = 0; i < size_; i++) {
                 auto field = mysql_fetch_field_direct(res_.get(), i);
@@ -89,15 +101,17 @@ namespace arg3
                     return column(i);
                 }
             }
-            throw database_exception("unknown column '" + name + "'");
+            throw no_such_column_exception(name);
         }
 
         string mysql_row::column_name(size_t nPosition) const
         {
-            assert(res_ != nullptr);
+            if (!is_valid()) {
+                throw database_exception("invalid mysql row");
+            }
 
             if (nPosition >= size()) {
-                throw database_exception("invalid index for row column");
+                throw no_such_column_exception();
             }
 
             auto field = mysql_fetch_field_direct(res_.get(), nPosition);
@@ -124,9 +138,13 @@ namespace arg3
         mysql_stmt_row::mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields)
             : row_impl(), fields_(fields), metadata_(metadata), db_(db)
         {
-            assert(db_ != NULL);
+            if (db_ == NULL) {
+                throw database_exception("No database provided for mysql row");
+            }
 
-            if (metadata_ != nullptr) size_ = mysql_num_fields(metadata_.get());
+            if (metadata_ != nullptr) {
+                size_ = mysql_num_fields(metadata_.get());
+            }
         }
 
         mysql_stmt_row::mysql_stmt_row(const mysql_stmt_row &other)
@@ -171,14 +189,12 @@ namespace arg3
 
         row_impl::column_type mysql_stmt_row::column(size_t nPosition) const
         {
-            assert(fields_ != nullptr);
-
             if (!is_valid()) {
                 throw database_exception("invalid row");
             }
 
             if (nPosition >= size()) {
-                throw database_exception("invalid index for row column");
+                throw no_such_column_exception();
             }
 
             if (db_->cache_level() == sqldb::CACHE_COLUMN)
@@ -189,12 +205,12 @@ namespace arg3
 
         row_impl::column_type mysql_stmt_row::column(const string &name) const
         {
-            assert(!name.empty());
-
-            assert(metadata_ != nullptr);
-
             if (!is_valid()) {
-                throw database_exception("invalid row");
+                throw database_exception("invalid mysql row");
+            }
+
+            if (name.empty()) {
+                throw no_such_column_exception();
             }
 
             for (size_t i = 0; i < size(); i++) {
@@ -204,7 +220,7 @@ namespace arg3
                     return column(i);
                 }
             }
-            throw database_exception("unknown column '" + name + "'");
+            throw no_such_column_exception(name);
         }
 
         string mysql_stmt_row::column_name(size_t nPosition) const
@@ -212,7 +228,7 @@ namespace arg3
             assert(metadata_ != nullptr);
 
             if (nPosition >= size()) {
-                throw database_exception("invalid index for row column");
+                throw no_such_column_exception();
             }
 
             auto field = mysql_fetch_field_direct(metadata_.get(), nPosition);
@@ -236,7 +252,9 @@ namespace arg3
 
         mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> metadata, mysql_binding &fields)
         {
-            assert(metadata != nullptr);
+            if (metadata == nullptr) {
+                throw database_exception("No meta data provided for mysql cached row");
+            }
 
             size_t size = mysql_num_fields(metadata.get());
 
@@ -251,9 +269,9 @@ namespace arg3
 
         mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row)
         {
-            assert(row != NULL);
-
-            assert(res != NULL);
+            if (row == NULL || res == nullptr) {
+                throw database_exception("missing data for mysql cached row");
+            }
 
             size_t size = mysql_num_fields(res.get());
 
@@ -265,7 +283,7 @@ namespace arg3
         row_impl::column_type mysql_cached_row::column(size_t nPosition) const
         {
             if (nPosition >= columns_.size()) {
-                throw database_exception("invalid index for row column");
+                throw no_such_column_exception();
             }
 
             return row_impl::column_type(columns_[nPosition]);
@@ -273,12 +291,12 @@ namespace arg3
 
         row_impl::column_type mysql_cached_row::column(const string &name) const
         {
-            assert(!name.empty());
-
             for (size_t i = 0; i < columns_.size(); i++) {
-                if (name == column_name(i)) return column(i);
+                if (name == column_name(i)) {
+                    return column(i);
+                }
             }
-            throw database_exception("unknown column '" + name + "'");
+            throw no_such_column_exception(name);
         }
 
         string mysql_cached_row::column_name(size_t nPosition) const

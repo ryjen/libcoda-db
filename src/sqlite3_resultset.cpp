@@ -10,6 +10,13 @@ namespace arg3
     {
         sqlite3_resultset::sqlite3_resultset(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt) : stmt_(stmt), db_(db), status_(-1)
         {
+            if (db_ == NULL) {
+                throw database_exception("No database provided to sqlite3 resultset");
+            }
+
+            if (stmt_ == nullptr) {
+                throw database_exception("no statement provided to sqlite3 resultset");
+            }
         }
 
         sqlite3_resultset::sqlite3_resultset(sqlite3_resultset &&other) : stmt_(other.stmt_), db_(other.db_), status_(other.status_)
@@ -45,9 +52,13 @@ namespace arg3
 
         bool sqlite3_resultset::next()
         {
-            if (!is_valid()) return false;
+            if (!is_valid()) {
+                return false;
+            }
 
-            if (status_ == SQLITE_DONE) return false;
+            if (status_ == SQLITE_DONE) {
+                return false;
+            }
 
             status_ = sqlite3_step(stmt_.get());
 
@@ -56,7 +67,9 @@ namespace arg3
 
         void sqlite3_resultset::reset()
         {
-            if (sqlite3_reset(stmt_.get()) != SQLITE_OK) throw database_exception(db_->last_error());
+            if (sqlite3_reset(stmt_.get()) != SQLITE_OK) {
+                throw database_exception(db_->last_error());
+            }
         }
 
         row sqlite3_resultset::current_row()

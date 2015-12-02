@@ -6,6 +6,7 @@
 
 #include "mysql_binding.h"
 #include "exception.h"
+#include "log.h"
 #include <memory>
 #include <cstdlib>
 #include <time.h>
@@ -15,48 +16,51 @@ namespace arg3
 {
     namespace db
     {
-        namespace inner
+        namespace helper
         {
             // small util method to make a c pointer for a type
             template <typename T>
-            void *to_ptr(T value)
+            void *to_ptr(const T &value)
             {
                 T *ptr = (T *)calloc(1, sizeof(T));
+
+                if (ptr == NULL) {
+                    log::error(ENOMEM);
+                    return NULL;
+                }
 
                 *ptr = value;
 
                 return ptr;
             }
 
-            bool create_bind_value_from_field(MYSQL_BIND *value, MYSQL_FIELD *field)
+            void bind_value_from_field(MYSQL_BIND *value, MYSQL_FIELD *field)
             {
                 value->buffer_type = field->type;
                 value->is_null = static_cast<my_bool *>(calloc(1, sizeof(my_bool)));
                 if (value->is_null == nullptr) {
-                    return false;
+                    throw std::bad_alloc();
                 }
                 value->is_unsigned = 0;
                 value->error = 0;
                 value->buffer_length = field->length;
                 value->length = static_cast<unsigned long *>(calloc(1, sizeof(unsigned long)));
                 if (value->length == nullptr) {
-                    return false;
+                    throw std::bad_alloc();
                 }
                 *value->length = field->length;
                 value->buffer = calloc(1, field->length);
                 if (value->buffer == nullptr) {
-                    return false;
+                    throw std::bad_alloc();
                 }
-                return true;
             }
 
-            bool copy_bind_value(MYSQL_BIND *value, const MYSQL_BIND *other)
+            void bind_value_copy(MYSQL_BIND *value, const MYSQL_BIND *other)
             {
                 if (other->length) {
                     value->length = static_cast<unsigned long *>(calloc(1, sizeof(unsigned long)));
-
                     if (value->length == nullptr) {
-                        return false;
+                        throw std::bad_alloc();
                     }
                     memmove(value->length, other->length, sizeof(unsigned long));
                 }
@@ -64,7 +68,7 @@ namespace arg3
                 if (other->buffer_length > 0 && other->buffer) {
                     value->buffer = calloc(1, other->buffer_length);
                     if (value->buffer == nullptr) {
-                        return false;
+                        throw std::bad_alloc();
                     }
                     memmove(value->buffer, other->buffer, other->buffer_length);
                 }
@@ -72,7 +76,7 @@ namespace arg3
                 if (other->is_null) {
                     value->is_null = static_cast<my_bool *>(calloc(1, sizeof(my_bool)));
                     if (value->is_null == nullptr) {
-                        return false;
+                        throw std::bad_alloc();
                     }
                     memmove(value->is_null, other->is_null, sizeof(my_bool));
                 }
@@ -80,7 +84,7 @@ namespace arg3
                 if (other->error) {
                     value->error = static_cast<my_bool *>(calloc(1, sizeof(my_bool)));
                     if (value->error == nullptr) {
-                        return false;
+                        throw std::bad_alloc();
                     }
                     memmove(value->error, other->error, sizeof(my_bool));
                 }
@@ -88,12 +92,10 @@ namespace arg3
                 value->buffer_type = other->buffer_type;
                 value->buffer_length = other->buffer_length;
                 value->is_unsigned = other->is_unsigned;
-
-                return true;
             }
-        }
 
-        extern string last_stmt_error(MYSQL_STMT *stmt);
+            extern string last_stmt_error(MYSQL_STMT *stmt);
+        }
 
         mysql_binding::mysql_binding() : value_(nullptr), size_(0)
         {
@@ -126,15 +128,15 @@ namespace arg3
             }
 
             for (size_t i = 0; i < size; i++) {
-                if (!inner::create_bind_value_from_field(&value_[i], &fields[i])) {
-                    throw std::bad_alloc();
-                }
+                helper::bind_value_from_field(&value_[i], &fields[i]);
             }
         }
 
         void mysql_binding::clear_value(size_t i)
         {
-            assert(i < size_);
+            if(i >= size_) {
+                throw binding_error("invalid index in mysql binding clear");
+            }
 
             if (value_[i].buffer) {
                 free(value_[i].buffer);
@@ -177,9 +179,7 @@ namespace arg3
                 const MYSQL_BIND *other = &others[i];
                 MYSQL_BIND *value = &value_[i];
 
-                if (!inner::copy_bind_value(value, other)) {
-                    throw std::bad_alloc();
-                }
+                helper::bind_value_copy(value, other);
             }
 
             size_ = size;
@@ -219,7 +219,7 @@ namespace arg3
         MYSQL_BIND *mysql_binding::get(size_t index) const
         {
             if (index >= size_) {
-                return nullptr;
+                throw binding_error("invalid index in mysql binding get");
             }
 
             return &value_[index];
@@ -228,7 +228,7 @@ namespace arg3
         void mysql_binding::bind_result(MYSQL_STMT *stmt) const
         {
             if (mysql_stmt_bind_result(stmt, value_) != 0) {
-                throw binding_error(last_stmt_error(stmt));
+                throw binding_error(helper::last_stmt_error(stmt));
             }
         }
 
@@ -243,14 +243,10 @@ namespace arg3
                 case MYSQL_TYPE_LONG:
                 case MYSQL_TYPE_INT24: {
                     int *p = static_cast<int *>(value_[index].buffer);
-                    if (p == nullptr) return sql_null;
                     return *p;
                 }
                 case MYSQL_TYPE_LONGLONG: {
                     long long *p = static_cast<long long *>(value_[index].buffer);
-
-                    if (p == nullptr) return sql_null;
-
                     return *p;
                 }
                 case MYSQL_TYPE_NULL:
@@ -267,7 +263,6 @@ namespace arg3
                         return (long long)mktime(tp);
                     } else {
                         int *p = static_cast<int *>(value_[index].buffer);
-                        if (p == nullptr) return sql_null;
                         return *p;
                     }
                 }
@@ -312,6 +307,7 @@ namespace arg3
 
         bool mysql_binding::reallocate_value(size_t index)
         {
+            // asset non-zero-indexed
             if (index == 0) {
                 return false;
             }
@@ -353,7 +349,7 @@ namespace arg3
         {
             if (reallocate_value(index)) {
                 value_[index - 1].buffer_type = MYSQL_TYPE_LONG;
-                value_[index - 1].buffer = inner::to_ptr(value);
+                value_[index - 1].buffer = helper::to_ptr(value);
                 value_[index - 1].buffer_length = sizeof(value);
             }
 
@@ -363,7 +359,7 @@ namespace arg3
         {
             if (reallocate_value(index)) {
                 value_[index - 1].buffer_type = MYSQL_TYPE_LONGLONG;
-                value_[index - 1].buffer = inner::to_ptr(value);
+                value_[index - 1].buffer = helper::to_ptr(value);
                 value_[index - 1].buffer_length = sizeof(value);
             }
 
@@ -373,7 +369,7 @@ namespace arg3
         {
             if (reallocate_value(index)) {
                 value_[index - 1].buffer_type = MYSQL_TYPE_DOUBLE;
-                value_[index - 1].buffer = inner::to_ptr(value);
+                value_[index - 1].buffer = helper::to_ptr(value);
                 value_[index - 1].buffer_length = sizeof(value);
             }
 
@@ -386,11 +382,6 @@ namespace arg3
                 auto size = len == -1 ? value.size() : len;
                 value_[index - 1].buffer = strdup(value.c_str());
                 value_[index - 1].buffer_length = size;
-                value_[index - 1].length = static_cast<unsigned long *>(calloc(1, sizeof(unsigned long)));
-                if (value_[index - 1].length == nullptr) {
-                    throw std::bad_alloc();
-                }
-                *value_[index - 1].length = size;
             }
 
             return *this;
@@ -402,11 +393,6 @@ namespace arg3
                 auto size = len == -1 ? value.size() : len;
                 value_[index - 1].buffer = wcsdup(value.c_str());
                 value_[index - 1].buffer_length = size;
-                value_[index - 1].length = static_cast<unsigned long *>(calloc(1, sizeof(unsigned long)));
-                if (value_[index - 1].length == nullptr) {
-                    throw std::bad_alloc();
-                }
-                *value_[index - 1].length = size;
             }
 
             return *this;
@@ -419,11 +405,6 @@ namespace arg3
                 memcpy(ptr, value.value(), value.size());
                 value_[index - 1].buffer = ptr;
                 value_[index - 1].buffer_length = value.size();
-                value_[index - 1].length = static_cast<unsigned long *>(calloc(1, sizeof(unsigned long)));
-                if (value_[index - 1].length == nullptr) {
-                    throw std::bad_alloc();
-                }
-                *value_[index - 1].length = value.size();
             }
 
             return *this;
@@ -438,7 +419,9 @@ namespace arg3
 
         void mysql_binding::bind_params(MYSQL_STMT *stmt) const
         {
-            if (mysql_stmt_bind_param(stmt, value_)) throw binding_error(last_stmt_error(stmt));
+            if (mysql_stmt_bind_param(stmt, value_)) {
+                throw binding_error(helper::last_stmt_error(stmt));
+            }
         }
 
         size_t mysql_binding::size() const

@@ -109,7 +109,9 @@ namespace arg3
             base_record(sqldb *db, const string &tablename, const string &idColumnName)
                 : schema_(db->schemas()->get(tablename)), idColumnName_(idColumnName)
             {
-                assert(schema_ != nullptr);
+                if(schema_ == nullptr) {
+                  throw database_exception("no schema for record " + tablename);
+                }
             }
 
             /*!
@@ -118,7 +120,9 @@ namespace arg3
              */
             base_record(std::shared_ptr<schema_type> schema, const string &columnName) : schema_(schema), idColumnName_(columnName)
             {
-                assert(schema_ != nullptr);
+                if(schema_ == nullptr) {
+                  throw database_exception("no schema for record");
+                }
             }
 
             /*!
@@ -279,6 +283,7 @@ namespace arg3
                 bool rval = false;
                 bool exists = has(idColumnName_);
 
+                // check for a previous record with set id
                 if (exists) {
                     select_query query(schema());
 
@@ -301,18 +306,16 @@ namespace arg3
                 }
 
                 if (exists) {
+                    // apply the existing id to the update query
                     query.bind_value(index++, get(idColumnName_));
 
-                    rval = query.executeUpdate(idColumnName_);
+                    rval = query.executeUpdate(where_clause(idColumnName_ + "=?"));
                 } else {
-                    long long id;
-
-                    rval = query.executeInsert(&id);
+                    rval = query.executeInsert();
 
                     if (rval) {
-                        if (insertId) *insertId = id;
-
-                        set(idColumnName_, id);
+                        // set the new id
+                        set(idColumnName_, query.last_insert_id());
                     }
                 }
 

@@ -10,7 +10,9 @@ namespace arg3
     {
         resultset::resultset(shared_ptr<resultset_impl> impl) : impl_(impl)
         {
-            assert(impl_ != nullptr);
+            if (impl_ == nullptr) {
+                throw database_exception("no implementation provided for resultset");
+            }
         }
 
         resultset::~resultset()
@@ -49,7 +51,6 @@ namespace arg3
         {
             return impl_->next();
         }
-
 
         void resultset::reset()
         {

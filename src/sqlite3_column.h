@@ -24,7 +24,6 @@ namespace arg3
            private:
             shared_ptr<sqlite3_stmt> stmt_;
             int column_;
-            void assert_value() const throw(no_such_column_exception);
 
            public:
             sqlite3_column(shared_ptr<sqlite3_stmt> stmt, int column);
@@ -52,7 +51,7 @@ namespace arg3
             string name_;
             sql_value value_;
             int type_;
-
+            void set_value(shared_ptr<sqlite3_stmt> stmt, int column);
            public:
             sqlite3_cached_column(shared_ptr<sqlite3_stmt> stmt, int column);
             sqlite3_cached_column(const sqlite3_cached_column &other) = delete;

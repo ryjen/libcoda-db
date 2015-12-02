@@ -2,19 +2,18 @@
 libarg3db
 =========
 
-[![Build Status](https://travis-ci.org/c0der78/arg3db.svg?branch=master)](https://travis-ci.org/c0der78/arg3db)
+[![Build Status](https://travis-ci.org/c0der78/arg3db.svg?branch=master)](https://travis-ci.org/deadcoda/arg3db)
 
 a sqlite3 and mysql wrapper / active record (ish) implementation
 
 [View Testing Code Coverage](http://htmlpreview.github.com/?https://github.com/c0der78/arg3db/blob/master/coverage/index.html)
 
-
-Use in production at your own risk, I'm not finished testing this bad boy.
+Use in production at your own risk, I'm still doing quite a bit of testing and refactoring.  Pull requests are welcomed..
 
 Building
 ========
 
-You can use [cmake](http://cmake.org] or the legacy [autotools](http://en.wikipedia.org/wiki/GNU_build_system) systems to build.
+You can use [cmake](http://cmake.org) or the legacy [autotools](http://en.wikipedia.org/wiki/GNU_build_system) systems to build.
 
 ```bash
 mkdir debug
