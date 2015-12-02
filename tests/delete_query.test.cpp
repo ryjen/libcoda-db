@@ -1,6 +1,6 @@
 #include <bandit/bandit.h>
 #include "base_record.h"
-#include "delete_query.h"
+#include "modify_query.h"
 #include "db.test.h"
 
 using namespace bandit;
@@ -122,7 +122,9 @@ go_bandit([]() {
 
             query.bind(1, "Bryan");
 
-            AssertThat(query.execute(true), Equals(1));
+            query.set_flags(modify_query::BATCH);
+
+            AssertThat(query.execute(), Equals(1));
 
             query.bind(1, "Mark");
 

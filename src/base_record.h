@@ -7,7 +7,6 @@
 
 #include "select_query.h"
 #include "modify_query.h"
-#include "delete_query.h"
 #include "schema.h"
 #include <memory>
 
@@ -109,8 +108,8 @@ namespace arg3
             base_record(sqldb *db, const string &tablename, const string &idColumnName)
                 : schema_(db->schemas()->get(tablename)), idColumnName_(idColumnName)
             {
-                if(schema_ == nullptr) {
-                  throw database_exception("no schema for record " + tablename);
+                if (schema_ == nullptr) {
+                    throw database_exception("no schema for record " + tablename);
                 }
             }
 
@@ -120,8 +119,8 @@ namespace arg3
              */
             base_record(std::shared_ptr<schema_type> schema, const string &columnName) : schema_(schema), idColumnName_(columnName)
             {
-                if(schema_ == nullptr) {
-                  throw database_exception("no schema for record");
+                if (schema_ == nullptr) {
+                    throw database_exception("no schema for record");
                 }
             }
 
@@ -274,44 +273,46 @@ namespace arg3
                 return schema_;
             }
 
+            bool exists() const
+            {
+                if (!has(idColumnName_)) {
+                    return false;
+                }
+
+                select_query query(schema());
+
+                query.where(idColumnName_ + " = ?");
+
+                query.bind_value(1, get(idColumnName_));
+
+                return query.count() > 0;
+            }
+
             /*!
              * saves this instance
              */
-            bool save(long long *insertId = NULL)
+            bool save()
             {
-                int index = 1;
+                size_t index = 0;
                 bool rval = false;
-                bool exists = has(idColumnName_);
 
-                // check for a previous record with set id
-                if (exists) {
-                    select_query query(schema());
+                if (exists()) {
+                    update_query query(schema());
 
-                    query.where(idColumnName_ + " = ?");
+                    query.where(idColumnName_ + " = ? ");
 
-                    query.bind_value(1, get(idColumnName_));
+                    index = bind(query);
 
-                    exists = query.count() > 0;
-                }
+                    // add the where parameter
+                    query.bind_value(index, get(idColumnName_));
 
-                modify_query query(schema());
-
-                // bind the column values
-                for (auto &column : schema()->columns()) {
-                    auto value = get(column.name);
-
-                    query.bind_value(index, value);
-
-                    index++;
-                }
-
-                if (exists) {
-                    // apply the existing id to the update query
-                    query.bind_value(index++, get(idColumnName_));
-
-                    rval = query.executeUpdate(where_clause(idColumnName_ + "=?"));
+                    rval = query.execute();
                 } else {
-                    rval = query.executeInsert();
+                    insert_query query(schema());
+
+                    bind(query);
+
+                    rval = query.execute();
 
                     if (rval) {
                         // set the new id
@@ -321,7 +322,6 @@ namespace arg3
 
                 return rval;
             }
-
 
             /*!
              * gets a value specified by column name
@@ -450,6 +450,23 @@ namespace arg3
                 query.bind_value(1, id());
 
                 return query.execute();
+            }
+
+           private:
+            size_t bind(query &query)
+            {
+                size_t index = 1;
+
+                // bind the column values
+                for (auto &column : schema()->columns()) {
+                    auto value = get(column.name);
+
+                    query.bind_value(index, value);
+
+                    index++;
+                }
+
+                return index;
             }
         };
     }

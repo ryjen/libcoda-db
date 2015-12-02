@@ -10,14 +10,14 @@ namespace arg3
     namespace db
     {
         modify_query::modify_query(sqldb *db, const string &tableName, const vector<string> &columns)
-            : query(db), columns_(columns), tableName_(tableName), lastId_(0), flags_(0)
+            : query(db), columns_(columns), tableName_(tableName), flags_(0)
         {
             if (tableName.empty()) {
                 throw database_exception("No table name provided for modify query");
             }
         }
 
-        modify_query::modify_query(sqldb *db, const string &tableName) : query(db), tableName_(tableName), lastId_(0), flags_(0)
+        modify_query::modify_query(sqldb *db, const string &tableName) : query(db), tableName_(tableName), flags_(0)
         {
             if (tableName.empty()) {
                 throw database_exception("No table name provided for modify query");
@@ -27,11 +27,12 @@ namespace arg3
         {
         }
 
-        modify_query::modify_query(const modify_query &other) : query(other), columns_(other.columns_), tableName_(other.tableName_), lastId_(other.lastId_), flags_(other.flags_)
+        modify_query::modify_query(const modify_query &other)
+            : query(other), columns_(other.columns_), tableName_(other.tableName_), flags_(other.flags_)
         {
         }
         modify_query::modify_query(modify_query &&other)
-            : query(std::move(other)), columns_(std::move(other.columns_)), tableName_(std::move(other.tableName_)), lastId_(other.lastId_), flags_(other.flags_)
+            : query(std::move(other)), columns_(std::move(other.columns_)), tableName_(std::move(other.tableName_)), flags_(other.flags_)
         {
         }
 
@@ -43,7 +44,6 @@ namespace arg3
             query::operator=(other);
             columns_ = other.columns_;
             tableName_ = other.tableName_;
-            lastId_ = other.lastId_;
             flags_ = other.flags_;
             return *this;
         }
@@ -53,7 +53,6 @@ namespace arg3
             query::operator=(std::move(other));
             columns_ = std::move(other.columns_);
             tableName_ = std::move(other.tableName_);
-            lastId_ = other.lastId_;
             flags_ = other.flags_;
             return *this;
         }
@@ -67,7 +66,9 @@ namespace arg3
             tableName_ = value;
             return *this;
         }
-        long long modify_query::last_insert_id() const {
+
+        long long insert_query::last_insert_id() const
+        {
             return lastId_;
         }
 
@@ -78,7 +79,7 @@ namespace arg3
             return *this;
         }
 
-        string modify_query::to_insert_string() const
+        string insert_query::to_string() const
         {
             ostringstream buf;
 
@@ -102,7 +103,7 @@ namespace arg3
             return buf.str();
         }
 
-        string modify_query::to_update_string(const where_clause &where) const
+        string update_query::to_string() const
         {
             ostringstream buf;
 
@@ -121,13 +122,25 @@ namespace arg3
                 throw database_exception("No binding values provided for update query");
             }
 
-            if (!where.empty()) {
-              buf << " WHERE " << where;
+            if (!where_.empty()) {
+                buf << " WHERE " << where_;
             } else {
                 log::warn("empty where clause for update");
             }
 
             return buf.str();
+        }
+
+        update_query &update_query::where(const where_clause &value)
+        {
+            where_ = value;
+            return *this;
+        }
+
+        update_query &update_query::where(const string &value)
+        {
+            where_ = where_clause(value);
+            return *this;
         }
 
         string modify_query::to_string() const
@@ -154,36 +167,13 @@ namespace arg3
             return buf.str();
         }
 
-        int modify_query::executeUpdate(const where_clause &where)
+        int insert_query::execute()
         {
-            prepare(to_update_string(where));
+            prepare(to_string());
 
             bool success = stmt_->result();
 
             int res = 0;
-
-            if (success) {
-                res = stmt_->last_number_of_changes();
-            }
-            if (flags_ & BATCH) {
-                reset();
-            } else {
-                stmt_->finish();
-                stmt_ = nullptr;
-            }
-
-            return res;
-        }
-
-        int modify_query::executeInsert()
-        {
-            prepare(to_insert_string());
-
-            bool success = stmt_->result();
-
-            int res = 0;
-
-            lastId_ = 0;
 
             if (success) {
                 res = stmt_->last_number_of_changes();
@@ -210,11 +200,8 @@ namespace arg3
 
             int res = 0;
 
-            lastId_ = 0;
-
             if (success) {
                 res = stmt_->last_number_of_changes();
-                lastId_ = stmt_->last_insert_id();
             } else {
                 log::trace(stmt_->last_error().c_str());
             }
@@ -227,6 +214,19 @@ namespace arg3
             }
 
             return res;
+        }
+
+        string delete_query::to_string() const
+        {
+            ostringstream buf;
+
+            buf << "DELETE FROM " << tableName_;
+
+            if (!where_.empty()) {
+                buf << " WHERE " << where_;
+            }
+
+            return buf.str();
         }
     }
 }

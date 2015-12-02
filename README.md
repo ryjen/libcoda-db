@@ -8,7 +8,9 @@ a sqlite3 and mysql wrapper / active record (ish) implementation
 
 [View Testing Code Coverage](http://htmlpreview.github.com/?https://github.com/c0der78/arg3db/blob/master/coverage/index.html)
 
-Use in production at your own risk, I'm still doing quite a bit of testing and refactoring.  Pull requests are welcomed..
+Use in production at your own risk, I'm still doing quite a bit of testing, refactoring and new features.  Pull requests are welcomed...
+
+I do however realize already that this is most likely an excercise in futility.
 
 Building
 ========
@@ -38,7 +40,7 @@ brew link arg3db
 Coding Style
 ============
 
-I don't like camel case classes/structs/methods/functions in c++.  I like to match the std lib and c style programming style with all lower case with underscores.  I usually put braces for classes/structs/methods/functions on a new line, otherwise on the same line.  Globals, constants, enums are uppercase underscored.  private member variables end with an open underscore.
+I don't like camel case classes/structs/methods/functions in c++.  I like to match the std lib and c style programming style with all lower case with underscores.  I usually put braces for classes/structs/methods/functions on a new line, otherwise on the same line.  Globals, constants, enums are uppercase underscored.  Private member variables end with an open underscore.
 
 Model
 =====
@@ -109,7 +111,7 @@ Query records
 -------------
 ```c++
     /* find all users */
- 	user().find_all([](shared_ptr<user> record) {
+ 	user().find_all([](const shared_ptr<user> &record) {
         cout << "User: " << record->to_string() << endl;
     }
 
@@ -177,6 +179,12 @@ for ( auto &row : results) {
     // do more stuff
 }
 
+Raw Queries
+-----------
+```c++
+/* execute some raw sql */
+arg3::db::query query(&testdb, "")
+
 /* alternatively */
 
 ```
@@ -209,10 +217,17 @@ std::function<void (const resultset &)> handler = [](const resultset &results)
 query.execute(handler);
 ```
 
+Alternatives
+============
+
+- [Poco Data](http://pocoproject.org/docs/00200-DataUserManual.html)
+- [SQLAPI++](http://www.sqlapi.com)
+- [SOCI](http://soci.sourceforge.net)
+
 TODO
 ====
 
-* named parameter indexing? also a better plan for handling a bad parameter index (other than assert)
+* named parameter indexing? 
 * ~~make base_query more of a generic raw sql query, remove tablename dependency~~
 * ~~Don't force usage of REPLACE query, implement more efficient UPSERT~~ (added executeInsert and executeUpdate)
 * More tests, at least 95% test coverage

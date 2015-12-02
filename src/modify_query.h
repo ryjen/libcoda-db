@@ -18,7 +18,6 @@ namespace arg3
         class modify_query : public query
         {
            public:
-
             /*! perform subsequent executes in batches */
             constexpr static const int BATCH = (1 << 0);
 
@@ -38,39 +37,61 @@ namespace arg3
 
             modify_query &operator=(modify_query &&other);
 
-            string to_string() const;
-            string to_update_string(const where_clause &where) const;
-            string to_insert_string() const;
+            virtual string to_string() const;
 
             string table_name() const;
 
             modify_query &set_flags(int value);
-
-            long long last_insert_id() const;
 
             modify_query &table_name(const string &value);
 
             /*! executes this query using a replace statement
              * @return the last number of changes made by this query
              */
-            int execute();
+            virtual int execute();
 
-            /*! executes this query using a update statement
-             * @param where the WHERE portion of the update sql query
-             * @return the last number of changes made by this query
-             */
-            int executeUpdate(const where_clause &where);
-
-            /*! executes this query using a insert statement
-             * @return the last number of changes made by this query
-             */
-            int executeInsert();
-
-           private:
+           protected:
             vector<string> columns_;
             string tableName_;
-            long long lastId_;
             int flags_;
+        };
+
+        class insert_query : public modify_query
+        {
+           public:
+            using modify_query::modify_query;
+
+            long long last_insert_id() const;
+
+            string to_string() const;
+
+            int execute();
+
+           private:
+            long long lastId_;
+        };
+
+        class update_query : public modify_query
+        {
+           public:
+            using modify_query::modify_query;
+
+            update_query &where(const where_clause &value);
+
+            update_query &where(const string &value);
+
+            virtual string to_string() const;
+
+           protected:
+            where_clause where_;
+        };
+
+        class delete_query : public update_query
+        {
+           public:
+            using update_query::update_query;
+
+            string to_string() const;
         };
     }
 }

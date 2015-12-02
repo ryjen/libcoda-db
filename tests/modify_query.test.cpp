@@ -1,6 +1,6 @@
 #include <bandit/bandit.h>
 #include "base_record.h"
-#include "delete_query.h"
+#include "modify_query.h"
 #include "db.test.h"
 
 using namespace bandit;
@@ -88,7 +88,7 @@ go_bandit([]() {
             modify_query query(testdb, "users", {"id", "first_name", "last_name"});
 
             query.set_flags(modify_query::BATCH);
-            
+
             for (int i = 0; i < 3; i++) {
                 char buf[100] = {0};
 
