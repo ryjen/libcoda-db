@@ -44,23 +44,25 @@ I don't like camel case classes/structs/methods/functions in c++.  I like to mat
 
 Model
 =====
+```
+/* database interfaces */
+sqldb                                 - interface for a specific database
+  └ statement                         - interface for a prepared statement
+        └ resultset                   - results of a statement
+              └ row                   - an single result
+                   └ column           - a field in a row containing a value
 
-            /* database interfaces */
-            **sqldb**                                 - interface for a specific database
-              └ **statement**                         - interface for a prepared statement
-                    └ **resultset**                   - results of a statement
-                          └ **row**                   - an single result
-                               └ **column**           - a field in a row containing a value
-
-            /* implementations using the above*/
-            **schema**                                - a definition of a table
-            **schema_factory**                        - cached schemas
-            **base_record**                           - the active record (ish) implementation
-            **select_query**                          - builds select queries
-            **modify_query**                          - builds update/insert queries
-            **delete_query**                          - builds delete queries
-            **sql_value**                             - storage and conversion for basic sql types
-
+/* implementations using the above*/
+schema                                - a definition of a table
+schema_factory                        - cached schemas
+base_record                           - the active record (ish) implementation
+select_query                          - builds select queries
+modify_query                          - replaces data
+insert_query                          - inserts data
+update_query                          - updates data
+delete_query                          - builds delete queries
+sql_value                             - storage and conversion for basic sql types
+```
 
 Records
 =======
