@@ -153,16 +153,17 @@ Modify Queries
 --------------
 ```c++
 /* replace a user (REPLACE INTO ..) */
-arg3::db::modify_query query(&testdb, "users", { "id", "first_name", "last_name" });
+modify_query query(&testdb, "users", { "id", "first_name", "last_name" });
 
 query.bind(1, 1234).bind(2, "happy").bind(3, "gilmour");
 
 /* saves user { "id": 1234, "first_name": "happy", "last_name": "gilmour" } */
 query.execute();
+```
 
-
+```c++
 /* insert a  user (INSERT INTO ..) */
-arg3::db::insert_query query(&testdb, "users"); /* auto find columns */
+insert_query query(&testdb, "users"); /* auto find columns */
 
 /* this would be the column order in table, TODO: named parameter binding */
 query.bind(1, 4321).bind(2, "dave").bind(3, "patterson");
@@ -171,20 +172,22 @@ if (!query.execute())
     cerr << testdb.last_error() << endl;
 else
     cout << "last insert id " << query.last_insert_id() << endl;
+```
 
-
+```c++
 /* update a user (UPDATE ...) */
-arg3::db::update_query query(&testdb, "users");
+update_query query(&testdb, "users");
 
 query.where("id = ?");
 
 query.bind(1, 3432).bind(2, "mark").bind(3, "anthony").bind(4, 1234);
 
 query.execute();
+```
 
-
+```c++
 /* delete a user (DELETE FROM ...) */
-arg3::db::delete_query query(&testdb, "users");
+delete_query query(&testdb, "users");
 
 query.where("id = ?");
 
@@ -198,7 +201,7 @@ Select Query
 ------------
 ```c++
 /* select some users */
-arg3::db::select_query query(&testdb, "users");
+select_query query(&testdb, "users");
 
 query.where("last_name = ?");
 
@@ -211,7 +214,6 @@ for ( auto &row : results) {
     // do more stuff
 }
 
-/* alternatively */
 
 ```
 
@@ -248,7 +250,7 @@ Batch Queries
 -------------
 ```c++
 /* execute some raw sql */
-arg3::db::insert_query query(&testdb, "counts");
+insert_query query(&testdb, "counts");
 
 /* turn on batch mode for this query */
 query.set_flags(modify_query::BATCH);
