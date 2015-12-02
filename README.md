@@ -2,7 +2,7 @@
 libarg3db
 =========
 
-[![Build Status](https://travis-ci.org/c0der78/arg3db.svg?branch=master)](https://travis-ci.org/deadcoda/arg3db)
+[![Build Status](https://travis-ci.org/deadcoda/arg3db.svg?branch=master)](https://travis-ci.org/deadcoda/arg3db)
 
 a sqlite3 and mysql wrapper / active record (ish) implementation
 
@@ -23,7 +23,7 @@ cd debug
 INSTALL_PREFIX=$(brew --cellar)/arg3db/0.5.0
 
 # use cmake for debug build with valgrind, lcov
-cmake -DMEMORY_CHECK=ON -DCODE_COVERAGE -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX ..
+cmake -DMEMORY_CHECK=ON -DCODE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX ..
 # or autotools
 ./configure --prefix=$INSTALL_PREFIX --enable-coverage
 
