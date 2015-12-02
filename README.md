@@ -149,17 +149,49 @@ Delete a record
 Basic Queries
 =============
 
-Modify Query
+Modify Queries
 --------------
 ```c++
-/* upsert a user */
+/* replace a user (REPLACE INTO ..) */
 arg3::db::modify_query query(&testdb, "users", { "id", "first_name", "last_name" });
 
 query.bind(1, 1234).bind(2, "happy").bind(3, "gilmour");
 
 /* saves user { "id": 1234, "first_name": "happy", "last_name": "gilmour" } */
-if(!query.execute())
+query.execute();
+
+
+/* insert a  user (INSERT INTO ..) */
+arg3::db::insert_query query(&testdb, "users"); /* auto find columns */
+
+/* this would be the column order in table, TODO: named parameter binding */
+query.bind(1, 4321).bind(2, "dave").bind(3, "patterson");
+
+if (!query.execute())
     cerr << testdb.last_error() << endl;
+else
+    cout << "last insert id " << query.last_insert_id() << endl;
+
+
+/* update a user (UPDATE ...) */
+arg3::db::update_query query(&testdb, "users");
+
+query.where("id = ?");
+
+query.bind(1, 3432).bind(2, "mark").bind(3, "anthony").bind(4, 1234);
+
+query.execute();
+
+
+/* delete a user (DELETE FROM ...) */
+arg3::db::delete_query query(&testdb, "users");
+
+query.where("id = ?");
+
+query.bind(1, 1234);
+
+query.execute();
+
 ```
 
 Select Query
@@ -179,17 +211,11 @@ for ( auto &row : results) {
     // do more stuff
 }
 
-Raw Queries
------------
-```c++
-/* execute some raw sql */
-arg3::db::query query(&testdb, "")
-
 /* alternatively */
 
 ```
 
-The query types also support a call back interface:
+The select query also supports a call back interface:
 
 ```
 select_query query(testdb, "users");
@@ -217,6 +243,25 @@ std::function<void (const resultset &)> handler = [](const resultset &results)
 query.execute(handler);
 ```
 
+
+Batch Queries
+-------------
+```c++
+/* execute some raw sql */
+arg3::db::insert_query query(&testdb, "counts");
+
+/* turn on batch mode for this query */
+query.set_flags(modify_query::BATCH);
+
+for(int i = 1000; i < 3000; i++) {
+    query.bind(1, i);
+
+    if (!query.execute()) {
+        cerr << testdb.last_error() << endl;
+    }
+}
+```
+
 Alternatives
 ============
 
@@ -224,13 +269,11 @@ Alternatives
 - [SQLAPI++](http://www.sqlapi.com)
 - [SOCI](http://soci.sourceforge.net)
 
-TODO
-====
+TODO / ROADMAP
+==============
 
-* named parameter indexing? 
-* ~~make base_query more of a generic raw sql query, remove tablename dependency~~
-* ~~Don't force usage of REPLACE query, implement more efficient UPSERT~~ (added executeInsert and executeUpdate)
-* More tests, at least 95% test coverage
+* named parameter indexing, especially for column names (col_name = ?col_name, bind("col_name", value))
 * More database implementations (postgres!)
+* More tests, at least 95% test coverage
 
 
