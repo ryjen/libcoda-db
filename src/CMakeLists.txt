@@ -4,7 +4,6 @@ include_directories(${PROJECT_SOURCE_DIR}/libs/variant/src ${MYSQL_INCLUDE_DIR} 
 
 target_link_libraries(${PROJECT_NAME} ${MYSQL_LIBRARIES} ${SQLITE3_LIBRARIES})
 
-
 set(${PROJECT_NAME}_HEADERS
 	base_record.h
 	bindable.h
