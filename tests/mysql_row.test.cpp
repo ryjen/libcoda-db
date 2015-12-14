@@ -101,6 +101,8 @@ void test_row_column(std::function<shared_ptr<row_impl>(size_t)> funk)
 {
     auto r = funk(0);
 
+    Assert::That(r->is_valid(), IsTrue());
+
     Assert::That(r->column(0).is_valid(), IsTrue());
 
     Assert::That(r->column(1).to_value(), Equals("Bryan"));

@@ -246,7 +246,7 @@ namespace arg3
 
         bool mysql_stmt_row::is_valid() const
         {
-            return fields_ != nullptr && metadata_ != nullptr && mysql_num_rows(metadata_.get()) > 0;
+            return fields_ != nullptr && metadata_ != nullptr;
         }
 
         /* cached version */
