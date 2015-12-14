@@ -32,21 +32,25 @@ int run_db_test(int argc, char *argv[])
 int main(int argc, char *argv[])
 {
 #ifdef HAVE_LIBSQLITE3
+#ifdef TEST_SQLITE
     puts("running sqlite3 tests");
     testdb = &sqlite_testdb;
     if (run_db_test(argc, argv)) {
         return 1;
     }
+#endif
 #else
     cout << "Sqlite not supported" << endl;
 #endif
 
 #ifdef HAVE_LIBMYSQLCLIENT
+#ifdef TEST_MYSQL
     puts("running mysql tests");
     testdb = &mysql_testdb;
     if (run_db_test(argc, argv)) {
         return 1;
     }
+#endif
 #else
     cout << "Mysql not supported" << endl;
 #endif
