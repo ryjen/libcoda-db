@@ -16,6 +16,7 @@ namespace arg3
         {
             extern string last_stmt_error(MYSQL_STMT *stmt);
         }
+
         struct mysql_stmt_delete {
             void operator()(MYSQL_STMT *p) const
             {

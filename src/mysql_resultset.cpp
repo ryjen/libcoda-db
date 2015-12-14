@@ -104,19 +104,19 @@ namespace arg3
         /* Statement version */
 
         mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, shared_ptr<MYSQL_STMT> stmt)
-            : stmt_(stmt), metadata_(NULL), db_(db), bindings_(nullptr), status_(-1)
+            : stmt_(stmt), metadata_(nullptr), db_(db), bindings_(nullptr), status_(-1)
         {
             assert(stmt_ != nullptr);
-            assert(db_ != NULL);
+            assert(db_ != nullptr);
         }
 
         mysql_stmt_resultset::mysql_stmt_resultset(mysql_stmt_resultset &&other)
             : stmt_(other.stmt_), metadata_(other.metadata_), db_(other.db_), bindings_(other.bindings_), status_(other.status_)
         {
-            other.db_ = NULL;
+            other.db_ = nullptr;
             other.stmt_ = nullptr;
             other.bindings_ = nullptr;
-            other.metadata_ = NULL;
+            other.metadata_ = nullptr;
         }
 
         mysql_stmt_resultset::~mysql_stmt_resultset()
@@ -131,16 +131,16 @@ namespace arg3
             metadata_ = other.metadata_;
             bindings_ = other.bindings_;
             status_ = other.status_;
-            other.db_ = NULL;
-            other.bindings_ = NULL;
-            other.metadata_ = NULL;
+            other.db_ = nullptr;
+            other.bindings_ = nullptr;
+            other.metadata_ = nullptr;
 
             return *this;
         }
 
         void mysql_stmt_resultset::prepare_results()
         {
-            if (stmt_ == nullptr || !stmt_ || bindings_ != NULL || status_ != -1) return;
+            if (stmt_ == nullptr || !stmt_ || bindings_ != nullptr || status_ != -1) return;
 
             if ((status_ = mysql_stmt_execute(stmt_.get()))) {
                 throw database_exception(helper::last_stmt_error(stmt_.get()));
@@ -208,7 +208,7 @@ namespace arg3
             if (db_->cache_level() == sqldb::CACHE_ROW)
                 return row(make_shared<mysql_cached_row>(db_, metadata_, *bindings_.get()));
             else
-                return row(make_shared<mysql_stmt_row>(db_, metadata_, bindings_));
+                return row(make_shared<mysql_stmt_row>(db_, stmt_, metadata_, bindings_));
         }
 
         size_t mysql_stmt_resultset::size() const

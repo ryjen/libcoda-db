@@ -135,8 +135,8 @@ namespace arg3
         /* statement version */
 
 
-        mysql_stmt_row::mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields)
-            : row_impl(), fields_(fields), metadata_(metadata), db_(db), size_(0)
+        mysql_stmt_row::mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_STMT> stmt, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields)
+            : row_impl(), fields_(fields), metadata_(metadata), stmt_(stmt), db_(db), size_(0)
         {
             if (db_ == NULL) {
                 throw database_exception("No database provided for mysql row");
@@ -148,16 +148,22 @@ namespace arg3
         }
 
         mysql_stmt_row::mysql_stmt_row(const mysql_stmt_row &other)
-            : row_impl(other), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_), size_(other.size_)
+            : row_impl(other), fields_(other.fields_), metadata_(other.metadata_), stmt_(other.stmt_), db_(other.db_), size_(other.size_)
         {
         }
 
         mysql_stmt_row::mysql_stmt_row(mysql_stmt_row &&other)
-            : row_impl(std::move(other)), fields_(other.fields_), metadata_(other.metadata_), db_(other.db_), size_(other.size_)
+            : row_impl(std::move(other)),
+              fields_(std::move(other.fields_)),
+              metadata_(std::move(other.metadata_)),
+              stmt_(std::move(other.stmt_)),
+              db_(other.db_),
+              size_(other.size_)
         {
             other.fields_ = nullptr;
             other.db_ = NULL;
             other.metadata_ = nullptr;
+            other.stmt_ = nullptr;
         }
 
         mysql_stmt_row::~mysql_stmt_row()
@@ -170,19 +176,22 @@ namespace arg3
             metadata_ = other.metadata_;
             db_ = other.db_;
             size_ = other.size_;
+            stmt_ = other.stmt_;
 
             return *this;
         }
 
         mysql_stmt_row &mysql_stmt_row::operator=(mysql_stmt_row &&other)
         {
-            fields_ = other.fields_;
-            metadata_ = other.metadata_;
+            fields_ = std::move(other.fields_);
+            metadata_ = std::move(other.metadata_);
             db_ = other.db_;
             size_ = other.size_;
+            stmt_ = std::move(other.stmt_);
             other.fields_ = nullptr;
             other.db_ = NULL;
             other.metadata_ = nullptr;
+            other.stmt_ = nullptr;
 
             return *this;
         }

@@ -57,11 +57,12 @@ namespace arg3
            private:
             shared_ptr<mysql_binding> fields_;
             shared_ptr<MYSQL_RES> metadata_;
+            shared_ptr<MYSQL_STMT> stmt_;
             mysql_db *db_;
             size_t size_;
 
            public:
-            mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields);
+            mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_STMT> stmt, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields);
             virtual ~mysql_stmt_row();
             mysql_stmt_row(const mysql_stmt_row &other);
             mysql_stmt_row(mysql_stmt_row &&other);
