@@ -15,11 +15,11 @@ namespace arg3
     {
         mysql_row::mysql_row(mysql_db *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row) : row_impl(), row_(row), res_(res), db_(db)
         {
-            if(db_ == NULL) {
+            if (db_ == NULL) {
                 throw database_exception("no database provided for mysql row");
             }
 
-            if(row_ == NULL) {
+            if (row_ == NULL) {
                 throw database_exception("no raw data for mysql row");
             }
 
@@ -90,7 +90,7 @@ namespace arg3
                 throw database_exception("invalid mysql row");
             }
 
-            if(name.empty()) {
+            if (name.empty()) {
                 throw no_such_column_exception();
             }
 
@@ -136,7 +136,7 @@ namespace arg3
 
 
         mysql_stmt_row::mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields)
-            : row_impl(), fields_(fields), metadata_(metadata), db_(db)
+            : row_impl(), fields_(fields), metadata_(metadata), db_(db), size_(0)
         {
             if (db_ == NULL) {
                 throw database_exception("No database provided for mysql row");
