@@ -190,7 +190,7 @@ namespace arg3
         row_impl::column_type mysql_stmt_row::column(size_t nPosition) const
         {
             if (!is_valid()) {
-                throw database_exception("invalid row");
+                throw database_exception("invalid mysql row");
             }
 
             if (nPosition >= size()) {
@@ -225,8 +225,9 @@ namespace arg3
 
         string mysql_stmt_row::column_name(size_t nPosition) const
         {
-            assert(metadata_ != nullptr);
-
+            if (!is_valid()) {
+                throw database_exception("invalid mysql row");
+            }
             if (nPosition >= size()) {
                 throw no_such_column_exception();
             }
@@ -245,7 +246,7 @@ namespace arg3
 
         bool mysql_stmt_row::is_valid() const
         {
-            return fields_ != nullptr && metadata_ != nullptr;
+            return fields_ != nullptr && metadata_ != nullptr && mysql_num_rows(metadata_.get()) > 0;
         }
 
         /* cached version */
