@@ -44,13 +44,13 @@ int main(int argc, char *argv[])
     }
 
     if (pid == 0) {
-        execl(mysql, mysql);
+        execl(mysql, mysql, NULL);
         return 0;
     }
 
     waitpid(pid, NULL, 0);
 
-    execl(sqlite, sqlite);
+    execl(sqlite, sqlite, NULL);
 
     return 0;
 }
