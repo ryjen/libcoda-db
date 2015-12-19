@@ -19,7 +19,7 @@ find_package(SQLite3)
 if(CODE_COVERAGE)
 	include(CodeCoverage)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_COVERAGE}")
-	setup_target_for_coverage(${PROJECT_NAME}-coverage ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test ${PROJECT_SOURCE_DIR}/coverage)
+	setup_target_for_coverage(${PROJECT_NAME}-coverage ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test ${PROJECT_SOURCE_DIR}/coverage)
 endif()
 
 # add config header file
@@ -38,11 +38,6 @@ add_subdirectory(tests)
 # Setup testing
 enable_testing()
 
-if (MEMORY_CHECK)
-	include(MemCheckTest)
-	add_memcheck_test(${PROJECT_NAME}-mysql-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-mysql-test)
-	add_memcheck_test(${PROJECT_NAME}-sqlite-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-sqlite-test)
-else ()
-	add_test(${PROJECT_NAME}-mysql-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-mysql-test)
-	add_test(${PROJECT_NAME}-sqlite-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-sqlite-test)
-endif()
+include(MemCheckTest)
+add_opt_memcheck_test(MEMORY_CHECK ${PROJECT_NAME}-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test)
+
