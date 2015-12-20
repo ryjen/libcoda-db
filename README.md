@@ -5,6 +5,7 @@ libarg3db
 [![Build Status](http://img.shields.io/travis/deadcoda/arg3dice.svg)](https://travis-ci.org/deadcoda/arg3dice)
 [![Coverage Status](https://coveralls.io/repos/deadcoda/arg3dice/badge.svg?branch=master&service=github)](https://coveralls.io/github/deadcoda/arg3dice?branch=master)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://deadcoda.mit-license.org)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/e98c311926b94b068ef6705245d77739)](https://www.codacy.com/app/c0der78/arg3db)
 
 a sqlite3 and mysql wrapper / active record (ish) implementation
 
