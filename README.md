@@ -2,67 +2,76 @@
 libarg3db
 =========
 
-[![Build Status](https://travis-ci.org/deadcoda/arg3db.svg?branch=master)](https://travis-ci.org/deadcoda/arg3db)
+[![Build Status](http://img.shields.io/travis/deadcoda/arg3dice.svg)](https://travis-ci.org/deadcoda/arg3dice)
+[![Coverage Status](https://coveralls.io/repos/deadcoda/arg3dice/badge.svg?branch=master&service=github)](https://coveralls.io/github/deadcoda/arg3dice?branch=master)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://deadcoda.mit-license.org)
 
 a sqlite3 and mysql wrapper / active record (ish) implementation
 
-[View Testing Code Coverage](http://htmlpreview.github.com/?https://github.com/c0der78/arg3db/blob/master/coverage/index.html)
-
 Use in production at your own risk, I'm still doing quite a bit of testing, refactoring and new features.  Pull requests are welcomed...
 
-I do however realize already that this is most likely an excercise in futility.
-
 Building
-========
+--------
 
-You can use [cmake](http://cmake.org) or the legacy [autotools](http://en.wikipedia.org/wiki/GNU_build_system) systems to build.
+After cloning run the following command to initialize submodules:
 
 ```bash
-mkdir debug
-cd debug
 
-# where to install (customize)
-INSTALL_PREFIX=$(brew --cellar)/arg3db/0.5.0
+git submodule update --init --recursive
+```
 
-# use cmake for debug build with valgrind, lcov
-cmake -DMEMORY_CHECK=ON -DCODE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX ..
-# or autotools
-./configure --prefix=$INSTALL_PREFIX --enable-coverage
+you can use [cmake](https://cmake.org) to generate for the build system of your choice.
 
+```bash
+mkdir debug; cd debug; 
+cmake -DCMAKE_BUILD_TYPE=Debug ..
 make
 make test
-make install
-
-# osx homebrew
-brew link arg3db
 ```
+
+a homebrew release example:
+```bash
+mkdir release; cd release
+cmake -DCMAKE_BUILD_TYPE=Release $(brew diy --version=0.2.0)
+make
+make install
+brew link arg3json
+```
+
+options supported are:
+
+    -DCODE_COVERAGE=ON   :   enable code coverage using lcov
+    -DMEMORY_CHECK=ON    :   enable valgrind memory checking on tests
 
 Coding Style
-============
+-------------
 
-I don't like camel case classes/structs/methods/functions in c++.  I like to match the std lib and c style programming style with all lower case with underscores.  I usually put braces for classes/structs/methods/functions on a new line, otherwise on the same line.  Globals, constants, enums are uppercase underscored.  Private member variables end with an open underscore.
+- class/struct/method names are all lower case with underscores separating words
+- non public members are camel case with and underscore at end of the name
+- macros, enums and constants are all upper case with underscores seperating words
+- braces on a new line
 
 Model
-=====
-```
-/* database interfaces */
-sqldb                                 - interface for a specific database
-  └ statement                         - interface for a prepared statement
-        └ resultset                   - results of a statement
-              └ row                   - an single result
-                   └ column           - a field in a row containing a value
+-----
 
-/* implementations using the above*/
-schema                                - a definition of a table
-schema_factory                        - cached schemas
-base_record                           - the active record (ish) implementation
-select_query                          - builds select queries
-modify_query                          - replaces data
-insert_query                          - inserts data
-update_query                          - updates data
-delete_query                          - builds delete queries
-sql_value                             - storage and conversion for basic sql types
-```
+      /* database interfaces */
+      sqldb                                 - interface for a specific database
+        └ statement                         - interface for a prepared statement
+              └ resultset                   - results of a statement
+                    └ row                   - an single result
+                         └ column           - a field in a row containing a value
+
+      /* implementations using the above*/
+      schema                                - a definition of a table
+      schema_factory                        - cached schemas
+      base_record                           - the active record (ish) implementation
+      select_query                          - builds select queries
+      modify_query                          - replaces data
+      insert_query                          - inserts data
+      update_query                          - updates data
+      delete_query                          - builds delete queries
+      sql_value                             - storage and conversion for basic sql types
+
 
 Records
 =======
