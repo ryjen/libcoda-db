@@ -12,15 +12,17 @@ namespace arg3
 {
     namespace db
     {
-        query::query(sqldb *db) : db_(db), stmt_(nullptr)
+        query::query(sqldb *db) : db_(db), stmt_(nullptr), bindings_()
         {
             if (db_ == nullptr) {
                 throw database_exception("No database provided for query");
             }
         }
+
         query::query(const query &other) : db_(other.db_), stmt_(other.stmt_), bindings_(other.bindings_)
         {
         }
+
         query::query(query &&other) : db_(other.db_), stmt_(std::move(other.stmt_)), bindings_(std::move(other.bindings_))
         {
             other.db_ = NULL;
@@ -43,9 +45,9 @@ namespace arg3
         {
             db_ = other.db_;
             stmt_ = std::move(other.stmt_);
+            bindings_ = std::move(other.bindings_);
             other.db_ = NULL;
             other.stmt_ = nullptr;
-            bindings_ = std::move(other.bindings_);
 
             return *this;
         }
@@ -62,14 +64,13 @@ namespace arg3
                 if (stmt_->is_valid()) {
                     return;
                 }
-            }
-            else {
+            } else {
                 stmt_ = db_->create_statement();
             }
 
             log::trace("Query: %s", sql.c_str());
 
-            stmt_->prepare(sql); // throws exception on error
+            stmt_->prepare(sql);  // throws exception on error
 
             for (size_t i = 1; i <= bindings_.size(); i++) {
                 auto &value = bindings_[i - 1];
@@ -80,7 +81,7 @@ namespace arg3
 
         size_t query::assert_binding_index(size_t index)
         {
-            if(index == 0) {
+            if (index == 0) {
                 throw binding_error("parameter index must be greater than zero");
             }
 

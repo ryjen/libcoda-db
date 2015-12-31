@@ -12,16 +12,10 @@ namespace arg3
         modify_query::modify_query(sqldb *db, const string &tableName, const vector<string> &columns)
             : query(db), columns_(columns), tableName_(tableName), flags_(0)
         {
-            if (tableName.empty()) {
-                throw database_exception("No table name provided for modify query");
-            }
         }
 
         modify_query::modify_query(sqldb *db, const string &tableName) : query(db), tableName_(tableName), flags_(0)
         {
-            if (tableName.empty()) {
-                throw database_exception("No table name provided for modify query");
-            }
         }
         modify_query::modify_query(shared_ptr<schema> schema) : modify_query(schema->db(), schema->table_name(), schema->column_names())
         {
@@ -169,6 +163,10 @@ namespace arg3
 
         int insert_query::execute()
         {
+            if (tableName_.empty()) {
+                throw database_exception("No table name provided for modify query");
+            }
+
             prepare(to_string());
 
             bool success = stmt_->result();
@@ -194,6 +192,10 @@ namespace arg3
 
         int modify_query::execute()
         {
+            if (tableName_.empty()) {
+                throw database_exception("No table name provided for modify query");
+            }
+
             prepare(to_string());
 
             bool success = stmt_->result();

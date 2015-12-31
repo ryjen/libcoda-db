@@ -12,16 +12,10 @@ namespace arg3
         select_query::select_query(sqldb *db, const string &tableName, const vector<string> &columns)
             : query(db), columns_(columns), tableName_(tableName)
         {
-            if (tableName_.empty()) {
-                throw database_exception("no table name provided to select query");
-            }
         }
 
         select_query::select_query(sqldb *db, const string &tableName) : query(db), columns_(), tableName_(tableName)
         {
-            if (tableName_.empty()) {
-                throw database_exception("no table name provided to select query");
-            }
         }
         select_query::select_query(const select_query &other)
             : query(other),
@@ -170,15 +164,24 @@ namespace arg3
         {
             auto cols(columns_);
 
-            columns_ = {"count(*)"};
+            // sucks to backup the columns just for this
+            // query, but I don't see an easy way right now
+            try {
+                columns_ = {"count(*)"};
 
-            prepare(to_string());
+                prepare(to_string());
 
-            int value = execute_scalar<int>();
+                int value = execute_scalar<int>();
 
-            columns_ = cols;
+                columns_ = cols;
 
-            return value;
+                return value;
+            } catch (...) {
+                // make sure we don't leave this query in a temp state
+                columns_ = cols;
+
+                return -1;
+            }
         }
 
         resultset select_query::execute()

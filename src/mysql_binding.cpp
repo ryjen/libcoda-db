@@ -18,7 +18,7 @@ namespace arg3
     {
         namespace helper
         {
-            // small util method to make a c pointer for a type
+            // small util method to make a dynamic c pointer for a type
             template <typename T>
             void *to_ptr(const T &value)
             {
@@ -134,7 +134,7 @@ namespace arg3
 
         void mysql_binding::clear_value(size_t i)
         {
-            if(i >= size_) {
+            if (i >= size_) {
                 throw binding_error("invalid index in mysql binding clear");
             }
 

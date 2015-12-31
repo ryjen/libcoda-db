@@ -29,15 +29,6 @@ make
 make test
 ```
 
-a homebrew release example:
-```bash
-mkdir release; cd release
-cmake -DCMAKE_BUILD_TYPE=Release $(cd ..;brew diy --version=0.2.0)
-make
-make install
-brew link arg3json
-```
-
 options supported are:
 
     -DCODE_COVERAGE=ON   :   enable code coverage using lcov
