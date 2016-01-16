@@ -7,6 +7,7 @@
 #include "query.h"
 #include "resultset.h"
 #include "where_clause.h"
+#include "join_clause.h"
 
 namespace arg3
 {
@@ -24,9 +25,11 @@ namespace arg3
 
            private:
             where_clause where_;
+            join_clause join_;
             string limit_;
             string orderBy_;
             string groupBy_;
+            string joinBy_;
             vector<string> columns_;
             string tableName_;
 
@@ -51,6 +54,8 @@ namespace arg3
 
             string group_by() const;
 
+            select_query &join(const string &tableName, const unordered_map<string, string> &columnMappings, join::type = join::inner);
+
             select_query &operator=(const select_query &other);
 
             select_query &operator=(select_query &&other);
@@ -64,6 +69,10 @@ namespace arg3
             select_query &order_by(const string &value);
 
             select_query &group_by(const string &value);
+
+            select_query &join(const join_clause &value);
+
+            select_query &join(const string &value);
 
             string to_string() const;
 

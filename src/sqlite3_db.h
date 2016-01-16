@@ -26,12 +26,8 @@ namespace arg3
            protected:
             sqlite3 *db_;
 
-           private:
-            string filename_;
-            schema_factory schema_factory_;
-
            public:
-            sqlite3_db(const string &name = "arg3.db");
+            sqlite3_db(const uri &info);
             sqlite3_db(const sqlite3_db &other);
             sqlite3_db(sqlite3_db &&other);
             sqlite3_db &operator=(const sqlite3_db &other);
@@ -52,14 +48,9 @@ namespace arg3
 
             void query_schema(const string &tableName, std::vector<column_definition> &columns);
 
-            string connection_string() const;
-            void set_connection_string(const string &value);
-
             resultset execute(const string &sql, bool cache = false);
 
             string last_error() const;
-
-            schema_factory *schemas();
 
             shared_ptr<statement> create_statement();
         };

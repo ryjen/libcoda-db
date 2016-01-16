@@ -28,13 +28,13 @@ go_bandit([]() {
 
             Assert::That(db.is_open(), IsFalse());
 
-            Assert::That(db.connection_string(), Equals(mysql_testdb.connection_string()));
+            Assert::That(db.connection_info().value, Equals(mysql_testdb.connection_info().value));
 
             Assert::That(mysql_testdb.is_open(), IsTrue());
 
             db = mysql_testdb;
 
-            Assert::That(db.connection_string(), Equals(mysql_testdb.connection_string()));
+            Assert::That(db.connection_info().value, Equals(mysql_testdb.connection_info().value));
 
             Assert::That(db.is_open(), IsFalse());
 
@@ -69,7 +69,7 @@ go_bandit([]() {
         });
 
         it("can handle bad parameters", []() {
-            mysql_db db("zzzzz", "zzzzz", "zzzz", "zzzzz", 0);
+            mysql_db db(uri("mysql://zzzzz:zzzzz@zzzz/zzzzz:0"));
 
             AssertThrows(database_exception, db.open());
         });

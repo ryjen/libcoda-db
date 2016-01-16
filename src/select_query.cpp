@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ * @copyright ryan jennings (arg3.com), 2013
  */
 #include "base_record.h"
 #include "select_query.h"
@@ -52,7 +52,6 @@ namespace arg3
             limit_ = other.limit_;
             orderBy_ = other.orderBy_;
             groupBy_ = other.groupBy_;
-
             columns_ = other.columns_;
             tableName_ = other.tableName_;
 
@@ -66,7 +65,6 @@ namespace arg3
             limit_ = std::move(other.limit_);
             orderBy_ = std::move(other.orderBy_);
             groupBy_ = std::move(other.groupBy_);
-
             columns_ = std::move(other.columns_);
             tableName_ = std::move(other.tableName_);
 
@@ -97,6 +95,11 @@ namespace arg3
         string select_query::order_by() const
         {
             return orderBy_;
+        }
+
+        select_query &select_query::join(const string &tableName, const unordered_map<string, string> &columnMappings, join::type joinType)
+        {
+            return *this;
         }
         select_query &select_query::where(const where_clause &value)
         {

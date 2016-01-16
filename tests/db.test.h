@@ -7,14 +7,12 @@
 #include "sqlite3_db.h"
 #include "mysql_db.h"
 
-#define TESTDB "test.db"
-
 #ifdef HAVE_LIBSQLITE3
 
 class test_sqlite3_db : public arg3::db::sqlite3_db
 {
    public:
-    test_sqlite3_db() : sqlite3_db(TESTDB)
+    test_sqlite3_db() : sqlite3_db(arg3::db::uri("file://testdb.db"))
     {
     }
 
@@ -36,7 +34,7 @@ extern test_sqlite3_db sqlite_testdb;
 class test_mysql_db : public arg3::db::mysql_db
 {
    public:
-    test_mysql_db() : mysql_db("test")
+    test_mysql_db() : mysql_db(arg3::db::uri("mysql://test"))
     {
     }
 

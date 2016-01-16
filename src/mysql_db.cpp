@@ -27,59 +27,34 @@ namespace arg3
             }
         }
 
-        mysql_db::mysql_db(const string &dbName, const string &user, const string &password, const string &host, int port)
-            : sqldb(), db_(NULL), dbName_(dbName), user_(user), password_(password), host_(host), port_(port), schema_factory_(this)
+        mysql_db::mysql_db(const uri &connInfo) : sqldb(connInfo), db_(nullptr)
         {
         }
 
-        mysql_db::mysql_db(const mysql_db &other)
-            : sqldb(other),
-              db_(NULL),
-              dbName_(other.dbName_),
-              user_(other.user_),
-              password_(other.password_),
-              host_(other.host_),
-              port_(other.port_),
-              schema_factory_(other.schema_factory_)
+        mysql_db::mysql_db(const mysql_db &other) : sqldb(other), db_(nullptr)
         {
         }
 
-        mysql_db::mysql_db(mysql_db &&other)
-            : sqldb(other),
-              db_(other.db_),
-              dbName_(std::move(other.dbName_)),
-              user_(std::move(other.user_)),
-              password_(std::move(other.password_)),
-              host_(std::move(other.host_)),
-              port_(other.port_),
-              schema_factory_(std::move(other.schema_factory_))
+        mysql_db::mysql_db(mysql_db &&other) : sqldb(other), db_(other.db_)
         {
-            other.db_ = NULL;
+            other.db_ = nullptr;
         }
 
         mysql_db &mysql_db::operator=(const mysql_db &other)
         {
-            db_ = NULL;
-            dbName_ = other.dbName_;
-            user_ = other.user_;
-            password_ = other.password_;
-            host_ = other.host_;
-            port_ = other.port_;
-            schema_factory_ = other.schema_factory_;
+            sqldb::operator=(other);
+
+            db_ = other.db_;
 
             return *this;
         }
 
         mysql_db &mysql_db::operator=(mysql_db &&other)
         {
+            sqldb::operator=(std::move(other));
+
             db_ = other.db_;
-            dbName_ = std::move(other.dbName_);
-            user_ = std::move(other.user_);
-            password_ = std::move(other.password_);
-            host_ = std::move(other.host_);
-            port_ = other.port_;
-            schema_factory_ = std::move(other.schema_factory_);
-            other.db_ = NULL;
+            other.db_ = nullptr;
 
             return *this;
         }
@@ -87,22 +62,6 @@ namespace arg3
         mysql_db::~mysql_db()
         {
             close();
-        }
-
-        string mysql_db::connection_string() const
-        {
-            ostringstream buf;
-            buf << "mysql://" << user_ << "@" << host_ << ":" << port_ << "/" << dbName_;
-            return buf.str();
-        }
-
-        schema_factory *mysql_db::schemas()
-        {
-            return &schema_factory_;
-        }
-
-        void mysql_db::set_connection_string(const string &value)
-        {
         }
 
         void mysql_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
@@ -125,19 +84,7 @@ namespace arg3
                 def.pk = row["Key"].to_value() == "PRI";
 
                 // find type
-                string type = row["Type"].to_value();
-
-
-                // yes, this is pretty immature
-                if (type.find("int") != string::npos) {
-                    def.type = MYSQL_TYPE_LONG;
-                } else if (type.find("double") != string::npos) {
-                    def.type = MYSQL_TYPE_DOUBLE;
-                } else if (type.find("blob") != string::npos) {
-                    def.type = MYSQL_TYPE_BLOB;
-                } else {
-                    def.type = MYSQL_TYPE_STRING;
-                }
+                def.type = row["Type"].to_value().to_string();
 
                 columns.push_back(def);
             }
@@ -145,31 +92,42 @@ namespace arg3
 
         void mysql_db::open()
         {
-            if (db_ != NULL) return;
+            if (db_ != nullptr) return;
 
-            db_ = mysql_init(NULL);
+            db_ = mysql_init(nullptr);
 
-            if (mysql_real_connect(db_, host_.c_str(), user_.c_str(), password_.c_str(), dbName_.c_str(), port_, NULL, 0) == NULL) {
+            auto info = connection_info();
+
+            int port;
+
+            try {
+                port = stoi(info.port);
+            } catch (const std::exception &e) {
+                port = 0;
+            }
+
+            if (mysql_real_connect(db_, info.host.c_str(), info.user.c_str(), info.password.c_str(), info.path.c_str(), port, nullptr, 0) ==
+                nullptr) {
                 throw database_exception("No connection could be made to the database");
             }
         }
 
         bool mysql_db::is_open() const
         {
-            return db_ != NULL;
+            return db_ != nullptr;
         }
 
         void mysql_db::close()
         {
-            if (db_ != NULL) {
+            if (db_ != nullptr) {
                 mysql_close(db_);
-                db_ = NULL;
+                db_ = nullptr;
             }
         }
 
         string mysql_db::last_error() const
         {
-            if(db_ == NULL) {
+            if (db_ == nullptr) {
                 return string();
             }
 
@@ -183,7 +141,7 @@ namespace arg3
 
         long long mysql_db::last_insert_id() const
         {
-            if(db_ == NULL) {
+            if (db_ == nullptr) {
                 return 0;
             }
 
@@ -192,7 +150,7 @@ namespace arg3
 
         int mysql_db::last_number_of_changes() const
         {
-            if(db_ == NULL) {
+            if (db_ == nullptr) {
                 return 0;
             }
 
@@ -201,7 +159,7 @@ namespace arg3
 
         resultset mysql_db::execute(const string &sql, bool cache)
         {
-            if(db_ == NULL) {
+            if (db_ == nullptr) {
                 throw database_exception("database is not open");
             }
 
@@ -211,7 +169,7 @@ namespace arg3
 
             res = mysql_store_result(db_);
 
-            if (res == NULL && mysql_field_count(db_) != 0) {
+            if (res == nullptr && mysql_field_count(db_) != 0) {
                 throw database_exception(last_error());
             }
 

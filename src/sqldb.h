@@ -26,15 +26,12 @@ namespace arg3
                 parse(url);
             }
             void parse(const std::string &url);
-            std::string protocol, user, password, host, path, query, value;
+            std::string protocol, user, password, host, port, path, query, value;
             operator std::string() const
             {
                 return value;
             }
         };
-
-        shared_ptr<sqldb> get_db_from_uri(const string &uri);
-
 
         namespace log
         {
@@ -66,7 +63,9 @@ namespace arg3
            public:
             typedef enum { CACHE_NONE, CACHE_RESULTSET, CACHE_ROW, CACHE_COLUMN } CacheLevel;
 
-            sqldb();
+            static shared_ptr<sqldb> from_uri(const string &value);
+
+            sqldb(const uri &connectionInfo);
             sqldb(const sqldb &other) = default;
             sqldb(sqldb &&other) = default;
             sqldb &operator=(const sqldb &other) = default;
@@ -84,8 +83,7 @@ namespace arg3
 
             virtual int last_number_of_changes() const = 0;
 
-            virtual string connection_string() const = 0;
-            virtual void set_connection_string(const string &value) = 0;
+            uri connection_info() const;
 
             virtual resultset execute(const string &sql, bool cache) = 0;
 
@@ -93,7 +91,7 @@ namespace arg3
 
             virtual string last_error() const = 0;
 
-            virtual schema_factory *schemas() = 0;
+            schema_factory *schemas();
 
             virtual shared_ptr<statement> create_statement() = 0;
 
@@ -102,9 +100,12 @@ namespace arg3
             CacheLevel cache_level() const;
 
            private:
+            uri connectionInfo_;
             CacheLevel cacheLevel_;
-        };
 
+           protected:
+            schema_factory schema_factory_;
+        };
     }
 }
 

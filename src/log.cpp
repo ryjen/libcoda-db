@@ -12,7 +12,6 @@ namespace arg3
 {
     namespace db
     {
-
         namespace log
         {
             const char *LevelNames[] = {"UNKNOWN", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"};

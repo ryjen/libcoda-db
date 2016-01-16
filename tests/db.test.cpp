@@ -60,7 +60,7 @@ void test_sqlite3_db::setup()
 void test_sqlite3_db::teardown()
 {
     close();
-    unlink(connection_string().c_str());
+    unlink(connection_info().path.c_str());
     schemas()->clear("users");
 }
 #endif
@@ -90,12 +90,12 @@ go_bandit([]() {
         it("can_parse_uri", []() {
             try {
 #ifdef HAVE_LIBSQLITE3
-                auto file = get_db_from_uri("file://test.db");
+                auto file = sqldb::from_uri("file://test.db");
 
                 AssertThat(file.get() != NULL, IsTrue());
 #endif
 #ifdef HAVE_LIBMYSQLCLIENT
-                auto mysql = get_db_from_uri("mysql://localhost:4000/test");
+                auto mysql = sqldb::from_uri("mysql://localhost:4000/test");
                 AssertThat(mysql.get() != NULL, IsTrue());
 #endif
             } catch (const std::exception &e) {

@@ -44,7 +44,7 @@ go_bandit([]() {
         });
 
         it("throws exceptions", []() {
-            sqlite3_db db;
+            sqlite3_db db(uri(""));
 
             sqlite3_statement stmt(&db);
 

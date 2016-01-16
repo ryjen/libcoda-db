@@ -27,13 +27,16 @@ namespace arg3
 
         void uri::parse(const string &url_s)
         {
-            value = url_s;
-
+            // do the manual implementation from stack overflow
+            // with some mods for the port
             const string prot_end("://");
             string::const_iterator prot_i = search(url_s.begin(), url_s.end(), prot_end.begin(), prot_end.end());
             protocol.reserve(distance(url_s.begin(), prot_i));
             transform(url_s.begin(), prot_i, back_inserter(protocol), ptr_fun<int, int>(tolower));  // protocol is icase
-            if (prot_i == url_s.end()) return;
+            if (prot_i == url_s.end()) {
+                return;
+            }
+
             advance(prot_i, prot_end.length());
 
             string::const_iterator user_i = find(prot_i, url_s.end(), '@');
@@ -49,17 +52,29 @@ namespace arg3
                     user.assign(prot_i, user_i);
                 }
                 path_i = user_i;
-            } else
+            } else {
                 path_i = find(prot_i, url_s.end(), '/');
-            host.reserve(distance(prot_i, path_i));
-            transform(prot_i, path_i, back_inserter(host), ptr_fun<int, int>(tolower));  // host is icase
+                if (path_i == url_s.end()) {
+                    path_i = prot_i;
+                }
+            }
+            string::const_iterator port_i = find(prot_i, path_i, ':');
+            string::const_iterator host_end;
+            if (port_i != url_s.end()) {
+                port.assign(port_i, path_i);
+                host_end = port_i;
+            } else {
+                host_end = path_i;
+            }
+            host.reserve(distance(prot_i, host_end));
+            transform(prot_i, host_end, back_inserter(host), ptr_fun<int, int>(tolower));  // host is icase
             string::const_iterator query_i = find(path_i, url_s.end(), '?');
             path.assign(path_i, query_i);
             if (query_i != url_s.end()) ++query_i;
             query.assign(query_i, url_s.end());
         }
 
-        shared_ptr<sqldb> get_db_from_uri(const string &uristr)
+        shared_ptr<sqldb> sqldb::from_uri(const string &uristr)
         {
             db::uri uri(uristr);
 #ifdef HAVE_LIBSQLITE3
@@ -68,23 +83,40 @@ namespace arg3
 #ifdef HAVE_LIBMYSQLCLIENT
             if ("mysql" == uri.protocol) return make_shared<mysql_db>(uri);
 #endif
+#ifdef HAVE_LIBPQ
+            if ("postgres" == uri.protocol || "postgresql" == uri.protocol) return make_shared<postgres_db>(uri);
+#endif
             throw database_exception("unknown database " + uri.value);
         }
 
-        sqldb::sqldb() : cacheLevel_(CACHE_NONE)
+        sqldb::sqldb(const uri &connectionInfo) : connectionInfo_(connectionInfo), cacheLevel_(CACHE_NONE), schema_factory_(this)
         {
         }
+
         resultset sqldb::execute(const string &sql)
         {
             return execute(sql, cache_level() == sqldb::CACHE_RESULTSET);
         }
+
         void sqldb::set_cache_level(CacheLevel level)
         {
             cacheLevel_ = level;
         }
+
         sqldb::CacheLevel sqldb::cache_level() const
         {
             return cacheLevel_;
+        }
+
+        uri sqldb::connection_info() const
+        {
+            return connectionInfo_;
+        }
+
+
+        schema_factory *sqldb::schemas()
+        {
+            return &schema_factory_;
         }
     }
 }

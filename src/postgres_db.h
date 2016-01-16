@@ -1,13 +1,13 @@
-#ifndef ARG3_DB_MYSQL_SQLDB_H
-#define ARG3_DB_MYSQL_SQLDB_H
+#ifndef POSTGRES_DB_H
+#define POSTGRES_DB_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-#ifdef HAVE_LIBMYSQLCLIENT
+#ifdef HAVE_LIBPOSTGRESQL
 
-#include <mysql/mysql.h>
+#include <.h>
 #include "sqldb.h"
 
 namespace arg3
@@ -17,23 +17,23 @@ namespace arg3
         /*!
          * a mysql specific implementation of a database
          */
-        class mysql_db : public sqldb
+        class postgres_db : public sqldb
         {
             friend class base_query;
-            friend class mysql_statement;
-            friend class mysql_resultset;
-            friend class mysql_cached_resultset;
+            friend class postgres_statement;
+            friend class postgres_resultset;
+            friend class postgres_cached_resultset;
 
            protected:
-            MYSQL *db_;
+            PGconn *db_;
 
            public:
-            mysql_db(const uri &connInfo);
-            mysql_db(const mysql_db &other);
-            mysql_db(mysql_db &&other);
-            mysql_db &operator=(const mysql_db &other);
-            mysql_db &operator=(mysql_db &&other);
-            virtual ~mysql_db();
+            postgres_db(const uri &info);
+            postgres_db(const postgres_db &other);
+            postgres_db(postgres_db &&other);
+            postgres_db &operator=(const postgres_db &other);
+            postgres_db &operator=(postgres_db &&other);
+            virtual ~postgres_db();
 
             bool is_open() const;
             void open();
@@ -46,11 +46,12 @@ namespace arg3
 
             resultset execute(const string &sql, bool cache = false);
 
+            schema_factory *schemas();
+
             shared_ptr<statement> create_statement();
         };
     }
 }
 
-#endif
 
 #endif

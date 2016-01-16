@@ -6,7 +6,7 @@ namespace arg3
 {
     namespace db
     {
-        where_clause operator"" _w(const char *cstr, size_t len)
+        where_clause operator"" _where(const char *cstr, size_t len)
         {
             return where_clause(string(cstr, len));
         }

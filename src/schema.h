@@ -18,7 +18,7 @@ namespace arg3
         struct column_definition {
             string name;
             bool pk;
-            int type;
+            string type;
         };
 
         ostream &operator<<(ostream &os, const column_definition &def);

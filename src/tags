@@ -1,0 +1,111 @@
+!_TAG_FILE_SORTED	2	/0=unsorted, 1=sorted, 2=foldcase/
+arg3	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^namespace arg3$/;"	n	language:C++	file:
+arg3	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^namespace arg3$/;"	n	language:C++
+arg3	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^namespace arg3$/;"	n	language:C++
+arg3	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^namespace arg3$/;"	n	language:C++	file:
+arg3	/Users/ryan/Devel/libarg3/src/db/src/sqldb.cpp	/^namespace arg3$/;"	n	language:C++	file:
+ARG3_DB_MYSQL_SQLDB_H	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^#define ARG3_DB_MYSQL_SQLDB_H$/;"	d	language:C++
+ARG3_IMPLEMENT_EXCEPTION	/Users/ryan/Devel/libarg3/src/db/src/sqldb.cpp	/^        ARG3_IMPLEMENT_EXCEPTION(binding_error, database_exception);$/;"	p	language:C++	namespace:arg3::db	file:
+ARG3_IMPLEMENT_EXCEPTION	/Users/ryan/Devel/libarg3/src/db/src/sqldb.cpp	/^        ARG3_IMPLEMENT_EXCEPTION(database_exception, std::exception);$/;"	p	language:C++	namespace:arg3::db	file:
+ARG3_IMPLEMENT_EXCEPTION	/Users/ryan/Devel/libarg3/src/db/src/sqldb.cpp	/^        ARG3_IMPLEMENT_EXCEPTION(no_such_column_exception, database_exception);$/;"	p	language:C++	namespace:arg3::db	file:
+ARG3_IMPLEMENT_EXCEPTION	/Users/ryan/Devel/libarg3/src/db/src/sqldb.cpp	/^        ARG3_IMPLEMENT_EXCEPTION(record_not_found_exception, database_exception);$/;"	p	language:C++	namespace:arg3::db	file:
+cache_level	/Users/ryan/Devel/libarg3/src/db/src/sqldb.cpp	/^        sqldb::CacheLevel sqldb::cache_level() const$/;"	f	language:C++	class:arg3::db::sqldb
+close	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        void mysql_db::close()$/;"	f	language:C++	class:arg3::db::mysql_db
+close	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            void close();$/;"	p	language:C++	class:arg3::db::mysql_db
+close	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            void close();$/;"	p	language:C++	class:arg3::db::postgres_db
+columns	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        vector<string> select_query::columns() const$/;"	f	language:C++	class:arg3::db::select_query
+connection_info	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        string mysql_db::connection_info() const$/;"	f	language:C++	class:arg3::db::mysql_db
+connection_info	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            string connection_info() const;$/;"	p	language:C++	class:arg3::db::mysql_db
+connection_info	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            string connection_info() const;$/;"	p	language:C++	class:arg3::db::postgres_db
+conn_info_	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^	    uri conn_info_;$/;"	m	language:C++	class:arg3::db::mysql_db
+conn_info_	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^	    string conn_info_;            $/;"	m	language:C++	class:arg3::db::postgres_db
+count	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        int select_query::count()$/;"	f	language:C++	class:arg3::db::select_query
+create_statement	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        shared_ptr<statement> mysql_db::create_statement()$/;"	f	language:C++	class:arg3::db::mysql_db
+create_statement	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            shared_ptr<statement> create_statement();$/;"	p	language:C++	class:arg3::db::mysql_db
+create_statement	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            shared_ptr<statement> create_statement();$/;"	p	language:C++	class:arg3::db::postgres_db
+db	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^    namespace db$/;"	n	language:C++	namespace:arg3	file:
+db	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^    namespace db$/;"	n	language:C++	namespace:arg3
+db	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^    namespace db$/;"	n	language:C++	namespace:arg3
+db	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^    namespace db$/;"	n	language:C++	namespace:arg3	file:
+db	/Users/ryan/Devel/libarg3/src/db/src/sqldb.cpp	/^    namespace db$/;"	n	language:C++	namespace:arg3	file:
+db_	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            MYSQL *db_;$/;"	m	language:C++	class:arg3::db::mysql_db
+db_	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            PGconn *db_;$/;"	m	language:C++	class:arg3::db::postgres_db
+execute	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        resultset mysql_db::execute(const string &sql, bool cache)$/;"	f	language:C++	class:arg3::db::mysql_db
+execute	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            resultset execute(const string &sql, bool cache = false);$/;"	p	language:C++	class:arg3::db::mysql_db
+execute	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            resultset execute(const string &sql, bool cache = false);$/;"	p	language:C++	class:arg3::db::postgres_db
+execute	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        resultset select_query::execute()$/;"	f	language:C++	class:arg3::db::select_query
+execute	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        void select_query::execute(std::function<void(const resultset &rs)> funk)$/;"	f	language:C++	class:arg3::db::select_query
+execute	/Users/ryan/Devel/libarg3/src/db/src/sqldb.cpp	/^        resultset sqldb::execute(const string &sql)$/;"	f	language:C++	class:arg3::db::sqldb
+get_db_from_uri	/Users/ryan/Devel/libarg3/src/db/src/sqldb.cpp	/^        shared_ptr<sqldb> get_db_from_uri(const string &uristr)$/;"	f	language:C++	namespace:arg3::db
+group_by	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query &select_query::group_by(const string &value)$/;"	f	language:C++	class:arg3::db::select_query
+group_by	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        string select_query::group_by() const$/;"	f	language:C++	class:arg3::db::select_query
+helper	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        namespace helper$/;"	n	language:C++	namespace:arg3::db	file:
+is_open	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        bool mysql_db::is_open() const$/;"	f	language:C++	class:arg3::db::mysql_db
+is_open	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            bool is_open() const;$/;"	p	language:C++	class:arg3::db::mysql_db
+is_open	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            bool is_open() const;$/;"	p	language:C++	class:arg3::db::postgres_db
+last_error	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        string mysql_db::last_error() const$/;"	f	language:C++	class:arg3::db::mysql_db
+last_error	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            string last_error() const;$/;"	p	language:C++	class:arg3::db::mysql_db
+last_error	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            string last_error() const;$/;"	p	language:C++	class:arg3::db::postgres_db
+last_insert_id	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        long long mysql_db::last_insert_id() const$/;"	f	language:C++	class:arg3::db::mysql_db
+last_insert_id	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            long long last_insert_id() const;$/;"	p	language:C++	class:arg3::db::mysql_db
+last_insert_id	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            long long last_insert_id() const;$/;"	p	language:C++	class:arg3::db::postgres_db
+last_number_of_changes	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        int mysql_db::last_number_of_changes() const$/;"	f	language:C++	class:arg3::db::mysql_db
+last_number_of_changes	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            int last_number_of_changes() const;$/;"	p	language:C++	class:arg3::db::mysql_db
+last_number_of_changes	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            int last_number_of_changes() const;$/;"	p	language:C++	class:arg3::db::postgres_db
+last_stmt_error	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^            string last_stmt_error(MYSQL_STMT *stmt)$/;"	f	language:C++	namespace:arg3::db::helper
+limit	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query &select_query::limit(const string &value)$/;"	f	language:C++	class:arg3::db::select_query
+limit	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        string select_query::limit() const$/;"	f	language:C++	class:arg3::db::select_query
+mysql_db	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        mysql_db::mysql_db(const mysql_db &other)$/;"	f	language:C++	class:arg3::db::mysql_db
+mysql_db	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        mysql_db::mysql_db(const string &connInfo)$/;"	f	language:C++	class:arg3::db::mysql_db
+mysql_db	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        mysql_db::mysql_db(mysql_db &&other)$/;"	f	language:C++	class:arg3::db::mysql_db
+mysql_db	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^	    mysql_db(const string &connInfo);$/;"	p	language:C++	class:arg3::db::mysql_db
+mysql_db	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            mysql_db(const mysql_db &other);$/;"	p	language:C++	class:arg3::db::mysql_db
+mysql_db	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            mysql_db(mysql_db &&other);$/;"	p	language:C++	class:arg3::db::mysql_db
+mysql_db	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^        class mysql_db : public sqldb$/;"	c	language:C++	namespace:arg3::db
+open	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        void mysql_db::open()$/;"	f	language:C++	class:arg3::db::mysql_db
+open	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            void open();$/;"	p	language:C++	class:arg3::db::mysql_db
+open	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            void open();$/;"	p	language:C++	class:arg3::db::postgres_db
+operator =	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        mysql_db &mysql_db::operator=(const mysql_db &other)$/;"	f	language:C++	class:arg3::db::mysql_db
+operator =	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        mysql_db &mysql_db::operator=(mysql_db &&other)$/;"	f	language:C++	class:arg3::db::mysql_db
+operator =	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            mysql_db &operator=(const mysql_db &other);$/;"	p	language:C++	class:arg3::db::mysql_db
+operator =	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            mysql_db &operator=(mysql_db &&other);$/;"	p	language:C++	class:arg3::db::mysql_db
+operator =	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            postgres_db &operator=(const postgres_db &other);$/;"	p	language:C++	class:arg3::db::postgres_db
+operator =	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            postgres_db &operator=(postgres_db &&other);$/;"	p	language:C++	class:arg3::db::postgres_db
+operator =	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query &select_query::operator=(const select_query &other)$/;"	f	language:C++	class:arg3::db::select_query
+operator =	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query &select_query::operator=(select_query &&other)$/;"	f	language:C++	class:arg3::db::select_query
+order_by	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query &select_query::order_by(const string &value)$/;"	f	language:C++	class:arg3::db::select_query
+order_by	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        string select_query::order_by() const$/;"	f	language:C++	class:arg3::db::select_query
+parse	/Users/ryan/Devel/libarg3/src/db/src/sqldb.cpp	/^        void uri::parse(const string &url_s)$/;"	f	language:C++	class:arg3::db::uri
+postgres_db	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            postgres_db(const postgres_db &other);$/;"	p	language:C++	class:arg3::db::postgres_db
+postgres_db	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            postgres_db(const string &connInfo);$/;"	p	language:C++	class:arg3::db::postgres_db
+postgres_db	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            postgres_db(postgres_db &&other);$/;"	p	language:C++	class:arg3::db::postgres_db
+postgres_db	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^        class postgres_db : public sqldb$/;"	c	language:C++	namespace:arg3::db
+POSTGRES_DB_H	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^#define POSTGRES_DB_H$/;"	d	language:C++
+query_schema	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        void mysql_db::query_schema(const string &tableName, std::vector<column_definition> &columns)$/;"	f	language:C++	class:arg3::db::mysql_db
+query_schema	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            void query_schema(const string &tablename, std::vector<column_definition> &columns);$/;"	p	language:C++	class:arg3::db::mysql_db
+query_schema	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            void query_schema(const string &tablename, std::vector<column_definition> &columns);$/;"	p	language:C++	class:arg3::db::postgres_db
+reset	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        void select_query::reset()$/;"	f	language:C++	class:arg3::db::select_query
+schemas	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        schema_factory *mysql_db::schemas()$/;"	f	language:C++	class:arg3::db::mysql_db
+schemas	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            schema_factory *schemas();$/;"	p	language:C++	class:arg3::db::mysql_db
+schemas	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            schema_factory *schemas();$/;"	p	language:C++	class:arg3::db::postgres_db
+schema_factory_	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^	    schema_factory schema_factory_;$/;"	m	language:C++	class:arg3::db::mysql_db
+schema_factory_	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^	    schema_factory schema_factory_;$/;"	m	language:C++	class:arg3::db::postgres_db
+select_query	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query::select_query(const select_query &other)$/;"	f	language:C++	class:arg3::db::select_query
+select_query	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query::select_query(select_query &&other)$/;"	f	language:C++	class:arg3::db::select_query
+select_query	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query::select_query(shared_ptr<schema> schema) : select_query(schema->db(), schema->table_name(), schema->column_names())$/;"	f	language:C++	class:arg3::db::select_query
+select_query	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query::select_query(sqldb *db, const string &tableName) : query(db), columns_(), tableName_(tableName)$/;"	f	language:C++	class:arg3::db::select_query
+select_query	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query::select_query(sqldb *db, const string &tableName, const vector<string> &columns)$/;"	f	language:C++	class:arg3::db::select_query
+set_cache_level	/Users/ryan/Devel/libarg3/src/db/src/sqldb.cpp	/^        void sqldb::set_cache_level(CacheLevel level)$/;"	f	language:C++	class:arg3::db::sqldb
+set_connection_info	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        void mysql_db::set_connection_info(const string &value)$/;"	f	language:C++	class:arg3::db::mysql_db
+set_connection_info	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            void set_connection_info(const string &value);$/;"	p	language:C++	class:arg3::db::mysql_db
+set_connection_info	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            void set_connection_info(const string &value);$/;"	p	language:C++	class:arg3::db::postgres_db
+sqldb	/Users/ryan/Devel/libarg3/src/db/src/sqldb.cpp	/^        sqldb::sqldb() : cacheLevel_(CACHE_NONE)$/;"	f	language:C++	class:arg3::db::sqldb
+table_name	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query &select_query::table_name(const string &value)$/;"	f	language:C++	class:arg3::db::select_query
+table_name	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        string select_query::table_name() const$/;"	f	language:C++	class:arg3::db::select_query
+to_string	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        string select_query::to_string() const$/;"	f	language:C++	class:arg3::db::select_query
+where	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query &select_query::where(const string &value)$/;"	f	language:C++	class:arg3::db::select_query
+where	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query &select_query::where(const where_clause &value)$/;"	f	language:C++	class:arg3::db::select_query
+~mysql_db	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.cpp	/^        mysql_db::~mysql_db()$/;"	f	language:C++	class:arg3::db::mysql_db
+~mysql_db	/Users/ryan/Devel/libarg3/src/db/src/mysql_db.h	/^            virtual ~mysql_db();$/;"	p	language:C++	class:arg3::db::mysql_db
+~postgres_db	/Users/ryan/Devel/libarg3/src/db/src/postgres_db.h	/^            virtual ~postgres_db();$/;"	p	language:C++	class:arg3::db::postgres_db
+~select_query	/Users/ryan/Devel/libarg3/src/db/src/select_query.cpp	/^        select_query::~select_query()$/;"	f	language:C++	class:arg3::db::select_query

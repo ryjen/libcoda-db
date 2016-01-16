@@ -11,7 +11,6 @@ namespace arg3
 {
     namespace db
     {
-
         namespace log
         {
             void error(const char *const format, ...) __attribute__((format(printf, 1, 2)));
