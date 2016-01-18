@@ -26,6 +26,7 @@ namespace arg3
         sqlite3_column &sqlite3_column::operator=(sqlite3_column &&other)
         {
             stmt_ = other.stmt_;
+            column_ = other.column_;
 
             other.stmt_ = nullptr;
 

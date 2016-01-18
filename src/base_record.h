@@ -21,7 +21,7 @@ namespace arg3
         class base_record;
 
         template <typename T>
-        inline void find_all(shared_ptr<schema> schema, typename base_record<T>::callback funk)
+        inline void find_all(std::shared_ptr<schema> schema, typename base_record<T>::callback funk)
         {
             select_query query(schema);
 
@@ -40,18 +40,18 @@ namespace arg3
 
 
         template <typename T>
-        inline vector<shared_ptr<T>> find_all(shared_ptr<schema> schema)
+        inline std::vector<std::shared_ptr<T>> find_all(std::shared_ptr<schema> schema)
         {
             /* convert sql rows to objects */
-            vector<shared_ptr<T>> items;
+            std::vector<std::shared_ptr<T>> items;
 
-            db::find_all<T>(schema, [&](shared_ptr<T> record) { items.push_back(record); });
+            db::find_all<T>(schema, [&](std::shared_ptr<T> record) { items.push_back(record); });
 
             return items;
         }
 
         template <typename T>
-        inline void find_by(shared_ptr<schema> schema, const string &name, const sql_value &value, typename base_record<T>::callback funk)
+        inline void find_by(std::shared_ptr<schema> schema, const std::string &name, const sql_value &value, typename base_record<T>::callback funk)
         {
             select_query query(schema);
 
@@ -73,12 +73,12 @@ namespace arg3
         }
 
         template <typename T>
-        inline vector<shared_ptr<T>> find_by(shared_ptr<schema> schema, const string &name, const sql_value &value)
+        inline std::vector<std::shared_ptr<T>> find_by(std::shared_ptr<schema> schema, const std::string &name, const sql_value &value)
         {
             /* convert sql rows to objects */
-            vector<shared_ptr<T>> items;
+            std::vector<shared_ptr<T>> items;
 
-            db::find_by<T>(schema, name, value, [&](shared_ptr<T> record) { items.push_back(record); });
+            db::find_by<T>(schema, name, value, [&](std::shared_ptr<T> record) { items.push_back(record); });
 
             return items;
         }
@@ -92,12 +92,12 @@ namespace arg3
            public:
             typedef arg3::db::schema schema_type;
 
-            typedef std::function<void(shared_ptr<T>)> callback;
+            typedef std::function<void(std::shared_ptr<T>)> callback;
 
            private:
             std::shared_ptr<schema_type> schema_;
-            std::unordered_map<string, sql_value> values_;
-            string idColumnName_;
+            std::unordered_map<std::string, sql_value> values_;
+            std::string idColumnName_;
 
            public:
             /*!
@@ -105,7 +105,7 @@ namespace arg3
              * @param tablename the table in the database to use
              * @param idColumnName the name of the id column in the table
              */
-            base_record(sqldb *db, const string &tablename, const string &idColumnName)
+            base_record(sqldb *db, const std::string &tablename, const std::string &idColumnName)
                 : schema_(db->schemas()->get(tablename)), idColumnName_(idColumnName)
             {
                 if (schema_ == nullptr) {
@@ -117,7 +117,7 @@ namespace arg3
              * @param schema the schema to operate on
              * @param columnName the name of the id column in the schema
              */
-            base_record(std::shared_ptr<schema_type> schema, const string &columnName) : schema_(schema), idColumnName_(columnName)
+            base_record(std::shared_ptr<schema_type> schema, const std::string &columnName) : schema_(schema), idColumnName_(columnName)
             {
                 if (schema_ == nullptr) {
                     throw database_exception("no schema for record");
@@ -130,7 +130,7 @@ namespace arg3
              * @param value the value of the id column
              */
             template <typename V>
-            base_record(std::shared_ptr<schema_type> schema, const string &columnName, V value)
+            base_record(std::shared_ptr<schema_type> schema, const std::string &columnName, V value)
                 : base_record(schema, columnName)
             {
                 set(idColumnName_, value);
@@ -144,7 +144,7 @@ namespace arg3
              * @param value the value of the id column
              */
             template <typename V>
-            base_record(sqldb *db, const string &tableName, const string &columnName, V value)
+            base_record(sqldb *db, const std::string &tableName, const std::string &columnName, V value)
                 : base_record(db, tableName, columnName)
             {
                 set(idColumnName_, value);
@@ -154,7 +154,7 @@ namespace arg3
             /*!
              * construct with values from a database row
              */
-            base_record(std::shared_ptr<schema_type> schema, const string &columnName, const row &values) : base_record(schema, columnName)
+            base_record(std::shared_ptr<schema_type> schema, const std::string &columnName, const row &values) : base_record(schema, columnName)
             {
                 init(values);
             }
@@ -162,7 +162,8 @@ namespace arg3
             /*!
              * construct with values from a database row
              */
-            base_record(sqldb *db, const string &tableName, const string &columnName, const row &values) : base_record(db, tableName, columnName)
+            base_record(sqldb *db, const std::string &tableName, const std::string &columnName, const row &values)
+                : base_record(db, tableName, columnName)
             {
                 init(values);
             }
@@ -258,7 +259,7 @@ namespace arg3
             /*!
              * returns the name of the id column for this record
              */
-            string id_column_name() const
+            std::string id_column_name() const
             {
                 return idColumnName_;
             }
@@ -266,7 +267,7 @@ namespace arg3
             /*!
              * returns the schema for this record
              */
-            shared_ptr<schema_type> schema() const
+            std::shared_ptr<schema_type> schema() const
             {
                 if (!schema_->is_valid()) schema_->init();
 
@@ -326,7 +327,7 @@ namespace arg3
             /*!
              * gets a value specified by column name
              */
-            sql_value get(const string &name) const
+            sql_value get(const std::string &name) const
             {
                 if (!has(name)) {
                     return sql_null;
@@ -338,7 +339,7 @@ namespace arg3
             /*!
              * check for the existance of a column by name
              */
-            bool has(const string &name) const
+            bool has(const std::string &name) const
             {
                 return values_.size() > 0 && values_.count(name) > 0;
             }
@@ -346,7 +347,7 @@ namespace arg3
             /*!
              * sets a string for a column name
              */
-            void set(const string &name, const sql_value &value)
+            void set(const std::string &name, const sql_value &value)
             {
                 values_[name] = value;
             }
@@ -354,7 +355,7 @@ namespace arg3
             /*!
              * unsets / removes a column
              */
-            void unset(const string &name)
+            void unset(const std::string &name)
             {
                 values_.erase(name);
             }
@@ -363,7 +364,7 @@ namespace arg3
              * looks up and returns all objects of a base_record type
              */
 
-            vector<shared_ptr<T>> find_all()
+            std::vector<std::shared_ptr<T>> find_all()
             {
                 return arg3::db::find_all<T>(schema());
             }
@@ -376,7 +377,7 @@ namespace arg3
             /*!
              * finds a single record by its id column
              */
-            shared_ptr<T> find_by_id(const sql_value &value)
+            std::shared_ptr<T> find_by_id(const sql_value &value)
             {
                 select_query query(schema());
 
@@ -398,12 +399,12 @@ namespace arg3
             /*!
              * find records by a column and its value
              */
-            vector<shared_ptr<T>> find_by(const string &name, const sql_value &value)
+            std::vector<std::shared_ptr<T>> find_by(const std::string &name, const sql_value &value)
             {
                 return arg3::db::find_by<T>(schema(), name, value);
             }
 
-            void find_by(const string &name, const sql_value &value, callback funk)
+            void find_by(const std::string &name, const sql_value &value, callback funk)
             {
                 arg3::db::find_by<T>(schema(), name, value, funk);
             }
@@ -419,7 +420,7 @@ namespace arg3
             /*!
              * refreshes by a column name
              */
-            bool refresh_by(const string &name)
+            bool refresh_by(const std::string &name)
             {
                 select_query query(schema());
 

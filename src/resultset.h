@@ -174,10 +174,10 @@ namespace arg3
         class resultset
         {
            private:
-            shared_ptr<resultset_impl> impl_;
+            std::shared_ptr<resultset_impl> impl_;
 
            public:
-            resultset(shared_ptr<resultset_impl> impl);
+            resultset(std::shared_ptr<resultset_impl> impl);
 
             resultset(const resultset &other) = delete;
             resultset(resultset &&other);
@@ -211,7 +211,7 @@ namespace arg3
 
             void for_each(std::function<void(const row &)> funk) const;
 
-            shared_ptr<resultset_impl> impl() const;
+            std::shared_ptr<resultset_impl> impl() const;
         };
     }
 }

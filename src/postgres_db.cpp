@@ -2,25 +2,33 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_LIBPOSTGRES
+#ifdef HAVE_LIBPQ
 
 #include "postgres_db.h"
 #include "postgres_statement.h"
 #include "postgres_resultset.h"
+#include "select_query.h"
 
 namespace arg3
 {
     namespace db
     {
-        postgres_db::postgres_db(const uri &info) : sqldb(info), db_(nullptr), schema_factory_(this)
+        void postgres_res_delete::operator()(PGresult *p) const
+        {
+            if (p != NULL) {
+                PQclear(p);
+            }
+        }
+
+        postgres_db::postgres_db(const uri &info) : sqldb(info), db_(nullptr)
         {
         }
 
-        postgres_db::postgres_db(const postgres_db &other) : sqldb(other), db_(nullptr), schema_factory_(other.schema_factory_)
+        postgres_db::postgres_db(const postgres_db &other) : sqldb(other), db_(nullptr)
         {
         }
 
-        postgres_db::postgres_db(postgres_db &&other) : sqldb(other), db_(other.db_), schema_factory_(std::move(other.schema_factory_))
+        postgres_db::postgres_db(postgres_db &&other) : sqldb(other), db_(other.db_)
         {
             other.db_ = nullptr;
         }
@@ -28,7 +36,6 @@ namespace arg3
         postgres_db &postgres_db::operator=(const postgres_db &other)
         {
             db_ = nullptr;
-            schema_factory_ = other.schema_factory_;
 
             return *this;
         }
@@ -36,7 +43,6 @@ namespace arg3
         postgres_db &postgres_db::operator=(postgres_db &&other)
         {
             db_ = other.db_;
-            schema_factory_ = std::move(other.schema_factory_);
             other.db_ = nullptr;
 
             return *this;
@@ -47,39 +53,25 @@ namespace arg3
             close();
         }
 
-        schema_factory *postgres_db::schemas()
-        {
-            return &schema_factory_;
-        }
-
-        void postgres_db::set_connection_info(const string &value)
-        {
-            conn_info_.parse(value);
-
-            if (conn_info_.protocol != "postgres" && conn_info_.protocol != "postgresql") {
-                throw database_exception("connection protocol is not postgres");
-            }
-        }
-
         void postgres_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
         {
             if (!is_open()) return;
 
-            select_query pkq(db_, "information_schema.table_constraints tc", {"tc.table_schema, tc.table_name, kc.column_name"});
+            select_query pkq(this, "information_schema.table_constraints tc", {"tc.table_schema, tc.table_name, kc.column_name"});
 
-            pkq.join(join("information_schema.key_column kc").on("kc.table_name", "tc.table_name").and ("kc.table_schema", "tc.table_schema"));
+            pkq.join("information_schema.key_column kc").where("kc.table_name = tc.table_name") && "kc.table_schema = tc.table_schema";
 
-            pkq.where(where("tc_constraint_type = 'PRIMARY_KEY'") && "kc.position_in_unique_constraint is not null");
+            pkq.where("tc_constraint_type = 'PRIMARY_KEY'") && "kc.position_in_unique_constraint is not null";
 
             pkq.order_by("tc.table_schema, tc.table_name, kc.position_in_unique_constraint");
 
-            auto primary_keys = execute(pkq);
+            auto primary_keys = pkq.execute();
 
-            select_query info_schema("information_schema.columns", {"column_name", "data_type"});
+            select_query info_schema(this, "information_schema.columns", {"column_name", "data_type"});
 
             info_schema.where("table_name = " + tableName);
 
-            auto rs = execute(info_schema);
+            auto rs = info_schema.execute();
 
             for (auto &row : rs) {
                 column_definition def;
@@ -92,13 +84,13 @@ namespace arg3
                 }
 
                 for (auto &pk : primary_keys) {
-                    if (pk["column_name"] == def.name) {
+                    if (pk["column_name"].to_value() == def.name) {
                         def.pk = true;
                     }
                 }
 
                 // find type
-                def.type = row["data_type"].to_value();
+                def.type = row["data_type"].to_value().to_string();
 
                 columns.push_back(def);
             }
@@ -108,9 +100,9 @@ namespace arg3
         {
             if (db_ != nullptr) return;
 
-            db_ = postgres_init(nullptr);
+            db_ = PQconnectdb(connection_info().value.c_str());
 
-            if (postgres_real_connect(db_, host_.c_str(), user_.c_str(), password_.c_str(), dbName_.c_str(), port_, nullptr, 0) == nullptr) {
+            if (db_ == nullptr) {
                 throw database_exception("No connection could be made to the database");
             }
         }
@@ -123,7 +115,7 @@ namespace arg3
         void postgres_db::close()
         {
             if (db_ != nullptr) {
-                postgres_close(db_);
+                PQfinish(db_);
                 db_ = nullptr;
             }
         }
@@ -136,28 +128,21 @@ namespace arg3
 
             ostringstream buf;
 
-            buf << postgres_errno(db_);
-            buf << ": " << postgres_error(db_);
+            buf << PQerrorMessage(db_);
 
             return buf.str();
         }
 
         long long postgres_db::last_insert_id() const
         {
-            if (db_ == nullptr) {
-                return 0;
-            }
-
-            return postgres_insert_id(db_);
+            // TODO: might have to perform a query here
+            return 0;
         }
 
         int postgres_db::last_number_of_changes() const
         {
-            if (db_ == nullptr) {
-                return 0;
-            }
-
-            return postgres_affected_rows(db_);
+            // TODO: might have to perform a query here
+            return 0;
         }
 
         resultset postgres_db::execute(const string &sql, bool cache)
@@ -166,20 +151,16 @@ namespace arg3
                 throw database_exception("database is not open");
             }
 
-            MYSQL_RES *res;
+            PGresult *res = PQexec(db_, sql.c_str());
 
-            if (postgres_real_query(db_, sql.c_str(), sql.length())) throw database_exception(last_error());
-
-            res = postgres_store_result(db_);
-
-            if (res == nullptr && postgres_field_count(db_) != 0) {
+            if (res == nullptr) {
                 throw database_exception(last_error());
             }
 
             if (cache)
-                return resultset(make_shared<postgres_cached_resultset>(this, shared_ptr<MYSQL_RES>(res, postgres_res_delete())));
+                return resultset(make_shared<postgres_cached_resultset>(this, shared_ptr<PGresult>(res, postgres_res_delete())));
             else
-                return resultset(make_shared<postgres_resultset>(this, shared_ptr<MYSQL_RES>(res, postgres_res_delete())));
+                return resultset(make_shared<postgres_resultset>(this, shared_ptr<PGresult>(res, postgres_res_delete())));
         }
 
         shared_ptr<statement> postgres_db::create_statement()

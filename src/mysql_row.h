@@ -28,21 +28,21 @@ namespace arg3
 
            private:
             MYSQL_ROW row_;
-            shared_ptr<MYSQL_RES> res_;
+            std::shared_ptr<MYSQL_RES> res_;
             mysql_db *db_;
             size_t size_;
 
            public:
-            mysql_row(mysql_db *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row);
+            mysql_row(mysql_db *db, std::shared_ptr<MYSQL_RES> res, MYSQL_ROW row);
             virtual ~mysql_row();
             mysql_row(const mysql_row &other);
             mysql_row(mysql_row &&other);
             mysql_row &operator=(const mysql_row &other);
             mysql_row &operator=(mysql_row &&other);
 
-            string column_name(size_t nPosition) const;
+            std::string column_name(size_t nPosition) const;
             column_type column(size_t nPosition) const;
-            column_type column(const string &name) const;
+            column_type column(const std::string &name) const;
             size_t size() const;
             bool is_valid() const;
         };
@@ -55,23 +55,24 @@ namespace arg3
             friend class mysql_stmt_resultset;
 
            private:
-            shared_ptr<mysql_binding> fields_;
-            shared_ptr<MYSQL_RES> metadata_;
-            shared_ptr<MYSQL_STMT> stmt_;
+            std::shared_ptr<mysql_binding> fields_;
+            std::shared_ptr<MYSQL_RES> metadata_;
+            std::shared_ptr<MYSQL_STMT> stmt_;
             mysql_db *db_;
             size_t size_;
 
            public:
-            mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_STMT> stmt, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields);
+            mysql_stmt_row(mysql_db *db, std::shared_ptr<MYSQL_STMT> stmt, std::shared_ptr<MYSQL_RES> metadata,
+                           std::shared_ptr<mysql_binding> fields);
             virtual ~mysql_stmt_row();
             mysql_stmt_row(const mysql_stmt_row &other);
             mysql_stmt_row(mysql_stmt_row &&other);
             mysql_stmt_row &operator=(const mysql_stmt_row &other);
             mysql_stmt_row &operator=(mysql_stmt_row &&other);
 
-            string column_name(size_t nPosition) const;
+            std::string column_name(size_t nPosition) const;
             column_type column(size_t nPosition) const;
-            column_type column(const string &name) const;
+            column_type column(const std::string &name) const;
             size_t size() const;
             bool is_valid() const;
         };
@@ -84,18 +85,18 @@ namespace arg3
             friend class mysql_stmt_resultset;
 
            private:
-            std::vector<shared_ptr<mysql_cached_column>> columns_;
+            std::vector<std::shared_ptr<mysql_cached_column>> columns_;
 
            public:
-            mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> metadata, mysql_binding &fields);
-            mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row);
+            mysql_cached_row(sqldb *db, std::shared_ptr<MYSQL_RES> metadata, mysql_binding &fields);
+            mysql_cached_row(sqldb *db, std::shared_ptr<MYSQL_RES> res, MYSQL_ROW row);
             virtual ~mysql_cached_row() = default;
             mysql_cached_row(const mysql_cached_row &other) = default;
             mysql_cached_row(mysql_cached_row &&other) = default;
             mysql_cached_row &operator=(const mysql_cached_row &other) = default;
             mysql_cached_row &operator=(mysql_cached_row &&other) = default;
 
-            string column_name(size_t nPosition) const;
+            std::string column_name(size_t nPosition) const;
             column_type column(size_t nPosition) const;
             column_type column(const string &name) const;
             size_t size() const;

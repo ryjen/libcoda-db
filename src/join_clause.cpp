@@ -2,6 +2,8 @@
 #include "join_clause.h"
 #include <sstream>
 
+using namespace std;
+
 namespace arg3
 {
     namespace db
@@ -15,15 +17,7 @@ namespace arg3
         {
         }
 
-        join_clause::join_clause(const string &tableName, join::type joinType) : tableName_(tableName), type_(joinType)
-        {
-        }
-
-        join_clause::join_clause(const join_clause &other) : tableName_(other.tableName_), columns_(other.columns_)
-        {
-        }
-
-        join_clause::join_clause(join_clause &&other) : tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))
+        join_clause::join_clause(const string &tableName, join::type type) : tableName_(tableName), type_(type)
         {
         }
 
@@ -35,8 +29,7 @@ namespace arg3
         {
             tableName_ = other.tableName_;
             type_ = other.type_;
-            columns_ = other.columns_;
-
+            on_ = other.on_;
             return *this;
         }
 
@@ -44,8 +37,7 @@ namespace arg3
         {
             tableName_ = std::move(other.tableName_);
             type_ = other.type_;
-            columns_ = other.columns_;
-
+            on_ = std::move(other.on_);
             return *this;
         }
 
@@ -69,34 +61,38 @@ namespace arg3
                     break;
             }
 
-            buf << " JOIN " << tableName_ << " ON ";
-
-            auto it = columns_.begin();
-
-            buf << it->first << " = " << it->second;
-
-            while (++it != columns_.end()) {
-                buf << " AND " << it->first << " = " << it->second;
-            }
+            buf << " JOIN " << tableName_ << " ON " << on_;
 
             return buf.str();
         }
 
-        join_clause &join_clause::on(const string &colA, const string &colB)
+        join_clause &join_clause::set_table_name(const string &value)
         {
-            columns_[colA] = colB;
+            tableName_ = value;
             return *this;
         }
 
-        join_clause &join_clause::on(const std::pair<string, string> &cols)
+        join_clause &join_clause::set_type(join::type value)
         {
-            columns_[cols.first] = cols.second;
+            type_ = value;
+            return *this;
+        }
+
+        where_clause &join_clause::where(const string &value)
+        {
+            on_ = where_clause(value);
+            return on_;
+        }
+
+        join_clause &join_clause::where(const where_clause &value)
+        {
+            on_ = value;
             return *this;
         }
 
         bool join_clause::empty() const
         {
-            return tableName_.empty() || columns_.empty();
+            return tableName_.empty() || on_.empty();
         }
 
         join_clause::operator string()
@@ -107,7 +103,7 @@ namespace arg3
         void join_clause::reset()
         {
             tableName_.clear();
-            columns_.clear();
+            on_.reset();
         }
 
         ostream &operator<<(ostream &out, const join_clause &join)

@@ -10,8 +10,6 @@
 #include "exception.h"
 #include "sql_value.h"
 
-using namespace std;
-
 namespace arg3
 {
     namespace db
@@ -33,7 +31,7 @@ namespace arg3
 
             virtual sql_value to_value() const = 0;
 
-            virtual string name() const = 0;
+            virtual std::string name() const = 0;
         };
 
         /*!
@@ -45,11 +43,11 @@ namespace arg3
             friend class row_iterator;
 
            private:
-            shared_ptr<column_impl> impl_;
+            std::shared_ptr<column_impl> impl_;
             column();
 
            public:
-            column(shared_ptr<column_impl> impl);
+            column(std::shared_ptr<column_impl> impl);
 
             virtual ~column() = default;
 
@@ -65,9 +63,9 @@ namespace arg3
 
             sql_value to_value() const;
 
-            string name() const;
+            std::string name() const;
 
-            shared_ptr<column_impl> impl() const;
+            std::shared_ptr<column_impl> impl() const;
         };
     }
 }

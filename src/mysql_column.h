@@ -41,7 +41,7 @@ namespace arg3
 
             int sql_type() const;
 
-            string name() const;
+            std::string name() const;
         };
 
         /*!
@@ -50,12 +50,12 @@ namespace arg3
         class mysql_stmt_column : public column_impl
         {
            private:
-            string name_;
-            shared_ptr<mysql_binding> value_;
+            std::string name_;
+            std::shared_ptr<mysql_binding> value_;
             size_t position_;
 
            public:
-            mysql_stmt_column(const string &name, shared_ptr<mysql_binding> bindings, size_t position);
+            mysql_stmt_column(const std::string &name, shared_ptr<mysql_binding> bindings, size_t position);
             mysql_stmt_column(const mysql_stmt_column &other);
             mysql_stmt_column(mysql_stmt_column &&other);
             virtual ~mysql_stmt_column();
@@ -68,7 +68,7 @@ namespace arg3
 
             int sql_type() const;
 
-            string name() const;
+            std::string name() const;
         };
 
         /*!
@@ -77,15 +77,15 @@ namespace arg3
         class mysql_cached_column : public column_impl
         {
            private:
-            string name_;
+            std::string name_;
             sql_value value_;
             int type_;
 
             void set_value(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
 
            public:
-            mysql_cached_column(const string &name, mysql_binding &bindings, size_t position);
-            mysql_cached_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
+            mysql_cached_column(const std::string &name, mysql_binding &bindings, size_t position);
+            mysql_cached_column(std::shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
             mysql_cached_column(const mysql_cached_column &other);
             mysql_cached_column(mysql_cached_column &&other);
             virtual ~mysql_cached_column();
@@ -98,7 +98,7 @@ namespace arg3
 
             int sql_type() const;
 
-            string name() const;
+            std::string name() const;
         };
     }
 }

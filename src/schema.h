@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 namespace arg3
 {
     namespace db
@@ -16,12 +14,12 @@ namespace arg3
          * Definition of a column in a schema
          */
         struct column_definition {
-            string name;
+            std::string name;
             bool pk;
-            string type;
+            std::string type;
         };
 
-        ostream &operator<<(ostream &os, const column_definition &def);
+        std::ostream &operator<<(std::ostream &os, const column_definition &def);
 
         /*!
          * Schema is a definition of a table in a database
@@ -31,11 +29,11 @@ namespace arg3
         {
            private:
             sqldb *db_;
-            string tableName_;
-            vector<column_definition> columns_;
+            std::string tableName_;
+            std::vector<column_definition> columns_;
 
            public:
-            schema(sqldb *db, const string &tablename);
+            schema(sqldb *db, const std::string &tablename);
 
             virtual ~schema();
 
@@ -48,13 +46,13 @@ namespace arg3
 
             virtual void init();
 
-            vector<column_definition> columns() const;
+            std::vector<column_definition> columns() const;
 
-            vector<string> column_names() const;
+            std::vector<std::string> column_names() const;
 
-            vector<string> primary_keys() const;
+            std::vector<std::string> primary_keys() const;
 
-            string table_name() const;
+            std::string table_name() const;
 
             column_definition operator[](size_t index) const;
 

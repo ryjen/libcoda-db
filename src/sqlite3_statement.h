@@ -23,7 +23,7 @@ namespace arg3
         {
            private:
             sqlite3_db *db_;
-            shared_ptr<sqlite3_stmt> stmt_;
+            std::shared_ptr<sqlite3_stmt> stmt_;
 
            public:
             sqlite3_statement(sqlite3_db *db);
@@ -39,7 +39,7 @@ namespace arg3
             void finish();
             void reset();
             int last_number_of_changes();
-            string last_error();
+            std::string last_error();
             long long last_insert_id();
             sqlite3_statement &bind(size_t index, int value);
             sqlite3_statement &bind(size_t index, long long value);

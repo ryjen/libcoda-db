@@ -14,6 +14,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 # check for libraries
 find_package(MySQL)
 find_package(SQLite3)
+find_package(PostgreSQL)
 
 # add target for code coverage
 if(CODE_COVERAGE)

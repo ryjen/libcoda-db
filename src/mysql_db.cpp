@@ -96,12 +96,20 @@ namespace arg3
 
             db_ = mysql_init(nullptr);
 
+            if (db_ == NULL) {
+                throw database_exception("out of memory connecting to mysql");
+            }
+
             auto info = connection_info();
 
             int port;
 
             try {
-                port = stoi(info.port);
+                if (info.port.empty()) {
+                    port = 0;
+                } else {
+                    port = stoi(info.port);
+                }
             } catch (const std::exception &e) {
                 port = 0;
             }

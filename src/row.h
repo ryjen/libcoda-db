@@ -24,11 +24,11 @@ namespace arg3
             row_impl &operator=(row_impl &&other) = default;
             virtual ~row_impl() = default;
 
-            virtual string column_name(size_t nPosition) const = 0;
+            virtual std::string column_name(size_t nPosition) const = 0;
 
             virtual column_type column(size_t nPosition) const = 0;
 
-            virtual column_type column(const string &name) const = 0;
+            virtual column_type column(const std::string &name) const = 0;
 
             virtual size_t size() const = 0;
 
@@ -42,7 +42,7 @@ namespace arg3
         class row_iterator : public std::iterator<std::random_access_iterator_tag, ValueType>
         {
            protected:
-            shared_ptr<RowType> row_;
+            std::shared_ptr<RowType> row_;
             int position_;
             NonConst currentValue_;
             void set_current_value(size_t index)
@@ -57,7 +57,7 @@ namespace arg3
             {
             }
 
-            row_iterator(shared_ptr<RowType> pRow, int nPosition) : row_(pRow), position_(nPosition)
+            row_iterator(std::shared_ptr<RowType> pRow, int nPosition) : row_(pRow), position_(nPosition)
             {
             }
 
@@ -199,7 +199,7 @@ namespace arg3
                     return 0;
             }
 
-            string name() const
+            std::string name() const
             {
                 assert(row_ != nullptr);
                 return row_->column_name(position_);
@@ -213,7 +213,7 @@ namespace arg3
         class row
         {
            private:
-            shared_ptr<row_impl> impl_;
+            std::shared_ptr<row_impl> impl_;
 
            public:
             typedef arg3::db::column column_type;
@@ -221,7 +221,7 @@ namespace arg3
             typedef row_iterator<const column_type, column_type, const row_impl> const_iterator;
 
             row();
-            row(shared_ptr<row_impl> impl);
+            row(std::shared_ptr<row_impl> impl);
             row(const row &other);
             row(row &&other);
             virtual ~row();
@@ -246,11 +246,11 @@ namespace arg3
 
             column_type operator[](const string &name) const;
 
-            string column_name(size_t nPosition) const;
+            std::string column_name(size_t nPosition) const;
 
             column_type column(size_t nPosition) const;
 
-            column_type column(const string &name) const;
+            column_type column(const std::string &name) const;
 
             size_t size() const;
 
@@ -260,7 +260,7 @@ namespace arg3
 
             void for_each(std::function<void(const db::column &)> funk) const;
 
-            shared_ptr<row_impl> impl() const;
+            std::shared_ptr<row_impl> impl() const;
         };
     }
 }

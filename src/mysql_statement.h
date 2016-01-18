@@ -24,7 +24,7 @@ namespace arg3
         {
            private:
             mysql_db *db_;
-            shared_ptr<MYSQL_STMT> stmt_;
+            std::shared_ptr<MYSQL_STMT> stmt_;
             mysql_binding bindings_;
 
            public:
@@ -42,7 +42,7 @@ namespace arg3
             void reset();
             int last_number_of_changes();
             long long last_insert_id();
-            string last_error();
+            std::string last_error();
 
             mysql_statement &bind(size_t index, int value);
             mysql_statement &bind(size_t index, long long value);

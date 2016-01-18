@@ -6,8 +6,6 @@
 #include <memory>
 #include "schema.h"
 
-using namespace std;
-
 namespace arg3
 {
     namespace db
@@ -22,11 +20,11 @@ namespace arg3
         class schema_factory
         {
            private:
-            std::unordered_map<string, std::shared_ptr<schema>> schema_cache_;
+            std::unordered_map<std::string, std::shared_ptr<schema>> schema_cache_;
 
             sqldb *db_;
 
-            shared_ptr<schema> create(const string &tableName);
+            std::shared_ptr<schema> create(const std::string &tableName);
 
            public:
             schema_factory(sqldb *db);
@@ -38,9 +36,9 @@ namespace arg3
             schema_factory(const schema_factory &other);
 
             schema_factory &operator=(const schema_factory &other);
-            std::shared_ptr<schema> get(const string &tableName);
+            std::shared_ptr<schema> get(const std::string &tableName);
 
-            void clear(const string &tablename);
+            void clear(const std::string &tablename);
         };
     }
 }

@@ -35,9 +35,9 @@ namespace arg3
 
            protected:
             sqldb *db_;
-            shared_ptr<statement> stmt_;
-            vector<sql_value> bindings_;
-            void prepare(const string &sql);
+            std::shared_ptr<statement> stmt_;
+            std::vector<sql_value> bindings_;
+            void prepare(const std::string &sql);
 
            public:
             /*!
@@ -75,12 +75,12 @@ namespace arg3
             /*!
              * binds a string to a parameterized query
              */
-            query &bind(size_t index, const string &value, int len = -1);
+            query &bind(size_t index, const std::string &value, int len = -1);
 
             /*!
              * binds a wide character string to a parameterized query
              */
-            query &bind(size_t index, const wstring &value, int len = -1);
+            query &bind(size_t index, const std::wstring &value, int len = -1);
 
             /*!
              * binds an integer to a parameterized query
@@ -120,7 +120,7 @@ namespace arg3
             /*!
              * returns the last error the query encountered, if any
              */
-            string last_error();
+            std::string last_error();
 
             /*!
              * returns the number of affected rows by the query after execution
@@ -135,7 +135,7 @@ namespace arg3
      * utility method used in creating sql
      */
     template <typename T>
-    string join_csv(vector<T> list)
+    std::string join_csv(std::vector<T> list)
     {
         ostringstream buf;
 
@@ -153,7 +153,7 @@ namespace arg3
     /*!
      * utility method used in creating sql
      */
-    string join_csv(std::string::value_type c, size_t count);
+    std::string join_csv(std::string::value_type c, size_t count);
 }
 
 #endif

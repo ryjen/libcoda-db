@@ -39,7 +39,7 @@ namespace arg3
 
             int sql_type() const;
 
-            string name() const;
+            std::string name() const;
         };
 
         /*!
@@ -48,10 +48,11 @@ namespace arg3
         class sqlite3_cached_column : public column_impl
         {
            private:
-            string name_;
+            std::string name_;
             sql_value value_;
             int type_;
-            void set_value(shared_ptr<sqlite3_stmt> stmt, int column);
+            void set_value(std::shared_ptr<sqlite3_stmt> stmt, int column);
+
            public:
             sqlite3_cached_column(shared_ptr<sqlite3_stmt> stmt, int column);
             sqlite3_cached_column(const sqlite3_cached_column &other) = delete;
@@ -66,7 +67,7 @@ namespace arg3
 
             int sql_type() const;
 
-            string name() const;
+            std::string name() const;
         };
     }
 }

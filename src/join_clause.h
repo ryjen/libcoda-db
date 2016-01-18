@@ -3,8 +3,7 @@
 
 #include <unordered_map>
 #include <string>
-
-using namespace std;
+#include "where_clause.h"
 
 namespace arg3
 {
@@ -17,18 +16,18 @@ namespace arg3
 
         /*!
          * a utility class aimed at making join statements
-         * ex. join("tablename").on("a", "b").and("c", "d");
+         * ex. join("tablename").on("a", "b").on("c", "d");
          */
         class join_clause
         {
            private:
-            string tableName_;
+            std::string tableName_;
             join::type type_;
-            unordered_map<string, string> columns_;
+            where_clause on_;
 
            public:
             join_clause();
-            explicit join_clause(const string &tableName, join::type joinType = join::inner);
+            explicit join_clause(const std::string &tableName, join::type joinType = join::inner);
             join_clause(const join_clause &other);
             join_clause(join_clause &&other);
             join_clause &operator=(const join_clause &other);
@@ -36,18 +35,20 @@ namespace arg3
 
             virtual ~join_clause();
 
-            string to_string() const;
+            std::string to_string() const;
 
             bool empty() const;
             void reset();
 
-            explicit operator string();
+            join_clause &set_type(join::type value);
+            join_clause &set_table_name(const std::string &value);
+            where_clause &where(const std::string &value);
+            join_clause &where(const where_clause &value);
 
-            join_clause &on(const string &colA, const string &colB);
-            join_clause &on(const pair<string, string> &columns);
+            explicit operator std::string();
         };
 
-        ostream &operator<<(ostream &out, const join_clause &where);
+        std::ostream &operator<<(std::ostream &out, const join_clause &where);
 
         // user defined literal for expressions like "this = ?"_w && "that = ?"_w
         join_clause operator"" _join(const char *cstr, size_t len);

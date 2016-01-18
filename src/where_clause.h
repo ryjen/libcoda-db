@@ -31,7 +31,7 @@ namespace arg3
 
             virtual ~where_clause();
 
-            string to_string() const;
+            virtual string to_string() const;
 
             explicit operator string();
 

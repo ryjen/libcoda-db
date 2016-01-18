@@ -13,7 +13,7 @@ namespace arg3
     namespace db
     {
         /*!
-         * a query to modify a table in some what (update or insert)
+         * a query to modify a table (replace query)
          */
         class modify_query : public query
         {
@@ -21,11 +21,11 @@ namespace arg3
             /*! perform subsequent executes in batches */
             constexpr static const int BATCH = (1 << 0);
 
-            modify_query(sqldb *db, const string &tableName, const vector<string> &columns);
+            modify_query(sqldb *db, const std::string &tableName, const std::vector<std::string> &columns);
 
-            modify_query(sqldb *db, const string &tableName);
+            modify_query(sqldb *db, const std::string &tableName);
 
-            modify_query(shared_ptr<schema> schema);
+            modify_query(std::shared_ptr<schema> schema);
 
             modify_query(const modify_query &other);
 
@@ -37,13 +37,13 @@ namespace arg3
 
             modify_query &operator=(modify_query &&other);
 
-            virtual string to_string() const;
+            virtual std::string to_string() const;
 
-            string table_name() const;
+            std::string table_name() const;
 
             modify_query &set_flags(int value);
 
-            modify_query &table_name(const string &value);
+            modify_query &table_name(const std::string &value);
 
             /*! executes this query using a replace statement
              * @return the last number of changes made by this query
@@ -51,11 +51,13 @@ namespace arg3
             virtual int execute();
 
            protected:
-            vector<string> columns_;
-            string tableName_;
+            std::vector<std::string> columns_;
+            std::string tableName_;
             int flags_;
         };
-
+        /*!
+         * a query to insert to a table
+         */
         class insert_query : public modify_query
         {
            public:
@@ -63,14 +65,16 @@ namespace arg3
 
             long long last_insert_id() const;
 
-            string to_string() const;
+            std::string to_string() const;
 
             int execute();
 
            private:
             long long lastId_;
         };
-
+        /*!
+         * a query to update a table
+         */
         class update_query : public modify_query
         {
            public:
@@ -78,20 +82,22 @@ namespace arg3
 
             update_query &where(const where_clause &value);
 
-            update_query &where(const string &value);
+            update_query &where(const std::string &value);
 
-            virtual string to_string() const;
+            virtual std::string to_string() const;
 
            protected:
             where_clause where_;
         };
-
+        /*!
+         * a query to delete from a table
+         */
         class delete_query : public update_query
         {
            public:
             using update_query::update_query;
 
-            string to_string() const;
+            std::string to_string() const;
         };
     }
 }

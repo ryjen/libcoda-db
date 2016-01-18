@@ -55,5 +55,16 @@ int main(int argc, char *argv[])
     cout << "Mysql not supported" << endl;
 #endif
 
+#ifdef HAVE_LIBPQ
+#ifdef TEST_POSTGRES
+    puts("running postgres tests");
+    testdb = &postgres_testdb;
+    if (run_db_test(argc, argv)) {
+        return 1;
+    }
+#endif
+#else
+    cout << "Mysql not supported" << endl;
+#endif
     return 0;
 }

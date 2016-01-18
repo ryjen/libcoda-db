@@ -11,8 +11,6 @@
 #include "schema_factory.h"
 #include "statement.h"
 
-using namespace std;
-
 namespace arg3
 {
     namespace db
@@ -63,7 +61,7 @@ namespace arg3
            public:
             typedef enum { CACHE_NONE, CACHE_RESULTSET, CACHE_ROW, CACHE_COLUMN } CacheLevel;
 
-            static shared_ptr<sqldb> from_uri(const string &value);
+            static std::shared_ptr<sqldb> from_uri(const std::string &value);
 
             sqldb(const uri &connectionInfo);
             sqldb(const sqldb &other) = default;
@@ -77,7 +75,7 @@ namespace arg3
             virtual void open() = 0;
             virtual void close() = 0;
 
-            virtual void query_schema(const string &tablename, std::vector<column_definition> &columns) = 0;
+            virtual void query_schema(const std::string &tablename, std::vector<column_definition> &columns) = 0;
 
             virtual long long last_insert_id() const = 0;
 
@@ -85,11 +83,11 @@ namespace arg3
 
             uri connection_info() const;
 
-            virtual resultset execute(const string &sql, bool cache) = 0;
+            virtual resultset execute(const std::string &sql, bool cache) = 0;
 
-            resultset execute(const string &sql);
+            resultset execute(const std::string &sql);
 
-            virtual string last_error() const = 0;
+            virtual std::string last_error() const = 0;
 
             schema_factory *schemas();
 

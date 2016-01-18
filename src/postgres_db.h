@@ -5,9 +5,9 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_LIBPOSTGRESQL
+#ifdef HAVE_LIBPQ
 
-#include <.h>
+#include <libpq-fe.h>
 #include "sqldb.h"
 
 namespace arg3
@@ -38,20 +38,23 @@ namespace arg3
             bool is_open() const;
             void open();
             void close();
-            void query_schema(const string &tablename, std::vector<column_definition> &columns);
+            void query_schema(const std::string &tablename, std::vector<column_definition> &columns);
 
             long long last_insert_id() const;
             int last_number_of_changes() const;
-            string last_error() const;
+            std::string last_error() const;
 
-            resultset execute(const string &sql, bool cache = false);
+            resultset execute(const std::string &sql, bool cache = false);
 
-            schema_factory *schemas();
+            std::shared_ptr<statement> create_statement();
+        };
 
-            shared_ptr<statement> create_statement();
+        struct postgres_res_delete {
+            void operator()(PGresult *p) const;
         };
     }
 }
 
 
+#endif
 #endif

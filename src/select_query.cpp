@@ -97,21 +97,15 @@ namespace arg3
             return orderBy_;
         }
 
-        select_query &select_query::join(const string &tableName, const unordered_map<string, string> &columnMappings, join::type joinType)
+        where_clause &select_query::where(const string &value)
         {
-            return *this;
+            where_ = where_clause(value);
+            return where_;
         }
+
         select_query &select_query::where(const where_clause &value)
         {
             where_ = value;
-
-            return *this;
-        }
-
-        select_query &select_query::where(const string &value)
-        {
-            where_ = where_clause(value);
-
             return *this;
         }
 
@@ -134,6 +128,18 @@ namespace arg3
             return *this;
         }
 
+        join_clause &select_query::join(const string &tableName, join::type type)
+        {
+            join_ = join_clause(tableName, type);
+            return join_;
+        }
+
+        select_query &select_query::join(const join_clause &value)
+        {
+            join_ = value;
+            return *this;
+        }
+
         string select_query::to_string() const
         {
             ostringstream buf;
@@ -143,6 +149,10 @@ namespace arg3
             buf << (columns_.size() == 0 ? "*" : join_csv(columns_));
 
             buf << " FROM " << tableName_;
+
+            if (!join_.empty()) {
+                buf << join_;
+            }
 
             if (!where_.empty()) {
                 buf << " WHERE " << where_.to_string();

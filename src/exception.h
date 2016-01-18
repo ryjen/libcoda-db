@@ -4,6 +4,8 @@
 #ifndef ARG3_DB_EXCEPTION_H
 #define ARG3_DB_EXCEPTION_H
 
+#include <string>
+
 #define ARG3_DECLARE_EXCEPTION(CLASS, BASE)                         \
     class CLASS : public BASE                                       \
     {                                                               \
@@ -38,10 +40,6 @@
         return context_.c_str();                                                                               \
     }
 
-
-#include <string>
-
-using namespace std;
 
 namespace arg3
 {

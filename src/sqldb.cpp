@@ -12,6 +12,7 @@
 #include "resultset.h"
 #include "sqlite3_db.h"
 #include "mysql_db.h"
+#include "postgres_db.h"
 
 namespace arg3
 {

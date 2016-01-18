@@ -27,21 +27,21 @@ namespace arg3
             friend class sqlite3_resultset;
 
            private:
-            shared_ptr<sqlite3_stmt> stmt_;
+            std::shared_ptr<sqlite3_stmt> stmt_;
             sqlite3_db *db_;
             size_t size_;
 
            public:
-            sqlite3_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt);
+            sqlite3_row(sqlite3_db *db, std::shared_ptr<sqlite3_stmt> stmt);
             virtual ~sqlite3_row();
             sqlite3_row(const sqlite3_row &other) = delete;
             sqlite3_row(sqlite3_row &&other);
             sqlite3_row &operator=(const sqlite3_row &other) = delete;
             sqlite3_row &operator=(sqlite3_row &&other);
 
-            string column_name(size_t nPosition) const;
+            std::string column_name(size_t nPosition) const;
             column_type column(size_t nPosition) const;
-            column_type column(const string &name) const;
+            column_type column(const std::string &name) const;
             size_t size() const;
             bool is_valid() const;
         };
@@ -54,19 +54,19 @@ namespace arg3
             friend class sqlite3_resultset;
 
            private:
-            vector<shared_ptr<sqlite3_cached_column>> columns_;
+            std::vector<std::shared_ptr<sqlite3_cached_column>> columns_;
 
            public:
-            sqlite3_cached_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt);
+            sqlite3_cached_row(sqlite3_db *db, std::shared_ptr<sqlite3_stmt> stmt);
             virtual ~sqlite3_cached_row();
             sqlite3_cached_row(const sqlite3_cached_row &other) = delete;
             sqlite3_cached_row(sqlite3_cached_row &&other);
             sqlite3_cached_row &operator=(const sqlite3_cached_row &other) = delete;
             sqlite3_cached_row &operator=(sqlite3_cached_row &&other);
 
-            string column_name(size_t nPosition) const;
+            std::string column_name(size_t nPosition) const;
             column_type column(size_t nPosition) const;
-            column_type column(const string &name) const;
+            column_type column(const std::string &name) const;
             size_t size() const;
             bool is_valid() const;
         };

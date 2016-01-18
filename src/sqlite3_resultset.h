@@ -29,12 +29,12 @@ namespace arg3
             friend class resultset_iterator;
 
            private:
-            shared_ptr<sqlite3_stmt> stmt_;
+            std::shared_ptr<sqlite3_stmt> stmt_;
             sqlite3_db *db_;
             int status_;
 
            public:
-            sqlite3_resultset(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt);
+            sqlite3_resultset(sqlite3_db *db, std::shared_ptr<sqlite3_stmt> stmt);
             sqlite3_resultset(const sqlite3_resultset &other) = delete;
             sqlite3_resultset(sqlite3_resultset &&other);
             virtual ~sqlite3_resultset();
@@ -66,7 +66,7 @@ namespace arg3
 
            private:
             sqlite3_db *db_;
-            vector<shared_ptr<row_impl>> rows_;
+            std::vector<std::shared_ptr<row_impl>> rows_;
             int currentRow_;
 
            public:

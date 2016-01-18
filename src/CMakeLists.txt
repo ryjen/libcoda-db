@@ -1,8 +1,8 @@
-add_library (${PROJECT_NAME} column.cpp join_clause.cpp mysql_column.cpp mysql_statement.cpp schema.cpp sqldb.cpp sqlite3_row.cpp mysql_db.cpp query.cpp schema_factory.cpp sqlite3_column.cpp sqlite3_statement.cpp modify_query.cpp mysql_resultset.cpp resultset.cpp select_query.cpp sqlite3_db.cpp where_clause.cpp mysql_binding.cpp mysql_row.cpp row.cpp sql_value.cpp sqlite3_resultset.cpp log.cpp postgres_db.cpp)
+add_library (${PROJECT_NAME} column.cpp join_clause.cpp mysql_column.cpp mysql_statement.cpp schema.cpp sqldb.cpp sqlite3_row.cpp mysql_db.cpp query.cpp schema_factory.cpp sqlite3_column.cpp sqlite3_statement.cpp modify_query.cpp mysql_resultset.cpp resultset.cpp select_query.cpp sqlite3_db.cpp where_clause.cpp mysql_binding.cpp mysql_row.cpp row.cpp sql_value.cpp sqlite3_resultset.cpp log.cpp postgres_db.cpp postgres_statement.cpp postgres_resultset.cpp postgres_row.cpp postgres_column.cpp postgres_binding.cpp join_clause.cpp alloc.cpp)
 
-include_directories(${PROJECT_SOURCE_DIR}/libs/variant/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/libs/variant/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
 
-target_link_libraries(${PROJECT_NAME} ${MYSQL_LIBRARIES} ${SQLITE3_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${MYSQL_LIBRARIES} ${SQLITE3_LIBRARIES} ${PostgreSQL_LIBRARIES})
 
 set(${PROJECT_NAME}_HEADERS
 	base_record.h
@@ -18,6 +18,11 @@ set(${PROJECT_NAME}_HEADERS
 	mysql_row.h
 	mysql_statement.h
   postgres_db.h
+  postgres_statement.h
+  postgres_resultset.h
+  postgres_row.h
+  postgres_column.h
+  postgres_binding.h
 	query.h
 	resultset.h
 	row.h

@@ -26,19 +26,19 @@ namespace arg3
            private:
             where_clause where_;
             join_clause join_;
-            string limit_;
-            string orderBy_;
-            string groupBy_;
-            string joinBy_;
-            vector<string> columns_;
-            string tableName_;
+            std::string limit_;
+            std::string orderBy_;
+            std::string groupBy_;
+            std::string joinBy_;
+            std::vector<std::string> columns_;
+            std::string tableName_;
 
            public:
-            select_query(sqldb *db, const string &tableName, const vector<string> &columns);
+            select_query(sqldb *db, const std::string &tableName, const std::vector<std::string> &columns);
 
-            select_query(sqldb *db, const string &tableName);
+            select_query(sqldb *db, const std::string &tableName);
 
-            select_query(shared_ptr<schema> schema);
+            select_query(std::shared_ptr<schema> schema);
 
             select_query(const select_query &other);
 
@@ -46,35 +46,33 @@ namespace arg3
 
             virtual ~select_query();
 
-            vector<string> columns() const;
+            std::vector<std::string> columns() const;
 
-            string limit() const;
+            std::string limit() const;
 
-            string order_by() const;
+            std::string order_by() const;
 
-            string group_by() const;
-
-            select_query &join(const string &tableName, const unordered_map<string, string> &columnMappings, join::type = join::inner);
+            std::string group_by() const;
 
             select_query &operator=(const select_query &other);
 
             select_query &operator=(select_query &&other);
 
+            where_clause &where(const std::string &value);
+
             select_query &where(const where_clause &value);
 
-            select_query &where(const string &value);
+            select_query &limit(const std::string &value);
 
-            select_query &limit(const string &value);
+            select_query &order_by(const std::string &value);
 
-            select_query &order_by(const string &value);
+            select_query &group_by(const std::string &value);
 
-            select_query &group_by(const string &value);
+            join_clause &join(const std::string &tableName, join::type type = join::inner);
 
             select_query &join(const join_clause &value);
 
-            select_query &join(const string &value);
-
-            string to_string() const;
+            std::string to_string() const;
 
             resultset execute();
 
@@ -84,9 +82,9 @@ namespace arg3
 
             void reset();
 
-            string table_name() const;
+            std::string table_name() const;
 
-            select_query &table_name(const string &value);
+            select_query &table_name(const std::string &value);
 
             /*!
              * return the first column in the first row of the result set

@@ -7,6 +7,7 @@
 #include "mysql_binding.h"
 #include "exception.h"
 #include "log.h"
+#include "alloc.h"
 #include <memory>
 #include <cstdlib>
 #include <time.h>
@@ -22,70 +23,42 @@ namespace arg3
             template <typename T>
             void *to_ptr(const T &value)
             {
-                T *ptr = (T *)calloc(1, sizeof(T));
-
-                if (ptr == NULL) {
-                    log::error(ENOMEM);
-                    return NULL;
-                }
-
+                T *ptr = c_alloc<T>(sizeof(T));
                 *ptr = value;
-
                 return ptr;
             }
 
             void bind_value_from_field(MYSQL_BIND *value, MYSQL_FIELD *field)
             {
                 value->buffer_type = field->type;
-                value->is_null = static_cast<my_bool *>(calloc(1, sizeof(my_bool)));
-                if (value->is_null == nullptr) {
-                    throw std::bad_alloc();
-                }
+                value->is_null = c_alloc<my_bool>();
                 value->is_unsigned = 0;
                 value->error = 0;
                 value->buffer_length = field->length;
-                value->length = static_cast<unsigned long *>(calloc(1, sizeof(unsigned long)));
-                if (value->length == nullptr) {
-                    throw std::bad_alloc();
-                }
+                value->length = c_alloc<unsigned long>();
                 *value->length = field->length;
-                value->buffer = calloc(1, field->length);
-                if (value->buffer == nullptr) {
-                    throw std::bad_alloc();
-                }
+                value->buffer = c_alloc(field->length);
             }
 
             void bind_value_copy(MYSQL_BIND *value, const MYSQL_BIND *other)
             {
                 if (other->length) {
-                    value->length = static_cast<unsigned long *>(calloc(1, sizeof(unsigned long)));
-                    if (value->length == nullptr) {
-                        throw std::bad_alloc();
-                    }
+                    value->length = c_alloc<unsigned long>();
                     memmove(value->length, other->length, sizeof(unsigned long));
                 }
 
                 if (other->buffer_length > 0 && other->buffer) {
-                    value->buffer = calloc(1, other->buffer_length);
-                    if (value->buffer == nullptr) {
-                        throw std::bad_alloc();
-                    }
+                    value->buffer = c_alloc(other->buffer_length);
                     memmove(value->buffer, other->buffer, other->buffer_length);
                 }
 
                 if (other->is_null) {
-                    value->is_null = static_cast<my_bool *>(calloc(1, sizeof(my_bool)));
-                    if (value->is_null == nullptr) {
-                        throw std::bad_alloc();
-                    }
+                    value->is_null = c_alloc<my_bool>();
                     memmove(value->is_null, other->is_null, sizeof(my_bool));
                 }
 
                 if (other->error) {
-                    value->error = static_cast<my_bool *>(calloc(1, sizeof(my_bool)));
-                    if (value->error == nullptr) {
-                        throw std::bad_alloc();
-                    }
+                    value->error = c_alloc<my_bool>();
                     memmove(value->error, other->error, sizeof(my_bool));
                 }
 
@@ -103,11 +76,7 @@ namespace arg3
 
         mysql_binding::mysql_binding(size_t size) : value_(nullptr), size_(size)
         {
-            value_ = static_cast<MYSQL_BIND *>(calloc(size, sizeof(MYSQL_BIND)));
-
-            if (value_ == nullptr) {
-                throw std::bad_alloc();
-            }
+            value_ = c_alloc<MYSQL_BIND>(size);
         }
 
         mysql_binding::mysql_binding(const MYSQL_BIND &value) : value_(nullptr), size_(1)
@@ -121,11 +90,7 @@ namespace arg3
 
         mysql_binding::mysql_binding(MYSQL_FIELD *fields, size_t size) : size_(size)
         {
-            value_ = static_cast<MYSQL_BIND *>(calloc(size, sizeof(MYSQL_BIND)));
-
-            if (value_ == nullptr) {
-                throw std::bad_alloc();
-            }
+            value_ = c_alloc<MYSQL_BIND>(size);
 
             for (size_t i = 0; i < size; i++) {
                 helper::bind_value_from_field(&value_[i], &fields[i]);
@@ -169,7 +134,7 @@ namespace arg3
         {
             clear_value();
 
-            value_ = static_cast<MYSQL_BIND *>(calloc(size, sizeof(MYSQL_BIND)));
+            value_ = c_alloc<MYSQL_BIND>(size);
 
             if (value_ == nullptr) {
                 throw std::bad_alloc();
@@ -319,21 +284,9 @@ namespace arg3
 
             // dynamic array of parameter values
             if (value_ == nullptr) {
-                value_ = static_cast<MYSQL_BIND *>(calloc(index, sizeof(MYSQL_BIND)));
-
-                if (value_ == nullptr) {
-                    throw std::bad_alloc();
-                }
+                value_ = c_alloc<MYSQL_BIND>(index);
             } else {
-                value_ = static_cast<MYSQL_BIND *>(realloc(value_, sizeof(MYSQL_BIND) * (index)));
-
-                if (value_ == nullptr) {
-                    throw std::bad_alloc();
-                }
-                // make sure new values are initialized
-                for (size_t i = size_; i < index; i++) {
-                    memset(&value_[i], 0, sizeof(MYSQL_BIND));
-                }
+                value_ = c_alloc<MYSQL_BIND>(value_, index, size_);
             }
 
             size_ = index;

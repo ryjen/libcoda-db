@@ -46,13 +46,13 @@ namespace arg3
 
             int last_number_of_changes() const;
 
-            void query_schema(const string &tableName, std::vector<column_definition> &columns);
+            void query_schema(const std::string &tableName, std::vector<column_definition> &columns);
 
-            resultset execute(const string &sql, bool cache = false);
+            resultset execute(const std::string &sql, bool cache = false);
 
-            string last_error() const;
+            std::string last_error() const;
 
-            shared_ptr<statement> create_statement();
+            std::shared_ptr<statement> create_statement();
         };
     }
 }

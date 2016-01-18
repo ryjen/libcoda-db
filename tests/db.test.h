@@ -6,10 +6,18 @@
 #include <unistd.h>
 #include "sqlite3_db.h"
 #include "mysql_db.h"
+#include "postgres_db.h"
 
-#ifdef HAVE_LIBSQLITE3
+class test_db
+{
+   public:
+    virtual void setup() = 0;
+    virtual void teardown() = 0;
+};
 
-class test_sqlite3_db : public arg3::db::sqlite3_db
+#if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
+
+class test_sqlite3_db : public arg3::db::sqlite3_db, public test_db
 {
    public:
     test_sqlite3_db() : sqlite3_db(arg3::db::uri("file://testdb.db"))
@@ -29,9 +37,9 @@ class test_sqlite3_db : public arg3::db::sqlite3_db
 extern test_sqlite3_db sqlite_testdb;
 #endif
 
-#ifdef HAVE_LIBMYSQLCLIENT
+#if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
 
-class test_mysql_db : public arg3::db::mysql_db
+class test_mysql_db : public arg3::db::mysql_db, public test_db
 {
    public:
     test_mysql_db() : mysql_db(arg3::db::uri("mysql://test"))
@@ -51,10 +59,34 @@ extern test_mysql_db mysql_testdb;
 
 #endif
 
-extern void setup_testdb();
-extern void teardown_testdb();
+#if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
+
+class test_postgres_db : public arg3::db::postgres_db, public test_db
+{
+   public:
+    test_postgres_db() : postgres_db(arg3::db::uri("postgres://test"))
+    {
+    }
+
+    void setup();
+
+    void teardown();
+
+    PGconn *rawDb()
+    {
+        return db_;
+    }
+};
+
+extern test_postgres_db postgres_testdb;
+
+#endif
 
 extern arg3::db::sqldb *testdb;
+
+void setup_testdb();
+
+void teardown_testdb();
 
 class user : public arg3::db::base_record<user>
 {
