@@ -25,13 +25,21 @@ namespace arg3
 
                 return buf.str();
             }
+
+            struct mysql_close_db {
+                void operator()(MYSQL *db) const {
+                    if (db != nullptr) {
+                        mysql_close(db);
+                    }
+                }
+            };
         }
 
         mysql_db::mysql_db(const uri &connInfo) : sqldb(connInfo), db_(nullptr)
         {
         }
 
-        mysql_db::mysql_db(const mysql_db &other) : sqldb(other), db_(nullptr)
+        mysql_db::mysql_db(const mysql_db &other) : sqldb(other), db_(other.db_)
         {
         }
 
@@ -61,7 +69,6 @@ namespace arg3
 
         mysql_db::~mysql_db()
         {
-            close();
         }
 
         void mysql_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
@@ -94,11 +101,13 @@ namespace arg3
         {
             if (db_ != nullptr) return;
 
-            db_ = mysql_init(nullptr);
+            MYSQL *conn = mysql_init(nullptr);
 
-            if (db_ == NULL) {
+            if (conn == NULL) {
                 throw database_exception("out of memory connecting to mysql");
             }
+
+            db_ = shared_ptr<MYSQL>(conn, helper::mysql_close_db());
 
             auto info = connection_info();
 
@@ -114,7 +123,7 @@ namespace arg3
                 port = 0;
             }
 
-            if (mysql_real_connect(db_, info.host.c_str(), info.user.c_str(), info.password.c_str(), info.path.c_str(), port, nullptr, 0) ==
+            if (mysql_real_connect(db_.get(), info.host.c_str(), info.user.c_str(), info.password.c_str(), info.path.c_str(), port, nullptr, 0) ==
                 nullptr) {
                 throw database_exception("No connection could be made to the database");
             }
@@ -128,7 +137,6 @@ namespace arg3
         void mysql_db::close()
         {
             if (db_ != nullptr) {
-                mysql_close(db_);
                 db_ = nullptr;
             }
         }
@@ -141,8 +149,8 @@ namespace arg3
 
             ostringstream buf;
 
-            buf << mysql_errno(db_);
-            buf << ": " << mysql_error(db_);
+            buf << mysql_errno(db_.get());
+            buf << ": " << mysql_error(db_.get());
 
             return buf.str();
         }
@@ -153,7 +161,7 @@ namespace arg3
                 return 0;
             }
 
-            return mysql_insert_id(db_);
+            return mysql_insert_id(db_.get());
         }
 
         int mysql_db::last_number_of_changes() const
@@ -162,7 +170,7 @@ namespace arg3
                 return 0;
             }
 
-            return mysql_affected_rows(db_);
+            return mysql_affected_rows(db_.get());
         }
 
         resultset mysql_db::execute(const string &sql, bool cache)
@@ -173,18 +181,18 @@ namespace arg3
 
             MYSQL_RES *res;
 
-            if (mysql_real_query(db_, sql.c_str(), sql.length())) throw database_exception(last_error());
+            if (mysql_real_query(db_.get(), sql.c_str(), sql.length())) throw database_exception(last_error());
 
-            res = mysql_store_result(db_);
+            res = mysql_store_result(db_.get());
 
-            if (res == nullptr && mysql_field_count(db_) != 0) {
+            if (res == nullptr && mysql_field_count(db_.get()) != 0) {
                 throw database_exception(last_error());
             }
 
             if (cache)
-                return resultset(make_shared<mysql_cached_resultset>(this, shared_ptr<MYSQL_RES>(res, mysql_res_delete())));
+                return resultset(make_shared<mysql_cached_resultset>(this, shared_ptr<MYSQL_RES>(res, helper::mysql_res_delete())));
             else
-                return resultset(make_shared<mysql_resultset>(this, shared_ptr<MYSQL_RES>(res, mysql_res_delete())));
+                return resultset(make_shared<mysql_resultset>(this, shared_ptr<MYSQL_RES>(res, helper::mysql_res_delete())));
         }
 
         shared_ptr<statement> mysql_db::create_statement()

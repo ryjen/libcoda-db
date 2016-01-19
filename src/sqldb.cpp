@@ -28,6 +28,7 @@ namespace arg3
 
         void uri::parse(const string &url_s)
         {
+            value = url_s;
             // do the manual implementation from stack overflow
             // with some mods for the port
             const string prot_end("://");

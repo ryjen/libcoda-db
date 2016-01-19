@@ -128,9 +128,11 @@ namespace arg3
             size_t size() const;
         };
 
-        struct mysql_res_delete {
-            void operator()(MYSQL_RES *p) const;
-        };
+        namespace helper {
+            struct mysql_res_delete {
+                void operator()(MYSQL_RES *p) const;
+            };
+        }
     }
 }
 

@@ -111,14 +111,14 @@ namespace arg3
                 return false;
             }
 
-            PGresult *res = PQexecParams(db_->db_, sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,
+            PGresult *res = PQexecParams(db_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,
                                          bindings_.formats_, 0);
 
             if (PQresultStatus(res) != PGRES_COMMAND_OK) {
                 return false;
             }
 
-            stmt_ = shared_ptr<PGresult>(res, postgres_res_delete());
+            stmt_ = shared_ptr<PGresult>(res, helper::postgres_res_delete());
 
             return true;
         }

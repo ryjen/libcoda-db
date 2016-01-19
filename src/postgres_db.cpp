@@ -13,11 +13,23 @@ namespace arg3
 {
     namespace db
     {
-        void postgres_res_delete::operator()(PGresult *p) const
+        namespace helper
         {
-            if (p != NULL) {
-                PQclear(p);
+            void postgres_res_delete::operator()(PGresult *p) const
+            {
+                if (p != nullptr) {
+                    PQclear(p);
+                }
             }
+
+            struct postgres_close_db {
+                void operator()(PGconn *p) const
+                {
+                    if (p != nullptr) {
+                        PQfinish(p);
+                    }
+                }
+            };
         }
 
         postgres_db::postgres_db(const uri &info) : sqldb(info), db_(nullptr)
@@ -50,7 +62,6 @@ namespace arg3
 
         postgres_db::~postgres_db()
         {
-            close();
         }
 
         void postgres_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
@@ -100,11 +111,13 @@ namespace arg3
         {
             if (db_ != nullptr) return;
 
-            db_ = PQconnectdb(connection_info().value.c_str());
+            PGconn *conn = PQconnectdb(connection_info().value.c_str());
 
-            if (db_ == nullptr) {
+            if (conn == nullptr) {
                 throw database_exception("No connection could be made to the database");
             }
+
+            db_ = shared_ptr<PGconn>(conn, helper::postgres_close_db());
         }
 
         bool postgres_db::is_open() const
@@ -115,7 +128,6 @@ namespace arg3
         void postgres_db::close()
         {
             if (db_ != nullptr) {
-                PQfinish(db_);
                 db_ = nullptr;
             }
         }
@@ -128,7 +140,7 @@ namespace arg3
 
             ostringstream buf;
 
-            buf << PQerrorMessage(db_);
+            buf << PQerrorMessage(db_.get());
 
             return buf.str();
         }
@@ -151,16 +163,16 @@ namespace arg3
                 throw database_exception("database is not open");
             }
 
-            PGresult *res = PQexec(db_, sql.c_str());
+            PGresult *res = PQexec(db_.get(), sql.c_str());
 
             if (res == nullptr) {
                 throw database_exception(last_error());
             }
 
             if (cache)
-                return resultset(make_shared<postgres_cached_resultset>(this, shared_ptr<PGresult>(res, postgres_res_delete())));
+                return resultset(make_shared<postgres_cached_resultset>(this, shared_ptr<PGresult>(res, helper::postgres_res_delete())));
             else
-                return resultset(make_shared<postgres_resultset>(this, shared_ptr<PGresult>(res, postgres_res_delete())));
+                return resultset(make_shared<postgres_resultset>(this, shared_ptr<PGresult>(res, helper::postgres_res_delete())));
         }
 
         shared_ptr<statement> postgres_db::create_statement()

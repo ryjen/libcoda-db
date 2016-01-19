@@ -61,7 +61,7 @@ namespace arg3
                 throw database_exception("database is not open");
             }
 
-            stmt_ = shared_ptr<MYSQL_STMT>(mysql_stmt_init(db_->db_), mysql_stmt_delete());
+            stmt_ = shared_ptr<MYSQL_STMT>(mysql_stmt_init(db_->db_.get()), mysql_stmt_delete());
 
             if (mysql_stmt_prepare(stmt_.get(), sql.c_str(), sql.length())) {
                 throw database_exception(db_->last_error());

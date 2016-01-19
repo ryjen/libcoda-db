@@ -30,7 +30,7 @@ class test_sqlite3_db : public arg3::db::sqlite3_db, public test_db
 
     sqlite3 *rawDb()
     {
-        return db_;
+        return db_.get();
     }
 };
 
@@ -52,7 +52,7 @@ class test_mysql_db : public arg3::db::mysql_db, public test_db
 
     MYSQL *rawDb()
     {
-        return db_;
+        return db_.get();
     }
 };
 extern test_mysql_db mysql_testdb;
@@ -74,7 +74,7 @@ class test_postgres_db : public arg3::db::postgres_db, public test_db
 
     PGconn *rawDb()
     {
-        return db_;
+        return db_.get();
     }
 };
 

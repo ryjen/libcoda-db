@@ -12,7 +12,18 @@ namespace arg3
 {
     namespace db
     {
-        sqlite3_db::sqlite3_db(const uri &info) : sqldb(info), db_(NULL)
+        namespace helper
+        {
+            struct sqlite3_close_db
+            {
+                void operator()(sqlite3 *p) const {
+                    if (p != nullptr) {
+                        sqlite3_close(p);
+                    }
+                }
+            };
+        }
+        sqlite3_db::sqlite3_db(const uri &info) : sqldb(info), db_(nullptr)
         {
         }
 
@@ -44,7 +55,6 @@ namespace arg3
 
         sqlite3_db::~sqlite3_db()
         {
-            close();
         }
 
         void sqlite3_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
@@ -78,49 +88,55 @@ namespace arg3
 
         void sqlite3_db::open(int flags)
         {
-            if (db_ != NULL) return;
+            if (db_ != nullptr) return;
 
-            if (sqlite3_open_v2(connection_info().path.c_str(), &db_, flags, NULL) != SQLITE_OK) throw database_exception(last_error());
+            sqlite3* conn = nullptr;
+
+            if (sqlite3_open_v2(connection_info().path.c_str(), &conn, flags, nullptr) != SQLITE_OK) {
+                throw database_exception(last_error());
+            }
+
+            db_ = shared_ptr<sqlite3>(conn, helper::sqlite3_close_db());
         }
 
         bool sqlite3_db::is_open() const
         {
-            return db_ != NULL;
+            return db_ != nullptr;
         }
 
         void sqlite3_db::close()
         {
-            if (db_ == NULL) return;
+            if (db_ == nullptr) return;
 
-            sqlite3_close(db_);
-            db_ = NULL;
+            // the shared_ptr destructor should close
+            db_ = nullptr;
         }
 
         string sqlite3_db::last_error() const
         {
             ostringstream buf;
 
-            buf << sqlite3_errcode(db_);
-            buf << ": " << sqlite3_errmsg(db_);
+            buf << sqlite3_errcode(db_.get());
+            buf << ": " << sqlite3_errmsg(db_.get());
 
             return buf.str();
         }
 
         long long sqlite3_db::last_insert_id() const
         {
-            return sqlite3_last_insert_rowid(db_);
+            return sqlite3_last_insert_rowid(db_.get());
         }
 
         int sqlite3_db::last_number_of_changes() const
         {
-            return sqlite3_changes(db_);
+            return sqlite3_changes(db_.get());
         }
 
         resultset sqlite3_db::execute(const string &sql, bool cache)
         {
             sqlite3_stmt *stmt;
 
-            if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, NULL) != SQLITE_OK) {
+            if (sqlite3_prepare_v2(db_.get(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
                 throw database_exception(last_error());
             }
 

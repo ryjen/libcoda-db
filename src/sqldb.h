@@ -19,8 +19,7 @@ namespace arg3
 
         struct uri {
            public:
-            uri(const std::string &url)
-            {
+            uri(const std::string &url) {
                 parse(url);
             }
             void parse(const std::string &url);

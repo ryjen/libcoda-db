@@ -25,7 +25,7 @@ namespace arg3
             friend class postgres_cached_resultset;
 
            protected:
-            PGconn *db_;
+            shared_ptr<PGconn> db_;
 
            public:
             postgres_db(const uri &info);
@@ -49,9 +49,12 @@ namespace arg3
             std::shared_ptr<statement> create_statement();
         };
 
-        struct postgres_res_delete {
-            void operator()(PGresult *p) const;
-        };
+        namespace helper {
+            struct postgres_res_delete
+            {
+                void operator()(PGresult *p) const;
+            };
+        }
     }
 }
 

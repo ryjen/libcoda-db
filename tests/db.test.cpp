@@ -91,8 +91,7 @@ void test_postgres_db::setup()
 {
     open();
     execute(
-        "create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45), dval real, data "
-        "blob)");
+        "create table if not exists users(id integer primary key, first_name varchar(45), last_name varchar(45), dval real, data bytea)");
 }
 
 void test_postgres_db::teardown()
