@@ -25,7 +25,9 @@ namespace arg3
 
             modify_query(sqldb *db, const std::string &tableName);
 
-            modify_query(std::shared_ptr<schema> schema);
+            modify_query(const std::shared_ptr<schema> &schema);
+
+            modify_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns);
 
             modify_query(const modify_query &other);
 
@@ -37,7 +39,7 @@ namespace arg3
 
             modify_query &operator=(modify_query &&other);
 
-            virtual std::string to_string() const;
+            virtual std::string to_string() const = 0;
 
             std::string table_name() const;
 
@@ -82,7 +84,7 @@ namespace arg3
 
             update_query &where(const where_clause &value);
 
-            update_query &where(const std::string &value);
+            where_clause &where(const string &value);
 
             virtual std::string to_string() const;
 

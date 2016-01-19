@@ -27,6 +27,7 @@ namespace arg3
 
         postgres_resultset::~postgres_resultset()
         {
+            stmt_ = nullptr;
         }
 
         postgres_resultset &postgres_resultset::operator=(postgres_resultset &&other)

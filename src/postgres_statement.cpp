@@ -34,6 +34,7 @@ namespace arg3
 
         postgres_statement::~postgres_statement()
         {
+            stmt_ = nullptr;
         }
 
         void postgres_statement::prepare(const string &sql)
@@ -52,7 +53,17 @@ namespace arg3
 
         int postgres_statement::last_number_of_changes()
         {
-            return db_->last_number_of_changes();
+            char *changes = PQcmdTuples(stmt_.get());
+
+            if (changes == nullptr || *changes == 0) {
+                return 0;
+            }
+
+            try {
+                return stoi(changes);
+            } catch (const std::exception &e) {
+                return 0;
+            }
         }
 
         string postgres_statement::last_error()
@@ -99,6 +110,15 @@ namespace arg3
 
         resultset postgres_statement::results()
         {
+            PGresult *res = PQexecParams(db_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,
+                                         bindings_.formats_, 0);
+
+            if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+                throw database_exception(last_error());
+            }
+
+            stmt_ = shared_ptr<PGresult>(res, helper::postgres_res_delete());
+
             if (db_->cache_level() == sqldb::CACHE_RESULTSET)
                 return resultset(make_shared<postgres_cached_resultset>(db_, stmt_));
             else
@@ -107,18 +127,14 @@ namespace arg3
 
         bool postgres_statement::result()
         {
-            if (stmt_ == nullptr) {
-                return false;
-            }
-
-            PGresult *res = PQexecParams(db_->db_, sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,
+            PGresult *res = PQexecParams(db_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,
                                          bindings_.formats_, 0);
 
             if (PQresultStatus(res) != PGRES_COMMAND_OK) {
                 return false;
             }
 
-            stmt_ = shared_ptr<PGresult>(res, postgres_res_delete());
+            stmt_ = shared_ptr<PGresult>(res, helper::postgres_res_delete());
 
             return true;
         }
@@ -126,6 +142,7 @@ namespace arg3
         void postgres_statement::finish()
         {
             stmt_ = nullptr;
+            sql_.clear();
         }
 
         void postgres_statement::reset()
@@ -133,11 +150,12 @@ namespace arg3
             if (stmt_ != nullptr) {
                 PQclear(stmt_.get());
             }
+            sql_.clear();
         }
 
         long long postgres_statement::last_insert_id()
         {
-            return db_->last_insert_id();
+            return PQoidValue(stmt_.get());
         }
     }
 }

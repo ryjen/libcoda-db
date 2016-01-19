@@ -170,6 +170,8 @@ namespace arg3
                 buf << " GROUP BY " << groupBy_;
             }
 
+            buf << ";";
+
             return buf.str();
         }
 

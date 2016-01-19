@@ -58,7 +58,7 @@ namespace arg3
 
             select_query &operator=(select_query &&other);
 
-            where_clause &where(const std::string &value);
+            where_clause &where(const string &value);
 
             select_query &where(const where_clause &value);
 

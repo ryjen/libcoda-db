@@ -20,7 +20,9 @@ namespace arg3
 
             size_ = PQnfields(stmt_.get());
 
-            if (row_ >= PQntuples(stmt_.get())) {
+            size_t rows = PQntuples(stmt_.get());
+
+            if (rows > 0 && row_ >= rows) {
                 throw database_exception("invalid row number provided to postgres row");
             }
         }
@@ -34,6 +36,7 @@ namespace arg3
 
         postgres_row::~postgres_row()
         {
+            stmt_ = nullptr;
         }
 
 

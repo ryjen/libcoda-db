@@ -48,16 +48,16 @@ namespace arg3
             switch (type_) {
                 default:
                 case join::inner:
-                    buf << "INNER";
+                    buf << " INNER";
                     break;
                 case join::left:
-                    buf << "LEFT";
+                    buf << " LEFT";
                     break;
                 case join::right:
-                    buf << "RIGHT";
+                    buf << " RIGHT";
                     break;
                 case join::outer:
-                    buf << "OUTER";
+                    buf << " OUTER";
                     break;
             }
 

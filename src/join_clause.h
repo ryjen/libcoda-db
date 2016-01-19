@@ -48,9 +48,8 @@ namespace arg3
             explicit operator std::string();
         };
 
-        std::ostream &operator<<(std::ostream &out, const join_clause &where);
+        std::ostream &operator<<(std::ostream &out, const join_clause &join);
 
-        // user defined literal for expressions like "this = ?"_w && "that = ?"_w
         join_clause operator"" _join(const char *cstr, size_t len);
     }
 }

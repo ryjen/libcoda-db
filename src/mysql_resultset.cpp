@@ -69,9 +69,9 @@ namespace arg3
 
             bool value = (row_ = mysql_fetch_row(res_.get())) != NULL;
 
-            if (!value && !mysql_more_results(db_->db_)) {
+            if (!value && !mysql_more_results(db_->db_.get())) {
                 MYSQL_RES *temp;
-                if ((temp = mysql_use_result(db_->db_)) != NULL) {
+                if ((temp = mysql_use_result(db_->db_.get())) != NULL) {
                     res_ = shared_ptr<MYSQL_RES>(temp, mysql_res_delete());
                     value = (row_ = mysql_fetch_row(temp)) != NULL;
                 } else {
@@ -260,13 +260,13 @@ namespace arg3
             if (row != NULL) {
                 rows_.push_back(make_shared<mysql_cached_row>(db, res, row));
 
-                while (mysql_more_results(db->db_) && (row = mysql_fetch_row(res.get())) != NULL) {
+                while (mysql_more_results(db->db_.get()) && (row = mysql_fetch_row(res.get())) != NULL) {
                     rows_.push_back(make_shared<mysql_cached_row>(db, res, row));
                 }
             } else {
                 MYSQL_RES *temp;
 
-                while ((temp = mysql_use_result(db->db_)) != NULL && (row = mysql_fetch_row(temp))) {
+                while ((temp = mysql_use_result(db->db_.get())) != NULL && (row = mysql_fetch_row(temp))) {
                     rows_.push_back(make_shared<mysql_cached_row>(db, shared_ptr<MYSQL_RES>(temp, mysql_res_delete()), row));
                 }
             }

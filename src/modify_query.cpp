@@ -17,7 +17,11 @@ namespace arg3
         modify_query::modify_query(sqldb *db, const string &tableName) : query(db), tableName_(tableName), flags_(0)
         {
         }
-        modify_query::modify_query(shared_ptr<schema> schema) : modify_query(schema->db(), schema->table_name(), schema->column_names())
+        modify_query::modify_query(const shared_ptr<schema> &schema) : modify_query(schema->db(), schema->table_name(), schema->column_names())
+        {
+        }
+        modify_query::modify_query(const shared_ptr<schema> &schema, const vector<string> &columns)
+            : modify_query(schema->db(), schema->table_name(), columns)
         {
         }
 
@@ -86,13 +90,15 @@ namespace arg3
 
                 buf << ") VALUES (";
 
-                buf << join_csv('?', columns_.size());
+                buf << join_params(columns_, false);
 
                 buf << ")";
             } else {
                 log::warn("No binded values for modify query");
                 buf << " DEFAULT VALUES";
             }
+
+            buf << ";";
 
             return buf.str();
         }
@@ -106,14 +112,7 @@ namespace arg3
             if (columns_.size() > 0) {
                 buf << " SET ";
 
-                for (int i = 0, size = columns_.size(); i < size; i++) {
-                    buf << columns_[i] << " = ?";
-                    if (i + 1 < size) {
-                        buf << ", ";
-                    }
-                }
-            } else {
-                throw database_exception("No binding values provided for update query");
+                buf << join_params(columns_, true);
             }
 
             if (!where_.empty()) {
@@ -121,6 +120,8 @@ namespace arg3
             } else {
                 log::warn("empty where clause for update");
             }
+
+            buf << ";";
 
             return buf.str();
         }
@@ -131,34 +132,10 @@ namespace arg3
             return *this;
         }
 
-        update_query &update_query::where(const string &value)
+        where_clause &update_query::where(const string &value)
         {
             where_ = where_clause(value);
-            return *this;
-        }
-
-        string modify_query::to_string() const
-        {
-            ostringstream buf;
-
-            buf << "REPLACE INTO " << tableName_;
-
-            if (columns_.size() > 0) {
-                buf << "(";
-
-                buf << join_csv(columns_);
-
-                buf << ") VALUES (";
-
-                buf << join_csv('?', columns_.size());
-
-                buf << ")";
-            } else {
-                log::warn("No values provided for modify query");
-                buf << " DEFAULT VALUES";
-            }
-
-            return buf.str();
+            return where_;
         }
 
         int insert_query::execute()
@@ -227,6 +204,8 @@ namespace arg3
             if (!where_.empty()) {
                 buf << " WHERE " << where_;
             }
+
+            buf << ";";
 
             return buf.str();
         }

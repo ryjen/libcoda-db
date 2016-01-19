@@ -55,7 +55,7 @@ namespace arg3
         {
             select_query query(schema);
 
-            query.where(name + " = ?");
+            query.where(name + " = $1");
 
             query.bind_value(1, value);
 
@@ -282,7 +282,7 @@ namespace arg3
 
                 select_query query(schema());
 
-                query.where(idColumnName_ + " = ?");
+                query.where(idColumnName_ + " = $1");
 
                 query.bind_value(1, get(idColumnName_));
 
@@ -296,22 +296,23 @@ namespace arg3
             {
                 size_t index = 0;
                 bool rval = false;
+                auto cols_to_save = available_columns();
 
                 if (exists()) {
-                    update_query query(schema());
+                    update_query query(schema(), cols_to_save);
 
-                    query.where(idColumnName_ + " = ? ");
+                    query.where(idColumnName_ + " = $1");
 
-                    index = bind(query);
+                    index = bind(query, cols_to_save);
 
                     // add the where parameter
                     query.bind_value(index, get(idColumnName_));
 
                     rval = query.execute();
                 } else {
-                    insert_query query(schema());
+                    insert_query query(schema(), cols_to_save);
 
-                    bind(query);
+                    bind(query, cols_to_save);
 
                     rval = query.execute();
 
@@ -381,7 +382,7 @@ namespace arg3
             {
                 select_query query(schema());
 
-                query.where(idColumnName_ + " = ?");
+                query.where(idColumnName_ + " = $1");
 
                 query.bind_value(1, value);
 
@@ -424,7 +425,7 @@ namespace arg3
             {
                 select_query query(schema());
 
-                query.where(name + " = ?");
+                query.where(name + " = $1");
 
                 query.limit("1");
 
@@ -446,7 +447,7 @@ namespace arg3
             {
                 delete_query query(schema());
 
-                query.where(idColumnName_ + " = ?");
+                query.where(idColumnName_ + " = $1");
 
                 query.bind_value(1, id());
 
@@ -454,17 +455,22 @@ namespace arg3
             }
 
            private:
-            size_t bind(query &query)
+            std::vector<std::string> available_columns()
             {
-                size_t index = 1;
+                std::vector<std::string> columns = schema()->column_names();
+                std::vector<std::string> values(columns.size());
+                auto it = std::copy_if(columns.begin(), columns.end(), values.begin(), [&](const std::string &val) { return has(val); });
+                values.resize(std::distance(values.begin(), it));
+                return values;
+            }
+            size_t bind(query &query, const std::vector<std::string> &columns)
+            {
+                size_t index = 0;
 
                 // bind the column values
-                for (auto &column : schema()->columns()) {
-                    auto value = get(column.name);
-
-                    query.bind_value(index, value);
-
-                    index++;
+                for (auto &column : columns) {
+                    auto value = get(column);
+                    query.bind_value(++index, value);
                 }
 
                 return index;

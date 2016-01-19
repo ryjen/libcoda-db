@@ -153,7 +153,7 @@ namespace arg3
     /*!
      * utility method used in creating sql
      */
-    std::string join_csv(std::string::value_type c, size_t count);
+    std::string join_params(const vector<std::string> &columns, bool update);
 }
 
 #endif

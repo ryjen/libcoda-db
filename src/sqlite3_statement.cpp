@@ -53,7 +53,7 @@ namespace arg3
 
             sqlite3_stmt *temp;
 
-            if (sqlite3_prepare_v2(db_->db_, sql.c_str(), -1, &temp, NULL) != SQLITE_OK) {
+            if (sqlite3_prepare_v2(db_->db_.get(), sql.c_str(), -1, &temp, NULL) != SQLITE_OK) {
                 throw database_exception(db_->last_error());
             }
 

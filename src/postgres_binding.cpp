@@ -94,7 +94,7 @@ namespace arg3
         }
 
         postgres_binding::postgres_binding(const postgres_binding &other)
-            : values_(nullptr), types_(nullptr), lengths_(nullptr), formats_(nullptr), size_(other.size_)
+            : values_(nullptr), types_(nullptr), lengths_(nullptr), formats_(nullptr), size_(0)
         {
             copy_value(other);
         }
@@ -135,7 +135,6 @@ namespace arg3
         {
             if (index >= size_ || values_[index] == nullptr) return sql_null;
 
-
             return values_[index];
         }
 
@@ -148,7 +147,7 @@ namespace arg3
 
         bool postgres_binding::reallocate_value(size_t index)
         {
-            // asset non-zero-indexed
+            // assert non-zero-indexed
             if (index == 0) {
                 return false;
             }
@@ -180,7 +179,7 @@ namespace arg3
                 char temp[BUFSIZ] = {0};
                 snprintf(temp, BUFSIZ, "%d", value);
                 values_[index - 1] = strdup(temp);
-                types_[index - 1] = sizeof(int) == 8 ? INT8OID : sizeof(int) == 4 ? INT4OID : INT2OID;
+                types_[index - 1] = sizeof(int) == 2 ? INT2OID : sizeof(int) == 4 ? INT4OID : INT8OID;
                 lengths_[index - 1] = sizeof(int);
                 formats_[index - 1] = 0;
             }
@@ -193,7 +192,7 @@ namespace arg3
                 char temp[BUFSIZ] = {0};
                 snprintf(temp, BUFSIZ, "%lld", value);
                 values_[index - 1] = strdup(temp);
-                types_[index - 1] = sizeof(long long) == 8 ? INT8OID : sizeof(int) == 4 ? INT4OID : INT2OID;
+                types_[index - 1] = sizeof(long long) == 2 ? INT2OID : sizeof(long long) == 4 ? INT4OID : INT8OID;
                 lengths_[index - 1] = sizeof(long long);
                 formats_[index - 1] = 0;
             }
@@ -257,7 +256,7 @@ namespace arg3
                 }
                 values_[index - 1] = nullptr;
                 lengths_[index - 1] = 0;
-                types_[index - 1] = TEXTOID;
+                types_[index - 1] = UNKNOWNOID;
                 formats_[index - 1] = 0;
             }
             return *this;

@@ -13,18 +13,30 @@ namespace arg3
 {
     namespace db
     {
-        void postgres_res_delete::operator()(PGresult *p) const
+        namespace helper
         {
-            if (p != NULL) {
-                PQclear(p);
+            void postgres_res_delete::operator()(PGresult *p) const
+            {
+                if (p != NULL) {
+                    PQclear(p);
+                }
             }
+
+            struct postgres_close_db {
+                void operator()(PGconn *p) const
+                {
+                    if (p != NULL) {
+                        PQfinish(p);
+                    }
+                }
+            };
         }
 
         postgres_db::postgres_db(const uri &info) : sqldb(info), db_(nullptr)
         {
         }
 
-        postgres_db::postgres_db(const postgres_db &other) : sqldb(other), db_(nullptr)
+        postgres_db::postgres_db(const postgres_db &other) : sqldb(other), db_(other.db_)
         {
         }
 
@@ -35,13 +47,17 @@ namespace arg3
 
         postgres_db &postgres_db::operator=(const postgres_db &other)
         {
-            db_ = nullptr;
+            sqldb::operator=(other);
+
+            db_ = other.db_;
 
             return *this;
         }
 
         postgres_db &postgres_db::operator=(postgres_db &&other)
         {
+            sqldb::operator=(std::move(other));
+
             db_ = other.db_;
             other.db_ = nullptr;
 
@@ -50,7 +66,6 @@ namespace arg3
 
         postgres_db::~postgres_db()
         {
-            close();
         }
 
         void postgres_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
@@ -59,9 +74,9 @@ namespace arg3
 
             select_query pkq(this, "information_schema.table_constraints tc", {"tc.table_schema, tc.table_name, kc.column_name"});
 
-            pkq.join("information_schema.key_column kc").where("kc.table_name = tc.table_name") && "kc.table_schema = tc.table_schema";
+            pkq.join("information_schema.key_column_usage kc").where("kc.table_name = tc.table_name") && "kc.table_schema = tc.table_schema";
 
-            pkq.where("tc_constraint_type = 'PRIMARY_KEY'") && "kc.position_in_unique_constraint is not null";
+            pkq.where("tc.constraint_type = 'PRIMARY_KEY'");
 
             pkq.order_by("tc.table_schema, tc.table_name, kc.position_in_unique_constraint");
 
@@ -69,7 +84,7 @@ namespace arg3
 
             select_query info_schema(this, "information_schema.columns", {"column_name", "data_type"});
 
-            info_schema.where("table_name = " + tableName);
+            info_schema.where("table_name = '" + tableName + "'");
 
             auto rs = info_schema.execute();
 
@@ -100,11 +115,13 @@ namespace arg3
         {
             if (db_ != nullptr) return;
 
-            db_ = PQconnectdb(connection_info().value.c_str());
+            PGconn *conn = PQconnectdb(connection_info().value.c_str());
 
-            if (db_ == nullptr) {
-                throw database_exception("No connection could be made to the database");
+            if (PQstatus(conn) != CONNECTION_OK) {
+                throw database_exception(PQerrorMessage(conn));
             }
+
+            db_ = shared_ptr<PGconn>(conn, helper::postgres_close_db());
         }
 
         bool postgres_db::is_open() const
@@ -115,7 +132,6 @@ namespace arg3
         void postgres_db::close()
         {
             if (db_ != nullptr) {
-                PQfinish(db_);
                 db_ = nullptr;
             }
         }
@@ -126,11 +142,7 @@ namespace arg3
                 return string();
             }
 
-            ostringstream buf;
-
-            buf << PQerrorMessage(db_);
-
-            return buf.str();
+            return PQerrorMessage(db_.get());
         }
 
         long long postgres_db::last_insert_id() const
@@ -151,16 +163,16 @@ namespace arg3
                 throw database_exception("database is not open");
             }
 
-            PGresult *res = PQexec(db_, sql.c_str());
+            PGresult *res = PQexec(db_.get(), sql.c_str());
 
-            if (res == nullptr) {
+            if (PQresultStatus(res) != PGRES_COMMAND_OK) {
                 throw database_exception(last_error());
             }
 
             if (cache)
-                return resultset(make_shared<postgres_cached_resultset>(this, shared_ptr<PGresult>(res, postgres_res_delete())));
+                return resultset(make_shared<postgres_cached_resultset>(this, shared_ptr<PGresult>(res, helper::postgres_res_delete())));
             else
-                return resultset(make_shared<postgres_resultset>(this, shared_ptr<PGresult>(res, postgres_res_delete())));
+                return resultset(make_shared<postgres_resultset>(this, shared_ptr<PGresult>(res, helper::postgres_res_delete())));
         }
 
         shared_ptr<statement> postgres_db::create_statement()

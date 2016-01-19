@@ -21,6 +21,7 @@ namespace arg3
 
         postgres_column::~postgres_column()
         {
+            stmt_ = nullptr;
         }
 
         postgres_column &postgres_column::operator=(postgres_column &&other)

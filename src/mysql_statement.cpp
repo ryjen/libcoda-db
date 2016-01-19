@@ -7,6 +7,7 @@
 #include "mysql_statement.h"
 #include "mysql_db.h"
 #include "mysql_resultset.h"
+#include <regex>
 
 namespace arg3
 {
@@ -61,9 +62,12 @@ namespace arg3
                 throw database_exception("database is not open");
             }
 
-            stmt_ = shared_ptr<MYSQL_STMT>(mysql_stmt_init(db_->db_), mysql_stmt_delete());
+            regex re("\\$[0-9]+");
+            string formatted_sql = regex_replace(sql, re, "?");
 
-            if (mysql_stmt_prepare(stmt_.get(), sql.c_str(), sql.length())) {
+            stmt_ = shared_ptr<MYSQL_STMT>(mysql_stmt_init(db_->db_.get()), mysql_stmt_delete());
+
+            if (mysql_stmt_prepare(stmt_.get(), formatted_sql.c_str(), formatted_sql.length())) {
                 throw database_exception(db_->last_error());
             }
         }

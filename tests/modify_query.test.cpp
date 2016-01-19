@@ -36,15 +36,15 @@ go_bandit([]() {
         after_each([]() { teardown_testdb(); });
 
         it("can be constructed", []() {
-            modify_query query(testdb, "users");
+            insert_query query(testdb, "users");
 
-            Assert::That(query.to_string(), Equals("REPLACE INTO users DEFAULT VALUES"));
+            Assert::That(query.to_string(), Equals("INSERT INTO users DEFAULT VALUES;"));
 
-            modify_query other(query);
+            insert_query other(query);
 
             Assert::That(query.to_string(), Equals(other.to_string()));
 
-            modify_query moved(std::move(query));
+            insert_query moved(std::move(query));
 
             Assert::That(query.is_valid(), Equals(false));
 
@@ -53,15 +53,15 @@ go_bandit([]() {
         });
 
         it("can be assigned", []() {
-            modify_query query(testdb, "users");
+            update_query query(testdb, "users");
 
-            modify_query other(testdb, "other_users");
+            update_query other(testdb, "other_users");
 
             other = query;
 
             Assert::That(query.to_string(), Equals(other.to_string()));
 
-            modify_query moved(testdb, "moved_users");
+            update_query moved(testdb, "moved_users");
 
             moved = std::move(query);
 
@@ -71,7 +71,7 @@ go_bandit([]() {
         });
 
         it("can modify", []() {
-            modify_query query(testdb, "users", {"id", "first_name", "last_name"});
+            insert_query query(testdb, "users", {"id", "first_name", "last_name"});
 
             query.bind(1, 1);
             query.bind(2, "blah");
@@ -85,7 +85,7 @@ go_bandit([]() {
         });
 
         it("can be batch executed", []() {
-            modify_query query(testdb, "users", {"id", "first_name", "last_name"});
+            insert_query query(testdb, "users", {"id", "first_name", "last_name"});
 
             query.set_flags(modify_query::BATCH);
 

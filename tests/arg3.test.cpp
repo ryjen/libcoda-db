@@ -31,6 +31,8 @@ int run_db_test(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+    arg3::db::log::set_level(arg3::db::log::Warn);
+
 #ifdef HAVE_LIBSQLITE3
 #ifdef TEST_SQLITE
     puts("running sqlite3 tests");
