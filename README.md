@@ -6,9 +6,14 @@ libarg3db
 [![Coverage Status](https://coveralls.io/repos/ryjen/arg3db/badge.svg?branch=master&service=github)](https://coveralls.io/github/ryjen/arg3db?branch=master)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://ryjen.mit-license.org)
 
-a sqlite3 and mysql wrapper / active record (ish) implementation
+a sqlite3, mysql and postgres wrapper / active record (ish) implementation
 
 Use in production at your own risk, I'm still doing quite a bit of testing, refactoring and new features.  Pull requests are welcomed...
+
+Why
+---
+
+Purely selfish reasons.
 
 Building
 --------
@@ -71,7 +76,8 @@ Base Record
 -----------
 ```c++
 arg3::db::sqlite3_db testdb("test.db");
-//arg3::db::mysql_db testdb("database", "user", "password", "localhost", 3306);
+// arg3::db::mysql_db testdb(arg3::db::uri("mysql://user@pass:localhost:3306/database"));
+// arg3::db::postgres_db testdb(arg3::db::uri("postgres://localhost/test"))
 
 class user : public arg3::db::base_record<user>
 {
@@ -99,7 +105,7 @@ public:
 
     // optional overridden method to do custom initialization
     void on_record_init(const arg3::db::row &row) {
-        set("customValue", row.co1umn("customName").to_value());
+        set("customValue", row.column("customName").to_value());
     }   
 
     // custom find method using the schema functions
@@ -148,21 +154,19 @@ Delete a record
         cerr << testdb.last_error() << endl;
 ```
 
+
+Prepared Statements
+===================
+
+Binding parameters in queries should follow a doller sign index format:
+
+ '$1', '$2', '$3', etc.
+
 Basic Queries
 =============
 
 Modify Queries
 --------------
-```c++
-/* replace a user (REPLACE INTO ..) */
-modify_query query(&testdb, "users", { "id", "first_name", "last_name" });
-
-query.bind(1, 1234).bind(2, "happy").bind(3, "gilmour");
-
-/* saves user { "id": 1234, "first_name": "happy", "last_name": "gilmour" } */
-query.execute();
-```
-
 ```c++
 /* insert a  user (INSERT INTO ..) */
 insert_query query(&testdb, "users"); /* auto find columns */
@@ -178,10 +182,10 @@ else
 
 ```c++
 /* update a user (UPDATE ...) */
-update_query query(&testdb, "users");
+update_query query(&testdb, "users", {"id", "first_name", "last_name"});
 
 /* using where clause literals WHERE .. OR .. */
-query.where("id = ?"_w || "last_name = ?"_w);
+query.where("id = $1 OR last_name = $1");
 
 query.bind(1, 3432).bind(2, "mark").bind(3, "anthony").bind(4, 1234).bind("henry");
 
@@ -192,9 +196,7 @@ query.execute();
 /* delete a user (DELETE FROM ...) */
 delete_query query(&testdb, "users");
 
-query.where("id = ?"_w && "first_name = ?"_w);
-
-query.bind(1, 1234).bind(1, "bob");
+query.where("id = $1 AND first_name = $2").bind(1, 1234).bind(2, "bob");
 
 query.execute();
 
@@ -206,7 +208,7 @@ Select Query
 /* select some users */
 select_query query(&testdb, "users");
 
-query.where("last_name = ?");
+query.where("last_name = $1");
 
 query.bind(1, "Jenkins");
 
@@ -277,8 +279,6 @@ Alternatives
 TODO / ROADMAP
 ==============
 
-* named parameter indexing, especially for column names (col_name = ?col_name, bind("col_name", value))
-* More database implementations (postgres!)
-* More tests, at least 95% test coverage
+* More and better quality tests, at least 95% test coverage
 
 
