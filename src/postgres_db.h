@@ -49,9 +49,9 @@ namespace arg3
             std::shared_ptr<statement> create_statement();
         };
 
-        namespace helper {
-            struct postgres_res_delete
-            {
+        namespace helper
+        {
+            struct postgres_res_delete {
                 void operator()(PGresult *p) const;
             };
         }

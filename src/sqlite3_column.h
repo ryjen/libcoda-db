@@ -26,7 +26,7 @@ namespace arg3
             int column_;
 
            public:
-            sqlite3_column(shared_ptr<sqlite3_stmt> stmt, int column);
+            sqlite3_column(const shared_ptr<sqlite3_stmt> &stmt, int column);
             sqlite3_column(const sqlite3_column &other) = delete;
             sqlite3_column(sqlite3_column &&other);
             virtual ~sqlite3_column();

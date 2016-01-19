@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-using namespace std;
+#include "sqldb.h"
 
 namespace arg3
 {
@@ -17,13 +17,13 @@ namespace arg3
         class where_clause
         {
            private:
-            string value_;
-            vector<where_clause> and_;
-            vector<where_clause> or_;
+            std::string value_;
+            std::vector<where_clause> and_;
+            std::vector<where_clause> or_;
 
            public:
             where_clause();
-            explicit where_clause(const string &value);
+            explicit where_clause(const std::string &value);
             where_clause(const where_clause &other);
             where_clause(where_clause &&other);
             where_clause &operator=(const where_clause &other);
@@ -31,26 +31,28 @@ namespace arg3
 
             virtual ~where_clause();
 
-            virtual string to_string() const;
+            virtual std::string to_string() const;
 
-            explicit operator string();
+            explicit operator std::string();
 
-            where_clause &operator&&(const string &value);
+            where_clause &operator&&(const std::string &value);
             where_clause &operator&&(const where_clause &value);
             where_clause &operator||(const where_clause &value);
-            where_clause &operator||(const string &value);
+            where_clause &operator||(const std::string &value);
+
+            where_clause &eq(const std::string &col);
+            where_clause &eq(const std::string &col, const sql_value &value);
 
             bool empty() const;
 
             void reset();
         };
 
-        ostream &operator<<(ostream &out, const where_clause &where);
+        std::ostream &operator<<(std::ostream &out, const where_clause &where);
 
-        // user defined literal for expressions like "this = ?"_w && "that = ?"_w
         where_clause operator"" _where(const char *cstr, size_t len);
 
-        inline where_clause where(const string &str)
+        inline where_clause where(const std::string &str)
         {
             return where_clause(str);
         }

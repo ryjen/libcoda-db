@@ -38,7 +38,7 @@ namespace arg3
 
             select_query(sqldb *db, const std::string &tableName);
 
-            select_query(std::shared_ptr<schema> schema);
+            select_query(const std::shared_ptr<schema> &schema);
 
             select_query(const select_query &other);
 
@@ -58,7 +58,7 @@ namespace arg3
 
             select_query &operator=(select_query &&other);
 
-            where_clause &where(const std::string &value);
+            where_clause &where(const string &value);
 
             select_query &where(const where_clause &value);
 
@@ -76,7 +76,7 @@ namespace arg3
 
             resultset execute();
 
-            void execute(std::function<void(const resultset &)>);
+            void execute(const std::function<void(const resultset &)> &);
 
             int count();
 

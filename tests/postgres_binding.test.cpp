@@ -104,7 +104,7 @@ go_bandit([]() {
         it("can handle a bad bind", []() {
             select_query query(&postgres_testdb, "users");
 
-            query.where("id = ? and first_name = ?");
+            query.where("id = $1 and first_name = $2");
 
             query.bind(3, "someId");
 

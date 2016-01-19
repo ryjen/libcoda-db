@@ -64,7 +64,7 @@ extern test_mysql_db mysql_testdb;
 class test_postgres_db : public arg3::db::postgres_db, public test_db
 {
    public:
-    test_postgres_db() : postgres_db(arg3::db::uri("postgres://test"))
+    test_postgres_db() : postgres_db(arg3::db::uri("postgres://localhost/test"))
     {
     }
 

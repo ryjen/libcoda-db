@@ -25,7 +25,7 @@ namespace arg3
         }
 
 
-        mysql_resultset::mysql_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res) : res_(res), row_(NULL), db_(db)
+        mysql_resultset::mysql_resultset(mysql_db *db, const shared_ptr<MYSQL_RES> &res) : res_(res), row_(NULL), db_(db)
         {
             if (db_ == nullptr) {
                 throw database_exception("database not provided to mysql resultset");
@@ -103,7 +103,7 @@ namespace arg3
 
         /* Statement version */
 
-        mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, shared_ptr<MYSQL_STMT> stmt)
+        mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, const shared_ptr<MYSQL_STMT> &stmt)
             : stmt_(stmt), metadata_(nullptr), db_(db), bindings_(nullptr), status_(-1)
         {
             assert(stmt_ != nullptr);
@@ -192,7 +192,9 @@ namespace arg3
 
         void mysql_stmt_resultset::reset()
         {
-            assert(is_valid());
+            if(!is_valid()) {
+                return;
+            }
 
             if (mysql_stmt_reset(stmt_.get())) {
                 throw database_exception(helper::last_stmt_error(stmt_.get()));
@@ -221,7 +223,7 @@ namespace arg3
 
         /* cached version */
 
-        mysql_cached_resultset::mysql_cached_resultset(sqldb *db, shared_ptr<MYSQL_STMT> stmt) : currentRow_(-1)
+        mysql_cached_resultset::mysql_cached_resultset(sqldb *db, const shared_ptr<MYSQL_STMT> &stmt) : currentRow_(-1)
         {
             assert(is_valid());
 
@@ -253,7 +255,7 @@ namespace arg3
             }
         }
 
-        mysql_cached_resultset::mysql_cached_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res) : currentRow_(0)
+        mysql_cached_resultset::mysql_cached_resultset(mysql_db *db, const shared_ptr<MYSQL_RES> &res) : currentRow_(0)
         {
             MYSQL_ROW row = mysql_fetch_row(res.get());
 

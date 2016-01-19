@@ -33,7 +33,7 @@ namespace arg3
             size_t size_;
 
            public:
-            mysql_row(mysql_db *db, std::shared_ptr<MYSQL_RES> res, MYSQL_ROW row);
+            mysql_row(mysql_db *db, const std::shared_ptr<MYSQL_RES> &res, MYSQL_ROW row);
             virtual ~mysql_row();
             mysql_row(const mysql_row &other);
             mysql_row(mysql_row &&other);
@@ -62,8 +62,8 @@ namespace arg3
             size_t size_;
 
            public:
-            mysql_stmt_row(mysql_db *db, std::shared_ptr<MYSQL_STMT> stmt, std::shared_ptr<MYSQL_RES> metadata,
-                           std::shared_ptr<mysql_binding> fields);
+            mysql_stmt_row(mysql_db *db, const std::shared_ptr<MYSQL_STMT> &stmt, const std::shared_ptr<MYSQL_RES> &metadata,
+                           const std::shared_ptr<mysql_binding> &fields);
             virtual ~mysql_stmt_row();
             mysql_stmt_row(const mysql_stmt_row &other);
             mysql_stmt_row(mysql_stmt_row &&other);
@@ -88,8 +88,8 @@ namespace arg3
             std::vector<std::shared_ptr<mysql_cached_column>> columns_;
 
            public:
-            mysql_cached_row(sqldb *db, std::shared_ptr<MYSQL_RES> metadata, mysql_binding &fields);
-            mysql_cached_row(sqldb *db, std::shared_ptr<MYSQL_RES> res, MYSQL_ROW row);
+            mysql_cached_row(sqldb *db, const std::shared_ptr<MYSQL_RES> &metadata, mysql_binding &fields);
+            mysql_cached_row(sqldb *db, const std::shared_ptr<MYSQL_RES> &res, MYSQL_ROW row);
             virtual ~mysql_cached_row() = default;
             mysql_cached_row(const mysql_cached_row &other) = default;
             mysql_cached_row(mysql_cached_row &&other) = default;

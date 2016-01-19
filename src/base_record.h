@@ -21,7 +21,7 @@ namespace arg3
         class base_record;
 
         template <typename T>
-        inline void find_all(std::shared_ptr<schema> schema, typename base_record<T>::callback funk)
+        inline void find_all(const std::shared_ptr<schema> &schema, const typename  base_record<T>::callback &funk)
         {
             select_query query(schema);
 
@@ -40,7 +40,7 @@ namespace arg3
 
 
         template <typename T>
-        inline std::vector<std::shared_ptr<T>> find_all(std::shared_ptr<schema> schema)
+        inline std::vector<std::shared_ptr<T>> find_all(const std::shared_ptr<schema> &schema)
         {
             /* convert sql rows to objects */
             std::vector<std::shared_ptr<T>> items;
@@ -51,11 +51,11 @@ namespace arg3
         }
 
         template <typename T>
-        inline void find_by(std::shared_ptr<schema> schema, const std::string &name, const sql_value &value, typename base_record<T>::callback funk)
+        inline void find_by(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value, const typename base_record<T>::callback &funk)
         {
             select_query query(schema);
 
-            query.where(name + " = ?");
+            query.where(name + " = $1");
 
             query.bind_value(1, value);
 
@@ -73,7 +73,7 @@ namespace arg3
         }
 
         template <typename T>
-        inline std::vector<std::shared_ptr<T>> find_by(std::shared_ptr<schema> schema, const std::string &name, const sql_value &value)
+        inline std::vector<std::shared_ptr<T>> find_by(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value)
         {
             /* convert sql rows to objects */
             std::vector<shared_ptr<T>> items;
@@ -117,7 +117,7 @@ namespace arg3
              * @param schema the schema to operate on
              * @param columnName the name of the id column in the schema
              */
-            base_record(std::shared_ptr<schema_type> schema, const std::string &columnName) : schema_(schema), idColumnName_(columnName)
+            base_record(const std::shared_ptr<schema_type> &schema, const std::string &columnName) : schema_(schema), idColumnName_(columnName)
             {
                 if (schema_ == nullptr) {
                     throw database_exception("no schema for record");
@@ -130,7 +130,7 @@ namespace arg3
              * @param value the value of the id column
              */
             template <typename V>
-            base_record(std::shared_ptr<schema_type> schema, const std::string &columnName, V value)
+            base_record(const std::shared_ptr<schema_type> &schema, const std::string &columnName, V value)
                 : base_record(schema, columnName)
             {
                 set(idColumnName_, value);
@@ -144,7 +144,7 @@ namespace arg3
              * @param value the value of the id column
              */
             template <typename V>
-            base_record(sqldb *db, const std::string &tableName, const std::string &columnName, V value)
+            base_record(sqldb *db, const std::string &tableName, const std::string &columnName, const V &value)
                 : base_record(db, tableName, columnName)
             {
                 set(idColumnName_, value);
@@ -282,7 +282,7 @@ namespace arg3
 
                 select_query query(schema());
 
-                query.where(idColumnName_ + " = ?");
+                query.where(idColumnName_ + " = $1");
 
                 query.bind_value(1, get(idColumnName_));
 
@@ -296,22 +296,23 @@ namespace arg3
             {
                 size_t index = 0;
                 bool rval = false;
+                auto cols_to_save = available_columns();
 
                 if (exists()) {
-                    update_query query(schema());
+                    update_query query(schema(), cols_to_save);
 
-                    query.where(idColumnName_ + " = ? ");
+                    query.where(idColumnName_ + " = $1");
 
-                    index = bind(query);
+                    index = bind(query, cols_to_save);
 
                     // add the where parameter
                     query.bind_value(index, get(idColumnName_));
 
                     rval = query.execute();
                 } else {
-                    insert_query query(schema());
+                    insert_query query(schema(), cols_to_save);
 
-                    bind(query);
+                    bind(query, cols_to_save);
 
                     rval = query.execute();
 
@@ -369,7 +370,7 @@ namespace arg3
                 return arg3::db::find_all<T>(schema());
             }
 
-            void find_all(callback funk)
+            void find_all(const callback &funk)
             {
                 arg3::db::find_all<T>(schema(), funk);
             }
@@ -381,7 +382,7 @@ namespace arg3
             {
                 select_query query(schema());
 
-                query.where(idColumnName_ + " = ?");
+                query.where(idColumnName_ + " = $1");
 
                 query.bind_value(1, value);
 
@@ -404,7 +405,7 @@ namespace arg3
                 return arg3::db::find_by<T>(schema(), name, value);
             }
 
-            void find_by(const std::string &name, const sql_value &value, callback funk)
+            void find_by(const std::string &name, const sql_value &value, const callback &funk)
             {
                 arg3::db::find_by<T>(schema(), name, value, funk);
             }
@@ -424,7 +425,7 @@ namespace arg3
             {
                 select_query query(schema());
 
-                query.where(name + " = ?");
+                query.where(name + " = $1");
 
                 query.limit("1");
 
@@ -446,7 +447,7 @@ namespace arg3
             {
                 delete_query query(schema());
 
-                query.where(idColumnName_ + " = ?");
+                query.where(idColumnName_ + " = $1");
 
                 query.bind_value(1, id());
 
@@ -454,17 +455,22 @@ namespace arg3
             }
 
            private:
-            size_t bind(query &query)
+            std::vector<std::string> available_columns()
             {
-                size_t index = 1;
+                std::vector<std::string> columns = schema()->column_names();
+                std::vector<std::string> values(columns.size());
+                auto it = std::copy_if(columns.begin(), columns.end(), values.begin(), [&](const std::string &val) { return has(val); });
+                values.resize(std::distance(values.begin(), it));
+                return values;
+            }
+            size_t bind(query &query, const std::vector<std::string> &columns)
+            {
+                size_t index = 0;
 
                 // bind the column values
-                for (auto &column : schema()->columns()) {
-                    auto value = get(column.name);
-
-                    query.bind_value(index, value);
-
-                    index++;
+                for (auto &column : columns) {
+                    auto value = get(column);
+                    query.bind_value(++index, value);
                 }
 
                 return index;

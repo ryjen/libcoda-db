@@ -47,7 +47,7 @@ namespace arg3
             column();
 
            public:
-            column(std::shared_ptr<column_impl> impl);
+            column(const std::shared_ptr<column_impl> &impl);
 
             virtual ~column() = default;
 

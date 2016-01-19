@@ -8,7 +8,7 @@ namespace arg3
 {
     namespace db
     {
-        postgres_resultset::postgres_resultset(postgres_db *db, shared_ptr<PGresult> stmt) : stmt_(stmt), db_(db), currentRow_(-1)
+        postgres_resultset::postgres_resultset(postgres_db *db, const shared_ptr<PGresult> &stmt) : stmt_(stmt), db_(db), currentRow_(-1)
         {
             if (db_ == NULL) {
                 throw database_exception("No database provided to postgres resultset");
@@ -27,6 +27,7 @@ namespace arg3
 
         postgres_resultset::~postgres_resultset()
         {
+            stmt_ = nullptr;
         }
 
         postgres_resultset &postgres_resultset::operator=(postgres_resultset &&other)
@@ -74,7 +75,7 @@ namespace arg3
 
         /* cached version */
 
-        postgres_cached_resultset::postgres_cached_resultset(postgres_db *db, shared_ptr<PGresult> stmt) : db_(db), currentRow_(-1)
+        postgres_cached_resultset::postgres_cached_resultset(postgres_db *db, const shared_ptr<PGresult> &stmt) : db_(db), currentRow_(-1)
         {
             for (size_t i = 0; i < PQntuples(stmt.get()); i++) {
                 rows_.push_back(make_shared<postgres_cached_row>(db, stmt, i));

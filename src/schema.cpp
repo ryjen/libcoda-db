@@ -67,7 +67,7 @@ namespace arg3
 
         void schema::init()
         {
-            if(!db_->is_open()) {
+            if (!db_->is_open()) {
                 throw database_exception("database is not open");
             }
 

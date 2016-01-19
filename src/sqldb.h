@@ -51,7 +51,6 @@ namespace arg3
             void set_level(Level level);
         }
 
-
         /*!
          *  a base class for a specific implementation of a database
          */

@@ -8,7 +8,7 @@ namespace arg3
 {
     namespace db
     {
-        postgres_row::postgres_row(postgres_db *db, shared_ptr<PGresult> stmt, size_t row) : row_impl(), stmt_(stmt), db_(db), row_(row)
+        postgres_row::postgres_row(postgres_db *db, const shared_ptr<PGresult> &stmt, size_t row) : row_impl(), stmt_(stmt), db_(db), row_(row)
         {
             if (db_ == NULL) {
                 throw database_exception("no database provided to postgres row");
@@ -20,7 +20,9 @@ namespace arg3
 
             size_ = PQnfields(stmt_.get());
 
-            if (row_ >= PQntuples(stmt_.get())) {
+            size_t rows = PQntuples(stmt_.get());
+
+            if (rows > 0 && row_ >= rows) {
                 throw database_exception("invalid row number provided to postgres row");
             }
         }
@@ -34,6 +36,7 @@ namespace arg3
 
         postgres_row::~postgres_row()
         {
+            stmt_ = nullptr;
         }
 
 
@@ -99,7 +102,7 @@ namespace arg3
 
         /* cached version */
 
-        postgres_cached_row::postgres_cached_row(postgres_db *db, shared_ptr<PGresult> stmt, size_t row)
+        postgres_cached_row::postgres_cached_row(postgres_db *db, const shared_ptr<PGresult> &stmt, size_t row)
         {
             if (db == NULL) {
                 throw database_exception("no database provided to postgres row");

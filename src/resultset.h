@@ -51,7 +51,7 @@ namespace arg3
             NonConst value_;
 
            public:
-            resultset_iterator(shared_ptr<resultset_impl> rset, int position) : rs_(rset), pos_(position), value_(rset->current_row())
+            resultset_iterator(const shared_ptr<resultset_impl> &rset, int position) : rs_(rset), pos_(position), value_(rset->current_row())
             {
             }
 
@@ -177,7 +177,7 @@ namespace arg3
             std::shared_ptr<resultset_impl> impl_;
 
            public:
-            resultset(std::shared_ptr<resultset_impl> impl);
+            resultset(const std::shared_ptr<resultset_impl> &impl);
 
             resultset(const resultset &other) = delete;
             resultset(resultset &&other);
@@ -209,7 +209,7 @@ namespace arg3
 
             size_t size() const;
 
-            void for_each(std::function<void(const row &)> funk) const;
+            void for_each(const std::function<void(const row &)> &funk) const;
 
             std::shared_ptr<resultset_impl> impl() const;
         };

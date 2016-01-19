@@ -14,9 +14,9 @@ namespace arg3
     {
         namespace helper
         {
-            struct sqlite3_close_db
-            {
-                void operator()(sqlite3 *p) const {
+            struct sqlite3_close_db {
+                void operator()(sqlite3 *p) const
+                {
                     if (p != nullptr) {
                         sqlite3_close(p);
                     }
@@ -33,6 +33,7 @@ namespace arg3
 
         sqlite3_db::sqlite3_db(sqlite3_db &&other) : sqldb(other), db_(std::move(other.db_))
         {
+            other.db_ = nullptr;
         }
 
         sqlite3_db &sqlite3_db::operator=(const sqlite3_db &other)
@@ -49,6 +50,8 @@ namespace arg3
             sqldb::operator=(std::move(other));
 
             db_ = std::move(other.db_);
+
+            other.db_ = nullptr;
 
             return *this;
         }

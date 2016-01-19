@@ -34,7 +34,7 @@ namespace arg3
             int currentRow_;
 
            public:
-            postgres_resultset(postgres_db *db, std::shared_ptr<PGresult> stmt);
+            postgres_resultset(postgres_db *db, const std::shared_ptr<PGresult> &stmt);
             postgres_resultset(const postgres_resultset &other) = delete;
             postgres_resultset(postgres_resultset &&other);
             virtual ~postgres_resultset();
@@ -70,7 +70,7 @@ namespace arg3
             int currentRow_;
 
            public:
-            postgres_cached_resultset(postgres_db *db, std::shared_ptr<PGresult> stmt);
+            postgres_cached_resultset(postgres_db *db, const std::shared_ptr<PGresult> &stmt);
             postgres_cached_resultset(const postgres_cached_resultset &other) = delete;
             postgres_cached_resultset(postgres_cached_resultset &&other);
             virtual ~postgres_cached_resultset();

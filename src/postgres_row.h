@@ -33,7 +33,7 @@ namespace arg3
             size_t row_;
 
            public:
-            postgres_row(postgres_db *db, std::shared_ptr<PGresult> stmt, size_t row);
+            postgres_row(postgres_db *db, const std::shared_ptr<PGresult> &stmt, size_t row);
             virtual ~postgres_row();
             postgres_row(const postgres_row &other) = delete;
             postgres_row(postgres_row &&other);
@@ -58,7 +58,7 @@ namespace arg3
             std::vector<std::shared_ptr<postgres_cached_column>> columns_;
 
            public:
-            postgres_cached_row(postgres_db *db, std::shared_ptr<PGresult> stmt, size_t row);
+            postgres_cached_row(postgres_db *db, const std::shared_ptr<PGresult> &stmt, size_t row);
             virtual ~postgres_cached_row();
             postgres_cached_row(const postgres_cached_row &other) = delete;
             postgres_cached_row(postgres_cached_row &&other);

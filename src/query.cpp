@@ -175,17 +175,22 @@ namespace arg3
         }
     }
 
-    string join_csv(string::value_type value, string::size_type count)
+    string join_params(const vector<string> &columns, bool update)
     {
         ostringstream buf;
 
-        if (count > 0) {
-            for (string::size_type i = 0; i < count - 1; i++) {
-                buf.put(value);
-                buf.put(',');
+        for (string::size_type i = 0; i < columns.size(); i++) {
+            if (update) {
+                buf << columns[i];
+                buf << " = ";
             }
 
-            buf.put(value);
+            buf.put('$');
+            buf << (i + 1);
+
+            if (i + 1 < columns.size()) {
+                buf.put(',');
+            }
         }
         return buf.str();
     }

@@ -28,7 +28,7 @@ namespace arg3
         {
         }
 
-        select_query::select_query(shared_ptr<schema> schema) : select_query(schema->db(), schema->table_name(), schema->column_names())
+        select_query::select_query(const shared_ptr<schema> &schema) : select_query(schema->db(), schema->table_name(), schema->column_names())
         {
         }
         select_query::select_query(select_query &&other)
@@ -170,6 +170,8 @@ namespace arg3
                 buf << " GROUP BY " << groupBy_;
             }
 
+            buf << ";";
+
             return buf.str();
         }
 
@@ -204,7 +206,7 @@ namespace arg3
             return stmt_->results();
         }
 
-        void select_query::execute(std::function<void(const resultset &rs)> funk)
+        void select_query::execute(const std::function<void(const resultset &rs)> &funk)
         {
             prepare(to_string());
 

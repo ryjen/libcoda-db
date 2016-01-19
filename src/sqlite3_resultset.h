@@ -34,7 +34,7 @@ namespace arg3
             int status_;
 
            public:
-            sqlite3_resultset(sqlite3_db *db, std::shared_ptr<sqlite3_stmt> stmt);
+            sqlite3_resultset(sqlite3_db *db, const std::shared_ptr<sqlite3_stmt> &stmt);
             sqlite3_resultset(const sqlite3_resultset &other) = delete;
             sqlite3_resultset(sqlite3_resultset &&other);
             virtual ~sqlite3_resultset();

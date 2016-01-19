@@ -32,7 +32,7 @@ namespace arg3
             size_t size_;
 
            public:
-            sqlite3_row(sqlite3_db *db, std::shared_ptr<sqlite3_stmt> stmt);
+            sqlite3_row(sqlite3_db *db, const std::shared_ptr<sqlite3_stmt> &stmt);
             virtual ~sqlite3_row();
             sqlite3_row(const sqlite3_row &other) = delete;
             sqlite3_row(sqlite3_row &&other);

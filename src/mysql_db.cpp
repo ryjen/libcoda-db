@@ -14,6 +14,15 @@ namespace arg3
     {
         namespace helper
         {
+            struct mysql_close_db {
+                void operator()(MYSQL *p) const
+                {
+                    if (p != nullptr) {
+                        mysql_close(p);
+                    }
+                }
+            };
+
             string last_stmt_error(MYSQL_STMT *stmt)
             {
                 if (!stmt) return "invalid";
@@ -25,14 +34,6 @@ namespace arg3
 
                 return buf.str();
             }
-
-            struct mysql_close_db {
-                void operator()(MYSQL *db) const {
-                    if (db != nullptr) {
-                        mysql_close(db);
-                    }
-                }
-            };
         }
 
         mysql_db::mysql_db(const uri &connInfo) : sqldb(connInfo), db_(nullptr)
@@ -123,10 +124,12 @@ namespace arg3
                 port = 0;
             }
 
-            if (mysql_real_connect(db_.get(), info.host.c_str(), info.user.c_str(), info.password.c_str(), info.path.c_str(), port, nullptr, 0) ==
+            if (mysql_real_connect(conn, info.host.c_str(), info.user.c_str(), info.password.c_str(), info.path.c_str(), port, nullptr, 0) ==
                 nullptr) {
                 throw database_exception("No connection could be made to the database");
             }
+
+            db_ = shared_ptr<MYSQL>(conn, helper::mysql_close_db());
         }
 
         bool mysql_db::is_open() const

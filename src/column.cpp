@@ -9,7 +9,7 @@ namespace arg3
         {
         }
 
-        column::column(shared_ptr<column_impl> impl) : impl_(impl)
+        column::column(const shared_ptr<column_impl> &impl) : impl_(impl)
         {
             if (impl_ == nullptr) {
                 throw database_exception("no implementation for column");

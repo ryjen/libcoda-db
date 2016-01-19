@@ -81,11 +81,11 @@ go_bandit([]() {
         });
 
         it("can use literal", []() {
-            auto w = ("this = ?"_where && "that = ?"_where);
+            auto w = ("this = $1"_where && "that = $2"_where);
 
             w || ("abc = def"_where && "xyz = tuv"_where);
 
-            AssertThat(w.to_string(), Equals("this = ? AND that = ? OR abc = def AND xyz = tuv"));
+            AssertThat(w.to_string(), Equals("this = $1 AND that = $2 OR abc = def AND xyz = tuv"));
         });
 
     });

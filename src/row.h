@@ -57,7 +57,7 @@ namespace arg3
             {
             }
 
-            row_iterator(std::shared_ptr<RowType> pRow, int nPosition) : row_(pRow), position_(nPosition)
+            row_iterator(const std::shared_ptr<RowType> &pRow, int nPosition) : row_(pRow), position_(nPosition)
             {
             }
 
@@ -221,7 +221,7 @@ namespace arg3
             typedef row_iterator<const column_type, column_type, const row_impl> const_iterator;
 
             row();
-            row(std::shared_ptr<row_impl> impl);
+            row(const std::shared_ptr<row_impl> &impl);
             row(const row &other);
             row(row &&other);
             virtual ~row();
@@ -258,7 +258,7 @@ namespace arg3
 
             bool is_valid() const;
 
-            void for_each(std::function<void(const db::column &)> funk) const;
+            void for_each(const std::function<void(const db::column &)> &funk) const;
 
             std::shared_ptr<row_impl> impl() const;
         };

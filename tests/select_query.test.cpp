@@ -112,7 +112,7 @@ go_bandit([]() {
             auto query = select_query(testdb, "users");
 
             try {
-                query.where("first_name=? OR last_name=?");
+                query.where("first_name=$1 OR last_name=$2");
 
                 query.bind(1, "Bryan");
                 query.bind(2, "Jenkins");
@@ -129,7 +129,7 @@ go_bandit([]() {
 
                 query.reset();
 
-                where_clause w("last_name = ?");
+                where_clause w("last_name = $1");
 
                 query.where(w);
 
@@ -155,7 +155,7 @@ go_bandit([]() {
 
             auto query = select_query(testdb, "users", columns);
 
-            query.where("first_name=?");
+            query.where("first_name=$1");
 
             query.bind(1, "Bryan");
 
@@ -172,7 +172,7 @@ go_bandit([]() {
 
             query.bind(2, "Jenkins");
 
-            query.where("first_name=? and last_name=?");
+            query.where("first_name=$1 and last_name=$2");
 
             query.execute([](const resultset& rs) {
                 Assert::That(rs.is_valid(), Equals(true));

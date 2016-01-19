@@ -8,7 +8,7 @@ namespace arg3
 {
     namespace db
     {
-        sqlite3_row::sqlite3_row(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt) : row_impl(), stmt_(stmt), db_(db)
+        sqlite3_row::sqlite3_row(sqlite3_db *db, const shared_ptr<sqlite3_stmt> &stmt) : row_impl(), stmt_(stmt), db_(db)
         {
             if (db_ == NULL) {
                 throw database_exception("no database provided to sqlite3 row");

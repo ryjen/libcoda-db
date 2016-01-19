@@ -39,7 +39,7 @@ go_bandit([]() {
         it("can delete", []() {
             delete_query query(testdb, "users");
 
-            query.where("first_name = ?");
+            query.where("first_name = $1");
 
             query.bind(1, "Mark");
 
@@ -51,7 +51,7 @@ go_bandit([]() {
         it("is copyable by constructor", []() {
             delete_query query(testdb, "users");
 
-            query.where("first_name = ?");
+            query.where("first_name = $1");
 
             query.bind(1, "Mark");
 
@@ -63,7 +63,7 @@ go_bandit([]() {
         it("is movable by constructor", []() {
             delete_query query(testdb, "users");
 
-            query.where("first_name = ?");
+            query.where("first_name = $1");
             query.bind(1, "Bryan");
 
             delete_query other(std::move(query));
@@ -75,7 +75,7 @@ go_bandit([]() {
         it("is copyable from assignment", []() {
             delete_query query(testdb, "users");
 
-            query.where("first_name = ?");
+            query.where("first_name = $1");
 
             query.bind(1, "Bryan");
 
@@ -91,7 +91,7 @@ go_bandit([]() {
         it("is movable from assignment", []() {
             delete_query query(testdb, "users");
 
-            query.where("first_name = ?");
+            query.where("first_name = $1");
             query.bind(1, "Bryan");
 
             delete_query other(testdb, "other_users");
@@ -106,7 +106,7 @@ go_bandit([]() {
         it("can delete from where clause", []() {
             delete_query query(testdb, "users");
 
-            where_clause where("first_name = ?");
+            where_clause where("first_name = $1");
 
             query.where(where);
 
@@ -118,7 +118,7 @@ go_bandit([]() {
         it("can be batch executed", []() {
             delete_query query(testdb, "users");
 
-            query.where("first_name = ?");
+            query.where("first_name = $1");
 
             query.bind(1, "Bryan");
 

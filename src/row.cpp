@@ -12,7 +12,7 @@ namespace arg3
         {
         }
 
-        row::row(shared_ptr<row_impl> impl) : impl_(impl)
+        row::row(const shared_ptr<row_impl> &impl) : impl_(impl)
         {
             if (impl_ == nullptr) {
                 throw database_exception("No implementation provided for row");
@@ -120,7 +120,7 @@ namespace arg3
             return impl_ != nullptr && impl_->is_valid();
         }
 
-        void row::for_each(std::function<void(const db::column &)> funk) const
+        void row::for_each(const std::function<void(const db::column &)> &funk) const
         {
             for (auto &c : *this) {
                 funk(c);

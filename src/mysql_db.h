@@ -25,7 +25,7 @@ namespace arg3
             friend class mysql_cached_resultset;
 
            protected:
-            shared_ptr<MYSQL> db_;
+            std::shared_ptr<MYSQL> db_;
 
            public:
             mysql_db(const uri &connInfo);

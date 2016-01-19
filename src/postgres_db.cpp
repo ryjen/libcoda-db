@@ -36,7 +36,7 @@ namespace arg3
         {
         }
 
-        postgres_db::postgres_db(const postgres_db &other) : sqldb(other), db_(nullptr)
+        postgres_db::postgres_db(const postgres_db &other) : sqldb(other), db_(other.db_)
         {
         }
 
@@ -47,13 +47,17 @@ namespace arg3
 
         postgres_db &postgres_db::operator=(const postgres_db &other)
         {
-            db_ = nullptr;
+            sqldb::operator=(other);
+
+            db_ = other.db_;
 
             return *this;
         }
 
         postgres_db &postgres_db::operator=(postgres_db &&other)
         {
+            sqldb::operator=(std::move(other));
+
             db_ = other.db_;
             other.db_ = nullptr;
 
@@ -70,9 +74,9 @@ namespace arg3
 
             select_query pkq(this, "information_schema.table_constraints tc", {"tc.table_schema, tc.table_name, kc.column_name"});
 
-            pkq.join("information_schema.key_column kc").where("kc.table_name = tc.table_name") && "kc.table_schema = tc.table_schema";
+            pkq.join("information_schema.key_column_usage kc").where("kc.table_name = tc.table_name") && "kc.table_schema = tc.table_schema";
 
-            pkq.where("tc_constraint_type = 'PRIMARY_KEY'") && "kc.position_in_unique_constraint is not null";
+            pkq.where("tc.constraint_type = 'PRIMARY_KEY'");
 
             pkq.order_by("tc.table_schema, tc.table_name, kc.position_in_unique_constraint");
 
@@ -80,7 +84,7 @@ namespace arg3
 
             select_query info_schema(this, "information_schema.columns", {"column_name", "data_type"});
 
-            info_schema.where("table_name = " + tableName);
+            info_schema.where("table_name = '" + tableName + "'");
 
             auto rs = info_schema.execute();
 
@@ -113,8 +117,8 @@ namespace arg3
 
             PGconn *conn = PQconnectdb(connection_info().value.c_str());
 
-            if (conn == nullptr) {
-                throw database_exception("No connection could be made to the database");
+            if (PQstatus(conn) != CONNECTION_OK) {
+                throw database_exception(PQerrorMessage(conn));
             }
 
             db_ = shared_ptr<PGconn>(conn, helper::postgres_close_db());
@@ -138,11 +142,7 @@ namespace arg3
                 return string();
             }
 
-            ostringstream buf;
-
-            buf << PQerrorMessage(db_.get());
-
-            return buf.str();
+            return PQerrorMessage(db_.get());
         }
 
         long long postgres_db::last_insert_id() const
@@ -165,7 +165,7 @@ namespace arg3
 
             PGresult *res = PQexec(db_.get(), sql.c_str());
 
-            if (res == nullptr) {
+            if (PQresultStatus(res) != PGRES_COMMAND_OK) {
                 throw database_exception(last_error());
             }
 

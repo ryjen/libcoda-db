@@ -10,7 +10,7 @@ namespace arg3
 {
     namespace db
     {
-        sqlite3_column::sqlite3_column(shared_ptr<sqlite3_stmt> stmt, int column) : stmt_(stmt), column_(column)
+        sqlite3_column::sqlite3_column(const shared_ptr<sqlite3_stmt> &stmt, int column) : stmt_(stmt), column_(column)
         {
         }
 
