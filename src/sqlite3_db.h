@@ -24,7 +24,7 @@ namespace arg3
             friend class sqlite3_statement;
 
            protected:
-            shared_ptr<sqlite3> db_;
+            std::shared_ptr<sqlite3> db_;
 
            public:
             sqlite3_db(const uri &info);

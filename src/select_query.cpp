@@ -206,7 +206,7 @@ namespace arg3
             return stmt_->results();
         }
 
-        void select_query::execute(std::function<void(const resultset &rs)> funk)
+        void select_query::execute(const std::function<void(const resultset &rs)> &funk)
         {
             prepare(to_string());
 

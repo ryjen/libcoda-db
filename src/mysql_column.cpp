@@ -237,7 +237,7 @@ namespace arg3
         {
         }
 
-        mysql_cached_column::mysql_cached_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index)
+        mysql_cached_column::mysql_cached_column(const shared_ptr<MYSQL_RES> &res, MYSQL_ROW pValue, size_t index)
         {
             if (res == nullptr) {
                 throw database_exception("no mysql result provided for column");
@@ -246,7 +246,7 @@ namespace arg3
             set_value(res, pValue, index);
         }
 
-        void mysql_cached_column::set_value(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index)
+        void mysql_cached_column::set_value(const shared_ptr<MYSQL_RES> &res, MYSQL_ROW pValue, size_t index)
         {
             auto field = mysql_fetch_field_direct(res.get(), index);
 

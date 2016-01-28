@@ -81,11 +81,11 @@ namespace arg3
             sql_value value_;
             int type_;
 
-            void set_value(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
+            void set_value(const shared_ptr<MYSQL_RES> &res, MYSQL_ROW pValue, size_t index);
 
            public:
             mysql_cached_column(const std::string &name, mysql_binding &bindings, size_t position);
-            mysql_cached_column(std::shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
+            mysql_cached_column(const std::shared_ptr<MYSQL_RES> &res, MYSQL_ROW pValue, size_t index);
             mysql_cached_column(const mysql_cached_column &other);
             mysql_cached_column(mysql_cached_column &&other);
             virtual ~mysql_cached_column();

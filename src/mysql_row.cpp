@@ -13,7 +13,7 @@ namespace arg3
 {
     namespace db
     {
-        mysql_row::mysql_row(mysql_db *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row) : row_impl(), row_(row), res_(res), db_(db)
+        mysql_row::mysql_row(mysql_db *db, const shared_ptr<MYSQL_RES> &res, MYSQL_ROW row) : row_impl(), row_(row), res_(res), db_(db)
         {
             if (db_ == nullptr) {
                 throw database_exception("no database provided for mysql row");
@@ -135,7 +135,7 @@ namespace arg3
         /* statement version */
 
 
-        mysql_stmt_row::mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_STMT> stmt, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields)
+        mysql_stmt_row::mysql_stmt_row(mysql_db *db, const shared_ptr<MYSQL_STMT> &stmt, const shared_ptr<MYSQL_RES> &metadata, const shared_ptr<mysql_binding> &fields)
             : row_impl(), fields_(fields), metadata_(metadata), stmt_(stmt), db_(db), size_(0)
         {
             if (db_ == nullptr) {
@@ -260,7 +260,7 @@ namespace arg3
 
         /* cached version */
 
-        mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> metadata, mysql_binding &fields)
+        mysql_cached_row::mysql_cached_row(sqldb *db, const shared_ptr<MYSQL_RES> &metadata, mysql_binding &fields)
         {
             if (metadata == nullptr) {
                 throw database_exception("No meta data provided for mysql cached row");
@@ -277,7 +277,7 @@ namespace arg3
             }
         }
 
-        mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row)
+        mysql_cached_row::mysql_cached_row(sqldb *db, const shared_ptr<MYSQL_RES> &res, MYSQL_ROW row)
         {
             if (row == nullptr || res == nullptr) {
                 throw database_exception("missing data for mysql cached row");

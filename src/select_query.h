@@ -76,7 +76,7 @@ namespace arg3
 
             resultset execute();
 
-            void execute(std::function<void(const resultset &)>);
+            void execute(const std::function<void(const resultset &)> &);
 
             int count();
 

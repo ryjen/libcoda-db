@@ -27,7 +27,7 @@ namespace arg3
             size_t row_;
 
            public:
-            postgres_column(std::shared_ptr<PGresult> stmt, size_t row, size_t column);
+            postgres_column(const std::shared_ptr<PGresult> &stmt, size_t row, size_t column);
             postgres_column(const postgres_column &other) = delete;
             postgres_column(postgres_column &&other);
             virtual ~postgres_column();
@@ -52,10 +52,10 @@ namespace arg3
             std::string name_;
             sql_value value_;
             int type_;
-            void set_value(std::shared_ptr<PGresult> stmt, size_t row, size_t column);
+            void set_value(const std::shared_ptr<PGresult> &stmt, size_t row, size_t column);
 
            public:
-            postgres_cached_column(std::shared_ptr<PGresult> stmt, size_t row, size_t column);
+            postgres_cached_column(const std::shared_ptr<PGresult> &stmt, size_t row, size_t column);
             postgres_cached_column(const postgres_cached_column &other) = delete;
             postgres_cached_column(postgres_cached_column &&other);
             virtual ~postgres_cached_column();

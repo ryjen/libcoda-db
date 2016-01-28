@@ -4,7 +4,7 @@
 
 #undef VERSION
 
-#if defined(HAVE_LIBPQ)
+#if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
 
 #include <bandit/bandit.h>
 #include "db.test.h"

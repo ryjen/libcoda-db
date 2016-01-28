@@ -14,7 +14,9 @@ namespace arg3
         {
             sql_value convert_raw_value(const char *, Oid);
         }
-        postgres_column::postgres_column(shared_ptr<PGresult> stmt, size_t row, size_t column) : stmt_(stmt), column_(column), row_(row)
+
+        postgres_column::postgres_column(const shared_ptr<PGresult> &stmt, size_t row, size_t column) : stmt_(stmt), column_(column), row_(row)
+
         {
         }
 
@@ -67,12 +69,12 @@ namespace arg3
 
         /* cached version */
 
-        postgres_cached_column::postgres_cached_column(shared_ptr<PGresult> stmt, size_t row, size_t column)
+        postgres_cached_column::postgres_cached_column(const shared_ptr<PGresult> &stmt, size_t row, size_t column)
         {
             set_value(stmt, row, column);
         }
 
-        void postgres_cached_column::set_value(shared_ptr<PGresult> stmt, size_t row, size_t column)
+        void postgres_cached_column::set_value(const shared_ptr<PGresult> &stmt, size_t row, size_t column)
         {
             if (stmt == nullptr) {
                 throw database_exception("no statement provided to postgres column");

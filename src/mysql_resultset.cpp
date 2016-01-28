@@ -17,15 +17,15 @@ namespace arg3
         namespace helper
         {
             extern string last_stmt_error(MYSQL_STMT *stmt);
+
+            void mysql_res_delete::operator()(MYSQL_RES *p) const
+            {
+                mysql_free_result(p);
+            }
         }
 
-        void mysql_res_delete::operator()(MYSQL_RES *p) const
-        {
-            mysql_free_result(p);
-        }
 
-
-        mysql_resultset::mysql_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res) : res_(res), row_(NULL), db_(db)
+        mysql_resultset::mysql_resultset(mysql_db *db, const shared_ptr<MYSQL_RES> &res) : res_(res), row_(NULL), db_(db)
         {
             if (db_ == nullptr) {
                 throw database_exception("database not provided to mysql resultset");
@@ -72,7 +72,7 @@ namespace arg3
             if (!value && !mysql_more_results(db_->db_.get())) {
                 MYSQL_RES *temp;
                 if ((temp = mysql_use_result(db_->db_.get())) != NULL) {
-                    res_ = shared_ptr<MYSQL_RES>(temp, mysql_res_delete());
+                    res_ = shared_ptr<MYSQL_RES>(temp, helper::mysql_res_delete());
                     value = (row_ = mysql_fetch_row(temp)) != NULL;
                 } else {
                     res_ = nullptr;
@@ -103,7 +103,7 @@ namespace arg3
 
         /* Statement version */
 
-        mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, shared_ptr<MYSQL_STMT> stmt)
+        mysql_stmt_resultset::mysql_stmt_resultset(mysql_db *db, const shared_ptr<MYSQL_STMT> &stmt)
             : stmt_(stmt), metadata_(nullptr), db_(db), bindings_(nullptr), status_(-1)
         {
             assert(stmt_ != nullptr);
@@ -151,7 +151,7 @@ namespace arg3
 
             if (temp == NULL) throw database_exception("No result data found.");
 
-            metadata_ = shared_ptr<MYSQL_RES>(temp, mysql_res_delete());
+            metadata_ = shared_ptr<MYSQL_RES>(temp, helper::mysql_res_delete());
 
             int size = mysql_num_fields(temp);
 
@@ -192,7 +192,9 @@ namespace arg3
 
         void mysql_stmt_resultset::reset()
         {
-            assert(is_valid());
+            if(!is_valid()) {
+                return;
+            }
 
             if (mysql_stmt_reset(stmt_.get())) {
                 throw database_exception(helper::last_stmt_error(stmt_.get()));
@@ -221,7 +223,7 @@ namespace arg3
 
         /* cached version */
 
-        mysql_cached_resultset::mysql_cached_resultset(sqldb *db, shared_ptr<MYSQL_STMT> stmt) : currentRow_(-1)
+        mysql_cached_resultset::mysql_cached_resultset(sqldb *db, const shared_ptr<MYSQL_STMT> &stmt) : currentRow_(-1)
         {
             assert(is_valid());
 
@@ -234,7 +236,7 @@ namespace arg3
 
             if (temp == NULL) throw database_exception("No result data found.");
 
-            auto metadata = shared_ptr<MYSQL_RES>(temp, mysql_res_delete());
+            auto metadata = shared_ptr<MYSQL_RES>(temp, helper::mysql_res_delete());
 
             int size = mysql_num_fields(temp);
 
@@ -253,7 +255,7 @@ namespace arg3
             }
         }
 
-        mysql_cached_resultset::mysql_cached_resultset(mysql_db *db, shared_ptr<MYSQL_RES> res) : currentRow_(0)
+        mysql_cached_resultset::mysql_cached_resultset(mysql_db *db, const shared_ptr<MYSQL_RES> &res) : currentRow_(0)
         {
             MYSQL_ROW row = mysql_fetch_row(res.get());
 
@@ -267,7 +269,7 @@ namespace arg3
                 MYSQL_RES *temp;
 
                 while ((temp = mysql_use_result(db->db_.get())) != NULL && (row = mysql_fetch_row(temp))) {
-                    rows_.push_back(make_shared<mysql_cached_row>(db, shared_ptr<MYSQL_RES>(temp, mysql_res_delete()), row));
+                    rows_.push_back(make_shared<mysql_cached_row>(db, shared_ptr<MYSQL_RES>(temp, helper::mysql_res_delete()), row));
                 }
             }
         }

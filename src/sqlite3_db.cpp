@@ -23,7 +23,7 @@ namespace arg3
                 }
             };
         }
-        sqlite3_db::sqlite3_db(const uri &info) : sqldb(info), db_(NULL)
+        sqlite3_db::sqlite3_db(const uri &info) : sqldb(info), db_(nullptr)
         {
         }
 
@@ -91,11 +91,11 @@ namespace arg3
 
         void sqlite3_db::open(int flags)
         {
-            if (db_ != NULL) return;
+            if (db_ != nullptr) return;
 
-            sqlite3 *conn = NULL;
+            sqlite3* conn = nullptr;
 
-            if (sqlite3_open_v2(connection_info().path.c_str(), &conn, flags, NULL) != SQLITE_OK) {
+            if (sqlite3_open_v2(connection_info().path.c_str(), &conn, flags, nullptr) != SQLITE_OK) {
                 throw database_exception(last_error());
             }
 
@@ -104,16 +104,15 @@ namespace arg3
 
         bool sqlite3_db::is_open() const
         {
-            return db_ != NULL;
+            return db_ != nullptr;
         }
 
         void sqlite3_db::close()
         {
-            if (db_ == NULL) return;
+            if (db_ == nullptr) return;
 
-            sqlite3_close(db_.get());
-
-            db_ = NULL;
+            // the shared_ptr destructor should close
+            db_ = nullptr;
         }
 
         string sqlite3_db::last_error() const
@@ -140,7 +139,7 @@ namespace arg3
         {
             sqlite3_stmt *stmt;
 
-            if (sqlite3_prepare_v2(db_.get(), sql.c_str(), -1, &stmt, NULL) != SQLITE_OK) {
+            if (sqlite3_prepare_v2(db_.get(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
                 throw database_exception(last_error());
             }
 

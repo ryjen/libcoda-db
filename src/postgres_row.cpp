@@ -8,7 +8,7 @@ namespace arg3
 {
     namespace db
     {
-        postgres_row::postgres_row(postgres_db *db, shared_ptr<PGresult> stmt, size_t row) : row_impl(), stmt_(stmt), db_(db), row_(row)
+        postgres_row::postgres_row(postgres_db *db, const shared_ptr<PGresult> &stmt, size_t row) : row_impl(), stmt_(stmt), db_(db), row_(row)
         {
             if (db_ == NULL) {
                 throw database_exception("no database provided to postgres row");
@@ -102,7 +102,7 @@ namespace arg3
 
         /* cached version */
 
-        postgres_cached_row::postgres_cached_row(postgres_db *db, shared_ptr<PGresult> stmt, size_t row)
+        postgres_cached_row::postgres_cached_row(postgres_db *db, const shared_ptr<PGresult> &stmt, size_t row)
         {
             if (db == NULL) {
                 throw database_exception("no database provided to postgres row");

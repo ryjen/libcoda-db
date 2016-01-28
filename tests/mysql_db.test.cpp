@@ -4,7 +4,7 @@
 
 #undef VERSION
 
-#if defined(HAVE_LIBMYSQLCLIENT)
+#if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
 
 #include <bandit/bandit.h>
 #include "db.test.h"

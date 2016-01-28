@@ -3,7 +3,7 @@
 #include "db.test.h"
 #include "postgres_statement.h"
 
-#ifdef HAVE_LIBPQ
+#if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
 
 using namespace bandit;
 

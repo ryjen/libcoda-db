@@ -135,7 +135,7 @@ namespace arg3
      * utility method used in creating sql
      */
     template <typename T>
-    std::string join_csv(std::vector<T> list)
+    std::string join_csv(const std::vector<T> &list)
     {
         ostringstream buf;
 

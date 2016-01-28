@@ -35,7 +35,7 @@ namespace arg3
             mysql_db *db_;
 
            public:
-            mysql_resultset(mysql_db *db, std::shared_ptr<MYSQL_RES> res);
+            mysql_resultset(mysql_db *db, const std::shared_ptr<MYSQL_RES> &res);
 
             mysql_resultset(const mysql_resultset &other) = delete;
             mysql_resultset(mysql_resultset &&other);
@@ -71,7 +71,7 @@ namespace arg3
             void prepare_results();
 
            public:
-            mysql_stmt_resultset(mysql_db *db, std::shared_ptr<MYSQL_STMT> stmt);
+            mysql_stmt_resultset(mysql_db *db, const std::shared_ptr<MYSQL_STMT> &stmt);
 
             mysql_stmt_resultset(const mysql_stmt_resultset &other) = delete;
             mysql_stmt_resultset(mysql_stmt_resultset &&other);
@@ -107,8 +107,8 @@ namespace arg3
             int currentRow_;
 
            public:
-            mysql_cached_resultset(sqldb *db, std::shared_ptr<MYSQL_STMT> stmt);
-            mysql_cached_resultset(mysql_db *db, std::shared_ptr<MYSQL_RES> res);
+            mysql_cached_resultset(sqldb *db, const std::shared_ptr<MYSQL_STMT> &stmt);
+            mysql_cached_resultset(mysql_db *db, const std::shared_ptr<MYSQL_RES> &res);
 
             mysql_cached_resultset(const mysql_cached_resultset &other) = delete;
             mysql_cached_resultset(mysql_cached_resultset &&other);
@@ -128,9 +128,11 @@ namespace arg3
             size_t size() const;
         };
 
-        struct mysql_res_delete {
-            void operator()(MYSQL_RES *p) const;
-        };
+        namespace helper {
+            struct mysql_res_delete {
+                void operator()(MYSQL_RES *p) const;
+            };
+        }
     }
 }
 

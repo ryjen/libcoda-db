@@ -17,7 +17,7 @@ namespace arg3
         {
             void postgres_res_delete::operator()(PGresult *p) const
             {
-                if (p != NULL) {
+                if (p != nullptr) {
                     PQclear(p);
                 }
             }
@@ -25,7 +25,7 @@ namespace arg3
             struct postgres_close_db {
                 void operator()(PGconn *p) const
                 {
-                    if (p != NULL) {
+                    if (p != nullptr) {
                         PQfinish(p);
                     }
                 }

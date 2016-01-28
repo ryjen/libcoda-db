@@ -146,7 +146,7 @@ namespace arg3
              * @param value the value of the id column
              */
             template <typename V>
-            base_record(sqldb *db, const std::string &tableName, const std::string &columnName, V value)
+            base_record(sqldb *db, const std::string &tableName, const std::string &columnName, const V &value)
                 : base_record(db, tableName, columnName)
             {
                 set(idColumnName_, value);
@@ -373,7 +373,7 @@ namespace arg3
                 return arg3::db::find_all<T>(schema());
             }
 
-            void find_all(callback funk)
+            void find_all(const callback &funk)
             {
                 arg3::db::find_all<T>(schema(), funk);
             }
@@ -408,7 +408,7 @@ namespace arg3
                 return arg3::db::find_by<T>(schema(), name, value);
             }
 
-            void find_by(const std::string &name, const sql_value &value, callback funk)
+            void find_by(const std::string &name, const sql_value &value, const callback &funk)
             {
                 arg3::db::find_by<T>(schema(), name, value, funk);
             }

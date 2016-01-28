@@ -108,6 +108,8 @@ namespace arg3
                 throw database_exception("out of memory connecting to mysql");
             }
 
+            db_ = shared_ptr<MYSQL>(conn, helper::mysql_close_db());
+
             auto info = connection_info();
 
             int port;
@@ -191,9 +193,9 @@ namespace arg3
             }
 
             if (cache)
-                return resultset(make_shared<mysql_cached_resultset>(this, shared_ptr<MYSQL_RES>(res, mysql_res_delete())));
+                return resultset(make_shared<mysql_cached_resultset>(this, shared_ptr<MYSQL_RES>(res, helper::mysql_res_delete())));
             else
-                return resultset(make_shared<mysql_resultset>(this, shared_ptr<MYSQL_RES>(res, mysql_res_delete())));
+                return resultset(make_shared<mysql_resultset>(this, shared_ptr<MYSQL_RES>(res, helper::mysql_res_delete())));
         }
 
         shared_ptr<statement> mysql_db::create_statement()

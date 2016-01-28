@@ -8,6 +8,10 @@
 
 using namespace bandit;
 
+#if !defined(HAVE_LIBMYSQLCLIENT) && !defined(HAVE_LIBSQLITE3) && !defined(HAVE_LIBPQ)
+#error "Mysql, postgres or sqlite is not installed on the system"
+#endif
+
 int run_db_test(int argc, char *argv[])
 {
     if (!testdb) {

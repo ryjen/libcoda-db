@@ -8,7 +8,7 @@ namespace arg3
 {
     namespace db
     {
-        resultset::resultset(shared_ptr<resultset_impl> impl) : impl_(impl)
+        resultset::resultset(const shared_ptr<resultset_impl> &impl) : impl_(impl)
         {
             if (impl_ == nullptr) {
                 throw database_exception("no implementation provided for resultset");
@@ -62,7 +62,7 @@ namespace arg3
             return impl_->size();
         }
 
-        void resultset::for_each(std::function<void(const row &row)> funk) const
+        void resultset::for_each(const std::function<void(const row &row)> &funk) const
         {
             for (auto &row : *this) {
                 funk(row);
