@@ -8,9 +8,9 @@ namespace arg3
 {
     namespace db
     {
-        postgres_resultset::postgres_resultset(postgres_db *db, shared_ptr<PGresult> stmt) : stmt_(stmt), db_(db), currentRow_(-1)
+        postgres_resultset::postgres_resultset(postgres_db *db, const shared_ptr<PGresult> &stmt) : stmt_(stmt), db_(db), currentRow_(-1)
         {
-            if (db_ == NULL) {
+            if (db_ == nullptr) {
                 throw database_exception("No database provided to postgres resultset");
             }
 
@@ -19,9 +19,10 @@ namespace arg3
             }
         }
 
-        postgres_resultset::postgres_resultset(postgres_resultset &&other) : stmt_(other.stmt_), db_(other.db_), currentRow_(other.currentRow_)
+        postgres_resultset::postgres_resultset(postgres_resultset &&other)
+            : stmt_(std::move(other.stmt_)), db_(other.db_), currentRow_(other.currentRow_)
         {
-            other.db_ = NULL;
+            other.db_ = nullptr;
             other.stmt_ = nullptr;
         }
 
@@ -32,10 +33,10 @@ namespace arg3
 
         postgres_resultset &postgres_resultset::operator=(postgres_resultset &&other)
         {
-            stmt_ = other.stmt_;
+            stmt_ = std::move(other.stmt_);
             db_ = other.db_;
             currentRow_ = other.currentRow_;
-            other.db_ = NULL;
+            other.db_ = nullptr;
             other.stmt_ = nullptr;
 
             return *this;
@@ -75,7 +76,7 @@ namespace arg3
 
         /* cached version */
 
-        postgres_cached_resultset::postgres_cached_resultset(postgres_db *db, shared_ptr<PGresult> stmt) : db_(db), currentRow_(-1)
+        postgres_cached_resultset::postgres_cached_resultset(postgres_db *db, const shared_ptr<PGresult> &stmt) : db_(db), currentRow_(-1)
         {
             for (size_t i = 0; i < PQntuples(stmt.get()); i++) {
                 rows_.push_back(make_shared<postgres_cached_row>(db, stmt, i));
@@ -83,9 +84,9 @@ namespace arg3
         }
 
         postgres_cached_resultset::postgres_cached_resultset(postgres_cached_resultset &&other)
-            : db_(other.db_), rows_(other.rows_), currentRow_(other.currentRow_)
+            : db_(other.db_), rows_(std::move(other.rows_)), currentRow_(other.currentRow_)
         {
-            other.db_ = NULL;
+            other.db_ = nullptr;
         }
 
         postgres_cached_resultset::~postgres_cached_resultset()
@@ -95,16 +96,16 @@ namespace arg3
         postgres_cached_resultset &postgres_cached_resultset::operator=(postgres_cached_resultset &&other)
         {
             db_ = other.db_;
-            rows_ = other.rows_;
+            rows_ = std::move(other.rows_);
             currentRow_ = other.currentRow_;
-            other.db_ = NULL;
+            other.db_ = nullptr;
 
             return *this;
         }
 
         bool postgres_cached_resultset::is_valid() const
         {
-            return db_ != NULL;
+            return db_ != nullptr;
         }
 
         size_t postgres_cached_resultset::size() const

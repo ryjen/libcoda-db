@@ -92,7 +92,7 @@ namespace arg3
                 def.pk = row["Key"].to_value() == "PRI";
 
                 // find type
-                def.type = row["Type"].to_value().to_string();
+                def.type = static_cast<char *>(row["Type"].to_value().to_binary().value());
 
                 columns.push_back(def);
             }

@@ -13,12 +13,12 @@ namespace arg3
 {
     namespace db
     {
-        mysql_column::mysql_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index) : value_(pValue), res_(res), index_(index)
+        mysql_column::mysql_column(const shared_ptr<MYSQL_RES> &res, MYSQL_ROW pValue, size_t index) : value_(pValue), res_(res), index_(index)
         {
-            if(value_ == nullptr) {
+            if (value_ == nullptr) {
                 throw database_exception("no mysql value provided for column");
             }
-            if(res_ == nullptr) {
+            if (res_ == nullptr) {
                 throw database_exception("no mysql result provided for column");
             }
         }
@@ -129,6 +129,9 @@ namespace arg3
                 case MYSQL_TYPE_LONG_BLOB:
                 case MYSQL_TYPE_BLOB: {
                     auto lengths = mysql_fetch_lengths(res_.get());
+                    if (lengths == NULL) {
+                        throw binding_error("no lengths for blob");
+                    }
                     return sql_blob(value_[index_], lengths[index_]);
                 }
                 case MYSQL_TYPE_NULL:
@@ -161,7 +164,7 @@ namespace arg3
 
         /* statement version */
 
-        mysql_stmt_column::mysql_stmt_column(const string &name, shared_ptr<mysql_binding> bindings, size_t position)
+        mysql_stmt_column::mysql_stmt_column(const string &name, const shared_ptr<mysql_binding> &bindings, size_t position)
             : name_(name), value_(bindings), position_(position)
         {
             if (bindings == nullptr) {
@@ -236,7 +239,7 @@ namespace arg3
 
         mysql_cached_column::mysql_cached_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index)
         {
-            if(res == nullptr) {
+            if (res == nullptr) {
                 throw database_exception("no mysql result provided for column");
             }
 
@@ -309,6 +312,9 @@ namespace arg3
                 case MYSQL_TYPE_LONG_BLOB:
                 case MYSQL_TYPE_BLOB: {
                     auto lengths = mysql_fetch_lengths(res.get());
+                    if (lengths == NULL) {
+                        throw binding_error("no lengths for blob");
+                    }
                     value_ = sql_blob(pValue[index], lengths[index]);
                     break;
                 }

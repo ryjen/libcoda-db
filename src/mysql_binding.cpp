@@ -36,7 +36,7 @@ namespace arg3
                 value->error = 0;
                 value->buffer_length = field->length;
                 value->length = c_alloc<unsigned long>();
-                *value->length = field->length;
+                *value->length = 0;
                 value->buffer = c_alloc(field->length);
             }
 
@@ -207,7 +207,7 @@ namespace arg3
                 case MYSQL_TYPE_SHORT:
                 case MYSQL_TYPE_LONG:
                 case MYSQL_TYPE_INT24: {
-                    int *p = static_cast<int *>(value_[index].buffer);
+                    long *p = static_cast<long *>(value_[index].buffer);
                     return *p;
                 }
                 case MYSQL_TYPE_LONGLONG: {
@@ -225,9 +225,9 @@ namespace arg3
                     struct tm *tp;
 
                     if ((tp = getdate(static_cast<char *>(value_[index].buffer)))) {
-                        return (long long)mktime(tp);
+                        return mktime(tp);
                     } else {
-                        int *p = static_cast<int *>(value_[index].buffer);
+                        long *p = static_cast<long *>(value_[index].buffer);
                         return *p;
                     }
                 }
@@ -335,6 +335,10 @@ namespace arg3
                 auto size = len == -1 ? value.size() : len;
                 value_[index - 1].buffer = strdup(value.c_str());
                 value_[index - 1].buffer_length = size;
+                if (!value_[index - 1].length) {
+                    value_[index - 1].length = c_alloc<unsigned long>();
+                }
+                *value_[index - 1].length = size;
             }
 
             return *this;
@@ -346,6 +350,10 @@ namespace arg3
                 auto size = len == -1 ? value.size() : len;
                 value_[index - 1].buffer = wcsdup(value.c_str());
                 value_[index - 1].buffer_length = size;
+                if (!value_[index - 1].length) {
+                    value_[index - 1].length = c_alloc<unsigned long>();
+                }
+                *value_[index - 1].length = size;
             }
 
             return *this;
@@ -354,10 +362,14 @@ namespace arg3
         {
             if (reallocate_value(index)) {
                 value_[index - 1].buffer_type = MYSQL_TYPE_BLOB;
-                void *ptr = calloc(1, value.size());
+                void *ptr = c_alloc(value.size());
                 memcpy(ptr, value.value(), value.size());
                 value_[index - 1].buffer = ptr;
                 value_[index - 1].buffer_length = value.size();
+                if (!value_[index - 1].length) {
+                    value_[index - 1].length = c_alloc<unsigned long>();
+                }
+                *value_[index - 1].length = value.size();
             }
 
             return *this;

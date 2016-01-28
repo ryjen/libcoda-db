@@ -15,11 +15,11 @@ namespace arg3
     {
         mysql_row::mysql_row(mysql_db *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row) : row_impl(), row_(row), res_(res), db_(db)
         {
-            if (db_ == NULL) {
+            if (db_ == nullptr) {
                 throw database_exception("no database provided for mysql row");
             }
 
-            if (row_ == NULL) {
+            if (row_ == nullptr) {
                 throw database_exception("no raw data for mysql row");
             }
 
@@ -36,8 +36,8 @@ namespace arg3
 
         mysql_row::mysql_row(mysql_row &&other) : row_impl(std::move(other)), row_(other.row_), res_(other.res_), db_(other.db_), size_(other.size_)
         {
-            other.row_ = NULL;
-            other.db_ = NULL;
+            other.row_ = nullptr;
+            other.db_ = nullptr;
             other.res_ = nullptr;
         }
 
@@ -61,8 +61,8 @@ namespace arg3
             res_ = other.res_;
             db_ = other.db_;
             size_ = other.size_;
-            other.row_ = NULL;
-            other.db_ = NULL;
+            other.row_ = nullptr;
+            other.db_ = nullptr;
             other.res_ = nullptr;
 
             return *this;
@@ -97,7 +97,7 @@ namespace arg3
             for (size_t i = 0; i < size_; i++) {
                 auto field = mysql_fetch_field_direct(res_.get(), i);
 
-                if (field != NULL && field->name != NULL && name == field->name) {
+                if (field != nullptr && field->name != nullptr && name == field->name) {
                     return column(i);
                 }
             }
@@ -116,7 +116,7 @@ namespace arg3
 
             auto field = mysql_fetch_field_direct(res_.get(), nPosition);
 
-            if (field == NULL || field->name == NULL) return string();
+            if (field == nullptr || field->name == nullptr) return string();
 
             return field->name;
         }
@@ -128,7 +128,7 @@ namespace arg3
 
         bool mysql_row::is_valid() const
         {
-            return res_ != nullptr && res_ && row_ != NULL;
+            return res_ != nullptr && res_ && row_ != nullptr;
         }
 
 
@@ -138,7 +138,7 @@ namespace arg3
         mysql_stmt_row::mysql_stmt_row(mysql_db *db, shared_ptr<MYSQL_STMT> stmt, shared_ptr<MYSQL_RES> metadata, shared_ptr<mysql_binding> fields)
             : row_impl(), fields_(fields), metadata_(metadata), stmt_(stmt), db_(db), size_(0)
         {
-            if (db_ == NULL) {
+            if (db_ == nullptr) {
                 throw database_exception("No database provided for mysql row");
             }
 
@@ -161,7 +161,7 @@ namespace arg3
               size_(other.size_)
         {
             other.fields_ = nullptr;
-            other.db_ = NULL;
+            other.db_ = nullptr;
             other.metadata_ = nullptr;
             other.stmt_ = nullptr;
         }
@@ -189,7 +189,7 @@ namespace arg3
             size_ = other.size_;
             stmt_ = std::move(other.stmt_);
             other.fields_ = nullptr;
-            other.db_ = NULL;
+            other.db_ = nullptr;
             other.metadata_ = nullptr;
             other.stmt_ = nullptr;
 
@@ -225,7 +225,7 @@ namespace arg3
             for (size_t i = 0; i < size(); i++) {
                 auto field = mysql_fetch_field_direct(metadata_.get(), i);
 
-                if (field != NULL && field->name != NULL && name == field->name) {
+                if (field != nullptr && field->name != nullptr && name == field->name) {
                     return column(i);
                 }
             }
@@ -243,7 +243,7 @@ namespace arg3
 
             auto field = mysql_fetch_field_direct(metadata_.get(), nPosition);
 
-            if (field == NULL || field->name == NULL) return string();
+            if (field == nullptr || field->name == nullptr) return string();
 
             return field->name;
         }
@@ -271,7 +271,7 @@ namespace arg3
             for (size_t i = 0; i < size; i++) {
                 auto field = mysql_fetch_field_direct(metadata.get(), i);
 
-                if (field == NULL || field->name == NULL) continue;
+                if (field == nullptr || field->name == nullptr) continue;
 
                 columns_.push_back(make_shared<mysql_cached_column>(field->name, fields, i));
             }
@@ -279,7 +279,7 @@ namespace arg3
 
         mysql_cached_row::mysql_cached_row(sqldb *db, shared_ptr<MYSQL_RES> res, MYSQL_ROW row)
         {
-            if (row == NULL || res == nullptr) {
+            if (row == nullptr || res == nullptr) {
                 throw database_exception("missing data for mysql cached row");
             }
 

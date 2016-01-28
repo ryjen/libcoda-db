@@ -24,6 +24,54 @@ namespace arg3
 {
     namespace db
     {
+        namespace helper
+        {
+            sql_value convert_raw_value(const char *value, Oid type)
+            {
+                if (value == nullptr) {
+                    return sql_null;
+                }
+
+                switch (type) {
+                    case BOOLOID:
+                    case BYTEAOID:
+                    case CHAROID:
+                    case INT8OID:
+                    case INT2OID:
+                    case INT4OID:
+                    case TIMESTAMPOID:
+                    case BITOID:
+                        try {
+                            return stol(value);
+                        } catch (const std::exception &e) {
+                            return value;
+                        }
+                    case FLOAT4OID:
+                        try {
+                            return stod(value);
+                        } catch (const std::exception &e) {
+                            return value;
+                        }
+                    case FLOAT8OID:
+                        try {
+                            return stold(value);
+                        } catch (const std::exception &e) {
+                            return value;
+                        }
+                    case UNKNOWNOID:
+                        return nullptr;
+                    case VARCHAROID:
+                    case TEXTOID:
+                    case DATEOID:
+                    case TIMEOID:
+                    case UUIDOID:
+                        return value;
+                    default:
+                        return value;
+                }
+            }
+        }
+
         postgres_binding::postgres_binding() : values_(nullptr), types_(nullptr), lengths_(nullptr), formats_(nullptr), size_(0)
         {
         }
@@ -89,7 +137,9 @@ namespace arg3
                 types_[i] = value.types_[i];
                 lengths_[i] = value.lengths_[i];
                 formats_[i] = value.formats_[i];
-                memmove(&values_[i], value.values_[i], lengths_[i]);
+                if (value.values_[i]) {
+                    values_[i] = strdup(value.values_[i]);
+                }
             }
         }
 
@@ -106,6 +156,9 @@ namespace arg3
             formats_ = other.formats_;
             size_ = other.size_;
             other.values_ = nullptr;
+            other.types_ = nullptr;
+            other.lengths_ = nullptr;
+            other.formats_ = nullptr;
             other.size_ = 0;
         }
 
@@ -123,6 +176,9 @@ namespace arg3
             formats_ = other.formats_;
             size_ = other.size_;
             other.values_ = nullptr;
+            other.types_ = nullptr;
+            other.lengths_ = nullptr;
+            other.formats_ = nullptr;
             other.size_ = 0;
             return *this;
         }
@@ -133,9 +189,10 @@ namespace arg3
 
         sql_value postgres_binding::to_value(size_t index) const
         {
-            if (index >= size_ || values_[index] == nullptr) return sql_null;
-
-            return values_[index];
+            if (index >= size_ || values_ == nullptr || values_[index] == nullptr) {
+                return sql_null;
+            }
+            return helper::convert_raw_value(values_[index], types_[index]);
         }
 
         int postgres_binding::sql_type(size_t index) const
@@ -176,9 +233,7 @@ namespace arg3
         postgres_binding &postgres_binding::bind(size_t index, int value)
         {
             if (reallocate_value(index)) {
-                char temp[BUFSIZ] = {0};
-                snprintf(temp, BUFSIZ, "%d", value);
-                values_[index - 1] = strdup(temp);
+                values_[index - 1] = strdup(std::to_string(value).c_str());
                 types_[index - 1] = sizeof(int) == 2 ? INT2OID : sizeof(int) == 4 ? INT4OID : INT8OID;
                 lengths_[index - 1] = sizeof(int);
                 formats_[index - 1] = 0;
@@ -189,9 +244,7 @@ namespace arg3
         postgres_binding &postgres_binding::bind(size_t index, long long value)
         {
             if (reallocate_value(index)) {
-                char temp[BUFSIZ] = {0};
-                snprintf(temp, BUFSIZ, "%lld", value);
-                values_[index - 1] = strdup(temp);
+                values_[index - 1] = strdup(std::to_string(value).c_str());
                 types_[index - 1] = sizeof(long long) == 2 ? INT2OID : sizeof(long long) == 4 ? INT4OID : INT8OID;
                 lengths_[index - 1] = sizeof(long long);
                 formats_[index - 1] = 0;
@@ -202,9 +255,7 @@ namespace arg3
         postgres_binding &postgres_binding::bind(size_t index, double value)
         {
             if (reallocate_value(index)) {
-                char temp[BUFSIZ] = {0};
-                snprintf(temp, BUFSIZ, "%f", value);
-                values_[index - 1] = strdup(temp);
+                values_[index - 1] = strdup(std::to_string(value).c_str());
                 types_[index - 1] = sizeof(double) == 8 ? FLOAT8OID : FLOAT4OID;
                 lengths_[index - 1] = sizeof(double);
                 formats_[index - 1] = 0;

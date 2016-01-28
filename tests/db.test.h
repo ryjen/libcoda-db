@@ -8,6 +8,10 @@
 #include "mysql_db.h"
 #include "postgres_db.h"
 
+#if !defined(HAVE_LIBMYSQLCLIENT) && !defined(HAVE_LIBSQLITE3) && !defined(HAVE_LIBPQ)
+#error "Mysql, postgres or sqlite is not installed on the system"
+#endif
+
 class test_db
 {
    public:

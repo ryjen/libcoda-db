@@ -1,6 +1,9 @@
 /*!
  * @copyright ryan jennings (arg3.com), 2013 under LGPL
  */
+#ifndef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <bandit/bandit.h>
 #include "base_record.h"
 #include "select_query.h"
@@ -16,16 +19,14 @@ using namespace arg3::db;
 #if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
 test_mysql_db mysql_testdb;
 sqldb *testdb = &mysql_testdb;
-#endif
-
-#if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
+#elif defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
 test_sqlite3_db sqlite_testdb;
 sqldb *testdb = &sqlite_testdb;
-#endif
-
-#if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
+#elif defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
 test_postgres_db postgres_testdb;
 sqldb *testdb = &postgres_testdb;
+#else
+sqldb *testdb = nullptr;
 #endif
 
 void setup_testdb()

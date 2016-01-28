@@ -31,7 +31,6 @@ namespace arg3
            public:
             using variant::variant;
 
-
             void bind_to(bindable *obj, int index) const;
         };
     }

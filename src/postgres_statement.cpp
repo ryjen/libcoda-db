@@ -10,24 +10,28 @@ namespace arg3
     {
         postgres_statement::postgres_statement(postgres_db *db) : db_(db), stmt_(nullptr)
         {
-            if (db_ == NULL) {
+            if (db_ == nullptr) {
                 throw database_exception("no database provided to postgres statement");
             }
         }
 
-        postgres_statement::postgres_statement(postgres_statement &&other) : db_(other.db_), stmt_(other.stmt_)
+        postgres_statement::postgres_statement(postgres_statement &&other)
+            : db_(other.db_), stmt_(std::move(other.stmt_)), bindings_(std::move(other.bindings_)), sql_(std::move(other.sql_))
         {
             other.stmt_ = nullptr;
-            other.db_ = NULL;
+            other.db_ = nullptr;
         }
 
         postgres_statement &postgres_statement::operator=(postgres_statement &&other)
         {
             db_ = other.db_;
-            stmt_ = other.stmt_;
+            stmt_ = std::move(other.stmt_);
+            bindings_ = std::move(other.bindings_);
+            sql_ = std::move(other.sql_);
 
             other.stmt_ = nullptr;
-            other.db_ = NULL;
+            other.db_ = nullptr;
+            other.sql_.clear();
 
             return *this;
         }
@@ -39,8 +43,8 @@ namespace arg3
 
         void postgres_statement::prepare(const string &sql)
         {
-            if (!db_ || !db_->db_) {
-                throw database_exception("database not open");
+            if (!db_ || !db_->is_open()) {
+                throw database_exception("postgres database not open");
             }
 
             sql_ = sql;
@@ -155,7 +159,13 @@ namespace arg3
 
         long long postgres_statement::last_insert_id()
         {
-            return PQoidValue(stmt_.get());
+            Oid value = PQoidValue(stmt_.get());
+
+            if (value == InvalidOid) {
+                return 0;
+            }
+
+            return value;
         }
     }
 }

@@ -73,13 +73,15 @@ go_bandit([]() {
         it("can modify", []() {
             insert_query query(testdb, "users", {"id", "first_name", "last_name"});
 
-            query.bind(1, 1);
+            int id = rand() % 5000;
+
+            query.bind(1, id);
             query.bind(2, "blah");
             query.bind(3, "bleh");
 
             Assert::That(query.execute() > 0, Equals(true));
 
-            user u1(1);
+            user u1(id);
 
             Assert::That(u1.refresh(), Equals(true));
         });

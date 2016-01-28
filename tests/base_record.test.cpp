@@ -14,6 +14,7 @@ go_bandit([]() {
         before_each([]() { setup_testdb(); });
 
         after_each([]() { teardown_testdb(); });
+
         it("should save", []() {
             try {
                 user user1;
@@ -21,21 +22,21 @@ go_bandit([]() {
                 user1.set("last_name", "Jennings");
 
                 // long long insertId = 0;
-                AssertThat(user1.save(), IsTrue());
+                Assert::That(user1.save(), IsTrue());
 
                 Assert::That(user1.refresh(), IsTrue());  // load values back up from db
 
-                AssertThat(user1.get("first_name"), Equals("Ryan"));
+                Assert::That(user1.get("first_name"), Equals("Ryan"));
 
                 user1.set("first_name", "Bryan");
                 user1.set("last_name", "Jenkins");
 
-                AssertThat(user1.save(), IsTrue());
+                Assert::That(user1.save(), IsTrue());
 
-                AssertThat(user1.refresh(), IsTrue());  // load values back up from db
+                Assert::That(user1.refresh(), IsTrue());  // load values back up from db
 
-                AssertThat(user1.get("first_name"), Equals("Bryan"));
-            } catch (const database_exception &e) {
+                Assert::That(user1.get("first_name"), Equals("Bryan"));
+            } catch (const database_exception& e) {
                 cerr << "Error1: " << testdb->last_error() << endl;
                 throw e;
             }
@@ -48,16 +49,16 @@ go_bandit([]() {
                 u1.set("first_name", "test");
                 u1.set("last_name", "testing");
 
-                AssertThat(u1.save(), IsTrue());
+                Assert::That(u1.save(), IsTrue());
 
                 auto lastId = testdb->last_insert_id();
 
                 auto u2 = user().find_by_id(lastId);
 
-                AssertThat(u2->is_valid(), IsTrue());
+                Assert::That(u2->is_valid(), IsTrue());
 
-                AssertThat(u2->id(), Equals(lastId));
-            } catch (const std::exception &e) {
+                Assert::That(u2->id(), Equals(lastId));
+            } catch (const std::exception& e) {
                 cerr << "Error2: " << e.what() << endl;
                 throw e;
             }
@@ -68,18 +69,18 @@ go_bandit([]() {
             u1.set("first_name", "Barry");
             u1.set("last_name", "White");
 
-            AssertThat(u1.save(), IsTrue());
+            Assert::That(u1.save(), IsTrue());
 
             user u2;
 
             u2.set("first_name", "Bono");
             u2.set("last_name", "Bono");
 
-            AssertThat(u2.save(), IsTrue());
+            Assert::That(u2.save(), IsTrue());
 
             auto results = user().find_all();
 
-            AssertThat(results.size(), Equals(2));
+            Assert::That(results.size(), Equals(2));
         });
 
         it("can find by a column", []() {
@@ -88,13 +89,13 @@ go_bandit([]() {
             u1.set("first_name", "John");
             u1.set("last_name", "Jenkins");
 
-            AssertThat(u1.save(), IsTrue());
+            Assert::That(u1.save(), IsTrue());
 
             auto res = u1.find_by("first_name", "John");
 
-            AssertThat(res.size() > 0, IsTrue());
+            Assert::That(res.size() > 0, IsTrue());
 
-            AssertThat(res[0]->get("first_name"), Equals("John"));
+            Assert::That(res[0]->get("first_name"), Equals("John"));
         });
 
         it("can refresh by a column", []() {
@@ -103,15 +104,15 @@ go_bandit([]() {
             u1.set("first_name", "Bender");
             u1.set("last_name", "Robot");
 
-            AssertThat(u1.save(), IsTrue());
+            Assert::That(u1.save(), IsTrue());
 
             user u2;
 
             u2.set("first_name", "Bender");
 
-            AssertThat(u2.refresh_by("first_name"), IsTrue());
+            Assert::That(u2.refresh_by("first_name"), IsTrue());
 
-            AssertThat(u2.get("last_name"), Equals("Robot"));
+            Assert::That(u2.get("last_name"), Equals("Robot"));
         });
 
         it("can have no column", []() {
@@ -119,13 +120,13 @@ go_bandit([]() {
 
             auto val = user1.get("missing");
 
-            AssertThat(val, Equals(sql_null));
+            Assert::That(val, Equals(sql_null));
         });
 
         it("cannnot refresh invalid", []() {
             user user1(14323432);
 
-            AssertThat(user1.refresh(), Equals(false));
+            Assert::That(user1.refresh(), Equals(false));
 
         });
     });

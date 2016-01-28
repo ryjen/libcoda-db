@@ -4,6 +4,8 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 
+class sqldb;
+
 int main(int argc, char *argv[])
 {
     char mysql[BUFSIZ + 1] = {0};

@@ -10,6 +10,10 @@ namespace arg3
 {
     namespace db
     {
+        namespace helper
+        {
+            sql_value convert_raw_value(const char *, Oid);
+        }
         postgres_column::postgres_column(shared_ptr<PGresult> stmt, size_t row, size_t column) : stmt_(stmt), column_(column), row_(row)
         {
         }
@@ -44,7 +48,7 @@ namespace arg3
                 throw no_such_column_exception();
             }
 
-            return PQgetvalue(stmt_.get(), row_, column_);
+            return helper::convert_raw_value(PQgetvalue(stmt_.get(), row_, column_), PQftype(stmt_.get(), column_));
         }
 
         int postgres_column::sql_type() const

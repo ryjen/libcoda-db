@@ -26,7 +26,7 @@ go_bandit([]() {
         it("is copyable", []() {
             postgres_db db(postgres_testdb);
 
-            Assert::That(db.is_open(), IsFalse());
+            Assert::That(db.is_open(), IsTrue());
 
             Assert::That(db.connection_info().value, Equals(postgres_testdb.connection_info().value));
 
@@ -36,7 +36,7 @@ go_bandit([]() {
 
             Assert::That(db.connection_info().value, Equals(postgres_testdb.connection_info().value));
 
-            Assert::That(db.is_open(), IsFalse());
+            Assert::That(db.is_open(), IsTrue());
 
             Assert::That(postgres_testdb.is_open(), IsTrue());
 

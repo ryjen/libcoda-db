@@ -1,9 +1,9 @@
 [submodule "tests/vendor/bandit"]
 	path = tests/vendor/bandit
 	url = http://github.com/deadcoda/bandit.git
-[submodule "libs/variant"]
-	path = libs/variant
-	url = http://github.com/deadcoda/arg3variant.git
 [submodule "cmake"]
 	path = cmake
 	url = http://github.com/deadcoda/cmake.git
+[submodule "libs/variant"]
+	path = libs/variant
+	url = http://github.com/ryjen/arg3variant.git

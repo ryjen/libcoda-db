@@ -16,18 +16,18 @@ namespace arg3
         namespace helper
         {
             extern string last_stmt_error(MYSQL_STMT *stmt);
-        }
 
-        struct mysql_stmt_delete {
-            void operator()(MYSQL_STMT *p) const
-            {
-                mysql_stmt_close(p);
-            }
-        };
+            struct mysql_stmt_delete {
+                void operator()(MYSQL_STMT *p) const
+                {
+                    mysql_stmt_close(p);
+                }
+            };
+        }
 
         mysql_statement::mysql_statement(mysql_db *db) : db_(db), stmt_(nullptr)
         {
-            if (db_ == NULL) {
+            if (db_ == nullptr) {
                 throw database_exception("No database provided for mysql statement");
             }
         }
@@ -36,7 +36,7 @@ namespace arg3
         {
             db_ = other.db_;
             stmt_ = other.stmt_;
-            other.db_ = NULL;
+            other.db_ = nullptr;
             other.stmt_ = nullptr;
         }
 
@@ -45,7 +45,7 @@ namespace arg3
             db_ = other.db_;
             stmt_ = other.stmt_;
 
-            other.db_ = NULL;
+            other.db_ = nullptr;
             other.stmt_ = nullptr;
 
             return *this;
@@ -58,14 +58,14 @@ namespace arg3
 
         void mysql_statement::prepare(const string &sql)
         {
-            if (db_ == NULL || !db_->is_open()) {
+            if (db_ == nullptr || !db_->is_open()) {
                 throw database_exception("database is not open");
             }
 
-            regex re("\\$[0-9]+");
+            regex re("\\$[0-9]+([:]{2}[a-z]+)?");
             string formatted_sql = regex_replace(sql, re, "?");
 
-            stmt_ = shared_ptr<MYSQL_STMT>(mysql_stmt_init(db_->db_.get()), mysql_stmt_delete());
+            stmt_ = shared_ptr<MYSQL_STMT>(mysql_stmt_init(db_->db_.get()), helper::mysql_stmt_delete());
 
             if (mysql_stmt_prepare(stmt_.get(), formatted_sql.c_str(), formatted_sql.length())) {
                 throw database_exception(db_->last_error());
@@ -125,8 +125,8 @@ namespace arg3
 
         resultset mysql_statement::results()
         {
-            if (stmt_ == nullptr) {
-                throw database_exception("statement not prepared");
+            if (!is_valid()) {
+                throw database_exception("statement not ready");
             }
 
             bindings_.bind_params(stmt_.get());
@@ -139,7 +139,7 @@ namespace arg3
 
         bool mysql_statement::result()
         {
-            if (stmt_ == nullptr) {
+            if (!is_valid()) {
                 return false;
             }
 
@@ -153,7 +153,7 @@ namespace arg3
 
         int mysql_statement::last_number_of_changes()
         {
-            if (stmt_ == nullptr) {
+            if (!is_valid()) {
                 return 0;
             }
 
@@ -162,8 +162,8 @@ namespace arg3
 
         string mysql_statement::last_error()
         {
-            if (stmt_ == nullptr) {
-                throw database_exception("statement not prepared");
+            if (!is_valid()) {
+                throw database_exception("statement not ready");
             }
 
             return helper::last_stmt_error(stmt_.get());
@@ -175,7 +175,6 @@ namespace arg3
 
             if (stmt_ != nullptr) {
                 mysql_stmt_free_result(stmt_.get());
-
                 stmt_ = nullptr;
             }
         }
@@ -184,7 +183,7 @@ namespace arg3
         {
             bindings_.reset();
 
-            if (stmt_ == nullptr) return;
+            if (!is_valid()) return;
 
             if (mysql_stmt_reset(stmt_.get())) {
                 throw database_exception(last_error());
@@ -193,7 +192,7 @@ namespace arg3
 
         long long mysql_statement::last_insert_id()
         {
-            if (stmt_ == nullptr) return 0;
+            if (!is_valid()) return 0;
 
             return mysql_stmt_insert_id(stmt_.get());
         }

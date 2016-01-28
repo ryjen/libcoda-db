@@ -28,7 +28,7 @@ namespace arg3
         {
         }
 
-        select_query::select_query(shared_ptr<schema> schema) : select_query(schema->db(), schema->table_name(), schema->column_names())
+        select_query::select_query(const shared_ptr<schema> &schema) : select_query(schema->db(), schema->table_name(), schema->column_names())
         {
         }
         select_query::select_query(select_query &&other)
@@ -182,7 +182,7 @@ namespace arg3
             // sucks to backup the columns just for this
             // query, but I don't see an easy way right now
             try {
-                columns_ = {"count(*)"};
+                columns_ = {"COUNT(*)"};
 
                 prepare(to_string());
 

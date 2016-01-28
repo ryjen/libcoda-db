@@ -25,13 +25,14 @@ namespace arg3
 
         query::query(query &&other) : db_(other.db_), stmt_(std::move(other.stmt_)), bindings_(std::move(other.bindings_))
         {
-            other.db_ = NULL;
+            other.db_ = nullptr;
             other.stmt_ = nullptr;
         }
 
         query::~query()
         {
         }
+
         query &query::operator=(const query &other)
         {
             db_ = other.db_;
@@ -46,7 +47,7 @@ namespace arg3
             db_ = other.db_;
             stmt_ = std::move(other.stmt_);
             bindings_ = std::move(other.bindings_);
-            other.db_ = NULL;
+            other.db_ = nullptr;
             other.stmt_ = nullptr;
 
             return *this;
@@ -166,7 +167,7 @@ namespace arg3
 
         bool query::is_valid() const
         {
-            return db_ != NULL;
+            return db_ != nullptr;
         }
         void query::reset()
         {

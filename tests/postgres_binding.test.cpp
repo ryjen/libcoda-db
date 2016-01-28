@@ -60,6 +60,8 @@ go_bandit([]() {
 
                 b.bind(1, 24);
 
+                Assert::That(b.to_value(0), Equals(24));
+
                 postgres_binding other(b);
 
                 Assert::That(b.size(), Equals(other.size()));

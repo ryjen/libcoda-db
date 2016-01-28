@@ -38,7 +38,7 @@ namespace arg3
 
             select_query(sqldb *db, const std::string &tableName);
 
-            select_query(std::shared_ptr<schema> schema);
+            select_query(const std::shared_ptr<schema> &schema);
 
             select_query(const select_query &other);
 

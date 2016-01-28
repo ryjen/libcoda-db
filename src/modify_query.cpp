@@ -73,7 +73,6 @@ namespace arg3
         modify_query &modify_query::set_flags(int value)
         {
             flags_ = value;
-
             return *this;
         }
 
@@ -94,7 +93,7 @@ namespace arg3
 
                 buf << ")";
             } else {
-                log::warn("No binded values for modify query");
+                log::warn("No binded values for insert query");
                 buf << " DEFAULT VALUES";
             }
 
@@ -111,14 +110,13 @@ namespace arg3
 
             if (columns_.size() > 0) {
                 buf << " SET ";
-
                 buf << join_params(columns_, true);
             }
 
             if (!where_.empty()) {
                 buf << " WHERE " << where_;
             } else {
-                log::warn("empty where clause for update");
+                log::warn("empty where clause for update query");
             }
 
             buf << ";";
@@ -155,6 +153,7 @@ namespace arg3
                 lastId_ = stmt_->last_insert_id();
             } else {
                 log::trace(stmt_->last_error().c_str());
+                lastId_ = 0;
             }
 
             if (flags_ & BATCH) {
@@ -203,6 +202,8 @@ namespace arg3
 
             if (!where_.empty()) {
                 buf << " WHERE " << where_;
+            } else {
+                log::warn("empty where clause for delete query");
             }
 
             buf << ";";

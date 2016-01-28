@@ -8,10 +8,6 @@
 
 using namespace bandit;
 
-#if !defined(HAVE_LIBMYSQLCLIENT) && !defined(HAVE_LIBSQLITE3)
-#error "Mysql or sqlite is not installed on the system"
-#endif
-
 int run_db_test(int argc, char *argv[])
 {
     if (!testdb) {
@@ -31,7 +27,7 @@ int run_db_test(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-    arg3::db::log::set_level(arg3::db::log::Warn);
+    arg3::db::log::set_level(arg3::db::log::Error);
 
 #ifdef HAVE_LIBSQLITE3
 #ifdef TEST_SQLITE

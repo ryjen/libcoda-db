@@ -28,7 +28,7 @@ namespace arg3
             size_t index_;
 
            public:
-            mysql_column(shared_ptr<MYSQL_RES> res, MYSQL_ROW pValue, size_t index);
+            mysql_column(const shared_ptr<MYSQL_RES> &res, MYSQL_ROW pValue, size_t index);
             mysql_column(const mysql_column &other);
             mysql_column(mysql_column &&other);
             virtual ~mysql_column();
@@ -55,7 +55,7 @@ namespace arg3
             size_t position_;
 
            public:
-            mysql_stmt_column(const std::string &name, shared_ptr<mysql_binding> bindings, size_t position);
+            mysql_stmt_column(const std::string &name, const shared_ptr<mysql_binding> &bindings, size_t position);
             mysql_stmt_column(const mysql_stmt_column &other);
             mysql_stmt_column(mysql_stmt_column &&other);
             virtual ~mysql_stmt_column();

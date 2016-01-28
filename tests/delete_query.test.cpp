@@ -110,7 +110,7 @@ go_bandit([]() {
 
             query.where(where);
 
-            query.bind(1, "Bryan");
+            query.bind(1, "Mark");
 
             AssertThat(query.execute(), Equals(1));
         });
