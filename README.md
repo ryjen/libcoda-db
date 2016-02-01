@@ -137,7 +137,7 @@ Query records
     }
 
     /* can also use schema functions */
-    results = find_all(obj.schema());
+    results = find_all<user>(obj.schema());
 ````
 
 Save a record
