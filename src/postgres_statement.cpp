@@ -1,8 +1,9 @@
+
+#include <algorithm>
 #include "postgres_statement.h"
 #include "postgres_db.h"
 #include "postgres_resultset.h"
 #include "log.h"
-#include <algorithm>
 
 #ifdef HAVE_LIBPQ
 

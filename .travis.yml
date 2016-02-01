@@ -26,6 +26,7 @@ addons:
       - valgrind
       - mysql-client
       - sqlite3 
+      - libpq-dev
       - cmake-data
       - cmake
 script:

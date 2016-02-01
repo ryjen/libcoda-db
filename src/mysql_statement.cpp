@@ -58,12 +58,14 @@ namespace arg3
 
         void mysql_statement::prepare(const string &sql)
         {
+            static regex param_regex("\\$[0-9]+([:]{2}[a-z]+)?");
+            static string param_repl("?");
+
             if (db_ == nullptr || !db_->is_open()) {
                 throw database_exception("database is not open");
             }
 
-            regex re("\\$[0-9]+([:]{2}[a-z]+)?");
-            string formatted_sql = regex_replace(sql, re, "?");
+            string formatted_sql = regex_replace(sql, param_regex, param_repl);
 
             stmt_ = shared_ptr<MYSQL_STMT>(mysql_stmt_init(db_->db_.get()), helper::mysql_stmt_delete());
 
