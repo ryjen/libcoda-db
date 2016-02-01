@@ -77,7 +77,8 @@ Base Record
 ```c++
 arg3::db::sqlite3_db testdb("test.db");
 
-/* Can user other databases
+/* Other databases
+
 arg3::db::mysql_db testdb(arg3::db::uri("mysql://user@pass:localhost:3306/database"));
 arg3::db::postgres_db testdb(arg3::db::uri("postgres://localhost/test"))
 */
