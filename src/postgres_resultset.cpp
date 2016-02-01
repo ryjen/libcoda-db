@@ -49,7 +49,13 @@ namespace arg3
 
         size_t postgres_resultset::size() const
         {
-            return PQntuples(stmt_.get());
+            int value = PQntuples(stmt_.get());
+
+            if (value < 0) {
+                return 0;
+            }
+
+            return value;
         }
 
         bool postgres_resultset::next()

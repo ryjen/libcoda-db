@@ -1,6 +1,6 @@
 /*!
  * implementation of a database record
- * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ * @copyright ryan jennings (arg3.com), 2013
  */
 #ifndef ARG3_DB_BASE_RECORD_H
 #define ARG3_DB_BASE_RECORD_H

@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ * @copyright ryan jennings (arg3.com), 2013
  */
 #ifndef ARG3_DB_EXCEPTION_H
 #define ARG3_DB_EXCEPTION_H
@@ -18,7 +18,7 @@
         CLASS(const std::string &what, const std::string &context); \
         CLASS();                                                    \
         virtual const char *what() const noexcept;                  \
-        virtual const char *context() const;                        \
+        virtual const char *context() const noexcept;               \
     }
 
 #define ARG3_IMPLEMENT_EXCEPTION(CLASS, BASE)                                                                  \
@@ -35,7 +35,7 @@
     {                                                                                                          \
         return what_.c_str();                                                                                  \
     }                                                                                                          \
-    const char *CLASS::context() const                                                                         \
+    const char *CLASS::context() const noexcept                                                                \
     {                                                                                                          \
         return context_.c_str();                                                                               \
     }

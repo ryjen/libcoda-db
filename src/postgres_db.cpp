@@ -32,15 +32,16 @@ namespace arg3
             };
         }
 
-        postgres_db::postgres_db(const uri &info) : sqldb(info), db_(nullptr)
+        postgres_db::postgres_db(const uri &info) : sqldb(info), db_(nullptr), lastId_(0), lastNumChanges_(0)
         {
         }
 
-        postgres_db::postgres_db(const postgres_db &other) : sqldb(other), db_(other.db_)
+        postgres_db::postgres_db(const postgres_db &other)
+            : sqldb(other), db_(other.db_), lastId_(other.lastId_), lastNumChanges_(other.lastNumChanges_)
         {
         }
 
-        postgres_db::postgres_db(postgres_db &&other) : sqldb(other), db_(other.db_)
+        postgres_db::postgres_db(postgres_db &&other) : sqldb(other), db_(other.db_), lastId_(other.lastId_), lastNumChanges_(other.lastNumChanges_)
         {
             other.db_ = nullptr;
         }
@@ -50,6 +51,8 @@ namespace arg3
             sqldb::operator=(other);
 
             db_ = other.db_;
+            lastId_ = other.lastId_;
+            lastNumChanges_ = other.lastNumChanges_;
 
             return *this;
         }
@@ -59,6 +62,8 @@ namespace arg3
             sqldb::operator=(std::move(other));
 
             db_ = other.db_;
+            lastId_ = other.lastId_;
+            lastNumChanges_ = other.lastNumChanges_;
             other.db_ = nullptr;
 
             return *this;
@@ -74,9 +79,11 @@ namespace arg3
 
             select_query pkq(this, "information_schema.table_constraints tc", {"tc.table_schema, tc.table_name, kc.column_name"});
 
-            pkq.join("information_schema.key_column_usage kc").where("kc.table_name = tc.table_name") && "kc.table_schema = tc.table_schema";
+            pkq.join("information_schema.key_column_usage kc").on("kc.table_name = tc.table_name") && "kc.table_schema = tc.table_schema";
 
-            pkq.where("tc.constraint_type = 'PRIMARY_KEY'");
+            pkq.where("tc.constraint_type = 'PRIMARY KEY'") && "tc.table_name = $1";
+
+            pkq.bind(1, tableName);
 
             pkq.order_by("tc.table_schema, tc.table_name, kc.position_in_unique_constraint");
 
@@ -84,7 +91,9 @@ namespace arg3
 
             select_query info_schema(this, "information_schema.columns", {"column_name", "data_type"});
 
-            info_schema.where("table_name = '" + tableName + "'");
+            info_schema.where("table_name = $1");
+
+            info_schema.bind(1, tableName);
 
             auto rs = info_schema.execute();
 
@@ -97,6 +106,8 @@ namespace arg3
                 if (def.name.empty()) {
                     continue;
                 }
+
+                def.pk = false;
 
                 for (auto &pk : primary_keys) {
                     if (pk["column_name"].to_value() == def.name) {
@@ -148,13 +159,23 @@ namespace arg3
         long long postgres_db::last_insert_id() const
         {
             // TODO: might have to perform a query here
-            return 0;
+            return lastId_;
+        }
+
+        void postgres_db::set_last_insert_id(long long value)
+        {
+            lastId_ = value;
         }
 
         int postgres_db::last_number_of_changes() const
         {
             // TODO: might have to perform a query here
-            return 0;
+            return lastNumChanges_;
+        }
+
+        void postgres_db::set_last_number_of_changes(int value)
+        {
+            lastNumChanges_ = value;
         }
 
         resultset postgres_db::execute(const string &sql, bool cache)
@@ -165,7 +186,7 @@ namespace arg3
 
             PGresult *res = PQexec(db_.get(), sql.c_str());
 
-            if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+            if (PQresultStatus(res) != PGRES_TUPLES_OK && PQresultStatus(res) != PGRES_COMMAND_OK) {
                 throw database_exception(last_error());
             }
 

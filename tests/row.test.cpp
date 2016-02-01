@@ -28,9 +28,9 @@ go_bandit([]() {
         user user1;
         user user2;
 
-        before_each([]() { setup_testdb(); });
-
         before_each([&]() {
+            setup_testdb();
+
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
@@ -40,11 +40,6 @@ go_bandit([]() {
             user2.set("last_name", "Smith");
 
             user2.save();
-        });
-
-        after_each([&]() {
-            user1.de1ete();
-            user2.de1ete();
         });
 
         after_each([]() { teardown_testdb(); });

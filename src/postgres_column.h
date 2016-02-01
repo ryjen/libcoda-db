@@ -23,11 +23,11 @@ namespace arg3
         {
            private:
             std::shared_ptr<PGresult> stmt_;
-            size_t column_;
-            size_t row_;
+            int column_;
+            int row_;
 
            public:
-            postgres_column(const std::shared_ptr<PGresult> &stmt, size_t row, size_t column);
+            postgres_column(const std::shared_ptr<PGresult> &stmt, int row, int column);
             postgres_column(const postgres_column &other) = delete;
             postgres_column(postgres_column &&other);
             virtual ~postgres_column();
@@ -51,6 +51,7 @@ namespace arg3
            private:
             std::string name_;
             sql_value value_;
+            int length_;
             int type_;
             void set_value(const std::shared_ptr<PGresult> &stmt, size_t row, size_t column);
 

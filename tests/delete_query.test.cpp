@@ -15,9 +15,9 @@ go_bandit([]() {
         user user1;
         user user2;
 
-        before_each([]() { setup_testdb(); });
+        before_each([&user1, &user2]() {
+            setup_testdb();
 
-        before_each([&]() {
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
@@ -27,11 +27,6 @@ go_bandit([]() {
             user2.set("last_name", "Smith");
 
             user2.save();
-        });
-
-        after_each([&]() {
-            user1.de1ete();
-            user2.de1ete();
         });
 
         after_each([]() { teardown_testdb(); });
@@ -45,7 +40,7 @@ go_bandit([]() {
 
             AssertThat(query.execute(), Equals(1));
 
-            // AssertThat(query.last_number_of_changes(), Equals(1));
+            AssertThat(query.last_number_of_changes(), Equals(1));
         });
 
         it("is copyable by constructor", []() {
@@ -131,16 +126,9 @@ go_bandit([]() {
             AssertThat(query.execute(), Equals(1));
         });
 
-        it("can be deleted from a record", []() {
-            user u;
+        it("can be deleted from a record", [&user1]() {
 
-            u.set("first_name", "Harold");
-            u.set("last_name", "Jenkins");
-            u.set("dval", 439.343);
-
-            AssertThat(u.save(), IsTrue());
-
-            AssertThat(u.de1ete(), IsTrue());
+            AssertThat(user1.de1ete(), IsTrue());
 
         });
 

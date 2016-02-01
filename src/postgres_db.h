@@ -47,6 +47,12 @@ namespace arg3
             resultset execute(const std::string &sql, bool cache = false);
 
             std::shared_ptr<statement> create_statement();
+
+           private:
+            long long lastId_;
+            int lastNumChanges_;
+            void set_last_insert_id(long long value);
+            void set_last_number_of_changes(int value);
         };
 
         namespace helper

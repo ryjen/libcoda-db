@@ -42,8 +42,8 @@ namespace arg3
 
             join_clause &set_type(join::type value);
             join_clause &set_table_name(const std::string &value);
-            where_clause &where(const std::string &value);
-            join_clause &where(const where_clause &value);
+            where_clause &on(const std::string &value);
+            join_clause &on(const where_clause &value);
 
             explicit operator std::string();
         };

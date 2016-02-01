@@ -49,25 +49,6 @@ go_bandit([]() {
             postgres_statement stmt(&db);
 
             AssertThrows(database_exception, stmt.prepare("select * from users"));
-
-            stmt = postgres_statement(&postgres_testdb);
-
-            AssertThrows(database_exception, stmt.prepare("asdfasdfasdf"));
-
-            AssertThat(stmt.last_error().empty(), IsFalse());
-
-            AssertThrows(binding_error, stmt.bind(1, 1));
-
-            AssertThrows(binding_error, stmt.bind(1, 1234LL));
-
-            AssertThrows(binding_error, stmt.bind(1, 123.123));
-
-            AssertThrows(binding_error, stmt.bind(1, "12134123"));
-
-            AssertThrows(binding_error, stmt.bind(1, sql_blob()));
-
-            AssertThrows(binding_error, stmt.bind(1, sql_null));
-
         });
 
         it("can reset", []() {

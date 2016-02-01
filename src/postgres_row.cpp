@@ -8,7 +8,7 @@ namespace arg3
 {
     namespace db
     {
-        postgres_row::postgres_row(postgres_db *db, const shared_ptr<PGresult> &stmt, size_t row) : row_impl(), stmt_(stmt), db_(db), row_(row)
+        postgres_row::postgres_row(postgres_db *db, const shared_ptr<PGresult> &stmt, int row) : row_impl(), stmt_(stmt), db_(db), row_(row)
         {
             if (db_ == NULL) {
                 throw database_exception("no database provided to postgres row");
@@ -19,16 +19,10 @@ namespace arg3
             }
 
             size_ = PQnfields(stmt_.get());
-
-            size_t rows = PQntuples(stmt_.get());
-
-            if (rows > 0 && row_ >= rows) {
-                throw database_exception("invalid row number provided to postgres row");
-            }
         }
 
         postgres_row::postgres_row(postgres_row &&other)
-            : row_impl(std::move(other)), stmt_(other.stmt_), db_(other.db_), size_(other.size_), row_(other.row_)
+            : row_impl(std::move(other)), stmt_(std::move(other.stmt_)), db_(other.db_), size_(other.size_), row_(other.row_)
         {
             other.stmt_ = nullptr;
             other.db_ = NULL;
@@ -42,7 +36,7 @@ namespace arg3
 
         postgres_row &postgres_row::operator=(postgres_row &&other)
         {
-            stmt_ = other.stmt_;
+            stmt_ = std::move(other.stmt_);
             db_ = other.db_;
             size_ = other.size_;
             row_ = other.row_;
@@ -54,7 +48,7 @@ namespace arg3
 
         row_impl::column_type postgres_row::column(size_t nPosition) const
         {
-            if (nPosition >= size()) {
+            if (nPosition >= size() || row_ == -1) {
                 throw no_such_column_exception();
             }
 
@@ -96,7 +90,7 @@ namespace arg3
 
         bool postgres_row::is_valid() const
         {
-            return stmt_ != nullptr;
+            return stmt_ != nullptr && row_ >= 0;
         }
 
 

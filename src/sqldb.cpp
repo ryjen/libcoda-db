@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ * @copyright ryan jennings (arg3.com), 2013
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"

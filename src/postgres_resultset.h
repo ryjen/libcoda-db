@@ -18,7 +18,7 @@ namespace arg3
         class postgres_db;
 
         /*!
-         * a sqlite specific implmentation of a result set
+         * a postgres specific implmentation of a result set
          */
         class postgres_resultset : public resultset_impl
         {

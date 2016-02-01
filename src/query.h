@@ -1,7 +1,7 @@
 /*!
  * @header Base Query
  * implementation of a query
- * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ * @copyright ryan jennings (arg3.com), 2013
  */
 #ifndef ARG3_DB_QUERY_H
 #define ARG3_DB_QUERY_H
@@ -121,11 +121,6 @@ namespace arg3
              * returns the last error the query encountered, if any
              */
             std::string last_error();
-
-            /*!
-             * returns the number of affected rows by the query after execution
-             */
-            int last_number_of_changes();
 
             bool is_valid() const;
         };

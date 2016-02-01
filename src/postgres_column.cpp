@@ -12,10 +12,10 @@ namespace arg3
     {
         namespace helper
         {
-            sql_value convert_raw_value(const char *, Oid);
+            sql_value convert_raw_value(const char *, Oid, int);
         }
 
-        postgres_column::postgres_column(const shared_ptr<PGresult> &stmt, size_t row, size_t column) : stmt_(stmt), column_(column), row_(row)
+        postgres_column::postgres_column(const shared_ptr<PGresult> &stmt, int row, int column) : stmt_(stmt), column_(column), row_(row)
 
         {
         }
@@ -41,7 +41,7 @@ namespace arg3
 
         bool postgres_column::is_valid() const
         {
-            return stmt_ != nullptr;
+            return stmt_ != nullptr && row_ >= 0 && column_ >= 0;
         }
 
         sql_value postgres_column::to_value() const
@@ -50,7 +50,8 @@ namespace arg3
                 throw no_such_column_exception();
             }
 
-            return helper::convert_raw_value(PQgetvalue(stmt_.get(), row_, column_), PQftype(stmt_.get(), column_));
+            return helper::convert_raw_value(PQgetvalue(stmt_.get(), row_, column_), PQftype(stmt_.get(), column_),
+                                             PQgetlength(stmt_.get(), row_, column_));
         }
 
         int postgres_column::sql_type() const
@@ -82,11 +83,12 @@ namespace arg3
             name_ = PQfname(stmt.get(), column);
             type_ = PQftype(stmt.get(), column);
             value_ = PQgetvalue(stmt.get(), row, column);
+            length_ = PQgetlength(stmt.get(), row, column);
         }
 
 
         postgres_cached_column::postgres_cached_column(postgres_cached_column &&other)
-            : name_(std::move(other.name_)), value_(std::move(other.value_)), type_(other.type_)
+            : name_(std::move(other.name_)), value_(std::move(other.value_)), type_(other.type_), length_(other.length_)
         {
         }
 
@@ -99,6 +101,7 @@ namespace arg3
             name_ = std::move(other.name_);
             type_ = other.type_;
             value_ = std::move(other.value_);
+            length_ = other.length_;
 
             return *this;
         }
@@ -110,7 +113,7 @@ namespace arg3
 
         sql_value postgres_cached_column::to_value() const
         {
-            return value_;
+            return helper::convert_raw_value(value_, type_, length_);
         }
 
         int postgres_cached_column::sql_type() const

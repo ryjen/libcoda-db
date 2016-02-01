@@ -1,6 +1,6 @@
 /*!
  * implementation of a query
- * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ * @copyright ryan jennings (arg3.com), 2013
  */
 #include "query.h"
 #include "exception.h"
@@ -149,13 +149,6 @@ namespace arg3
             value.bind_to(this, index);
 
             return *this;
-        }
-
-        int query::last_number_of_changes()
-        {
-            if (stmt_ == nullptr) return 0;
-
-            return stmt_->last_number_of_changes();
         }
 
         string query::last_error()

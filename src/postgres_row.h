@@ -30,10 +30,10 @@ namespace arg3
             std::shared_ptr<PGresult> stmt_;
             postgres_db *db_;
             size_t size_;
-            size_t row_;
+            int row_;
 
            public:
-            postgres_row(postgres_db *db, const std::shared_ptr<PGresult> &stmt, size_t row);
+            postgres_row(postgres_db *db, const std::shared_ptr<PGresult> &stmt, int row);
             virtual ~postgres_row();
             postgres_row(const postgres_row &other) = delete;
             postgres_row(postgres_row &&other);

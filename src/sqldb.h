@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ * @copyright ryan jennings (arg3.com), 2013
  */
 #ifndef ARG3_DB_SQLDB_H
 #define ARG3_DB_SQLDB_H
@@ -17,11 +17,20 @@ namespace arg3
     {
         class resultset;
 
+        /*! small utility to parse a uri */
         struct uri {
            public:
-            uri(const std::string &url) {
+            /*!
+             * @param url the url to parse
+             */
+            uri(const std::string &url)
+            {
                 parse(url);
             }
+            /*!
+             * decomposes a uri into its parts
+             * @param url the url to parse
+             */
             void parse(const std::string &url);
             std::string protocol, user, password, host, port, path, query, value;
             operator std::string() const

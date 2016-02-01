@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ * @copyright ryan jennings (arg3.com), 2013
  */
 #ifndef ARG3_DB_MODIFY_QUERY_H
 #define ARG3_DB_MODIFY_QUERY_H
@@ -52,10 +52,13 @@ namespace arg3
              */
             virtual int execute();
 
+            int last_number_of_changes() const;
+
            protected:
             std::vector<std::string> columns_;
             std::string tableName_;
             int flags_;
+            int numChanges_;
         };
         /*!
          * a query to insert to a table
@@ -74,6 +77,7 @@ namespace arg3
            private:
             long long lastId_;
         };
+
         /*!
          * a query to update a table
          */

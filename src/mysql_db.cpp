@@ -108,8 +108,6 @@ namespace arg3
                 throw database_exception("out of memory connecting to mysql");
             }
 
-            db_ = shared_ptr<MYSQL>(conn, helper::mysql_close_db());
-
             auto info = connection_info();
 
             int port;

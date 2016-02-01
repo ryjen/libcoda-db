@@ -26,6 +26,7 @@ go_bandit([]() {
         before_each([]() { setup_testdb(); });
 
         after_each([]() { teardown_testdb(); });
+
         before_each([]() {
             user u;
             u.set("first_name", "Bob");
@@ -82,7 +83,7 @@ go_bandit([]() {
 
             AssertThat(col.to_value().is_binary(), IsTrue());
 
-            AssertThat(col.to_value().to_binary().size(), Equals(4));
+            AssertThat(col.to_value().to_binary().size(), Equals(sizeof(int)));
         });
 
         it("can be a double", []() {

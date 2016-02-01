@@ -26,15 +26,21 @@ namespace arg3
     {
         namespace helper
         {
-            sql_value convert_raw_value(const char *value, Oid type)
+            // Pretty immature implementation here
+            // TODO: beef up
+            sql_value convert_raw_value(const char *value, Oid type, int len)
             {
                 if (value == nullptr) {
                     return sql_null;
                 }
 
                 switch (type) {
+                    case BYTEAOID: {
+                        size_t blen = 0;
+                        unsigned char *b = PQunescapeBytea(reinterpret_cast<const unsigned char *>(value), &blen);
+                        return binary(b, blen);
+                    }
                     case BOOLOID:
-                    case BYTEAOID:
                     case CHAROID:
                     case INT8OID:
                     case INT2OID:
@@ -44,19 +50,19 @@ namespace arg3
                         try {
                             return stol(value);
                         } catch (const std::exception &e) {
-                            return value;
+                            return sql_null;
                         }
                     case FLOAT4OID:
                         try {
                             return stod(value);
                         } catch (const std::exception &e) {
-                            return value;
+                            return sql_null;
                         }
                     case FLOAT8OID:
                         try {
                             return stold(value);
                         } catch (const std::exception &e) {
-                            return value;
+                            return sql_null;
                         }
                     case UNKNOWNOID:
                         return nullptr;
@@ -192,7 +198,7 @@ namespace arg3
             if (index >= size_ || values_ == nullptr || values_[index] == nullptr) {
                 return sql_null;
             }
-            return helper::convert_raw_value(values_[index], types_[index]);
+            return helper::convert_raw_value(values_[index], types_[index], lengths_[index]);
         }
 
         int postgres_binding::sql_type(size_t index) const

@@ -1,6 +1,8 @@
 #include "postgres_statement.h"
 #include "postgres_db.h"
 #include "postgres_resultset.h"
+#include "log.h"
+#include <algorithm>
 
 #ifdef HAVE_LIBPQ
 
@@ -43,11 +45,25 @@ namespace arg3
 
         void postgres_statement::prepare(const string &sql)
         {
+            static std::string insert("INSERT");
+
             if (!db_ || !db_->is_open()) {
                 throw database_exception("postgres database not open");
             }
 
             sql_ = sql;
+
+            // begin ugly hack to get the last insert id in postgres
+            bool is_insert = std::equal(sql.begin(), sql.begin() + insert.size(), insert.begin(),
+                                        [](char c1, char c2) { return std::toupper(c1) == std::toupper(c2); });
+
+            if (is_insert) {
+                if (*(sql_.end() - 1) == ';') {
+                    sql_.pop_back();
+                }
+                // don't know the primary key column, so get everything
+                sql_ += " RETURNING *;";
+            }
         }
 
         bool postgres_statement::is_valid() const
@@ -57,21 +73,32 @@ namespace arg3
 
         int postgres_statement::last_number_of_changes()
         {
+            if (stmt_ == nullptr) {
+                return 0;
+            }
             char *changes = PQcmdTuples(stmt_.get());
 
-            if (changes == nullptr || *changes == 0) {
-                return 0;
+            int value = 0;
+
+            if (changes != nullptr && *changes != 0) {
+                try {
+                    value = stoi(changes);
+                } catch (const std::exception &e) {
+                    value = 0;
+                }
+            }
+            if (db_ != nullptr) {
+                db_->set_last_number_of_changes(value);
             }
 
-            try {
-                return stoi(changes);
-            } catch (const std::exception &e) {
-                return 0;
-            }
+            return value;
         }
 
         string postgres_statement::last_error()
         {
+            if (db_ == nullptr) {
+                return "no database";
+            }
             return db_->last_error();
         }
 
@@ -134,7 +161,8 @@ namespace arg3
             PGresult *res = PQexecParams(db_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,
                                          bindings_.formats_, 0);
 
-            if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+            if (PQresultStatus(res) != PGRES_COMMAND_OK && PQresultStatus(res) != PGRES_TUPLES_OK) {
+                log::error(last_error().c_str());
                 return false;
             }
 
@@ -159,11 +187,22 @@ namespace arg3
 
         long long postgres_statement::last_insert_id()
         {
-            Oid value = PQoidValue(stmt_.get());
+            Oid oid = PQoidValue(stmt_.get());
 
-            if (value == InvalidOid) {
-                return 0;
+            long long value = 0;
+
+            if (oid == InvalidOid) {
+                auto val = PQgetvalue(stmt_.get(), 0, 0);
+                if (val != nullptr) {
+                    try {
+                        value = stoll(val);
+                    } catch (const std::exception &e) {
+                        value = 0;
+                    }
+                }
             }
+
+            db_->set_last_insert_id(value);
 
             return value;
         }

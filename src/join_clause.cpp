@@ -78,13 +78,13 @@ namespace arg3
             return *this;
         }
 
-        where_clause &join_clause::where(const string &value)
+        where_clause &join_clause::on(const string &value)
         {
             on_ = where_clause(value);
             return on_;
         }
 
-        join_clause &join_clause::where(const where_clause &value)
+        join_clause &join_clause::on(const where_clause &value)
         {
             on_ = value;
             return *this;
