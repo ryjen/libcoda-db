@@ -43,9 +43,9 @@ Coding Style
 -------------
 
 - class/struct/method names are all lower case with underscores separating words
-- non public members are camel case with and underscore at end of the name
+- non public members have an underscore at end of the name
 - macros, enums and constants are all upper case with underscores seperating words
-- braces on a new line
+- braces for types on a new line, functions and methods can be same line
 
 Model
 -----
@@ -76,8 +76,11 @@ Base Record
 -----------
 ```c++
 arg3::db::sqlite3_db testdb("test.db");
-// arg3::db::mysql_db testdb(arg3::db::uri("mysql://user@pass:localhost:3306/database"));
-// arg3::db::postgres_db testdb(arg3::db::uri("postgres://localhost/test"))
+
+/* Can user other databases
+arg3::db::mysql_db testdb(arg3::db::uri("mysql://user@pass:localhost:3306/database"));
+arg3::db::postgres_db testdb(arg3::db::uri("postgres://localhost/test"))
+*/
 
 class user : public arg3::db::base_record<user>
 {
@@ -118,18 +121,23 @@ public:
 Query records
 -------------
 ```c++
+    user obj;
+
     /* find all users */
- 	user().find_all([](const shared_ptr<user> &record) {
+    obj.find_all([](const shared_ptr<user> &record) {
         cout << "User: " << record->to_string() << endl;
     }
 
     /* alternative type returns a vector */
-    results = user().find_by("first_name", "Joe");
+    results = obj.find_by("first_name", "Joe");
 
     for (auto user : results)
     {
         cout << "Found user: " << user->to_string() << endl;
     }
+
+    /* can also use schema functions */
+    results = find_all(obj.schema());
 ````
 
 Save a record
@@ -172,6 +180,7 @@ Modify Queries
 insert_query query(&testdb, "users"); /* auto find columns */
 
 /* this would be the column order in table, TODO: named parameter binding */
+/* NOTE: mysql does not support reusing parameters in the query */
 query.bind(1, 4321).bind(2, "dave").bind(3, "patterson");
 
 if (!query.execute())
