@@ -48,7 +48,7 @@ namespace arg3
             T *val = static_cast<T *>(mem);
 
             // make sure new values are initialized
-            for (size_t i = oldSize; i < size; i++) {
+            for (size_t i = oldSize; i < num; i++) {
                 memset(&val[i], 0, sizeof(T));
             }
 
