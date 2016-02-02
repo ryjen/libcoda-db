@@ -7,6 +7,7 @@ before_script:
   - git submodule update --init --recursive
   - mkdir build
   - gem install coveralls-lcov
+  - psql -c 'create database test;' -U postgres
 install:
   - mysql -e "create database IF NOT EXISTS test;" -uroot 
   - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.7"; fi
@@ -15,6 +16,7 @@ install:
   - tar xf lcov_1.12.orig.tar.gz
   - export PATH=$TRAVIS_BUILD_DIR/lcov-1.12/bin:$PATH  
 addons:
+  postgresql: "9.3"
   apt:
     sources:
       - george-edison55-precise-backports
@@ -25,10 +27,15 @@ addons:
       - clang-3.7
       - valgrind
       - mysql-client
+      - libmysqlclient-dev
       - sqlite3 
+      - libsqlite3-dev
       - libpq-dev
       - cmake-data
       - cmake
+      - libpq-dev
+services:
+  - postgresql   
 script:
   - cd build
   - cmake -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DMEMORY_CHECK=ON ..
