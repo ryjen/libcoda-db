@@ -1,4 +1,6 @@
 /*!
+ * @file column.h
+ * represents a column in a row in a database
  * @copyright ryan jennings (arg3.com), 2013
  */
 #ifndef ARG3_DB_COLUMN_VALUE_H
@@ -27,15 +29,26 @@ namespace arg3
             column_impl &operator=(column_impl &&other) = default;
             virtual ~column_impl() = default;
 
+            /*!
+             * tests if this colums data validity
+             * @return true if this columns data is valid
+             */
             virtual bool is_valid() const = 0;
 
+            /*!
+             * converts this column to a value
+             * @return the value of this column
+             */
             virtual sql_value to_value() const = 0;
 
+            /*!
+             * @return the name of this column;
+             */
             virtual std::string name() const = 0;
         };
 
         /*!
-         * a column holds a value for a row
+         * a column holds a value
          */
         class column
         {
@@ -47,24 +60,46 @@ namespace arg3
             column();
 
            public:
+            /*!
+             * default constructor requires an implementation
+             * @param impl the database specific implementation
+             */
             column(const std::shared_ptr<column_impl> &impl);
 
             virtual ~column() = default;
 
+            /*! copy constructor */
             column(const column &other);
 
+            /*! move constructor */
             column(column &&other);
 
+            /*! copy assignment */
             column &operator=(const column &other);
 
+            /*! move assignment */
             column &operator=(column &&other);
 
+            /*!
+             * tests if this column has valid data
+             * @return true if this columns data is valid
+             */
             bool is_valid() const;
 
+            /*!
+             * converts this column to a value
+             * @return the value of this column
+             */
             sql_value to_value() const;
 
+            /*!
+             * @return the name of this column
+             */
             std::string name() const;
 
+            /*!
+             * @return the instance of the implementation
+             */
             std::shared_ptr<column_impl> impl() const;
         };
     }

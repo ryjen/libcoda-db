@@ -1,4 +1,6 @@
 /*!
+ * @file exception.h
+ * declaration of exceptions used in the library
  * @copyright ryan jennings (arg3.com), 2013
  */
 #ifndef ARG3_DB_EXCEPTION_H

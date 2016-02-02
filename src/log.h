@@ -1,3 +1,7 @@
+/*!
+ * @file log.h
+ * internal logging for the library
+ */
 #ifndef ARG3_DB_LOG_H_
 #define ARG3_DB_LOG_H_
 
@@ -13,6 +17,8 @@ namespace arg3
     {
         namespace log
         {
+            /* standard printf style functions */
+
             void error(const char *const format, ...) __attribute__((format(printf, 1, 2)));
 
             void warn(const char *const format, ...) __attribute__((format(printf, 1, 2)));

@@ -1,5 +1,6 @@
 /*!
- * implementation of a database record
+ * @file base_record.h
+ * implementation of a database record (model)
  * @copyright ryan jennings (arg3.com), 2013
  */
 #ifndef ARG3_DB_BASE_RECORD_H
@@ -21,6 +22,11 @@ namespace arg3
         template <typename T>
         class base_record;
 
+        /*!
+         * finds all records for a schema
+         * @param schema the schema to find records for
+         * @param funk the callback function for each found record
+         */
         template <typename T>
         inline void find_all(const std::shared_ptr<schema> &schema, const typename base_record<T>::callback &funk)
         {
@@ -39,7 +45,11 @@ namespace arg3
             }
         }
 
-
+        /*!
+         * finds records for a schema
+         * @param schema the schema to find records for
+         * @return a vector of records found
+         */
         template <typename T>
         inline std::vector<std::shared_ptr<T>> find_all(const std::shared_ptr<schema> &schema)
         {
@@ -51,6 +61,13 @@ namespace arg3
             return items;
         }
 
+        /*!
+         * finds records for a column value
+         * @param schema the schema find records for
+         * @param name the column name to search by
+         * @param value the value of the column being searched
+         * @param funk the callback function for each record found
+         */
         template <typename T>
         inline void find_by(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value,
                             const typename base_record<T>::callback &funk)
@@ -74,6 +91,13 @@ namespace arg3
             }
         }
 
+        /*!
+         * finds records for a column value
+         * @param schema the schema find records for
+         * @param name the column name to search by
+         * @param value the value of the column being searched
+         * @return a vector of results found
+         */
         template <typename T>
         inline std::vector<std::shared_ptr<T>> find_by(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value)
         {
@@ -93,7 +117,6 @@ namespace arg3
         {
            public:
             typedef arg3::db::schema schema_type;
-
             typedef std::function<void(std::shared_ptr<T>)> callback;
 
            private:
@@ -184,7 +207,6 @@ namespace arg3
             base_record(base_record &&other)
                 : schema_(std::move(other.schema_)), values_(std::move(other.values_)), idColumnName_(std::move(other.idColumnName_))
             {
-                other.schema_ = nullptr;
             }
 
             virtual ~base_record()
@@ -212,8 +234,6 @@ namespace arg3
                 schema_ = std::move(other.schema_);
                 idColumnName_ = std::move(other.idColumnName_);
 
-                other.schema_ = nullptr;
-
                 return *this;
             }
 
@@ -226,7 +246,7 @@ namespace arg3
             }
 
             /*!
-             * returns the value of the id column in the record
+             * @return the value of the id column in the record
              */
             sql_value id() const
             {
@@ -238,7 +258,9 @@ namespace arg3
              */
             void init(const row &values)
             {
-                if (!values.is_valid()) return;
+                if (!values.is_valid()) {
+                    return;
+                }
 
                 for (auto v = values.begin(); v != values.end(); v++) {
                     set(v.name(), v->to_value());
@@ -253,6 +275,7 @@ namespace arg3
 
             /*!
              * check if the record internals are valid
+             * @return true if the schema is valid
              */
             bool is_valid() const
             {
@@ -260,7 +283,7 @@ namespace arg3
             }
 
             /*!
-             * returns the name of the id column for this record
+             * @return the name of the id column for this record
              */
             std::string id_column_name() const
             {
@@ -268,15 +291,21 @@ namespace arg3
             }
 
             /*!
-             * returns the schema for this record
+             * @return the schema for this record
              */
             std::shared_ptr<schema_type> schema() const
             {
-                if (!schema_->is_valid()) schema_->init();
+
+                if (schema_ != nullptr && !schema_->is_valid()) {
+                    schema_->init();
+                }
 
                 return schema_;
             }
 
+            /*!
+             *  @return true if a record with the id column value exists
+             */
             bool exists() const
             {
                 if (!has(idColumnName_)) {
@@ -294,6 +323,7 @@ namespace arg3
 
             /*!
              * saves this instance
+             * @return true if the save was successful
              */
             bool save()
             {
@@ -329,7 +359,8 @@ namespace arg3
             }
 
             /*!
-             * gets a value specified by column name
+             * @param name the name of the column to get
+             * @return a value specified by column name
              */
             sql_value get(const std::string &name) const
             {
@@ -342,6 +373,9 @@ namespace arg3
 
             /*!
              * check for the existance of a column by name
+             * @param name the name of the column to check
+             * @return true if the column exists in the current record
+             * NOTE: you may need to 'refresh' from the db to get all columns
              */
             bool has(const std::string &name) const
             {
@@ -350,6 +384,8 @@ namespace arg3
 
             /*!
              * sets a string for a column name
+             * @param name the name of the column to set
+             * @param value the value to set for the column
              */
             void set(const std::string &name, const sql_value &value)
             {
@@ -358,6 +394,7 @@ namespace arg3
 
             /*!
              * unsets / removes a column
+             * @param name the name of the column to unset
              */
             void unset(const std::string &name)
             {
@@ -366,13 +403,17 @@ namespace arg3
 
             /*!
              * looks up and returns all objects of a base_record type
+             * @return a vector of record objects of type T
              */
-
             std::vector<std::shared_ptr<T>> find_all()
             {
                 return arg3::db::find_all<T>(schema());
             }
 
+            /*!
+             * find all records
+             * @param funk the callback function for each found record
+             */
             void find_all(const callback &funk)
             {
                 arg3::db::find_all<T>(schema(), funk);
@@ -402,19 +443,28 @@ namespace arg3
 
             /*!
              * find records by a column and its value
+             * @param name the name of the column to search by
+             * @param value the value of the column to search by
+             * @return a vector of found records of type T
              */
             std::vector<std::shared_ptr<T>> find_by(const std::string &name, const sql_value &value)
             {
                 return arg3::db::find_by<T>(schema(), name, value);
             }
-
+            /*!
+             * find records by a column and its value
+             * @param name the name of the column to search by
+             * @param value the value of the column to search by
+             * @param funk the callback function for each record found
+             */
             void find_by(const std::string &name, const sql_value &value, const callback &funk)
             {
                 arg3::db::find_by<T>(schema(), name, value, funk);
             }
 
             /*!
-             * refreshes from the database
+             * refreshes from the database for the value in the id column
+             * @return true if successful
              */
             bool refresh()
             {
@@ -423,9 +473,15 @@ namespace arg3
 
             /*!
              * refreshes by a column name
+             * @param name the name of the column to refresh by
+             * @return true if successful
              */
             bool refresh_by(const std::string &name)
             {
+                if (!has(name)) {
+                    return false;
+                }
+
                 select_query query(schema());
 
                 query.where(name + " = $1");
@@ -436,7 +492,9 @@ namespace arg3
 
                 auto result = query.execute();
 
-                if (!result.next()) return false;
+                if (!result.next()) {
+                    return false;
+                }
 
                 init(*result);
 
@@ -444,10 +502,13 @@ namespace arg3
             }
 
             /*!
-             * deletes this record from the database
+             * deletes this record from the database for the value in the id column
              */
             bool de1ete()
             {
+                if (!has(idColumnName_)) {
+                    return false;
+                }
                 delete_query query(schema());
 
                 query.where(idColumnName_ + " = $1");
