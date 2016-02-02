@@ -107,6 +107,7 @@ go_bandit([]() {
         before_each([]() { setup_testdb(); });
 
         after_each([]() { teardown_testdb(); });
+
         it("can_parse_uri", []() {
             try {
                 auto file = sqldb::from_uri("file://test.db");

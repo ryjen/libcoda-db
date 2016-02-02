@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
     char postgres[BUFSIZ + 1] = {0};
     pid_t pid;
     struct stat st;
+    int loc;
 
     snprintf(mysql, BUFSIZ, "%s-mysql", argv[0]);
     snprintf(sqlite, BUFSIZ, "%s-sqlite", argv[0]);
@@ -63,8 +64,11 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    waitpid(pid, NULL, 0);
+    waitpid(pid, &loc, 0);
 
+    if (WIFEXITED(loc) && WEXITSTATUS(loc) != 0) {
+        return 1;
+    }
 
     pid = fork();
 
@@ -78,9 +82,14 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    waitpid(pid, NULL, 0);
+    waitpid(pid, &loc, 0);
+
+    if (WIFEXITED(loc) && WEXITSTATUS(loc) != 0) {
+        return 1;
+    }
 
     execl(postgres, postgres, NULL);
 
-    return 0;
+    // shouldn't get here
+    return 1;
 }
