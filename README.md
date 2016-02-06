@@ -46,7 +46,7 @@ Model
       sqldb                                 - interface for a specific database
         └ statement                         - interface for a prepared statement
               └ resultset                   - results of a statement
-                    └ row                   - an single result
+                    └ row                   - a single result
                          └ column           - a field in a row containing a value
 
       /* implementations using the above*/
@@ -54,7 +54,6 @@ Model
       schema_factory                        - cached schemas
       base_record                           - the active record (ish) implementation
       select_query                          - builds select queries
-      modify_query                          - replaces data
       insert_query                          - inserts data
       update_query                          - updates data
       delete_query                          - builds delete queries
@@ -187,7 +186,7 @@ else
 update_query query(&testdb, "users", {"id", "first_name", "last_name"});
 
 /* using where clause literals WHERE .. OR .. */
-query.where("id = $1 OR last_name = $1");
+query.where("id = $1") || ("last_name = $1");
 
 query.bind(1, 3432).bind(2, "mark").bind(3, "anthony").bind(4, 1234).bind("henry");
 
@@ -198,7 +197,9 @@ query.execute();
 /* delete a user (DELETE FROM ...) */
 delete_query query(&testdb, "users");
 
-query.where("id = $1 AND first_name = $2").bind(1, 1234).bind(2, "bob");
+query.where("id = $1") && "first_name = $2";
+
+query.bind(1, 1234).bind(2, "bob");
 
 query.execute();
 
@@ -260,7 +261,7 @@ Batch Queries
 insert_query query(&testdb, "counts");
 
 /* turn on batch mode for this query */
-query.set_flags(modify_query::BATCH);
+query.set_flags(modify_query::Batch);
 
 for(int i = 1000; i < 3000; i++) {
     query.bind(1, i);
@@ -291,5 +292,6 @@ TODO / ROADMAP
 
 * More and better quality tests, at least 95% test coverage
 * Support more sql data types and refactor the type handling/converting
+* make the binding interface a little nicer, maybe with variadic templates
 
 

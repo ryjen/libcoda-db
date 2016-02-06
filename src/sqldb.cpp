@@ -92,6 +92,10 @@ namespace arg3
             throw database_exception("unknown database " + uri.value);
         }
 
+        sqldb::sqldb() : schema_factory_(this)
+        {
+        }
+
         sqldb::sqldb(const uri &connectionInfo) : connectionInfo_(connectionInfo), schema_factory_(this)
         {
         }
@@ -148,6 +152,11 @@ namespace arg3
         uri sqldb::connection_info() const
         {
             return connectionInfo_;
+        }
+
+        void sqldb::set_connection_info(const uri &value)
+        {
+            connectionInfo_ = value;
         }
 
 

@@ -150,6 +150,7 @@ namespace arg3
            protected:
             where_clause where_;
         };
+
         /*!
          * a query to delete from a table
          */

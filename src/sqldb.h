@@ -49,6 +49,10 @@ namespace arg3
         /*! small utility to parse a uri */
         struct uri_type {
            public:
+            uri_type()
+            {
+            }
+
             /*!
              * @param url the url to parse
              */
@@ -82,6 +86,8 @@ namespace arg3
              * @param value   the uri string to parse
              */
             static std::shared_ptr<sqldb> from_uri(const std::string &value);
+
+            sqldb();
 
             /*!
              * @param info  the connection info
@@ -160,6 +166,8 @@ namespace arg3
              * @return the connection info uri
              */
             uri connection_info() const;
+
+            void set_connection_info(const uri &value);
 
            private:
             uri connectionInfo_;

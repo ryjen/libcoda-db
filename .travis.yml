@@ -16,7 +16,6 @@ install:
   - tar xf lcov_1.12.orig.tar.gz
   - export PATH=$TRAVIS_BUILD_DIR/lcov-1.12/bin:$PATH  
 addons:
-  postgresql: "9.3"
   apt:
     sources:
       - george-edison55-precise-backports

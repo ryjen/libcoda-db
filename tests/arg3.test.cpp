@@ -39,6 +39,11 @@ int main(int argc, char *argv[])
 #ifdef HAVE_LIBMYSQLCLIENT
 #ifdef TEST_MYSQL
     puts("running mysql tests");
+    char *host = std::getenv("MYSQL_URI");
+    if (host) {
+        mysql_testdb.set_connection_info(arg3::db::uri(host));
+        cout << "connecting to " << mysql_testdb.connection_info().value << endl;
+    }
     testdb = &mysql_testdb;
     if (bandit::run(argc, argv)) {
         return 1;
@@ -51,6 +56,11 @@ int main(int argc, char *argv[])
 #ifdef HAVE_LIBPQ
 #ifdef TEST_POSTGRES
     puts("running postgres tests");
+    char *host = std::getenv("POSTGRES_URI");
+    if (host) {
+        postgres_testdb.set_connection_info(arg3::db::uri(host));
+        cout << "connecting to " << postgres_testdb.connection_info().value << endl;
+    }
     testdb = &postgres_testdb;
     if (bandit::run(argc, argv)) {
         return 1;
