@@ -166,7 +166,7 @@ namespace arg3
                 numChanges_ = 0;
             }
 
-            if (flags_ & BATCH) {
+            if (flags_ & Batch) {
                 reset();
             } else {
                 stmt_->finish();
@@ -193,7 +193,7 @@ namespace arg3
                 numChanges_ = 0;
             }
 
-            if (flags_ & BATCH) {
+            if (flags_ & Batch) {
                 reset();
             } else {
                 stmt_->finish();

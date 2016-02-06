@@ -1,3 +1,6 @@
+/*!
+ * @file sqlite3_resultset.h
+ */
 #ifndef ARG3_DB_SQLITE_RESULTSET_H
 #define ARG3_DB_SQLITE_RESULTSET_H
 
@@ -34,22 +37,24 @@ namespace arg3
             int status_;
 
            public:
+            /*!
+             * @param  db   the database in use
+             * @param  stmt the query statement in use
+             */
             sqlite3_resultset(sqlite3_db *db, const std::shared_ptr<sqlite3_stmt> &stmt);
+
+            /* non-copyable boilerplate */
             sqlite3_resultset(const sqlite3_resultset &other) = delete;
             sqlite3_resultset(sqlite3_resultset &&other);
             virtual ~sqlite3_resultset();
-
             sqlite3_resultset &operator=(const sqlite3_resultset &other) = delete;
             sqlite3_resultset &operator=(sqlite3_resultset &&other);
 
+            /* resultset_impl overrides */
             bool is_valid() const;
-
             row current_row();
-
             void reset();
-
             bool next();
-
             size_t size() const;
         };
 
@@ -70,22 +75,24 @@ namespace arg3
             int currentRow_;
 
            public:
+            /*!
+             * @param db    the database in use
+             * @param stmt  the statement in use
+             */
             sqlite3_cached_resultset(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt);
+
+            /* non-copyable boilerplate */
             sqlite3_cached_resultset(const sqlite3_cached_resultset &other) = delete;
             sqlite3_cached_resultset(sqlite3_cached_resultset &&other);
             virtual ~sqlite3_cached_resultset();
-
             sqlite3_cached_resultset &operator=(const sqlite3_cached_resultset &other) = delete;
             sqlite3_cached_resultset &operator=(sqlite3_cached_resultset &&other);
 
+            /* resultset_impl overrides */
             bool is_valid() const;
-
             row current_row();
-
             void reset();
-
             bool next();
-
             size_t size() const;
         };
     }

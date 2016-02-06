@@ -21,10 +21,10 @@ namespace arg3
         {
            public:
             /*!
-            query flags
-            */
+             * query flags
+             */
             /*! perform subsequent executes in batches */
-            constexpr static const int BATCH = (1 << 0);
+            constexpr static const int Batch = (1 << 0);
 
             /*!
              * @param db the database to modify

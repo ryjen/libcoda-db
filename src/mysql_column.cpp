@@ -23,10 +23,6 @@ namespace arg3
             }
         }
 
-        mysql_column::mysql_column(const mysql_column &other) : value_(other.value_), res_(other.res_), index_(other.index_)
-        {
-        }
-
         mysql_column::mysql_column(mysql_column &&other) : value_(other.value_), res_(other.res_), index_(other.index_)
         {
             other.value_ = NULL;
@@ -35,15 +31,6 @@ namespace arg3
 
         mysql_column::~mysql_column()
         {
-        }
-
-        mysql_column &mysql_column::operator=(const mysql_column &other)
-        {
-            value_ = other.value_;
-            index_ = other.index_;
-            res_ = other.res_;
-
-            return *this;
         }
 
         mysql_column &mysql_column::operator=(mysql_column &&other)
@@ -172,9 +159,6 @@ namespace arg3
             }
         }
 
-        mysql_stmt_column::mysql_stmt_column(const mysql_stmt_column &other) : name_(other.name_), value_(other.value_), position_(other.position_)
-        {
-        }
 
         mysql_stmt_column::mysql_stmt_column(mysql_stmt_column &&other)
             : name_(std::move(other.name_)), value_(other.value_), position_(other.position_)
@@ -184,15 +168,6 @@ namespace arg3
 
         mysql_stmt_column::~mysql_stmt_column()
         {
-        }
-
-        mysql_stmt_column &mysql_stmt_column::operator=(const mysql_stmt_column &other)
-        {
-            value_ = other.value_;
-            name_ = other.name_;
-            position_ = other.position_;
-
-            return *this;
         }
 
         mysql_stmt_column &mysql_stmt_column::operator=(mysql_stmt_column &&other)
@@ -224,149 +199,6 @@ namespace arg3
         }
 
         string mysql_stmt_column::name() const
-        {
-            return name_;
-        }
-
-
-        /* cached version */
-
-
-        mysql_cached_column::mysql_cached_column(const string &name, mysql_binding &bindings, size_t position)
-            : name_(name), value_(bindings.to_value(position)), type_(bindings.sql_type(position))
-        {
-        }
-
-        mysql_cached_column::mysql_cached_column(const shared_ptr<MYSQL_RES> &res, MYSQL_ROW pValue, size_t index)
-        {
-            if (res == nullptr) {
-                throw database_exception("no mysql result provided for column");
-            }
-
-            set_value(res, pValue, index);
-        }
-
-        void mysql_cached_column::set_value(const shared_ptr<MYSQL_RES> &res, MYSQL_ROW pValue, size_t index)
-        {
-            auto field = mysql_fetch_field_direct(res.get(), index);
-
-            if (field == nullptr) {
-                throw no_such_column_exception();
-            }
-
-            type_ = field->type;
-
-            if (field->name) {
-                name_ = field->name;
-            }
-
-            if (pValue[index] == NULL) {
-                value_ = sql_null;
-                return;
-            }
-
-            switch (field->type) {
-                case MYSQL_TYPE_BIT:
-                case MYSQL_TYPE_TINY:
-                case MYSQL_TYPE_SHORT:
-                case MYSQL_TYPE_LONG:
-                case MYSQL_TYPE_INT24:
-                case MYSQL_TYPE_LONGLONG:
-                    value_ = std::stoll(pValue[index]);
-                    break;
-                case MYSQL_TYPE_NULL:
-                    value_ = sql_null;
-                    break;
-                case MYSQL_TYPE_TIME:
-                case MYSQL_TYPE_YEAR:
-                case MYSQL_TYPE_NEWDATE:
-                case MYSQL_TYPE_DATE:
-                case MYSQL_TYPE_DATETIME:
-                case MYSQL_TYPE_TIMESTAMP: {
-                    struct tm *tp;
-
-                    if ((tp = getdate(pValue[index]))) {
-                        long long epoch = mktime(tp);
-                        value_ = epoch;
-                    }
-                    break;
-                }
-                case MYSQL_TYPE_VARCHAR:
-                case MYSQL_TYPE_VAR_STRING:
-                case MYSQL_TYPE_GEOMETRY:
-                case MYSQL_TYPE_SET:
-                case MYSQL_TYPE_ENUM:
-                case MYSQL_TYPE_DECIMAL:
-                case MYSQL_TYPE_NEWDECIMAL:
-                case MYSQL_TYPE_STRING:
-                default: {
-                    value_ = pValue[index];
-                    break;
-                }
-                case MYSQL_TYPE_FLOAT:
-                case MYSQL_TYPE_DOUBLE:
-                    value_ = std::stod(pValue[index]);
-                    break;
-                case MYSQL_TYPE_TINY_BLOB:
-                case MYSQL_TYPE_MEDIUM_BLOB:
-                case MYSQL_TYPE_LONG_BLOB:
-                case MYSQL_TYPE_BLOB: {
-                    auto lengths = mysql_fetch_lengths(res.get());
-                    if (lengths == NULL) {
-                        throw binding_error("no lengths for blob");
-                    }
-                    value_ = sql_blob(pValue[index], lengths[index]);
-                    break;
-                }
-            }
-        }
-
-        mysql_cached_column::mysql_cached_column(const mysql_cached_column &other) : name_(other.name_), value_(other.value_), type_(other.type_)
-        {
-        }
-
-        mysql_cached_column::mysql_cached_column(mysql_cached_column &&other)
-            : name_(std::move(other.name_)), value_(std::move(other.value_)), type_(other.type_)
-        {
-            other.value_ = nullptr;
-        }
-        mysql_cached_column::~mysql_cached_column()
-        {
-        }
-
-        mysql_cached_column &mysql_cached_column::operator=(const mysql_cached_column &other)
-        {
-            name_ = other.name_;
-            value_ = other.value_;
-            type_ = other.type_;
-
-            return *this;
-        }
-        mysql_cached_column &mysql_cached_column::operator=(mysql_cached_column &&other)
-        {
-            name_ = std::move(other.name_);
-            value_ = std::move(other.value_);
-            type_ = other.type_;
-
-            return *this;
-        }
-
-        bool mysql_cached_column::is_valid() const
-        {
-            return true;
-        }
-
-        sql_value mysql_cached_column::to_value() const
-        {
-            return value_;
-        }
-
-        int mysql_cached_column::sql_type() const
-        {
-            return type_;
-        }
-
-        string mysql_cached_column::name() const
         {
             return name_;
         }

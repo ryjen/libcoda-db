@@ -121,7 +121,7 @@ namespace arg3
             return *this;
         }
 
-        sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_null_t &value)
+        sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_null_type &value)
         {
             if (sqlite3_bind_null(stmt_.get(), index) != SQLITE_OK) {
                 throw binding_error(db_->last_error());
@@ -131,7 +131,7 @@ namespace arg3
 
         resultset sqlite3_statement::results()
         {
-            if (db_->cache_level() == sqldb::CACHE_RESULTSET)
+            if (db_->cache_level() == cache::ResultSet)
                 return resultset(make_shared<sqlite3_cached_resultset>(db_, stmt_));
             else
                 return resultset(make_shared<sqlite3_resultset>(db_, stmt_));

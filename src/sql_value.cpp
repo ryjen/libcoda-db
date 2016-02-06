@@ -6,7 +6,7 @@
 
 namespace std
 {
-    string to_string(const nullptr_t &value)
+    string to_string(const arg3::db::sql_null_type &value)
     {
         return "NULL";
     }
@@ -15,7 +15,7 @@ namespace std
         return value;
     }
 
-    ostream &operator<<(ostream &out, const nullptr_t &null)
+    ostream &operator<<(ostream &out, const arg3::db::sql_null_type &null)
     {
         out << "NULL";
         return out;
@@ -31,7 +31,7 @@ namespace arg3
         void sql_value::bind_to(bindable *obj, int index) const
         {
             if (obj == NULL) {
-                throw database_exception("no bindable object for sql value binding");
+                throw binding_error("no bindable object for sql value binding");
             }
 
             if (is_null()) {
@@ -39,6 +39,8 @@ namespace arg3
             } else if (is_numeric()) {
                 if (is_real()) {
                     obj->bind(index, to_double(0));
+                } else if (size() <= sizeof(int)) {
+                    obj->bind(index, to_int(0));
                 } else {
                     obj->bind(index, to_llong(0));
                 }

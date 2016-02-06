@@ -1,3 +1,6 @@
+/*!
+ * @file sqlite3_row.h
+ */
 #ifndef ARG3_DB_SQLITE_ROW_H
 #define ARG3_DB_SQLITE_ROW_H
 
@@ -10,8 +13,6 @@
 #include "row.h"
 #include "sqlite3_column.h"
 #include <vector>
-
-#define sqlite3_default_row arg3::db::sqlite3_cached_row
 
 namespace arg3
 {
@@ -32,13 +33,20 @@ namespace arg3
             size_t size_;
 
            public:
+            /*!
+             * @param db    the database in use
+             * @param stmt  the query statement in use
+             */
             sqlite3_row(sqlite3_db *db, const std::shared_ptr<sqlite3_stmt> &stmt);
+
+            /* non-copyable boilerplate */
             virtual ~sqlite3_row();
             sqlite3_row(const sqlite3_row &other) = delete;
             sqlite3_row(sqlite3_row &&other);
             sqlite3_row &operator=(const sqlite3_row &other) = delete;
             sqlite3_row &operator=(sqlite3_row &&other);
 
+            /* row_impl overrides */
             std::string column_name(size_t nPosition) const;
             column_type column(size_t nPosition) const;
             column_type column(const std::string &name) const;
@@ -57,13 +65,20 @@ namespace arg3
             std::vector<std::shared_ptr<sqlite3_cached_column>> columns_;
 
            public:
+            /*!
+             * @param db    the database in use
+             * @param stmt  the query statement in use
+             */
             sqlite3_cached_row(sqlite3_db *db, std::shared_ptr<sqlite3_stmt> stmt);
+
+            /* non-copyable boilerplate */
             virtual ~sqlite3_cached_row();
             sqlite3_cached_row(const sqlite3_cached_row &other) = delete;
             sqlite3_cached_row(sqlite3_cached_row &&other);
             sqlite3_cached_row &operator=(const sqlite3_cached_row &other) = delete;
             sqlite3_cached_row &operator=(sqlite3_cached_row &&other);
 
+            /* row_impl overrides */
             std::string column_name(size_t nPosition) const;
             column_type column(size_t nPosition) const;
             column_type column(const std::string &name) const;

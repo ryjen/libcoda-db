@@ -1,3 +1,6 @@
+/*!
+ * @file sqlite3_column.h
+ */
 #ifndef ARG3_DB_SQLITE_COLUMN_H
 #define ARG3_DB_SQLITE_COLUMN_H
 
@@ -9,8 +12,6 @@
 
 #include <sqlite3.h>
 #include "column.h"
-
-#define sqlite3_default_column sqlite3_cached_column
 
 namespace arg3
 {
@@ -26,19 +27,23 @@ namespace arg3
             int column_;
 
            public:
+            /*!
+             * @param stmt      the statement in use
+             * @param column    the column index
+             */
             sqlite3_column(const shared_ptr<sqlite3_stmt> &stmt, int column);
+
+            /* non-copyable boilerplate */
             sqlite3_column(const sqlite3_column &other) = delete;
             sqlite3_column(sqlite3_column &&other);
             virtual ~sqlite3_column();
             sqlite3_column &operator=(const sqlite3_column &other) = delete;
             sqlite3_column &operator=(sqlite3_column &&other);
 
+            /* column_impl overrides */
             bool is_valid() const;
-
             sql_value to_value() const;
-
             int sql_type() const;
-
             std::string name() const;
         };
 
@@ -54,19 +59,23 @@ namespace arg3
             void set_value(std::shared_ptr<sqlite3_stmt> stmt, int column);
 
            public:
+            /*!
+             * @param stmt    the sqlite3 statement in use
+             * @param column  the column index
+             */
             sqlite3_cached_column(shared_ptr<sqlite3_stmt> stmt, int column);
+
+            /* non-copyable boilerplate */
             sqlite3_cached_column(const sqlite3_cached_column &other) = delete;
             sqlite3_cached_column(sqlite3_cached_column &&other);
             virtual ~sqlite3_cached_column();
             sqlite3_cached_column &operator=(const sqlite3_cached_column &other) = delete;
             sqlite3_cached_column &operator=(sqlite3_cached_column &&other);
 
+            /* column_impl overrides */
             bool is_valid() const;
-
             sql_value to_value() const;
-
             int sql_type() const;
-
             std::string name() const;
         };
     }

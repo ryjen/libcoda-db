@@ -72,32 +72,6 @@ namespace arg3
         {
         }
 
-        void mysql_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
-        {
-            if (!is_open()) return;
-
-            auto rs = execute("show columns from " + tableName);
-
-            for (auto &row : rs) {
-                column_definition def;
-
-                // column name
-                def.name = row["Field"].to_value().to_string();
-
-                if (def.name.empty()) {
-                    continue;
-                }
-
-                // primary key check
-                def.pk = row["Key"].to_value() == "PRI";
-
-                // find type
-                def.type = static_cast<char *>(row["Type"].to_value().to_binary().value());
-
-                columns.push_back(def);
-            }
-        }
-
         void mysql_db::open()
         {
             if (db_ != nullptr) return;
@@ -174,15 +148,17 @@ namespace arg3
             return mysql_affected_rows(db_.get());
         }
 
-        resultset mysql_db::execute(const string &sql, bool cache)
+        resultset mysql_db::execute(const string &sql)
         {
+            MYSQL_RES *res = nullptr;
+
             if (db_ == nullptr) {
                 throw database_exception("database is not open");
             }
 
-            MYSQL_RES *res;
-
-            if (mysql_real_query(db_.get(), sql.c_str(), sql.length())) throw database_exception(last_error());
+            if (mysql_real_query(db_.get(), sql.c_str(), sql.length())) {
+                throw database_exception(last_error());
+            }
 
             res = mysql_store_result(db_.get());
 
@@ -190,10 +166,10 @@ namespace arg3
                 throw database_exception(last_error());
             }
 
-            if (cache)
-                return resultset(make_shared<mysql_cached_resultset>(this, shared_ptr<MYSQL_RES>(res, helper::mysql_res_delete())));
-            else
-                return resultset(make_shared<mysql_resultset>(this, shared_ptr<MYSQL_RES>(res, helper::mysql_res_delete())));
+            // if (cache_level() == cache::ResultSet)
+            //    return resultset(make_shared<mysql_cached_resultset>(this, shared_ptr<MYSQL_RES>(res, helper::mysql_res_delete())));
+            // else
+            return resultset(make_shared<mysql_resultset>(this, shared_ptr<MYSQL_RES>(res, helper::mysql_res_delete())));
         }
 
         shared_ptr<statement> mysql_db::create_statement()

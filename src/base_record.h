@@ -295,7 +295,6 @@ namespace arg3
              */
             std::shared_ptr<schema_type> schema() const
             {
-
                 if (schema_ != nullptr && !schema_->is_valid()) {
                     schema_->init();
                 }

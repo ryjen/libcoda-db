@@ -25,7 +25,7 @@ namespace arg3
         }
 
 
-        mysql_resultset::mysql_resultset(mysql_db *db, const shared_ptr<MYSQL_RES> &res) : res_(res), row_(NULL), db_(db)
+        mysql_resultset::mysql_resultset(mysql_db *db, const shared_ptr<MYSQL_RES> &res) : res_(res), row_(nullptr), db_(db)
         {
             if (db_ == nullptr) {
                 throw database_exception("database not provided to mysql resultset");
@@ -34,9 +34,9 @@ namespace arg3
 
         mysql_resultset::mysql_resultset(mysql_resultset &&other) : res_(other.res_), row_(other.row_), db_(other.db_)
         {
-            other.db_ = NULL;
+            other.db_ = nullptr;
             other.res_ = nullptr;
-            other.row_ = NULL;
+            other.row_ = nullptr;
         }
 
         mysql_resultset::~mysql_resultset()
@@ -49,9 +49,9 @@ namespace arg3
             res_ = other.res_;
             db_ = other.db_;
             row_ = other.row_;
-            other.db_ = NULL;
+            other.db_ = nullptr;
             other.res_ = nullptr;
-            other.row_ = NULL;
+            other.row_ = nullptr;
 
             return *this;
         }
@@ -63,17 +63,17 @@ namespace arg3
 
         bool mysql_resultset::next()
         {
-            assert(db_ != NULL);
+            assert(db_ != nullptr);
 
             if (!is_valid() || !db_->is_open()) return false;
 
-            bool value = (row_ = mysql_fetch_row(res_.get())) != NULL;
+            bool value = (row_ = mysql_fetch_row(res_.get())) != nullptr;
 
             if (!value && !mysql_more_results(db_->db_.get())) {
                 MYSQL_RES *temp;
-                if ((temp = mysql_use_result(db_->db_.get())) != NULL) {
+                if ((temp = mysql_use_result(db_->db_.get())) != nullptr) {
                     res_ = shared_ptr<MYSQL_RES>(temp, helper::mysql_res_delete());
-                    value = (row_ = mysql_fetch_row(temp)) != NULL;
+                    value = (row_ = mysql_fetch_row(temp)) != nullptr;
                 } else {
                     res_ = nullptr;
                 }
@@ -89,10 +89,7 @@ namespace arg3
 
         row mysql_resultset::current_row()
         {
-            if (db_->cache_level() == sqldb::CACHE_ROW)
-                return row(make_shared<mysql_cached_row>(db_, res_, row_));
-            else
-                return row(make_shared<mysql_row>(db_, res_, row_));
+            return row(make_shared<mysql_row>(db_, res_, row_));
         }
 
         size_t mysql_resultset::size() const
@@ -149,7 +146,7 @@ namespace arg3
             // get information about the results
             MYSQL_RES *temp = mysql_stmt_result_metadata(stmt_.get());
 
-            if (temp == NULL) throw database_exception("No result data found.");
+            if (temp == nullptr) throw database_exception("No result data found.");
 
             metadata_ = shared_ptr<MYSQL_RES>(temp, helper::mysql_res_delete());
 
@@ -160,6 +157,10 @@ namespace arg3
             bindings_ = make_shared<mysql_binding>(fields, size);
 
             bindings_->bind_result(stmt_.get());
+
+            if (mysql_stmt_store_result(stmt_.get())) {
+                throw database_exception(helper::last_stmt_error(stmt_.get()));
+            }
         }
 
         bool mysql_stmt_resultset::is_valid() const
@@ -192,7 +193,7 @@ namespace arg3
 
         void mysql_stmt_resultset::reset()
         {
-            if(!is_valid()) {
+            if (!is_valid()) {
                 return;
             }
 
@@ -205,12 +206,12 @@ namespace arg3
 
         row mysql_stmt_resultset::current_row()
         {
-            assert(db_ != NULL);
+            assert(db_ != nullptr);
 
-            if (db_->cache_level() == sqldb::CACHE_ROW)
-                return row(make_shared<mysql_cached_row>(db_, metadata_, *bindings_.get()));
-            else
-                return row(make_shared<mysql_stmt_row>(db_, stmt_, metadata_, bindings_));
+            // if (db_->cache_level() == cache::Row)
+            // return row(make_shared<mysql_cached_row>(db_, metadata_, *bindings_.get()));
+            // else
+            return row(make_shared<mysql_stmt_row>(db_, stmt_, metadata_, bindings_));
         }
 
         size_t mysql_stmt_resultset::size() const
@@ -218,114 +219,6 @@ namespace arg3
             if (!is_valid()) return 0;
 
             return mysql_stmt_field_count(stmt_.get());
-        }
-
-
-        /* cached version */
-
-        mysql_cached_resultset::mysql_cached_resultset(sqldb *db, const shared_ptr<MYSQL_STMT> &stmt) : currentRow_(-1)
-        {
-            assert(is_valid());
-
-            if (mysql_stmt_execute(stmt.get())) {
-                throw database_exception(helper::last_stmt_error(stmt.get()));
-            }
-
-            // get information about the results
-            MYSQL_RES *temp = mysql_stmt_result_metadata(stmt.get());
-
-            if (temp == NULL) throw database_exception("No result data found.");
-
-            auto metadata = shared_ptr<MYSQL_RES>(temp, helper::mysql_res_delete());
-
-            int size = mysql_num_fields(temp);
-
-            auto fields = mysql_fetch_fields(temp);
-
-            mysql_binding bindings(fields, size);
-
-            bindings.bind_result(stmt.get());
-
-            int res = mysql_stmt_fetch(stmt.get());
-
-            while (res == 0) {
-                rows_.push_back(make_shared<mysql_cached_row>(db, metadata, bindings));
-
-                res = mysql_stmt_fetch(stmt.get());
-            }
-        }
-
-        mysql_cached_resultset::mysql_cached_resultset(mysql_db *db, const shared_ptr<MYSQL_RES> &res) : currentRow_(0)
-        {
-            MYSQL_ROW row = mysql_fetch_row(res.get());
-
-            if (row != NULL) {
-                rows_.push_back(make_shared<mysql_cached_row>(db, res, row));
-
-                while (mysql_more_results(db->db_.get()) && (row = mysql_fetch_row(res.get())) != NULL) {
-                    rows_.push_back(make_shared<mysql_cached_row>(db, res, row));
-                }
-            } else {
-                MYSQL_RES *temp;
-
-                while ((temp = mysql_use_result(db->db_.get())) != NULL && (row = mysql_fetch_row(temp))) {
-                    rows_.push_back(make_shared<mysql_cached_row>(db, shared_ptr<MYSQL_RES>(temp, helper::mysql_res_delete()), row));
-                }
-            }
-        }
-        mysql_cached_resultset::mysql_cached_resultset(mysql_cached_resultset &&other) : rows_(std::move(other.rows_)), currentRow_(other.currentRow_)
-        {
-            other.rows_.clear();
-            other.currentRow_ = 0;
-        }
-
-        mysql_cached_resultset::~mysql_cached_resultset()
-        {
-        }
-
-        mysql_cached_resultset &mysql_cached_resultset::operator=(mysql_cached_resultset &&other)
-        {
-            rows_ = std::move(other.rows_);
-            currentRow_ = other.currentRow_;
-
-            other.rows_.clear();
-            other.currentRow_ = 0;
-
-            return *this;
-        }
-
-        bool mysql_cached_resultset::is_valid() const
-        {
-            return true;
-        }
-
-        bool mysql_cached_resultset::next()
-        {
-            if (rows_.empty()) {
-                return false;
-            }
-
-            return static_cast<size_t>(++currentRow_) < rows_.size();
-        }
-
-        void mysql_cached_resultset::reset()
-        {
-            currentRow_ = -1;
-        }
-
-        row mysql_cached_resultset::current_row()
-        {
-            if (currentRow_ >= 0 && static_cast<size_t>(currentRow_) < rows_.size())
-
-                return row(rows_[currentRow_]);
-
-            else
-                return row();
-        }
-
-        size_t mysql_cached_resultset::size() const
-        {
-            return rows_.size();
         }
     }
 }

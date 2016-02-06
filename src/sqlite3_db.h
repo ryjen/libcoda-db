@@ -1,3 +1,6 @@
+/*!
+ * @file sqlite3_db.h
+ */
 #ifndef ARG3_DB_SQLITE_SQLDB_H
 #define ARG3_DB_SQLITE_SQLDB_H
 
@@ -15,6 +18,14 @@ namespace arg3
 {
     namespace db
     {
+        namespace cache
+        {
+            /*!
+             * level of caching results in a database
+             */
+            typedef enum { None, ResultSet, Row, Column } level;
+        }
+
         /*!
          * a sqlite specific implementation of a database
          */
@@ -25,34 +36,49 @@ namespace arg3
 
            protected:
             std::shared_ptr<sqlite3> db_;
+            cache::level cacheLevel_;
 
            public:
+            /*!
+             * @param info   the connection info
+             */
             sqlite3_db(const uri &info);
+
+            /* boilerplate */
             sqlite3_db(const sqlite3_db &other);
             sqlite3_db(sqlite3_db &&other);
             sqlite3_db &operator=(const sqlite3_db &other);
             sqlite3_db &operator=(sqlite3_db &&other);
             virtual ~sqlite3_db();
 
+            /* sqldb overrides */
             bool is_open() const;
-
             void open(int flags);
-
             void open();
-
             void close();
-
             long long last_insert_id() const;
-
             int last_number_of_changes() const;
+            resultset execute(const std::string &sql);
+            std::string last_error() const;
+            std::shared_ptr<statement> create_statement();
 
+            /*! @copydoc
+             *  overriden for sqlite3 specific pragma parsing
+             */
             void query_schema(const std::string &tableName, std::vector<column_definition> &columns);
 
-            resultset execute(const std::string &sql, bool cache = false);
 
-            std::string last_error() const;
+            /*!
+             * sets the cache level
+             * @param level of caching
+             */
+            void set_cache_level(cache::level level);
 
-            std::shared_ptr<statement> create_statement();
+            /*!
+             * gets the cache level for this database
+             * @return the level of caching
+             */
+            cache::level cache_level() const;
         };
     }
 }

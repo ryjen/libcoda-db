@@ -18,15 +18,15 @@ namespace arg3
 
             namespace current
             {
-                Level level;
+                level level;
             }
 
-            void set_level(Level level)
+            void set_level(log::level level)
             {
                 current::level = level;
             }
 
-            static void lvargs(Level level, const char *const format, va_list args)
+            static void lvargs(log::level level, const char *const format, va_list args)
             {
                 char buf[BUFSIZ + 1] = {0};
 

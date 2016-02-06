@@ -126,7 +126,7 @@ namespace arg3
             return *this;
         }
 
-        query &query::bind(size_t index, const sql_null_t &value)
+        query &query::bind(size_t index, const sql_null_type &value)
         {
             return bind(index);
         }

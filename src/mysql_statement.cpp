@@ -67,7 +67,13 @@ namespace arg3
 
             string formatted_sql = regex_replace(sql, param_regex, param_repl);
 
-            stmt_ = shared_ptr<MYSQL_STMT>(mysql_stmt_init(db_->db_.get()), helper::mysql_stmt_delete());
+            MYSQL_STMT *temp = mysql_stmt_init(db_->db_.get());
+
+            if (temp == nullptr) {
+                throw database_exception("out of memory");
+            }
+
+            stmt_ = shared_ptr<MYSQL_STMT>(temp, helper::mysql_stmt_delete());
 
             if (mysql_stmt_prepare(stmt_.get(), formatted_sql.c_str(), formatted_sql.length())) {
                 throw database_exception(db_->last_error());
@@ -118,7 +124,7 @@ namespace arg3
 
             return *this;
         }
-        mysql_statement &mysql_statement::bind(size_t index, const sql_null_t &value)
+        mysql_statement &mysql_statement::bind(size_t index, const sql_null_type &value)
         {
             bindings_.bind(index, value);
 
@@ -133,10 +139,7 @@ namespace arg3
 
             bindings_.bind_params(stmt_.get());
 
-            if (db_->cache_level() == sqldb::CACHE_RESULTSET)
-                return resultset(make_shared<mysql_cached_resultset>(db_, stmt_));
-            else
-                return resultset(make_shared<mysql_stmt_resultset>(db_, stmt_));
+            return resultset(make_shared<mysql_stmt_resultset>(db_, stmt_));
         }
 
         bool mysql_statement::result()

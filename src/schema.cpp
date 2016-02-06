@@ -116,5 +116,10 @@ namespace arg3
         {
             return columns_[index];
         }
+
+        size_t schema::size() const
+        {
+            return columns_.size();
+        }
     };
 }

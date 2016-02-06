@@ -16,17 +16,21 @@ go_bandit([]() {
         user user2;
 
         before_each([&user1, &user2]() {
-            setup_testdb();
+            try {
+                setup_testdb();
 
-            user1.set("first_name", "Bryan");
-            user1.set("last_name", "Jenkins");
+                user1.set("first_name", "Bryan");
+                user1.set("last_name", "Jenkins");
 
-            user1.save();
+                user1.save();
 
-            user2.set("first_name", "Mark");
-            user2.set("last_name", "Smith");
+                user2.set("first_name", "Mark");
+                user2.set("last_name", "Smith");
 
-            user2.save();
+                user2.save();
+            } catch (const std::exception& e) {
+                cerr << "setup error: " << e.what() << endl;
+            }
         });
 
         after_each([]() { teardown_testdb(); });
@@ -117,7 +121,7 @@ go_bandit([]() {
 
             query.bind(1, "Bryan");
 
-            query.set_flags(modify_query::BATCH);
+            query.set_flags(modify_query::Batch);
 
             AssertThat(query.execute(), Equals(1));
 

@@ -23,15 +23,15 @@ namespace arg3
                 }
             };
         }
-        sqlite3_db::sqlite3_db(const uri &info) : sqldb(info), db_(nullptr)
+        sqlite3_db::sqlite3_db(const uri &info) : sqldb(info), db_(nullptr), cacheLevel_(cache::None)
         {
         }
 
-        sqlite3_db::sqlite3_db(const sqlite3_db &other) : sqldb(other), db_(other.db_)
+        sqlite3_db::sqlite3_db(const sqlite3_db &other) : sqldb(other), db_(other.db_), cacheLevel_(other.cacheLevel_)
         {
         }
 
-        sqlite3_db::sqlite3_db(sqlite3_db &&other) : sqldb(other), db_(std::move(other.db_))
+        sqlite3_db::sqlite3_db(sqlite3_db &&other) : sqldb(other), db_(std::move(other.db_)), cacheLevel_(other.cacheLevel_)
         {
             other.db_ = nullptr;
         }
@@ -41,6 +41,7 @@ namespace arg3
             sqldb::operator=(other);
 
             db_ = other.db_;
+            cacheLevel_ = other.cacheLevel_;
 
             return *this;
         }
@@ -50,6 +51,7 @@ namespace arg3
             sqldb::operator=(std::move(other));
 
             db_ = std::move(other.db_);
+            cacheLevel_ = other.cacheLevel_;
 
             other.db_ = nullptr;
 
@@ -93,7 +95,7 @@ namespace arg3
         {
             if (db_ != nullptr) return;
 
-            sqlite3* conn = nullptr;
+            sqlite3 *conn = nullptr;
 
             if (sqlite3_open_v2(connection_info().path.c_str(), &conn, flags, nullptr) != SQLITE_OK) {
                 throw database_exception(last_error());
@@ -135,7 +137,7 @@ namespace arg3
             return sqlite3_changes(db_.get());
         }
 
-        resultset sqlite3_db::execute(const string &sql, bool cache)
+        resultset sqlite3_db::execute(const string &sql)
         {
             sqlite3_stmt *stmt;
 
@@ -145,7 +147,7 @@ namespace arg3
 
             shared_ptr<resultset_impl> impl;
 
-            if (cache)
+            if (cache_level() == cache::ResultSet)
                 impl = make_shared<sqlite3_cached_resultset>(this, shared_ptr<sqlite3_stmt>(stmt, sqlite3_stmt_delete()));
             else
                 impl = make_shared<sqlite3_resultset>(this, shared_ptr<sqlite3_stmt>(stmt, sqlite3_stmt_delete()));
@@ -160,6 +162,16 @@ namespace arg3
         shared_ptr<statement> sqlite3_db::create_statement()
         {
             return make_shared<sqlite3_statement>(this);
+        }
+
+        void sqlite3_db::set_cache_level(cache::level level)
+        {
+            cacheLevel_ = level;
+        }
+
+        cache::level sqlite3_db::cache_level() const
+        {
+            return cacheLevel_;
         }
     }
 }

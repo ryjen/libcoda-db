@@ -1,4 +1,7 @@
-
+/*!
+ * @file resultset.h
+ * a query result set in a database
+ */
 #ifndef ARG3_DB_RESULTSET_H
 #define ARG3_DB_RESULTSET_H
 
@@ -21,21 +24,40 @@ namespace arg3
             resultset_impl() = default;
 
            public:
+            /* non-copyable */
             resultset_impl(const resultset_impl &other) = delete;
             resultset_impl(resultset_impl &&other) = default;
             virtual ~resultset_impl() = default;
-
             resultset_impl &operator=(const resultset_impl &other) = delete;
             resultset_impl &operator=(resultset_impl &&other) = default;
 
+            /*!
+             * tests if this implementation is valid
+             * @return true if operations can be performed safely
+             */
             virtual bool is_valid() const = 0;
 
+            /*!
+             * moves to the next row in the results
+             * @return true if successful
+             */
             virtual bool next() = 0;
 
+            /*!
+             * gets the current row in the results
+             * @return the current row object
+             */
             virtual row current_row() = 0;
 
+            /*!
+             * resets this resultset back to the first row
+             */
             virtual void reset() = 0;
 
+            /*!
+             * gets the number of rows in the results
+             * @return the number of rows
+             */
             virtual size_t size() const = 0;
         };
 
@@ -177,40 +199,82 @@ namespace arg3
             std::shared_ptr<resultset_impl> impl_;
 
            public:
-            resultset(const std::shared_ptr<resultset_impl> &impl);
-
-            resultset(const resultset &other) = delete;
-            resultset(resultset &&other);
-            virtual ~resultset();
-
-            resultset &operator=(const resultset &other) = delete;
-            resultset &operator=(resultset &&other);
-
             typedef resultset_iterator<row, row> iterator;
             typedef resultset_iterator<const row, row> const_iterator;
 
+            /*!
+             * @param impl the implementation for this resultset
+             */
+            resultset(const std::shared_ptr<resultset_impl> &impl);
+
+            /* non-copyable */
+            resultset(const resultset &other) = delete;
+            resultset(resultset &&other);
+            virtual ~resultset();
+            resultset &operator=(const resultset &other) = delete;
+            resultset &operator=(resultset &&other);
+
+            /*!
+             * tests if the result set is valid
+             * @return true if the implementation is valid
+             */
             bool is_valid() const;
 
+            /*!
+             * @return an iterator to the first row
+             */
             iterator begin();
 
+            /*!
+             * @return an immutable iterator to the first row
+             */
             const_iterator begin() const;
 
+            /*!
+             * @return an iterator to after the last row
+             */
             iterator end();
 
+            /*!
+             * @return a immutable iterator the after the last row
+             */
             const_iterator end() const;
 
+            /*!
+             * gets the current row
+             * @return the current row
+             */
             row current_row();
 
+            /*!
+             * moves to the next row
+             * @return true if successful
+             */
             bool next();
 
+            /*!
+             * dereference operator to the current row
+             */
             row operator*();
 
+            /*!
+             * resets this result set back to the first row
+             */
             void reset();
 
+            /*!
+             * @return the number of rows in the result set
+             */
             size_t size() const;
 
+            /*!
+             * @param funk the callback to perform for each row
+             */
             void for_each(const std::function<void(const row &)> &funk) const;
 
+            /*!
+             * @return a pointer to the implementation
+             */
             std::shared_ptr<resultset_impl> impl() const;
         };
     }

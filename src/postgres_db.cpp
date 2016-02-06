@@ -73,55 +73,6 @@ namespace arg3
         {
         }
 
-        void postgres_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
-        {
-            if (!is_open()) return;
-
-            select_query pkq(this, "information_schema.table_constraints tc", {"tc.table_schema, tc.table_name, kc.column_name"});
-
-            pkq.join("information_schema.key_column_usage kc").on("kc.table_name = tc.table_name") && "kc.table_schema = tc.table_schema";
-
-            pkq.where("tc.constraint_type = 'PRIMARY KEY'") && "tc.table_name = $1";
-
-            pkq.bind(1, tableName);
-
-            pkq.order_by("tc.table_schema, tc.table_name, kc.position_in_unique_constraint");
-
-            auto primary_keys = pkq.execute();
-
-            select_query info_schema(this, "information_schema.columns", {"column_name", "data_type"});
-
-            info_schema.where("table_name = $1");
-
-            info_schema.bind(1, tableName);
-
-            auto rs = info_schema.execute();
-
-            for (auto &row : rs) {
-                column_definition def;
-
-                // column name
-                def.name = row["column_name"].to_value().to_string();
-
-                if (def.name.empty()) {
-                    continue;
-                }
-
-                def.pk = false;
-
-                for (auto &pk : primary_keys) {
-                    if (pk["column_name"].to_value() == def.name) {
-                        def.pk = true;
-                    }
-                }
-
-                // find type
-                def.type = row["data_type"].to_value().to_string();
-
-                columns.push_back(def);
-            }
-        }
-
         void postgres_db::open()
         {
             if (db_ != nullptr) return;
@@ -178,7 +129,7 @@ namespace arg3
             lastNumChanges_ = value;
         }
 
-        resultset postgres_db::execute(const string &sql, bool cache)
+        resultset postgres_db::execute(const string &sql)
         {
             if (db_ == nullptr) {
                 throw database_exception("database is not open");
@@ -190,10 +141,7 @@ namespace arg3
                 throw database_exception(last_error());
             }
 
-            if (cache)
-                return resultset(make_shared<postgres_cached_resultset>(this, shared_ptr<PGresult>(res, helper::postgres_res_delete())));
-            else
-                return resultset(make_shared<postgres_resultset>(this, shared_ptr<PGresult>(res, helper::postgres_res_delete())));
+            return resultset(make_shared<postgres_resultset>(this, shared_ptr<PGresult>(res, helper::postgres_res_delete())));
         }
 
         shared_ptr<statement> postgres_db::create_statement()

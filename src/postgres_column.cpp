@@ -66,65 +66,6 @@ namespace arg3
         {
             return PQfname(stmt_.get(), column_);
         }
-
-
-        /* cached version */
-
-        postgres_cached_column::postgres_cached_column(const shared_ptr<PGresult> &stmt, size_t row, size_t column)
-        {
-            set_value(stmt, row, column);
-        }
-
-        void postgres_cached_column::set_value(const shared_ptr<PGresult> &stmt, size_t row, size_t column)
-        {
-            if (stmt == nullptr) {
-                throw database_exception("no statement provided to postgres column");
-            }
-            name_ = PQfname(stmt.get(), column);
-            type_ = PQftype(stmt.get(), column);
-            value_ = PQgetvalue(stmt.get(), row, column);
-            length_ = PQgetlength(stmt.get(), row, column);
-        }
-
-
-        postgres_cached_column::postgres_cached_column(postgres_cached_column &&other)
-            : name_(std::move(other.name_)), value_(std::move(other.value_)), type_(other.type_), length_(other.length_)
-        {
-        }
-
-        postgres_cached_column::~postgres_cached_column()
-        {
-        }
-
-        postgres_cached_column &postgres_cached_column::operator=(postgres_cached_column &&other)
-        {
-            name_ = std::move(other.name_);
-            type_ = other.type_;
-            value_ = std::move(other.value_);
-            length_ = other.length_;
-
-            return *this;
-        }
-
-        bool postgres_cached_column::is_valid() const
-        {
-            return true;
-        }
-
-        sql_value postgres_cached_column::to_value() const
-        {
-            return helper::convert_raw_value(value_, type_, length_);
-        }
-
-        int postgres_cached_column::sql_type() const
-        {
-            return type_;
-        }
-
-        string postgres_cached_column::name() const
-        {
-            return name_;
-        }
     }
 }
 

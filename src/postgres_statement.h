@@ -1,3 +1,7 @@
+/*!
+ * @file postgres_statement.h
+ * A postgres statement
+ */
 #ifndef ARG3_DB_POSTGRES_STATEMENT_H
 #define ARG3_DB_POSTGRES_STATEMENT_H
 
@@ -29,12 +33,19 @@ namespace arg3
             std::string sql_;
 
            public:
+            /*!
+             * @param db    the database in use
+             */
             postgres_statement(postgres_db *db);
+
+            /* non-copyable boilerplate */
             postgres_statement(const postgres_statement &other) = delete;
             postgres_statement(postgres_statement &&other);
             postgres_statement &operator=(const postgres_statement &other) = delete;
             postgres_statement &operator=(postgres_statement &&other);
             virtual ~postgres_statement();
+
+            /* statement overrides */
             void prepare(const std::string &sql);
             bool is_valid() const;
             resultset results();
@@ -44,13 +55,15 @@ namespace arg3
             int last_number_of_changes();
             std::string last_error();
             long long last_insert_id();
+
+            /* bindable overrides */
             postgres_statement &bind(size_t index, int value);
             postgres_statement &bind(size_t index, long long value);
             postgres_statement &bind(size_t index, double value);
             postgres_statement &bind(size_t index, const std::string &value, int len = -1);
             postgres_statement &bind(size_t index, const std::wstring &value, int len = -1);
             postgres_statement &bind(size_t index, const sql_blob &value);
-            postgres_statement &bind(size_t index, const sql_null_t &value);
+            postgres_statement &bind(size_t index, const sql_null_type &value);
         };
     }
 }

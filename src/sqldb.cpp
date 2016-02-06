@@ -13,6 +13,7 @@
 #include "sqlite3_db.h"
 #include "mysql_db.h"
 #include "postgres_db.h"
+#include "select_query.h"
 
 namespace arg3
 {
@@ -91,23 +92,57 @@ namespace arg3
             throw database_exception("unknown database " + uri.value);
         }
 
-        sqldb::sqldb(const uri &connectionInfo) : connectionInfo_(connectionInfo), cacheLevel_(CACHE_NONE), schema_factory_(this)
+        sqldb::sqldb(const uri &connectionInfo) : connectionInfo_(connectionInfo), schema_factory_(this)
         {
         }
 
-        resultset sqldb::execute(const string &sql)
+        void sqldb::query_schema(const string &tableName, std::vector<column_definition> &columns)
         {
-            return execute(sql, cache_level() == sqldb::CACHE_RESULTSET);
-        }
+            if (!is_open()) return;
 
-        void sqldb::set_cache_level(CacheLevel level)
-        {
-            cacheLevel_ = level;
-        }
+            select_query pkq(this, "information_schema.table_constraints tc", {"tc.table_schema, tc.table_name, kc.column_name"});
 
-        sqldb::CacheLevel sqldb::cache_level() const
-        {
-            return cacheLevel_;
+            pkq.join("information_schema.key_column_usage kc").on("kc.table_name = tc.table_name") && "kc.table_schema = tc.table_schema";
+
+            pkq.where("tc.constraint_type = 'PRIMARY KEY'") && "tc.table_name = $1";
+
+            pkq.order_by("tc.table_schema, tc.table_name, kc.position_in_unique_constraint");
+
+            pkq.bind(1, tableName);
+
+            auto primary_keys = pkq.execute();
+
+            select_query info_schema(this, "information_schema.columns", {"column_name", "data_type"});
+
+            info_schema.where("table_name = $1");
+
+            info_schema.bind(1, tableName);
+
+            auto rs = info_schema.execute();
+
+            for (auto &row : rs) {
+                column_definition def;
+
+                // column name
+                def.name = row["column_name"].to_value().to_string();
+
+                if (def.name.empty()) {
+                    continue;
+                }
+
+                def.pk = false;
+
+                for (auto &pk : primary_keys) {
+                    if (pk["column_name"].to_value() == def.name) {
+                        def.pk = true;
+                    }
+                }
+
+                // find type
+                def.type = row["data_type"].to_value().to_string();
+
+                columns.push_back(def);
+            }
         }
 
         uri sqldb::connection_info() const

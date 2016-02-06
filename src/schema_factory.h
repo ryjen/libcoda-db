@@ -1,3 +1,7 @@
+/*!
+ * @file schema_factory.h
+ * a factory for caching schemas
+ */
 #ifndef ARG3_DB_SCHEMA_FACTORY_H
 #define ARG3_DB_SCHEMA_FACTORY_H
 
@@ -27,17 +31,22 @@ namespace arg3
             std::shared_ptr<schema> create(const std::string &tableName);
 
            public:
+            /*
+             * @param db the database in use
+             */
             schema_factory(sqldb *db);
 
+            /* boilerplate */
             schema_factory(schema_factory &&other);
-
             schema_factory &operator=(schema_factory &&other);
-
             schema_factory(const schema_factory &other);
-
             schema_factory &operator=(const schema_factory &other);
             std::shared_ptr<schema> get(const std::string &tableName);
 
+            /*!
+             * clears a cached schema for the table name
+             * @param tablename the table name to clear the schema for
+             */
             void clear(const std::string &tablename);
         };
     }

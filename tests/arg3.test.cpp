@@ -12,23 +12,6 @@ using namespace bandit;
 #error "Mysql, postgres or sqlite is not installed on the system"
 #endif
 
-int run_db_test(int argc, char *argv[])
-{
-    if (!testdb) {
-        return 1;
-    }
-
-    // run the uncached test
-    if (bandit::run(argc, argv)) {
-        return 1;
-    }
-
-    // run the cached test
-    testdb->set_cache_level(arg3::db::sqldb::CACHE_RESULTSET);
-    cout << "setting cache level" << endl;
-    return bandit::run(argc, argv);
-}
-
 int main(int argc, char *argv[])
 {
     arg3::db::log::set_level(arg3::db::log::Error);
@@ -37,7 +20,15 @@ int main(int argc, char *argv[])
 #ifdef TEST_SQLITE
     puts("running sqlite3 tests");
     testdb = &sqlite_testdb;
-    if (run_db_test(argc, argv)) {
+    // run the uncached test
+    if (bandit::run(argc, argv)) {
+        return 1;
+    }
+
+    // run the cached test
+    sqlite_testdb.set_cache_level(arg3::db::cache::ResultSet);
+    cout << "setting cache level" << endl;
+    if (bandit::run(argc, argv)) {
         return 1;
     }
 #endif
@@ -49,7 +40,7 @@ int main(int argc, char *argv[])
 #ifdef TEST_MYSQL
     puts("running mysql tests");
     testdb = &mysql_testdb;
-    if (run_db_test(argc, argv)) {
+    if (bandit::run(argc, argv)) {
         return 1;
     }
 #endif
@@ -61,7 +52,7 @@ int main(int argc, char *argv[])
 #ifdef TEST_POSTGRES
     puts("running postgres tests");
     testdb = &postgres_testdb;
-    if (run_db_test(argc, argv)) {
+    if (bandit::run(argc, argv)) {
         return 1;
     }
 #endif

@@ -99,32 +99,23 @@ go_bandit([]() {
 
         describe("is movable", []() {
 
-            if (mysql_testdb.cache_level() == sqldb::CACHE_RESULTSET) {
-                it("as cached results", []() { test_move_resultset<mysql_cached_resultset>(get_stmt_resultset); });
 
-            } else {
-                it("as statement results", []() { test_move_resultset<mysql_stmt_resultset>(get_stmt_resultset); });
+            it("as statement results", []() { test_move_resultset<mysql_stmt_resultset>(get_stmt_resultset); });
 
-                it("as results", []() { test_move_resultset<mysql_resultset>(get_resultset); });
-            }
+            it("as results", []() { test_move_resultset<mysql_resultset>(get_resultset); });
 
 
         });
 
         describe("can get a row", []() {
-            if (mysql_testdb.cache_level() == sqldb::CACHE_RESULTSET) {
-                it("as cached results", []() {
-                    test_resultset_row<mysql_cached_resultset>(get_stmt_resultset);
 
-                });
-            } else {
-                it("as statement results", []() {
-                    test_resultset_row<mysql_stmt_resultset>(get_stmt_resultset);
+            it("as statement results", []() {
+                test_resultset_row<mysql_stmt_resultset>(get_stmt_resultset);
 
-                });
+            });
 
-                it("as results", []() { test_resultset_row<mysql_resultset>(get_resultset); });
-            }
+            it("as results", []() { test_resultset_row<mysql_resultset>(get_resultset); });
+
         });
 
         it("can handle a bad query", []() {

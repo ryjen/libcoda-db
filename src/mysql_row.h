@@ -1,3 +1,7 @@
+/*!
+ * Mysql specific implementations of a row
+ * @file mysql_row.h
+ */
 #ifndef ARG3_DB_MYSQL_ROW_H
 #define ARG3_DB_MYSQL_ROW_H
 
@@ -33,15 +37,23 @@ namespace arg3
             size_t size_;
 
            public:
+            /*!
+             * @param db the database in use
+             * @param res the query result
+             * @param row the row values
+             */
             mysql_row(mysql_db *db, const std::shared_ptr<MYSQL_RES> &res, MYSQL_ROW row);
+
+            /* non-copyable boilerplate */
             virtual ~mysql_row();
-            mysql_row(const mysql_row &other);
+            mysql_row(const mysql_row &other) = delete;
             mysql_row(mysql_row &&other);
-            mysql_row &operator=(const mysql_row &other);
+            mysql_row &operator=(const mysql_row &other) = delete;
             mysql_row &operator=(mysql_row &&other);
 
-            std::string column_name(size_t nPosition) const;
-            column_type column(size_t nPosition) const;
+            /* row_impl overrides */
+            std::string column_name(size_t position) const;
+            column_type column(size_t position) const;
             column_type column(const std::string &name) const;
             size_t size() const;
             bool is_valid() const;
@@ -62,43 +74,26 @@ namespace arg3
             size_t size_;
 
            public:
+            /*!
+             * @param db the database in use
+             * @param stmt the query statement
+             * @param metadata the query meta data
+             * @param fields the bindings for the statement
+             */
             mysql_stmt_row(mysql_db *db, const std::shared_ptr<MYSQL_STMT> &stmt, const std::shared_ptr<MYSQL_RES> &metadata,
                            const std::shared_ptr<mysql_binding> &fields);
+
+            /* non-copyable boilerplate */
             virtual ~mysql_stmt_row();
-            mysql_stmt_row(const mysql_stmt_row &other);
+            mysql_stmt_row(const mysql_stmt_row &other) = delete;
             mysql_stmt_row(mysql_stmt_row &&other);
-            mysql_stmt_row &operator=(const mysql_stmt_row &other);
+            mysql_stmt_row &operator=(const mysql_stmt_row &other) = delete;
             mysql_stmt_row &operator=(mysql_stmt_row &&other);
 
-            std::string column_name(size_t nPosition) const;
-            column_type column(size_t nPosition) const;
+            /* row_impl overrides */
+            std::string column_name(size_t position) const;
+            column_type column(size_t position) const;
             column_type column(const std::string &name) const;
-            size_t size() const;
-            bool is_valid() const;
-        };
-
-        /*!
-         * a row that contains pre-fetched columns
-         */
-        class mysql_cached_row : public row_impl
-        {
-            friend class mysql_stmt_resultset;
-
-           private:
-            std::vector<std::shared_ptr<mysql_cached_column>> columns_;
-
-           public:
-            mysql_cached_row(sqldb *db, const std::shared_ptr<MYSQL_RES> &metadata, mysql_binding &fields);
-            mysql_cached_row(sqldb *db, const std::shared_ptr<MYSQL_RES> &res, MYSQL_ROW row);
-            virtual ~mysql_cached_row() = default;
-            mysql_cached_row(const mysql_cached_row &other) = default;
-            mysql_cached_row(mysql_cached_row &&other) = default;
-            mysql_cached_row &operator=(const mysql_cached_row &other) = default;
-            mysql_cached_row &operator=(mysql_cached_row &&other) = default;
-
-            std::string column_name(size_t nPosition) const;
-            column_type column(size_t nPosition) const;
-            column_type column(const string &name) const;
             size_t size() const;
             bool is_valid() const;
         };

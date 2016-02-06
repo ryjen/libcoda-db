@@ -45,11 +45,11 @@ namespace arg3
 
         row_impl::column_type sqlite3_row::column(size_t nPosition) const
         {
-            if(nPosition >= size()) {
+            if (nPosition >= size()) {
                 throw no_such_column_exception();
             }
 
-            if (db_->cache_level() == sqldb::CACHE_COLUMN)
+            if (db_->cache_level() == cache::Column)
                 return row_impl::column_type(make_shared<sqlite3_cached_column>(stmt_, nPosition));
             else
                 return row_impl::column_type(make_shared<sqlite3_column>(stmt_, nPosition));
@@ -73,7 +73,7 @@ namespace arg3
 
         string sqlite3_row::column_name(size_t nPosition) const
         {
-            if(nPosition >= size()) {
+            if (nPosition >= size()) {
                 throw no_such_column_exception();
             }
 
@@ -128,7 +128,7 @@ namespace arg3
 
         row_impl::column_type sqlite3_cached_row::column(size_t nPosition) const
         {
-            if(nPosition >= size()) {
+            if (nPosition >= size()) {
                 throw no_such_column_exception();
             }
 
@@ -151,7 +151,7 @@ namespace arg3
 
         string sqlite3_cached_row::column_name(size_t nPosition) const
         {
-            if(nPosition >= size()) {
+            if (nPosition >= size()) {
                 throw no_such_column_exception();
             }
 

@@ -16,6 +16,10 @@ find_package(MySQL)
 find_package(SQLite3)
 find_package(PostgreSQL)
 
+find_program(HEADERDOC headerdoc2html)
+find_program(GATHERDOC gatherheaderdoc)
+find_program(DOXYGEN doxygen)
+
 # add target for code coverage
 if(CODE_COVERAGE)
 	include(CodeCoverage)
@@ -42,3 +46,9 @@ enable_testing()
 include(MemCheckTest)
 add_opt_memcheck_test(MEMORY_CHECK ${PROJECT_NAME}-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test)
 
+if (HEADERDOC)
+  add_custom_target(html COMMAND ${HEADERDOC} -o ${PROJECT_BINARY_DIR}/html ${CMAKE_SOURCE_DIR}/src/*.h
+                                 COMMAND ${GATHERDOC} ${PROJECT_BINARY_DIR}/html)
+elseif (DOXYGEN)
+    add_custom_target(html COMMAND ${DOXYGEN} -w html Doxyfile)
+endif()

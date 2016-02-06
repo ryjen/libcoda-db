@@ -134,7 +134,7 @@ namespace arg3
             return *this;
         }
 
-        postgres_statement &postgres_statement::bind(size_t index, const sql_null_t &value)
+        postgres_statement &postgres_statement::bind(size_t index, const sql_null_type &value)
         {
             bindings_.bind(index, value);
             return *this;
@@ -151,10 +151,7 @@ namespace arg3
 
             stmt_ = shared_ptr<PGresult>(res, helper::postgres_res_delete());
 
-            if (db_->cache_level() == sqldb::CACHE_RESULTSET)
-                return resultset(make_shared<postgres_cached_resultset>(db_, stmt_));
-            else
-                return resultset(make_shared<postgres_resultset>(db_, stmt_));
+            return resultset(make_shared<postgres_resultset>(db_, stmt_));
         }
 
         bool postgres_statement::result()

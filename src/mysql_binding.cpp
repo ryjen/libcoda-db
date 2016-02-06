@@ -304,6 +304,8 @@ namespace arg3
                 value_[index - 1].buffer_type = MYSQL_TYPE_LONG;
                 value_[index - 1].buffer = helper::to_ptr(value);
                 value_[index - 1].buffer_length = sizeof(value);
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -314,6 +316,8 @@ namespace arg3
                 value_[index - 1].buffer_type = MYSQL_TYPE_LONGLONG;
                 value_[index - 1].buffer = helper::to_ptr(value);
                 value_[index - 1].buffer_length = sizeof(value);
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -324,6 +328,8 @@ namespace arg3
                 value_[index - 1].buffer_type = MYSQL_TYPE_DOUBLE;
                 value_[index - 1].buffer = helper::to_ptr(value);
                 value_[index - 1].buffer_length = sizeof(value);
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -339,6 +345,8 @@ namespace arg3
                     value_[index - 1].length = c_alloc<unsigned long>();
                 }
                 *value_[index - 1].length = size;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -354,6 +362,8 @@ namespace arg3
                     value_[index - 1].length = c_alloc<unsigned long>();
                 }
                 *value_[index - 1].length = size;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -370,14 +380,18 @@ namespace arg3
                     value_[index - 1].length = c_alloc<unsigned long>();
                 }
                 *value_[index - 1].length = value.size();
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
         }
-        mysql_binding &mysql_binding::bind(size_t index, const sql_null_t &value)
+        mysql_binding &mysql_binding::bind(size_t index, const sql_null_type &value)
         {
             if (reallocate_value(index)) {
                 value_[index - 1].buffer_type = MYSQL_TYPE_NULL;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
             return *this;
         }

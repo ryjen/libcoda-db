@@ -1,5 +1,5 @@
 /*!
- * @header Base Query
+ * @file query.h
  * implementation of a query
  * @copyright ryan jennings (arg3.com), 2013
  */
@@ -25,6 +25,7 @@ namespace arg3
         class query : public bindable
         {
             friend class sqldb;
+
             /*!
             * ensures that the binding storage array is large enough
             * @param index the parameter index for binding
@@ -56,10 +57,20 @@ namespace arg3
              */
             query(query &&other);
 
+            /*!
+             * deconstructor
+             */
             virtual ~query();
 
+            /*!
+             * resets this query for re-execution
+             */
             virtual void reset();
 
+            /*!
+             * get the database in use
+             * @return the database object
+             */
             sqldb *db() const;
 
             /*!
@@ -72,48 +83,21 @@ namespace arg3
              */
             query &operator=(query &&other);
 
-            /*!
-             * binds a string to a parameterized query
-             */
+            /* bindable overrides */
             query &bind(size_t index, const std::string &value, int len = -1);
-
-            /*!
-             * binds a wide character string to a parameterized query
-             */
             query &bind(size_t index, const std::wstring &value, int len = -1);
-
-            /*!
-             * binds an integer to a parameterized query
-             */
             query &bind(size_t index, int value);
-
-            /*!
-             * binds a 64 bit integer to a parameterized query
-             */
             query &bind(size_t index, long long value);
-
-            /*!
-             * binds a null value
-             */
             query &bind(size_t index);
-
-            /*!
-             * binds a double to a parameterized query
-             */
             query &bind(size_t index, double value);
-
-            /*!
-             * binds a sql_blob type to a parameterized query
-             */
             query &bind(size_t index, const sql_blob &value);
+            query &bind(size_t index, const sql_null_type &value);
 
             /*!
-             * binds a null type to a parameterized query
-             */
-            query &bind(size_t index, const sql_null_t &value);
-
-            /*!
-             * binds an arbitrary sql value to a parameterized query
+             * bind an arbitrary value
+             * @param  index the index of the binding
+             * @param  v     the value to bind
+             * @return       a reference to this instance
              */
             query &bind_value(size_t index, const sql_value &v);
 
@@ -122,6 +106,10 @@ namespace arg3
              */
             std::string last_error();
 
+            /*!
+             * tests if this query is valid
+             * @return true if the internals are open and valid
+             */
             bool is_valid() const;
         };
     }

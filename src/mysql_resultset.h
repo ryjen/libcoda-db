@@ -45,41 +45,18 @@ namespace arg3
              */
             mysql_resultset(mysql_db *db, const std::shared_ptr<MYSQL_RES> &res);
 
-            /* do not allow copying */
+            /* non-copyable boilerplate */
             mysql_resultset(const mysql_resultset &other) = delete;
-            mysql_resultset &operator=(const mysql_resultset &other) = delete;
-
-            /* allow moving */
             mysql_resultset(mysql_resultset &&other);
+            mysql_resultset &operator=(const mysql_resultset &other) = delete;
             mysql_resultset &operator=(mysql_resultset &&other);
-
-            /* boilerplate */
             virtual ~mysql_resultset();
 
-            /*!
-             * @return true if this database internals are open and valid
-             */
+            /* resultset_impl overrides */
             bool is_valid() const;
-
-            /*!
-             * @return the current row in the result set
-             */
             row current_row();
-
-            /*!
-             * resets the position in the result set
-             */
             void reset();
-
-            /*!
-             * moves to the next row in the result set
-             * @return false if there are no more rows or an error occurs
-             */
             bool next();
-
-            /*!
-             * @return the number of rows in the result set
-             */
             size_t size() const;
         };
 
@@ -109,111 +86,25 @@ namespace arg3
              */
             mysql_stmt_resultset(mysql_db *db, const std::shared_ptr<MYSQL_STMT> &stmt);
 
-            /* non-copyable */
+            /* non-copyable boilerplate */
             mysql_stmt_resultset(const mysql_stmt_resultset &other) = delete;
             mysql_stmt_resultset &operator=(const mysql_stmt_resultset &other) = delete;
-
-            /* allow moving */
             mysql_stmt_resultset(mysql_stmt_resultset &&other);
             mysql_stmt_resultset &operator=(mysql_stmt_resultset &&other);
 
             /* boilerplate */
             virtual ~mysql_stmt_resultset();
 
-            /*!
-             * @return true if the database internals are open and valid
-             */
+            /* resultset_impl overrides */
             bool is_valid() const;
-
-            /*!
-             * @return the current selected row in the result set
-             */
             row current_row();
-
-            /*!
-             * resets the position in the result set
-             */
             void reset();
-
-            /*!
-             * moves to the next row in the result set
-             * @return false if there are no more rows or an error occurs
-             */
             bool next();
-
-            /*!
-             * @return the number of rows in the result set
-             */
             size_t size() const;
         };
 
-        /*!
-         * a resultset that contains pre-fetched rows with no database dependency
-         */
-        class mysql_cached_resultset : public resultset_impl
+        namespace helper
         {
-            friend class select_query;
-            friend class row;
-            friend class sqldb;
-            template <typename, typename>
-            friend class resultset_iterator;
-
-           private:
-            std::vector<std::shared_ptr<row_impl>> rows_;
-            int currentRow_;
-
-           public:
-            /*!
-             * @param db the database in use
-             * @param stmt the statement being executed
-             */
-            mysql_cached_resultset(sqldb *db, const std::shared_ptr<MYSQL_STMT> &stmt);
-
-            /*!
-             * @param db the database in use
-             * @param res the result of a query
-             */
-            mysql_cached_resultset(mysql_db *db, const std::shared_ptr<MYSQL_RES> &res);
-
-            /* non-copyable */
-            mysql_cached_resultset(const mysql_cached_resultset &other) = delete;
-            mysql_cached_resultset &operator=(const mysql_cached_resultset &other) = delete;
-
-            /* allow moving */
-            mysql_cached_resultset(mysql_cached_resultset &&other);
-            mysql_cached_resultset &operator=(mysql_cached_resultset &&other);
-
-            /* boilerplate */
-            virtual ~mysql_cached_resultset();
-
-            /*!
-             * @return true if the internals are valid
-             */
-            bool is_valid() const;
-
-            /*!
-             * @return the current selected row in the result set
-             */
-            row current_row();
-
-            /*!
-             * resets the position in the result set
-             */
-            void reset();
-
-            /*!
-             * moves to the next row in the result set
-             * @return false if there are no more rows or an error occurs
-             */
-            bool next();
-
-            /*!
-             * @return the number of rows in the result set
-             */
-            size_t size() const;
-        };
-
-        namespace helper {
             /*! helper to clean up after a query result */
             struct mysql_res_delete {
                 void operator()(MYSQL_RES *p) const;

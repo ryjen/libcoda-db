@@ -1,4 +1,7 @@
-
+/*!
+ * @file row.h
+ * A row in a result set
+ */
 #ifndef ARG3_DB_ROW_H
 #define ARG3_DB_ROW_H
 
@@ -17,6 +20,7 @@ namespace arg3
         {
            public:
             typedef arg3::db::column column_type;
+
             row_impl() = default;
             row_impl(const row_impl &other) = default;
             row_impl(row_impl &&other) = default;
@@ -24,14 +28,37 @@ namespace arg3
             row_impl &operator=(row_impl &&other) = default;
             virtual ~row_impl() = default;
 
-            virtual std::string column_name(size_t nPosition) const = 0;
+            /*!
+             * gets the name of a column in the row
+             * @param  position the index of the column
+             * @return          the name of the column at the given position
+             */
+            virtual std::string column_name(size_t position) const = 0;
 
-            virtual column_type column(size_t nPosition) const = 0;
+            /*!
+             * gets a column in the row
+             * @param  position the index of the column
+             * @return          the column object
+             */
+            virtual column_type column(size_t position) const = 0;
 
+            /*!
+             * gets a column in the row
+             * @param  name the name of the column
+             * @return      the column object
+             */
             virtual column_type column(const std::string &name) const = 0;
 
+            /*!
+             * gets the number of columns in the row
+             * @return the number of columns;
+             */
             virtual size_t size() const = 0;
 
+            /*!
+             * tests if the row internals are valid
+             * @return true if the row is valid
+             */
             virtual bool is_valid() const = 0;
         };
 
@@ -49,7 +76,9 @@ namespace arg3
             {
                 assert(row_ != nullptr);
 
-                if (index >= 0 && index < row_->size()) currentValue_ = row_->column(index);
+                if (index >= 0 && index < row_->size()) {
+                    currentValue_ = row_->column(index);
+                }
             }
 
            public:
@@ -57,7 +86,7 @@ namespace arg3
             {
             }
 
-            row_iterator(const std::shared_ptr<RowType> &pRow, int nPosition) : row_(pRow), position_(nPosition)
+            row_iterator(const std::shared_ptr<RowType> &pRow, int position) : row_(pRow), position_(position)
             {
             }
 
@@ -220,46 +249,115 @@ namespace arg3
             typedef row_iterator<column_type, column_type, row_impl> iterator;
             typedef row_iterator<const column_type, column_type, const row_impl> const_iterator;
 
+            /*!
+             * default constructor
+             */
             row();
+
+            /*!
+             * @param impl  the row implementation
+             */
             row(const std::shared_ptr<row_impl> &impl);
+
+            /* rule of 3 + move */
             row(const row &other);
             row(row &&other);
             virtual ~row();
-
             row &operator=(const row &other);
             row &operator=(row &&other);
 
-            // Methods
+            /*!
+             * @return an iterator to the first column
+             */
             iterator begin();
 
+            /*!
+             * @return an const iterator to the first column
+             */
             const_iterator begin() const;
 
+            /*!
+             * @return an immutable iterator to the first column
+             */
             const_iterator cbegin() const;
 
+            /*!
+             * @return an iterator to after the last column
+             */
             iterator end();
 
+            /*!
+             * @return a const iterator to after the last column
+             */
             const_iterator end() const;
 
+            /*!
+             * @return an immutable iterator to after the last column
+             */
             const_iterator cend() const;
 
-            column_type operator[](size_t nPosition) const;
+            /*!
+             * gets a column at a position
+             * @param  position   the index of the column
+             * @return            the column object
+             */
+            column_type operator[](size_t position) const;
 
+            /*!
+             * gets a column by a name
+             * @param  name the name of the column
+             * @return      the column object
+             */
             column_type operator[](const string &name) const;
 
+            /*!
+             * gets the column name
+             * @param  nPosition the index of the column
+             * @return           the column name
+             */
             std::string column_name(size_t nPosition) const;
 
+            /*!
+             * get a column by index
+             * @param  nPosition the index of the column
+             * @return           the column object
+             */
             column_type column(size_t nPosition) const;
 
+            /*!
+             * gets a column by name
+             * @param  name the name of the column
+             * @return      the column object
+             */
             column_type column(const std::string &name) const;
 
+            /*!
+             * gets the number of columns in the row
+             * @return the number of columns
+             */
             size_t size() const;
 
+            /*!
+             * tests if this row has no data
+             * @return true if the row has no data
+             */
             bool empty() const;
 
+            /*!
+             * tests if the implementation is valid
+             * @return true if valid
+             */
             bool is_valid() const;
 
+            /*!
+             * performs a callback for each column
+             * @param funk the callback
+             */
             void for_each(const std::function<void(const db::column &)> &funk) const;
 
+            /*!
+             * gets the implementation for this row
+             */
             std::shared_ptr<row_impl> impl() const;
         };
     }

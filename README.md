@@ -39,14 +39,6 @@ options supported are:
     -DCODE_COVERAGE=ON   :   enable code coverage using lcov
     -DMEMORY_CHECK=ON    :   enable valgrind memory checking on tests
 
-Coding Style
--------------
-
-- class/struct/method names are all lower case with underscores separating words
-- non public members have an underscore at end of the name
-- macros, enums and constants are all upper case with underscores seperating words
-- braces for types on a new line, functions and methods can be same line
-
 Model
 -----
 
@@ -279,6 +271,14 @@ for(int i = 1000; i < 3000; i++) {
 }
 ```
 
+Caching
+-------
+
+For sqlite3 databases results from a query will have a dependency on a database pointer that must remain open.
+Memory caching was add to pre-fetch the values and eliminate the dependency if needed.  It can be done at the resultset, row or column level.
+
+Caching is also used for looking up schemas to reduce hits to the database.
+
 Alternatives
 ============
 
@@ -290,5 +290,6 @@ TODO / ROADMAP
 ==============
 
 * More and better quality tests, at least 95% test coverage
+* Support more sql data types and refactor the type handling/converting
 
 

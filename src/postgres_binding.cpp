@@ -243,6 +243,8 @@ namespace arg3
                 types_[index - 1] = sizeof(int) == 2 ? INT2OID : sizeof(int) == 4 ? INT4OID : INT8OID;
                 lengths_[index - 1] = sizeof(int);
                 formats_[index - 1] = 0;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -254,6 +256,8 @@ namespace arg3
                 types_[index - 1] = sizeof(long long) == 2 ? INT2OID : sizeof(long long) == 4 ? INT4OID : INT8OID;
                 lengths_[index - 1] = sizeof(long long);
                 formats_[index - 1] = 0;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -265,6 +269,8 @@ namespace arg3
                 types_[index - 1] = sizeof(double) == 8 ? FLOAT8OID : FLOAT4OID;
                 lengths_[index - 1] = sizeof(double);
                 formats_[index - 1] = 0;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -276,6 +282,8 @@ namespace arg3
                 types_[index - 1] = TEXTOID;
                 lengths_[index - 1] = value.size();
                 formats_[index - 1] = 0;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -290,6 +298,8 @@ namespace arg3
                 types_[index - 1] = TEXTOID;
                 lengths_[index - 1] = value.size();
                 formats_[index - 1] = 0;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -301,11 +311,13 @@ namespace arg3
                 types_[index - 1] = BYTEAOID;
                 lengths_[index - 1] = value.size();
                 formats_[index - 1] = 1;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
         }
-        postgres_binding &postgres_binding::bind(size_t index, const sql_null_t &value)
+        postgres_binding &postgres_binding::bind(size_t index, const sql_null_type &value)
         {
             if (reallocate_value(index)) {
                 if (values_[index - 1]) {
@@ -315,6 +327,8 @@ namespace arg3
                 lengths_[index - 1] = 0;
                 types_[index - 1] = UNKNOWNOID;
                 formats_[index - 1] = 0;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
             }
             return *this;
         }

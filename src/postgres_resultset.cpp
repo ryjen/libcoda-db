@@ -74,68 +74,7 @@ namespace arg3
 
         row postgres_resultset::current_row()
         {
-            if (db_->cache_level() == sqldb::CACHE_ROW)
-                return row(make_shared<postgres_cached_row>(db_, stmt_, currentRow_));
-            else
-                return row(make_shared<postgres_row>(db_, stmt_, currentRow_));
-        }
-
-        /* cached version */
-
-        postgres_cached_resultset::postgres_cached_resultset(postgres_db *db, const shared_ptr<PGresult> &stmt) : db_(db), currentRow_(-1)
-        {
-            for (size_t i = 0; i < PQntuples(stmt.get()); i++) {
-                rows_.push_back(make_shared<postgres_cached_row>(db, stmt, i));
-            }
-        }
-
-        postgres_cached_resultset::postgres_cached_resultset(postgres_cached_resultset &&other)
-            : db_(other.db_), rows_(std::move(other.rows_)), currentRow_(other.currentRow_)
-        {
-            other.db_ = nullptr;
-        }
-
-        postgres_cached_resultset::~postgres_cached_resultset()
-        {
-        }
-
-        postgres_cached_resultset &postgres_cached_resultset::operator=(postgres_cached_resultset &&other)
-        {
-            db_ = other.db_;
-            rows_ = std::move(other.rows_);
-            currentRow_ = other.currentRow_;
-            other.db_ = nullptr;
-
-            return *this;
-        }
-
-        bool postgres_cached_resultset::is_valid() const
-        {
-            return db_ != nullptr;
-        }
-
-        size_t postgres_cached_resultset::size() const
-        {
-            return rows_.size();
-        }
-
-        bool postgres_cached_resultset::next()
-        {
-            if (rows_.empty()) return false;
-
-            return ++currentRow_ < static_cast<int>(rows_.size());
-        }
-        void postgres_cached_resultset::reset()
-        {
-            currentRow_ = -1;
-        }
-
-        row postgres_cached_resultset::current_row()
-        {
-            if (currentRow_ >= 0 && currentRow_ < static_cast<int>(rows_.size()))
-                return row(rows_[currentRow_]);
-            else
-                return row();
+            return row(make_shared<postgres_row>(db_, stmt_, currentRow_));
         }
     }
 }

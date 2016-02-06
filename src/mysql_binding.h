@@ -20,8 +20,6 @@ namespace arg3
 {
     namespace db
     {
-        class sql_value;
-
         /*!
          * makes binding mysql queries simpler
          */
@@ -73,12 +71,6 @@ namespace arg3
             virtual ~mysql_binding();
 
             /*!
-             * prepares the statement to receive results based on the bindings
-             * @param stmt the raw mysql statement to bind to
-             */
-            void bind_result(MYSQL_STMT *stmt) const;
-
-            /*!
              * @return the size (number of bindings) of this instance
              */
             size_t size() const;
@@ -101,20 +93,26 @@ namespace arg3
              */
             int sql_type(size_t index) const;
 
-            /*! bindable overrides */
+            /* bindable overrides */
             mysql_binding &bind(size_t index, int value);
             mysql_binding &bind(size_t index, long long value);
             mysql_binding &bind(size_t index, double value);
             mysql_binding &bind(size_t index, const std::string &value, int len = -1);
             mysql_binding &bind(size_t index, const std::wstring &value, int len = -1);
             mysql_binding &bind(size_t index, const sql_blob &value);
-            mysql_binding &bind(size_t index, const sql_null_t &value);
+            mysql_binding &bind(size_t index, const sql_null_type &value);
 
             /*!
              * puts values into a query before execution
              * @param stmt the statemnt to bind to
              */
             void bind_params(MYSQL_STMT *stmt) const;
+
+            /*!
+             * prepares the statement to receive results based on the bindings
+             * @param stmt the raw mysql statement to bind to
+             */
+            void bind_result(MYSQL_STMT *stmt) const;
 
             /*!
              * reset all the bindings
