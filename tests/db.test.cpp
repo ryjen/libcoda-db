@@ -110,15 +110,18 @@ go_bandit([]() {
 
         it("can_parse_uri", []() {
             try {
+#ifdef HAVE_LIBSQLITE3
                 auto file = sqldb::from_uri("file://test.db");
-
                 AssertThat(file.get() != NULL, IsTrue());
-
+#endif
+#ifdef HAVE_LIBMYSQLCLIENT
                 auto mysql = sqldb::from_uri("mysql://localhost:4000/test");
                 AssertThat(mysql.get() != NULL, IsTrue());
-
+#endif
+#ifdef HAVE_LIBPQ
                 auto postgres = sqldb::from_uri("postgres://localhost:4000/test");
                 AssertThat(postgres.get() != NULL, IsTrue());
+#endif
 
             } catch (const std::exception &e) {
                 cerr << e.what() << endl;
