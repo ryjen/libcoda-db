@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     }
 #endif
 #else
-    cout << "Mysql not supported" << endl;
+    cout << "Postgres not supported" << endl;
 #endif
     return 0;
 }
