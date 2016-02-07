@@ -28,6 +28,7 @@ addons:
       - libmysqlclient-dev
       - libsqlite3-dev
       - libpq-dev
+      - postgresql-server-dev-9.5
       - cmake-data
       - cmake
 services:

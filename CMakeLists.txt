@@ -14,20 +14,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 # check for libraries
 find_package(MySQL)
 find_package(SQLite3)
-find_path(PostgreSQL_TYPE_INCLUDE_DIR
-  NAMES catalog/pg_type.h
-  PATHS
-   # Look in other places.
-   ${PostgreSQL_ROOT_DIRECTORIES}
-  PATH_SUFFIXES
-    postgresql
-    pgsql/server
-    postgresql/server
-    include/server
-  # Help the user find it if we cannot.
-  DOC "The ${PostgreSQL_INCLUDE_DIR_MESSAGE}"
-)
-find_package(PostgreSQL )
+find_package(PostgreSQL)
 
 find_program(HEADERDOC headerdoc2html)
 find_program(GATHERDOC gatherheaderdoc)
