@@ -38,8 +38,7 @@ namespace arg3
 
             for (auto &row : results) {
                 if (row.is_valid()) {
-                    auto record = make_shared<T>();
-                    record->init(row);
+                    auto record = make_shared<T>(row);
                     funk(record);
                 }
             }
@@ -56,7 +55,7 @@ namespace arg3
             /* convert sql rows to objects */
             std::vector<std::shared_ptr<T>> items;
 
-            db::find_all<T>(schema, [&](std::shared_ptr<T> record) { items.push_back(record); });
+            db::find_all<T>(schema, [&items](std::shared_ptr<T> record) { items.push_back(record); });
 
             return items;
         }
@@ -74,20 +73,15 @@ namespace arg3
         {
             select_query query(schema);
 
-            query.where(name + " = $1");
-
-            query.bind_value(1, value);
+            query.where(name + " = $1", value);
 
             auto results = query.execute();
 
             if (!results.is_valid()) return;
 
             for (auto &row : results) {
-                if (row.is_valid()) {
-                    auto record = make_shared<T>();
-                    record->init(row);
-                    funk(record);
-                }
+                auto record = make_shared<T>(row);
+                funk(record);
             }
         }
 
@@ -104,7 +98,7 @@ namespace arg3
             /* convert sql rows to objects */
             std::vector<shared_ptr<T>> items;
 
-            db::find_by<T>(schema, name, value, [&](std::shared_ptr<T> record) { items.push_back(record); });
+            db::find_by<T>(schema, name, value, [&items](std::shared_ptr<T> record) { items.push_back(record); });
 
             return items;
         }
@@ -269,6 +263,11 @@ namespace arg3
                 on_record_init(values);
             }
 
+            /*!
+             * called when a record is read from the database
+             * Overide in subclasses for custom loading actions
+             * @param row the values read from the database
+             */
             virtual void on_record_init(const row &values)
             {
             }
@@ -313,9 +312,7 @@ namespace arg3
 
                 select_query query(schema());
 
-                query.where(idColumnName_ + " = $1");
-
-                query.bind_value(1, get(idColumnName_));
+                query.where(idColumnName_ + " = $1", get(idColumnName_));
 
                 return query.count() > 0;
             }
@@ -425,9 +422,7 @@ namespace arg3
             {
                 select_query query(schema());
 
-                query.where(idColumnName_ + " = $1");
-
-                query.bind_value(1, value);
+                query.where(idColumnName_ + " = $1", value);
 
                 auto results = query.execute();
 
@@ -450,6 +445,7 @@ namespace arg3
             {
                 return arg3::db::find_by<T>(schema(), name, value);
             }
+
             /*!
              * find records by a column and its value
              * @param name the name of the column to search by
@@ -483,11 +479,7 @@ namespace arg3
 
                 select_query query(schema());
 
-                query.where(name + " = $1");
-
-                query.limit("1");
-
-                query.bind_value(1, get(name));
+                query.where(name + " = $1", get(name)).limit("1");
 
                 auto result = query.execute();
 
@@ -510,9 +502,7 @@ namespace arg3
                 }
                 delete_query query(schema());
 
-                query.where(idColumnName_ + " = $1");
-
-                query.bind_value(1, id());
+                query.where(idColumnName_ + " = $1", id());
 
                 return query.execute();
             }

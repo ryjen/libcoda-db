@@ -137,10 +137,26 @@ namespace arg3
              */
             update_query &where(const where_clause &value);
 
+            template <typename... List>
+            update_query &where(const where_clause &value, const List &... args)
+            {
+                where(value);
+                bind(args...);
+                return *this;
+            }
+
             /*!
              * @param value the where sql/string to set
              */
             where_clause &where(const string &value);
+
+            template <typename... List>
+            update_query &where(const string &value, const List &... args)
+            {
+                where(value);
+                bind(args...);
+                return *this;
+            }
 
             /*!
              * @return the string/sql representation of this query

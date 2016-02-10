@@ -34,6 +34,9 @@ namespace arg3
                 throw binding_error("no bindable object for sql value binding");
             }
 
+            // TODO: this needs to be improved....
+            //       possibly a mapping of types but is also dependent
+            //       on the types supported by each database
             if (is_null()) {
                 obj->bind(index, sql_null);
             } else if (is_numeric()) {

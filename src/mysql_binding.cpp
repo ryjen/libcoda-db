@@ -17,6 +17,152 @@ namespace arg3
 {
     namespace db
     {
+        namespace mysql_data_mapper
+        {
+            /*
+             * Key method here, handles conversion from MYSQL_BIND to sql_value
+             * TODO: test this more
+             */
+            sql_value to_value(MYSQL_BIND *binding)
+            {
+                if (binding == nullptr) {
+                    return sql_null;
+                }
+
+                switch (binding->buffer_type) {
+                    case MYSQL_TYPE_BIT:
+                    case MYSQL_TYPE_TINY:
+                    case MYSQL_TYPE_SHORT:
+                    case MYSQL_TYPE_LONG:
+                    case MYSQL_TYPE_INT24: {
+                        long *p = static_cast<long *>(binding->buffer);
+                        return *p;
+                    }
+                    case MYSQL_TYPE_LONGLONG: {
+                        long long *p = static_cast<long long *>(binding->buffer);
+                        return *p;
+                    }
+                    case MYSQL_TYPE_NULL:
+                        return sql_null;
+                    case MYSQL_TYPE_TIME:
+                    case MYSQL_TYPE_DATE:
+                    case MYSQL_TYPE_YEAR:
+                    case MYSQL_TYPE_NEWDATE:
+                    case MYSQL_TYPE_TIMESTAMP:
+                    case MYSQL_TYPE_DATETIME: {
+                        struct tm *tp;
+
+                        if ((tp = getdate(static_cast<char *>(binding->buffer)))) {
+                            return mktime(tp);
+                        } else {
+                            long *p = static_cast<long *>(binding->buffer);
+                            return *p;
+                        }
+                    }
+                    case MYSQL_TYPE_VAR_STRING:
+                    case MYSQL_TYPE_VARCHAR:
+                    case MYSQL_TYPE_DECIMAL:
+                    case MYSQL_TYPE_SET:
+                    case MYSQL_TYPE_ENUM:
+                    case MYSQL_TYPE_GEOMETRY:
+                    case MYSQL_TYPE_NEWDECIMAL:
+                    case MYSQL_TYPE_STRING:
+                    default: {
+                        return static_cast<const char *>(binding->buffer);
+                    }
+                    case MYSQL_TYPE_FLOAT:
+                    case MYSQL_TYPE_DOUBLE: {
+                        double *p = static_cast<double *>(binding->buffer);
+                        return *p;
+                    }
+                    case MYSQL_TYPE_TINY_BLOB:
+                    case MYSQL_TYPE_MEDIUM_BLOB:
+                    case MYSQL_TYPE_LONG_BLOB:
+                    case MYSQL_TYPE_BLOB: {
+                        if (binding->length) {
+                            return sql_blob(binding->buffer, *binding->length);
+                        }
+
+                        return sql_blob();
+                    }
+                }
+            }
+
+            /*
+             * Key method here, handles conversion from a field to sql_value
+             * TODO: test this more
+             */
+            sql_value to_value(int type, const char *value, size_t length)
+            {
+                if (value == nullptr) {
+                    throw sql_null;
+                }
+
+                switch (type) {
+                    case MYSQL_TYPE_BIT:
+                    case MYSQL_TYPE_TINY:
+                    case MYSQL_TYPE_SHORT:
+                    case MYSQL_TYPE_LONG: {
+                        try {
+                            return std::stoi(value);
+                        } catch (const std::exception &e) {
+                            return sql_value();
+                        }
+                    }
+                    case MYSQL_TYPE_INT24:
+                    case MYSQL_TYPE_LONGLONG: {
+                        try {
+                            return std::stoll(value);
+                        } catch (const std::exception &e) {
+                            return sql_value();
+                        }
+                    }
+                    case MYSQL_TYPE_DECIMAL:
+                    case MYSQL_TYPE_VARCHAR:
+                    case MYSQL_TYPE_VAR_STRING:
+                    case MYSQL_TYPE_NEWDECIMAL:
+                    case MYSQL_TYPE_GEOMETRY:
+                    case MYSQL_TYPE_ENUM:
+                    case MYSQL_TYPE_SET:
+                    case MYSQL_TYPE_STRING:
+                    default:
+                        return value;
+
+
+                    case MYSQL_TYPE_NEWDATE:
+                    case MYSQL_TYPE_DATE:
+                    case MYSQL_TYPE_DATETIME:
+                    case MYSQL_TYPE_TIMESTAMP:
+                    case MYSQL_TYPE_YEAR:
+                    case MYSQL_TYPE_TIME: {
+                        struct tm *tp;
+
+                        if ((tp = getdate(value))) {
+                            return mktime(tp);
+                        }
+
+                        return sql_value();
+                    }
+                    case MYSQL_TYPE_FLOAT:
+                    case MYSQL_TYPE_DOUBLE: {
+                        try {
+                            return std::stod(value);
+                        } catch (const std::exception &e) {
+                            return sql_value();
+                        }
+                    }
+                    case MYSQL_TYPE_TINY_BLOB:
+                    case MYSQL_TYPE_MEDIUM_BLOB:
+                    case MYSQL_TYPE_LONG_BLOB:
+                    case MYSQL_TYPE_BLOB: {
+                        return sql_blob(value, length);
+                    }
+                    case MYSQL_TYPE_NULL:
+                        return sql_null;
+                }
+            }
+        }
+
         namespace helper
         {
             // small util method to make a dynamic c pointer for a type
@@ -199,66 +345,11 @@ namespace arg3
 
         sql_value mysql_binding::to_value(size_t index) const
         {
-            if (index >= size_ || value_[index].buffer == nullptr) return sql_null;
-
-            switch (value_[index].buffer_type) {
-                case MYSQL_TYPE_BIT:
-                case MYSQL_TYPE_TINY:
-                case MYSQL_TYPE_SHORT:
-                case MYSQL_TYPE_LONG:
-                case MYSQL_TYPE_INT24: {
-                    long *p = static_cast<long *>(value_[index].buffer);
-                    return *p;
-                }
-                case MYSQL_TYPE_LONGLONG: {
-                    long long *p = static_cast<long long *>(value_[index].buffer);
-                    return *p;
-                }
-                case MYSQL_TYPE_NULL:
-                    return sql_null;
-                case MYSQL_TYPE_TIME:
-                case MYSQL_TYPE_DATE:
-                case MYSQL_TYPE_YEAR:
-                case MYSQL_TYPE_NEWDATE:
-                case MYSQL_TYPE_TIMESTAMP:
-                case MYSQL_TYPE_DATETIME: {
-                    struct tm *tp;
-
-                    if ((tp = getdate(static_cast<char *>(value_[index].buffer)))) {
-                        return mktime(tp);
-                    } else {
-                        long *p = static_cast<long *>(value_[index].buffer);
-                        return *p;
-                    }
-                }
-                case MYSQL_TYPE_VAR_STRING:
-                case MYSQL_TYPE_VARCHAR:
-                case MYSQL_TYPE_DECIMAL:
-                case MYSQL_TYPE_SET:
-                case MYSQL_TYPE_ENUM:
-                case MYSQL_TYPE_GEOMETRY:
-                case MYSQL_TYPE_NEWDECIMAL:
-                case MYSQL_TYPE_STRING:
-                default: {
-                    return static_cast<const char *>(value_[index].buffer);
-                }
-                case MYSQL_TYPE_FLOAT:
-                case MYSQL_TYPE_DOUBLE: {
-                    double *p = static_cast<double *>(value_[index].buffer);
-
-                    return *p;
-                }
-                case MYSQL_TYPE_TINY_BLOB:
-                case MYSQL_TYPE_MEDIUM_BLOB:
-                case MYSQL_TYPE_LONG_BLOB:
-                case MYSQL_TYPE_BLOB: {
-                    if (value_[index].length) {
-                        return sql_blob(value_[index].buffer, *value_[index].length);
-                    }
-
-                    return sql_blob();
-                }
+            if (index >= size_ || value_[index].buffer == nullptr) {
+                return sql_null;
             }
+
+            return mysql_data_mapper::to_value(&value_[index]);
         }
 
         int mysql_binding::sql_type(size_t index) const

@@ -20,6 +20,12 @@ namespace arg3
 {
     namespace db
     {
+        namespace mysql_data_mapper
+        {
+            sql_value to_value(MYSQL_BIND *binding);
+            sql_value to_value(int type, const char *value, size_t length);
+        }
+
         /*!
          * makes binding mysql queries simpler
          */

@@ -17,6 +17,21 @@ namespace arg3
         class bindable
         {
            public:
+            template <typename T>
+            bindable &bind(size_t index, const T &value)
+            {
+                bind(index, value);
+                return *this;
+            }
+
+            template <typename T, typename... Args>
+            bindable &bind(size_t index, const T &value, const Args &... argv)
+            {
+                bind(index, value);
+                bind(index, argv...);
+                return *this;
+            }
+
             /*!
              * binds an integer value
              * @param  index the index of the binding

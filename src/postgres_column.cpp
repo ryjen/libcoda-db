@@ -5,16 +5,12 @@
 #ifdef HAVE_LIBPQ
 
 #include "postgres_column.h"
+#include "postgres_binding.h"
 
 namespace arg3
 {
     namespace db
     {
-        namespace helper
-        {
-            sql_value convert_raw_value(const char *, Oid, int);
-        }
-
         postgres_column::postgres_column(const shared_ptr<PGresult> &stmt, int row, int column) : stmt_(stmt), column_(column), row_(row)
 
         {
@@ -50,8 +46,8 @@ namespace arg3
                 throw no_such_column_exception();
             }
 
-            return helper::convert_raw_value(PQgetvalue(stmt_.get(), row_, column_), PQftype(stmt_.get(), column_),
-                                             PQgetlength(stmt_.get(), row_, column_));
+            return postgres_data_mapper::to_value(PQftype(stmt_.get(), column_), PQgetvalue(stmt_.get(), row_, column_),
+                                                  PQgetlength(stmt_.get(), row_, column_));
         }
 
         int postgres_column::sql_type() const

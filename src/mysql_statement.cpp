@@ -66,7 +66,7 @@ namespace arg3
             }
 
             // TODO: this needs to be fleshed out into being able to handle duplicate placeholders
-            // example: col1 = $1 and col2 = $1
+            // example: col1 = $1 AND col2 = $1
             string formatted_sql = regex_replace(sql, param_regex, param_repl);
 
             MYSQL_STMT *temp = mysql_stmt_init(db_->db_.get());

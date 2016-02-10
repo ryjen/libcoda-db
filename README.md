@@ -8,7 +8,7 @@ libarg3db
 
 a sqlite3, mysql and postgres wrapper / active record (ish) implementation
 
-Use in production at your own risk, I'm still doing quite a bit of testing, refactoring and new features.  Pull requests are welcomed...
+Use in production at your own risk, still doing quite a bit of testing, refactoring and new features.  Pull requests are welcomed...
 
 Why
 ---
@@ -28,7 +28,7 @@ git submodule update --init --recursive
 you can use [cmake](https://cmake.org) to generate for the build system of your choice.
 
 ```bash
-mkdir debug; cd debug; 
+mkdir debug; cd debug;
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 make
 make test
@@ -162,6 +162,8 @@ Binding parameters in queries should follow a doller sign index format:
 
  '$1', '$2', '$3', etc.
 
+ Note that mysql does not support re-using (more than one instance of) parameters in a query string as of 02/09/16.
+
 Basic Queries
 =============
 
@@ -171,8 +173,7 @@ Modify Queries
 /* insert a  user (INSERT INTO ..) */
 insert_query query(&testdb, "users"); /* auto find columns */
 
-/* this would be the column order in table, TODO: named parameter binding */
-/* NOTE: mysql does not support reusing parameters in the query */
+/* this would be the column order in the users table, TODO: named parameter binding */
 query.bind(1, 4321).bind(2, "dave").bind(3, "patterson");
 
 if (!query.execute())
@@ -185,10 +186,11 @@ else
 /* update a user (UPDATE ...) */
 update_query query(&testdb, "users", {"id", "first_name", "last_name"});
 
-/* using where clause literals WHERE .. OR .. */
-query.where("id = $1") || ("last_name = $1");
+/* using where clause WHERE .. OR .. */
+query.where("id = $4") || ("last_name = $5");
 
-query.bind(1, 3432).bind(2, "mark").bind(3, "anthony").bind(4, 1234).bind("henry");
+/* bind update columns and where clause */
+query.bind(1, 3432).bind(2, "mark").bind(3, "anthony").bind(4, 1234).bind(5, "henry");
 
 query.execute();
 ```
@@ -197,9 +199,7 @@ query.execute();
 /* delete a user (DELETE FROM ...) */
 delete_query query(&testdb, "users");
 
-query.where("id = $1") && "first_name = $2";
-
-query.bind(1, 1234).bind(2, "bob");
+query.where("id = $1 AND first_name = $2", 1234, "bob");
 
 query.execute();
 
@@ -211,9 +211,7 @@ Select Query
 /* select some users */
 select_query query(&testdb, "users");
 
-query.where("last_name = $1");
-
-query.bind(1, "Jenkins");
+query.where("last_name = $1 OR first_name = $2", "Jenkins", "Harry");
 
 auto results = query.execute();
 
@@ -292,6 +290,5 @@ TODO / ROADMAP
 
 * More and better quality tests, at least 95% test coverage
 * Support more sql data types and refactor the type handling/converting
-* make the binding interface a little nicer, maybe with variadic templates
-
-
+* Make the binding interface a little nicer, maybe with variadic templates
+*

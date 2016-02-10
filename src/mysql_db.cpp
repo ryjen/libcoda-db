@@ -166,9 +166,6 @@ namespace arg3
                 throw database_exception(last_error());
             }
 
-            // if (cache_level() == cache::ResultSet)
-            //    return resultset(make_shared<mysql_cached_resultset>(this, shared_ptr<MYSQL_RES>(res, helper::mysql_res_delete())));
-            // else
             return resultset(make_shared<mysql_resultset>(this, shared_ptr<MYSQL_RES>(res, helper::mysql_res_delete())));
         }
 

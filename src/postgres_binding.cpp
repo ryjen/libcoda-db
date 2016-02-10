@@ -24,11 +24,11 @@ namespace arg3
 {
     namespace db
     {
-        namespace helper
+        namespace postgres_data_mapper
         {
-            // Pretty immature implementation here
-            // TODO: beef up
-            sql_value convert_raw_value(const char *value, Oid type, int len)
+            // Key function here. Handles conversion from Oid to sql_value
+            // TODO: test more
+            sql_value to_value(Oid type, const char *value, int len)
             {
                 if (value == nullptr) {
                     return sql_null;
@@ -198,7 +198,7 @@ namespace arg3
             if (index >= size_ || values_ == nullptr || values_[index] == nullptr) {
                 return sql_null;
             }
-            return helper::convert_raw_value(values_[index], types_[index], lengths_[index]);
+            return postgres_data_mapper::to_value(types_[index], values_[index], lengths_[index]);
         }
 
         int postgres_binding::sql_type(size_t index) const

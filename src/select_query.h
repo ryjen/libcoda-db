@@ -90,12 +90,28 @@ namespace arg3
              */
             where_clause &where(const string &value);
 
+            template <typename... List>
+            select_query &where(const string &value, const List &... args)
+            {
+                where(value);
+                bind(args...);
+                return *this;
+            }
+
             /*!
              * adds a where clause to this query
              * @param  value the second where clause
              * @return       a reference to this
              */
             select_query &where(const where_clause &value);
+
+            template <typename... List>
+            select_query &where(const where_clause &value, const List &... args)
+            {
+                where(value);
+                bind(args...);
+                return *this;
+            }
 
             /*!
              * sets the limit by clause for this query

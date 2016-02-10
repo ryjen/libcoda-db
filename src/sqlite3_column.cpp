@@ -10,6 +10,29 @@ namespace arg3
 {
     namespace db
     {
+        namespace sqlite_data_mapper
+        {
+            sql_value to_value(const shared_ptr<sqlite3_stmt> &stmt, int column)
+            {
+                switch (sqlite3_column_type(stmt.get(), column)) {
+                    case SQLITE_INTEGER:
+                        return sqlite3_column_int64(stmt.get(), column);
+                    case SQLITE3_TEXT:
+                    default: {
+                        const unsigned char *textValue = sqlite3_column_text(stmt.get(), column);
+                        if (textValue != NULL) {
+                            return reinterpret_cast<const char *>(textValue);
+                        }
+                        return sql_value();
+                    }
+                    case SQLITE_FLOAT:
+                        return sqlite3_column_double(stmt.get(), column);
+                    case SQLITE_BLOB:
+                        return sql_blob(sqlite3_column_blob(stmt.get(), column), sqlite3_column_bytes(stmt.get(), column));
+                }
+            }
+        }
+
         sqlite3_column::sqlite3_column(const shared_ptr<sqlite3_stmt> &stmt, int column) : stmt_(stmt), column_(column)
         {
         }
@@ -43,22 +66,8 @@ namespace arg3
             if (!is_valid()) {
                 throw no_such_column_exception();
             }
-            switch (sqlite3_column_type(stmt_.get(), column_)) {
-                case SQLITE_INTEGER:
-                    return sqlite3_column_int64(stmt_.get(), column_);
-                case SQLITE3_TEXT:
-                default: {
-                    const unsigned char *textValue = sqlite3_column_text(stmt_.get(), column_);
-                    if (textValue != NULL) {
-                        return reinterpret_cast<const char *>(textValue);
-                    }
-                    return sql_value();
-                }
-                case SQLITE_FLOAT:
-                    return sqlite3_column_double(stmt_.get(), column_);
-                case SQLITE_BLOB:
-                    return sql_blob(sqlite3_column_blob(stmt_.get(), column_), sqlite3_column_bytes(stmt_.get(), column_));
-            }
+
+            return sqlite_data_mapper::to_value(stmt_, column_);
         }
 
         int sqlite3_column::sql_type() const
@@ -87,28 +96,10 @@ namespace arg3
             if (stmt == nullptr) {
                 throw database_exception("no statement provided to sqlite3 column");
             }
+
             name_ = sqlite3_column_name(stmt.get(), column);
             type_ = sqlite3_column_type(stmt.get(), column);
-
-            switch (sqlite3_column_type(stmt.get(), column)) {
-                case SQLITE_INTEGER:
-                    value_ = sqlite3_column_int64(stmt.get(), column);
-                    break;
-                case SQLITE_TEXT:
-                default: {
-                    const unsigned char *textValue = sqlite3_column_text(stmt.get(), column);
-                    if (textValue != NULL) {
-                        value_ = reinterpret_cast<const char *>(textValue);
-                    }
-                    break;
-                }
-                case SQLITE_FLOAT:
-                    value_ = sqlite3_column_double(stmt.get(), column);
-                    break;
-                case SQLITE_BLOB:
-                    value_ = sql_blob(sqlite3_column_blob(stmt.get(), column), sqlite3_column_bytes(stmt.get(), column));
-                    break;
-            }
+            value_ = sqlite_data_mapper::to_value(stmt, column);
         }
 
 

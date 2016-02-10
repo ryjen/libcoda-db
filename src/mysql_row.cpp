@@ -64,9 +64,6 @@ namespace arg3
                 throw no_such_column_exception();
             }
 
-            // if (db_->cache_level() == cache::Column)
-            //     return row_impl::column_type(make_shared<mysql_cached_column>(res_, row_, position));
-            // else
             return row_impl::column_type(make_shared<mysql_column>(res_, row_, position));
         }
 
@@ -177,9 +174,6 @@ namespace arg3
                 throw no_such_column_exception();
             }
 
-            // if (db_->cache_level() == cache::Column)
-            //     return row_impl::column_type(make_shared<mysql_cached_column>(column_name(position), *fields_.get(), position));
-            // else
             return row_impl::column_type(make_shared<mysql_stmt_column>(column_name(position), fields_, position));
         }
 

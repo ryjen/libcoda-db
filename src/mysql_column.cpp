@@ -50,6 +50,10 @@ namespace arg3
             return value_ != nullptr;
         }
 
+        /*
+         * Key function here.  Handles conversion from MYSQL_ROW to sql value
+         * TODO: test more
+         */
         sql_value mysql_column::to_value() const
         {
             auto field = mysql_fetch_field_direct(res_.get(), index_);
@@ -58,72 +62,13 @@ namespace arg3
                 throw no_such_column_exception();
             }
 
-            switch (field->type) {
-                case MYSQL_TYPE_BIT:
-                case MYSQL_TYPE_TINY:
-                case MYSQL_TYPE_SHORT:
-                case MYSQL_TYPE_LONG: {
-                    try {
-                        return std::stoi(value_[index_]);
-                    } catch (const std::exception &e) {
-                        return sql_value();
-                    }
-                }
-                case MYSQL_TYPE_INT24:
-                case MYSQL_TYPE_LONGLONG: {
-                    try {
-                        return std::stoll(value_[index_]);
-                    } catch (const std::exception &e) {
-                        return sql_value();
-                    }
-                }
-                case MYSQL_TYPE_DECIMAL:
-                case MYSQL_TYPE_VARCHAR:
-                case MYSQL_TYPE_VAR_STRING:
-                case MYSQL_TYPE_NEWDECIMAL:
-                case MYSQL_TYPE_GEOMETRY:
-                case MYSQL_TYPE_ENUM:
-                case MYSQL_TYPE_SET:
-                case MYSQL_TYPE_STRING:
-                default:
-                    return value_[index_];
+            auto lengths = mysql_fetch_lengths(res_.get());
 
-
-                case MYSQL_TYPE_NEWDATE:
-                case MYSQL_TYPE_DATE:
-                case MYSQL_TYPE_DATETIME:
-                case MYSQL_TYPE_TIMESTAMP:
-                case MYSQL_TYPE_YEAR:
-                case MYSQL_TYPE_TIME: {
-                    struct tm *tp;
-
-                    if ((tp = getdate(value_[index_]))) {
-                        return mktime(tp);
-                    }
-
-                    return sql_value();
-                }
-                case MYSQL_TYPE_FLOAT:
-                case MYSQL_TYPE_DOUBLE: {
-                    try {
-                        return std::stod(value_[index_]);
-                    } catch (const std::exception &e) {
-                        return sql_value();
-                    }
-                }
-                case MYSQL_TYPE_TINY_BLOB:
-                case MYSQL_TYPE_MEDIUM_BLOB:
-                case MYSQL_TYPE_LONG_BLOB:
-                case MYSQL_TYPE_BLOB: {
-                    auto lengths = mysql_fetch_lengths(res_.get());
-                    if (lengths == NULL) {
-                        throw binding_error("no lengths for blob");
-                    }
-                    return sql_blob(value_[index_], lengths[index_]);
-                }
-                case MYSQL_TYPE_NULL:
-                    return sql_null;
+            if (lengths == NULL) {
+                throw binding_error("no lengths for field");
             }
+
+            return mysql_data_mapper::to_value(field->type, value_[index_], lengths[index_]);
         }
 
         int mysql_column::sql_type() const

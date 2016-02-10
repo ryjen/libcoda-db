@@ -2,13 +2,15 @@
 # Docker Hub https://registry.hub.docker.com/_/debian/
 # Read more about containers on our dev center
 # http://devcenter.wercker.com/docs/containers/index.html
-box: debian
+box: ubuntu
 # You can also use services such as databases. Read more on our dev center:
 # http://devcenter.wercker.com/docs/services/index.html
 services:
     - postgres
     # http://devcenter.wercker.com/docs/services/postgresql.html
-    - mysql
+    - id: mysql
+      env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 1
     # - mongodb
     # http://devcenter.wercker.com/docs/services/mongodb.html
 
@@ -19,15 +21,30 @@ build:
     # Steps make up the actions in your pipeline
     # Read more about steps on our dev center:
     # http://devcenter.wercker.com/docs/steps/index.html
-  steps:
-    - install-packages:
-        packages: build-essentials valgrind libmysqlclient-dev libsqlite3-dev libpq-dev postgresql-server-dev-9.5 cmake-data cmake
-    - script: |
-        mkdir build
-        cd build
-    - cmake -DMEMORY_CHECK=ON -DCODE_COVERAGE=ON ..
-    - make
-    - make arg3db-coverage-clean
-    - make test ARGS=-V
-    - make arg3db-coverage-info
+    steps:
+        - script:
+            name: "prepare-toolchain"
+            code: |-
+                sudo apt-get install -y software-properties-common
+                sudo add-apt-repository ppa:george-edison55/cmake-3.x
+                sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+                sudo apt-get update
+                sudo apt-get install -y build-essential gcc-5 g++-5 valgrind libmysqlclient-dev libsqlite3-dev libpq-dev cmake-data cmake lcov mysql-client
+        - script: 
+            name: "prepare-environment"
+            code: |-
+                mysql -e "create database IF NOT EXISTS test;" -uroot 
+                psql -c 'create database test;' -U postgres
+                if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.7"; fi
+                if [ "$CXX" == "g++" ]; then export CXX="g++-5" CC="gcc-5" GCOV="gcov-4.9"; fi
+        - script:
+            name: "build"
+            code: |-
+                mkdir build
+                cd build
+                cmake -DMEMORY_CHECK=ON -DCODE_COVERAGE=ON ..
+                make
+                make arg3db-coverage-clean
+                make test ARGS=-V
+                make arg3db-coverage-info
 

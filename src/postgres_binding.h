@@ -20,6 +20,10 @@ namespace arg3
 {
     namespace db
     {
+        namespace postgres_data_mapper
+        {
+            sql_value to_value(Oid type, const char *value, int len);
+        }
         /*
          * utility class to simplify binding query parameters
          */
