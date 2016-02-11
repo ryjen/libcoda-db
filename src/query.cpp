@@ -76,7 +76,7 @@ namespace arg3
             for (size_t i = 1; i <= bindings_.size(); i++) {
                 auto &value = bindings_[i - 1];
 
-                value.bind_to(stmt_.get(), i);
+                stmt_->bind_value(i, value);
             }
         }
 
@@ -111,8 +111,20 @@ namespace arg3
 
             return *this;
         }
+        query &query::bind(size_t index, unsigned value)
+        {
+            bindings_[assert_binding_index(index)] = value;
+
+            return *this;
+        }
 
         query &query::bind(size_t index, long long value)
+        {
+            bindings_[assert_binding_index(index)] = value;
+
+            return *this;
+        }
+        query &query::bind(size_t index, unsigned long long value)
         {
             bindings_[assert_binding_index(index)] = value;
 
@@ -130,6 +142,12 @@ namespace arg3
         {
             return bind(index);
         }
+        query &query::bind(size_t index, float value)
+        {
+            bindings_[assert_binding_index(index)] = value;
+
+            return *this;
+        }
         query &query::bind(size_t index, double value)
         {
             bindings_[assert_binding_index(index)] = value;
@@ -143,10 +161,9 @@ namespace arg3
 
             return *this;
         }
-
-        query &query::bind_value(size_t index, const sql_value &value)
+        query &query::bind(size_t index, const sql_time &value)
         {
-            value.bind_to(this, index);
+            bindings_[assert_binding_index(index)] = value;
 
             return *this;
         }

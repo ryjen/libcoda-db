@@ -87,19 +87,15 @@ namespace arg3
             query &bind(size_t index, const std::string &value, int len = -1);
             query &bind(size_t index, const std::wstring &value, int len = -1);
             query &bind(size_t index, int value);
+            query &bind(size_t index, unsigned value);
             query &bind(size_t index, long long value);
+            query &bind(size_t index, unsigned long long value);
             query &bind(size_t index);
+            query &bind(size_t index, float value);
             query &bind(size_t index, double value);
             query &bind(size_t index, const sql_blob &value);
             query &bind(size_t index, const sql_null_type &value);
-
-            /*!
-             * bind an arbitrary value
-             * @param  index the index of the binding
-             * @param  v     the value to bind
-             * @return       a reference to this instance
-             */
-            query &bind_value(size_t index, const sql_value &v);
+            query &bind(size_t index, const sql_time &value);
 
             /*!
              * returns the last error the query encountered, if any

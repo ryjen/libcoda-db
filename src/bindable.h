@@ -6,6 +6,7 @@
 #define ARG3_DB_BINDABLE_H
 
 #include "sql_value.h"
+#include "exception.h"
 
 namespace arg3
 {
@@ -17,18 +18,16 @@ namespace arg3
         class bindable
         {
            public:
-            template <typename T>
-            bindable &bind(size_t index, const T &value)
-            {
-                bind(index, value);
-                return *this;
-            }
+            bindable &bind_value(size_t index, const sql_value &value);
 
-            template <typename T, typename... Args>
-            bindable &bind(size_t index, const T &value, const Args &... argv)
+            bindable &bind_all(size_t index, const sql_value &value);
+
+            template <typename T, typename... List>
+            bindable &bind_all(size_t index, const T &value, const List &... argv)
             {
-                bind(index, value);
-                bind(index, argv...);
+                static const size_t number_of_args = sizeof...(List) + 1;
+                bind_value(number_of_args - index, value);
+                bind_all(sizeof...(List), argv...);
                 return *this;
             }
 
@@ -41,12 +40,36 @@ namespace arg3
             virtual bindable &bind(size_t index, int value) = 0;
 
             /*!
+             * binds an unsigned integer value
+             * @param  index the index of the binding
+             * @param  value the value to bind
+             * @return       a reference to this instance
+             */
+            virtual bindable &bind(size_t index, unsigned value) = 0;
+
+            /*!
              * binds a long long value
              * @param  index the index of the binding
              * @param  value the value to bind
              * @return       a reference to this instance
              */
             virtual bindable &bind(size_t index, long long value) = 0;
+
+            /*!
+             * binds an unsigned long long value
+             * @param  index the index of the binding
+             * @param  value the value to bind
+             * @return       a reference to this instance
+             */
+            virtual bindable &bind(size_t index, unsigned long long value) = 0;
+
+            /*!
+             * binds a floating point value
+             * @param  index the index of the binding
+             * @param  value the value to bind
+             * @return       a reference to this instance
+             */
+            virtual bindable &bind(size_t index, float value) = 0;
 
             /*!
              * binds a floating point value
@@ -89,6 +112,14 @@ namespace arg3
              * @return       a reference to this instance
              */
             virtual bindable &bind(size_t index, const sql_null_type &value) = 0;
+
+            /*!
+             * binds a timestamp
+             * @param  index the index of the binding
+             * @param  time  the value to bind
+             * @return       a reference to this instance
+             */
+            virtual bindable &bind(size_t index, const sql_time &time) = 0;
         };
     }
 }

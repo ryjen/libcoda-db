@@ -84,9 +84,27 @@ namespace arg3
             }
             return *this;
         }
+        sqlite3_statement &sqlite3_statement::bind(size_t index, unsigned value)
+        {
+            if (sqlite3_bind_int64(stmt_.get(), index, value) != SQLITE_OK) {
+                throw binding_error(db_->last_error());
+            }
+            return *this;
+        }
         sqlite3_statement &sqlite3_statement::bind(size_t index, long long value)
         {
             if (sqlite3_bind_int64(stmt_.get(), index, value) != SQLITE_OK) {
+                throw binding_error(db_->last_error());
+            }
+            return *this;
+        }
+        sqlite3_statement &sqlite3_statement::bind(size_t index, unsigned long long value)
+        {
+            throw binding_error("sqlite3 does not support unsigned 64 bit integers");
+        }
+        sqlite3_statement &sqlite3_statement::bind(size_t index, float value)
+        {
+            if (sqlite3_bind_double(stmt_.get(), index, value) != SQLITE_OK) {
                 throw binding_error(db_->last_error());
             }
             return *this;
@@ -124,6 +142,15 @@ namespace arg3
         sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_null_type &value)
         {
             if (sqlite3_bind_null(stmt_.get(), index) != SQLITE_OK) {
+                throw binding_error(db_->last_error());
+            }
+            return *this;
+        }
+        sqlite3_statement &sqlite3_statement::bind(size_t index, const sql_time &value)
+        {
+            auto tstr = value.to_string();
+
+            if (sqlite3_bind_text(stmt_.get(), index, tstr.c_str(), tstr.size(), SQLITE_TRANSIENT) != SQLITE_OK) {
                 throw binding_error(db_->last_error());
             }
             return *this;

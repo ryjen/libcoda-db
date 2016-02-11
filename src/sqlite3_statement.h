@@ -55,12 +55,16 @@ namespace arg3
 
             /* bindable overrides */
             sqlite3_statement &bind(size_t index, int value);
+            sqlite3_statement &bind(size_t index, unsigned value);
             sqlite3_statement &bind(size_t index, long long value);
+            sqlite3_statement &bind(size_t index, unsigned long long value);
+            sqlite3_statement &bind(size_t index, float value);
             sqlite3_statement &bind(size_t index, double value);
             sqlite3_statement &bind(size_t index, const std::string &value, int len = -1);
             sqlite3_statement &bind(size_t index, const std::wstring &value, int len = -1);
             sqlite3_statement &bind(size_t index, const sql_blob &value);
             sqlite3_statement &bind(size_t index, const sql_null_type &value);
+            sqlite3_statement &bind(size_t index, const sql_time &value);
         };
 
         /*!

@@ -82,12 +82,16 @@ namespace arg3
 
             /* bindable overrides */
             postgres_binding &bind(size_t index, int value);
+            postgres_binding &bind(size_t index, unsigned value);
             postgres_binding &bind(size_t index, long long value);
+            postgres_binding &bind(size_t index, unsigned long long value);
+            postgres_binding &bind(size_t index, float value);
             postgres_binding &bind(size_t index, double value);
             postgres_binding &bind(size_t index, const std::string &value, int len = -1);
             postgres_binding &bind(size_t index, const std::wstring &value, int len = -1);
             postgres_binding &bind(size_t index, const sql_blob &value);
             postgres_binding &bind(size_t index, const sql_null_type &value);
+            postgres_binding &bind(size_t index, const sql_time &value);
 
             /*!
              * clear and remove all bindings

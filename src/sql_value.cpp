@@ -3,6 +3,7 @@
 #include "sqldb.h"
 #include "exception.h"
 #include <sstream>
+#include <cwchar>
 
 namespace std
 {
@@ -28,32 +29,114 @@ namespace arg3
     {
         const nullptr_t sql_null = nullptr;
 
-        void sql_value::bind_to(bindable *obj, int index) const
+        sql_time::sql_time() : value_(0), format_(TIMESTAMP)
         {
-            if (obj == NULL) {
-                throw binding_error("no bindable object for sql value binding");
+        }
+
+        sql_time::sql_time(time_t value, formats format) : value_(value), format_(format)
+        {
+        }
+
+        size_t sql_time::size() const
+        {
+            return sizeof(time_t);
+        }
+
+        bool sql_time::equals(const custom *other) const
+        {
+            auto *otime = dynamic_cast<const sql_time *>(other);
+
+            if (otime == nullptr) {
+                return false;
             }
 
-            // TODO: this needs to be improved....
-            //       possibly a mapping of types but is also dependent
-            //       on the types supported by each database
-            if (is_null()) {
-                obj->bind(index, sql_null);
-            } else if (is_numeric()) {
-                if (is_real()) {
-                    obj->bind(index, to_double(0));
-                } else if (size() <= sizeof(int)) {
-                    obj->bind(index, to_int(0));
-                } else {
-                    obj->bind(index, to_llong(0));
-                }
-            } else if (is_binary()) {
-                obj->bind(index, to_binary());
-            } else if (is_wstring()) {
-                obj->bind(index, to_wstring());
-            } else {
-                obj->bind(index, to_string());
+            return value_ == otime->value_ && format_ == otime->format_;
+        }
+
+        unsigned long sql_time::to_ulong() const
+        {
+            return value_;
+        }
+        long long sql_time::to_llong() const
+        {
+            return value_;
+        }
+        unsigned long long sql_time::to_ullong() const
+        {
+            return value_;
+        }
+        bool sql_time::to_bool() const
+        {
+            return value_ > 0;
+        }
+
+        sql_time::formats sql_time::format() const
+        {
+            return format_;
+        }
+
+        struct tm *sql_time::to_gmtime() const
+        {
+            return gmtime(&value_);
+        }
+        string sql_time::to_string() const
+        {
+            char buf[500] = {0};
+
+            switch (format_) {
+                case DATE:
+                    strftime(buf, sizeof(buf), "%F", gmtime(&value_));
+                    return buf;
+                case TIME:
+                    strftime(buf, sizeof(buf), "%T", gmtime(&value_));
+                    return buf;
+                case DATETIME:
+                case TIMESTAMP:
+                    strftime(buf, sizeof(buf), "%F %T", gmtime(&value_));
+                    return buf;
             }
+        }
+
+        wstring sql_time::to_wstring() const
+        {
+            wchar_t buf[500] = {0};
+
+            switch (format_) {
+                case DATE:
+                    wcsftime(buf, sizeof(buf), L"%F", gmtime(&value_));
+                    return buf;
+                case TIME:
+                    wcsftime(buf, sizeof(buf), L"%T", gmtime(&value_));
+                    return buf;
+                case DATETIME:
+                case TIMESTAMP:
+                    wcsftime(buf, sizeof(buf), L"%F %T", gmtime(&value_));
+                    return buf;
+            }
+        }
+
+        sql_value::sql_value()
+        {
+        }
+
+        sql_value::sql_value(const sql_time &value) : variant(new std::shared_ptr<sql_time>(new sql_time(value)))
+        {
+        }
+
+        sql_time sql_value::to_time() const
+        {
+            auto ptr = dynamic_pointer_cast<sql_time>(to_custom());
+
+            if (ptr) {
+                return *ptr;
+            }
+
+            return sql_time();
+        }
+
+        bool sql_value::is_time() const
+        {
+            return is_custom();
         }
     }
 }

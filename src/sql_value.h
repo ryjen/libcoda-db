@@ -33,6 +33,40 @@ namespace arg3
          */
         typedef arg3::binary sql_blob;
 
+        class sql_custom : public arg3::variant::custom
+        {
+           public:
+        };
+
+        class sql_time : public sql_custom
+        {
+            friend class sql_value;
+
+           private:
+            sql_time();
+
+           public:
+            typedef enum { DATE, TIME, DATETIME, TIMESTAMP } formats;
+
+            sql_time(time_t value, formats format);
+            size_t size() const;
+            unsigned long to_ulong() const;
+            long long to_llong() const;
+            unsigned long long to_ullong() const;
+            bool to_bool() const;
+            string to_string() const;
+            wstring to_wstring() const;
+
+            formats format() const;
+            struct tm *to_gmtime() const;
+
+            bool equals(const custom *other) const;
+
+           private:
+            time_t value_;
+            formats format_;
+        };
+
         /*!
          * A sql value
          */
@@ -41,13 +75,12 @@ namespace arg3
            public:
             using arg3::variant::variant;
 
-            /*!
-             * binds a sql value to a bindable object
-             * @param obj   the object to bind to
-             * @param index the parameter index to bind
-             * @param value the sql value to bind
-             */
-            void bind_to(bindable *obj, int index) const;
+            sql_value(const sql_time &value);
+
+            sql_value();
+
+            sql_time to_time() const;
+            bool is_time() const;
         };
     }
 }

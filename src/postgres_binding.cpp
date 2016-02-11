@@ -249,6 +249,19 @@ namespace arg3
 
             return *this;
         }
+        postgres_binding &postgres_binding::bind(size_t index, unsigned value)
+        {
+            if (reallocate_value(index)) {
+                values_[index - 1] = strdup(std::to_string(value).c_str());
+                types_[index - 1] = sizeof(unsigned) <= 2 ? INT2OID : sizeof(unsigned) <= 4 ? INT4OID : INT8OID;
+                lengths_[index - 1] = sizeof(unsigned);
+                formats_[index - 1] = 0;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
+            }
+
+            return *this;
+        }
         postgres_binding &postgres_binding::bind(size_t index, long long value)
         {
             if (reallocate_value(index)) {
@@ -262,11 +275,37 @@ namespace arg3
 
             return *this;
         }
+        postgres_binding &postgres_binding::bind(size_t index, unsigned long long value)
+        {
+            if (reallocate_value(index)) {
+                values_[index - 1] = strdup(std::to_string(value).c_str());
+                types_[index - 1] = sizeof(unsigned long long) <= 2 ? INT2OID : sizeof(unsigned long long) <= 4 ? INT4OID : INT8OID;
+                lengths_[index - 1] = sizeof(unsigned long long);
+                formats_[index - 1] = 0;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
+            }
+
+            return *this;
+        }
+        postgres_binding &postgres_binding::bind(size_t index, float value)
+        {
+            if (reallocate_value(index)) {
+                values_[index - 1] = strdup(std::to_string(value).c_str());
+                types_[index - 1] = FLOAT4OID;
+                lengths_[index - 1] = sizeof(float);
+                formats_[index - 1] = 0;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
+            }
+
+            return *this;
+        }
         postgres_binding &postgres_binding::bind(size_t index, double value)
         {
             if (reallocate_value(index)) {
                 values_[index - 1] = strdup(std::to_string(value).c_str());
-                types_[index - 1] = sizeof(double) == 8 ? FLOAT8OID : FLOAT4OID;
+                types_[index - 1] = sizeof(double) <= 4 ? FLOAT4OID : FLOAT8OID;
                 lengths_[index - 1] = sizeof(double);
                 formats_[index - 1] = 0;
             } else {
@@ -330,6 +369,19 @@ namespace arg3
             } else {
                 log::warn("unable to reallocate bindings for index %ld", index);
             }
+            return *this;
+        }
+        postgres_binding &postgres_binding::bind(size_t index, const sql_time &value)
+        {
+            if (reallocate_value(index)) {
+                values_[index - 1] = strdup(value.to_string().c_str());
+                types_[index - 1] = TEXTOID;
+                lengths_[index - 1] = value.size();
+                formats_[index - 1] = 0;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
+            }
+
             return *this;
         }
 

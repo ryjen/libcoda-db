@@ -57,9 +57,6 @@ go_bandit([]() {
 
             AssertThat(b, IsTrue());
 
-            sql_blob blob = v;
-
-            AssertThat(blob.value() == NULL, IsTrue());
         });
 
         /*

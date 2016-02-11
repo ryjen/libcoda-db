@@ -97,7 +97,25 @@ namespace arg3
 
             return *this;
         }
+        mysql_statement &mysql_statement::bind(size_t index, unsigned value)
+        {
+            bindings_.bind(index, value);
+
+            return *this;
+        }
         mysql_statement &mysql_statement::bind(size_t index, long long value)
+        {
+            bindings_.bind(index, value);
+
+            return *this;
+        }
+        mysql_statement &mysql_statement::bind(size_t index, unsigned long long value)
+        {
+            bindings_.bind(index, value);
+
+            return *this;
+        }
+        mysql_statement &mysql_statement::bind(size_t index, float value)
         {
             bindings_.bind(index, value);
 
@@ -127,6 +145,13 @@ namespace arg3
             return *this;
         }
         mysql_statement &mysql_statement::bind(size_t index, const sql_null_type &value)
+        {
+            bindings_.bind(index, value);
+
+            return *this;
+        }
+
+        mysql_statement &mysql_statement::bind(size_t index, const sql_time &value)
         {
             bindings_.bind(index, value);
 

@@ -108,7 +108,22 @@ namespace arg3
             bindings_.bind(index, value);
             return *this;
         }
+        postgres_statement &postgres_statement::bind(size_t index, unsigned value)
+        {
+            bindings_.bind(index, value);
+            return *this;
+        }
         postgres_statement &postgres_statement::bind(size_t index, long long value)
+        {
+            bindings_.bind(index, value);
+            return *this;
+        }
+        postgres_statement &postgres_statement::bind(size_t index, unsigned long long value)
+        {
+            bindings_.bind(index, value);
+            return *this;
+        }
+        postgres_statement &postgres_statement::bind(size_t index, float value)
         {
             bindings_.bind(index, value);
             return *this;
@@ -139,7 +154,11 @@ namespace arg3
             bindings_.bind(index, value);
             return *this;
         }
-
+        postgres_statement &postgres_statement::bind(size_t index, const sql_time &value)
+        {
+            bindings_.bind(index, value);
+            return *this;
+        }
         resultset postgres_statement::results()
         {
             PGresult *res = PQexecParams(db_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,

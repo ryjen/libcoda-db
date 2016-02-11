@@ -101,12 +101,16 @@ namespace arg3
 
             /* bindable overrides */
             mysql_binding &bind(size_t index, int value);
+            mysql_binding &bind(size_t index, unsigned value);
             mysql_binding &bind(size_t index, long long value);
+            mysql_binding &bind(size_t index, unsigned long long value);
+            mysql_binding &bind(size_t index, float value);
             mysql_binding &bind(size_t index, double value);
             mysql_binding &bind(size_t index, const std::string &value, int len = -1);
             mysql_binding &bind(size_t index, const std::wstring &value, int len = -1);
             mysql_binding &bind(size_t index, const sql_blob &value);
             mysql_binding &bind(size_t index, const sql_null_type &value);
+            mysql_binding &bind(size_t index, const sql_time &value);
 
             /*!
              * puts values into a query before execution

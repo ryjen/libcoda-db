@@ -17,6 +17,73 @@ namespace arg3
 {
     namespace db
     {
+        namespace helper
+        {
+            // small util method to make a dynamic c pointer for a type
+            template <typename T>
+            void *to_ptr(const T &value)
+            {
+                T *ptr = c_alloc<T>(sizeof(T));
+                *ptr = value;
+                return ptr;
+            }
+
+            void bind_value_from_field(MYSQL_BIND *value, MYSQL_FIELD *field)
+            {
+                value->buffer_type = field->type;
+                value->is_null = c_alloc<my_bool>();
+                value->is_unsigned = 0;
+                value->error = 0;
+                value->buffer_length = field->length;
+                value->length = c_alloc<unsigned long>();
+                *value->length = 0;
+                value->buffer = c_alloc(field->length);
+            }
+
+            void bind_value_copy(MYSQL_BIND *value, const MYSQL_BIND *other)
+            {
+                if (other->length) {
+                    value->length = c_alloc<unsigned long>();
+                    memmove(value->length, other->length, sizeof(unsigned long));
+                }
+
+                if (other->buffer_length > 0 && other->buffer) {
+                    value->buffer = c_alloc(other->buffer_length);
+                    memmove(value->buffer, other->buffer, other->buffer_length);
+                }
+
+                if (other->is_null) {
+                    value->is_null = c_alloc<my_bool>();
+                    memmove(value->is_null, other->is_null, sizeof(my_bool));
+                }
+
+                if (other->error) {
+                    value->error = c_alloc<my_bool>();
+                    memmove(value->error, other->error, sizeof(my_bool));
+                }
+
+                value->buffer_type = other->buffer_type;
+                value->buffer_length = other->buffer_length;
+                value->is_unsigned = other->is_unsigned;
+            }
+
+            time_t parse_time(MYSQL_BIND *binding)
+            {
+                MYSQL_TIME *db_tm = (MYSQL_TIME *)binding->buffer;
+                struct tm sys;
+
+                sys.tm_year = db_tm->year;
+                sys.tm_mon = db_tm->month;
+                sys.tm_mday = db_tm->day;
+                sys.tm_hour = db_tm->hour;
+                sys.tm_min = db_tm->minute;
+                sys.tm_sec = db_tm->second;
+
+                return mktime(&sys);
+            }
+
+            extern string last_stmt_error(MYSQL_STMT *stmt);
+        }
         namespace mysql_data_mapper
         {
             /*
@@ -35,30 +102,35 @@ namespace arg3
                     case MYSQL_TYPE_SHORT:
                     case MYSQL_TYPE_LONG:
                     case MYSQL_TYPE_INT24: {
-                        long *p = static_cast<long *>(binding->buffer);
-                        return *p;
+                        if (binding->is_unsigned) {
+                            unsigned *p = static_cast<unsigned *>(binding->buffer);
+                            return *p;
+                        } else {
+                            int *p = static_cast<int *>(binding->buffer);
+                            return *p;
+                        }
                     }
                     case MYSQL_TYPE_LONGLONG: {
-                        long long *p = static_cast<long long *>(binding->buffer);
-                        return *p;
+                        if (binding->is_unsigned) {
+                            unsigned long long *p = static_cast<unsigned long long *>(binding->buffer);
+                            return *p;
+                        } else {
+                            long long *p = static_cast<long long *>(binding->buffer);
+                            return *p;
+                        }
                     }
                     case MYSQL_TYPE_NULL:
                         return sql_null;
                     case MYSQL_TYPE_TIME:
+                        return sql_time(helper::parse_time(binding), sql_time::TIME);
                     case MYSQL_TYPE_DATE:
-                    case MYSQL_TYPE_YEAR:
-                    case MYSQL_TYPE_NEWDATE:
-                    case MYSQL_TYPE_TIMESTAMP:
-                    case MYSQL_TYPE_DATETIME: {
-                        struct tm *tp;
+                        return sql_time(helper::parse_time(binding), sql_time::DATE);
 
-                        if ((tp = getdate(static_cast<char *>(binding->buffer)))) {
-                            return mktime(tp);
-                        } else {
-                            long *p = static_cast<long *>(binding->buffer);
-                            return *p;
-                        }
-                    }
+                    case MYSQL_TYPE_TIMESTAMP:
+                        return sql_time(helper::parse_time(binding), sql_time::TIMESTAMP);
+                    case MYSQL_TYPE_DATETIME:
+                        return sql_time(helper::parse_time(binding), sql_time::DATETIME);
+
                     case MYSQL_TYPE_VAR_STRING:
                     case MYSQL_TYPE_VARCHAR:
                     case MYSQL_TYPE_DECIMAL:
@@ -70,7 +142,10 @@ namespace arg3
                     default: {
                         return static_cast<const char *>(binding->buffer);
                     }
-                    case MYSQL_TYPE_FLOAT:
+                    case MYSQL_TYPE_FLOAT: {
+                        float *p = static_cast<float *>(binding->buffer);
+                        return *p;
+                    }
                     case MYSQL_TYPE_DOUBLE: {
                         double *p = static_cast<double *>(binding->buffer);
                         return *p;
@@ -161,60 +236,117 @@ namespace arg3
                         return sql_null;
                 }
             }
+
+            void set_time(MYSQL_BIND *binding, const sql_time &value)
+            {
+                MYSQL_TIME *tm = nullptr;
+                if (binding == nullptr) {
+                    return;
+                }
+                switch (value.format()) {
+                    case sql_time::DATE:
+                        binding->buffer_type = MYSQL_TYPE_DATE;
+                        break;
+                    case sql_time::TIME:
+                        binding->buffer_type = MYSQL_TYPE_TIME;
+                        break;
+                    case sql_time::DATETIME:
+                        binding->buffer_type = MYSQL_TYPE_DATETIME;
+                        break;
+                    case sql_time::TIMESTAMP:
+                        binding->buffer_type = MYSQL_TYPE_TIMESTAMP;
+                        break;
+                }
+                tm = c_alloc<MYSQL_TIME>();
+                auto gmt = value.to_gmtime();
+                tm->year = gmt->tm_year;
+                tm->month = gmt->tm_mon;
+                tm->day = gmt->tm_mday;
+                tm->hour = gmt->tm_hour;
+                tm->minute = gmt->tm_min;
+                tm->second = gmt->tm_sec;
+                binding->buffer = tm;
+            }
+
+            void set_value(MYSQL_BIND *binding, const sql_value &value)
+            {
+                if (binding == nullptr) {
+                    return;
+                }
+                switch (value.type()) {
+                    case variant::NULLTYPE:
+                        binding->buffer_type = MYSQL_TYPE_NULL;
+                        break;
+                    case variant::CHAR:
+                    case variant::WCHAR:
+                    case variant::BOOL:
+                    case variant::NUMBER:
+                        if (value.size() <= sizeof(int)) {
+                            binding->buffer_type = MYSQL_TYPE_LONG;
+                            binding->buffer = helper::to_ptr(value.to_long());
+                        } else {
+                            binding->buffer_type = MYSQL_TYPE_LONGLONG;
+                            binding->buffer = helper::to_ptr(value.to_llong());
+                        }
+
+                        binding->buffer_length = value.size();
+                        break;
+                    case variant::UNUMBER:
+                        if (value.size() <= sizeof(int)) {
+                            binding->buffer_type = MYSQL_TYPE_LONG;
+                            binding->buffer = helper::to_ptr(value.to_ulong());
+                        } else {
+                            binding->buffer_type = MYSQL_TYPE_LONGLONG;
+                            binding->buffer = helper::to_ptr(value.to_ullong());
+                        }
+
+                        binding->buffer_length = value.size();
+                        break;
+                    case variant::REAL:
+                        binding->buffer_type = MYSQL_TYPE_DOUBLE;
+                        binding->buffer = helper::to_ptr(value.to_double());
+                        binding->buffer_length = value.size();
+                        break;
+                    case variant::STRING:
+                        binding->buffer_type = MYSQL_TYPE_STRING;
+                        binding->buffer = strdup(value.to_cstring());
+                        binding->buffer_length = value.size();
+                        if (!binding->length) {
+                            binding->length = c_alloc<unsigned long>();
+                        }
+                        *binding->length = binding->buffer_length;
+                        break;
+                    case variant::WSTRING:
+                        binding->buffer_type = MYSQL_TYPE_STRING;
+                        binding->buffer = wcsdup(value.to_wcstring());
+                        binding->buffer_length = value.size();
+                        if (!binding->length) {
+                            binding->length = c_alloc<unsigned long>();
+                        }
+                        *binding->length = binding->buffer_length;
+                        break;
+                    case variant::BINARY:
+                        binding->buffer_type = MYSQL_TYPE_BLOB;
+                        binding->buffer = c_alloc(value.size());
+                        memcpy(binding->buffer, value.to_pointer(), value.size());
+                        binding->buffer_length = value.size();
+                        if (!binding->length) {
+                            binding->length = c_alloc<unsigned long>();
+                        }
+                        *binding->length = value.size();
+                        break;
+                    case variant::CUSTOM: {
+                        if (value.is_time()) {
+                            set_time(binding, value.to_time());
+                        } else {
+                            throw binding_error("unknown custom type");
+                        }
+                        break;
+                    }
+                }
+            }
         }
 
-        namespace helper
-        {
-            // small util method to make a dynamic c pointer for a type
-            template <typename T>
-            void *to_ptr(const T &value)
-            {
-                T *ptr = c_alloc<T>(sizeof(T));
-                *ptr = value;
-                return ptr;
-            }
-
-            void bind_value_from_field(MYSQL_BIND *value, MYSQL_FIELD *field)
-            {
-                value->buffer_type = field->type;
-                value->is_null = c_alloc<my_bool>();
-                value->is_unsigned = 0;
-                value->error = 0;
-                value->buffer_length = field->length;
-                value->length = c_alloc<unsigned long>();
-                *value->length = 0;
-                value->buffer = c_alloc(field->length);
-            }
-
-            void bind_value_copy(MYSQL_BIND *value, const MYSQL_BIND *other)
-            {
-                if (other->length) {
-                    value->length = c_alloc<unsigned long>();
-                    memmove(value->length, other->length, sizeof(unsigned long));
-                }
-
-                if (other->buffer_length > 0 && other->buffer) {
-                    value->buffer = c_alloc(other->buffer_length);
-                    memmove(value->buffer, other->buffer, other->buffer_length);
-                }
-
-                if (other->is_null) {
-                    value->is_null = c_alloc<my_bool>();
-                    memmove(value->is_null, other->is_null, sizeof(my_bool));
-                }
-
-                if (other->error) {
-                    value->error = c_alloc<my_bool>();
-                    memmove(value->error, other->error, sizeof(my_bool));
-                }
-
-                value->buffer_type = other->buffer_type;
-                value->buffer_length = other->buffer_length;
-                value->is_unsigned = other->is_unsigned;
-            }
-
-            extern string last_stmt_error(MYSQL_STMT *stmt);
-        }
 
         mysql_binding::mysql_binding() : value_(nullptr), size_(0)
         {
@@ -401,10 +533,48 @@ namespace arg3
 
             return *this;
         }
+        mysql_binding &mysql_binding::bind(size_t index, unsigned value)
+        {
+            if (reallocate_value(index)) {
+                value_[index - 1].buffer_type = MYSQL_TYPE_LONG;
+                value_[index - 1].buffer = helper::to_ptr(value);
+                value_[index - 1].buffer_length = sizeof(value);
+                value_[index - 1].is_unsigned = 1;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
+            }
+
+            return *this;
+        }
         mysql_binding &mysql_binding::bind(size_t index, long long value)
         {
             if (reallocate_value(index)) {
                 value_[index - 1].buffer_type = MYSQL_TYPE_LONGLONG;
+                value_[index - 1].buffer = helper::to_ptr(value);
+                value_[index - 1].buffer_length = sizeof(value);
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
+            }
+
+            return *this;
+        }
+        mysql_binding &mysql_binding::bind(size_t index, unsigned long long value)
+        {
+            if (reallocate_value(index)) {
+                value_[index - 1].buffer_type = MYSQL_TYPE_LONGLONG;
+                value_[index - 1].buffer = helper::to_ptr(value);
+                value_[index - 1].buffer_length = sizeof(value);
+                value_[index - 1].is_unsigned = 1;
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
+            }
+
+            return *this;
+        }
+        mysql_binding &mysql_binding::bind(size_t index, float value)
+        {
+            if (reallocate_value(index)) {
+                value_[index - 1].buffer_type = MYSQL_TYPE_FLOAT;
                 value_[index - 1].buffer = helper::to_ptr(value);
                 value_[index - 1].buffer_length = sizeof(value);
             } else {
@@ -477,6 +647,7 @@ namespace arg3
 
             return *this;
         }
+
         mysql_binding &mysql_binding::bind(size_t index, const sql_null_type &value)
         {
             if (reallocate_value(index)) {
@@ -484,6 +655,17 @@ namespace arg3
             } else {
                 log::warn("unable to reallocate bindings for index %ld", index);
             }
+            return *this;
+        }
+
+        mysql_binding &mysql_binding::bind(size_t index, const sql_time &value)
+        {
+            if (reallocate_value(index)) {
+                mysql_data_mapper::set_time(&value_[index - 1], value);
+            } else {
+                log::warn("unable to reallocate bindings for index %ld", index);
+            }
+
             return *this;
         }
 
