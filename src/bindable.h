@@ -18,10 +18,29 @@ namespace arg3
         class bindable
         {
            public:
+            /*!
+             * Binds a sql_value using the other bind methods
+             * @param index the index of the binding
+             * @param value the value of the binding
+             * @return a reference to this instance
+             */
             bindable &bind_value(size_t index, const sql_value &value);
 
+            /*!
+             * bind_all override for one sql_value parameter
+             * @param index the index of the binding
+             * @param value the value to bind
+             * @return a reference to this instance
+             */
             bindable &bind_all(size_t index, const sql_value &value);
 
+            /*!
+             * bind a list of a values, using the order of values as the index
+             * @param index the initial index for the list
+             * @param value the first value in the list
+             * @param argv the remaining values
+             * @return a reference to this instance
+             */
             template <typename T, typename... List>
             bindable &bind_all(size_t index, const T &value, const List &... argv)
             {

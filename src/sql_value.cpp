@@ -136,7 +136,7 @@ namespace arg3
 
         bool sql_value::is_time() const
         {
-            return is_custom();
+            return is_custom() && dynamic_pointer_cast<sql_time>(to_custom());
         }
     }
 }

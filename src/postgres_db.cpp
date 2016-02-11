@@ -109,7 +109,6 @@ namespace arg3
 
         long long postgres_db::last_insert_id() const
         {
-            // TODO: might have to perform a query here
             return lastId_;
         }
 
@@ -120,7 +119,6 @@ namespace arg3
 
         int postgres_db::last_number_of_changes() const
         {
-            // TODO: might have to perform a query here
             return lastNumChanges_;
         }
 

@@ -69,6 +69,10 @@ namespace arg3
 
             time_t parse_time(MYSQL_BIND *binding)
             {
+                if (binding == nullptr) {
+                    return 0;
+                }
+
                 MYSQL_TIME *db_tm = (MYSQL_TIME *)binding->buffer;
                 struct tm sys;
 
@@ -125,12 +129,10 @@ namespace arg3
                         return sql_time(helper::parse_time(binding), sql_time::TIME);
                     case MYSQL_TYPE_DATE:
                         return sql_time(helper::parse_time(binding), sql_time::DATE);
-
                     case MYSQL_TYPE_TIMESTAMP:
                         return sql_time(helper::parse_time(binding), sql_time::TIMESTAMP);
                     case MYSQL_TYPE_DATETIME:
                         return sql_time(helper::parse_time(binding), sql_time::DATETIME);
-
                     case MYSQL_TYPE_VAR_STRING:
                     case MYSQL_TYPE_VARCHAR:
                     case MYSQL_TYPE_DECIMAL:
@@ -165,7 +167,8 @@ namespace arg3
 
             /*
              * Key method here, handles conversion from a field to sql_value
-             * TODO: test this more
+             * TODO: test this more with different types
+             * Doesn't throw, prefers to return a null value
              */
             sql_value to_value(int type, const char *value, size_t length)
             {
@@ -181,6 +184,7 @@ namespace arg3
                         try {
                             return std::stoi(value);
                         } catch (const std::exception &e) {
+                            log::error("unable to get integer from %s", value);
                             return sql_value();
                         }
                     }
@@ -189,6 +193,7 @@ namespace arg3
                         try {
                             return std::stoll(value);
                         } catch (const std::exception &e) {
+                            log::error("unable to get long from %s", value);
                             return sql_value();
                         }
                     }
@@ -202,8 +207,6 @@ namespace arg3
                     case MYSQL_TYPE_STRING:
                     default:
                         return value;
-
-
                     case MYSQL_TYPE_NEWDATE:
                     case MYSQL_TYPE_DATE:
                     case MYSQL_TYPE_DATETIME:
@@ -214,15 +217,24 @@ namespace arg3
 
                         if ((tp = getdate(value))) {
                             return mktime(tp);
+                        } else {
+                            log::error("unable to get date of %s (%d)", value, getdate_err);
+                            return sql_value();
                         }
-
-                        return sql_value();
                     }
-                    case MYSQL_TYPE_FLOAT:
+                    case MYSQL_TYPE_FLOAT: {
+                        try {
+                            return std::stof(value);
+                        } catch (const std::exception &e) {
+                            log::error("unable to get float of %s", value);
+                            return sql_value();
+                        }
+                    }
                     case MYSQL_TYPE_DOUBLE: {
                         try {
                             return std::stod(value);
                         } catch (const std::exception &e) {
+                            log::error("unable to get double of %s", value);
                             return sql_value();
                         }
                     }
@@ -237,6 +249,9 @@ namespace arg3
                 }
             }
 
+            /*!
+             * TODO: test this more
+             */
             void set_time(MYSQL_BIND *binding, const sql_time &value)
             {
                 MYSQL_TIME *tm = nullptr;
@@ -266,84 +281,6 @@ namespace arg3
                 tm->minute = gmt->tm_min;
                 tm->second = gmt->tm_sec;
                 binding->buffer = tm;
-            }
-
-            void set_value(MYSQL_BIND *binding, const sql_value &value)
-            {
-                if (binding == nullptr) {
-                    return;
-                }
-                switch (value.type()) {
-                    case variant::NULLTYPE:
-                        binding->buffer_type = MYSQL_TYPE_NULL;
-                        break;
-                    case variant::CHAR:
-                    case variant::WCHAR:
-                    case variant::BOOL:
-                    case variant::NUMBER:
-                        if (value.size() <= sizeof(int)) {
-                            binding->buffer_type = MYSQL_TYPE_LONG;
-                            binding->buffer = helper::to_ptr(value.to_long());
-                        } else {
-                            binding->buffer_type = MYSQL_TYPE_LONGLONG;
-                            binding->buffer = helper::to_ptr(value.to_llong());
-                        }
-
-                        binding->buffer_length = value.size();
-                        break;
-                    case variant::UNUMBER:
-                        if (value.size() <= sizeof(int)) {
-                            binding->buffer_type = MYSQL_TYPE_LONG;
-                            binding->buffer = helper::to_ptr(value.to_ulong());
-                        } else {
-                            binding->buffer_type = MYSQL_TYPE_LONGLONG;
-                            binding->buffer = helper::to_ptr(value.to_ullong());
-                        }
-
-                        binding->buffer_length = value.size();
-                        break;
-                    case variant::REAL:
-                        binding->buffer_type = MYSQL_TYPE_DOUBLE;
-                        binding->buffer = helper::to_ptr(value.to_double());
-                        binding->buffer_length = value.size();
-                        break;
-                    case variant::STRING:
-                        binding->buffer_type = MYSQL_TYPE_STRING;
-                        binding->buffer = strdup(value.to_cstring());
-                        binding->buffer_length = value.size();
-                        if (!binding->length) {
-                            binding->length = c_alloc<unsigned long>();
-                        }
-                        *binding->length = binding->buffer_length;
-                        break;
-                    case variant::WSTRING:
-                        binding->buffer_type = MYSQL_TYPE_STRING;
-                        binding->buffer = wcsdup(value.to_wcstring());
-                        binding->buffer_length = value.size();
-                        if (!binding->length) {
-                            binding->length = c_alloc<unsigned long>();
-                        }
-                        *binding->length = binding->buffer_length;
-                        break;
-                    case variant::BINARY:
-                        binding->buffer_type = MYSQL_TYPE_BLOB;
-                        binding->buffer = c_alloc(value.size());
-                        memcpy(binding->buffer, value.to_pointer(), value.size());
-                        binding->buffer_length = value.size();
-                        if (!binding->length) {
-                            binding->length = c_alloc<unsigned long>();
-                        }
-                        *binding->length = value.size();
-                        break;
-                    case variant::CUSTOM: {
-                        if (value.is_time()) {
-                            set_time(binding, value.to_time());
-                        } else {
-                            throw binding_error("unknown custom type");
-                        }
-                        break;
-                    }
-                }
             }
         }
 
@@ -528,7 +465,7 @@ namespace arg3
                 value_[index - 1].buffer = helper::to_ptr(value);
                 value_[index - 1].buffer_length = sizeof(value);
             } else {
-                log::warn("unable to reallocate bindings for index %ld", index);
+                log::error("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -541,7 +478,7 @@ namespace arg3
                 value_[index - 1].buffer_length = sizeof(value);
                 value_[index - 1].is_unsigned = 1;
             } else {
-                log::warn("unable to reallocate bindings for index %ld", index);
+                log::error("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -553,7 +490,7 @@ namespace arg3
                 value_[index - 1].buffer = helper::to_ptr(value);
                 value_[index - 1].buffer_length = sizeof(value);
             } else {
-                log::warn("unable to reallocate bindings for index %ld", index);
+                log::error("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -566,7 +503,7 @@ namespace arg3
                 value_[index - 1].buffer_length = sizeof(value);
                 value_[index - 1].is_unsigned = 1;
             } else {
-                log::warn("unable to reallocate bindings for index %ld", index);
+                log::error("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -578,7 +515,7 @@ namespace arg3
                 value_[index - 1].buffer = helper::to_ptr(value);
                 value_[index - 1].buffer_length = sizeof(value);
             } else {
-                log::warn("unable to reallocate bindings for index %ld", index);
+                log::error("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -590,7 +527,7 @@ namespace arg3
                 value_[index - 1].buffer = helper::to_ptr(value);
                 value_[index - 1].buffer_length = sizeof(value);
             } else {
-                log::warn("unable to reallocate bindings for index %ld", index);
+                log::error("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -607,7 +544,7 @@ namespace arg3
                 }
                 *value_[index - 1].length = size;
             } else {
-                log::warn("unable to reallocate bindings for index %ld", index);
+                log::error("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;
@@ -624,7 +561,7 @@ namespace arg3
                 }
                 *value_[index - 1].length = size;
             } else {
-                log::warn("unable to reallocate bindings for index %ld", index);
+                log::error("unable to reallocate bindings for index %ld", index);
             }
 
             return *this;

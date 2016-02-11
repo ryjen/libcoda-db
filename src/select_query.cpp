@@ -181,6 +181,7 @@ namespace arg3
 
             // sucks to backup the columns just for this
             // query, but I don't see an easy way right now
+            // TODO: improve
             try {
                 columns_ = {"COUNT(*)"};
 
