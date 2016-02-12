@@ -5,23 +5,7 @@
 #include <sstream>
 #include <cwchar>
 
-namespace std
-{
-    string to_string(const arg3::db::sql_null_type &value)
-    {
-        return "NULL";
-    }
-    string to_string(const std::string &value)
-    {
-        return value;
-    }
-
-    ostream &operator<<(ostream &out, const arg3::db::sql_null_type &null)
-    {
-        out << "NULL";
-        return out;
-    }
-}
+using namespace std;
 
 namespace arg3
 {
@@ -42,15 +26,11 @@ namespace arg3
             return sizeof(time_t);
         }
 
-        bool sql_time::equals(const custom *other) const
+        long sql_time::hashcode() const
         {
-            auto *otime = dynamic_cast<const sql_time *>(other);
-
-            if (otime == nullptr) {
-                return false;
-            }
-
-            return value_ == otime->value_ && format_ == otime->format_;
+            std::size_t h1 = std::hash<unsigned int>()(value_);
+            std::size_t h2 = std::hash<unsigned int>()(format_);
+            return h1 ^ (h2 << 1);
         }
 
         unsigned long sql_time::to_ulong() const
@@ -125,7 +105,7 @@ namespace arg3
 
         sql_time sql_value::to_time() const
         {
-            auto ptr = dynamic_pointer_cast<sql_time>(to_custom());
+            auto ptr = dynamic_pointer_cast<sql_time>(to_complex());
 
             if (ptr) {
                 return *ptr;
@@ -136,7 +116,30 @@ namespace arg3
 
         bool sql_value::is_time() const
         {
-            return is_custom() && dynamic_pointer_cast<sql_time>(to_custom());
+            return is_complex() && dynamic_pointer_cast<sql_time>(to_complex());
+        }
+
+        std::string to_string(const sql_null_type &null)
+        {
+            return "NULL";
+        }
+
+        ostream &operator<<(ostream &out, const sql_null_type &null)
+        {
+            out << "NULL";
+            return out;
+        }
+
+        ostream &operator<<(ostream &out, const sql_time &value)
+        {
+            out << value.to_string();
+            return out;
+        }
+
+        ostream &operator<<(ostream &out, const sql_value &value)
+        {
+            out << value.to_string();
+            return out;
         }
     }
 }

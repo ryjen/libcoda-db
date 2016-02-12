@@ -1,5 +1,5 @@
 /*!
- * @file postgres_statement.h
+ * @file statement.h
  * A postgres statement
  */
 #ifndef ARG3_DB_POSTGRES_STATEMENT_H
@@ -19,56 +19,59 @@ namespace arg3
 {
     namespace db
     {
-        class postgres_db;
-
-        /*!
-         * a sqlite specific implementation of a statement
-         */
-        class postgres_statement : public statement
+        namespace postgres
         {
-           private:
-            postgres_db *db_;
-            std::shared_ptr<PGresult> stmt_;
-            postgres_binding bindings_;
-            std::string sql_;
+            class db;
 
-           public:
             /*!
-             * @param db    the database in use
+             * a sqlite specific implementation of a statement
              */
-            postgres_statement(postgres_db *db);
+            class statement : public arg3::db::statement
+            {
+               private:
+                postgres::db *db_;
+                std::shared_ptr<PGresult> stmt_;
+                binding bindings_;
+                std::string sql_;
 
-            /* non-copyable boilerplate */
-            postgres_statement(const postgres_statement &other) = delete;
-            postgres_statement(postgres_statement &&other);
-            postgres_statement &operator=(const postgres_statement &other) = delete;
-            postgres_statement &operator=(postgres_statement &&other);
-            virtual ~postgres_statement();
+               public:
+                /*!
+                 * @param db    the database in use
+                 */
+                statement(postgres::db *db);
 
-            /* statement overrides */
-            void prepare(const std::string &sql);
-            bool is_valid() const;
-            resultset results();
-            bool result();
-            void finish();
-            void reset();
-            int last_number_of_changes();
-            std::string last_error();
-            long long last_insert_id();
+                /* non-copyable boilerplate */
+                statement(const statement &other) = delete;
+                statement(statement &&other);
+                statement &operator=(const statement &other) = delete;
+                statement &operator=(statement &&other);
+                virtual ~statement();
 
-            /* bindable overrides */
-            postgres_statement &bind(size_t index, int value);
-            postgres_statement &bind(size_t index, unsigned value);
-            postgres_statement &bind(size_t index, long long value);
-            postgres_statement &bind(size_t index, unsigned long long value);
-            postgres_statement &bind(size_t index, float value);
-            postgres_statement &bind(size_t index, double value);
-            postgres_statement &bind(size_t index, const std::string &value, int len = -1);
-            postgres_statement &bind(size_t index, const std::wstring &value, int len = -1);
-            postgres_statement &bind(size_t index, const sql_blob &value);
-            postgres_statement &bind(size_t index, const sql_null_type &value);
-            postgres_statement &bind(size_t index, const sql_time &value);
-        };
+                /* statement overrides */
+                void prepare(const std::string &sql);
+                bool is_valid() const;
+                resultset_type results();
+                bool result();
+                void finish();
+                void reset();
+                int last_number_of_changes();
+                std::string last_error();
+                long long last_insert_id();
+
+                /* bindable overrides */
+                statement &bind(size_t index, int value);
+                statement &bind(size_t index, unsigned value);
+                statement &bind(size_t index, long long value);
+                statement &bind(size_t index, unsigned long long value);
+                statement &bind(size_t index, float value);
+                statement &bind(size_t index, double value);
+                statement &bind(size_t index, const std::string &value, int len = -1);
+                statement &bind(size_t index, const std::wstring &value, int len = -1);
+                statement &bind(size_t index, const sql_blob &value);
+                statement &bind(size_t index, const sql_null_type &value);
+                statement &bind(size_t index, const sql_time &value);
+            };
+        }
     }
 }
 

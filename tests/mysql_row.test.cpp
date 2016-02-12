@@ -123,9 +123,9 @@ go_bandit([]() {
         describe("is movable", []() {
 
 
-            it("as statement results", []() { test_move_row<mysql_stmt_row>(get_stmt_row); });
+            it("as statement results", []() { test_move_row<mysql::stmt_row>(get_stmt_row); });
 
-            it("as results", []() { test_move_row<mysql_row>(get_results_row); });
+            it("as results", []() { test_move_row<mysql::row>(get_results_row); });
 
         });
 
@@ -152,9 +152,9 @@ go_bandit([]() {
 
         describe("can get a column", []() {
 
-            it("as statement results", []() { test_row_column<mysql_stmt_row>(get_stmt_row); });
+            it("as statement results", []() { test_row_column<mysql::stmt_row>(get_stmt_row); });
 
-            it("as results", []() { test_row_column<mysql_row>(get_results_row); });
+            it("as results", []() { test_row_column<mysql::row>(get_results_row); });
 
         });
     });

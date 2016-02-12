@@ -40,7 +40,7 @@ namespace arg3
                 case variant::BINARY:
                     bind(index, value.to_binary());
                     break;
-                case variant::CUSTOM:
+                case variant::COMPLEX:
                     if (value.is_time()) {
                         bind(index, value.to_time());
                     } else {

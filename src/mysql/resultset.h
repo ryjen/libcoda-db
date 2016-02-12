@@ -56,7 +56,7 @@ namespace arg3
 
                 /* resultset_impl overrides */
                 bool is_valid() const;
-                row_type current_row();
+                resultset::row_type current_row();
                 void reset();
                 bool next();
                 size_t size() const;
@@ -99,7 +99,7 @@ namespace arg3
 
                 /* resultset_impl overrides */
                 bool is_valid() const;
-                row_type current_row();
+                stmt_resultset::row_type current_row();
                 void reset();
                 bool next();
                 size_t size() const;

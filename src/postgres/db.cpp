@@ -9,142 +9,146 @@
 #include "resultset.h"
 #include "../select_query.h"
 
+using namespace std;
+
 namespace arg3
 {
     namespace db
     {
-        namespace helper
+        namespace postgres
         {
-            void postgres_res_delete::operator()(PGresult *p) const
+            namespace helper
             {
-                if (p != nullptr) {
-                    PQclear(p);
-                }
-            }
-
-            struct postgres_close_db {
-                void operator()(PGconn *p) const
+                void res_delete::operator()(PGresult *p) const
                 {
                     if (p != nullptr) {
-                        PQfinish(p);
+                        PQclear(p);
                     }
                 }
-            };
-        }
 
-        postgres_db::postgres_db(const uri &info) : sqldb(info), db_(nullptr), lastId_(0), lastNumChanges_(0)
-        {
-        }
-
-        postgres_db::postgres_db(const postgres_db &other)
-            : sqldb(other), db_(other.db_), lastId_(other.lastId_), lastNumChanges_(other.lastNumChanges_)
-        {
-        }
-
-        postgres_db::postgres_db(postgres_db &&other) : sqldb(other), db_(other.db_), lastId_(other.lastId_), lastNumChanges_(other.lastNumChanges_)
-        {
-            other.db_ = nullptr;
-        }
-
-        postgres_db &postgres_db::operator=(const postgres_db &other)
-        {
-            sqldb::operator=(other);
-
-            db_ = other.db_;
-            lastId_ = other.lastId_;
-            lastNumChanges_ = other.lastNumChanges_;
-
-            return *this;
-        }
-
-        postgres_db &postgres_db::operator=(postgres_db &&other)
-        {
-            sqldb::operator=(std::move(other));
-
-            db_ = other.db_;
-            lastId_ = other.lastId_;
-            lastNumChanges_ = other.lastNumChanges_;
-            other.db_ = nullptr;
-
-            return *this;
-        }
-
-        postgres_db::~postgres_db()
-        {
-        }
-
-        void postgres_db::open()
-        {
-            if (db_ != nullptr) return;
-
-            PGconn *conn = PQconnectdb(connection_info().value.c_str());
-
-            if (PQstatus(conn) != CONNECTION_OK) {
-                throw database_exception(PQerrorMessage(conn));
+                struct close_db {
+                    void operator()(PGconn *p) const
+                    {
+                        if (p != nullptr) {
+                            PQfinish(p);
+                        }
+                    }
+                };
             }
 
-            db_ = shared_ptr<PGconn>(conn, helper::postgres_close_db());
-        }
-
-        bool postgres_db::is_open() const
-        {
-            return db_ != nullptr;
-        }
-
-        void postgres_db::close()
-        {
-            if (db_ != nullptr) {
-                db_ = nullptr;
-            }
-        }
-
-        string postgres_db::last_error() const
-        {
-            if (db_ == nullptr) {
-                return string();
+            db::db(const uri &info) : sqldb(info), db_(nullptr), lastId_(0), lastNumChanges_(0)
+            {
             }
 
-            return PQerrorMessage(db_.get());
-        }
-
-        long long postgres_db::last_insert_id() const
-        {
-            return lastId_;
-        }
-
-        void postgres_db::set_last_insert_id(long long value)
-        {
-            lastId_ = value;
-        }
-
-        int postgres_db::last_number_of_changes() const
-        {
-            return lastNumChanges_;
-        }
-
-        void postgres_db::set_last_number_of_changes(int value)
-        {
-            lastNumChanges_ = value;
-        }
-
-        resultset postgres_db::execute(const string &sql)
-        {
-            if (db_ == nullptr) {
-                throw database_exception("database is not open");
+            db::db(const db &other) : sqldb(other), db_(other.db_), lastId_(other.lastId_), lastNumChanges_(other.lastNumChanges_)
+            {
             }
 
-            PGresult *res = PQexec(db_.get(), sql.c_str());
-
-            if (PQresultStatus(res) != PGRES_TUPLES_OK && PQresultStatus(res) != PGRES_COMMAND_OK) {
-                throw database_exception(last_error());
+            db::db(db &&other) : sqldb(other), db_(other.db_), lastId_(other.lastId_), lastNumChanges_(other.lastNumChanges_)
+            {
+                other.db_ = nullptr;
             }
 
-            return resultset(make_shared<postgres_resultset>(this, shared_ptr<PGresult>(res, helper::postgres_res_delete())));
-        }
+            db &db::operator=(const db &other)
+            {
+                sqldb::operator=(other);
 
-        shared_ptr<statement> postgres_db::create_statement()
-        {
-            return make_shared<postgres_statement>(this);
+                db_ = other.db_;
+                lastId_ = other.lastId_;
+                lastNumChanges_ = other.lastNumChanges_;
+
+                return *this;
+            }
+
+            db &db::operator=(db &&other)
+            {
+                sqldb::operator=(std::move(other));
+
+                db_ = other.db_;
+                lastId_ = other.lastId_;
+                lastNumChanges_ = other.lastNumChanges_;
+                other.db_ = nullptr;
+
+                return *this;
+            }
+
+            db::~db()
+            {
+            }
+
+            void db::open()
+            {
+                if (db_ != nullptr) return;
+
+                PGconn *conn = PQconnectdb(connection_info().value.c_str());
+
+                if (PQstatus(conn) != CONNECTION_OK) {
+                    throw database_exception(PQerrorMessage(conn));
+                }
+
+                db_ = shared_ptr<PGconn>(conn, helper::close_db());
+            }
+
+            bool db::is_open() const
+            {
+                return db_ != nullptr;
+            }
+
+            void db::close()
+            {
+                if (db_ != nullptr) {
+                    db_ = nullptr;
+                }
+            }
+
+            string db::last_error() const
+            {
+                if (db_ == nullptr) {
+                    return string();
+                }
+
+                return PQerrorMessage(db_.get());
+            }
+
+            long long db::last_insert_id() const
+            {
+                return lastId_;
+            }
+
+            void db::set_last_insert_id(long long value)
+            {
+                lastId_ = value;
+            }
+
+            int db::last_number_of_changes() const
+            {
+                return lastNumChanges_;
+            }
+
+            void db::set_last_number_of_changes(int value)
+            {
+                lastNumChanges_ = value;
+            }
+
+            db::resultset_type db::execute(const string &sql)
+            {
+                if (db_ == nullptr) {
+                    throw database_exception("database is not open");
+                }
+
+                PGresult *res = PQexec(db_.get(), sql.c_str());
+
+                if (PQresultStatus(res) != PGRES_TUPLES_OK && PQresultStatus(res) != PGRES_COMMAND_OK) {
+                    throw database_exception(last_error());
+                }
+
+                return resultset_type(make_shared<resultset>(this, shared_ptr<PGresult>(res, helper::res_delete())));
+            }
+
+            shared_ptr<db::statement_type> db::create_statement()
+            {
+                return make_shared<statement>(this);
+            }
         }
     }
 }

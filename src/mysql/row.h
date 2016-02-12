@@ -30,7 +30,7 @@ namespace arg3
              */
             class row : public row_impl
             {
-                friend class mysql::resultset;
+                friend class resultset;
 
                private:
                 MYSQL_ROW row_;
@@ -64,9 +64,9 @@ namespace arg3
             /*!
              *  a mysql specific implementation of a row using prepared statements
              */
-            class mysql_stmt_row : public row_impl
+            class stmt_row : public row_impl
             {
-                friend class mysql::stmt_resultset;
+                friend class stmt_resultset;
 
                private:
                 std::shared_ptr<mysql::binding> fields_;
@@ -82,15 +82,15 @@ namespace arg3
                  * @param metadata the query meta data
                  * @param fields the bindings for the statement
                  */
-                mysql_stmt_row(mysql::db *db, const std::shared_ptr<MYSQL_STMT> &stmt, const std::shared_ptr<MYSQL_RES> &metadata,
-                               const std::shared_ptr<mysql::binding> &fields);
+                stmt_row(mysql::db *db, const std::shared_ptr<MYSQL_STMT> &stmt, const std::shared_ptr<MYSQL_RES> &metadata,
+                         const std::shared_ptr<mysql::binding> &fields);
 
                 /* non-copyable boilerplate */
-                virtual ~mysql_stmt_row();
-                mysql_stmt_row(const mysql_stmt_row &other) = delete;
-                mysql_stmt_row(mysql_stmt_row &&other);
-                mysql_stmt_row &operator=(const mysql_stmt_row &other) = delete;
-                mysql_stmt_row &operator=(mysql_stmt_row &&other);
+                virtual ~stmt_row();
+                stmt_row(const stmt_row &other) = delete;
+                stmt_row(stmt_row &&other);
+                stmt_row &operator=(const stmt_row &other) = delete;
+                stmt_row &operator=(stmt_row &&other);
 
                 /* row_impl overrides */
                 std::string column_name(size_t position) const;

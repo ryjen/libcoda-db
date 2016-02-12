@@ -82,6 +82,7 @@ namespace arg3
         {
            public:
             typedef resultset resultset_type;
+            typedef statement statement_type;
 
             /*!
              * parses a uri and returns a database object
@@ -137,12 +138,12 @@ namespace arg3
              * @param  cache true if the results should be independent from the database connection
              * @return       the results of the query
              */
-            virtual resultset execute(const std::string &sql) = 0;
+            virtual resultset_type execute(const std::string &sql) = 0;
 
             /*!
              * @return a statement for this database
              */
-            virtual shared_ptr<statement> create_statement() = 0;
+            virtual std::shared_ptr<statement_type> create_statement() = 0;
 
             /*!
              * gets the last error for any statement

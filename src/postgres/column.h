@@ -1,5 +1,5 @@
 /*!
- * @file postgres_column.h
+ * @file column.h
  * column in a postgres database
  */
 #ifndef ARG3_DB_POSTGRES_COLUMN_H
@@ -18,37 +18,40 @@ namespace arg3
 {
     namespace db
     {
-        /*!
-         * a sqlite specific implementation of a column
-         */
-        class postgres_column : public column_impl
+        namespace postgres
         {
-           private:
-            std::shared_ptr<PGresult> stmt_;
-            int column_;
-            int row_;
-
-           public:
             /*!
-             * @param stmt the query statement in use
-             * @param row the row index
-             * @param column the column index
+             * a sqlite specific implementation of a column
              */
-            postgres_column(const std::shared_ptr<PGresult> &stmt, int row, int column);
+            class column : public column_impl
+            {
+               private:
+                std::shared_ptr<PGresult> stmt_;
+                int column_;
+                int row_;
 
-            /* non-copyable boilerplate */
-            postgres_column(const postgres_column &other) = delete;
-            postgres_column(postgres_column &&other);
-            virtual ~postgres_column();
-            postgres_column &operator=(const postgres_column &other) = delete;
-            postgres_column &operator=(postgres_column &&other);
+               public:
+                /*!
+                 * @param stmt the query statement in use
+                 * @param row the row index
+                 * @param column the column index
+                 */
+                column(const std::shared_ptr<PGresult> &stmt, int row, int column);
 
-            /* column_impl overrides */
-            bool is_valid() const;
-            sql_value to_value() const;
-            int sql_type() const;
-            std::string name() const;
-        };
+                /* non-copyable boilerplate */
+                column(const column &other) = delete;
+                column(column &&other);
+                virtual ~column();
+                column &operator=(const column &other) = delete;
+                column &operator=(column &&other);
+
+                /* column_impl overrides */
+                bool is_valid() const;
+                sql_value to_value() const;
+                int sql_type() const;
+                std::string name() const;
+            };
+        }
     }
 }
 

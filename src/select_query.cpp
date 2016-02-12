@@ -5,6 +5,8 @@
 #include "select_query.h"
 #include "base_record.h"
 
+using namespace std;
+
 namespace arg3
 {
     namespace db

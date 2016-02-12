@@ -88,10 +88,10 @@ namespace arg3
              * @param  value the sql string
              * @return       a reference to this
              */
-            where_clause &where(const string &value);
+            where_clause &where(const std::string &value);
 
             template <typename... List>
-            select_query &where(const string &value, const List &... args)
+            select_query &where(const std::string &value, const List &... args)
             {
                 where(value);
                 bind_all(sizeof...(List), args...);

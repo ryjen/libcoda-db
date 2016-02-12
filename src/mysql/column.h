@@ -28,9 +28,9 @@ namespace arg3
             class column : public column_impl
             {
                private:
-                string name_;
+                std::string name_;
                 MYSQL_ROW value_;
-                shared_ptr<MYSQL_RES> res_;
+                std::shared_ptr<MYSQL_RES> res_;
                 size_t index_;
 
                public:
@@ -39,7 +39,7 @@ namespace arg3
                  * @param value the column values for the result
                  * @param index the index of the column value
                  */
-                column(const shared_ptr<MYSQL_RES> &res, MYSQL_ROW value, size_t index);
+                column(const std::shared_ptr<MYSQL_RES> &res, MYSQL_ROW value, size_t index);
 
                 /* non-copyable boilerplate */
                 column(const column &other) = delete;
@@ -71,7 +71,7 @@ namespace arg3
                  * @param bindings the bindings containing the column value
                  * @param position the index of the column in the bindings
                  */
-                stmt_column(const std::string &name, const shared_ptr<binding> &bindings, size_t position);
+                stmt_column(const std::string &name, const std::shared_ptr<binding> &bindings, size_t position);
 
                 /* non-copyable boilerplate */
                 stmt_column(const stmt_column &other) = delete;

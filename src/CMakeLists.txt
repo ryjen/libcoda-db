@@ -42,7 +42,7 @@ set(${PROJECT_NAME}_HEADERS
 	bindable.h
 	column.h
 	exception.h
-  	join_clause.h
+  join_clause.h
 	modify_query.h
 	query.h
 	resultset.h
@@ -75,11 +75,11 @@ set(${PROJECT_NAME}_POSTGRES_HEADERS
 )
 
 set(${PROJECT_NAME}_SQLITE_HEADERS
-	sqlite3/column.h
-	sqlite3/db.h
-	sqlite3/resultset.h
-	sqlite3/row.h
-	sqlite3/statement.h
+	sqlite/column.h
+	sqlite/db.h
+	sqlite/resultset.h
+	sqlite/row.h
+	sqlite/statement.h
 )
 
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}")

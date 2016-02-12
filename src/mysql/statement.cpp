@@ -9,6 +9,8 @@
 #include "resultset.h"
 #include <regex>
 
+using namespace std;
+
 namespace arg3
 {
     namespace db
@@ -162,7 +164,7 @@ namespace arg3
                 return *this;
             }
 
-            resultset_type statement::results()
+            statement::resultset_type statement::results()
             {
                 if (!is_valid()) {
                     throw database_exception("statement not ready");

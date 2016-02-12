@@ -148,10 +148,10 @@ namespace arg3
             /*!
              * @param value the where sql/string to set
              */
-            where_clause &where(const string &value);
+            where_clause &where(const std::string &value);
 
             template <typename... List>
-            update_query &where(const string &value, const List &... args)
+            update_query &where(const std::string &value, const List &... args)
             {
                 where(value);
                 bind_all(sizeof...(List), args...);

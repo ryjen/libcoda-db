@@ -45,23 +45,23 @@ go_bandit([]() {
         after_each([]() { mysql_testdb.teardown(); });
 
         it("has a size contructor", []() {
-            mysql_binding b(3);
+            mysql::binding b(3);
 
             Assert::That(b.size(), Equals(3));
 
             Assert::That(b.get(1)->buffer == NULL, IsTrue());
 
-            Assert::That(b.to_value(1), Equals(sql_null));
+            Assert::That(b.to_value(1) == sql_null, IsTrue());
         });
 
         describe("is copyable", []() {
 
             it("from a raw mysql binding", []() {
-                mysql_binding b;
+                mysql::binding b;
 
                 b.bind(1, 24);
 
-                mysql_binding other(*b.get(0));
+                mysql::binding other(*b.get(0));
 
                 Assert::That(b.size(), Equals(other.size()));
 
@@ -70,17 +70,17 @@ go_bandit([]() {
 
             it("from another", []() {
 
-                mysql_binding b;
+                mysql::binding b;
 
                 b.bind(1, 24);
 
-                mysql_binding other(b);
+                mysql::binding other(b);
 
                 Assert::That(b.size(), Equals(other.size()));
 
                 Assert::That(other.to_value(0), Equals(24));
 
-                mysql_binding c;
+                mysql::binding c;
 
                 c = other;
 
@@ -91,11 +91,11 @@ go_bandit([]() {
         });
 
         it("is movable", []() {
-            mysql_binding b;
+            mysql::binding b;
 
             b.bind(1, 24);
 
-            mysql_binding other(std::move(b));
+            mysql::binding other(std::move(b));
 
             Assert::That(b.size(), Equals(0));
 
@@ -103,7 +103,7 @@ go_bandit([]() {
 
             Assert::That(other.to_value(0), Equals(24));
 
-            mysql_binding c;
+            mysql::binding c;
 
             c = std::move(other);
 

@@ -100,9 +100,9 @@ go_bandit([]() {
         describe("is movable", []() {
 
 
-            it("as statement results", []() { test_move_resultset<mysql_stmt_resultset>(get_stmt_resultset); });
+            it("as statement results", []() { test_move_resultset<mysql::stmt_resultset>(get_stmt_resultset); });
 
-            it("as results", []() { test_move_resultset<mysql_resultset>(get_resultset); });
+            it("as results", []() { test_move_resultset<mysql::resultset>(get_resultset); });
 
 
         });
@@ -110,11 +110,11 @@ go_bandit([]() {
         describe("can get a row", []() {
 
             it("as statement results", []() {
-                test_resultset_row<mysql_stmt_resultset>(get_stmt_resultset);
+                test_resultset_row<mysql::stmt_resultset>(get_stmt_resultset);
 
             });
 
-            it("as results", []() { test_resultset_row<mysql_resultset>(get_resultset); });
+            it("as results", []() { test_resultset_row<mysql::resultset>(get_resultset); });
 
         });
 

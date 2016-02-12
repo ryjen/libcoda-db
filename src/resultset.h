@@ -20,7 +20,7 @@ namespace arg3
          */
         class resultset_impl
         {
-          public:
+           public:
             typedef arg3::db::row row_type;
 
            protected:
@@ -71,12 +71,12 @@ namespace arg3
         class resultset_iterator : public std::iterator<std::input_iterator_tag, ValueType>
         {
            private:
-            shared_ptr<resultset_impl> rs_;
+            std::shared_ptr<resultset_impl> rs_;
             int pos_;
             NonConst value_;
 
            public:
-            resultset_iterator(const shared_ptr<resultset_impl> &rset, int position) : rs_(rset), pos_(position), value_(rset->current_row())
+            resultset_iterator(const std::shared_ptr<resultset_impl> &rset, int position) : rs_(rset), pos_(position), value_(rset->current_row())
             {
             }
 
@@ -198,7 +198,7 @@ namespace arg3
          */
         class resultset
         {
-          public:
+           public:
             typedef arg3::db::row row_type;
 
            private:

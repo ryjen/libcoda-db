@@ -20,19 +20,19 @@ go_bandit([]() {
 
 
         it("is movable", []() {
-            postgres_statement stmt(&postgres_testdb);
+            postgres::statement stmt(&postgres_testdb);
 
             stmt.prepare("select * from users");
 
             AssertThat(stmt.is_valid(), IsTrue());
 
-            postgres_statement s2(std::move(stmt));
+            postgres::statement s2(std::move(stmt));
 
             AssertThat(s2.is_valid(), IsTrue());
 
             AssertThat(stmt.is_valid(), IsFalse());
 
-            postgres_statement s3(&postgres_testdb);
+            postgres::statement s3(&postgres_testdb);
 
             AssertThat(s3.is_valid(), IsFalse());
 
@@ -44,15 +44,15 @@ go_bandit([]() {
         });
 
         it("throws exceptions", []() {
-            postgres_db db(uri(""));
+            postgres::db db(uri(""));
 
-            postgres_statement stmt(&db);
+            postgres::statement stmt(&db);
 
             AssertThrows(database_exception, stmt.prepare("select * from users"));
         });
 
         it("can reset", []() {
-            postgres_statement stmt(&postgres_testdb);
+            postgres::statement stmt(&postgres_testdb);
 
             stmt.prepare("select * from users");
 

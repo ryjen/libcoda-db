@@ -116,10 +116,10 @@ namespace arg3
     template <typename T>
     std::string join_csv(const std::vector<T> &list)
     {
-        ostringstream buf;
+        std::ostringstream buf;
 
         if (list.size() > 0) {
-            ostream_iterator<T> it(buf, ",");
+            std::ostream_iterator<T> it(buf, ",");
 
             copy(list.begin(), list.end() - 1, it);
 
@@ -132,7 +132,7 @@ namespace arg3
     /*!
      * utility method used in creating sql
      */
-    std::string join_params(const vector<std::string> &columns, bool update);
+    std::string join_params(const std::vector<std::string> &columns, bool update);
 }
 
 #endif

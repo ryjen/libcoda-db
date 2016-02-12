@@ -21,10 +21,10 @@ class test_db
 
 #if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
 
-class test_sqlite3_db : public arg3::db::sqlite3_db, public test_db
+class test_sqlite3_db : public arg3::db::sqlite::db, public test_db
 {
    public:
-    test_sqlite3_db() : sqlite3_db(arg3::db::uri("file://testdb.db"))
+    test_sqlite3_db() : db(arg3::db::uri("file://testdb.db"))
     {
     }
 
@@ -43,10 +43,10 @@ extern test_sqlite3_db sqlite_testdb;
 
 #if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
 
-class test_mysql_db : public arg3::db::mysql_db, public test_db
+class test_mysql_db : public arg3::db::mysql::db, public test_db
 {
    public:
-    test_mysql_db() : mysql_db(arg3::db::uri("mysql://test"))
+    test_mysql_db() : db(arg3::db::uri("mysql://test"))
     {
     }
 
@@ -65,10 +65,10 @@ extern test_mysql_db mysql_testdb;
 
 #if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
 
-class test_postgres_db : public arg3::db::postgres_db, public test_db
+class test_postgres_db : public arg3::db::postgres::db, public test_db
 {
    public:
-    test_postgres_db() : postgres_db(arg3::db::uri("postgres://localhost/test"))
+    test_postgres_db() : db(arg3::db::uri("postgres://localhost/test"))
     {
     }
 
@@ -130,9 +130,9 @@ class user : public arg3::db::base_record<user>
         base_record<user>::operator=(std::move(other));
         return *this;
     }
-    string to_string()
+    std::string to_string()
     {
-        ostringstream buf;
+        std::ostringstream buf;
 
         buf << id() << ": " << get("first_name") << " " << get("last_name");
 

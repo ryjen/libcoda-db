@@ -9,6 +9,8 @@
 #include "row.h"
 #include "binding.h"
 
+using namespace std;
+
 namespace arg3
 {
     namespace db
@@ -28,7 +30,7 @@ namespace arg3
             }
 
 
-            resultset::resultset(mysql_db *db, const shared_ptr<MYSQL_RES> &res) : res_(res), row_(nullptr), db_(db)
+            resultset::resultset(mysql::db *db, const shared_ptr<MYSQL_RES> &res) : res_(res), row_(nullptr), db_(db)
             {
                 if (db_ == nullptr) {
                     throw database_exception("database not provided to mysql resultset");
@@ -75,7 +77,7 @@ namespace arg3
                 if (!value && !mysql_more_results(db_->db_.get())) {
                     MYSQL_RES *temp;
                     if ((temp = mysql_use_result(db_->db_.get())) != nullptr) {
-                        res_ = shared_ptr<MYSQL_RES>(temp, helper::mysql_res_delete());
+                        res_ = shared_ptr<MYSQL_RES>(temp, helper::res_delete());
                         value = (row_ = mysql_fetch_row(temp)) != nullptr;
                     } else {
                         res_ = nullptr;
@@ -90,7 +92,7 @@ namespace arg3
                 mysql_data_seek(res_.get(), 0);
             }
 
-            row_type resultset::current_row()
+            resultset::row_type resultset::current_row()
             {
                 return row_type(make_shared<mysql::row>(db_, res_, row_));
             }
@@ -103,7 +105,7 @@ namespace arg3
 
             /* Statement version */
 
-            stmt_resultset::stmt_resultset(mysql_db *db, const shared_ptr<MYSQL_STMT> &stmt)
+            stmt_resultset::stmt_resultset(mysql::db *db, const shared_ptr<MYSQL_STMT> &stmt)
                 : stmt_(stmt), metadata_(nullptr), db_(db), bindings_(nullptr), status_(-1)
             {
                 assert(stmt_ != nullptr);
@@ -151,13 +153,13 @@ namespace arg3
 
                 if (temp == nullptr) throw database_exception("No result data found.");
 
-                metadata_ = shared_ptr<MYSQL_RES>(temp, helper::mysql_res_delete());
+                metadata_ = shared_ptr<MYSQL_RES>(temp, helper::res_delete());
 
                 int size = mysql_num_fields(temp);
 
                 auto fields = mysql_fetch_fields(temp);
 
-                bindings_ = make_shared<mysql_binding>(fields, size);
+                bindings_ = make_shared<mysql::binding>(fields, size);
 
                 bindings_->bind_result(stmt_.get());
 
@@ -207,11 +209,11 @@ namespace arg3
                 status_ = -1;
             }
 
-            row_type stmt_resultset::current_row()
+            resultset::row_type stmt_resultset::current_row()
             {
                 assert(db_ != nullptr);
 
-                return row_type(make_shared<mysql::stmt_row>(db_, stmt_, metadata_, bindings_));
+                return row_type(make_shared<stmt_row>(db_, stmt_, metadata_, bindings_));
             }
 
             size_t stmt_resultset::size() const

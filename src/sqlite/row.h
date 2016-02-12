@@ -1,5 +1,5 @@
 /*!
- * @file sqlite3_row.h
+ * @file row.h
  */
 #ifndef ARG3_DB_SQLITE_ROW_H
 #define ARG3_DB_SQLITE_ROW_H
@@ -18,73 +18,76 @@ namespace arg3
 {
     namespace db
     {
-        class sqlite3_db;
-
-        /*!
-         *  a sqlite specific implementation of a row
-         */
-        class sqlite3_row : public row_impl
+        namespace sqlite
         {
-            friend class sqlite3_resultset;
+            class db;
 
-           private:
-            std::shared_ptr<sqlite3_stmt> stmt_;
-            sqlite3_db *db_;
-            size_t size_;
-
-           public:
             /*!
-             * @param db    the database in use
-             * @param stmt  the query statement in use
+             *  a sqlite specific implementation of a row
              */
-            sqlite3_row(sqlite3_db *db, const std::shared_ptr<sqlite3_stmt> &stmt);
+            class row : public row_impl
+            {
+                friend class resultset;
 
-            /* non-copyable boilerplate */
-            virtual ~sqlite3_row();
-            sqlite3_row(const sqlite3_row &other) = delete;
-            sqlite3_row(sqlite3_row &&other);
-            sqlite3_row &operator=(const sqlite3_row &other) = delete;
-            sqlite3_row &operator=(sqlite3_row &&other);
+               private:
+                std::shared_ptr<sqlite3_stmt> stmt_;
+                sqlite::db *db_;
+                size_t size_;
 
-            /* row_impl overrides */
-            std::string column_name(size_t nPosition) const;
-            column_type column(size_t nPosition) const;
-            column_type column(const std::string &name) const;
-            size_t size() const;
-            bool is_valid() const;
-        };
+               public:
+                /*!
+                 * @param db    the database in use
+                 * @param stmt  the query statement in use
+                 */
+                row(sqlite::db *db, const std::shared_ptr<sqlite3_stmt> &stmt);
 
-        /*!
-         * a row that contains pre-fetched columns
-         */
-        class sqlite3_cached_row : public row_impl
-        {
-            friend class sqlite3_resultset;
+                /* non-copyable boilerplate */
+                virtual ~row();
+                row(const row &other) = delete;
+                row(row &&other);
+                row &operator=(const row &other) = delete;
+                row &operator=(row &&other);
 
-           private:
-            std::vector<std::shared_ptr<sqlite3_cached_column>> columns_;
+                /* row_impl overrides */
+                std::string column_name(size_t nPosition) const;
+                column_type column(size_t nPosition) const;
+                column_type column(const std::string &name) const;
+                size_t size() const;
+                bool is_valid() const;
+            };
 
-           public:
             /*!
-             * @param db    the database in use
-             * @param stmt  the query statement in use
+             * a row that contains pre-fetched columns
              */
-            sqlite3_cached_row(sqlite3_db *db, std::shared_ptr<sqlite3_stmt> stmt);
+            class cached_row : public row_impl
+            {
+                friend class resultset;
 
-            /* non-copyable boilerplate */
-            virtual ~sqlite3_cached_row();
-            sqlite3_cached_row(const sqlite3_cached_row &other) = delete;
-            sqlite3_cached_row(sqlite3_cached_row &&other);
-            sqlite3_cached_row &operator=(const sqlite3_cached_row &other) = delete;
-            sqlite3_cached_row &operator=(sqlite3_cached_row &&other);
+               private:
+                std::vector<std::shared_ptr<cached_column>> columns_;
 
-            /* row_impl overrides */
-            std::string column_name(size_t nPosition) const;
-            column_type column(size_t nPosition) const;
-            column_type column(const std::string &name) const;
-            size_t size() const;
-            bool is_valid() const;
-        };
+               public:
+                /*!
+                 * @param db    the database in use
+                 * @param stmt  the query statement in use
+                 */
+                cached_row(sqlite::db *db, std::shared_ptr<sqlite3_stmt> stmt);
+
+                /* non-copyable boilerplate */
+                virtual ~cached_row();
+                cached_row(const cached_row &other) = delete;
+                cached_row(cached_row &&other);
+                cached_row &operator=(const cached_row &other) = delete;
+                cached_row &operator=(cached_row &&other);
+
+                /* row_impl overrides */
+                std::string column_name(size_t nPosition) const;
+                column_type column(size_t nPosition) const;
+                column_type column(const std::string &name) const;
+                size_t size() const;
+                bool is_valid() const;
+            };
+        }
     }
 }
 

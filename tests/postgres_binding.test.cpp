@@ -45,30 +45,30 @@ go_bandit([]() {
         after_each([]() { postgres_testdb.teardown(); });
 
         it("has a size contructor", []() {
-            postgres_binding b(3);
+            postgres::binding b(3);
 
             Assert::That(b.size(), Equals(3));
 
-            Assert::That(b.to_value(1), Equals(sql_null));
+            Assert::That(b.to_value(1) == sql_null, IsTrue());
         });
 
         describe("is copyable", []() {
 
             it("from another", []() {
 
-                postgres_binding b;
+                postgres::binding b;
 
                 b.bind(1, 24);
 
                 Assert::That(b.to_value(0), Equals(24));
 
-                postgres_binding other(b);
+                postgres::binding other(b);
 
                 Assert::That(b.size(), Equals(other.size()));
 
                 Assert::That(other.to_value(0), Equals(24));
 
-                postgres_binding c;
+                postgres::binding c;
 
                 c = other;
 
@@ -79,11 +79,11 @@ go_bandit([]() {
         });
 
         it("is movable", []() {
-            postgres_binding b;
+            postgres::binding b;
 
             b.bind(1, 24);
 
-            postgres_binding other(std::move(b));
+            postgres::binding other(std::move(b));
 
             Assert::That(b.size(), Equals(0));
 
@@ -91,7 +91,7 @@ go_bandit([]() {
 
             Assert::That(other.to_value(0), Equals(24));
 
-            postgres_binding c;
+            postgres::binding c;
 
             c = std::move(other);
 

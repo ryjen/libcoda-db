@@ -107,9 +107,9 @@ go_bandit([]() {
         it("can be a string", []() { AssertThat(to_string(sql_null), Equals("NULL")); });
 
         it("can be a sql value", []() {
-            sql_value value = sql_null;
+            sql_value value;
 
-            AssertThat(value, Equals(sql_null));
+            AssertThat(value == sql_null, IsTrue());
         });
     });
 

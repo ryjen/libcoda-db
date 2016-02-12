@@ -88,7 +88,7 @@ namespace arg3
                     return mktime(&sys);
                 }
 
-                extern string last_stmt_error(MYSQL_STMT *stmt);
+                extern std::string last_stmt_error(MYSQL_STMT *stmt);
             }
             namespace data_mapper
             {

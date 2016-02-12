@@ -24,7 +24,7 @@ go_bandit([]() {
         after_each([]() { mysql_testdb.teardown(); });
 
         it("is copyable", []() {
-            mysql_db db(mysql_testdb);
+            mysql::db db(mysql_testdb);
 
             Assert::That(db.is_open(), IsTrue());
 
@@ -44,13 +44,13 @@ go_bandit([]() {
         });
 
         it("is movable", []() {
-            mysql_db other(mysql_testdb);
+            mysql::db other(mysql_testdb);
 
             other.open();
 
             Assert::That(other.is_open(), IsTrue());
 
-            mysql_db db(std::move(other));
+            mysql::db db(std::move(other));
 
             Assert::That(other.is_open(), IsFalse());
 
@@ -66,7 +66,7 @@ go_bandit([]() {
         });
 
         it("can handle bad parameters", []() {
-            mysql_db db(uri("mysql://zzzzz:zzzzz@zzzz/zzzzz:0"));
+            mysql::db db(uri("mysql://zzzzz:zzzzz@zzzz/zzzzz:0"));
 
             AssertThrows(database_exception, db.open());
         });

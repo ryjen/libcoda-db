@@ -24,7 +24,7 @@ go_bandit([]() {
         after_each([]() { postgres_testdb.teardown(); });
 
         it("is copyable", []() {
-            postgres_db db(postgres_testdb);
+            postgres::db db(postgres_testdb);
 
             Assert::That(db.is_open(), IsTrue());
 
@@ -47,13 +47,13 @@ go_bandit([]() {
         });
 
         it("is movable", []() {
-            postgres_db other(postgres_testdb);
+            postgres::db other(postgres_testdb);
 
             other.open();
 
             Assert::That(other.is_open(), IsTrue());
 
-            postgres_db db(std::move(other));
+            postgres::db db(std::move(other));
 
             Assert::That(other.is_open(), IsFalse());
 
@@ -69,7 +69,7 @@ go_bandit([]() {
         });
 
         it("can handle bad parameters", []() {
-            postgres_db db(uri("postgres://zzzzz:zzzzz@zzzz/zzzzz:0"));
+            postgres::db db(uri("postgres://zzzzz:zzzzz@zzzz/zzzzz:0"));
 
             AssertThrows(database_exception, db.open());
         });

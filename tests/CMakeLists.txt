@@ -2,15 +2,47 @@
 
 link_directories("${PROJECT_BINARY_DIR}/libs/variant/src")
 
-add_executable (${PROJECT_NAME}-test-mysql arg3.test.cpp delete_query.test.cpp mysql_db.test.cpp resultset.test.cpp select_query.test.cpp base_record.test.cpp modify_query.test.cpp mysql_resultset.test.cpp row.test.cpp sql_value.test.cpp column.test.cpp mysql_binding.test.cpp mysql_row.test.cpp schema.test.cpp db.test.cpp mysql_column.test.cpp mysql_statement.test.cpp schema_factory.test.cpp where_clause.test.cpp)
+set(TEST-SOURCES
+  arg3.test.cpp  
+  base_record.test.cpp  
+  column.test.cpp 
+  db.test.cpp 
+  delete_query.test.cpp 
+  modify_query.test.cpp
+  resultset.test.cpp 
+  row.test.cpp 
+  schema.test.cpp 
+  schema_factory.test.cpp 
+  select_query.test.cpp
+  sql_value.test.cpp
+  where_clause.test.cpp 
+)
+
+add_executable (${PROJECT_NAME}-test-mysql 
+	${TEST-SOURCES}
+	mysql_binding.test.cpp 
+	mysql_column.test.cpp 
+	mysql_db.test.cpp 
+	mysql_resultset.test.cpp 
+	mysql_row.test.cpp 
+	mysql_statement.test.cpp 
+)
 
 set_target_properties(${PROJECT_NAME}-test-mysql PROPERTIES COMPILE_FLAGS "-DTEST_MYSQL") 
 
-add_executable (${PROJECT_NAME}-test-sqlite arg3.test.cpp delete_query.test.cpp resultset.test.cpp select_query.test.cpp base_record.test.cpp modify_query.test.cpp row.test.cpp sql_value.test.cpp column.test.cpp schema.test.cpp sqlite3_statement.test.cpp db.test.cpp schema_factory.test.cpp where_clause.test.cpp sqlite3_statement.test.cpp)
+add_executable (${PROJECT_NAME}-test-sqlite 
+  ${TEST-SOURCES}
+  sqlite3_statement.test.cpp
+)
 
 set_target_properties(${PROJECT_NAME}-test-sqlite PROPERTIES COMPILE_FLAGS "-DTEST_SQLITE") 
 
-add_executable (${PROJECT_NAME}-test-postgres arg3.test.cpp delete_query.test.cpp postgres_db.test.cpp resultset.test.cpp select_query.test.cpp base_record.test.cpp modify_query.test.cpp row.test.cpp sql_value.test.cpp column.test.cpp postgres_binding.test.cpp schema.test.cpp db.test.cpp postgres_statement.test.cpp schema_factory.test.cpp where_clause.test.cpp)
+add_executable (${PROJECT_NAME}-test-postgres 
+  ${TEST-SOURCES}
+  postgres_db.test.cpp 
+  postgres_binding.test.cpp 
+  postgres_statement.test.cpp 
+)
 
 set_target_properties(${PROJECT_NAME}-test-postgres PROPERTIES COMPILE_FLAGS "-DTEST_POSTGRES") 
 

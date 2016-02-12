@@ -3,6 +3,8 @@
 #include "schema.h"
 #include "sqldb.h"
 
+using namespace std;
+
 namespace arg3
 {
     namespace db

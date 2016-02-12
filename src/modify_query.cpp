@@ -5,6 +5,8 @@
 #include "exception.h"
 #include "log.h"
 
+using namespace std;
+
 namespace arg3
 {
     namespace db

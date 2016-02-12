@@ -38,7 +38,7 @@ namespace arg3
 
             for (auto &row : results) {
                 if (row.is_valid()) {
-                    auto record = make_shared<T>(row);
+                    auto record = std::make_shared<T>(row);
                     funk(record);
                 }
             }
@@ -80,7 +80,7 @@ namespace arg3
             if (!results.is_valid()) return;
 
             for (auto &row : results) {
-                auto record = make_shared<T>(row);
+                auto record = std::make_shared<T>(row);
                 funk(record);
             }
         }
@@ -96,7 +96,7 @@ namespace arg3
         inline std::vector<std::shared_ptr<T>> find_by(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value)
         {
             /* convert sql rows to objects */
-            std::vector<shared_ptr<T>> items;
+            std::vector<std::shared_ptr<T>> items;
 
             db::find_by<T>(schema, name, value, [&items](std::shared_ptr<T> record) { items.push_back(record); });
 
@@ -330,7 +330,7 @@ namespace arg3
                 if (exists()) {
                     update_query query(schema(), cols_to_save);
 
-                    query.where(idColumnName_ + " = $" + to_string(cols_to_save.size() + 1));
+                    query.where(idColumnName_ + " = $" + std::to_string(cols_to_save.size() + 1));
 
                     index = bind_columns_to_query(query, cols_to_save);
 
@@ -429,7 +429,7 @@ namespace arg3
                 auto it = results.begin();
 
                 if (it != results.end()) {
-                    return make_shared<T>(*it);
+                    return std::make_shared<T>(*it);
                 }
 
                 throw record_not_found_exception();

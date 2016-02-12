@@ -4,6 +4,8 @@
 #include "sqldb.h"
 #include "resultset.h"
 
+using namespace std;
+
 namespace arg3
 {
     namespace db

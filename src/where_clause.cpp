@@ -2,6 +2,8 @@
 #include "where_clause.h"
 #include <sstream>
 
+using namespace std;
+
 namespace arg3
 {
     namespace db

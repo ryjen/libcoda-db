@@ -1,5 +1,5 @@
 /*!
- * @file sqlite3_resultset.h
+ * @file resultset.h
  */
 #ifndef ARG3_DB_SQLITE_RESULTSET_H
 #define ARG3_DB_SQLITE_RESULTSET_H
@@ -18,83 +18,84 @@ namespace arg3
 {
     namespace db
     {
-        class sqlite3_db;
-
-        /*!
-         * a sqlite specific implmentation of a result set
-         */
-        class sqlite3_resultset : public resultset_impl
+        namespace sqlite
         {
-            friend class select_query;
-            friend class row;
-            friend class sqldb;
-            template <typename, typename>
-            friend class resultset_iterator;
+            class db;
 
-           private:
-            std::shared_ptr<sqlite3_stmt> stmt_;
-            sqlite3_db *db_;
-            int status_;
-
-           public:
             /*!
-             * @param  db   the database in use
-             * @param  stmt the query statement in use
+             * a sqlite specific implmentation of a result set
              */
-            sqlite3_resultset(sqlite3_db *db, const std::shared_ptr<sqlite3_stmt> &stmt);
+            class resultset : public resultset_impl
+            {
+                friend class row;
+                friend class sqldb;
+                template <typename, typename>
+                friend class resultset_iterator;
 
-            /* non-copyable boilerplate */
-            sqlite3_resultset(const sqlite3_resultset &other) = delete;
-            sqlite3_resultset(sqlite3_resultset &&other);
-            virtual ~sqlite3_resultset();
-            sqlite3_resultset &operator=(const sqlite3_resultset &other) = delete;
-            sqlite3_resultset &operator=(sqlite3_resultset &&other);
+               private:
+                std::shared_ptr<sqlite3_stmt> stmt_;
+                sqlite::db *db_;
+                int status_;
 
-            /* resultset_impl overrides */
-            bool is_valid() const;
-            row current_row();
-            void reset();
-            bool next();
-            size_t size() const;
-        };
+               public:
+                /*!
+                 * @param  db   the database in use
+                 * @param  stmt the query statement in use
+                 */
+                resultset(sqlite::db *db, const std::shared_ptr<sqlite3_stmt> &stmt);
 
-        /*!
-         * a resultset that contains pre-fetched rows
-         */
-        class sqlite3_cached_resultset : public resultset_impl
-        {
-            friend class select_query;
-            friend class row;
-            friend class sqldb;
-            template <typename, typename>
-            friend class resultset_iterator;
+                /* non-copyable boilerplate */
+                resultset(const resultset &other) = delete;
+                resultset(resultset &&other);
+                virtual ~resultset();
+                resultset &operator=(const resultset &other) = delete;
+                resultset &operator=(resultset &&other);
 
-           private:
-            sqlite3_db *db_;
-            std::vector<std::shared_ptr<row_impl>> rows_;
-            int currentRow_;
+                /* resultset_impl overrides */
+                bool is_valid() const;
+                row_type current_row();
+                void reset();
+                bool next();
+                size_t size() const;
+            };
 
-           public:
             /*!
-             * @param db    the database in use
-             * @param stmt  the statement in use
+             * a resultset that contains pre-fetched rows
              */
-            sqlite3_cached_resultset(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt);
+            class cached_resultset : public resultset_impl
+            {
+                friend class row;
+                friend class sqldb;
+                template <typename, typename>
+                friend class resultset_iterator;
 
-            /* non-copyable boilerplate */
-            sqlite3_cached_resultset(const sqlite3_cached_resultset &other) = delete;
-            sqlite3_cached_resultset(sqlite3_cached_resultset &&other);
-            virtual ~sqlite3_cached_resultset();
-            sqlite3_cached_resultset &operator=(const sqlite3_cached_resultset &other) = delete;
-            sqlite3_cached_resultset &operator=(sqlite3_cached_resultset &&other);
+               private:
+                sqlite::db *db_;
+                std::vector<std::shared_ptr<row_impl>> rows_;
+                int currentRow_;
 
-            /* resultset_impl overrides */
-            bool is_valid() const;
-            row current_row();
-            void reset();
-            bool next();
-            size_t size() const;
-        };
+               public:
+                /*!
+                 * @param db    the database in use
+                 * @param stmt  the statement in use
+                 */
+                cached_resultset(sqlite::db *db, std::shared_ptr<sqlite3_stmt> stmt);
+
+                /* non-copyable boilerplate */
+                cached_resultset(const cached_resultset &other) = delete;
+                cached_resultset(cached_resultset &&other);
+                virtual ~cached_resultset();
+                cached_resultset &operator=(const cached_resultset &other) = delete;
+                cached_resultset &operator=(cached_resultset &&other);
+
+                /* resultset_impl overrides */
+                bool is_valid() const;
+                row_type current_row();
+                void reset();
+                bool next();
+                size_t size() const;
+            };
+        }
     }
 }
 

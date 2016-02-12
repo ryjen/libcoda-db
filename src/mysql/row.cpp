@@ -9,6 +9,8 @@
 #include "binding.h"
 #include "db.h"
 
+using namespace std;
+
 namespace arg3
 {
     namespace db
@@ -56,7 +58,7 @@ namespace arg3
                 return *this;
             }
 
-            row_impl::column_type row::column(size_t position) const
+            row::column_type row::column(size_t position) const
             {
                 if (!is_valid()) {
                     throw database_exception("invalid row");
@@ -69,7 +71,7 @@ namespace arg3
                 return row_impl::column_type(make_shared<mysql::column>(res_, row_, position));
             }
 
-            row_impl::column_type row::column(const string &name) const
+            row::column_type row::column(const string &name) const
             {
                 if (!is_valid()) {
                     throw database_exception("invalid mysql row");
@@ -121,7 +123,7 @@ namespace arg3
 
 
             stmt_row::stmt_row(mysql::db *db, const shared_ptr<MYSQL_STMT> &stmt, const shared_ptr<MYSQL_RES> &metadata,
-                                           const shared_ptr<mysql::binding> &fields)
+                               const shared_ptr<mysql::binding> &fields)
                 : row_impl(), fields_(fields), metadata_(metadata), stmt_(stmt), db_(db), size_(0)
             {
                 if (db_ == nullptr) {
@@ -166,7 +168,7 @@ namespace arg3
                 return *this;
             }
 
-            row_impl::column_type stmt_row::column(size_t position) const
+            stmt_row::column_type stmt_row::column(size_t position) const
             {
                 if (!is_valid()) {
                     throw database_exception("invalid mysql row");
@@ -176,10 +178,10 @@ namespace arg3
                     throw no_such_column_exception();
                 }
 
-                return row_impl::column_type(make_shared<mysql_stmt_column>(column_name(position), fields_, position));
+                return column_type(make_shared<stmt_column>(column_name(position), fields_, position));
             }
 
-            row_impl::column_type stmt_row::column(const string &name) const
+            stmt_row::column_type stmt_row::column(const string &name) const
             {
                 if (!is_valid()) {
                     throw database_exception("invalid mysql row");

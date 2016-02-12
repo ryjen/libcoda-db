@@ -20,19 +20,19 @@ go_bandit([]() {
 
 
         it("is movable", []() {
-            sqlite3_statement stmt(&sqlite_testdb);
+            sqlite::statement stmt(&sqlite_testdb);
 
             stmt.prepare("select * from users");
 
             AssertThat(stmt.is_valid(), IsTrue());
 
-            sqlite3_statement s2(std::move(stmt));
+            sqlite::statement s2(std::move(stmt));
 
             AssertThat(s2.is_valid(), IsTrue());
 
             AssertThat(stmt.is_valid(), IsFalse());
 
-            sqlite3_statement s3(&sqlite_testdb);
+            sqlite::statement s3(&sqlite_testdb);
 
             AssertThat(s3.is_valid(), IsFalse());
 
@@ -44,13 +44,13 @@ go_bandit([]() {
         });
 
         it("throws exceptions", []() {
-            sqlite3_db db(uri(""));
+            sqlite::db db(uri(""));
 
-            sqlite3_statement stmt(&db);
+            sqlite::statement stmt(&db);
 
             AssertThrows(database_exception, stmt.prepare("select * from users"));
 
-            stmt = sqlite3_statement(&sqlite_testdb);
+            stmt = sqlite::statement(&sqlite_testdb);
 
             AssertThrows(database_exception, stmt.prepare("asdfasdfasdf"));
 
@@ -71,7 +71,7 @@ go_bandit([]() {
         });
 
         it("can reset", []() {
-            sqlite3_statement stmt(&sqlite_testdb);
+            sqlite::statement stmt(&sqlite_testdb);
 
             stmt.prepare("select * from users");
 

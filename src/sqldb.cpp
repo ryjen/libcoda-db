@@ -15,6 +15,8 @@
 #include "postgres/db.h"
 #include "select_query.h"
 
+using namespace std;
+
 namespace arg3
 {
     namespace db
@@ -81,13 +83,13 @@ namespace arg3
         {
             db::uri uri(uristr);
 #ifdef HAVE_LIBSQLITE3
-            if ("file" == uri.protocol) return make_shared<sqlite3_db>(uri);
+            if ("file" == uri.protocol) return make_shared<sqlite::db>(uri);
 #endif
 #ifdef HAVE_LIBMYSQLCLIENT
             if ("mysql" == uri.protocol) return make_shared<mysql::db>(uri);
 #endif
 #ifdef HAVE_LIBPQ
-            if ("postgres" == uri.protocol || "postgresql" == uri.protocol) return make_shared<postgres_db>(uri);
+            if ("postgres" == uri.protocol || "postgresql" == uri.protocol) return make_shared<postgres::db>(uri);
 #endif
             throw database_exception("unknown database " + uri.value);
         }

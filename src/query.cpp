@@ -8,6 +8,8 @@
 #include "log.h"
 #include <cassert>
 
+using namespace std;
+
 namespace arg3
 {
     namespace db

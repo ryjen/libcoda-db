@@ -51,9 +51,9 @@ namespace arg3
                 void close();
                 long long last_insert_id() const;
                 int last_number_of_changes() const;
-                string last_error() const;
-                arg3::db::resultset execute(const string &sql);
-                shared_ptr<arg3::db::statement> create_statement();
+                std::string last_error() const;
+                resultset_type execute(const std::string &sql);
+                std::shared_ptr<statement_type> create_statement();
             };
         }
     }

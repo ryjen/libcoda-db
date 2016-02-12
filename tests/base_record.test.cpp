@@ -120,7 +120,7 @@ go_bandit([]() {
 
             auto val = user1.get("missing");
 
-            Assert::That(val, Equals(sql_null));
+            Assert::That(val == nullptr, IsTrue());
         });
 
         it("cannnot refresh invalid", []() {

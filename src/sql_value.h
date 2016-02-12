@@ -20,13 +20,13 @@ namespace arg3
         /*
          * a sql null type
          */
-        typedef nullptr_t sql_null_type;
+        typedef std::nullptr_t sql_null_type;
 
         /*!
          * the instance of a null type
          * use this to check for sql null values
          */
-        extern const nullptr_t sql_null;
+        extern const sql_null_type sql_null;
 
         /*!
          * A sql blob type
@@ -34,17 +34,9 @@ namespace arg3
         typedef arg3::binary sql_blob;
 
         /*!
-         * a custom variant type
-         */
-        class sql_custom : public arg3::variant::custom
-        {
-           public:
-        };
-
-        /*!
          * a date/time column format
          */
-        class sql_time : public sql_custom
+        class sql_time : public variant::complex
         {
             friend class sql_value;
 
@@ -92,13 +84,13 @@ namespace arg3
              * Creates a string based on the timestamp format
              * @return the time format string
              */
-            string to_string() const;
+            std::string to_string() const;
 
             /*!
              * creates a wide string based on the timestamp format
              * @return the time format wide string
              */
-            wstring to_wstring() const;
+            std::wstring to_wstring() const;
 
             /*!
              * @return the format of the timestamp
@@ -111,10 +103,10 @@ namespace arg3
             struct tm *to_gmtime() const;
 
             /*!
-             * tests if this instance is equal with another custom type
-             * @return true if the instances are equal
+             * gets the hashcode for equality
+             * @return the hashcode value
              */
-            bool equals(const custom *other) const;
+            long hashcode() const;
 
            private:
             time_t value_;
@@ -149,25 +141,26 @@ namespace arg3
              */
             bool is_time() const;
         };
+
+        /*!
+         * get a string representation of a sql null
+         * @param  null the null type
+         * @return      a NULL sql string
+         */
+        std::string to_string(const sql_null_type &null);
+
+        /*!
+         * output stream operator for a sql null type
+         * will append "NULL"
+         * @param out  the output stream
+         * @param null  the null type to append
+         */
+        std::ostream &operator<<(std::ostream &out, const sql_null_type &null);
+
+        std::ostream &operator<<(std::ostream &out, const sql_time &value);
+
+        std::ostream &operator<<(std::ostream &out, const sql_value &value);
     }
 }
-
-namespace std
-{
-    /*
-     * some standard to_string functions
-     */
-    std::string to_string(const arg3::db::sql_null_type &value);
-    std::string to_string(const std::string &value);  // yep
-
-    /*!
-     * output stream operator for a sql null type
-     * will append "NULL"
-     * @param out  the output stream
-     * @param null  the null type to append
-     */
-    std::ostream &operator<<(std::ostream &out, const arg3::db::sql_null_type &null);
-}
-
 
 #endif

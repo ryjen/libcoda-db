@@ -4,142 +4,146 @@
 
 #ifdef HAVE_LIBSQLITE3
 
+using namespace std;
+
 namespace arg3
 {
     namespace db
     {
-        sqlite3_resultset::sqlite3_resultset(sqlite3_db *db, const shared_ptr<sqlite3_stmt> &stmt) : stmt_(stmt), db_(db), status_(-1)
+        namespace sqlite
         {
-            if (db_ == NULL) {
-                throw database_exception("No database provided to sqlite3 resultset");
+            resultset::resultset(sqlite::db *db, const shared_ptr<sqlite3_stmt> &stmt) : stmt_(stmt), db_(db), status_(-1)
+            {
+                if (db_ == NULL) {
+                    throw database_exception("No database provided to sqlite3 resultset");
+                }
+
+                if (stmt_ == nullptr) {
+                    throw database_exception("no statement provided to sqlite3 resultset");
+                }
             }
 
-            if (stmt_ == nullptr) {
-                throw database_exception("no statement provided to sqlite3 resultset");
-            }
-        }
-
-        sqlite3_resultset::sqlite3_resultset(sqlite3_resultset &&other) : stmt_(other.stmt_), db_(other.db_), status_(other.status_)
-        {
-            other.db_ = NULL;
-            other.stmt_ = nullptr;
-        }
-
-        sqlite3_resultset::~sqlite3_resultset()
-        {
-        }
-
-        sqlite3_resultset &sqlite3_resultset::operator=(sqlite3_resultset &&other)
-        {
-            stmt_ = other.stmt_;
-            db_ = other.db_;
-            status_ = other.status_;
-            other.db_ = NULL;
-            other.stmt_ = nullptr;
-
-            return *this;
-        }
-
-        bool sqlite3_resultset::is_valid() const
-        {
-            return stmt_ != nullptr && stmt_;
-        }
-
-        size_t sqlite3_resultset::size() const
-        {
-            return sqlite3_column_count(stmt_.get());
-        }
-
-        bool sqlite3_resultset::next()
-        {
-            if (!is_valid()) {
-                return false;
+            resultset::resultset(resultset &&other) : stmt_(other.stmt_), db_(other.db_), status_(other.status_)
+            {
+                other.db_ = NULL;
+                other.stmt_ = nullptr;
             }
 
-            if (status_ == SQLITE_DONE) {
-                return false;
+            resultset::~resultset()
+            {
             }
 
-            status_ = sqlite3_step(stmt_.get());
+            resultset &resultset::operator=(resultset &&other)
+            {
+                stmt_ = other.stmt_;
+                db_ = other.db_;
+                status_ = other.status_;
+                other.db_ = NULL;
+                other.stmt_ = nullptr;
 
-            return status_ == SQLITE_ROW;
-        }
-
-        void sqlite3_resultset::reset()
-        {
-            if (sqlite3_reset(stmt_.get()) != SQLITE_OK) {
-                throw database_exception(db_->last_error());
+                return *this;
             }
-        }
 
-        row sqlite3_resultset::current_row()
-        {
-            if (db_->cache_level() == cache::Row)
-                return row(make_shared<sqlite3_cached_row>(db_, stmt_));
-            else
-                return row(make_shared<sqlite3_row>(db_, stmt_));
-        }
-
-        /* cached version */
-
-        sqlite3_cached_resultset::sqlite3_cached_resultset(sqlite3_db *db, shared_ptr<sqlite3_stmt> stmt) : db_(db), currentRow_(-1)
-        {
-            int status = sqlite3_step(stmt.get());
-
-            while (status == SQLITE_ROW) {
-                rows_.push_back(make_shared<sqlite3_cached_row>(db, stmt));
-
-                status = sqlite3_step(stmt.get());
+            bool resultset::is_valid() const
+            {
+                return stmt_ != nullptr && stmt_;
             }
-        }
 
-        sqlite3_cached_resultset::sqlite3_cached_resultset(sqlite3_cached_resultset &&other)
-            : db_(other.db_), rows_(other.rows_), currentRow_(other.currentRow_)
-        {
-            other.db_ = NULL;
-        }
+            size_t resultset::size() const
+            {
+                return sqlite3_column_count(stmt_.get());
+            }
 
-        sqlite3_cached_resultset::~sqlite3_cached_resultset()
-        {
-        }
+            bool resultset::next()
+            {
+                if (!is_valid()) {
+                    return false;
+                }
 
-        sqlite3_cached_resultset &sqlite3_cached_resultset::operator=(sqlite3_cached_resultset &&other)
-        {
-            db_ = other.db_;
-            rows_ = other.rows_;
-            currentRow_ = other.currentRow_;
-            other.db_ = NULL;
+                if (status_ == SQLITE_DONE) {
+                    return false;
+                }
 
-            return *this;
-        }
+                status_ = sqlite3_step(stmt_.get());
 
-        bool sqlite3_cached_resultset::is_valid() const
-        {
-            return db_ != NULL;
-        }
+                return status_ == SQLITE_ROW;
+            }
 
-        size_t sqlite3_cached_resultset::size() const
-        {
-            return rows_.size();
-        }
+            void resultset::reset()
+            {
+                if (sqlite3_reset(stmt_.get()) != SQLITE_OK) {
+                    throw database_exception(db_->last_error());
+                }
+            }
 
-        bool sqlite3_cached_resultset::next()
-        {
-            if (rows_.empty()) return false;
+            resultset::row_type resultset::current_row()
+            {
+                if (db_->cache_level() == cache::Row)
+                    return row_type(make_shared<cached_row>(db_, stmt_));
+                else
+                    return row_type(make_shared<row>(db_, stmt_));
+            }
 
-            return ++currentRow_ < static_cast<int>(rows_.size());
-        }
-        void sqlite3_cached_resultset::reset()
-        {
-            currentRow_ = -1;
-        }
+            /* cached version */
 
-        row sqlite3_cached_resultset::current_row()
-        {
-            if (currentRow_ >= 0 && currentRow_ < static_cast<int>(rows_.size()))
-                return row(rows_[currentRow_]);
-            else
-                return row();
+            cached_resultset::cached_resultset(sqlite::db *db, shared_ptr<sqlite3_stmt> stmt) : db_(db), currentRow_(-1)
+            {
+                int status = sqlite3_step(stmt.get());
+
+                while (status == SQLITE_ROW) {
+                    rows_.push_back(make_shared<cached_row>(db, stmt));
+
+                    status = sqlite3_step(stmt.get());
+                }
+            }
+
+            cached_resultset::cached_resultset(cached_resultset &&other) : db_(other.db_), rows_(other.rows_), currentRow_(other.currentRow_)
+            {
+                other.db_ = NULL;
+            }
+
+            cached_resultset::~cached_resultset()
+            {
+            }
+
+            cached_resultset &cached_resultset::operator=(cached_resultset &&other)
+            {
+                db_ = other.db_;
+                rows_ = other.rows_;
+                currentRow_ = other.currentRow_;
+                other.db_ = NULL;
+
+                return *this;
+            }
+
+            bool cached_resultset::is_valid() const
+            {
+                return db_ != NULL;
+            }
+
+            size_t cached_resultset::size() const
+            {
+                return rows_.size();
+            }
+
+            bool cached_resultset::next()
+            {
+                if (rows_.empty()) return false;
+
+                return ++currentRow_ < static_cast<int>(rows_.size());
+            }
+            void cached_resultset::reset()
+            {
+                currentRow_ = -1;
+            }
+
+            cached_resultset::row_type cached_resultset::current_row()
+            {
+                if (currentRow_ >= 0 && currentRow_ < static_cast<int>(rows_.size()))
+                    return row_type(rows_[currentRow_]);
+                else
+                    return row_type();
+            }
         }
     }
 }

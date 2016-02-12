@@ -8,170 +8,175 @@
 #include "statement.h"
 #include "resultset.h"
 
+using namespace std;
+
 namespace arg3
 {
     namespace db
     {
-        namespace helper
+        namespace sqlite
         {
-            struct sqlite3_close_db {
-                void operator()(sqlite3 *p) const
-                {
-                    if (p != nullptr) {
-                        sqlite3_close(p);
+            namespace helper
+            {
+                struct close_db {
+                    void operator()(sqlite3 *p) const
+                    {
+                        if (p != nullptr) {
+                            sqlite3_close(p);
+                        }
                     }
+                };
+            }
+            db::db(const uri &info) : sqldb(info), db_(nullptr), cacheLevel_(cache::None)
+            {
+            }
+
+            db::db(const db &other) : sqldb(other), db_(other.db_), cacheLevel_(other.cacheLevel_)
+            {
+            }
+
+            db::db(db &&other) : sqldb(other), db_(std::move(other.db_)), cacheLevel_(other.cacheLevel_)
+            {
+                other.db_ = nullptr;
+            }
+
+            db &db::operator=(const db &other)
+            {
+                sqldb::operator=(other);
+
+                db_ = other.db_;
+                cacheLevel_ = other.cacheLevel_;
+
+                return *this;
+            }
+
+            db &db::operator=(db &&other)
+            {
+                sqldb::operator=(std::move(other));
+
+                db_ = std::move(other.db_);
+                cacheLevel_ = other.cacheLevel_;
+
+                other.db_ = nullptr;
+
+                return *this;
+            }
+
+            db::~db()
+            {
+            }
+
+            void db::query_schema(const string &tableName, std::vector<column_definition> &columns)
+            {
+                if (tableName.empty()) {
+                    throw database_exception("no table name to query schema");
                 }
-            };
-        }
-        sqlite3_db::sqlite3_db(const uri &info) : sqldb(info), db_(nullptr), cacheLevel_(cache::None)
-        {
-        }
 
-        sqlite3_db::sqlite3_db(const sqlite3_db &other) : sqldb(other), db_(other.db_), cacheLevel_(other.cacheLevel_)
-        {
-        }
+                auto rs = execute("pragma table_info(" + tableName + ")");
 
-        sqlite3_db::sqlite3_db(sqlite3_db &&other) : sqldb(other), db_(std::move(other.db_)), cacheLevel_(other.cacheLevel_)
-        {
-            other.db_ = nullptr;
-        }
+                for (auto &row : rs) {
+                    column_definition def;
 
-        sqlite3_db &sqlite3_db::operator=(const sqlite3_db &other)
-        {
-            sqldb::operator=(other);
+                    // column name
+                    def.name = row["name"].to_value().to_string();
 
-            db_ = other.db_;
-            cacheLevel_ = other.cacheLevel_;
+                    // primary key check
+                    def.pk = row["pk"].to_value().to_bool();
 
-            return *this;
-        }
+                    // find type
+                    def.type = row["type"].to_value().to_string();
 
-        sqlite3_db &sqlite3_db::operator=(sqlite3_db &&other)
-        {
-            sqldb::operator=(std::move(other));
-
-            db_ = std::move(other.db_);
-            cacheLevel_ = other.cacheLevel_;
-
-            other.db_ = nullptr;
-
-            return *this;
-        }
-
-        sqlite3_db::~sqlite3_db()
-        {
-        }
-
-        void sqlite3_db::query_schema(const string &tableName, std::vector<column_definition> &columns)
-        {
-            if (tableName.empty()) {
-                throw database_exception("no table name to query schema");
+                    columns.push_back(def);
+                }
             }
 
-            auto rs = execute("pragma table_info(" + tableName + ")");
-
-            for (auto &row : rs) {
-                column_definition def;
-
-                // column name
-                def.name = row["name"].to_value().to_string();
-
-                // primary key check
-                def.pk = row["pk"].to_value().to_bool();
-
-                // find type
-                def.type = row["type"].to_value().to_string();
-
-                columns.push_back(def);
-            }
-        }
-
-        void sqlite3_db::open()
-        {
-            open(SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_URI);
-        }
-
-        void sqlite3_db::open(int flags)
-        {
-            if (db_ != nullptr) return;
-
-            sqlite3 *conn = nullptr;
-
-            if (sqlite3_open_v2(connection_info().path.c_str(), &conn, flags, nullptr) != SQLITE_OK) {
-                throw database_exception(last_error());
+            void db::open()
+            {
+                open(SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_URI);
             }
 
-            db_ = shared_ptr<sqlite3>(conn, helper::sqlite3_close_db());
-        }
+            void db::open(int flags)
+            {
+                if (db_ != nullptr) return;
 
-        bool sqlite3_db::is_open() const
-        {
-            return db_ != nullptr;
-        }
+                sqlite3 *conn = nullptr;
 
-        void sqlite3_db::close()
-        {
-            if (db_ == nullptr) return;
+                if (sqlite3_open_v2(connection_info().path.c_str(), &conn, flags, nullptr) != SQLITE_OK) {
+                    throw database_exception(last_error());
+                }
 
-            // the shared_ptr destructor should close
-            db_ = nullptr;
-        }
-
-        string sqlite3_db::last_error() const
-        {
-            ostringstream buf;
-
-            buf << sqlite3_errcode(db_.get());
-            buf << ": " << sqlite3_errmsg(db_.get());
-
-            return buf.str();
-        }
-
-        long long sqlite3_db::last_insert_id() const
-        {
-            return sqlite3_last_insert_rowid(db_.get());
-        }
-
-        int sqlite3_db::last_number_of_changes() const
-        {
-            return sqlite3_changes(db_.get());
-        }
-
-        resultset sqlite3_db::execute(const string &sql)
-        {
-            sqlite3_stmt *stmt;
-
-            if (sqlite3_prepare_v2(db_.get(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
-                throw database_exception(last_error());
+                db_ = shared_ptr<sqlite3>(conn, helper::close_db());
             }
 
-            shared_ptr<resultset_impl> impl;
+            bool db::is_open() const
+            {
+                return db_ != nullptr;
+            }
 
-            if (cache_level() == cache::ResultSet)
-                impl = make_shared<sqlite3_cached_resultset>(this, shared_ptr<sqlite3_stmt>(stmt, sqlite3_stmt_delete()));
-            else
-                impl = make_shared<sqlite3_resultset>(this, shared_ptr<sqlite3_stmt>(stmt, sqlite3_stmt_delete()));
+            void db::close()
+            {
+                if (db_ == nullptr) return;
 
-            resultset set(impl);
+                // the shared_ptr destructor should close
+                db_ = nullptr;
+            }
 
-            set.next();
+            string db::last_error() const
+            {
+                ostringstream buf;
 
-            return set;
-        }
+                buf << sqlite3_errcode(db_.get());
+                buf << ": " << sqlite3_errmsg(db_.get());
 
-        shared_ptr<statement> sqlite3_db::create_statement()
-        {
-            return make_shared<sqlite3_statement>(this);
-        }
+                return buf.str();
+            }
 
-        void sqlite3_db::set_cache_level(cache::level level)
-        {
-            cacheLevel_ = level;
-        }
+            long long db::last_insert_id() const
+            {
+                return sqlite3_last_insert_rowid(db_.get());
+            }
 
-        cache::level sqlite3_db::cache_level() const
-        {
-            return cacheLevel_;
+            int db::last_number_of_changes() const
+            {
+                return sqlite3_changes(db_.get());
+            }
+
+            db::resultset_type db::execute(const string &sql)
+            {
+                sqlite3_stmt *stmt;
+
+                if (sqlite3_prepare_v2(db_.get(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+                    throw database_exception(last_error());
+                }
+
+                shared_ptr<resultset_impl> impl;
+
+                if (cache_level() == cache::ResultSet)
+                    impl = make_shared<cached_resultset>(this, shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
+                else
+                    impl = make_shared<resultset>(this, shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
+
+                resultset_type set(impl);
+
+                set.next();
+
+                return set;
+            }
+
+            shared_ptr<db::statement_type> db::create_statement()
+            {
+                return make_shared<statement>(this);
+            }
+
+            void db::set_cache_level(cache::level level)
+            {
+                cacheLevel_ = level;
+            }
+
+            cache::level db::cache_level() const
+            {
+                return cacheLevel_;
+            }
         }
     }
 }

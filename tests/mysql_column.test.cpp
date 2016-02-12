@@ -127,9 +127,9 @@ go_bandit([]() {
         describe("is movable", []() {
 
 
-            it("as statement results", []() { test_move_column<mysql_stmt_column>(get_stmt_column); });
+            it("as statement results", []() { test_move_column<mysql::stmt_column>(get_stmt_column); });
 
-            it("as results", []() { test_move_column<mysql_column>(get_results_column); });
+            it("as results", []() { test_move_column<mysql::column>(get_results_column); });
 
 
         });
@@ -155,7 +155,7 @@ go_bandit([]() {
             it("as statement results", []() {
                 auto c = get_stmt_column(4, 0);
 
-                Assert::That(static_pointer_cast<mysql_stmt_column>(c)->sql_type(), Equals(MYSQL_TYPE_BLOB));
+                Assert::That(static_pointer_cast<mysql::stmt_column>(c)->sql_type(), Equals(MYSQL_TYPE_BLOB));
 
                 sql_blob b = c->to_value();
 
@@ -165,7 +165,7 @@ go_bandit([]() {
             it("as results", []() {
                 auto c = get_results_column(4, 0);
 
-                Assert::That(static_pointer_cast<mysql_column>(c)->sql_type(), Equals(MYSQL_TYPE_BLOB));
+                Assert::That(static_pointer_cast<mysql::column>(c)->sql_type(), Equals(MYSQL_TYPE_BLOB));
 
                 sql_blob b = c->to_value();
 
@@ -179,7 +179,7 @@ go_bandit([]() {
             it("as statement results", []() {
                 auto c = get_stmt_column(3, 0);
 
-                Assert::That(static_pointer_cast<mysql_stmt_column>(c)->sql_type(), Equals(MYSQL_TYPE_DOUBLE));
+                Assert::That(static_pointer_cast<mysql::stmt_column>(c)->sql_type(), Equals(MYSQL_TYPE_DOUBLE));
                 Assert::That(c->to_value(), Equals(3.1456));
 
                 c = get_stmt_column(1, 0);
@@ -190,7 +190,7 @@ go_bandit([]() {
             it("as results", []() {
                 auto c = get_results_column(3, 0);
 
-                Assert::That(static_pointer_cast<mysql_column>(c)->sql_type(), Equals(MYSQL_TYPE_DOUBLE));
+                Assert::That(static_pointer_cast<mysql::column>(c)->sql_type(), Equals(MYSQL_TYPE_DOUBLE));
                 Assert::That(c->to_value(), Equals(3.1456));
 
                 c = get_results_column(1, 0);

@@ -4,6 +4,8 @@
 #include "resultset.h"
 #include "sqldb.h"
 
+using namespace std;
+
 namespace arg3
 {
     namespace db
@@ -31,7 +33,7 @@ namespace arg3
 
             return *this;
         }
-        row resultset::operator*()
+        resultset_impl::row_type resultset::operator*()
         {
             return impl_->current_row();
         }
@@ -41,7 +43,7 @@ namespace arg3
             return impl_ != nullptr && impl_->is_valid();
         }
 
-        row resultset::current_row()
+        resultset_impl::row_type resultset::current_row()
         {
             assert(is_valid());
             return impl_->current_row();

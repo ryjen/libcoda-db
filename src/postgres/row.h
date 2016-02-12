@@ -1,5 +1,5 @@
 /*!
- * @file postgres_row.h
+ * @file row.h
  * A postgres row
  */
 #ifndef ARG3_DB_POSTGRES_ROW_H
@@ -19,43 +19,46 @@ namespace arg3
 {
     namespace db
     {
-        class postgres_db;
-
-        /*!
-         *  a sqlite specific implementation of a row
-         */
-        class postgres_row : public row_impl
+        namespace postgres
         {
-            friend class postgres_resultset;
+            class db;
 
-           private:
-            std::shared_ptr<PGresult> stmt_;
-            postgres_db *db_;
-            size_t size_;
-            int row_;
-
-           public:
             /*!
-             * @param db    the database in use
-             * @param stmt  the query statement result in use
-             * @param row   the row index
+             *  a sqlite specific implementation of a row
              */
-            postgres_row(postgres_db *db, const std::shared_ptr<PGresult> &stmt, int row);
+            class row : public row_impl
+            {
+                friend class resultset;
 
-            /* non-copyable boilerplate */
-            virtual ~postgres_row();
-            postgres_row(const postgres_row &other) = delete;
-            postgres_row(postgres_row &&other);
-            postgres_row &operator=(const postgres_row &other) = delete;
-            postgres_row &operator=(postgres_row &&other);
+               private:
+                std::shared_ptr<PGresult> stmt_;
+                postgres::db *db_;
+                size_t size_;
+                int row_;
 
-            /*! row_impl overrides */
-            std::string column_name(size_t nPosition) const;
-            column_type column(size_t nPosition) const;
-            column_type column(const std::string &name) const;
-            size_t size() const;
-            bool is_valid() const;
-        };
+               public:
+                /*!
+                 * @param db    the database in use
+                 * @param stmt  the query statement result in use
+                 * @param row   the row index
+                 */
+                row(postgres::db *db, const std::shared_ptr<PGresult> &stmt, int row);
+
+                /* non-copyable boilerplate */
+                virtual ~row();
+                row(const row &other) = delete;
+                row(row &&other);
+                row &operator=(const row &other) = delete;
+                row &operator=(row &&other);
+
+                /*! row_impl overrides */
+                std::string column_name(size_t nPosition) const;
+                column_type column(size_t nPosition) const;
+                column_type column(const std::string &name) const;
+                size_t size() const;
+                bool is_valid() const;
+            };
+        }
     }
 }
 

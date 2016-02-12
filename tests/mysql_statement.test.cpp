@@ -43,9 +43,9 @@ go_bandit([]() {
 
         after_each([]() { mysql_testdb.teardown(); });
         it("is movable", []() {
-            mysql_statement stmt(&mysql_testdb);
+            mysql::statement stmt(&mysql_testdb);
 
-            mysql_statement other(std::move(stmt));
+            mysql::statement other(std::move(stmt));
 
             other.prepare("select * from users");
 
@@ -59,7 +59,7 @@ go_bandit([]() {
         });
 
         it("can handle an error", []() {
-            mysql_statement stmt(&mysql_testdb);
+            mysql::statement stmt(&mysql_testdb);
 
             AssertThrows(database_exception, stmt.prepare("update users set asdfsdf='1'"));
 

@@ -9,7 +9,7 @@ namespace arg3
         {
         }
 
-        column::column(const shared_ptr<column_impl> &impl) : impl_(impl)
+        column::column(const std::shared_ptr<column_impl> &impl) : impl_(impl)
         {
             if (impl_ == nullptr) {
                 throw database_exception("no implementation for column");
@@ -52,12 +52,12 @@ namespace arg3
             return impl_->to_value();
         }
 
-        string column::name() const
+        std::string column::name() const
         {
             return impl_->name();
         }
 
-        shared_ptr<column_impl> column::impl() const
+        std::shared_ptr<column_impl> column::impl() const
         {
             return impl_;
         }

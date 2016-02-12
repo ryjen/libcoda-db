@@ -9,6 +9,8 @@
 #include "column.h"
 #include "binding.h"
 
+using namespace std;
+
 namespace arg3
 {
     namespace db
@@ -107,8 +109,7 @@ namespace arg3
             }
 
 
-            stmt_column::stmt_column(stmt_column &&other)
-                : name_(std::move(other.name_)), value_(other.value_), position_(other.position_)
+            stmt_column::stmt_column(stmt_column &&other) : name_(std::move(other.name_)), value_(other.value_), position_(other.position_)
             {
                 other.value_ = nullptr;
             }

@@ -1,5 +1,5 @@
 /*!
- * @file postgres_db.h
+ * @file db.h
  * a postgres database
  */
 #ifndef POSTGRES_DB_H
@@ -18,57 +18,58 @@ namespace arg3
 {
     namespace db
     {
-        /*!
-         * a mysql specific implementation of a database
-         */
-        class postgres_db : public sqldb
+        namespace postgres
         {
-            friend class base_query;
-            friend class postgres_statement;
-            friend class postgres_resultset;
-            friend class postgres_cached_resultset;
-
-           protected:
-            shared_ptr<PGconn> db_;
-
-           public:
             /*!
-             * @param info the connection uri
+             * a mysql specific implementation of a database
              */
-            postgres_db(const uri &info);
+            class db : public sqldb
+            {
+                friend class statement;
+                friend class resultset;
 
-            /* boilerplate */
-            postgres_db(const postgres_db &other);
-            postgres_db(postgres_db &&other);
-            postgres_db &operator=(const postgres_db &other);
-            postgres_db &operator=(postgres_db &&other);
-            virtual ~postgres_db();
+               protected:
+                std::shared_ptr<PGconn> db_;
 
-            /* sqldb overrides */
-            bool is_open() const;
-            void open();
-            void close();
-            long long last_insert_id() const;
-            int last_number_of_changes() const;
-            std::string last_error() const;
-            resultset execute(const std::string &sql);
-            std::shared_ptr<statement> create_statement();
+               public:
+                /*!
+                 * @param info the connection uri
+                 */
+                db(const uri &info);
 
-           private:
-            long long lastId_;
-            int lastNumChanges_;
-            void set_last_insert_id(long long value);
-            void set_last_number_of_changes(int value);
-        };
+                /* boilerplate */
+                db(const db &other);
+                db(db &&other);
+                db &operator=(const db &other);
+                db &operator=(db &&other);
+                virtual ~db();
 
-        /*!
-         * utility to cleanup a postgres result
-         */
-        namespace helper
-        {
-            struct postgres_res_delete {
-                void operator()(PGresult *p) const;
+                /* sqldb overrides */
+                bool is_open() const;
+                void open();
+                void close();
+                long long last_insert_id() const;
+                int last_number_of_changes() const;
+                std::string last_error() const;
+                resultset_type execute(const std::string &sql);
+                std::shared_ptr<statement_type> create_statement();
+
+               private:
+                long long lastId_;
+                int lastNumChanges_;
+                void set_last_insert_id(long long value);
+                void set_last_number_of_changes(int value);
             };
+
+            /*!
+             * utility to cleanup a postgres result
+             */
+            namespace helper
+            {
+                struct res_delete {
+                    void operator()(PGresult *p) const;
+                };
+            }
         }
     }
 }

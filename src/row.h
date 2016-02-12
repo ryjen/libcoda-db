@@ -308,7 +308,7 @@ namespace arg3
              * @param  name the name of the column
              * @return      the column object
              */
-            column_type operator[](const string &name) const;
+            column_type operator[](const std::string &name) const;
 
             /*!
              * gets the column name

@@ -8,6 +8,8 @@
 #include "statement.h"
 #include "resultset.h"
 
+using namespace std;
+
 namespace arg3
 {
     namespace db
@@ -150,7 +152,7 @@ namespace arg3
                 return mysql_affected_rows(db_.get());
             }
 
-            resultset_type db::execute(const string &sql)
+            db::resultset_type db::execute(const string &sql)
             {
                 MYSQL_RES *res = nullptr;
 
@@ -168,12 +170,12 @@ namespace arg3
                     throw database_exception(last_error());
                 }
 
-                return db::resultset(make_shared<resultset>(this, shared_ptr<MYSQL_RES>(res, helper::res_delete())));
+                return resultset_type(make_shared<resultset>(this, shared_ptr<MYSQL_RES>(res, helper::res_delete())));
             }
 
-            shared_ptr<statement> db::create_statement()
+            shared_ptr<db::statement_type> db::create_statement()
             {
-                return make_shared<mysql_statement>(this);
+                return make_shared<statement>(this);
             }
         }
     }

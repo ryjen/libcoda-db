@@ -1,5 +1,5 @@
 /*!
- * @file postgres_resultset.h
+ * @file resultset.h
  * a postgres result set
  */
 #ifndef ARG3_DB_POSTGRES_RESULTSET_H
@@ -19,45 +19,47 @@ namespace arg3
 {
     namespace db
     {
-        class postgres_db;
-
-        /*!
-         * a postgres specific implmentation of a result set
-         */
-        class postgres_resultset : public resultset_impl
+        namespace postgres
         {
-            friend class select_query;
-            friend class row;
-            friend class sqldb;
-            template <typename, typename>
-            friend class resultset_iterator;
+            class db;
 
-           private:
-            std::shared_ptr<PGresult> stmt_;
-            postgres_db *db_;
-            int currentRow_;
-
-           public:
             /*!
-             * @param  db    the database in use
-             * @param  stmt  the query result in use
+             * a postgres specific implmentation of a result set
              */
-            postgres_resultset(postgres_db *db, const std::shared_ptr<PGresult> &stmt);
+            class resultset : public resultset_impl
+            {
+                friend class row;
+                friend class sqldb;
+                template <typename, typename>
+                friend class resultset_iterator;
 
-            /* non-copyable boilerplate */
-            postgres_resultset(const postgres_resultset &other) = delete;
-            postgres_resultset(postgres_resultset &&other);
-            virtual ~postgres_resultset();
-            postgres_resultset &operator=(const postgres_resultset &other) = delete;
-            postgres_resultset &operator=(postgres_resultset &&other);
+               private:
+                std::shared_ptr<PGresult> stmt_;
+                postgres::db *db_;
+                int currentRow_;
 
-            /* resultset_impl overrides */
-            bool is_valid() const;
-            row current_row();
-            void reset();
-            bool next();
-            size_t size() const;
-        };
+               public:
+                /*!
+                 * @param  db    the database in use
+                 * @param  stmt  the query result in use
+                 */
+                resultset(postgres::db *db, const std::shared_ptr<PGresult> &stmt);
+
+                /* non-copyable boilerplate */
+                resultset(const resultset &other) = delete;
+                resultset(resultset &&other);
+                virtual ~resultset();
+                resultset &operator=(const resultset &other) = delete;
+                resultset &operator=(resultset &&other);
+
+                /* resultset_impl overrides */
+                bool is_valid() const;
+                row_type current_row();
+                void reset();
+                bool next();
+                size_t size() const;
+            };
+        }
     }
 }
 
