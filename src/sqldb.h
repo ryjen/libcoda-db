@@ -81,6 +81,8 @@ namespace arg3
         class sqldb
         {
            public:
+            typedef resultset resultset_type;
+
             /*!
              * parses a uri and returns a database object
              * @param value   the uri string to parse

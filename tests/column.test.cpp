@@ -1,7 +1,7 @@
 #include <bandit/bandit.h>
 #include "base_record.h"
 #include "db.test.h"
-#include "sqlite3_column.h"
+#include "sqlite/column.h"
 
 using namespace bandit;
 

@@ -1,4 +1,37 @@
-add_library (${PROJECT_NAME} bindable.cpp column.cpp join_clause.cpp mysql_column.cpp mysql_statement.cpp schema.cpp sqldb.cpp sqlite3_row.cpp mysql_db.cpp query.cpp schema_factory.cpp sqlite3_column.cpp sqlite3_statement.cpp modify_query.cpp mysql_resultset.cpp resultset.cpp select_query.cpp sqlite3_db.cpp where_clause.cpp mysql_binding.cpp mysql_row.cpp row.cpp sql_value.cpp sqlite3_resultset.cpp log.cpp postgres_db.cpp postgres_statement.cpp postgres_resultset.cpp postgres_row.cpp postgres_column.cpp postgres_binding.cpp join_clause.cpp alloc.cpp)
+add_library (${PROJECT_NAME}
+	alloc.cpp
+	bindable.cpp
+	column.cpp
+	join_clause.cpp
+	log.cpp
+	modify_query.cpp
+	query.cpp
+	resultset.cpp
+	row.cpp
+	schema.cpp
+	schema_factory.cpp
+	select_query.cpp
+	sqldb.cpp
+	sql_value.cpp
+	where_clause.cpp
+	mysql/binding.cpp
+	mysql/column.cpp
+	mysql/db.cpp
+	mysql/resultset.cpp
+	mysql/row.cpp
+	mysql/statement.cpp
+	postgres/binding.cpp
+	postgres/column.cpp
+	postgres/db.cpp
+	postgres/resultset.cpp
+	postgres/row.cpp
+	postgres/statement.cpp
+	sqlite/column.cpp
+	sqlite/db.cpp
+	sqlite/resultset.cpp
+	sqlite/row.cpp
+	sqlite/statement.cpp
+)
 
 include_directories(${PROJECT_SOURCE_DIR}/libs/variant/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
 
@@ -9,20 +42,8 @@ set(${PROJECT_NAME}_HEADERS
 	bindable.h
 	column.h
 	exception.h
-  join_clause.h
+  	join_clause.h
 	modify_query.h
-	mysql_binding.h
-	mysql_column.h
-	mysql_db.h
-	mysql_resultset.h
-	mysql_row.h
-	mysql_statement.h
-  postgres_db.h
-  postgres_statement.h
-  postgres_resultset.h
-  postgres_row.h
-  postgres_column.h
-  postgres_binding.h
 	query.h
 	resultset.h
 	row.h
@@ -31,15 +52,42 @@ set(${PROJECT_NAME}_HEADERS
 	select_query.h
 	sql_value.h
 	sqldb.h
-	sqlite3_column.h
-	sqlite3_db.h
-	sqlite3_resultset.h
-	sqlite3_row.h
-	sqlite3_statement.h
 	statement.h
 	where_clause.h
 )
 
+set(${PROJECT_NAME}_MYSQL_HEADERS
+	mysql/binding.h
+	mysql/column.h
+	mysql/db.h
+	mysql/resultset.h
+	mysql/row.h
+	mysql/statement.h
+)
+
+set(${PROJECT_NAME}_POSTGRES_HEADERS
+  postgres/db.h
+  postgres/statement.h
+  postgres/resultset.h
+  postgres/row.h
+  postgres/column.h
+  postgres/binding.h
+)
+
+set(${PROJECT_NAME}_SQLITE_HEADERS
+	sqlite3/column.h
+	sqlite3/db.h
+	sqlite3/resultset.h
+	sqlite3/row.h
+	sqlite3/statement.h
+)
+
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}")
+
+install(FILES ${${PROJECT_NAME}_MYSQL_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}/mysql")
+
+install(FILES ${${PROJECT_NAME}_POSTGRES_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}/postgres")
+
+install(FILES ${${PROJECT_NAME}_SQLITE_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}/sqlite")
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)

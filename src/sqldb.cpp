@@ -10,9 +10,9 @@
 #include "query.h"
 #include "exception.h"
 #include "resultset.h"
-#include "sqlite3_db.h"
-#include "mysql_db.h"
-#include "postgres_db.h"
+#include "sqlite/db.h"
+#include "mysql/db.h"
+#include "postgres/db.h"
 #include "select_query.h"
 
 namespace arg3
@@ -84,7 +84,7 @@ namespace arg3
             if ("file" == uri.protocol) return make_shared<sqlite3_db>(uri);
 #endif
 #ifdef HAVE_LIBMYSQLCLIENT
-            if ("mysql" == uri.protocol) return make_shared<mysql_db>(uri);
+            if ("mysql" == uri.protocol) return make_shared<mysql::db>(uri);
 #endif
 #ifdef HAVE_LIBPQ
             if ("postgres" == uri.protocol || "postgresql" == uri.protocol) return make_shared<postgres_db>(uri);

@@ -20,6 +20,9 @@ namespace arg3
          */
         class resultset_impl
         {
+          public:
+            typedef arg3::db::row row_type;
+
            protected:
             resultset_impl() = default;
 
@@ -47,7 +50,7 @@ namespace arg3
              * gets the current row in the results
              * @return the current row object
              */
-            virtual row current_row() = 0;
+            virtual row_type current_row() = 0;
 
             /*!
              * resets this resultset back to the first row
@@ -195,12 +198,15 @@ namespace arg3
          */
         class resultset
         {
+          public:
+            typedef arg3::db::row row_type;
+
            private:
             std::shared_ptr<resultset_impl> impl_;
 
            public:
-            typedef resultset_iterator<row, row> iterator;
-            typedef resultset_iterator<const row, row> const_iterator;
+            typedef resultset_iterator<row_type, row_type> iterator;
+            typedef resultset_iterator<const row_type, row_type> const_iterator;
 
             /*!
              * @param impl the implementation for this resultset
@@ -244,7 +250,7 @@ namespace arg3
              * gets the current row
              * @return the current row
              */
-            row current_row();
+            row_type current_row();
 
             /*!
              * moves to the next row
@@ -255,7 +261,7 @@ namespace arg3
             /*!
              * dereference operator to the current row
              */
-            row operator*();
+            row_type operator*();
 
             /*!
              * resets this result set back to the first row
@@ -270,7 +276,7 @@ namespace arg3
             /*!
              * @param funk the callback to perform for each row
              */
-            void for_each(const std::function<void(const row &)> &funk) const;
+            void for_each(const std::function<void(const row_type &)> &funk) const;
 
             /*!
              * @return a pointer to the implementation

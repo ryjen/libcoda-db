@@ -8,7 +8,7 @@
 
 #include <bandit/bandit.h>
 #include "db.test.h"
-#include "mysql_binding.h"
+#include "mysql/binding.h"
 
 using namespace bandit;
 

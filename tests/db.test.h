@@ -4,9 +4,9 @@
 #include "sqldb.h"
 #include "base_record.h"
 #include <unistd.h>
-#include "sqlite3_db.h"
-#include "mysql_db.h"
-#include "postgres_db.h"
+#include "sqlite/db.h"
+#include "mysql/db.h"
+#include "postgres/db.h"
 
 #if !defined(HAVE_LIBMYSQLCLIENT) && !defined(HAVE_LIBSQLITE3) && !defined(HAVE_LIBPQ)
 #error "Mysql, postgres or sqlite is not installed on the system"

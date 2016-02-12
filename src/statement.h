@@ -18,6 +18,9 @@ namespace arg3
         class statement : public bindable
         {
            public:
+            typedef arg3::db::resultset resultset_type;
+
+           public:
             /*!
              * prepares this statement for execution
              * @param sql the sql to prepare
@@ -44,7 +47,7 @@ namespace arg3
              * executes this statement
              * @return a set of the results
              */
-            virtual resultset results() = 0;
+            virtual resultset_type results() = 0;
 
             /*!
              * executes this statement

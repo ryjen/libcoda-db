@@ -8,7 +8,7 @@
 
 #include <bandit/bandit.h>
 #include "db.test.h"
-#include "postgres_binding.h"
+#include "postgres/binding.h"
 
 using namespace bandit;
 
