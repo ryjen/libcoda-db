@@ -173,11 +173,11 @@ Basic Queries
 Modify Queries
 --------------
 ```c++
-/* insert a  user (INSERT INTO ..) */
-insert_query query(&testdb, "users"); /* auto find columns */
+/* insert a  user (INSERT INTO ...) */
+insert_query query(&testdb, "users", {"id", "first_name", "last_name"});
 
-/* this would be the column order in the users table, TODO: named parameter binding */
-query.bind(1, 4321).bind(2, "dave").bind(3, "patterson");
+/* bind the values to the columns.  TODO: named parameter binding */
+query.bind_all(4321, "dave", "patterson");
 
 if (!query.execute())
     cerr << testdb.last_error() << endl;
@@ -291,7 +291,5 @@ Alternatives
 TODO / ROADMAP
 ==============
 
-* More and better quality tests, at least 95% test coverage
-* Support more sql data types and refactor the type handling/converting
-* Make the binding interface a little nicer, maybe with variadic templates
-*
+* More and better quality tests, I demand 100% coverage
+* Support named parameter binding
