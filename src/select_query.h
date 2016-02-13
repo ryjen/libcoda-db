@@ -94,7 +94,7 @@ namespace arg3
             select_query &where(const std::string &value, const List &... args)
             {
                 where(value);
-                bind_all(sizeof...(List), args...);
+                bind_all(args...);
                 return *this;
             }
 
@@ -109,7 +109,7 @@ namespace arg3
             select_query &where(const where_clause &value, const List &... args)
             {
                 where(value);
-                bind_all(sizeof...(args), args...);
+                bind_all(args...);
                 return *this;
             }
 

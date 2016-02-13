@@ -1,5 +1,4 @@
 #include <bandit/bandit.h>
-#include "base_record.h"
 #include "db.test.h"
 
 using namespace bandit;
@@ -23,15 +22,12 @@ go_bandit([]() {
 
             user user1;
 
-            user1.set_id(1);
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
             user1.save();
 
             user user2;
-
-            user2.set_id(3);
 
             user2.set("first_name", "Bob");
             user2.set("last_name", "Smith");

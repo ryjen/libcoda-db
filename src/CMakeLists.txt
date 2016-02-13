@@ -38,13 +38,13 @@ include_directories(${PROJECT_SOURCE_DIR}/libs/variant/src ${MYSQL_INCLUDE_DIR} 
 target_link_libraries(${PROJECT_NAME} ${MYSQL_LIBRARIES} ${SQLITE3_LIBRARIES} ${PostgreSQL_LIBRARIES})
 
 set(${PROJECT_NAME}_HEADERS
-	base_record.h
 	bindable.h
 	column.h
 	exception.h
   join_clause.h
 	modify_query.h
 	query.h
+  record.h
 	resultset.h
 	row.h
 	schema.h

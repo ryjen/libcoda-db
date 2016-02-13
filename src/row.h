@@ -78,6 +78,8 @@ namespace arg3
 
                 if (index >= 0 && index < row_->size()) {
                     currentValue_ = row_->column(index);
+                } else {
+                    currentValue_ = NonConst();
                 }
             }
 

@@ -100,15 +100,12 @@ go_bandit([]() {
 
             user user1(&mysql_testdb);
 
-            user1.set_id(1);
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
             user1.save();
 
             user user2(&mysql_testdb);
-
-            user2.set_id(3);
 
             user2.set("first_name", "Bob");
             user2.set("last_name", "Smith");
@@ -121,7 +118,6 @@ go_bandit([]() {
         after_each([]() { mysql_testdb.teardown(); });
 
         describe("is movable", []() {
-
 
             it("as statement results", []() { test_move_row<mysql::stmt_row>(get_stmt_row); });
 

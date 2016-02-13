@@ -6,7 +6,7 @@ libarg3db
 [![Coverage Status](https://coveralls.io/repos/ryjen/arg3db/badge.svg?branch=master&service=github)](https://coveralls.io/github/ryjen/arg3db?branch=master)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://ryjen.mit-license.org)
 
-a sqlite3, mysql and postgres wrapper / active record (ish) implementation
+a sqlite, mysql and postgres wrapper / active record (ish) implementation
 
 Use in production at your own risk, still doing quite a bit of testing, refactoring and new features.  Pull requests are welcomed...
 
@@ -25,7 +25,7 @@ After cloning run the following command to initialize submodules:
 git submodule update --init --recursive
 ```
 
-you can use [cmake](https://cmake.org) to generate for the build system of your choice.
+use [cmake](https://cmake.org) to generate for the build system of your choice.
 
 ```bash
 mkdir debug; cd debug;
@@ -63,30 +63,31 @@ Model
 Records
 =======
 
-Base Record
------------
+An simple user example
+----------------------
 ```c++
-arg3::db::sqlite3_db testdb("test.db");
+arg3::db::sqlite::db testdb("test.db");
 
 /* Other databases
 
-arg3::db::mysql_db testdb(arg3::db::uri("mysql://user@pass:localhost:3306/database"));
-arg3::db::postgres_db testdb(arg3::db::uri("postgres://localhost/test"))
+arg3::db::mysql::db testdb(arg3::db::uri("mysql://user@pass:localhost:3306/database"));
+arg3::db::postgres::db testdb(arg3::db::uri("postgres://localhost/test"))
+
 */
 
-class user : public arg3::db::base_record<user>
+class user : public arg3::db::record<user>
 {
     constexpr static const char *const ID_COLUMN = "id";
     constexpr static const char *const TABLE_NAME = "users";
 public:
     /* default constructor, no database hits */
-    user() : base_record(&testdb, TABLE_NAME, ID_COLUMN) {}
+    user() : record(&testdb, TABLE_NAME, ID_COLUMN) {}
 
     /* results constructor */
-    user(const row &values) : base_record(&testdb, TABLE_NAME, ID_COLUMN, values) {}
+    user(const row &values) : record(&testdb, TABLE_NAME, ID_COLUMN, values) {}
 
     /* id constructor, pulls data from database */
-    user(long id) : base_record(&testdb, TABLE_NAME, ID_COLUMN, id) {}
+    user(long id) : record(&testdb, TABLE_NAME, ID_COLUMN, id) {}
 
     /* utility method showing how to get columns */
     string to_string() const
@@ -115,21 +116,21 @@ Query records
 ```c++
     user obj;
 
-    /* find all users */
+    /* find all users with a callback */
     obj.find_all([](const shared_ptr<user> &record) {
         cout << "User: " << record->to_string() << endl;
     }
 
-    /* alternative type returns a vector */
+    /* find specific records and return an result vector */
     results = obj.find_by("first_name", "Joe");
 
-    for (auto user : results)
-    {
+    for (auto user : results) {
         cout << "Found user: " << user->to_string() << endl;
     }
 
     /* can also use schema functions */
-    results = find_all<user>(obj.schema());
+    results = find_all<user>(testdb.schemas()->get("users"));
+
 ````
 
 Save a record
@@ -141,8 +142,9 @@ Save a record
     obj.set("first_name", "John");
     obj.set("last_name", "Doe");
 
-    if(!obj.save())
+    if(!obj.save()) {
     	cerr << testdb.last_error() << endl;
+    }
 ```
 
 Delete a record
@@ -150,8 +152,9 @@ Delete a record
 ```c++
     user obj(1); // id constructor
 
-    if(!obj.de1ete())
+    if(!obj.de1ete()) {
         cerr << testdb.last_error() << endl;
+    }
 ```
 
 
@@ -162,7 +165,7 @@ Binding parameters in queries should follow a doller sign index format:
 
  '$1', '$2', '$3', etc.
 
- Note that mysql does not support re-using (more than one instance of) parameters in a query string as of 02/09/16.
+ Note that mysql does not support re-using (more than one instance of) parameters in a query string (02/09/16).
 
 Basic Queries
 =============
@@ -190,7 +193,7 @@ update_query query(&testdb, "users", {"id", "first_name", "last_name"});
 query.where("id = $4") || ("last_name = $5");
 
 /* bind update columns and where clause */
-query.bind(1, 3432).bind(2, "mark").bind(3, "anthony").bind(4, 1234).bind(5, "henry");
+query.bind_all(1, 3432, "mark", "anthony", 1234, "henry");
 
 query.execute();
 ```

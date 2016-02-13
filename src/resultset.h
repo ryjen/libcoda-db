@@ -122,6 +122,7 @@ namespace arg3
                     value_ = rs_->current_row();
                 } else {
                     pos_ = -1;
+                    value_ = NonConst();
                 }
 
                 return *this;

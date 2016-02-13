@@ -1,5 +1,4 @@
 #include <bandit/bandit.h>
-#include "base_record.h"
 #include "modify_query.h"
 #include "db.test.h"
 
@@ -75,9 +74,7 @@ go_bandit([]() {
 
             int id = rand() % 5000;
 
-            query.bind(1, id);
-            query.bind(2, "blah");
-            query.bind(3, "bleh");
+            query.bind_all(id, "blah", "bleh");
 
             Assert::That(query.execute() > 0, Equals(true));
 

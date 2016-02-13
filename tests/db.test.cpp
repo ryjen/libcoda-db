@@ -5,7 +5,7 @@
 #include "config.h"
 #endif
 #include <bandit/bandit.h>
-#include "base_record.h"
+#include "record.h"
 #include "select_query.h"
 #include "sqldb.h"
 #include "db.test.h"

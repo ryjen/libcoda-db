@@ -50,11 +50,5 @@ namespace arg3
             }
             return *this;
         }
-
-        bindable &bindable::bind_all(size_t index, const sql_value &value)
-        {
-            bind_value(index, value);
-            return *this;
-        }
     }
 }

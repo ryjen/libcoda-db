@@ -1,5 +1,5 @@
 /*!
- * @file base_record.h
+ * @file record.h
  * implementation of a database record (model)
  * @copyright ryan jennings (arg3.com), 2013
  */
@@ -16,11 +16,8 @@ namespace arg3
 {
     namespace db
     {
-        class record_db;
-        class row;
-
         template <typename T>
-        class base_record;
+        class record;
 
         /*!
          * finds all records for a schema
@@ -28,7 +25,7 @@ namespace arg3
          * @param funk the callback function for each found record
          */
         template <typename T>
-        inline void find_all(const std::shared_ptr<schema> &schema, const typename base_record<T>::callback &funk)
+        inline void find_all(const std::shared_ptr<schema> &schema, const typename record<T>::callback &funk)
         {
             select_query query(schema);
 
@@ -69,7 +66,7 @@ namespace arg3
          */
         template <typename T>
         inline void find_by(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value,
-                            const typename base_record<T>::callback &funk)
+                            const typename record<T>::callback &funk)
         {
             select_query query(schema);
 
@@ -107,7 +104,7 @@ namespace arg3
          * an active-record (ish) pattern
          */
         template <typename T>
-        class base_record
+        class record
         {
            public:
             typedef arg3::db::schema schema_type;
@@ -124,7 +121,7 @@ namespace arg3
              * @param tablename the table in the database to use
              * @param idColumnName the name of the id column in the table
              */
-            base_record(sqldb *db, const std::string &tablename, const std::string &idColumnName)
+            record(sqldb *db, const std::string &tablename, const std::string &idColumnName)
                 : schema_(db->schemas()->get(tablename)), idColumnName_(idColumnName)
             {
                 if (schema_ == nullptr) {
@@ -136,7 +133,7 @@ namespace arg3
              * @param schema the schema to operate on
              * @param columnName the name of the id column in the schema
              */
-            base_record(const std::shared_ptr<schema_type> &schema, const std::string &columnName) : schema_(schema), idColumnName_(columnName)
+            record(const std::shared_ptr<schema_type> &schema, const std::string &columnName) : schema_(schema), idColumnName_(columnName)
             {
                 if (schema_ == nullptr) {
                     throw database_exception("no schema for record");
@@ -149,8 +146,8 @@ namespace arg3
              * @param value the value of the id column
              */
             template <typename V>
-            base_record(const std::shared_ptr<schema_type> &schema, const std::string &columnName, V value)
-                : base_record(schema, columnName)
+            record(const std::shared_ptr<schema_type> &schema, const std::string &columnName, V value)
+                : record(schema, columnName)
             {
                 set(idColumnName_, value);
                 refresh();  // load up from database
@@ -163,8 +160,8 @@ namespace arg3
              * @param value the value of the id column
              */
             template <typename V>
-            base_record(sqldb *db, const std::string &tableName, const std::string &columnName, const V &value)
-                : base_record(db, tableName, columnName)
+            record(sqldb *db, const std::string &tableName, const std::string &columnName, const V &value)
+                : record(db, tableName, columnName)
             {
                 set(idColumnName_, value);
                 refresh();
@@ -173,8 +170,7 @@ namespace arg3
             /*!
              * construct with values from a database row
              */
-            base_record(const std::shared_ptr<schema_type> &schema, const std::string &columnName, const row &values)
-                : base_record(schema, columnName)
+            record(const std::shared_ptr<schema_type> &schema, const std::string &columnName, const row &values) : record(schema, columnName)
             {
                 init(values);
             }
@@ -182,8 +178,7 @@ namespace arg3
             /*!
              * construct with values from a database row
              */
-            base_record(sqldb *db, const std::string &tableName, const std::string &columnName, const row &values)
-                : base_record(db, tableName, columnName)
+            record(sqldb *db, const std::string &tableName, const std::string &columnName, const row &values) : record(db, tableName, columnName)
             {
                 init(values);
             }
@@ -191,26 +186,26 @@ namespace arg3
             /*!
              * copy constructor
              */
-            base_record(const base_record &other) : schema_(other.schema_), values_(other.values_), idColumnName_(other.idColumnName_)
+            record(const record &other) : schema_(other.schema_), values_(other.values_), idColumnName_(other.idColumnName_)
             {
             }
 
             /*!
              * move constructor
              */
-            base_record(base_record &&other)
+            record(record &&other)
                 : schema_(std::move(other.schema_)), values_(std::move(other.values_)), idColumnName_(std::move(other.idColumnName_))
             {
             }
 
-            virtual ~base_record()
+            virtual ~record()
             {
             }
 
             /*!
              * assignment operator
              */
-            base_record &operator=(const base_record &other)
+            record &operator=(const record &other)
             {
                 values_ = other.values_;
                 schema_ = other.schema_;
@@ -222,7 +217,7 @@ namespace arg3
             /*!
              * move assignment operator
              */
-            base_record &operator=(base_record &&other)
+            record &operator=(record &&other)
             {
                 values_ = std::move(other.values_);
                 schema_ = std::move(other.schema_);
@@ -325,9 +320,10 @@ namespace arg3
             {
                 size_t index = 0;
                 bool rval = false;
-                auto cols_to_save = available_columns();
+                bool exists = record::exists();
+                auto cols_to_save = available_columns(exists);
 
-                if (exists()) {
+                if (exists) {
                     update_query query(schema(), cols_to_save);
 
                     query.where(idColumnName_ + " = $" + std::to_string(cols_to_save.size() + 1));
@@ -398,7 +394,7 @@ namespace arg3
             }
 
             /*!
-             * looks up and returns all objects of a base_record type
+             * looks up and returns all objects of a record type
              * @return a vector of record objects of type T
              */
             std::vector<std::shared_ptr<T>> find_all()
@@ -508,11 +504,12 @@ namespace arg3
             }
 
            private:
-            std::vector<std::string> available_columns()
+            std::vector<std::string> available_columns(bool exists)
             {
                 std::vector<std::string> columns = schema()->column_names();
                 std::vector<std::string> values(columns.size());
-                auto it = std::copy_if(columns.begin(), columns.end(), values.begin(), [&](const std::string &val) { return has(val); });
+                auto it = std::copy_if(columns.begin(), columns.end(), values.begin(),
+                                       [&](const std::string &val) { return has(val) && (exists || val != idColumnName_); });
                 values.resize(std::distance(values.begin(), it));
                 return values;
             }

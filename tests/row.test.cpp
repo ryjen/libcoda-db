@@ -1,5 +1,4 @@
 #include <bandit/bandit.h>
-#include "base_record.h"
 #include "row.h"
 #include "db.test.h"
 
@@ -25,11 +24,12 @@ row get_first_user_row()
 go_bandit([]() {
 
     describe("a row", []() {
-        user user1;
-        user user2;
 
         before_each([&]() {
             setup_testdb();
+
+            user user1;
+            user user2;
 
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
@@ -59,7 +59,7 @@ go_bandit([]() {
 
             auto rs = q.execute();
 
-            auto i = rs.begin() + 2;
+            auto i = rs.begin();
 
             row other = get_first_user_row();
 

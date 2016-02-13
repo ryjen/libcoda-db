@@ -2,7 +2,7 @@
 #define ARG3_TEST_DB_H
 
 #include "sqldb.h"
-#include "base_record.h"
+#include "record.h"
 #include <unistd.h>
 #include "sqlite/db.h"
 #include "mysql/db.h"
@@ -92,26 +92,26 @@ void setup_testdb();
 
 void teardown_testdb();
 
-class user : public arg3::db::base_record<user>
+class user : public arg3::db::record<user>
 {
    public:
-    user(arg3::db::sqldb *db = testdb) : base_record(db, "users", "id")
+    user(arg3::db::sqldb *db = testdb) : record(db, "users", "id")
     {
     }
 
-    user(const arg3::db::row &values, arg3::db::sqldb *db = testdb) : base_record(db, "users", "id", values)
+    user(const arg3::db::row &values, arg3::db::sqldb *db = testdb) : record(db, "users", "id", values)
     {
     }
 
-    user(long long id, arg3::db::sqldb *db = testdb) : base_record(db, "users", "id", id)
+    user(long long id, arg3::db::sqldb *db = testdb) : record(db, "users", "id", id)
     {
     }
 
-    user(const user &other) : base_record(other)
+    user(const user &other) : record(other)
     {
     }
 
-    user(user &&other) : base_record(std::move(other))
+    user(user &&other) : record(std::move(other))
     {
     }
 
@@ -121,13 +121,13 @@ class user : public arg3::db::base_record<user>
 
     user &operator=(const user &other)
     {
-        base_record<user>::operator=(other);
+        record<user>::operator=(other);
         return *this;
     }
 
     user &operator=(user &&other)
     {
-        base_record<user>::operator=(std::move(other));
+        record<user>::operator=(std::move(other));
         return *this;
     }
     std::string to_string()

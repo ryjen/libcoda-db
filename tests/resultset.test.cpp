@@ -11,11 +11,12 @@ using namespace arg3::db;
 go_bandit([]() {
 
     describe("resultset", []() {
-        user user1;
-        user user2;
 
         before_each([&]() {
             setup_testdb();
+
+            user user1;
+            user user2;
 
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");

@@ -163,7 +163,7 @@ namespace arg3
                 numChanges_ = stmt_->last_number_of_changes();
                 lastId_ = stmt_->last_insert_id();
             } else {
-                log::trace(stmt_->last_error().c_str());
+                log::error(stmt_->last_error().c_str());
                 lastId_ = 0;
                 numChanges_ = 0;
             }
@@ -191,7 +191,7 @@ namespace arg3
             if (success) {
                 numChanges_ = stmt_->last_number_of_changes();
             } else {
-                log::trace(stmt_->last_error().c_str());
+                log::error(stmt_->last_error().c_str());
                 numChanges_ = 0;
             }
 

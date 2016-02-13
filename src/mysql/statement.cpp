@@ -31,7 +31,7 @@ namespace arg3
                 };
             }
 
-            statement::statement(db *db) : db_(db), stmt_(nullptr)
+            statement::statement(mysql::db *db) : db_(db), stmt_(nullptr)
             {
                 if (db_ == nullptr) {
                     throw database_exception("No database provided for mysql statement");

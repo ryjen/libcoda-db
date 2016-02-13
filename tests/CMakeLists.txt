@@ -3,12 +3,12 @@
 link_directories("${PROJECT_BINARY_DIR}/libs/variant/src")
 
 set(TEST-SOURCES
-  arg3.test.cpp  
-  base_record.test.cpp  
+  arg3.test.cpp   
   column.test.cpp 
   db.test.cpp 
   delete_query.test.cpp 
   modify_query.test.cpp
+  record.test.cpp 
   resultset.test.cpp 
   row.test.cpp 
   schema.test.cpp 

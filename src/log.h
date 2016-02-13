@@ -2,8 +2,8 @@
  * @file log.h
  * internal logging for the library
  */
-#ifndef ARG3_DB_LOG_H_
-#define ARG3_DB_LOG_H_
+#ifndef ARG3_DB_LOG_H
+#define ARG3_DB_LOG_H
 
 #include <cstring>
 

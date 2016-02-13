@@ -1,5 +1,4 @@
 #include <bandit/bandit.h>
-#include "base_record.h"
 #include "db.test.h"
 
 using namespace bandit;

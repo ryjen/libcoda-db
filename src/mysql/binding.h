@@ -22,7 +22,6 @@ namespace arg3
     {
         namespace mysql
         {
-
             namespace data_mapper
             {
                 sql_value to_value(MYSQL_BIND *binding);

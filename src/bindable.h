@@ -17,22 +17,18 @@ namespace arg3
          */
         class bindable
         {
-           public:
-            /*!
-             * Binds a sql_value using the other bind methods
-             * @param index the index of the binding
-             * @param value the value of the binding
-             * @return a reference to this instance
-             */
-            bindable &bind_value(size_t index, const sql_value &value);
-
+           protected:
             /*!
              * bind_all override for one sql_value parameter
              * @param index the index of the binding
              * @param value the value to bind
              * @return a reference to this instance
              */
-            bindable &bind_all(size_t index, const sql_value &value);
+            template <typename T>
+            bindable &bind_list(size_t index, const T &value)
+            {
+                return bind_value(index, value);
+            }
 
             /*!
              * bind a list of a values, using the order of values as the index
@@ -42,13 +38,27 @@ namespace arg3
              * @return a reference to this instance
              */
             template <typename T, typename... List>
-            bindable &bind_all(size_t index, const T &value, const List &... argv)
+            bindable &bind_list(size_t index, const T &value, const List &... argv)
             {
-                static const size_t number_of_args = sizeof...(List) + 1;
-                bind_value(number_of_args - index, value);
-                bind_all(sizeof...(List), argv...);
+                bind_value(index, value);
+                bind_list(index + 1, argv...);
                 return *this;
             }
+
+           public:
+            template <typename T, typename... List>
+            bindable &bind_all(const T &value, const List &... argv)
+            {
+                return bind_list(1, value, argv...);
+            }
+
+            /*!
+             * Binds a sql_value using the other bind methods
+             * @param index the index of the binding
+             * @param value the value of the binding
+             * @return a reference to this instance
+             */
+            bindable &bind_value(size_t index, const sql_value &value);
 
             /*!
              * binds an integer value

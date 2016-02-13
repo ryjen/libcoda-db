@@ -29,7 +29,7 @@ namespace arg3
             class statement : public arg3::db::statement
             {
                private:
-                db *db_;
+                mysql::db *db_;
                 std::shared_ptr<MYSQL_STMT> stmt_;
                 binding bindings_;
 
@@ -37,7 +37,7 @@ namespace arg3
                 /*!
                  * @param db the database in use
                  */
-                statement(db *db);
+                statement(mysql::db *db);
 
                 /* non-copyable boilerplate */
                 statement(const statement &other) = delete;

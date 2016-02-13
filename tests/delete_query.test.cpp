@@ -1,5 +1,4 @@
 #include <bandit/bandit.h>
-#include "base_record.h"
 #include "modify_query.h"
 #include "db.test.h"
 
@@ -30,6 +29,7 @@ go_bandit([]() {
                 user2.save();
             } catch (const std::exception& e) {
                 cerr << "setup error: " << e.what() << endl;
+                throw e;
             }
         });
 
@@ -38,9 +38,7 @@ go_bandit([]() {
         it("can delete", []() {
             delete_query query(testdb, "users");
 
-            query.where("first_name = $1");
-
-            query.bind(1, "Mark");
+            query.where("first_name = $1", "Mark");
 
             AssertThat(query.execute(), Equals(1));
 
@@ -50,9 +48,7 @@ go_bandit([]() {
         it("is copyable by constructor", []() {
             delete_query query(testdb, "users");
 
-            query.where("first_name = $1");
-
-            query.bind(1, "Mark");
+            query.where("first_name = $1", "Mark");
 
             delete_query other(query);
 
@@ -62,8 +58,7 @@ go_bandit([]() {
         it("is movable by constructor", []() {
             delete_query query(testdb, "users");
 
-            query.where("first_name = $1");
-            query.bind(1, "Bryan");
+            query.where("first_name = $1", "Bryan");
 
             delete_query other(std::move(query));
 
@@ -74,9 +69,7 @@ go_bandit([]() {
         it("is copyable from assignment", []() {
             delete_query query(testdb, "users");
 
-            query.where("first_name = $1");
-
-            query.bind(1, "Bryan");
+            query.where("first_name = $1", "Bryan");
 
             delete_query other(testdb, "other_users");
 
@@ -90,8 +83,7 @@ go_bandit([]() {
         it("is movable from assignment", []() {
             delete_query query(testdb, "users");
 
-            query.where("first_name = $1");
-            query.bind(1, "Bryan");
+            query.where("first_name = $1", "Bryan");
 
             delete_query other(testdb, "other_users");
 
@@ -117,9 +109,7 @@ go_bandit([]() {
         it("can be batch executed", []() {
             delete_query query(testdb, "users");
 
-            query.where("first_name = $1");
-
-            query.bind(1, "Bryan");
+            query.where("first_name = $1", "Bryan");
 
             query.set_flags(modify_query::Batch);
 

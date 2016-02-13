@@ -68,11 +68,7 @@ namespace arg3
 
                 auto lengths = mysql_fetch_lengths(res_.get());
 
-                if (lengths == NULL) {
-                    throw binding_error("no lengths for field");
-                }
-
-                return mysql::data_mapper::to_value(field->type, value_[index_], lengths[index_]);
+                return mysql::data_mapper::to_value(field->type, value_[index_], !lengths ? 0 : lengths[index_]);
             }
 
             int column::sql_type() const

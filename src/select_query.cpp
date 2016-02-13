@@ -1,9 +1,8 @@
 /*!
  * @copyright ryan jennings (arg3.com), 2013
  */
-#include "base_record.h"
+#include "record.h"
 #include "select_query.h"
-#include "base_record.h"
 
 using namespace std;
 
