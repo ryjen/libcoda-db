@@ -47,13 +47,13 @@ namespace arg3
             /*!
              * types of date time values
              */
-            typedef enum { DATE, TIME, DATETIME, TIMESTAMP } formats;
+            typedef enum { DATE, TIME, TIMESTAMP, DATETIME } formats;
 
             /*!
              * @param value the unix timestamp
              * @param format the format to display
              */
-            sql_time(time_t value, formats format);
+            sql_time(time_t value, formats format = TIMESTAMP);
 
             /*!
              * @return the size of this custom field
@@ -102,6 +102,8 @@ namespace arg3
              */
             struct tm *to_gmtime() const;
 
+            struct tm *to_localtime() const;
+
             /*!
              * gets the hashcode for equality
              * @return the hashcode value
@@ -130,6 +132,8 @@ namespace arg3
              * default constructor
              */
             sql_value();
+
+            operator sql_time() const;
 
             /*!
              * @return the sql_time

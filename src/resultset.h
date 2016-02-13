@@ -275,6 +275,12 @@ namespace arg3
             size_t size() const;
 
             /*!
+             * tests if the are no results
+             * @return true if there are no results
+             */
+            bool empty() const;
+
+            /*!
              * @param funk the callback to perform for each row
              */
             void for_each(const std::function<void(const row_type &)> &funk) const;

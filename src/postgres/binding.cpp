@@ -378,7 +378,18 @@ namespace arg3
             {
                 if (reallocate_value(index)) {
                     values_[index - 1] = strdup(value.to_string().c_str());
-                    types_[index - 1] = TEXTOID;
+                    switch (value.format()) {
+                        case sql_time::DATE:
+                            types_[index - 1] = DATEOID;
+                            break;
+                        case sql_time::TIME:
+                            types_[index - 1] = TIMEOID;
+                            break;
+                        case sql_time::DATETIME:
+                        case sql_time::TIMESTAMP:
+                            types_[index - 1] = TIMESTAMPOID;
+                            break;
+                    }
                     lengths_[index - 1] = value.size();
                     formats_[index - 1] = 0;
                 } else {

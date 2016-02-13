@@ -167,6 +167,8 @@ Binding parameters in queries should follow a doller sign index format:
 
  Note that mysql does not support re-using (more than one instance of) parameters in a query string (02/09/16).
 
+ Also not supported yet are named parameters (02/09/16)
+
 Basic Queries
 =============
 
@@ -190,7 +192,7 @@ else
 update_query query(&testdb, "users", {"id", "first_name", "last_name"});
 
 /* using where clause WHERE .. OR .. */
-query.where("id = $4") || ("last_name = $5");
+query.where("id = $4") or ("last_name = $5");
 
 /* bind update columns and where clause */
 query.bind_all(1, 3432, "mark", "anthony", 1234, "henry");
@@ -254,6 +256,20 @@ std::function<void (const resultset &)> handler = [](const resultset &results)
 query.execute(handler);
 ```
 
+Joins
+-----
+
+There is a helper class **join_clause** to build join statements, but you can also build them with sql.
+
+```c++
+
+select_query query(&testdb, "users u", {"u.id", "us.setting"});
+
+query.join("user_settings s").on("u.id = s.user_id") and ("s.valid = 1");
+
+query.execute();
+
+```
 
 Batch Queries
 -------------
@@ -272,6 +288,44 @@ for(int i = 1000; i < 3000; i++) {
     }
 }
 ```
+
+Types
+-----
+
+A **sql_time** class was added for dealing with sql date/time formats.
+
+```c++
+time_t current_time = time(0);
+
+/* 
+ * create a DATE sql value 
+ *
+ * can be DATE, TIME, TIMESTAMP
+ */
+sql_time value(current_time, sql_time::DATE);
+
+/* binds the date to a query */
+query.bind(1, value);
+
+/* YYYY-MM-DD format */
+auto str = value.to_string();
+```
+
+Queries can also handle binary data with **sql_blob**.
+
+```c++
+size_t sz = 30;
+void *data = malloc(sz);
+/* set data here */
+
+/*
+ * create a blob value, this will create a copy of the data
+ *
+ * you can pass function pointers to control how the data is allocated, freed, copied and compared
+ */
+sql_blob value(data, sz);
+
+query.bind(1, value);
 
 Caching
 -------

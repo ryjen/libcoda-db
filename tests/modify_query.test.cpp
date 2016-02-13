@@ -37,7 +37,7 @@ go_bandit([]() {
         it("can be constructed", []() {
             insert_query query(testdb, "users");
 
-            Assert::That(query.to_string(), Equals("INSERT INTO users DEFAULT VALUES;"));
+            Assert::That(query.to_string(), Equals("INSERT INTO users() VALUES();"));
 
             insert_query other(query);
 

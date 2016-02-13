@@ -60,6 +60,9 @@ void test_sqlite3_db::setup()
     execute(
         "create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45), dval real, data "
         "blob)");
+    execute(
+        "create table if not exists user_settings(id integer primary key autoincrement, user_id integer not null, valid int(1), created_at "
+        "timestamp)");
 }
 
 void test_sqlite3_db::teardown()
@@ -67,6 +70,7 @@ void test_sqlite3_db::teardown()
     close();
     unlink(connection_info().path.c_str());
     schemas()->clear("users");
+    schemas()->clear("user_settings");
 }
 #endif
 
@@ -77,13 +81,18 @@ void test_mysql_db::setup()
     execute(
         "create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45), dval real, data "
         "blob)");
+    execute(
+        "create table if not exists user_settings(id integer primary key auto_increment, user_id integer not null, valid int(1), created_at "
+        "timestamp)");
 }
 
 void test_mysql_db::teardown()
 {
     execute("drop table users");
+    execute("drop table user_settings");
     close();
     schemas()->clear("users");
+    schemas()->clear("user_settings");
 }
 #endif
 
@@ -92,13 +101,17 @@ void test_postgres_db::setup()
 {
     open();
     execute("create table if not exists users(id serial primary key unique, first_name varchar(45), last_name varchar(45), dval real, data bytea)");
+
+    execute("create table if not exists user_settings(id serial primary key unique, user_id integer not null, valid smallint, created_at timestamp)");
 }
 
 void test_postgres_db::teardown()
 {
     execute("drop table users");
+    execute("drop table user_settings");
     close();
     schemas()->clear("users");
+    schemas()->clear("user_settings");
 }
 #endif
 

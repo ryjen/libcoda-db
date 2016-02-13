@@ -95,22 +95,15 @@ namespace arg3
 
             buf << "INSERT INTO " << tableName_;
 
-            if (columns_.size() > 0) {
-                buf << "(";
+            buf << "(";
 
-                buf << join_csv(columns_);
+            buf << join_csv(columns_);
 
-                buf << ") VALUES (";
+            buf << ") VALUES(";
 
-                buf << join_params(columns_, false);
+            buf << join_params(columns_, false);
 
-                buf << ")";
-            } else {
-                log::warn("No binded values for insert query");
-                buf << " DEFAULT VALUES";
-            }
-
-            buf << ";";
+            buf << ");";
 
             return buf.str();
         }

@@ -59,20 +59,25 @@ namespace arg3
         {
             return gmtime(&value_);
         }
+
+        struct tm *sql_time::to_localtime() const
+        {
+            return localtime(&value_);
+        }
         string sql_time::to_string() const
         {
             char buf[500] = {0};
 
             switch (format_) {
                 case DATE:
-                    strftime(buf, sizeof(buf), "%F", gmtime(&value_));
+                    strftime(buf, sizeof(buf), "%Y-%m-%d", gmtime(&value_));
                     return buf;
                 case TIME:
-                    strftime(buf, sizeof(buf), "%T", gmtime(&value_));
+                    strftime(buf, sizeof(buf), "%H:%M:%S", gmtime(&value_));
                     return buf;
-                case DATETIME:
                 case TIMESTAMP:
-                    strftime(buf, sizeof(buf), "%F %T", gmtime(&value_));
+                case DATETIME:
+                    strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", gmtime(&value_));
                     return buf;
             }
         }
@@ -83,14 +88,14 @@ namespace arg3
 
             switch (format_) {
                 case DATE:
-                    wcsftime(buf, sizeof(buf), L"%F", gmtime(&value_));
+                    wcsftime(buf, sizeof(buf), L"%Y-%m-%d", gmtime(&value_));
                     return buf;
                 case TIME:
-                    wcsftime(buf, sizeof(buf), L"%T", gmtime(&value_));
+                    wcsftime(buf, sizeof(buf), L"%H:%M:%S", gmtime(&value_));
                     return buf;
-                case DATETIME:
                 case TIMESTAMP:
-                    wcsftime(buf, sizeof(buf), L"%F %T", gmtime(&value_));
+                case DATETIME:
+                    wcsftime(buf, sizeof(buf), L"%Y-%m-%d %H:%M:%S", gmtime(&value_));
                     return buf;
             }
         }
@@ -99,7 +104,7 @@ namespace arg3
         {
         }
 
-        sql_value::sql_value(const sql_time &value) : variant(new std::shared_ptr<sql_time>(new sql_time(value)))
+        sql_value::sql_value(const sql_time &value) : variant(std::shared_ptr<sql_time>(new sql_time(value)))
         {
         }
 
@@ -112,6 +117,11 @@ namespace arg3
             }
 
             return sql_time();
+        }
+
+        sql_value::operator sql_time() const
+        {
+            return to_time();
         }
 
         bool sql_value::is_time() const

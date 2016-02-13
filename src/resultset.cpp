@@ -64,6 +64,11 @@ namespace arg3
             return impl_->size();
         }
 
+        bool resultset::empty() const
+        {
+            return impl_->size() == 0;
+        }
+
         void resultset::for_each(const std::function<void(const row &row)> &funk) const
         {
             for (auto &row : *this) {

@@ -7,6 +7,7 @@ set(TEST-SOURCES
   column.test.cpp 
   db.test.cpp 
   delete_query.test.cpp 
+  join.test.cpp
   modify_query.test.cpp
   record.test.cpp 
   resultset.test.cpp 
