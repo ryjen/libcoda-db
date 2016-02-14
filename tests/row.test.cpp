@@ -84,23 +84,15 @@ go_bandit([]() {
 
         it("has an iterator", []() {
 
-            auto schema = testdb->schemas()->get("users");
-
-            if (!schema->is_valid()) schema->init();
-
             select_query query(testdb, "users");
 
             auto rs = query.execute();
 
             auto r = *rs.begin();
 
-            auto columns = schema->column_names();
-
-            AssertThat(columns.size() > 0, IsTrue());
-
             row::const_iterator ci = r.cbegin();
 
-            AssertThat(ci.name(), Equals(columns[0]));
+            AssertThat(ci.name(), Equals("data"));
 
             for (; ci < r.cend(); ci++) {
                 AssertThat(ci->is_valid(), IsTrue());
