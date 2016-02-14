@@ -21,7 +21,7 @@ namespace arg3
         {
            public:
             /*! types of sql joins */
-            typedef enum { inner, left, right, outer } type;
+            typedef enum { none, natural, inner, left_outer, right_outer, full_outer, cross } type;
 
            private:
             std::string tableName_;
@@ -36,7 +36,7 @@ namespace arg3
              * @param tableName the required name of the table to join
              * @param joinType the type of sql query (default inner)
              */
-            explicit join_clause(const std::string &tableName, type joinType = inner);
+            explicit join_clause(const std::string &tableName, type joinType = none);
 
             /*! boilerplate rule of 3 + move */
             join_clause(const join_clause &other);
@@ -99,11 +99,6 @@ namespace arg3
          * stream operator for joins
          */
         std::ostream &operator<<(std::ostream &out, const join_clause &join);
-
-        /*!
-         * suffix operator
-         */
-        join_clause operator"" _join(const char *cstr, size_t len);
     }
 }
 

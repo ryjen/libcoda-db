@@ -8,11 +8,6 @@ namespace arg3
 {
     namespace db
     {
-        join_clause operator"" _join(const char *cstr, size_t len)
-        {
-            return join_clause(string(cstr, len));
-        }
-
         join_clause::join_clause()
         {
         }
@@ -47,21 +42,33 @@ namespace arg3
 
             switch (type_) {
                 default:
+                case join::none:
+                    break;
+                case join::natural:
+                    buf << " NATURAL";
+                    break;
                 case join::inner:
                     buf << " INNER";
                     break;
-                case join::left:
-                    buf << " LEFT";
+                case join::left_outer:
+                    buf << " LEFT OUTER";
                     break;
-                case join::right:
-                    buf << " RIGHT";
+                case join::right_outer:
+                    buf << " RIGHT OUTER";
                     break;
-                case join::outer:
-                    buf << " OUTER";
+                case join::full_outer:
+                    buf << " FULL OUTER";
+                    break;
+                case join::cross:
+                    buf << " CROSS";
                     break;
             }
 
-            buf << " JOIN " << tableName_ << " ON " << on_;
+            buf << " JOIN " << tableName_;
+
+            if (type_ != join::cross) {
+                buf << " ON " << on_;
+            }
 
             return buf.str();
         }

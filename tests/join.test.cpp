@@ -45,6 +45,74 @@ go_bandit([]() {
 
             Assert::That(rs.empty(), IsFalse());
         });
+        it("can be a cross join", []() {
+            select_query query(testdb, "users u");
+
+            query.join("user_settings s", join::cross);
+
+            auto rs = query.execute();
+
+            Assert::That(rs.size() >= 1, IsTrue());
+        });
+        it("can be full outer", []() {
+            select_query query(testdb, "users u");
+
+            query.join("user_settings s", join::full_outer);
+
+            auto rs = query.execute();
+
+            Assert::That(rs.size() >= 1, IsTrue());
+        });
+
+        it("can be a right outer", []() {
+            select_query query(testdb, "users u");
+
+            query.join("user_settings s", join::right_outer);
+
+            auto rs = query.execute();
+
+            Assert::That(rs.size() >= 1, IsTrue());
+        });
+
+        it("can be a left outer", []() {
+            select_query query(testdb, "users u");
+
+            query.join("user_settings s", join::left_outer);
+
+            auto rs = query.execute();
+
+            Assert::That(rs.size() >= 1, IsTrue());
+        });
+
+        it("can be a inner", []() {
+            select_query query(testdb, "users u");
+
+            query.join("user_settings s", join::inner);
+
+            auto rs = query.execute();
+
+            Assert::That(rs.size() >= 1, IsTrue());
+        });
+
+        it("can be a natural", []() {
+            select_query query(testdb, "users u");
+
+            query.join("user_settings s", join::natural);
+
+            auto rs = query.execute();
+
+            Assert::That(rs.size() >= 1, IsTrue());
+        });
+
+        it("can be a default", []() {
+            select_query query(testdb, "users u");
+
+            query.join("user_settings s", join::none);
+
+            auto rs = query.execute();
+
+            Assert::That(rs.size() >= 1, IsTrue());
+        });
     });
 
 });
