@@ -326,6 +326,7 @@ void *data = malloc(sz);
 sql_blob value(data, sz);
 
 query.bind(1, value);
+```
 
 Caching
 -------
