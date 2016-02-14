@@ -63,7 +63,7 @@ go_bandit([]() {
 
             os << cd;
 
-            Assert::That(os.str(), Equals("data"));
+            Assert::That(os.str(), !Equals(""));
         });
 
     });
