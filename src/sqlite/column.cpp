@@ -18,6 +18,10 @@ namespace arg3
             {
                 sql_value to_value(const shared_ptr<sqlite3_stmt> &stmt, int column)
                 {
+                    if (stmt == nullptr || column < 0 || column >= sqlite3_column_count(stmt.get())) {
+                        return sql_value();
+                    }
+
                     switch (sqlite3_column_type(stmt.get(), column)) {
                         case SQLITE_INTEGER:
                             return sqlite3_column_int64(stmt.get(), column);

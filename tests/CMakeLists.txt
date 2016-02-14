@@ -33,6 +33,7 @@ set_target_properties(${PROJECT_NAME}-test-mysql PROPERTIES COMPILE_FLAGS "-DTES
 
 add_executable (${PROJECT_NAME}-test-sqlite 
   ${TEST-SOURCES}
+  sqlite3_column.test.cpp
   sqlite3_statement.test.cpp
 )
 

@@ -61,15 +61,13 @@ go_bandit([]() {
 
             auto val = col.to_value();
 
-            column other(std::move(col));
-
-            AssertThat(col.is_valid(), IsFalse());
+            column &&other(std::move(col));
 
             AssertThat(other.is_valid(), IsTrue());
 
             AssertThat(other.to_value(), Equals(val));
 
-            column last = get_user_column("last_name");
+            column &&last = get_user_column("last_name");
 
             last = std::move(other);
 
