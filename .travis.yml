@@ -36,7 +36,7 @@ services:
   - postgresql
 script:
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DMEMORY_CHECK=ON ..
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DMEMORY_CHECK=ON -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/9.1/server/catalog ..
   - make
   - make arg3db-coverage-clean
   - make test ARGS=-V
