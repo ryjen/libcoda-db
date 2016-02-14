@@ -41,6 +41,7 @@ set_target_properties(${PROJECT_NAME}-test-sqlite PROPERTIES COMPILE_FLAGS "-DTE
 
 add_executable (${PROJECT_NAME}-test-postgres 
   ${TEST-SOURCES}
+  postgres_column.test.cpp
   postgres_db.test.cpp 
   postgres_binding.test.cpp 
   postgres_statement.test.cpp 
@@ -48,7 +49,7 @@ add_executable (${PROJECT_NAME}-test-postgres
 
 set_target_properties(${PROJECT_NAME}-test-postgres PROPERTIES COMPILE_FLAGS "-DTEST_POSTGRES") 
 
-include_directories(SYSTEM vendor/bandit ${PROJECT_SOURCE_DIR}/libs/variant/src ${PROJECT_SOURCE_DIR}/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIR})
+include_directories(SYSTEM vendor/bandit ${PROJECT_SOURCE_DIR}/libs/variant/src ${PROJECT_SOURCE_DIR}/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
 
 target_link_libraries (${PROJECT_NAME}-test-mysql ${PROJECT_NAME} arg3variant)
 
