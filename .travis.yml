@@ -16,7 +16,6 @@ install:
   - tar xf lcov_1.12.orig.tar.gz
   - export PATH=$TRAVIS_BUILD_DIR/lcov-1.12/bin:$PATH  
 addons:
-  postgresql: "9.1"
   apt:
     sources:
       - george-edison55-precise-backports
@@ -36,7 +35,7 @@ services:
   - postgresql
 script:
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DMEMORY_CHECK=ON -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/9.1/server/catalog ..
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DMEMORY_CHECK=ON -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/9.5/server/catalog ..
   - make
   - make arg3db-coverage-clean
   - make test ARGS=-V
