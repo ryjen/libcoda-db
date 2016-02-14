@@ -66,7 +66,7 @@ namespace arg3
 
             bool column::is_valid() const
             {
-                return stmt_ != nullptr;
+                return stmt_ != nullptr && stmt_ && column_ >= 0;
             }
 
             sql_value column::to_value() const
@@ -88,21 +88,28 @@ namespace arg3
 
             string column::name() const
             {
+                if (!is_valid()) {
+                    return string();
+                }
                 return sqlite3_column_name(stmt_.get(), column_);
             }
 
 
             /* cached version */
 
-            cached_column::cached_column(shared_ptr<sqlite3_stmt> stmt, int column)
+            cached_column::cached_column(const shared_ptr<sqlite3_stmt> &stmt, int column)
             {
                 set_value(stmt, column);
             }
 
-            void cached_column::set_value(shared_ptr<sqlite3_stmt> stmt, int column)
+            void cached_column::set_value(const shared_ptr<sqlite3_stmt> &stmt, int column)
             {
                 if (stmt == nullptr) {
                     throw database_exception("no statement provided to sqlite3 column");
+                }
+
+                if (column < 0 || column >= sqlite3_column_count(stmt.get())) {
+                    throw no_such_column_exception();
                 }
 
                 name_ = sqlite3_column_name(stmt.get(), column);

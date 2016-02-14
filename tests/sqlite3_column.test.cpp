@@ -15,7 +15,8 @@ using namespace std;
 
 using namespace arg3::db;
 
-shared_ptr<sqlite::column> get_sqlite_column(const string &name)
+template <typename T>
+shared_ptr<T> get_sqlite_column(const string &name)
 {
     select_query q(&sqlite_testdb, "users");
 
@@ -25,7 +26,7 @@ shared_ptr<sqlite::column> get_sqlite_column(const string &name)
 
     auto col = row->column(name);
 
-    return static_pointer_cast<sqlite::column>(col.impl());
+    return static_pointer_cast<T>(col.impl());
 }
 
 
@@ -50,7 +51,10 @@ go_bandit([]() {
         describe("has a type", []() {
 
             it("as a column", []() {
-                auto col = get_sqlite_column("first_name");
+
+                sqlite_testdb.set_cache_level(sqlite::cache::None);
+
+                auto col = get_sqlite_column<sqlite::column>("first_name");
 
                 Assert::That(col->sql_type(), Equals(SQLITE_TEXT));
             });
@@ -58,7 +62,7 @@ go_bandit([]() {
             it("as a cached column", []() {
                 sqlite_testdb.set_cache_level(sqlite::cache::ResultSet);
 
-                auto col = get_sqlite_column("first_name");
+                auto col = get_sqlite_column<sqlite::cached_column>("first_name");
 
                 Assert::That(col->sql_type(), Equals(SQLITE_TEXT));
             });
@@ -66,13 +70,19 @@ go_bandit([]() {
 
         describe("has a name", []() {
             it("as a column", []() {
-                auto col = get_sqlite_column("last_name");
+
+                sqlite_testdb.set_cache_level(sqlite::cache::None);
+
+                auto col = get_sqlite_column<sqlite::column>("last_name");
 
                 Assert::That(col->name(), Equals("last_name"));
             });
 
             it("as a cached column", []() {
-                auto col = get_sqlite_column("last_name");
+
+                sqlite_testdb.set_cache_level(sqlite::cache::ResultSet);
+
+                auto col = get_sqlite_column<sqlite::cached_column>("last_name");
 
                 Assert::That(col->name(), Equals("last_name"));
             });

@@ -58,14 +58,14 @@ namespace arg3
                 std::string name_;
                 sql_value value_;
                 int type_;
-                void set_value(std::shared_ptr<sqlite3_stmt> stmt, int column);
+                void set_value(const std::shared_ptr<sqlite3_stmt> &stmt, int column);
 
                public:
                 /*!
                  * @param stmt    the sqlite3 statement in use
                  * @param column  the column index
                  */
-                cached_column(std::shared_ptr<sqlite3_stmt> stmt, int column);
+                cached_column(const std::shared_ptr<sqlite3_stmt> &stmt, int column);
 
                 /* non-copyable boilerplate */
                 cached_column(const cached_column &other) = delete;
