@@ -8,6 +8,80 @@ using namespace std;
 using namespace arg3::db;
 
 go_bandit([]() {
+
+    describe("sql time value", []() {
+
+        struct tm tm;
+        tm.tm_year = 2016 - 1900;
+        tm.tm_mon = 2;
+        tm.tm_mday = 11;
+        tm.tm_hour = 8;
+        tm.tm_min = 15;
+        tm.tm_sec = 30;
+
+        it("has equality", []() {
+            time_t curr = time(0);
+
+            sql_time value(curr);
+
+            sql_time other(curr);
+
+            Assert::That(value, Equals(other));
+
+            other = 12341234U;
+
+            Assert::That(value, !Equals(other));
+
+        });
+
+        it("can be converted", [&tm]() {
+
+            time_t curr = timegm(&tm);
+
+            sql_time value(curr);
+
+            Assert::That(value.to_ulong(), Equals(curr));
+
+            Assert::That(value.to_llong(), Equals(curr));
+
+            Assert::That(value.to_ullong(), Equals(curr));
+
+            Assert::That(value.to_bool(), IsTrue());
+
+            auto lt = value.to_localtime();
+
+            Assert::That(lt->tm_mon == 2, IsTrue());
+        });
+
+        it("has different formats", [&tm]() {
+
+
+            time_t current = timegm(&tm);
+
+            sql_time date(current, sql_time::DATE);
+
+            Assert::That(date.to_string(), Equals("2016-03-11"));
+
+            sql_time tim(current, sql_time::TIME);
+
+            Assert::That(tim.to_string(), Equals("08:15:30"));
+
+            sql_time timestamp(current, sql_time::TIMESTAMP);
+
+            Assert::That(timestamp.to_string(), Equals("2016-03-11 08:15:30"));
+        });
+
+        it("can be outputed to a stream", [&tm]() {
+            sql_time value(timegm(&tm));
+
+            ostringstream out;
+
+            out << value;
+
+            Assert::That(out.str(), Equals("2016-03-11 08:15:30"));
+
+        });
+    });
     describe("sql value", []() {
         it("has equality", []() {
             sql_value v = "1234";
@@ -101,6 +175,18 @@ go_bandit([]() {
             AssertThrows(arg3::illegal_conversion, v.to_double());
         });
 
+
+        it("can be outputed to a stream", []() {
+            sql_value value(12341234);
+
+            ostringstream buf;
+
+            buf << value;
+
+            Assert::That(buf.str(), Equals("12341234"));
+        });
+
+
     });
 
     describe("sql null", []() {
@@ -110,6 +196,14 @@ go_bandit([]() {
             sql_value value;
 
             AssertThat(value == sql_null, IsTrue());
+        });
+
+        it("can be outputed to a stream", []() {
+            ostringstream buf;
+
+            buf << sql_null;
+
+            Assert::That(buf.str(), Equals("NULL"));
         });
     });
 

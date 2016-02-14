@@ -276,7 +276,7 @@ namespace arg3
                     }
                     tm = c_alloc<MYSQL_TIME>();
                     auto gmt = value.to_gmtime();
-                    tm->year = gmt->tm_year;
+                    tm->year = gmt->tm_year + 1900;
                     tm->month = gmt->tm_mon;
                     tm->day = gmt->tm_mday;
                     tm->hour = gmt->tm_hour;
