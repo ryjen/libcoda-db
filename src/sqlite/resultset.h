@@ -10,9 +10,9 @@
 
 #ifdef HAVE_LIBSQLITE3
 
+#include <vector>
 #include <sqlite3.h>
 #include "../resultset.h"
-#include <vector>
 
 namespace arg3
 {

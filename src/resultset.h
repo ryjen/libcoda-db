@@ -5,9 +5,9 @@
 #ifndef ARG3_DB_RESULTSET_H
 #define ARG3_DB_RESULTSET_H
 
+#include <memory>
 #include "row.h"
 #include "exception.h"
-#include <memory>
 
 namespace arg3
 {

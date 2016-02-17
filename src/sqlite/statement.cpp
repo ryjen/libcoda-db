@@ -56,7 +56,9 @@ namespace arg3
                     throw database_exception("database not open");
                 }
 
-                if (is_valid()) return;
+                if (is_valid()) {
+                    return;
+                }
 
                 sqlite3_stmt *temp;
 
@@ -65,8 +67,6 @@ namespace arg3
                 }
 
                 stmt_ = shared_ptr<sqlite3_stmt>(temp, helper::stmt_delete());
-
-                return;
             }
 
             bool statement::is_valid() const
@@ -160,6 +160,18 @@ namespace arg3
                 if (sqlite3_bind_text(stmt_.get(), index, tstr.c_str(), tstr.size(), SQLITE_TRANSIENT) != SQLITE_OK) {
                     throw binding_error(db_->last_error());
                 }
+                return *this;
+            }
+
+            statement &statement::bind(const string &name, const sql_value &value)
+            {
+                int index = sqlite3_bind_parameter_index(stmt_.get(), name.c_str());
+
+                if (index <= 0) {
+                    throw binding_error("No such named parameter '" + name + "'");
+                }
+
+                bind_value(index, value);
                 return *this;
             }
 

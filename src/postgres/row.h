@@ -11,9 +11,9 @@
 
 #ifdef HAVE_LIBPQ
 
+#include <vector>
 #include "../row.h"
 #include "column.h"
-#include <vector>
 
 namespace arg3
 {

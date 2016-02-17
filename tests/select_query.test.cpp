@@ -180,6 +180,21 @@ go_bandit([]() {
 
         });
 
+        it("can use named parameters", []() {
+            select_query query(testdb, "users");
+
+            query.where("first_name = @name or last_name = @name");
+
+            query.bind("@name", "Bryan");
+
+            query.execute([](const resultset &rs) {
+                rs.for_each([](const row &row) {
+                    Assert::That(row.column("first_name").to_value() == "Bryan" || row.column("last_name").to_value() == "Bryan");
+                });
+
+            });
+        });
+
     });
 
 });

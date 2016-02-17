@@ -10,9 +10,9 @@
 
 #ifdef HAVE_LIBSQLITE3
 
+#include <vector>
 #include "../row.h"
 #include "column.h"
-#include <vector>
 
 namespace arg3
 {

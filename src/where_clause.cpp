@@ -1,6 +1,6 @@
 
-#include "where_clause.h"
 #include <sstream>
+#include "where_clause.h"
 
 using namespace std;
 

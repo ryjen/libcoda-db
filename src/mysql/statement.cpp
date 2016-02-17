@@ -7,7 +7,6 @@
 #include "statement.h"
 #include "db.h"
 #include "resultset.h"
-#include <regex>
 
 using namespace std;
 
@@ -64,16 +63,9 @@ namespace arg3
 
             void statement::prepare(const string &sql)
             {
-                static regex param_regex("\\$([0-9]+)([:]{2}[a-z]+)?");
-                static string param_repl("?");
-
                 if (db_ == nullptr || !db_->is_open()) {
                     throw database_exception("database is not open");
                 }
-
-                // TODO: this needs to be fleshed out into being able to handle duplicate placeholders
-                // example: col1 = $1 AND col2 = $1
-                string formatted_sql = regex_replace(sql, param_regex, param_repl);
 
                 MYSQL_STMT *temp = mysql_stmt_init(db_->db_.get());
 
@@ -82,6 +74,8 @@ namespace arg3
                 }
 
                 stmt_ = shared_ptr<MYSQL_STMT>(temp, helper::stmt_delete());
+
+                string formatted_sql = bindings_.prepare(sql);
 
                 if (mysql_stmt_prepare(stmt_.get(), formatted_sql.c_str(), formatted_sql.length())) {
                     throw database_exception(db_->last_error());
@@ -160,7 +154,12 @@ namespace arg3
             statement &statement::bind(size_t index, const sql_time &value)
             {
                 bindings_.bind(index, value);
+                return *this;
+            }
 
+            statement &statement::bind(const string &name, const sql_value &value)
+            {
+                bindings_.bind(name, value);
                 return *this;
             }
 

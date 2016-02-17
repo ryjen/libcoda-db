@@ -5,9 +5,9 @@
 #ifndef ARG3_DB_SQL_VALUE_H
 #define ARG3_DB_SQL_VALUE_H
 
-#include "variant.h"
 #include <iostream>
 #include <cmath>
+#include "variant.h"
 
 namespace arg3
 {

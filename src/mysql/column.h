@@ -12,6 +12,7 @@
 #ifdef HAVE_LIBMYSQLCLIENT
 
 #include <mysql/mysql.h>
+
 #include "../column.h"
 
 namespace arg3

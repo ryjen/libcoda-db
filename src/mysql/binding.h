@@ -11,10 +11,11 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include "../sql_value.h"
-#include "../bindable.h"
 #include <mysql/mysql.h>
 #include <string>
+
+#include "../sql_value.h"
+#include "../bindable.h"
 
 namespace arg3
 {
@@ -31,7 +32,7 @@ namespace arg3
             /*!
              * makes binding mysql queries simpler
              */
-            class binding : public bindable
+            class binding : public arg3::db::bind_mapping
             {
                 friend class mysql_column;
 
@@ -113,6 +114,7 @@ namespace arg3
                 binding &bind(size_t index, const sql_blob &value);
                 binding &bind(size_t index, const sql_null_type &value);
                 binding &bind(size_t index, const sql_time &value);
+                binding &bind(const std::string &name, const sql_value &value);
 
                 /*!
                  * puts values into a query before execution
@@ -125,6 +127,12 @@ namespace arg3
                  * @param stmt the raw mysql statement to bind to
                  */
                 void bind_result(MYSQL_STMT *stmt) const;
+
+                /*!
+                 * validates the sql and prepares the bindinds
+                 * @param sql the sql to prepare
+                 */
+                std::string prepare(const std::string &sql);
 
                 /*!
                  * reset all the bindings

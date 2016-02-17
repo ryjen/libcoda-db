@@ -11,10 +11,10 @@
 
 #ifdef HAVE_LIBPQ
 
-#include "../sql_value.h"
-#include "../bindable.h"
 #include <libpq-fe.h>
 #include <string>
+#include "../sql_value.h"
+#include "../bindable.h"
 
 namespace arg3
 {
@@ -29,7 +29,7 @@ namespace arg3
             /*
              * utility class to simplify binding query parameters
              */
-            class binding : public bindable
+            class binding : public arg3::db::bind_mapping
             {
                 friend class column;
                 friend class statement;
@@ -94,6 +94,9 @@ namespace arg3
                 binding &bind(size_t index, const sql_blob &value);
                 binding &bind(size_t index, const sql_null_type &value);
                 binding &bind(size_t index, const sql_time &value);
+                binding &bind(const std::string &name, const sql_value &value);
+
+                std::string prepare(const std::string &sql);
 
                 /*!
                  * clear and remove all bindings

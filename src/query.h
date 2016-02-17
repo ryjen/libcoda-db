@@ -6,6 +6,7 @@
 #ifndef ARG3_DB_QUERY_H
 #define ARG3_DB_QUERY_H
 
+#include <vector>
 #include <map>
 #include <sstream>
 #include "schema.h"
@@ -26,6 +27,7 @@ namespace arg3
         {
             friend class sqldb;
 
+          private:
             /*!
             * ensures that the binding storage array is large enough
             * @param index the parameter index for binding
@@ -37,9 +39,14 @@ namespace arg3
            protected:
             sqldb *db_;
             std::shared_ptr<statement> stmt_;
-            std::vector<sql_value> bindings_;
-            void prepare(const std::string &sql);
+            std::vector<sql_value> params_;
+            std::unordered_map<std::string, sql_value> named_params_;
 
+            /*!
+             * prepares this query for the sql string
+             * @param sql the sql string
+             */
+            void prepare(const std::string &sql);
            public:
             /*!
              * @param db the database to perform the query on
@@ -50,12 +57,12 @@ namespace arg3
             /*!
              * @param other the other query to copy from
              */
-            query(const query &other);
+            query(const query &other) noexcept;
 
             /*!
              * @param other the query being moved
              */
-            query(query &&other);
+            query(query &&other) noexcept;
 
             /*!
              * deconstructor
@@ -96,6 +103,7 @@ namespace arg3
             query &bind(size_t index, const sql_blob &value);
             query &bind(size_t index, const sql_null_type &value);
             query &bind(size_t index, const sql_time &value);
+            query &bind(const std::string &name, const sql_value &value);
 
             /*!
              * returns the last error the query encountered, if any

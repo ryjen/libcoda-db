@@ -11,9 +11,9 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
+#include <vector>
 #include <mysql/mysql.h>
 #include "../resultset.h"
-#include <vector>
 
 namespace arg3
 {

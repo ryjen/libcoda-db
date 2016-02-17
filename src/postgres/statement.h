@@ -70,6 +70,7 @@ namespace arg3
                 statement &bind(size_t index, const sql_blob &value);
                 statement &bind(size_t index, const sql_null_type &value);
                 statement &bind(size_t index, const sql_time &value);
+                statement &bind(const std::string &name, const sql_value &value);
             };
         }
     }

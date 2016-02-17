@@ -54,7 +54,7 @@ namespace arg3
                     throw database_exception("postgres database not open");
                 }
 
-                sql_ = sql;
+                sql_ = bindings_.prepare(sql);
             }
 
             bool statement::is_valid() const
@@ -149,6 +149,13 @@ namespace arg3
                 bindings_.bind(index, value);
                 return *this;
             }
+
+            statement &statement::bind(const string &name, const sql_value &value)
+            {
+                bindings_.bind(name, value);
+                return *this;
+            }
+
             statement::resultset_type statement::results()
             {
                 PGresult *res = PQexecParams(db_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,

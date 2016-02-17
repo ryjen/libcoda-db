@@ -4,10 +4,6 @@
 
 #ifdef HAVE_LIBPQ
 
-#include "binding.h"
-#include "../exception.h"
-#include "../log.h"
-#include "../alloc.h"
 #undef PACKAGE_NAME
 #undef PACKAGE_VERSION
 #include <postgres.h>
@@ -19,6 +15,13 @@
 #include <cassert>
 #include <locale>
 #include <codecvt>
+#include <regex>
+
+#include "../exception.h"
+#include "../log.h"
+#include "../alloc.h"
+
+#include "binding.h"
 
 using namespace std;
 
@@ -399,6 +402,12 @@ namespace arg3
                 return *this;
             }
 
+            binding &binding::bind(const string &name, const sql_value &value)
+            {
+                bind_mapping::bind(name, value);
+                return *this;
+            }
+
             size_t binding::size() const
             {
                 return size_;
@@ -406,7 +415,25 @@ namespace arg3
 
             void binding::reset()
             {
+                bind_mapping::reset();
+
                 clear_value();
+            }
+
+            std::string binding::prepare(const string &sql) {
+                static std::regex param_regex("(\\?|[@:]\\w+)");
+                bind_mapping::prepare(sql);
+
+                std::string formatted = sql;
+
+                auto match_begin = std::sregex_iterator(formatted.begin(), formatted.end(), param_regex);
+                auto match_end = std::sregex_iterator();
+
+                unsigned index = 0;
+                for(auto match = match_begin; match != match_end; ++match) {
+                    formatted.replace(match->position(), match->length(), "$" + std::to_string(++index));
+                }
+                return formatted;
             }
         }
     }
