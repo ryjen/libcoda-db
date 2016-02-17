@@ -166,5 +166,29 @@ namespace arg3
         {
             return &schema_factory_;
         }
+
+        const schema_factory *sqldb::schemas() const
+        {
+            return &schema_factory_;
+        }
+
+        string sqldb::insert_sql(const shared_ptr<schema> &schema, const vector<string> &columns) const
+        {
+            ostringstream buf;
+
+            buf << "INSERT INTO " << schema->table_name();
+
+            buf << "(";
+
+            buf << join_csv(columns);
+
+            buf << ") VALUES(";
+
+            buf << join_params(columns, false);
+
+            buf << ");";
+
+            return buf.str();
+        }
     }
 }

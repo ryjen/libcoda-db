@@ -11,10 +11,11 @@ using namespace arg3::db;
 go_bandit([]() {
 
     describe("a delete query", []() {
-        user user1;
-        user user2;
 
-        before_each([&user1, &user2]() {
+        before_each([]() {
+            user user1;
+            user user2;
+
             try {
                 setup_testdb();
 
@@ -27,6 +28,7 @@ go_bandit([]() {
                 user2.set("last_name", "Smith");
 
                 user2.save();
+
             } catch (const std::exception& e) {
                 cerr << "setup error: " << e.what() << endl;
                 throw e;
@@ -120,9 +122,11 @@ go_bandit([]() {
             AssertThat(query.execute(), Equals(1));
         });
 
-        it("can be deleted from a record", [&user1]() {
+        it("can be deleted from a record", []() {
 
-            AssertThat(user1.de1ete(), IsTrue());
+            auto u = user().find_one("first_name", "Bryan");
+
+            AssertThat(u->de1ete(), IsTrue());
 
         });
 

@@ -44,6 +44,12 @@ namespace arg3
              * @param level the level to set
              */
             void set_level(level level);
+
+            /*!
+             * sets the log level from a name
+             * @param arg a string representation of one of the log levels
+             */
+            void set_level(const char *arg);
         }
 
         /*! small utility to parse a uri */
@@ -157,6 +163,8 @@ namespace arg3
              */
             schema_factory *schemas();
 
+            const schema_factory *schemas() const;
+
             /*!
              * queries the database for a tables column definitions
              * @param tablename the tablename
@@ -171,6 +179,8 @@ namespace arg3
             uri connection_info() const;
 
             void set_connection_info(const uri &value);
+
+            virtual std::string insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
 
            private:
             uri connectionInfo_;

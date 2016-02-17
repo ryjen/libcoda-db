@@ -91,21 +91,16 @@ namespace arg3
 
         string insert_query::to_string() const
         {
-            ostringstream buf;
+            if (db_ == nullptr) {
+                throw database_exception("invalid query, no database");
+            }
+            auto schema = db_->schemas()->get(tableName_);
 
-            buf << "INSERT INTO " << tableName_;
+            if (schema == nullptr) {
+                throw database_exception("invalid query, schema not found or initialized yet");
+            }
 
-            buf << "(";
-
-            buf << join_csv(columns_);
-
-            buf << ") VALUES(";
-
-            buf << join_params(columns_, false);
-
-            buf << ");";
-
-            return buf.str();
+            return db_->insert_sql(db_->schemas()->get(tableName_), columns_);
         }
 
         string update_query::to_string() const

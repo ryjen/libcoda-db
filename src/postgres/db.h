@@ -53,6 +53,7 @@ namespace arg3
                 std::string last_error() const;
                 resultset_type execute(const std::string &sql);
                 std::shared_ptr<statement_type> create_statement();
+                std::string insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
 
                private:
                 long long lastId_;

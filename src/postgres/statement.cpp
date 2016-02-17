@@ -50,25 +50,11 @@ namespace arg3
 
             void statement::prepare(const string &sql)
             {
-                static std::string insert("INSERT");
-
                 if (!db_ || !db_->is_open()) {
                     throw database_exception("postgres database not open");
                 }
 
                 sql_ = sql;
-
-                // begin ugly hack to get the last insert id in postgres
-                bool is_insert = std::equal(sql.begin(), sql.begin() + insert.size(), insert.begin(),
-                                            [](char c1, char c2) { return std::toupper(c1) == std::toupper(c2); });
-
-                if (is_insert) {
-                    if (*(sql_.end() - 1) == ';') {
-                        sql_.pop_back();
-                    }
-                    // don't know the primary key column, so get everything
-                    sql_ += " RETURNING *;";
-                }
             }
 
             bool statement::is_valid() const
@@ -210,16 +196,21 @@ namespace arg3
             {
                 Oid oid = PQoidValue(stmt_.get());
 
+                if (oid != InvalidOid) {
+                    return oid;
+                }
+
                 long long value = 0;
 
-                if (oid == InvalidOid) {
-                    auto val = PQgetvalue(stmt_.get(), 0, 0);
-                    if (val != nullptr) {
-                        try {
-                            value = stoll(val);
-                        } catch (const std::exception &e) {
-                            value = 0;
-                        }
+                if (PQntuples(stmt_.get()) <= 0) {
+                    return value;
+                }
+                auto val = PQgetvalue(stmt_.get(), 0, 0);
+                if (val != nullptr) {
+                    try {
+                        value = stoll(val);
+                    } catch (const std::exception &e) {
+                        value = 0;
                     }
                 }
 

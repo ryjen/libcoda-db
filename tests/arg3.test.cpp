@@ -15,8 +15,13 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    arg3::db::log::set_level(arg3::db::log::Error);
+    int opt = getopt(argc, argv, "l::");
 
+    if (opt == 'l') {
+        arg3::db::log::set_level(optarg);
+    } else {
+        arg3::db::log::set_level(arg3::db::log::Error);
+    }
 #ifdef HAVE_LIBSQLITE3
 #ifdef TEST_SQLITE
     puts("running sqlite3 tests");

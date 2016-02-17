@@ -259,7 +259,7 @@ query.execute(handler);
 Joins
 -----
 
-There is a helper class **join_clause** to build join statements, but you can also build them with sql.
+The **join_clause** is used to build join statements.
 
 ```c++
 
@@ -292,7 +292,7 @@ for(int i = 1000; i < 3000; i++) {
 Types
 -----
 
-A **sql_time** class was added for dealing with sql date/time formats.
+The **sql_time** class is a type for dealing with sql date/time formats.
 
 ```c++
 time_t current_time = time(0);

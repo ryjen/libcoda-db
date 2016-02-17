@@ -149,6 +149,41 @@ namespace arg3
             {
                 return make_shared<statement>(this);
             }
+
+            string db::insert_sql(const shared_ptr<schema> &schema, const vector<string> &columns) const
+            {
+                ostringstream buf;
+
+                buf << "INSERT INTO " << schema->table_name();
+
+                buf << "(";
+
+                buf << join_csv(columns);
+
+                buf << ") VALUES(";
+
+                buf << join_params(columns, false);
+
+                buf << ")";
+
+                auto keys = schema->primary_keys();
+
+                auto it = keys.begin();
+
+                if(it != keys.end()) {
+                    buf << " RETURNING ";
+
+                    while(it < keys.end() - 1) {
+                        buf << *it << ",";
+                    }
+
+                    buf << *it;
+                }
+
+                buf << ";";
+
+                return buf.str();
+            }
         }
     }
 }

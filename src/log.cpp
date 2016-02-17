@@ -26,6 +26,25 @@ namespace arg3
                 current::level = level;
             }
 
+            void set_level(const char *arg)
+            {
+                if (arg == NULL || *arg == 0) {
+                    return;
+                }
+
+                if(!strcasecmp(arg, "ERROR")) {
+                    current::level = Error;
+                } else if (!strcasecmp(arg, "WARN")) {
+                    current::level = Warn;
+                } else if (!strcasecmp(arg, "INFO")) {
+                    current::level = Info;
+                } else if (!strcasecmp(arg, "DEBUG")) {
+                    current::level = Debug;
+                } else if (!strcasecmp(arg, "TRACE")) {
+                    current::level = Trace;
+                }
+            }
+
             static void lvargs(log::level level, const char *const format, va_list args)
             {
                 char buf[BUFSIZ + 1] = {0};

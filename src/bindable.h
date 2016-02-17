@@ -149,6 +149,7 @@ namespace arg3
              * @return       a reference to this instance
              */
             virtual bindable &bind(size_t index, const sql_time &time) = 0;
+
         };
     }
 }
