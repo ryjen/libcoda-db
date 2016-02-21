@@ -57,18 +57,6 @@ namespace arg3
                 }
 
                 sql_ = sql;
-
-                // begin ugly hack to get the last insert id in postgres
-                bool is_insert = std::equal(sql.begin(), sql.begin() + insert.size(), insert.begin(),
-                                            [](char c1, char c2) { return std::toupper(c1) == std::toupper(c2); });
-
-                if (is_insert) {
-                    if (*(sql_.end() - 1) == ';') {
-                        sql_.pop_back();
-                    }
-                    // don't know the primary key column, so get everything
-                    sql_ += " RETURNING *;";
-                }
             }
 
             bool statement::is_valid() const

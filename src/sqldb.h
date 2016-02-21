@@ -157,6 +157,8 @@ namespace arg3
              */
             schema_factory *schemas();
 
+            const schema_factory *schemas() const;
+
             /*!
              * queries the database for a tables column definitions
              * @param tablename the tablename
@@ -171,6 +173,8 @@ namespace arg3
             uri connection_info() const;
 
             void set_connection_info(const uri &value);
+
+            virtual std::string insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
 
            private:
             uri connectionInfo_;

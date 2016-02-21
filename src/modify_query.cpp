@@ -91,21 +91,13 @@ namespace arg3
 
         string insert_query::to_string() const
         {
-            ostringstream buf;
+            auto schema = db_->schemas()->get(tableName_);
 
-            buf << "INSERT INTO " << tableName_;
-
-            buf << "(";
-
-            buf << join_csv(columns_);
-
-            buf << ") VALUES(";
-
-            buf << join_params(columns_, false);
-
-            buf << ");";
-
-            return buf.str();
+            if (schema == nullptr) {
+                log::error("No schema found for %s", tableName_.c_str());
+                return string();
+            }
+            return db_->insert_sql(schema, columns_);
         }
 
         string update_query::to_string() const
