@@ -164,17 +164,23 @@ namespace arg3
 
                 buf << join_params(columns, false);
 
-                buf << ") RETURNING ";
+                buf << ")";
 
                 auto keys = schema->primary_keys();
 
                 auto it = keys.begin();
 
-                while (it < keys.end() - 1) {
-                    buf << *it << ",";
+                if(it != keys.end()) {
+                    buf << " RETURNING ";
+
+                    while(it < keys.end() - 1) {
+                        buf << *it << ",";
+                    }
+
+                    buf << *it;
                 }
 
-                buf << *it << ";";
+                buf << ";";
 
                 return buf.str();
             }

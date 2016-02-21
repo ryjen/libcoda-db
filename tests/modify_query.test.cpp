@@ -36,9 +36,11 @@ go_bandit([]() {
 
         it("can be constructed", []() {
             insert_query query(testdb, "users");
-
+#if TEST_POSTGRES
+            Assert::That(query.to_string(), Equals("INSERT INTO users() VALUES() RETURNING id;"));
+#else
             Assert::That(query.to_string(), Equals("INSERT INTO users() VALUES();"));
-
+#endif
             insert_query other(query);
 
             Assert::That(query.to_string(), Equals(other.to_string()));

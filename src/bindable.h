@@ -5,6 +5,8 @@
 #ifndef ARG3_DB_BINDABLE_H
 #define ARG3_DB_BINDABLE_H
 
+#include <unordered_map>
+#include <set>
 #include "sql_value.h"
 #include "exception.h"
 
@@ -149,6 +151,56 @@ namespace arg3
              * @return       a reference to this instance
              */
             virtual bindable &bind(size_t index, const sql_time &time) = 0;
+
+            /*!
+             * bind a named parameter
+             * @param name the name of the parameter
+             * @param value the value to bind
+             * @return a reference to this instance
+             */
+            virtual bindable &bind(const std::string &name, const sql_value &value) = 0;
+        };
+
+        /*!
+         * a binding that supports mapping named parameters to indexed parameters
+         */
+        class bind_mapping : public bindable
+        {
+
+        protected:
+
+            typedef std::unordered_map<std::string, std::set<unsigned>> type;
+
+            void add_named_param(const std::string &name, unsigned index);
+            void rem_named_param(const std::string &name, unsigned index);
+        public:
+
+            bind_mapping();
+            bind_mapping(const bind_mapping &other);
+            bind_mapping(bind_mapping &&other);
+            virtual ~bind_mapping();
+            bind_mapping &operator=(const bind_mapping &other);
+            bind_mapping &operator=(bind_mapping &&other);
+
+            /*!
+             * prepares the bindings for a sql string.  should call prepare_params()
+             * @param sql the sql string with parameters
+             * @return the reformatted sql
+             * @throws binding_error if the sql contains mixed named and indexed parameters
+             */
+            virtual std::string prepare(const std::string &sql);
+
+            bind_mapping &bind(const std::string &name, const sql_value &value);
+
+            bool is_named() const;
+
+            /*!
+             * reset all the binding
+             */
+            virtual void reset();
+
+        protected:
+            type mappings_;
         };
     }
 }

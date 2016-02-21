@@ -44,6 +44,12 @@ namespace arg3
              * @param level the level to set
              */
             void set_level(level level);
+
+            /*!
+             * sets the log level from a name
+             * @param arg a string representation of one of the log levels
+             */
+            void set_level(const char *arg);
         }
 
         /*! small utility to parse a uri */

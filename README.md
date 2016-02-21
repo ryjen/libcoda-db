@@ -259,7 +259,7 @@ query.execute(handler);
 Joins
 -----
 
-There is a helper class **join_clause** to build join statements, but you can also build them with sql.
+The **join_clause** is used to build join statements.
 
 ```c++
 
@@ -292,15 +292,15 @@ for(int i = 1000; i < 3000; i++) {
 Types
 -----
 
-A **sql_time** class was added for dealing with sql date/time formats.
+The **sql_time** class is a type for dealing with sql date/time formats.
 
 ```c++
 time_t current_time = time(0);
 
-/* 
- * create a DATE sql value 
+/*
+ * create a DATE sql value
  *
- * can be DATE, TIME, TIMESTAMP
+ * can be DATE, TIME, DATETIME, TIMESTAMP
  */
 sql_time value(current_time, sql_time::DATE);
 
@@ -347,4 +347,7 @@ TODO / ROADMAP
 ==============
 
 * More and better quality tests, I demand 100% coverage
-* Support named parameter binding
+* Support named parameter binding:
+     - validate sql so named/indexed parameters aren't mixed
+     - support :name and @name
+     - named parameters need will convert to indexed parameters for postgres

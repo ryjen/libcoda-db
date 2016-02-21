@@ -6,11 +6,11 @@
 #ifndef ARG3_DB_BASE_RECORD_H
 #define ARG3_DB_BASE_RECORD_H
 
+#include <memory>
+#include <algorithm>
 #include "select_query.h"
 #include "modify_query.h"
 #include "schema.h"
-#include <memory>
-#include <algorithm>
 
 namespace arg3
 {
@@ -83,6 +83,30 @@ namespace arg3
         }
 
         /*!
+         * finds one record for a column value
+         * @param schema the schema find records for
+         * @param name the column name to search by
+         * @param value the value of the column being searched
+         * @param funk the callback function for each record found
+         */
+        template <typename T>
+        inline void find_one(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value,
+                            const typename record<T>::callback &funk)
+        {
+            select_query query(schema);
+
+            query.where(name + " = $1", value).limit("1");
+
+            auto results = query.execute();
+
+            if (!results.is_valid() || results.size() == 0) {
+                return;
+            }
+
+            funk(std::make_shared<T>(*results.begin()));
+        }
+
+        /*!
          * finds records for a column value
          * @param schema the schema find records for
          * @param name the column name to search by
@@ -98,6 +122,24 @@ namespace arg3
             db::find_by<T>(schema, name, value, [&items](std::shared_ptr<T> record) { items.push_back(record); });
 
             return items;
+        }
+
+        /*!
+         * finds one record for a column value
+         * @param schema the schema find records for
+         * @param name the column name to search by
+         * @param value the value of the column being searched
+         * @return a vector of results found
+         */
+        template <typename T>
+        inline std::shared_ptr<T> find_one(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value)
+        {
+            /* convert sql rows to objects */
+            std::shared_ptr<T> item;
+
+            db::find_one<T>(schema, name, value, [&item](std::shared_ptr<T> record) { item = record; });
+
+            return item;
         }
 
         /*!
@@ -314,6 +356,7 @@ namespace arg3
 
             /*!
              * saves this instance
+             * @param insert_only set to true to never perform an update if the record exists
              * @return true if the save was successful
              */
             bool save()
@@ -397,7 +440,7 @@ namespace arg3
              * looks up and returns all objects of a record type
              * @return a vector of record objects of type T
              */
-            std::vector<std::shared_ptr<T>> find_all()
+            std::vector<std::shared_ptr<T>> find_all() const
             {
                 return arg3::db::find_all<T>(schema());
             }
@@ -406,7 +449,7 @@ namespace arg3
              * find all records
              * @param funk the callback function for each found record
              */
-            void find_all(const callback &funk)
+            void find_all(const callback &funk) const
             {
                 arg3::db::find_all<T>(schema(), funk);
             }
@@ -414,7 +457,7 @@ namespace arg3
             /*!
              * finds a single record by its id column
              */
-            std::shared_ptr<T> find_by_id(const sql_value &value)
+            std::shared_ptr<T> find_by_id(const sql_value &value) const
             {
                 select_query query(schema());
 
@@ -437,7 +480,7 @@ namespace arg3
              * @param value the value of the column to search by
              * @return a vector of found records of type T
              */
-            std::vector<std::shared_ptr<T>> find_by(const std::string &name, const sql_value &value)
+            std::vector<std::shared_ptr<T>> find_by(const std::string &name, const sql_value &value) const
             {
                 return arg3::db::find_by<T>(schema(), name, value);
             }
@@ -448,9 +491,40 @@ namespace arg3
              * @param value the value of the column to search by
              * @param funk the callback function for each record found
              */
-            void find_by(const std::string &name, const sql_value &value, const callback &funk)
+            void find_by(const std::string &name, const sql_value &value, const callback &funk) const
             {
                 arg3::db::find_by<T>(schema(), name, value, funk);
+            }
+
+
+            /*!
+             * find records by a column and its value
+             * @param name the name of the column to search by
+             * @param value the value of the column to search by
+             * @return a vector of found records of type T
+             */
+            std::shared_ptr<T> find_one(const std::string &name, const sql_value &value) const
+            {
+                return arg3::db::find_one<T>(schema(), name, value);
+            }
+
+            /*!
+             * find records by a column and its value
+             * @param name the name of the column to search by
+             * @param value the value of the column to search by
+             * @param funk the callback function for each record found
+             */
+            void find_one(const std::string &name, const sql_value &value, const callback &funk) const
+            {
+                arg3::db::find_one<T>(schema(), name, value, funk);
+            }
+
+            /*!
+             * clears values set on this object
+             */
+            void reset()
+            {
+                values_.clear();
             }
 
             /*!
@@ -491,7 +565,7 @@ namespace arg3
             /*!
              * deletes this record from the database for the value in the id column
              */
-            bool de1ete()
+            bool de1ete() const
             {
                 if (!has(idColumnName_)) {
                     return false;
@@ -504,7 +578,7 @@ namespace arg3
             }
 
            private:
-            std::vector<std::string> available_columns(bool exists)
+            std::vector<std::string> available_columns(bool exists) const
             {
                 std::vector<std::string> columns = schema()->column_names();
                 std::vector<std::string> values(columns.size());
@@ -514,7 +588,7 @@ namespace arg3
                 return values;
             }
 
-            size_t bind_columns_to_query(query &query, const std::vector<std::string> &columns)
+            size_t bind_columns_to_query(query &query, const std::vector<std::string> &columns) const
             {
                 size_t index = 0;
 

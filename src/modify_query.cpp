@@ -91,13 +91,16 @@ namespace arg3
 
         string insert_query::to_string() const
         {
+            if (db_ == nullptr) {
+                throw database_exception("invalid query, no database");
+            }
             auto schema = db_->schemas()->get(tableName_);
 
             if (schema == nullptr) {
-                log::error("No schema found for %s", tableName_.c_str());
-                return string();
+                throw database_exception("invalid query, schema not found or initialized yet");
             }
-            return db_->insert_sql(schema, columns_);
+
+            return db_->insert_sql(db_->schemas()->get(tableName_), columns_);
         }
 
         string update_query::to_string() const

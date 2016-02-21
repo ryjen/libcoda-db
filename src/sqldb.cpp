@@ -167,7 +167,6 @@ namespace arg3
             return &schema_factory_;
         }
 
-
         const schema_factory *sqldb::schemas() const
         {
             return &schema_factory_;

@@ -50,13 +50,11 @@ namespace arg3
 
             void statement::prepare(const string &sql)
             {
-                static std::string insert("INSERT");
-
                 if (!db_ || !db_->is_open()) {
                     throw database_exception("postgres database not open");
                 }
 
-                sql_ = sql;
+                sql_ = bindings_.prepare(sql);
             }
 
             bool statement::is_valid() const
@@ -151,6 +149,13 @@ namespace arg3
                 bindings_.bind(index, value);
                 return *this;
             }
+
+            statement &statement::bind(const string &name, const sql_value &value)
+            {
+                bindings_.bind(name, value);
+                return *this;
+            }
+
             statement::resultset_type statement::results()
             {
                 PGresult *res = PQexecParams(db_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,
@@ -198,16 +203,21 @@ namespace arg3
             {
                 Oid oid = PQoidValue(stmt_.get());
 
+                if (oid != InvalidOid) {
+                    return oid;
+                }
+
                 long long value = 0;
 
-                if (oid == InvalidOid) {
-                    auto val = PQgetvalue(stmt_.get(), 0, 0);
-                    if (val != nullptr) {
-                        try {
-                            value = stoll(val);
-                        } catch (const std::exception &e) {
-                            value = 0;
-                        }
+                if (PQntuples(stmt_.get()) <= 0) {
+                    return value;
+                }
+                auto val = PQgetvalue(stmt_.get(), 0, 0);
+                if (val != nullptr) {
+                    try {
+                        value = stoll(val);
+                    } catch (const std::exception &e) {
+                        value = 0;
                     }
                 }
 

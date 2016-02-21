@@ -4,14 +4,17 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include "binding.h"
-#include "../exception.h"
-#include "../log.h"
-#include "../alloc.h"
 #include <memory>
 #include <cstdlib>
 #include <time.h>
 #include <cassert>
+#include <regex>
+
+#include "../exception.h"
+#include "../log.h"
+#include "../alloc.h"
+
+#include "binding.h"
 
 namespace arg3
 {
@@ -608,6 +611,12 @@ namespace arg3
                 return *this;
             }
 
+            binding &binding::bind(const std::string &name, const sql_value &value)
+            {
+                bind_mapping::bind(name, value);
+                return *this;
+            }
+
             void binding::bind_params(MYSQL_STMT *stmt) const
             {
                 if (mysql_stmt_bind_param(stmt, value_)) {
@@ -622,7 +631,18 @@ namespace arg3
 
             void binding::reset()
             {
+                bind_mapping::reset();
+
                 clear_value();
+            }
+
+            std::string binding::prepare(const std::string &sql)
+            {
+                static std::regex param_regex("(\\$[0-9]+|[@:]\\w+)");
+
+                bind_mapping::prepare(sql);
+
+                return regex_replace(sql, param_regex, "?");
             }
         }
     }

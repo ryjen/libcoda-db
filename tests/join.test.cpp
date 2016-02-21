@@ -45,6 +45,7 @@ go_bandit([]() {
 
             Assert::That(rs.empty(), IsFalse());
         });
+
         it("can be a cross join", []() {
             select_query query(testdb, "users u");
 
@@ -54,6 +55,7 @@ go_bandit([]() {
 
             Assert::That(rs.size() >= 1, IsTrue());
         });
+
         it("can be full outer", []() {
             select_query query(testdb, "users u");
 

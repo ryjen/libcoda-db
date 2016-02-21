@@ -1,9 +1,10 @@
+
+#include <sstream>
+#include <cwchar>
 #include "sql_value.h"
 #include "query.h"
 #include "sqldb.h"
 #include "exception.h"
-#include <sstream>
-#include <cwchar>
 
 using namespace std;
 

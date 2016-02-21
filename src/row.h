@@ -5,9 +5,9 @@
 #ifndef ARG3_DB_ROW_H
 #define ARG3_DB_ROW_H
 
-#include "column.h"
 #include <iterator>
 #include <memory>
+#include "column.h"
 
 namespace arg3
 {

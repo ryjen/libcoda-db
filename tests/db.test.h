@@ -1,9 +1,9 @@
 #ifndef ARG3_TEST_DB_H
 #define ARG3_TEST_DB_H
 
+#include <unistd.h>
 #include "sqldb.h"
 #include "record.h"
-#include <unistd.h>
 #include "sqlite/db.h"
 #include "mysql/db.h"
 #include "postgres/db.h"

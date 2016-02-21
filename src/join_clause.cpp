@@ -1,6 +1,6 @@
 
-#include "join_clause.h"
 #include <sstream>
+#include "join_clause.h"
 
 using namespace std;
 
