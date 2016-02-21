@@ -53,16 +53,21 @@ namespace arg3
             return *this;
         }
 
-        bind_mapping::bind_mapping() {}
+        bind_mapping::bind_mapping()
+        {
+        }
 
         bind_mapping::bind_mapping(const bind_mapping &other) : mappings_(other.mappings_)
-        {}
+        {
+        }
 
         bind_mapping::bind_mapping(bind_mapping &&other) : mappings_(std::move(other.mappings_))
-        {}
+        {
+        }
 
         bind_mapping::~bind_mapping()
-        {}
+        {
+        }
 
         bind_mapping &bind_mapping::operator=(const bind_mapping &other)
         {
@@ -83,7 +88,7 @@ namespace arg3
 
             auto indexes = mappings_[name];
 
-            for(auto &index : indexes) {
+            for (auto &index : indexes) {
                 bind_value(index, value);
             }
             return *this;
@@ -116,14 +121,15 @@ namespace arg3
             auto match_end = std::sregex_iterator();
 
             unsigned index = 0;
-            for(auto match = match_begin; match != match_end; ++match) {
+            for (auto match = match_begin; match != match_end; ++match) {
                 add_named_param(match->str(), ++index);
             }
 
             return sql;
         }
 
-        bool bind_mapping::is_named() const {
+        bool bind_mapping::is_named() const
+        {
             return mappings_.size() > 0;
         }
 

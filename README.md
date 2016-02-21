@@ -8,12 +8,14 @@ libarg3db
 
 a sqlite, mysql and postgres wrapper / active record (ish) implementation
 
-Use in production at your own risk, still doing quite a bit of testing, refactoring and new features.  Pull requests are welcomed...
+While this library I think is pretty awesome, use in production at your own risk. Still doing quite a bit of testing, refactoring and new features (2016/02/20).  
+
+Pull requests are welcomed...
 
 Why
 ---
 
-Purely selfish reasons.
+Purely selfish reasons like learning, resume content, and a lack of desire to use other options.
 
 Building
 --------
@@ -165,9 +167,7 @@ Binding parameters in queries should follow a doller sign index format:
 
  '$1', '$2', '$3', etc.
 
- Note that mysql does not support re-using (more than one instance of) parameters in a query string (02/09/16).
-
- Also not supported yet are named parameters (02/09/16)
+ Note that mysql does not support re-using (more than one instance of) indexed parameters in a query string (02/09/16).
 
 Basic Queries
 =============
@@ -178,7 +178,7 @@ Modify Queries
 /* insert a  user (INSERT INTO ...) */
 insert_query query(&testdb, "users", {"id", "first_name", "last_name"});
 
-/* bind the values to the columns.  TODO: named parameter binding */
+/* bind the values to the columns by index */
 query.bind_all(4321, "dave", "patterson");
 
 if (!query.execute())
@@ -192,10 +192,13 @@ else
 update_query query(&testdb, "users", {"id", "first_name", "last_name"});
 
 /* using where clause WHERE .. OR .. */
-query.where("id = $4") or ("last_name = $5");
+query.where("id = @id") or ("last_name = @last_name");
 
-/* bind update columns and where clause */
-query.bind_all(1, 3432, "mark", "anthony", 1234, "henry");
+/* bind update columns  */
+query.bind_all(1, 3432, "mark", "anthony");
+
+/* bind named parameters */
+query.bind("@id", 1234).bind("@last_name", "henry");
 
 query.execute();
 ```
@@ -333,6 +336,7 @@ Caching
 
 For sqlite3 databases results from a query will have a dependency on a database pointer that must remain open.
 Memory caching was add to pre-fetch the values and eliminate the dependency if needed.  It can be done at the resultset, row or column level.
+Mysql has pre-fetching built-in and it is used within the library.
 
 Caching is also used for looking up schemas to reduce hits to the database.
 
@@ -347,7 +351,4 @@ TODO / ROADMAP
 ==============
 
 * More and better quality tests, I demand 100% coverage
-* Support named parameter binding:
-     - validate sql so named/indexed parameters aren't mixed
-     - support :name and @name
-     - named parameters need will convert to indexed parameters for postgres
+* Support index parameter reuse in mysql
