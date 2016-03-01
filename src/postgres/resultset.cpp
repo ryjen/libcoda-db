@@ -31,7 +31,6 @@ namespace arg3
 
             resultset::~resultset()
             {
-                stmt_ = nullptr;
             }
 
             resultset &resultset::operator=(resultset &&other)

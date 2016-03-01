@@ -126,6 +126,28 @@ go_bandit([]() {
             // AssertThrows(binding_error, query.execute().next());
         });
 
+        it("can bind a time value", []() {
+            time_t tval = time(0);
+
+            mysql::binding b;
+
+            b.bind(1, sql_time(tval, sql_time::TIME));
+
+            b.bind(2, sql_time(tval, sql_time::DATE));
+
+            b.bind(3, sql_time(tval, sql_time::DATETIME));
+
+            b.bind(4, sql_time(tval, sql_time::TIMESTAMP));
+
+            Assert::That(b.to_value(0).to_time().to_ulong(), Equals(tval));
+
+            Assert::That(b.to_value(1).to_time().to_ulong(), Equals(tval));
+
+            Assert::That(b.to_value(2).to_time().to_ulong(), Equals(tval));
+
+            Assert::That(b.to_value(3).to_time().to_ulong(), Equals(tval));
+        });
+
     });
 
 });

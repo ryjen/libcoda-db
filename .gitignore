@@ -37,3 +37,5 @@ release
 Testing
 html
 latex
+.vagrant-build
+.vagrant

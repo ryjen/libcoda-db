@@ -22,6 +22,32 @@ namespace arg3
         {
         }
 
+        sql_time::sql_time(const sql_time &other) : value_(other.value_), format_(other.format_)
+        {
+        }
+
+        sql_time::sql_time(sql_time &&other) : value_(other.value_), format_(other.format_)
+        {
+        }
+
+        sql_time::~sql_time()
+        {
+        }
+
+        sql_time &sql_time::operator=(const sql_time &other)
+        {
+            value_ = other.value_;
+            format_ = other.format_;
+            return *this;
+        }
+
+        sql_time &sql_time::operator=(sql_time &&other)
+        {
+            value_ = other.value_;
+            format_ = other.format_;
+            return *this;
+        }
+
         size_t sql_time::size() const
         {
             return sizeof(time_t);
@@ -105,7 +131,7 @@ namespace arg3
         {
         }
 
-        sql_value::sql_value(const sql_time &value) : variant(std::shared_ptr<sql_time>(new sql_time(value)))
+        sql_value::sql_value(const sql_time &value) : variant(std::shared_ptr<complex>(new sql_time(value)))
         {
         }
 

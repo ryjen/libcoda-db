@@ -45,7 +45,6 @@ namespace arg3
 
             statement::~statement()
             {
-                stmt_ = nullptr;
             }
 
             void statement::prepare(const string &sql)

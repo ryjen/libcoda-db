@@ -59,11 +59,11 @@ go_bandit([]() {
         });
 
         it("can handle an error", []() {
-            mysql::statement stmt(&mysql_testdb);
+            mysql::db db(uri(""));
 
-            AssertThrows(database_exception, stmt.prepare("update users set asdfsdf='1'"));
+            mysql::statement stmt(&db);
 
-            AssertThrows(database_exception, stmt.result());
+            AssertThrows(database_exception, stmt.prepare("update qwerqwer set asdfsdf='1'"));
         });
     });
 

@@ -12,13 +12,10 @@ go_bandit([]() {
     describe("where clause", []() {
 
         it("can and and or", []() {
-            where_clause w("this");
 
-            w && "that";
+            auto w = (where("this") and "that") or (where("blah") and "bleh");
 
-            w || "blah";
-
-            AssertThat(w.to_string(), Equals("this AND that OR blah"));
+            AssertThat(w.to_string(), Equals("(this AND that) OR (blah AND bleh)"));
         });
 
         it("can operate with other clauses", []() {
@@ -30,7 +27,7 @@ go_bandit([]() {
 
             where_clause w4("bleh");
 
-            w1 || w2;
+            w1 or w2;
 
             string value = (string)w1;
 
@@ -46,13 +43,13 @@ go_bandit([]() {
 
             where_clause w2;
 
-            w1 && "blah";
+            w1 and "blah";
 
             string value = (string)w1;
 
             AssertThat(value, Equals("blah"));
 
-            w2 || "bleh";
+            w2 or "bleh";
 
             AssertThat(w2.to_string(), Equals("bleh"));
 
@@ -64,7 +61,7 @@ go_bandit([]() {
 
             where_clause w4;
 
-            w4 || w1;
+            w4 or w1;
 
             AssertThat(w4.to_string(), Equals(w1.to_string()));
         });
@@ -72,7 +69,7 @@ go_bandit([]() {
         it("can reset", []() {
             where_clause w("this");
 
-            w || "that";
+            w or "that";
 
             w.reset();
 
@@ -80,12 +77,12 @@ go_bandit([]() {
 
         });
 
-        it("can use literal", []() {
-            auto w = ("this = $1"_where && "that = $2"_where);
+        it("can combine", []() {
+            auto w = where("this = $1") and ("that = $2");
 
-            w || ("abc = def"_where && "xyz = tuv"_where);
+            w or (where("abc = def") and "xyz = tuv");
 
-            AssertThat(w.to_string(), Equals("this = $1 AND that = $2 OR abc = def AND xyz = tuv"));
+            AssertThat(w.to_string(), Equals("(this = $1 AND that = $2) OR (abc = def AND xyz = tuv)"));
         });
 
     });

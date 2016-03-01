@@ -98,11 +98,6 @@ namespace arg3
         std::ostream &operator<<(std::ostream &out, const where_clause &where);
 
         /*!
-         * string suffix operator
-         */
-        where_clause operator"" _where(const char *cstr, size_t len);
-
-        /*!
          * simplify the type name
          */
         typedef where_clause where;

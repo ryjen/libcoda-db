@@ -74,7 +74,9 @@ namespace arg3
             NonConst currentValue_;
             void set_current_value(size_t index)
             {
-                assert(row_ != nullptr);
+                if (row_ == nullptr) {
+                    return;
+                }
 
                 if (index >= 0 && index < row_->size()) {
                     currentValue_ = row_->column(index);
@@ -142,7 +144,9 @@ namespace arg3
 
             row_iterator &operator++()
             {
-                if (position_ < row_->size()) ++position_;
+                if (position_ < row_->size()) {
+                    ++position_;
+                }
                 return *this;
             }
 
@@ -155,7 +159,9 @@ namespace arg3
 
             row_iterator &operator--()
             {
-                if (position_ > 0) --position_;
+                if (position_ > 0) {
+                    --position_;
+                }
                 return *this;
             }
 
@@ -232,7 +238,10 @@ namespace arg3
 
             std::string name() const
             {
-                assert(row_ != nullptr);
+                if (row_ == nullptr) {
+                    return nullptr;
+                }
+
                 return row_->column_name(position_);
             }
         };

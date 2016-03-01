@@ -21,13 +21,14 @@ namespace arg3
             }
         }
 
-        query::query(const query &other) noexcept : db_(other.db_), stmt_(other.stmt_), params_(other.params_),
-            named_params_(other.named_params_)
+        query::query(const query &other) noexcept : db_(other.db_), stmt_(other.stmt_), params_(other.params_), named_params_(other.named_params_)
         {
         }
 
-        query::query(query &&other) noexcept : db_(other.db_), stmt_(std::move(other.stmt_)),
-            params_(std::move(other.params_)), named_params_(std::move(other.named_params_))
+        query::query(query &&other) noexcept : db_(other.db_),
+                                               stmt_(std::move(other.stmt_)),
+                                               params_(std::move(other.params_)),
+                                               named_params_(std::move(other.named_params_))
         {
             other.db_ = nullptr;
             other.stmt_ = nullptr;

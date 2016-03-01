@@ -171,7 +171,7 @@ namespace arg3
              * executes this query
              * @return a count of the number of rows
              */
-            int count();
+            long long count();
 
             /*!
              * resets this query for re-execution
@@ -199,11 +199,21 @@ namespace arg3
             {
                 auto rs = execute();
 
-                if (!rs.is_valid() || rs.begin() == rs.end()) return T();
+                if (!rs.is_valid()) {
+                    return T();
+                }
 
                 auto row = rs.begin();
 
+                if (row == rs.end() || !row->is_valid()) {
+                    return T();
+                }
+
                 auto col = row->begin();
+
+                if (col == row->end() || !col->is_valid()) {
+                    return T();
+                }
 
                 return col->to_value();
             }

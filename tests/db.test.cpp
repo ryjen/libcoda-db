@@ -29,6 +29,17 @@ sqldb *testdb = &postgres_testdb;
 sqldb *testdb = nullptr;
 #endif
 
+std::string get_env_uri(const char *name, const std::string &def)
+{
+    char *temp = getenv(name);
+
+    if (temp != NULL) {
+        return temp;
+    }
+
+    return def;
+}
+
 void setup_testdb()
 {
     try {
@@ -36,7 +47,7 @@ void setup_testdb()
 
         thisdb->setup();
     } catch (const std::exception &e) {
-        std::cout << e.what() << std::endl;
+        std::cout << e.what() << ": " << testdb->last_error() << std::endl;
         throw e;
     }
 }
@@ -48,7 +59,7 @@ void teardown_testdb()
 
         thisdb->teardown();
     } catch (const std::exception &e) {
-        std::cout << e.what() << std::endl;
+        std::cout << e.what() << ": " << testdb->last_error() << std::endl;
         throw e;
     }
 }
@@ -59,7 +70,7 @@ void test_sqlite3_db::setup()
     open();
     execute(
         "create table if not exists users(id integer primary key autoincrement, first_name varchar(45), last_name varchar(45), dval real, data "
-        "blob)");
+        "blob, tval timestamp)");
     execute(
         "create table if not exists user_settings(id integer primary key autoincrement, user_id integer not null, valid int(1), created_at "
         "timestamp)");
@@ -80,7 +91,7 @@ void test_mysql_db::setup()
     open();
     execute(
         "create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45), dval real, data "
-        "blob)");
+        "blob, tval timestamp)");
     execute(
         "create table if not exists user_settings(id integer primary key auto_increment, user_id integer not null, valid int(1), created_at "
         "timestamp)");
@@ -100,7 +111,9 @@ void test_mysql_db::teardown()
 void test_postgres_db::setup()
 {
     open();
-    execute("create table if not exists users(id serial primary key unique, first_name varchar(45), last_name varchar(45), dval real, data bytea)");
+    execute(
+        "create table if not exists users(id serial primary key unique, first_name varchar(45), last_name varchar(45), dval real, data bytea, tval "
+        "timestamp)");
 
     execute("create table if not exists user_settings(id serial primary key unique, user_id integer not null, valid smallint, created_at timestamp)");
 }
@@ -130,10 +143,16 @@ go_bandit([]() {
 #ifdef HAVE_LIBMYSQLCLIENT
                 auto mysql = sqldb::from_uri("mysql://localhost:4000/test");
                 AssertThat(mysql.get() != NULL, IsTrue());
+                AssertThat(mysql->connection_info().host, Equals("localhost"));
+                AssertThat(mysql->connection_info().port, Equals("4000"));
+                AssertThat(mysql->connection_info().path, Equals("test"));
 #endif
 #ifdef HAVE_LIBPQ
                 auto postgres = sqldb::from_uri("postgres://localhost:4000/test");
                 AssertThat(postgres.get() != NULL, IsTrue());
+                AssertThat(mysql->connection_info().host, Equals("localhost"));
+                AssertThat(mysql->connection_info().port, Equals("4000"));
+                AssertThat(mysql->connection_info().path, Equals("test"));
 #endif
 
             } catch (const std::exception &e) {

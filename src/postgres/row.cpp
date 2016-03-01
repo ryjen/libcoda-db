@@ -33,7 +33,6 @@ namespace arg3
 
             row::~row()
             {
-                stmt_ = nullptr;
             }
 
 

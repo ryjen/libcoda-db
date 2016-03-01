@@ -88,16 +88,14 @@ namespace arg3
 
                 auto info = connection_info();
 
-                int port;
+                int port = 3306;
 
                 try {
-                    if (info.port.empty()) {
-                        port = 0;
-                    } else {
+                    if (!info.port.empty()) {
                         port = stoi(info.port);
                     }
                 } catch (const std::exception &e) {
-                    port = 0;
+                    throw database_exception("unable to parse port " + info.port);
                 }
 
                 if (mysql_real_connect(conn, info.host.c_str(), info.user.c_str(), info.password.c_str(), info.path.c_str(), port, nullptr, 0) ==

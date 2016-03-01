@@ -29,7 +29,7 @@ namespace arg3
 
             column::column(column &&other) : value_(other.value_), res_(other.res_), index_(other.index_)
             {
-                other.value_ = NULL;
+                other.value_ = nullptr;
                 other.res_ = nullptr;
             }
 
@@ -43,7 +43,7 @@ namespace arg3
                 index_ = other.index_;
                 res_ = other.res_;
 
-                other.value_ = NULL;
+                other.value_ = nullptr;
                 other.res_ = nullptr;
 
                 return *this;
@@ -86,7 +86,7 @@ namespace arg3
             {
                 auto field = mysql_fetch_field_direct(res_.get(), index_);
 
-                if (field == NULL || field->name == NULL) {
+                if (field == nullptr || field->name == nullptr) {
                     return string();
                 }
 
@@ -105,7 +105,7 @@ namespace arg3
             }
 
 
-            stmt_column::stmt_column(stmt_column &&other) : name_(std::move(other.name_)), value_(other.value_), position_(other.position_)
+            stmt_column::stmt_column(stmt_column &&other) : name_(std::move(other.name_)), value_(std::move(other.value_)), position_(other.position_)
             {
                 other.value_ = nullptr;
             }
@@ -117,7 +117,7 @@ namespace arg3
             stmt_column &stmt_column::operator=(stmt_column &&other)
             {
                 name_ = std::move(other.name_);
-                value_ = other.value_;
+                value_ = std::move(other.value_);
                 position_ = other.position_;
                 other.value_ = nullptr;
                 return *this;

@@ -35,46 +35,48 @@ namespace arg3
             // do the manual implementation from stack overflow
             // with some mods for the port
             const string prot_end("://");
-            string::const_iterator prot_i = search(url_s.begin(), url_s.end(), prot_end.begin(), prot_end.end());
-            protocol.reserve(distance(url_s.begin(), prot_i));
-            transform(url_s.begin(), prot_i, back_inserter(protocol), ptr_fun<int, int>(tolower));  // protocol is icase
-            if (prot_i == url_s.end()) {
+            string::const_iterator pos_i = search(url_s.begin(), url_s.end(), prot_end.begin(), prot_end.end());
+            protocol.reserve(distance(url_s.begin(), pos_i));
+            transform(url_s.begin(), pos_i, back_inserter(protocol), ptr_fun<int, int>(tolower));  // protocol is icase
+            if (pos_i == url_s.end()) {
                 return;
             }
 
-            advance(prot_i, prot_end.length());
+            advance(pos_i, prot_end.length());
 
-            string::const_iterator user_i = find(prot_i, url_s.end(), '@');
+            string::const_iterator user_i = find(pos_i, url_s.end(), '@');
             string::const_iterator path_i;
 
             if (user_i != url_s.end()) {
-                string::const_iterator pwd_i = find(prot_i, user_i, ':');
+                string::const_iterator pwd_i = find(pos_i, user_i, ':');
 
                 if (pwd_i != user_i) {
                     password.assign(pwd_i, user_i);
-                    user.assign(prot_i, pwd_i);
+                    user.assign(pos_i, pwd_i);
                 } else {
-                    user.assign(prot_i, user_i);
+                    user.assign(pos_i, user_i);
                 }
-                path_i = user_i;
-            } else {
-                path_i = find(prot_i, url_s.end(), '/');
-                if (path_i == url_s.end()) {
-                    path_i = prot_i;
-                }
+
+                pos_i = user_i + 1;
             }
-            string::const_iterator port_i = find(prot_i, path_i, ':');
+
+            path_i = find(pos_i, url_s.end(), '/');
+            if (path_i == url_s.end()) {
+                path_i = pos_i;
+            }
+
+            string::const_iterator port_i = find(pos_i, path_i, ':');
             string::const_iterator host_end;
             if (port_i != url_s.end()) {
-                port.assign(port_i, path_i);
+                port.assign(*port_i == ':' ? (port_i + 1) : port_i, path_i);
                 host_end = port_i;
             } else {
                 host_end = path_i;
             }
-            host.reserve(distance(prot_i, host_end));
-            transform(prot_i, host_end, back_inserter(host), ptr_fun<int, int>(tolower));  // host is icase
+            host.reserve(distance(pos_i, host_end));
+            transform(pos_i, host_end, back_inserter(host), ptr_fun<int, int>(tolower));  // host is icase
             string::const_iterator query_i = find(path_i, url_s.end(), '?');
-            path.assign(path_i, query_i);
+            path.assign(*path_i == '/' ? (path_i + 1) : path_i, query_i);
             if (query_i != url_s.end()) ++query_i;
             query.assign(query_i, url_s.end());
         }
@@ -110,19 +112,15 @@ namespace arg3
 
             pkq.join("information_schema.key_column_usage kc").on("kc.table_name = tc.table_name") && "kc.table_schema = tc.table_schema";
 
-            pkq.where("tc.constraint_type = 'PRIMARY KEY'") && "tc.table_name = $1";
+            pkq.where("tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = $1", tableName);
 
             pkq.order_by("tc.table_schema, tc.table_name, kc.position_in_unique_constraint");
-
-            pkq.bind(1, tableName);
 
             auto primary_keys = pkq.execute();
 
             select_query info_schema(this, "information_schema.columns", {"column_name", "data_type"});
 
-            info_schema.where("table_name = $1");
-
-            info_schema.bind(1, tableName);
+            info_schema.where("table_name = $1", tableName);
 
             auto rs = info_schema.execute();
 

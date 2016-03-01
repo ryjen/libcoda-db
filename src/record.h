@@ -91,7 +91,7 @@ namespace arg3
          */
         template <typename T>
         inline void find_one(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value,
-                            const typename record<T>::callback &funk)
+                             const typename record<T>::callback &funk)
         {
             select_query query(schema);
 
@@ -192,7 +192,10 @@ namespace arg3
                 : record(schema, columnName)
             {
                 set(idColumnName_, value);
-                refresh();  // load up from database
+                // load up from database
+                if (!refresh()) {
+                    throw database_exception("no record found with " + columnName + " of " + std::to_string(value));
+                }
             }
 
             /*!
@@ -206,7 +209,10 @@ namespace arg3
                 : record(db, tableName, columnName)
             {
                 set(idColumnName_, value);
-                refresh();
+                // load up from database
+                if (!refresh()) {
+                    throw database_exception("no record found with " + columnName + " of " + std::to_string(value));
+                }
             }
 
             /*!
@@ -293,7 +299,7 @@ namespace arg3
                     return;
                 }
 
-                for (auto v = values.begin(); v != values.end(); v++) {
+                for (auto v = values.begin(); v != values.end(); ++v) {
                     set(v.name(), v->to_value());
                 }
 
@@ -553,11 +559,13 @@ namespace arg3
 
                 auto result = query.execute();
 
-                if (!result.next()) {
+                auto it = result.begin();
+
+                if (it == result.end()) {
                     return false;
                 }
 
-                init(*result);
+                init(*it);
 
                 return true;
             }

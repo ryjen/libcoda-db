@@ -113,7 +113,9 @@ namespace arg3
 
             resultset_iterator &operator++()
             {
-                if (pos_ == -1 || rs_ == nullptr) return *this;
+                if (pos_ == -1 || rs_ == nullptr) {
+                    return *this;
+                }
 
                 bool res = rs_->next();
 
@@ -152,7 +154,9 @@ namespace arg3
 
             resultset_iterator &operator+=(int n)
             {
-                for (int i = 0; i < n; i++) operator++();
+                for (int i = 0; i < n; i++) {
+                    operator++();
+                }
                 return *this;
             }
 

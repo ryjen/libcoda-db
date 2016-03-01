@@ -16,7 +16,15 @@ column get_user_column(const string &name)
 
     auto rs = q.execute();
 
+    if (!rs.is_valid()) {
+        throw database_exception("no rows in test");
+    }
+
     auto row = rs.begin();
+
+    if (row == rs.end() || !row->is_valid()) {
+        throw database_exception("no rows in test");
+    }
 
     return row->column(name);
 }

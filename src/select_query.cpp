@@ -176,7 +176,7 @@ namespace arg3
             return buf.str();
         }
 
-        int select_query::count()
+        long long select_query::count()
         {
             auto cols(columns_);
 
@@ -188,7 +188,7 @@ namespace arg3
 
                 prepare(to_string());
 
-                int value = execute_scalar<int>();
+                long long value = execute_scalar<long long>();
 
                 columns_ = cols;
 

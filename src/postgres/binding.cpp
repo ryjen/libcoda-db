@@ -156,17 +156,19 @@ namespace arg3
                 }
             }
 
-            binding::binding(const binding &other) : values_(nullptr), types_(nullptr), lengths_(nullptr), formats_(nullptr), size_(0)
+            binding::binding(const binding &other)
+                : bind_mapping(other), values_(nullptr), types_(nullptr), lengths_(nullptr), formats_(nullptr), size_(0)
             {
                 copy_value(other);
             }
             binding::binding(binding &&other)
+                : bind_mapping(std::move(other)),
+                  values_(other.values_),
+                  types_(other.types_),
+                  lengths_(other.lengths_),
+                  formats_(other.formats_),
+                  size_(other.size_)
             {
-                values_ = other.values_;
-                types_ = other.types_;
-                lengths_ = other.lengths_;
-                formats_ = other.formats_;
-                size_ = other.size_;
                 other.values_ = nullptr;
                 other.types_ = nullptr;
                 other.lengths_ = nullptr;
@@ -176,12 +178,14 @@ namespace arg3
 
             binding &binding::operator=(const binding &other)
             {
+                bind_mapping::operator=(other);
                 copy_value(other);
                 return *this;
             }
 
             binding &binding::operator=(binding &&other)
             {
+                bind_mapping::operator=(std::move(other));
                 values_ = other.values_;
                 types_ = other.types_;
                 lengths_ = other.lengths_;
@@ -420,7 +424,8 @@ namespace arg3
                 clear_value();
             }
 
-            std::string binding::prepare(const string &sql) {
+            std::string binding::prepare(const string &sql)
+            {
                 static std::regex param_regex("(\\?|[@:]\\w+)");
                 bind_mapping::prepare(sql);
 
@@ -430,7 +435,7 @@ namespace arg3
                 auto match_end = std::sregex_iterator();
 
                 unsigned index = 0;
-                for(auto match = match_begin; match != match_end; ++match) {
+                for (auto match = match_begin; match != match_end; ++match) {
                     formatted.replace(match->position(), match->length(), "$" + std::to_string(++index));
                 }
                 return formatted;

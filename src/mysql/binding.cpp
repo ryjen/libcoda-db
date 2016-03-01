@@ -35,18 +35,34 @@ namespace arg3
 
                 void bind_value_from_field(MYSQL_BIND *value, MYSQL_FIELD *field)
                 {
+                    if (value == nullptr || field == nullptr) {
+                        return;
+                    }
                     value->buffer_type = field->type;
                     value->is_null = c_alloc<my_bool>();
                     value->is_unsigned = 0;
                     value->error = 0;
-                    value->buffer_length = field->length;
                     value->length = c_alloc<unsigned long>();
-                    *value->length = 0;
-                    value->buffer = c_alloc(field->length);
+                    switch (field->type) {
+                        default:
+                            value->buffer_length = field->length;
+                            break;
+                        case MYSQL_TYPE_DATETIME:
+                        case MYSQL_TYPE_DATE:
+                        case MYSQL_TYPE_TIME:
+                        case MYSQL_TYPE_TIMESTAMP:
+                            value->buffer_length = sizeof(MYSQL_TIME);
+                            break;
+                    }
+                    value->buffer = c_alloc(value->buffer_length);
                 }
 
                 void bind_value_copy(MYSQL_BIND *value, const MYSQL_BIND *other)
                 {
+                    if (value == nullptr || other == nullptr) {
+                        return;
+                    }
+
                     if (other->length) {
                         value->length = c_alloc<unsigned long>();
                         memmove(value->length, other->length, sizeof(unsigned long));
@@ -74,21 +90,45 @@ namespace arg3
 
                 time_t parse_time(MYSQL_BIND *binding)
                 {
+                    struct tm sys;
+                    MYSQL_TIME *db_tm;
+
                     if (binding == nullptr) {
                         return 0;
                     }
 
-                    MYSQL_TIME *db_tm = (MYSQL_TIME *)binding->buffer;
-                    struct tm sys;
+                    db_tm = (MYSQL_TIME *)binding->buffer;
 
-                    sys.tm_year = db_tm->year;
+                    if (db_tm == nullptr) {
+                        return 0;
+                    }
+
+                    memset(&sys, 0, sizeof(sys));
+
+                    sys.tm_year = db_tm->year - 1900;
                     sys.tm_mon = db_tm->month;
                     sys.tm_mday = db_tm->day;
                     sys.tm_hour = db_tm->hour;
                     sys.tm_min = db_tm->minute;
                     sys.tm_sec = db_tm->second;
 
-                    return mktime(&sys);
+                    return timegm(&sys);
+                }
+
+                time_t parse_time(const char *value)
+                {
+                    struct tm *tp;
+
+                    if (value == nullptr) {
+                        return 0;
+                    }
+
+                    if ((tp = getdate(value))) {
+                        return timegm(tp);
+                    } else {
+                        log::error("unable to get date of %s (%d)", value, getdate_err);
+                        return 0;
+                    }
                 }
 
                 extern std::string last_stmt_error(MYSQL_STMT *stmt);
@@ -214,18 +254,13 @@ namespace arg3
                             return value;
                         case MYSQL_TYPE_NEWDATE:
                         case MYSQL_TYPE_DATE:
+                            return sql_time(helper::parse_time(value), sql_time::DATE);
                         case MYSQL_TYPE_DATETIME:
+                            return sql_time(helper::parse_time(value), sql_time::DATETIME);
                         case MYSQL_TYPE_TIMESTAMP:
-                        case MYSQL_TYPE_YEAR:
+                            return sql_time(helper::parse_time(value), sql_time::TIMESTAMP);
                         case MYSQL_TYPE_TIME: {
-                            struct tm *tp;
-
-                            if ((tp = getdate(value))) {
-                                return mktime(tp);
-                            } else {
-                                log::error("unable to get date of %s (%d)", value, getdate_err);
-                                return sql_value();
-                            }
+                            return sql_time(helper::parse_time(value), sql_time::TIME);
                         }
                         case MYSQL_TYPE_FLOAT: {
                             try {
@@ -286,6 +321,7 @@ namespace arg3
                     tm->minute = gmt->tm_min;
                     tm->second = gmt->tm_sec;
                     binding->buffer = tm;
+                    binding->buffer_length = sizeof(MYSQL_TIME);
                 }
             }
 
@@ -370,11 +406,11 @@ namespace arg3
                 size_ = size;
             }
 
-            binding::binding(const binding &other) : value_(nullptr)
+            binding::binding(const binding &other) : bind_mapping(other), value_(nullptr), size_(0)
             {
                 copy_value(other.value_, other.size_);
             }
-            binding::binding(binding &&other)
+            binding::binding(binding &&other) : bind_mapping(std::move(other))
             {
                 value_ = other.value_;
                 size_ = other.size_;
@@ -384,12 +420,14 @@ namespace arg3
 
             binding &binding::operator=(const binding &other)
             {
+                bind_mapping::operator=(other);
                 copy_value(other.value_, other.size_);
                 return *this;
             }
 
             binding &binding::operator=(binding &&other)
             {
+                bind_mapping::operator=(std::move(other));
                 value_ = other.value_;
                 size_ = other.size_;
                 other.value_ = nullptr;
@@ -412,6 +450,9 @@ namespace arg3
 
             void binding::bind_result(MYSQL_STMT *stmt) const
             {
+                if (stmt == nullptr || value_ == nullptr) {
+                    return;
+                }
                 if (mysql_stmt_bind_result(stmt, value_) != 0) {
                     throw binding_error(helper::last_stmt_error(stmt));
                 }
@@ -619,6 +660,10 @@ namespace arg3
 
             void binding::bind_params(MYSQL_STMT *stmt) const
             {
+                if (value_ == nullptr || stmt == nullptr) {
+                    return;
+                }
+
                 if (mysql_stmt_bind_param(stmt, value_)) {
                     throw binding_error(helper::last_stmt_error(stmt));
                 }
@@ -642,7 +687,7 @@ namespace arg3
 
                 bind_mapping::prepare(sql);
 
-                return regex_replace(sql, param_regex, "?");
+                return regex_replace(sql, param_regex, std::string("?"));
             }
         }
     }

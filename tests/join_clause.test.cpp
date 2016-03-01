@@ -34,6 +34,27 @@ go_bandit([]() {
         });
         after_each([]() { teardown_testdb(); });
 
+        it("can be copied", []() {
+            join_clause clause("tablename");
+
+            clause.on("columnA = columnB");
+
+            join_clause other(clause);
+
+            Assert::That(other.to_string(), Equals(clause.to_string()));
+        });
+
+        it("can be moved", []() {
+            join_clause clause("tablename");
+
+            clause.on("columnA = columnB");
+
+            string test = clause.to_string();
+
+            join_clause&& other(std::move(clause));
+
+            Assert::That(other.to_string(), Equals(test));
+        });
 
         it("can join", []() {
 

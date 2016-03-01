@@ -20,6 +20,14 @@ namespace arg3
         {
         }
 
+        join_clause::join_clause(const join_clause &other) : tableName_(other.tableName_), type_(other.type_), on_(other.on_)
+        {
+        }
+
+        join_clause::join_clause(join_clause &&other) : tableName_(std::move(other.tableName_)), type_(other.type_), on_(std::move(other.on_))
+        {
+        }
+
         join_clause &join_clause::operator=(const join_clause &other)
         {
             tableName_ = other.tableName_;

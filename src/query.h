@@ -27,7 +27,7 @@ namespace arg3
         {
             friend class sqldb;
 
-          private:
+           private:
             /*!
             * ensures that the binding storage array is large enough
             * @param index the parameter index for binding
@@ -47,6 +47,7 @@ namespace arg3
              * @param sql the sql string
              */
             void prepare(const std::string &sql);
+
            public:
             /*!
              * @param db the database to perform the query on

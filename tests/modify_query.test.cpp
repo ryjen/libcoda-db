@@ -82,7 +82,8 @@ go_bandit([]() {
 
             user u1(id);
 
-            Assert::That(u1.refresh(), Equals(true));
+            Assert::That(u1.get("first_name"), Equals("blah"));
+            Assert::That(u1.get("last_name"), Equals("bleh"));
         });
 
         it("can be batch executed", []() {

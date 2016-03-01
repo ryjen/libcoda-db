@@ -55,6 +55,12 @@ namespace arg3
              */
             sql_time(time_t value, formats format = TIMESTAMP);
 
+            sql_time(const sql_time &other);
+            sql_time(sql_time &&other);
+            sql_time &operator=(const sql_time &other);
+            sql_time &operator=(sql_time &&other);
+            virtual ~sql_time();
+
             /*!
              * @return the size of this custom field
              */

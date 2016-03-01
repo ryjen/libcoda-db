@@ -37,7 +37,7 @@ namespace arg3
                 }
             }
 
-            resultset::resultset(resultset &&other) : res_(other.res_), row_(other.row_), db_(other.db_)
+            resultset::resultset(resultset &&other) : res_(std::move(other.res_)), row_(other.row_), db_(other.db_)
             {
                 other.db_ = nullptr;
                 other.res_ = nullptr;
@@ -46,12 +46,11 @@ namespace arg3
 
             resultset::~resultset()
             {
-                res_ = nullptr;
             }
 
             resultset &resultset::operator=(resultset &&other)
             {
-                res_ = other.res_;
+                res_ = std::move(other.res_);
                 db_ = other.db_;
                 row_ = other.row_;
                 other.db_ = nullptr;
@@ -113,7 +112,11 @@ namespace arg3
             }
 
             stmt_resultset::stmt_resultset(stmt_resultset &&other)
-                : stmt_(other.stmt_), metadata_(other.metadata_), db_(other.db_), bindings_(other.bindings_), status_(other.status_)
+                : stmt_(std::move(other.stmt_)),
+                  metadata_(std::move(other.metadata_)),
+                  db_(other.db_),
+                  bindings_(std::move(other.bindings_)),
+                  status_(other.status_)
             {
                 other.db_ = nullptr;
                 other.stmt_ = nullptr;
@@ -123,15 +126,14 @@ namespace arg3
 
             stmt_resultset::~stmt_resultset()
             {
-                metadata_ = nullptr;
             }
 
             stmt_resultset &stmt_resultset::operator=(stmt_resultset &&other)
             {
-                stmt_ = other.stmt_;
+                stmt_ = std::move(other.stmt_);
                 db_ = other.db_;
-                metadata_ = other.metadata_;
-                bindings_ = other.bindings_;
+                metadata_ = std::move(other.metadata_);
+                bindings_ = std::move(other.bindings_);
                 status_ = other.status_;
                 other.db_ = nullptr;
                 other.bindings_ = nullptr;

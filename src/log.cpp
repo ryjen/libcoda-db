@@ -16,6 +16,8 @@ namespace arg3
         {
             const char *LevelNames[] = {"UNKNOWN", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"};
 
+            FILE *file = stdout;
+
             namespace current
             {
                 level level;
@@ -32,7 +34,7 @@ namespace arg3
                     return;
                 }
 
-                if(!strcasecmp(arg, "ERROR")) {
+                if (!strcasecmp(arg, "ERROR")) {
                     current::level = Error;
                 } else if (!strcasecmp(arg, "WARN")) {
                     current::level = Warn;
@@ -51,7 +53,7 @@ namespace arg3
 
                 time_t t = 0;
 
-                if (!format || !*format) {
+                if (!format || !*format || !log::file) {
                     return;
                 }
 
@@ -59,11 +61,11 @@ namespace arg3
 
                 strftime(buf, BUFSIZ, "%Y-%m-%d %H:%M:%S", localtime(&t));
 
-                fprintf(stdout, "%s %s: ", buf, LevelNames[level]);
+                fprintf(log::file, "%s %s: ", buf, LevelNames[level]);
 
-                vfprintf(stdout, format, args);
-                fputs("\n", stdout);
-                fflush(stdout);
+                vfprintf(log::file, format, args);
+                fputs("\n", log::file);
+                fflush(log::file);
             }
 
             void error(const char *const format, ...)

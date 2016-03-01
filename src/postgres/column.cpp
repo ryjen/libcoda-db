@@ -27,7 +27,6 @@ namespace arg3
 
             column::~column()
             {
-                stmt_ = nullptr;
             }
 
             column &column::operator=(column &&other)

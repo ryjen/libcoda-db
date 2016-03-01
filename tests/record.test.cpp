@@ -123,7 +123,9 @@ go_bandit([]() {
         });
 
         it("cannnot refresh invalid", []() {
-            user user1(14323432);
+            user user1;
+
+            user1.set_id(14323432);
 
             Assert::That(user1.refresh(), Equals(false));
 

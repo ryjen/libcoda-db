@@ -143,8 +143,8 @@ namespace arg3
                   db_(other.db_),
                   size_(other.size_)
             {
-                other.fields_ = nullptr;
                 other.db_ = nullptr;
+                other.fields_ = nullptr;
                 other.metadata_ = nullptr;
                 other.stmt_ = nullptr;
             }
@@ -160,8 +160,8 @@ namespace arg3
                 db_ = other.db_;
                 size_ = other.size_;
                 stmt_ = std::move(other.stmt_);
-                other.fields_ = nullptr;
                 other.db_ = nullptr;
+                other.fields_ = nullptr;
                 other.metadata_ = nullptr;
                 other.stmt_ = nullptr;
 

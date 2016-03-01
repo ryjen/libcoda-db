@@ -166,15 +166,13 @@ namespace arg3
          */
         class bind_mapping : public bindable
         {
-
-        protected:
-
+           protected:
             typedef std::unordered_map<std::string, std::set<unsigned>> type;
 
             void add_named_param(const std::string &name, unsigned index);
             void rem_named_param(const std::string &name, unsigned index);
-        public:
 
+           public:
             bind_mapping();
             bind_mapping(const bind_mapping &other);
             bind_mapping(bind_mapping &&other);
@@ -199,7 +197,7 @@ namespace arg3
              */
             virtual void reset();
 
-        protected:
+           protected:
             type mappings_;
         };
     }

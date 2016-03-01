@@ -8,11 +8,6 @@ namespace arg3
 {
     namespace db
     {
-        where_clause operator"" _where(const char *cstr, size_t len)
-        {
-            return where_clause(string(cstr, len));
-        }
-
         where_clause::where_clause()
         {
         }
@@ -55,6 +50,10 @@ namespace arg3
         {
             ostringstream buf;
 
+            if (and_.size() > 0 && or_.size() > 0) {
+                buf << "(";
+            }
+
             buf << value_;
 
             if (and_.size() > 0) {
@@ -62,12 +61,22 @@ namespace arg3
                 for (auto &w : and_) {
                     buf << w.to_string();
                 }
+                if (or_.size() > 0) {
+                    buf << ")";
+                }
             }
 
             if (or_.size() > 0) {
-                buf << " OR ";
+                if (and_.size() > 0) {
+                    buf << " OR (";
+                } else {
+                    buf << " OR ";
+                }
                 for (auto &w : or_) {
                     buf << w.to_string();
+                }
+                if (and_.size() > 0) {
+                    buf << ")";
                 }
             }
             return buf.str();

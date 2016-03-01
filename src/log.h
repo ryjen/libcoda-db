@@ -17,6 +17,10 @@ namespace arg3
     {
         namespace log
         {
+            extern FILE *file;
+
+            extern const char *LevelNames[];
+
             /* standard printf style functions */
 
             void error(const char *const format, ...) __attribute__((format(printf, 1, 2)));

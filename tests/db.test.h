@@ -19,6 +19,8 @@ class test_db
     virtual void teardown() = 0;
 };
 
+std::string get_env_uri(const char *name, const std::string &def);
+
 #if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
 
 class test_sqlite3_db : public arg3::db::sqlite::db, public test_db
@@ -46,7 +48,7 @@ extern test_sqlite3_db sqlite_testdb;
 class test_mysql_db : public arg3::db::mysql::db, public test_db
 {
    public:
-    test_mysql_db() : db(arg3::db::uri("mysql://test"))
+    test_mysql_db() : db(arg3::db::uri(get_env_uri("MYSQL_URI", "mysql://test")))
     {
     }
 
@@ -68,7 +70,7 @@ extern test_mysql_db mysql_testdb;
 class test_postgres_db : public arg3::db::postgres::db, public test_db
 {
    public:
-    test_postgres_db() : db(arg3::db::uri("postgres://localhost/test"))
+    test_postgres_db() : db(arg3::db::uri(get_env_uri("POSTGRES_URI", "postgres://localhost/test")))
     {
     }
 
@@ -121,13 +123,13 @@ class user : public arg3::db::record<user>
 
     user &operator=(const user &other)
     {
-        record<user>::operator=(other);
+        record::operator=(other);
         return *this;
     }
 
     user &operator=(user &&other)
     {
-        record<user>::operator=(std::move(other));
+        record::operator=(std::move(other));
         return *this;
     }
     std::string to_string()
