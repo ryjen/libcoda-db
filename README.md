@@ -195,7 +195,7 @@ update_query query(&testdb, "users", {"id", "first_name", "last_name"});
 query.where("id = @id") or ("last_name = @last_name");
 
 /* bind update columns  */
-query.bind_all(1, 3432, "mark", "anthony");
+query.bind_all(3432, "mark", "anthony");
 
 /* bind named parameters */
 query.bind("@id", 1234).bind("@last_name", "henry");
@@ -233,7 +233,7 @@ for ( auto &row : results) {
 
 The select query also supports a call back interface:
 
-```
+```c++
 select_query query(testdb, "users");
 
 query.execute([](const resultset & rs)
