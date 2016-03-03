@@ -25,7 +25,7 @@ shared_ptr<resultset_impl> get_resultset()
 
 shared_ptr<resultset_impl> get_stmt_resultset()
 {
-    select_query query(&mysql_testdb, "users");
+    select_query query(&mysql_testdb, {}, "users");
 
     auto rs = query.execute();
 
@@ -121,7 +121,7 @@ go_bandit([]() {
         it("can handle a bad query", []() {
             AssertThrows(database_exception, mysql_testdb.execute("select * from asdfasdfasdf"));
 
-            select_query query(&mysql_testdb, "asdfasdfasdf");
+            select_query query(&mysql_testdb, {}, "asdfasdfasdf");
 
             AssertThrows(database_exception, query.execute());
         });

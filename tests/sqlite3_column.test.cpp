@@ -18,9 +18,9 @@ using namespace arg3::db;
 template <typename T>
 shared_ptr<T> get_sqlite_column(const string &name)
 {
-    select_query q(&sqlite_testdb, "users");
+    select_query q(&sqlite_testdb);
 
-    auto rs = q.execute();
+    auto rs = q.from("users").execute();
 
     auto row = rs.begin();
 

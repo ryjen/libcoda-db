@@ -38,9 +38,9 @@ go_bandit([]() {
         after_each([]() { teardown_testdb(); });
 
         it("can delete", []() {
-            delete_query query(testdb, "users");
+            delete_query query(testdb);
 
-            query.where("first_name = $1", "Mark");
+            query.from("users").where("first_name = $1", "Mark");
 
             AssertThat(query.execute(), Equals(1));
 
@@ -48,9 +48,9 @@ go_bandit([]() {
         });
 
         it("is copyable by constructor", []() {
-            delete_query query(testdb, "users");
+            delete_query query(testdb);
 
-            query.where("first_name = $1", "Mark");
+            query.from("users").where("first_name = $1", "Mark");
 
             delete_query other(query);
 
@@ -58,9 +58,9 @@ go_bandit([]() {
         });
 
         it("is movable by constructor", []() {
-            delete_query query(testdb, "users");
+            delete_query query(testdb);
 
-            query.where("first_name = $1", "Bryan");
+            query.from("users").where("first_name = $1", "Bryan");
 
             delete_query other(std::move(query));
 
@@ -69,9 +69,9 @@ go_bandit([]() {
         });
 
         it("is copyable from assignment", []() {
-            delete_query query(testdb, "users");
+            delete_query query(testdb);
 
-            query.where("first_name = $1", "Bryan");
+            query.from("users").where("first_name = $1", "Bryan");
 
             delete_query other(testdb, "other_users");
 
@@ -79,13 +79,13 @@ go_bandit([]() {
 
             AssertThat(other.is_valid(), IsTrue());
             AssertThat(query.is_valid(), IsTrue());
-            AssertThat(other.table_name(), Equals("users"));
+            AssertThat(other.from(), Equals("users"));
         });
 
         it("is movable from assignment", []() {
-            delete_query query(testdb, "users");
+            delete_query query(testdb);
 
-            query.where("first_name = $1", "Bryan");
+            query.from("users").where("first_name = $1", "Bryan");
 
             delete_query other(testdb, "other_users");
 
@@ -93,7 +93,7 @@ go_bandit([]() {
 
             AssertThat(query.is_valid(), IsFalse());
             AssertThat(other.is_valid(), IsTrue());
-            AssertThat(other.table_name(), Equals("users"));
+            AssertThat(other.from(), Equals("users"));
         });
 
         it("can delete from where clause", []() {

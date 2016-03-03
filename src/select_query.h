@@ -36,22 +36,29 @@ namespace arg3
 
            public:
             /*!
-             * @param db        the database in use
-             * @param tableName the table name to query
-             * @param columns   the columns to query
+             * defaults to 'select *'
+             * @param db the database in use
              */
-            select_query(sqldb *db, const std::string &tableName, const std::vector<std::string> &columns);
+            select_query(sqldb *db);
 
             /*!
              * @param db        the database in use
              * @param tableName the table name to query
+             * @param columns   the columns to query
              */
-            select_query(sqldb *db, const std::string &tableName);
+            select_query(sqldb *db, const std::vector<std::string> &columns);
 
             /*!
              * @param schema    the schema to query
              */
             select_query(const std::shared_ptr<schema> &schema);
+
+            /*!
+             * @param db  the database in use
+             * @param columns the columns to query
+             * @param tableName the table to query from
+             */
+            select_query(sqldb *db, const std::vector<std::string> &columns, const std::string &tableName);
 
             /* boilerplate */
             select_query(const select_query &other);
@@ -59,6 +66,26 @@ namespace arg3
             virtual ~select_query();
             select_query &operator=(const select_query &other);
             select_query &operator=(select_query &&other);
+
+            /*!
+             * sets which table to select from
+             * @param  tableName the table name
+             * @return           a reference to this instance
+             */
+            select_query &from(const std::string &tableName);
+
+            /*!
+             * gets the select from table name for this query
+             * @return the table name
+             */
+            std::string from() const;
+
+            /*!
+             * sets the columns to select
+             * @param other a vector of column names
+             * @return a reference to this
+             */
+            select_query &columns(const std::vector<std::string> &other);
 
             /*!
              * @return the columns being queried
@@ -90,6 +117,12 @@ namespace arg3
              */
             where_clause &where(const std::string &value);
 
+            /*!
+             * adds a where clause to this query and binds parameters to it
+             * @param value the sql where string
+             * @param args the variadic list of bind values
+             * @return a reference to this instance
+             */
             template <typename... List>
             select_query &where(const std::string &value, const List &... args)
             {
@@ -100,11 +133,17 @@ namespace arg3
 
             /*!
              * adds a where clause to this query
-             * @param  value the second where clause
+             * @param  value the where clause
              * @return       a reference to this
              */
             select_query &where(const where_clause &value);
 
+            /*!
+             * adds a where clause and binds parameters to it
+             * @param value the where clause
+             * @param args a variadic list of bind values
+             * @return a reference to this instance
+             */
             template <typename... List>
             select_query &where(const where_clause &value, const List &... args)
             {

@@ -80,8 +80,9 @@ arg3::db::postgres::db testdb(arg3::db::uri("postgres://localhost/test"))
 class user : public arg3::db::record<user>
 {
     constexpr static const char *const ID_COLUMN = "id";
-    constexpr static const char *const TABLE_NAME = "users";
 public:
+    constexpr static const char *const TABLE_NAME = "users";
+
     /* default constructor, no database hits */
     user() : record(&testdb, TABLE_NAME, ID_COLUMN) {}
 
@@ -115,25 +116,40 @@ public:
 
 Query records
 -------------
+
+Built in record queries include **find_all(), find_by(column, value), and find_one() and find_one(column, value)**.  
+
+example:
 ```c++
-    user obj;
+  /* find users with a callback */
+  user().find_xxx(... [](const shared_ptr<user> &record) {
+      cout << "User: " << record->to_string() << endl;
+  });
 
-    /* find all users with a callback */
-    obj.find_all([](const shared_ptr<user> &record) {
-        cout << "User: " << record->to_string() << endl;
-    }
+  /* find users returning the results */
+  results = user().find_xxx(...);
 
-    /* find specific records and return an result vector */
-    results = obj.find_by("first_name", "Joe");
+  for (auto user : results) {
+      cout << "User: " << record->to_string() << endl;
+  }
+```
 
-    for (auto user : results) {
-        cout << "Found user: " << user->to_string() << endl;
-    }
+the more efficient way can also be written as:
+```c++
+  schema_factory schemas(testdb);
 
-    /* can also use schema functions */
-    results = find_all<user>(testdb.schemas()->get("users"));
+  auto schema = schemas.get(user::TABLE_NAME);
 
-````
+  find_xxx<user>(schema, ... [](const shared_ptr<user> &record) {
+      cout << "User: " << record->to_string() << endl;
+  });
+
+  results = find_xxx<user>(schema, ...);
+
+  for (auto user : results) {
+      cout << "User: " << record->to_string() << endl;
+  }
+```
 
 Save a record
 -------------
@@ -167,7 +183,7 @@ Binding parameters in queries should follow a doller sign index format:
 
  '$1', '$2', '$3', etc.
 
- Note that mysql does not support re-using (more than one instance of) indexed parameters in a query string (02/09/16).
+ NOTE: mysql implementation does not support re-using or re-arranging indexed parameters in a query string (02/09/16).
 
 Basic Queries
 =============
@@ -176,10 +192,11 @@ Modify Queries
 --------------
 ```c++
 /* insert a  user (INSERT INTO ...) */
-insert_query query(&testdb, "users", {"id", "first_name", "last_name"});
+insert_query insert(&testdb);
 
-/* bind the values to the columns by index */
-query.bind_all(4321, "dave", "patterson");
+/* insert column values into a table */
+insert.into("users").columns({"id", "first_name", "last_name"})
+      .values(4321, "dave", "patterson");
 
 if (!query.execute())
     cerr << testdb.last_error() << endl;
@@ -189,13 +206,14 @@ else
 
 ```c++
 /* update a user (UPDATE ...) */
-update_query query(&testdb, "users", {"id", "first_name", "last_name"});
+update_query update(&testdb);
 
-/* using where clause WHERE .. OR .. */
+/* update columns in a table with values */
+update.table("users").columns({"id", "first_name", "last_name"})
+     .values(3432, "mark", "anthony");
+
+/* using where clause with named parameters */
 query.where("id = @id") or ("last_name = @last_name");
-
-/* bind update columns  */
-query.bind_all(3432, "mark", "anthony");
 
 /* bind named parameters */
 query.bind("@id", 1234).bind("@last_name", "henry");
@@ -205,9 +223,9 @@ query.execute();
 
 ```c++
 /* delete a user (DELETE FROM ...) */
-delete_query query(&testdb, "users");
+delete_query query(&testdb);
 
-query.where("id = $1 AND first_name = $2", 1234, "bob");
+query.from("users").where("id = $1 AND first_name = $2", 1234, "bob");
 
 query.execute();
 
@@ -215,11 +233,12 @@ query.execute();
 
 Select Query
 ------------
+
 ```c++
 /* select some users */
-select_query query(&testdb, "users");
+select_query query(&testdb);
 
-query.where("last_name = $1 OR first_name = $2", "Jenkins", "Harry");
+query.from("users").where("last_name = $1 OR first_name = $2", "Jenkins", "Harry");
 
 auto results = query.execute();
 
@@ -227,7 +246,6 @@ for ( auto &row : results) {
     string lName = row["last_name"]; // "Jenkins"
     // do more stuff
 }
-
 
 ```
 
@@ -266,11 +284,11 @@ The **join_clause** is used to build join statements.
 
 ```c++
 
-select_query query(&testdb, "users u", {"u.id", "us.setting"});
+select_query select(&testdb, {"u.id", "us.setting"});
 
-query.join("user_settings s").on("u.id = s.user_id") and ("s.valid = 1");
+select.from("users u").join("user_settings s").on("u.id = s.user_id") and ("s.valid = 1");
 
-query.execute();
+select.execute();
 
 ```
 
@@ -278,15 +296,17 @@ Batch Queries
 -------------
 ```c++
 /* execute some raw sql */
-insert_query query(&testdb, "counts");
+insert_query insert(&testdb);
+
+insert.into("users").columns({"counter"});
 
 /* turn on batch mode for this query */
-query.set_flags(modify_query::Batch);
+insert.set_flags(modify_query::Batch);
 
 for(int i = 1000; i < 3000; i++) {
-    query.bind(1, i);
+    insert.bind(1, i);
 
-    if (!query.execute()) {
+    if (!insert.execute()) {
         cerr << testdb.last_error() << endl;
     }
 }
@@ -334,7 +354,7 @@ query.bind(1, value);
 Caching
 -------
 
-For sqlite3 databases results from a query will have a dependency on a database pointer that must remain open.
+For sqlite3 databases, results from a query will have a dependency on a database pointer that must remain open.
 Memory caching was add to pre-fetch the values and eliminate the dependency if needed.  It can be done at the resultset, row or column level.
 Mysql has pre-fetching built-in and it is used within the library.
 
@@ -352,3 +372,4 @@ TODO / ROADMAP
 
 * More and better quality tests, I demand 100% coverage
 * Support index parameter reuse in mysql
+

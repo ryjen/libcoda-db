@@ -61,16 +61,6 @@ namespace arg3
                 void set_last_insert_id(long long value);
                 void set_last_number_of_changes(int value);
             };
-
-            /*!
-             * utility to cleanup a postgres result
-             */
-            namespace helper
-            {
-                struct res_delete {
-                    void operator()(PGresult *p) const;
-                };
-            }
         }
     }
 }

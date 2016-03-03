@@ -72,6 +72,17 @@ namespace arg3
                 statement &bind(size_t index, const sql_time &value);
                 statement &bind(const std::string &name, const sql_value &value);
             };
+
+
+            /*
+             * utility to cleanup a postgres result
+             */
+            namespace helper
+            {
+                struct res_delete {
+                    void operator()(PGresult *p) const;
+                };
+            }
         }
     }
 }

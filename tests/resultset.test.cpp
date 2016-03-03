@@ -44,9 +44,9 @@ go_bandit([]() {
         });
 
         it("has a current row", []() {
-            select_query q(testdb, "users");
+            select_query q(testdb);
 
-            auto rs = q.execute();
+            auto rs = q.from("users").execute();
 
             auto i = rs.begin();
 
@@ -63,9 +63,9 @@ go_bandit([]() {
         });
 
         it("can use for each", []() {
-            select_query q(testdb, "users");
+            select_query q(testdb);
 
-            auto rs = q.execute();
+            auto rs = q.from("users").execute();
 
             rs.for_each([](const row& row) {
                 AssertThat(row.is_valid(), IsTrue());
@@ -75,9 +75,9 @@ go_bandit([]() {
         });
 
         it("can be reset", []() {
-            select_query q(testdb, "users");
+            select_query q(testdb);
 
-            auto rs = q.execute();
+            auto rs = q.from("users").execute();
 
             Assert::That(rs.size() >= 2, IsTrue());
 
@@ -98,9 +98,9 @@ go_bandit([]() {
         });
 
         it("can construct iterators", []() {
-            select_query q(testdb, "users");
+            select_query q(testdb);
 
-            auto rs = q.execute();
+            auto rs = q.from("users").execute();
 
             auto i = rs.begin();
 
@@ -120,9 +120,9 @@ go_bandit([]() {
         });
 
         it("can operate on iterators", []() {
-            select_query q(testdb, "users");
+            select_query q(testdb);
 
-            auto rs = q.execute();
+            auto rs = q.from("users").execute();
 
             auto i = rs.end();
 

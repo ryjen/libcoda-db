@@ -44,11 +44,12 @@ add_subdirectory(tests)
 enable_testing()
 
 include(MemCheckTest)
+
 add_opt_memcheck_test(MEMORY_CHECK ${PROJECT_NAME}-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test)
 
-if (HEADERDOC)
-  add_custom_target(html COMMAND ${HEADERDOC} -o ${PROJECT_BINARY_DIR}/html ${CMAKE_SOURCE_DIR}/src/*.h
+if (DOXYGEN)
+    add_custom_target(html WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND ${DOXYGEN} ${PROJECT_SOURCE_DIR}/Doxyfile)
+elseif (HEADERDOC)
+  add_custom_target(html COMMAND ${HEADERDOC} -o ${PROJECT_BINARY_DIR}/html ${CMAKE_SOURCE_DIR}/src/**.h
                                  COMMAND ${GATHERDOC} ${PROJECT_BINARY_DIR}/html)
-elseif (DOXYGEN)
-    add_custom_target(html COMMAND ${DOXYGEN} -w html Doxyfile)
 endif()

@@ -39,7 +39,7 @@ shared_ptr<column_impl> get_results_column(size_t index, size_t iterations)
 
 shared_ptr<column_impl> get_stmt_column(size_t index, size_t iterations)
 {
-    select_query query(&mysql_testdb, "users");
+    select_query query(&mysql_testdb, {}, "users");
 
     auto rs = query.execute();
 

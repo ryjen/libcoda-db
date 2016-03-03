@@ -116,7 +116,9 @@ go_bandit([]() {
         });
 
         it("can handle a bad bind", []() {
-            select_query query(&mysql_testdb, "users");
+            select_query query(&mysql_testdb);
+
+            query.from("users");
 
             query.where("id = $1 and first_name = $2");
 

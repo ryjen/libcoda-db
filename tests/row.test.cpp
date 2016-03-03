@@ -10,9 +10,9 @@ using namespace arg3::db;
 
 row get_first_user_row()
 {
-    select_query query(testdb, "users");
+    select_query query(testdb);
 
-    auto rs = query.execute();
+    auto rs = query.from("users").execute();
 
     auto i = rs.begin();
 
@@ -55,9 +55,9 @@ go_bandit([]() {
         });
 
         it("can be copied", []() {
-            select_query q(testdb, "users");
+            select_query q(testdb);
 
-            auto rs = q.execute();
+            auto rs = q.from("users").execute();
 
             auto i = rs.begin();
 
@@ -73,9 +73,9 @@ go_bandit([]() {
         });
 
         it("can use for each", []() {
-            select_query query(testdb, "users");
+            select_query query(testdb);
 
-            auto rs = query.execute();
+            auto rs = query.from("users").execute();
 
             auto r = rs.begin();
 
@@ -86,15 +86,17 @@ go_bandit([]() {
 
             auto schema = testdb->schemas()->get("users");
 
-            if (!schema->is_valid()) schema->init();
+            if (!schema->is_valid()) {
+                schema->init();
+            }
 
             auto columns = schema->column_names();
 
             AssertThat(columns.size() > 0, IsTrue());
 
-            select_query query(testdb, "users", columns);
+            select_query query(testdb, columns);
 
-            auto rs = query.execute();
+            auto rs = query.from("users").execute();
 
             auto r = *rs.begin();
 

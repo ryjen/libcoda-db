@@ -10,14 +10,17 @@ namespace arg3
 {
     namespace db
     {
-        select_query::select_query(sqldb *db, const string &tableName, const vector<string> &columns)
+        select_query::select_query(sqldb *db) : query(db)
+        {
+        }
+        select_query::select_query(sqldb *db, const vector<string> &columns) : query(db), columns_(columns)
+        {
+        }
+        select_query::select_query(sqldb *db, const vector<string> &columns, const string &tableName)
             : query(db), columns_(columns), tableName_(tableName)
         {
         }
 
-        select_query::select_query(sqldb *db, const string &tableName) : query(db), columns_(), tableName_(tableName)
-        {
-        }
         select_query::select_query(const select_query &other)
             : query(other),
               where_(other.where_),
@@ -29,9 +32,11 @@ namespace arg3
         {
         }
 
-        select_query::select_query(const shared_ptr<schema> &schema) : select_query(schema->db(), schema->table_name(), schema->column_names())
+        select_query::select_query(const shared_ptr<schema> &schema) : select_query(schema->db(), schema->column_names())
         {
+            tableName_ = schema->table_name();
         }
+
         select_query::select_query(select_query &&other)
             : query(std::move(other)),
               where_(std::move(other.where_)),
@@ -72,14 +77,33 @@ namespace arg3
             return *this;
         }
 
+        select_query &select_query::from(const string &value)
+        {
+            tableName_ = value;
+            return *this;
+        }
+
+        string select_query::from() const
+        {
+            return tableName_;
+        }
+
         vector<string> select_query::columns() const
         {
             return columns_;
         }
+
+        select_query &select_query::columns(const vector<string> &value)
+        {
+            columns_ = value;
+            return *this;
+        }
+
         string select_query::table_name() const
         {
             return tableName_;
         }
+
         select_query &select_query::table_name(const string &value)
         {
             tableName_ = value;

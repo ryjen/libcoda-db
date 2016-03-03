@@ -108,7 +108,9 @@ namespace arg3
         {
             if (!is_open()) return;
 
-            select_query pkq(this, "information_schema.table_constraints tc", {"tc.table_schema, tc.table_name, kc.column_name"});
+            select_query pkq(this, {"tc.table_schema, tc.table_name, kc.column_name"});
+
+            pkq.from("information_schema.table_constraints tc");
 
             pkq.join("information_schema.key_column_usage kc").on("kc.table_name = tc.table_name") && "kc.table_schema = tc.table_schema";
 
@@ -118,7 +120,9 @@ namespace arg3
 
             auto primary_keys = pkq.execute();
 
-            select_query info_schema(this, "information_schema.columns", {"column_name", "data_type"});
+            select_query info_schema(this, {"column_name", "data_type"});
+
+            info_schema.from("information_schema.columns");
 
             info_schema.where("table_name = $1", tableName);
 

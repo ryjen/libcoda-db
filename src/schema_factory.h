@@ -25,9 +25,7 @@ namespace arg3
         {
            private:
             std::unordered_map<std::string, std::shared_ptr<schema>> schema_cache_;
-
             sqldb *db_;
-
             std::shared_ptr<schema> create(const std::string &tableName);
 
            public:

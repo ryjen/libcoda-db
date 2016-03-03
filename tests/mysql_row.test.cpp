@@ -35,7 +35,7 @@ shared_ptr<row_impl> get_results_row(size_t index)
 
 shared_ptr<row_impl> get_stmt_row(size_t index)
 {
-    select_query query(&mysql_testdb, "users");
+    select_query query(&mysql_testdb, {}, "users");
 
     auto rs = query.execute();
 
@@ -128,7 +128,7 @@ go_bandit([]() {
         describe("can get a column name", []() {
 
             it("as statement results", []() {
-                select_query query(&mysql_testdb, "users");
+                select_query query(&mysql_testdb, {}, "users");
                 auto rs = query.execute();
                 auto c = rs.begin();
 

@@ -11,32 +11,18 @@ namespace arg3
 {
     namespace db
     {
-        modify_query::modify_query(sqldb *db, const string &tableName, const vector<string> &columns)
-            : query(db), columns_(columns), tableName_(tableName), flags_(0), numChanges_(0)
+        modify_query::modify_query(sqldb *db) : query(db), flags_(0), numChanges_(0)
         {
         }
 
-        modify_query::modify_query(sqldb *db, const string &tableName) : query(db), tableName_(tableName), flags_(0), numChanges_(0)
-        {
-        }
-        modify_query::modify_query(const shared_ptr<schema> &schema) : modify_query(schema->db(), schema->table_name(), schema->column_names())
-        {
-        }
-        modify_query::modify_query(const shared_ptr<schema> &schema, const vector<string> &columns)
-            : modify_query(schema->db(), schema->table_name(), columns)
+        modify_query::modify_query(const shared_ptr<schema> &schema) : modify_query(schema->db())
         {
         }
 
-        modify_query::modify_query(const modify_query &other)
-            : query(other), columns_(other.columns_), tableName_(other.tableName_), flags_(other.flags_), numChanges_(other.numChanges_)
+        modify_query::modify_query(const modify_query &other) : query(other), flags_(other.flags_), numChanges_(other.numChanges_)
         {
         }
-        modify_query::modify_query(modify_query &&other)
-            : query(std::move(other)),
-              columns_(std::move(other.columns_)),
-              tableName_(std::move(other.tableName_)),
-              flags_(other.flags_),
-              numChanges_(other.numChanges_)
+        modify_query::modify_query(modify_query &&other) : query(std::move(other)), flags_(other.flags_), numChanges_(other.numChanges_)
         {
         }
 
@@ -46,8 +32,6 @@ namespace arg3
         modify_query &modify_query::operator=(const modify_query &other)
         {
             query::operator=(other);
-            columns_ = other.columns_;
-            tableName_ = other.tableName_;
             flags_ = other.flags_;
             numChanges_ = other.numChanges_;
             return *this;
@@ -56,18 +40,191 @@ namespace arg3
         modify_query &modify_query::operator=(modify_query &&other)
         {
             query::operator=(std::move(other));
-            columns_ = std::move(other.columns_);
-            tableName_ = std::move(other.tableName_);
             flags_ = other.flags_;
             numChanges_ = other.numChanges_;
             return *this;
         }
 
-        string modify_query::table_name() const
+        bool insert_query::is_valid() const
+        {
+            return query::is_valid() && !tableName_.empty();
+        }
+
+        bool update_query::is_valid() const
+        {
+            return query::is_valid() && !tableName_.empty();
+        }
+
+        bool delete_query::is_valid() const
+        {
+            return query::is_valid() && !tableName_.empty();
+        }
+
+        /*!
+         * @param db the database to modify
+         * @param tableName the table to modify
+         * @param columns the columns to modify
+         */
+        insert_query::insert_query(sqldb *db, const std::string &tableName) : modify_query(db)
+        {
+            tableName_ = tableName;
+        }
+
+        /*!
+         * @param db the database to modify
+         * @param columns the columns to modify
+         */
+        insert_query::insert_query(sqldb *db, const std::string &tableName, const std::vector<std::string> &columns) : modify_query(db)
+        {
+            tableName_ = tableName;
+            columns_ = columns;
+        }
+
+        /*!
+         * @param schema the schema to modify
+         * @param column the specific columns to modify in the schema
+         */
+        insert_query::insert_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) : modify_query(schema->db())
+        {
+            tableName_ = schema->table_name();
+            columns_ = columns;
+        }
+
+
+        insert_query::insert_query(const insert_query &other)
+            : modify_query(other), lastId_(other.lastId_), columns_(other.columns_), tableName_(other.tableName_)
+        {
+        }
+        insert_query::insert_query(insert_query &&other)
+            : modify_query(std::move(other)), lastId_(other.lastId_), columns_(std::move(other.columns_)), tableName_(std::move(other.tableName_))
+        {
+        }
+
+        insert_query::~insert_query()
+        {
+        }
+        insert_query &insert_query::operator=(const insert_query &other)
+        {
+            modify_query::operator=(other);
+            lastId_ = other.lastId_;
+            columns_ = other.columns_;
+            tableName_ = other.tableName_;
+            return *this;
+        }
+
+        insert_query &insert_query::operator=(insert_query &&other)
+        {
+            modify_query::operator=(std::move(other));
+            lastId_ = other.lastId_;
+            columns_ = std::move(other.columns_);
+            tableName_ = std::move(other.tableName_);
+            return *this;
+        }
+        /*!
+         * @param db the database to modify
+         * @param tableName the table to modify
+         * @param columns the columns to modify
+         */
+        update_query::update_query(sqldb *db, const std::string &tableName) : modify_query(db)
+        {
+            tableName_ = tableName;
+        }
+
+        /*!
+         * @param db the database to modify
+         * @param columns the columns to modify
+         */
+        update_query::update_query(sqldb *db, const std::string &tableName, const std::vector<std::string> &columns) : modify_query(db)
+        {
+            tableName_ = tableName;
+            columns_ = columns;
+        }
+
+        /*!
+         * @param schema the schema to modify
+         * @param column the specific columns to modify in the schema
+         */
+        update_query::update_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) : modify_query(schema)
+        {
+            tableName_ = schema->table_name();
+            columns_ = columns;
+        }
+
+        update_query::update_query(const update_query &other)
+            : modify_query(other), where_(other.where_), columns_(other.columns_), tableName_(other.tableName_)
+        {
+        }
+        update_query::update_query(update_query &&other)
+            : modify_query(std::move(other)),
+              where_(std::move(other.where_)),
+              columns_(std::move(other.columns_)),
+              tableName_(std::move(other.tableName_))
+        {
+        }
+
+        update_query::~update_query()
+        {
+        }
+        update_query &update_query::operator=(const update_query &other)
+        {
+            modify_query::operator=(other);
+            where_ = other.where_;
+            columns_ = other.columns_;
+            tableName_ = other.tableName_;
+            return *this;
+        }
+
+        update_query &update_query::operator=(update_query &&other)
+        {
+            modify_query::operator=(std::move(other));
+            where_ = std::move(other.where_);
+            columns_ = std::move(other.columns_);
+            tableName_ = std::move(other.tableName_);
+            return *this;
+        }
+        delete_query::delete_query(sqldb *db, const std::string &tableName) : modify_query(db)
+        {
+            tableName_ = tableName;
+        }
+
+        delete_query::delete_query(const shared_ptr<schema> &schema) : modify_query(schema)
+        {
+            tableName_ = schema->table_name();
+        }
+
+        delete_query::delete_query(const delete_query &other) : modify_query(other), where_(other.where_), tableName_(other.tableName_)
+        {
+        }
+        delete_query::delete_query(delete_query &&other)
+            : modify_query(std::move(other)), where_(std::move(other.where_)), tableName_(std::move(other.tableName_))
+        {
+        }
+
+        delete_query::~delete_query()
+        {
+        }
+        delete_query &delete_query::operator=(const delete_query &other)
+        {
+            modify_query::operator=(other);
+            where_ = other.where_;
+            tableName_ = other.tableName_;
+            return *this;
+        }
+
+        delete_query &delete_query::operator=(delete_query &&other)
+        {
+            modify_query::operator=(std::move(other));
+            where_ = std::move(other.where_);
+            tableName_ = std::move(other.tableName_);
+            return *this;
+        }
+
+        string update_query::table() const
         {
             return tableName_;
         }
-        modify_query &modify_query::table_name(const string &value)
+
+        update_query &update_query::table(const string &value)
         {
             tableName_ = value;
             return *this;
@@ -125,6 +282,28 @@ namespace arg3
             return buf.str();
         }
 
+        insert_query &insert_query::columns(const vector<string> &columns)
+        {
+            columns_ = columns;
+            return *this;
+        }
+
+        vector<string> insert_query::columns() const
+        {
+            return columns_;
+        }
+
+        update_query &update_query::columns(const vector<string> &columns)
+        {
+            columns_ = columns;
+            return *this;
+        }
+
+        vector<string> update_query::columns() const
+        {
+            return columns_;
+        }
+
         update_query &update_query::where(const where_clause &value)
         {
             where_ = value;
@@ -137,10 +316,22 @@ namespace arg3
             return where_;
         }
 
+        delete_query &delete_query::where(const where_clause &value)
+        {
+            where_ = value;
+            return *this;
+        }
+
+        where_clause &delete_query::where(const string &value)
+        {
+            where_ = where_clause(value);
+            return where_;
+        }
+
         int insert_query::execute()
         {
-            if (tableName_.empty()) {
-                throw database_exception("No table name provided for modify query");
+            if (!is_valid()) {
+                throw database_exception("invalid insert query");
             }
 
             prepare(to_string());
@@ -168,8 +359,8 @@ namespace arg3
 
         int modify_query::execute()
         {
-            if (tableName_.empty()) {
-                throw database_exception("No table name provided for modify query");
+            if (!is_valid()) {
+                throw database_exception("Invalid modify query");
             }
 
             prepare(to_string());
@@ -191,6 +382,28 @@ namespace arg3
             }
 
             return numChanges_;
+        }
+
+        insert_query &insert_query::into(const std::string &value)
+        {
+            tableName_ = value;
+            return *this;
+        }
+
+        std::string insert_query::into() const
+        {
+            return tableName_;
+        }
+
+        delete_query &delete_query::from(const std::string &value)
+        {
+            tableName_ = value;
+            return *this;
+        }
+
+        std::string delete_query::from() const
+        {
+            return tableName_;
         }
 
         string delete_query::to_string() const

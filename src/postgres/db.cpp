@@ -19,13 +19,6 @@ namespace arg3
         {
             namespace helper
             {
-                void res_delete::operator()(PGresult *p) const
-                {
-                    if (p != nullptr) {
-                        PQclear(p);
-                    }
-                }
-
                 struct close_db {
                     void operator()(PGconn *p) const
                     {
@@ -170,10 +163,10 @@ namespace arg3
 
                 auto it = keys.begin();
 
-                if(it != keys.end()) {
+                if (it != keys.end()) {
                     buf << " RETURNING ";
 
-                    while(it < keys.end() - 1) {
+                    while (it < keys.end() - 1) {
                         buf << *it << ",";
                     }
 

@@ -27,28 +27,14 @@ namespace arg3
             constexpr static const int Batch = (1 << 0);
 
             /*!
-             * @param db the database to modify
-             * @param tableName the table to modify
-             * @param columns the columns to modify
+             * @param db the database in use
              */
-            modify_query(sqldb *db, const std::string &tableName, const std::vector<std::string> &columns);
-
-            /*!
-             * @param db the database to modify
-             * @param tableName the table to modify
-             */
-            modify_query(sqldb *db, const std::string &tableName);
+            modify_query(sqldb *db);
 
             /*!
              * @param schema the schema to modify
              */
             modify_query(const std::shared_ptr<schema> &schema);
-
-            /*!
-             * @param schema the schema to modify
-             * @param column the specific columns to modify in the schema
-             */
-            modify_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns);
 
             /* boilerplate */
             modify_query(const modify_query &other);
@@ -63,19 +49,9 @@ namespace arg3
             virtual std::string to_string() const = 0;
 
             /*!
-             * @return the name of the table being modified
-             */
-            std::string table_name() const;
-
-            /*!
              * sets flags for this query (@see query flags)
              */
             modify_query &set_flags(int value);
-
-            /*!
-             * sets the table name for this query
-             */
-            modify_query &table_name(const std::string &value);
 
             /*!
              * executes this query using a replace statement
@@ -89,8 +65,6 @@ namespace arg3
             int last_number_of_changes() const;
 
            protected:
-            std::vector<std::string> columns_;
-            std::string tableName_;
             int flags_;
             int numChanges_;
         };
@@ -104,6 +78,32 @@ namespace arg3
             using modify_query::modify_query;
 
             /*!
+             * @param db the database to modify
+             * @param tableName the table to modify
+             * @param columns the columns to modify
+             */
+            insert_query(sqldb *db, const std::string &tableName);
+
+            /*!
+             * @param db the database to modify
+             * @param columns the columns to modify
+             */
+            insert_query(sqldb *db, const std::string &tableName, const std::vector<std::string> &columns);
+
+            /*!
+             * @param schema the schema to modify
+             * @param column the specific columns to modify in the schema
+             */
+            insert_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns);
+
+            /* boilerplate */
+            insert_query(const insert_query &other);
+            insert_query(insert_query &&other);
+            virtual ~insert_query();
+            insert_query &operator=(const insert_query &other);
+            insert_query &operator=(insert_query &&other);
+
+            /*!
              * @return the id column of the last insert
              */
             long long last_insert_id() const;
@@ -114,13 +114,52 @@ namespace arg3
             std::string to_string() const;
 
             /*!
+             * get the columns being modified
+             * @return the list of columns
+             */
+            std::vector<std::string> columns() const;
+
+            /*!
+             * set the columns to modify
+             * @param  value the list of column names
+             * @return       a reference to this instance
+             */
+            insert_query &columns(const std::vector<std::string> &value);
+
+            /*!
+             * set the table to insert into
+             * @see modify_query::table_name
+             * @param  tableName the table name
+             * @return           a reference to this instance
+             */
+            insert_query &into(const std::string &tableName);
+
+            /*!
+             * get the table name being inserted into
+             * @see modify_query::table_name
+             * @return the table name
+             */
+            std::string into() const;
+
+            template <typename T, typename... List>
+            insert_query &values(const T &value, const List &... argv)
+            {
+                bind_list(1, value, argv...);
+                return *this;
+            }
+
+            /*!
              * executes the insert query
              * @return the number of records inserted
              */
             int execute();
 
+            bool is_valid() const;
+
            private:
             long long lastId_;
+            std::vector<std::string> columns_;
+            std::string tableName_;
         };
 
         /*!
@@ -132,11 +171,71 @@ namespace arg3
             using modify_query::modify_query;
 
             /*!
+             * @param db the database to modify
+             * @param tableName the table to modify
+             * @param columns the columns to modify
+             */
+            update_query(sqldb *db, const std::string &tableName);
+
+            /*!
+             * @param db the database to modify
+             * @param columns the columns to modify
+             */
+            update_query(sqldb *db, const std::string &tableName, const std::vector<std::string> &columns);
+
+            /*!
+             * @param schema the schema to modify
+             * @param column the specific columns to modify in the schema
+             */
+            update_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns);
+
+            /* boilerplate */
+            update_query(const update_query &other);
+            update_query(update_query &&other);
+            virtual ~update_query();
+            update_query &operator=(const update_query &other);
+            update_query &operator=(update_query &&other);
+
+            /*!
+             * get the columns being modified
+             * @return the list of columns
+             */
+            std::vector<std::string> columns() const;
+
+            /*!
+             * set the columns to modify
+             * @param  value the list of column names
+             * @return       a reference to this instance
+             */
+            update_query &columns(const std::vector<std::string> &value);
+
+            /*!
+             * set the table to insert into
+             * @see modify_query::table_name
+             * @param  tableName the table name
+             * @return           a reference to this instance
+             */
+            update_query &table(const std::string &tableName);
+
+            /*!
+             * get the table name being inserted into
+             * @see modify_query::table_name
+             * @return the table name
+             */
+            std::string table() const;
+
+            /*!
              * sets the where clause for the update query
              * @param value the where clause to set
              */
             update_query &where(const where_clause &value);
 
+            /*!
+             * sets the where clause and binds a list of values
+             * @param value the where clause to set
+             * @param args a variadic list of indexed bind values
+             * @return a reference to this instance
+             */
             template <typename... List>
             update_query &where(const where_clause &value, const List &... args)
             {
@@ -150,6 +249,12 @@ namespace arg3
              */
             where_clause &where(const std::string &value);
 
+            /*!
+             * sets the where clause and binds a list of values
+             * @param value the sql where clause string
+             * @param args the variadic list of indexed bind values
+             * @return a reference to this instance
+             */
             template <typename... List>
             update_query &where(const std::string &value, const List &... args)
             {
@@ -159,26 +264,113 @@ namespace arg3
             }
 
             /*!
-             * @return the string/sql representation of this query
+             * a rename of the bind_all method so it makes sense to the query language
+             * @param value a value to bind
+             * @param argv the variadic list of values to bind
              */
-            virtual std::string to_string() const;
-
-           protected:
-            where_clause where_;
-        };
-
-        /*!
-         * a query to delete from a table
-         */
-        class delete_query : public update_query
-        {
-           public:
-            using update_query::update_query;
+            template <typename T, typename... List>
+            update_query &values(const T &value, const List &... argv)
+            {
+                bind_list(1, value, argv...);
+                return *this;
+            }
 
             /*!
              * @return the string/sql representation of this query
              */
             std::string to_string() const;
+
+            bool is_valid() const;
+
+           protected:
+            where_clause where_;
+            std::vector<std::string> columns_;
+            std::string tableName_;
+        };
+
+        /*!
+         * a query to delete from a table
+         */
+        class delete_query : public modify_query
+        {
+           public:
+            using modify_query::modify_query;
+
+            delete_query(sqldb *db, const std::string &tableName);
+
+            delete_query(const std::shared_ptr<schema> &schema);
+
+            /* boilerplate */
+            delete_query(const delete_query &other);
+            delete_query(delete_query &&other);
+            virtual ~delete_query();
+            delete_query &operator=(const delete_query &other);
+            delete_query &operator=(delete_query &&other);
+
+            /*!
+             * set the table to insert into
+             * @see modify_query::table_name
+             * @param  tableName the table name
+             * @return           a reference to this instance
+             */
+            delete_query &from(const std::string &tableName);
+
+            /*!
+             * get the table name being inserted into
+             * @see modify_query::table_name
+             * @return the table name
+             */
+            std::string from() const;
+
+            /*!
+             * @return the string/sql representation of this query
+             */
+            std::string to_string() const;
+
+            /*!
+             * sets the where clause for the update query
+             * @param value the where clause to set
+             */
+            delete_query &where(const where_clause &value);
+
+            /*!
+             * sets the where clause and binds a list of values
+             * @param value the where clause to set
+             * @param args a variadic list of indexed bind values
+             * @return a reference to this instance
+             */
+            template <typename... List>
+            delete_query &where(const where_clause &value, const List &... args)
+            {
+                where(value);
+                bind_all(args...);
+                return *this;
+            }
+
+            /*!
+             * @param value the where sql/string to set
+             */
+            where_clause &where(const std::string &value);
+
+            /*!
+             * sets the where clause and binds a list of values
+             * @param value the sql where clause string
+             * @param args the variadic list of indexed bind values
+             * @return a reference to this instance
+             */
+            template <typename... List>
+            delete_query &where(const std::string &value, const List &... args)
+            {
+                where(value);
+                bind_all(args...);
+                return *this;
+            }
+
+            bool is_valid() const;
+
+           private:
+            where_clause where_;
+            std::string tableName_;
         };
     }
 }

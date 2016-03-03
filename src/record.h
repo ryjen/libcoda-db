@@ -83,6 +83,24 @@ namespace arg3
         }
 
         /*!
+         * finds records for a column value
+         * @param schema the schema find records for
+         * @param name the column name to search by
+         * @param value the value of the column being searched
+         * @return a vector of results found
+         */
+        template <typename T>
+        inline std::vector<std::shared_ptr<T>> find_by(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value)
+        {
+            /* convert sql rows to objects */
+            std::vector<std::shared_ptr<T>> items;
+
+            db::find_by<T>(schema, name, value, [&items](std::shared_ptr<T> record) { items.push_back(record); });
+
+            return items;
+        }
+
+        /*!
          * finds one record for a column value
          * @param schema the schema find records for
          * @param name the column name to search by
@@ -107,21 +125,22 @@ namespace arg3
         }
 
         /*!
-         * finds records for a column value
+         * finds one record for a column value
          * @param schema the schema find records for
-         * @param name the column name to search by
-         * @param value the value of the column being searched
-         * @return a vector of results found
+         * @param funk the callback function for each record found
          */
         template <typename T>
-        inline std::vector<std::shared_ptr<T>> find_by(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value)
+        inline void find_one(const std::shared_ptr<schema> &schema, const typename record<T>::callback &funk)
         {
-            /* convert sql rows to objects */
-            std::vector<std::shared_ptr<T>> items;
+            select_query query(schema);
 
-            db::find_by<T>(schema, name, value, [&items](std::shared_ptr<T> record) { items.push_back(record); });
+            auto results = query.execute();
 
-            return items;
+            if (!results.is_valid() || results.size() == 0) {
+                return;
+            }
+
+            funk(std::make_shared<T>(*results.begin()));
         }
 
         /*!
@@ -143,14 +162,31 @@ namespace arg3
         }
 
         /*!
-         * an active-record (ish) pattern
+         * finds one record for a column value
+         * @param schema the schema find records for
+         * @return a vector of results found
+         */
+        template <typename T>
+        inline std::shared_ptr<T> find_one(const std::shared_ptr<schema> &schema)
+        {
+            /* convert sql rows to objects */
+            std::shared_ptr<T> item;
+
+            db::find_one<T>(schema, [&item](std::shared_ptr<T> record) { item = record; });
+
+            return item;
+        }
+
+        /*!
+         * an active-record (ish) pattern, should be used as a curiously reoccuring design pattern
          */
         template <typename T>
         class record
         {
            public:
             typedef arg3::db::schema schema_type;
-            typedef std::function<void(std::shared_ptr<T>)> callback;
+            typedef std::function<void(const std::shared_ptr<T> &)> callback;
+            typedef std::function<void(const std::shared_ptr<T> &, const std::shared_ptr<T> &)> comparator;
 
            private:
             std::shared_ptr<schema_type> schema_;

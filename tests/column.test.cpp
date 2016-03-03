@@ -12,7 +12,9 @@ using namespace arg3::db;
 
 column get_user_column(const string &name)
 {
-    select_query q(testdb, "users");
+    select_query q(testdb);
+
+    q.from("users");
 
     auto rs = q.execute();
 

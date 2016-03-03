@@ -115,7 +115,7 @@ namespace arg3
              * tests if this query is valid
              * @return true if the internals are open and valid
              */
-            bool is_valid() const;
+            virtual bool is_valid() const;
         };
     }
 

@@ -23,7 +23,7 @@ using namespace arg3::db;
 
 shared_ptr<postgres::column> get_postgres_column(const string &name)
 {
-    select_query q(&postgres_testdb, "users");
+    select_query q(&postgres_testdb, {}, "users");
 
     auto rs = q.execute();
 

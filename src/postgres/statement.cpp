@@ -15,6 +15,15 @@ namespace arg3
     {
         namespace postgres
         {
+            namespace helper
+            {
+                void res_delete::operator()(PGresult *p) const
+                {
+                    if (p != nullptr) {
+                        PQclear(p);
+                    }
+                }
+            }
             statement::statement(postgres::db *db) : db_(db), stmt_(nullptr)
             {
                 if (db_ == nullptr) {
