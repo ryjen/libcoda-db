@@ -117,7 +117,7 @@ public:
 Query records
 -------------
 
-Built in record queries include **find_all(), find_by(column, value), and find_one() and find_one(column, value)**.  
+Built in record queries include **find_all(), find_by(column, value), find_one()** and **find_one(column, value)**.  
 
 example:
 ```c++
