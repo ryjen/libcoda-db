@@ -39,3 +39,4 @@ html
 latex
 .vagrant-build
 .vagrant
+coverage

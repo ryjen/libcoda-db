@@ -67,6 +67,9 @@ Records
 
 An simple user example
 ----------------------
+
+Records should be imlemented using the [curiously reoccuring template pattern (CRTP)](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
+
 ```c++
 arg3::db::sqlite::db testdb("test.db");
 
@@ -119,22 +122,24 @@ Query records
 
 Built in record queries include **find_all(), find_by(column, value), find_one()** and **find_one(column, value)**.  
 
-example:
+example using a callback:
 ```c++
   /* find users with a callback */
   user().find_xxx(... [](const shared_ptr<user> &record) {
       cout << "User: " << record->to_string() << endl;
   });
-
+```
+example using a return value:
+```c++
   /* find users returning the results */
-  results = user().find_xxx(...);
+  auto results = user().find_xxx(...);
 
   for (auto user : results) {
       cout << "User: " << record->to_string() << endl;
   }
 ```
 
-the more efficient way can also be written as:
+the alternative way can be written using schema's instead of the user object:
 ```c++
   schema_factory schemas(testdb);
 
@@ -144,7 +149,7 @@ the more efficient way can also be written as:
       cout << "User: " << record->to_string() << endl;
   });
 
-  results = find_xxx<user>(schema, ...);
+  auto results = find_xxx<user>(schema, ...);
 
   for (auto user : results) {
       cout << "User: " << record->to_string() << endl;
@@ -179,11 +184,17 @@ Delete a record
 Prepared Statements
 ===================
 
-Binding parameters in queries should follow a doller sign index format:
+indexed binding parameters in queries should follow a doller sign index format:
 
  '$1', '$2', '$3', etc.
 
  NOTE: mysql implementation does not support re-using or re-arranging indexed parameters in a query string (02/09/16).
+
+named parameters are also supported using a '@' or ':' prefix:
+
+  'id = @id', 'name = :name', etc.
+
+you can mix and match indexed and the named parameters.
 
 Basic Queries
 =============
