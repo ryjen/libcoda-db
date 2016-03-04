@@ -142,7 +142,7 @@ namespace arg3
 
             sql_value stmt_column::to_value() const
             {
-                if(value_ == nullptr)) {
+                if (value_ == nullptr) {
                     return sql_value();
                 }
 
@@ -151,7 +151,7 @@ namespace arg3
 
             int stmt_column::sql_type() const
             {
-                if(value_ == nullptr) {
+                if (value_ == nullptr) {
                     return -1;
                 }
 
