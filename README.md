@@ -384,3 +384,8 @@ TODO / ROADMAP
 * More and better quality tests, I demand 100% coverage
 * Support index parameter reuse in mysql
 
+
+Buy me a beer! [![BitCoin donate button](https://img.shields.io/badge/bitcoin-donate-yellow.svg)](https://coinbase.com/checkouts/9ef59f5479eec1d97d63382c9ebcb93a "Donate once-off to this project using BitCoin")
+
+
+

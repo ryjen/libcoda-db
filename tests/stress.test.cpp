@@ -3,6 +3,8 @@
 #include "insert_query.h"
 #include "log.h"
 
+#include <chrono>
+
 using namespace std;
 
 using namespace arg3::db;
@@ -49,7 +51,7 @@ void run_tests(sqldb* db, const char* name)
     insert.into(user::TABLE_NAME).columns({"first_name", "last_name", "dval"});
 
     for (int i = 0; i < TEST_SIZE; i++) {
-        insert.values(random_name(), random_name(), random_num<double>(-123012.123132, 1231232.12312));
+        insert.values(random_name(), random_name(), random_num<int>(-123012, 1231232));
 
         if (!insert.execute()) {
             log::error("unable to prepare test: %s", testdb->last_error().c_str());
