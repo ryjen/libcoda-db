@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <time.h>
+#include <sys/time.h>
 #include "sqldb.h"
 #include "log.h"
 
@@ -49,19 +50,18 @@ namespace arg3
 
             static void lvargs(log::level level, const char *const format, va_list args)
             {
-                char buf[BUFSIZ + 1] = {0};
-
-                time_t t = 0;
+                char buf[80] = {0};
+                timeval curTime;
 
                 if (!format || !*format || !log::file) {
                     return;
                 }
 
-                t = time(0);
+                gettimeofday(&curTime, NULL);
 
-                strftime(buf, BUFSIZ, "%Y-%m-%d %H:%M:%S", localtime(&t));
+                strftime(buf, 80, "%Y-%m-%d %H:%M:%S", localtime(&curTime.tv_sec));
 
-                fprintf(log::file, "%s %s: ", buf, LevelNames[level]);
+                fprintf(log::file, "%s:%d %s: ", buf, (curTime.tv_usec / 1000), LevelNames[level]);
 
                 vfprintf(log::file, format, args);
                 fputs("\n", log::file);

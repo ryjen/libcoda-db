@@ -8,6 +8,7 @@
 #include "db.h"
 #include "row.h"
 #include "binding.h"
+#include "../log.h"
 
 using namespace std;
 
@@ -67,8 +68,8 @@ namespace arg3
 
             bool resultset::next()
             {
-                if(db_ == nullptr) {
-                    log::warn("resultset::next database not open");
+                if (db_ == nullptr) {
+                    log::warn("mysql resultset next: database not open");
                     return false;
                 }
 
@@ -116,11 +117,11 @@ namespace arg3
             stmt_resultset::stmt_resultset(mysql::db *db, const shared_ptr<MYSQL_STMT> &stmt)
                 : stmt_(stmt), metadata_(nullptr), db_(db), bindings_(nullptr), status_(-1)
             {
-                if(stmt_ == nullptr) {
-                    throw database_exception("invalid statement provided to stmt_resultset");
+                if (stmt_ == nullptr) {
+                    throw database_exception("invalid statement provided to mysql statement resultset");
                 }
-                if(db_ == nullptr) {
-                    throw database_exception("invalid database provided to stmt_resultset");
+                if (db_ == nullptr) {
+                    throw database_exception("invalid database provided to mysql statement resultset");
                 }
             }
 
@@ -190,12 +191,13 @@ namespace arg3
 
             bool stmt_resultset::is_valid() const
             {
-                return stmt_ != nullptr;
+                return stmt_ != nullptr && stmt_;
             }
 
             bool stmt_resultset::next()
             {
                 if (!is_valid()) {
+                    log::warn("mysql resultset next invalid");
                     return false;
                 }
 
@@ -223,7 +225,7 @@ namespace arg3
             void stmt_resultset::reset()
             {
                 if (!is_valid()) {
-                    log::warn("stmt_resultset::reset invalid")
+                    log::warn("stmt_resultset::reset invalid");
                     return;
                 }
 
@@ -242,6 +244,7 @@ namespace arg3
             size_t stmt_resultset::size() const
             {
                 if (!is_valid()) {
+                    log::warn("mysql resultset size invalid");
                     return 0;
                 }
 

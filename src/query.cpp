@@ -186,7 +186,9 @@ namespace arg3
 
         string query::last_error()
         {
-            if (stmt_ == nullptr) return string();
+            if (stmt_ == nullptr) {
+                return string();
+            }
 
             return stmt_->last_error();
         }

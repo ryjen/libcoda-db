@@ -1,6 +1,7 @@
 #ifndef ARG3_TEST_DB_H
 #define ARG3_TEST_DB_H
 
+#include <random>
 #include <unistd.h>
 #include "sqldb.h"
 #include "record.h"
@@ -94,18 +95,31 @@ void setup_testdb();
 
 void teardown_testdb();
 
+std::string random_name();
+
+extern std::default_random_engine rand_eng;
+
+template <typename T>
+T random_num(T min, T max)
+{
+    std::uniform_int_distribution<T> uniform_dist(min, max);
+    return uniform_dist(rand_eng);
+}
+
 class user : public arg3::db::record<user>
 {
    public:
-    user(arg3::db::sqldb *db = testdb) : record(db, "users", "id")
+    constexpr static const char *const TABLE_NAME = "users";
+
+    user(arg3::db::sqldb *db = testdb) : record(db, TABLE_NAME, "id")
     {
     }
 
-    user(const arg3::db::row &values, arg3::db::sqldb *db = testdb) : record(db, "users", "id", values)
+    user(const arg3::db::row &values, arg3::db::sqldb *db = testdb) : record(db, TABLE_NAME, "id", values)
     {
     }
 
-    user(long long id, arg3::db::sqldb *db = testdb) : record(db, "users", "id", id)
+    user(long long id, arg3::db::sqldb *db = testdb) : record(db, TABLE_NAME, "id", id)
     {
     }
 

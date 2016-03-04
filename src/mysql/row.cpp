@@ -61,7 +61,7 @@ namespace arg3
             row::column_type row::column(size_t position) const
             {
                 if (!is_valid()) {
-                    throw database_exception("invalid row");
+                    throw database_exception("invalid mysql row");
                 }
 
                 if (position >= size()) {

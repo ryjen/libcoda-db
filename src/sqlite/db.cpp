@@ -97,7 +97,9 @@ namespace arg3
 
             void db::open(int flags)
             {
-                if (db_ != nullptr) return;
+                if (db_ != nullptr) {
+                    return;
+                }
 
                 sqlite3 *conn = nullptr;
 
@@ -115,14 +117,15 @@ namespace arg3
 
             void db::close()
             {
-                if (db_ == nullptr) return;
-
                 // the shared_ptr destructor should close
                 db_ = nullptr;
             }
 
             string db::last_error() const
             {
+                if (db_ == nullptr) {
+                    return string();
+                }
                 ostringstream buf;
 
                 buf << sqlite3_errcode(db_.get());
@@ -133,17 +136,27 @@ namespace arg3
 
             long long db::last_insert_id() const
             {
+                if (db_ == nullptr) {
+                    return 0;
+                }
                 return sqlite3_last_insert_rowid(db_.get());
             }
 
             int db::last_number_of_changes() const
             {
+                if (db_ == nullptr) {
+                    return 0;
+                }
                 return sqlite3_changes(db_.get());
             }
 
             db::resultset_type db::execute(const string &sql)
             {
                 sqlite3_stmt *stmt;
+
+                if (db_ == nullptr) {
+                    throw database_exception("db::execute database not open");
+                }
 
                 if (sqlite3_prepare_v2(db_.get(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
                     throw database_exception(last_error());

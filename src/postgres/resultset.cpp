@@ -51,6 +51,10 @@ namespace arg3
 
             size_t resultset::size() const
             {
+                if (!is_valid()) {
+                    return 0;
+                }
+
                 int value = PQntuples(stmt_.get());
 
                 if (value < 0) {
@@ -66,7 +70,7 @@ namespace arg3
                     return false;
                 }
 
-                return ++currentRow_ < static_cast<int>(size());
+                return static_cast<unsigned>(++currentRow_) < size();
             }
 
             void resultset::reset()

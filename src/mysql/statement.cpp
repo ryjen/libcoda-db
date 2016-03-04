@@ -7,6 +7,7 @@
 #include "statement.h"
 #include "db.h"
 #include "resultset.h"
+#include "../log.h"
 
 using namespace std;
 
@@ -177,6 +178,7 @@ namespace arg3
             bool statement::result()
             {
                 if (!is_valid()) {
+                    log::warn("mysql statement result invalid");
                     return false;
                 }
 
@@ -191,6 +193,7 @@ namespace arg3
             int statement::last_number_of_changes()
             {
                 if (!is_valid()) {
+                    log::warn("mysql statement result invalid");
                     return 0;
                 }
 
@@ -220,7 +223,10 @@ namespace arg3
             {
                 bindings_.reset();
 
-                if (!is_valid()) return;
+                if (!is_valid()) {
+                    log::warn("mysql statement reset invalid");
+                    return;
+                }
 
                 if (mysql_stmt_reset(stmt_.get())) {
                     throw database_exception(last_error());
@@ -229,7 +235,9 @@ namespace arg3
 
             long long statement::last_insert_id()
             {
-                if (!is_valid()) return 0;
+                if (!is_valid()) {
+                    return 0;
+                }
 
                 return mysql_stmt_insert_id(stmt_.get());
             }

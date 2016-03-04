@@ -1,6 +1,7 @@
 #include "resultset.h"
 #include "db.h"
 #include "row.h"
+#include "../log.h"
 
 #ifdef HAVE_LIBSQLITE3
 
@@ -51,6 +52,9 @@ namespace arg3
 
             size_t resultset::size() const
             {
+                if (!is_valid()) {
+                    return 0;
+                }
                 return sqlite3_column_count(stmt_.get());
             }
 
@@ -71,6 +75,11 @@ namespace arg3
 
             void resultset::reset()
             {
+                if (!is_valid()) {
+                    log::warn("resultset::reset database not open");
+                    return;
+                }
+
                 if (sqlite3_reset(stmt_.get()) != SQLITE_OK) {
                     throw database_exception(db_->last_error());
                 }
@@ -88,6 +97,10 @@ namespace arg3
 
             cached_resultset::cached_resultset(sqlite::db *db, shared_ptr<sqlite3_stmt> stmt) : db_(db), currentRow_(-1)
             {
+                if (stmt == nullptr) {
+                    throw database_exception("cached_resultset:: invalidate statement");
+                }
+
                 int status = sqlite3_step(stmt.get());
 
                 while (status == SQLITE_ROW) {
@@ -130,8 +143,9 @@ namespace arg3
             {
                 if (rows_.empty()) return false;
 
-                return ++currentRow_ < static_cast<int>(rows_.size());
+                return static_cast<unsigned>(++currentRow_) < rows_.size();
             }
+
             void cached_resultset::reset()
             {
                 currentRow_ = -1;
@@ -139,7 +153,7 @@ namespace arg3
 
             cached_resultset::row_type cached_resultset::current_row()
             {
-                if (currentRow_ >= 0 && currentRow_ < static_cast<int>(rows_.size()))
+                if (currentRow_ >= 0 && static_cast<unsigned>(currentRow_) < rows_.size())
                     return row_type(rows_[currentRow_]);
                 else
                     return row_type();

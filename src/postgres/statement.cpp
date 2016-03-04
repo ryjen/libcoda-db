@@ -166,6 +166,10 @@ namespace arg3
 
             statement::resultset_type statement::results()
             {
+                if (db_ == nullptr) {
+                    throw database_exception("statement::results invalid database");
+                }
+
                 PGresult *res = PQexecParams(db_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,
                                              bindings_.formats_, 0);
 
@@ -180,6 +184,10 @@ namespace arg3
 
             bool statement::result()
             {
+                if (db_ == nullptr) {
+                    throw database_exception("statement::results invalid database");
+                }
+
                 PGresult *res = PQexecParams(db_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,
                                              bindings_.formats_, 0);
 
@@ -209,6 +217,10 @@ namespace arg3
 
             long long statement::last_insert_id()
             {
+                if (stmt_ == nullptr) {
+                    return 0;
+                }
+
                 Oid oid = PQoidValue(stmt_.get());
 
                 if (oid != InvalidOid) {

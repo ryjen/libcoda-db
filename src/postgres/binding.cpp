@@ -213,7 +213,9 @@ namespace arg3
 
             int binding::sql_type(size_t index) const
             {
-                if (index >= size_) return 0;
+                if (index >= size_) {
+                    return 0;
+                }
 
                 return types_[index];
             }

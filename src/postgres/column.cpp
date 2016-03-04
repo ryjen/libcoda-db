@@ -16,7 +16,6 @@ namespace arg3
         namespace postgres
         {
             column::column(const shared_ptr<PGresult> &stmt, int row, int column) : stmt_(stmt), column_(column), row_(row)
-
             {
             }
 
@@ -63,6 +62,9 @@ namespace arg3
 
             string column::name() const
             {
+                if (!is_valid()) {
+                    return string();
+                }
                 return PQfname(stmt_.get(), column_);
             }
         }

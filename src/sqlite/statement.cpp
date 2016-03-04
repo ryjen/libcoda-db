@@ -1,6 +1,7 @@
 #include "statement.h"
 #include "db.h"
 #include "resultset.h"
+#include "../log.h"
 
 #ifdef HAVE_LIBSQLITE3
 
@@ -57,6 +58,7 @@ namespace arg3
                 }
 
                 if (is_valid()) {
+                    log::warn("sql statement prepare not valid");
                     return;
                 }
 
@@ -86,6 +88,9 @@ namespace arg3
 
             statement &statement::bind(size_t index, int value)
             {
+                if (!is_valid()) {
+                    throw binding_error("statment invalid");
+                }
                 if (sqlite3_bind_int(stmt_.get(), index, value) != SQLITE_OK) {
                     throw binding_error(db_->last_error());
                 }
@@ -93,6 +98,9 @@ namespace arg3
             }
             statement &statement::bind(size_t index, unsigned value)
             {
+                if (!is_valid()) {
+                    throw binding_error("statment invalid");
+                }
                 if (sqlite3_bind_int64(stmt_.get(), index, value) != SQLITE_OK) {
                     throw binding_error(db_->last_error());
                 }
@@ -100,6 +108,9 @@ namespace arg3
             }
             statement &statement::bind(size_t index, long long value)
             {
+                if (!is_valid()) {
+                    throw binding_error("statment invalid");
+                }
                 if (sqlite3_bind_int64(stmt_.get(), index, value) != SQLITE_OK) {
                     throw binding_error(db_->last_error());
                 }
@@ -111,6 +122,9 @@ namespace arg3
             }
             statement &statement::bind(size_t index, float value)
             {
+                if (!is_valid()) {
+                    throw binding_error("statment invalid");
+                }
                 if (sqlite3_bind_double(stmt_.get(), index, value) != SQLITE_OK) {
                     throw binding_error(db_->last_error());
                 }
@@ -118,6 +132,9 @@ namespace arg3
             }
             statement &statement::bind(size_t index, double value)
             {
+                if (!is_valid()) {
+                    throw binding_error("statment invalid");
+                }
                 if (sqlite3_bind_double(stmt_.get(), index, value) != SQLITE_OK) {
                     throw binding_error(db_->last_error());
                 }
@@ -125,6 +142,9 @@ namespace arg3
             }
             statement &statement::bind(size_t index, const std::string &value, int len)
             {
+                if (!is_valid()) {
+                    throw binding_error("statment invalid");
+                }
                 if (sqlite3_bind_text(stmt_.get(), index, value.c_str(), len, SQLITE_TRANSIENT) != SQLITE_OK) {
                     throw binding_error(db_->last_error());
                 }
@@ -132,6 +152,9 @@ namespace arg3
             }
             statement &statement::bind(size_t index, const std::wstring &value, int len)
             {
+                if (!is_valid()) {
+                    throw binding_error("statment invalid");
+                }
                 if (sqlite3_bind_text16(stmt_.get(), index, value.c_str(), len, SQLITE_TRANSIENT) != SQLITE_OK) {
                     throw binding_error(db_->last_error());
                 }
@@ -139,6 +162,9 @@ namespace arg3
             }
             statement &statement::bind(size_t index, const sql_blob &value)
             {
+                if (!is_valid()) {
+                    throw binding_error("statment invalid");
+                }
                 if (sqlite3_bind_blob(stmt_.get(), index, value.value(), value.size(), value.is_transient() ? SQLITE_TRANSIENT : SQLITE_STATIC) !=
                     SQLITE_OK) {
                     throw binding_error(db_->last_error());
@@ -148,6 +174,9 @@ namespace arg3
 
             statement &statement::bind(size_t index, const sql_null_type &value)
             {
+                if (!is_valid()) {
+                    throw binding_error("statment invalid");
+                }
                 if (sqlite3_bind_null(stmt_.get(), index) != SQLITE_OK) {
                     throw binding_error(db_->last_error());
                 }
@@ -155,6 +184,10 @@ namespace arg3
             }
             statement &statement::bind(size_t index, const sql_time &value)
             {
+                if (!is_valid()) {
+                    throw binding_error("statment invalid");
+                }
+
                 auto tstr = value.to_string();
 
                 if (sqlite3_bind_text(stmt_.get(), index, tstr.c_str(), tstr.size(), SQLITE_TRANSIENT) != SQLITE_OK) {
@@ -165,6 +198,10 @@ namespace arg3
 
             statement &statement::bind(const string &name, const sql_value &value)
             {
+                if (!is_valid()) {
+                    throw binding_error("statment invalid");
+                }
+
                 int index = sqlite3_bind_parameter_index(stmt_.get(), name.c_str());
 
                 if (index <= 0) {
@@ -177,6 +214,9 @@ namespace arg3
 
             statement::resultset_type statement::results()
             {
+                if (db_ == nullptr) {
+                    throw database_exception("sqlite statement results invalid database");
+                }
                 if (db_->cache_level() == cache::ResultSet)
                     return resultset_type(make_shared<cached_resultset>(db_, stmt_));
                 else
@@ -185,6 +225,10 @@ namespace arg3
 
             bool statement::result()
             {
+                if (!is_valid()) {
+                    log::warn("sqlite statement result invalid");
+                    return false;
+                }
                 return sqlite3_step(stmt_.get()) == SQLITE_DONE;
             }
 
@@ -195,6 +239,10 @@ namespace arg3
 
             void statement::reset()
             {
+                if (!is_valid()) {
+                    log::warn("sqlite statement reset invalid");
+                    return;
+                }
                 if (sqlite3_reset(stmt_.get()) != SQLITE_OK) {
                     throw database_exception(db_->last_error());
                 }
@@ -202,6 +250,9 @@ namespace arg3
 
             long long statement::last_insert_id()
             {
+                if (db_ == nullptr) {
+                    return 0;
+                }
                 return db_->last_insert_id();
             }
         }

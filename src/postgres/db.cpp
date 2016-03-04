@@ -71,7 +71,9 @@ namespace arg3
 
             void db::open()
             {
-                if (db_ != nullptr) return;
+                if (db_ != nullptr) {
+                    return;
+                }
 
                 PGconn *conn = PQconnectdb(connection_info().value.c_str());
 
@@ -145,6 +147,10 @@ namespace arg3
 
             string db::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
             {
+                if (schema == nullptr) {
+                    return string();
+                }
+
                 ostringstream buf;
 
                 buf << "INSERT INTO " << schema->table_name();
