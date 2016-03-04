@@ -68,7 +68,7 @@ Records
 An simple user example
 ----------------------
 
-Records should be imlemented using the [curiously reoccuring template pattern (CRTP)](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
+Records should be implemented using the [curiously reoccuring template pattern (CRTP)](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
 
 ```c++
 arg3::db::sqlite::db testdb("test.db");
@@ -184,17 +184,17 @@ Delete a record
 Prepared Statements
 ===================
 
-indexed binding parameters in queries should follow a doller sign index format:
+Indexed binding parameters in queries should follow a doller sign index format:
 
  '$1', '$2', '$3', etc.
 
  NOTE: mysql implementation does not support re-using or re-arranging indexed parameters in a query string (02/09/16).
 
-named parameters are also supported using a '@' or ':' prefix:
+Named parameters are also supported using a '@' or ':' prefix:
 
   'id = @id', 'name = :name', etc.
 
-you can mix and match indexed and the named parameters.
+You can mix and match indexed and the named parameters.
 
 Basic Queries
 =============

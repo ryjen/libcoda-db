@@ -21,9 +21,6 @@ namespace arg3
          */
         class select_query : public query
         {
-           public:
-            friend class resultset;
-
            private:
             where_clause where_;
             join_clause join_;

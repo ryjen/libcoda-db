@@ -28,8 +28,6 @@ namespace arg3
              */
             class resultset : public resultset_impl
             {
-                friend class row;
-                friend class sqldb;
                 template <typename, typename>
                 friend class resultset_iterator;
 

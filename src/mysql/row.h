@@ -30,8 +30,6 @@ namespace arg3
              */
             class row : public row_impl
             {
-                friend class resultset;
-
                private:
                 MYSQL_ROW row_;
                 std::shared_ptr<MYSQL_RES> res_;
@@ -66,8 +64,6 @@ namespace arg3
              */
             class stmt_row : public row_impl
             {
-                friend class stmt_resultset;
-
                private:
                 std::shared_ptr<mysql::binding> fields_;
                 std::shared_ptr<MYSQL_RES> metadata_;

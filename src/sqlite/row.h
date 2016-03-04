@@ -27,8 +27,6 @@ namespace arg3
              */
             class row : public row_impl
             {
-                friend class resultset;
-
                private:
                 std::shared_ptr<sqlite3_stmt> stmt_;
                 sqlite::db *db_;
@@ -61,8 +59,6 @@ namespace arg3
              */
             class cached_row : public row_impl
             {
-                friend class resultset;
-
                private:
                 std::vector<std::shared_ptr<cached_column>> columns_;
 

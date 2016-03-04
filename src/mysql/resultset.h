@@ -29,9 +29,6 @@ namespace arg3
              */
             class resultset : public resultset_impl
             {
-                friend class arg3::db::row;
-                friend class arg3::db::sqldb;
-
                 template <typename, typename>
                 friend class resultset_iterator;
 
@@ -67,9 +64,6 @@ namespace arg3
              */
             class stmt_resultset : public resultset_impl
             {
-                friend class select_query;
-                friend class row;
-                friend class sqldb;
                 template <typename, typename>
                 friend class resultset_iterator;
 

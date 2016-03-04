@@ -29,7 +29,9 @@ namespace arg3
 
                 string last_stmt_error(MYSQL_STMT *stmt)
                 {
-                    if (!stmt) return "invalid";
+                    if (!stmt) {
+                        return "invalid";
+                    }
 
                     ostringstream buf;
 
@@ -78,11 +80,13 @@ namespace arg3
 
             void db::open()
             {
-                if (db_ != nullptr) return;
+                if (db_ != nullptr) {
+                    return;
+                }
 
                 MYSQL *conn = mysql_init(nullptr);
 
-                if (conn == NULL) {
+                if (conn == nullptr) {
                     throw database_exception("out of memory connecting to mysql");
                 }
 

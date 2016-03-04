@@ -42,18 +42,27 @@ namespace arg3
 
         bool column::is_valid() const
         {
-            if (impl_ == nullptr) return false;
+            if (impl_ == nullptr) {
+                return false;
+            }
 
             return impl_->is_valid();
         }
 
         sql_value column::to_value() const
         {
+            if (impl_ == nullptr) {
+                return sql_value();
+            }
+
             return impl_->to_value();
         }
 
         std::string column::name() const
         {
+            if (impl_ == nullptr) {
+                return std::string();
+            }
             return impl_->name();
         }
 

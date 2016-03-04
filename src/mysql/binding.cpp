@@ -295,6 +295,7 @@ namespace arg3
                 void set_time(MYSQL_BIND *binding, const sql_time &value)
                 {
                     MYSQL_TIME *tm = nullptr;
+
                     if (binding == nullptr) {
                         return;
                     }
@@ -441,7 +442,7 @@ namespace arg3
 
             MYSQL_BIND *binding::get(size_t index) const
             {
-                if (index >= size_) {
+                if (index >= size_ || value_ == nullptr) {
                     throw binding_error("invalid index in mysql binding get");
                 }
 
@@ -460,7 +461,7 @@ namespace arg3
 
             sql_value binding::to_value(size_t index) const
             {
-                if (index >= size_ || value_[index].buffer == nullptr) {
+                if (index >= size_ || value_ == nullptr || value_[index].buffer == nullptr) {
                     return sql_null;
                 }
 
@@ -469,7 +470,7 @@ namespace arg3
 
             int binding::sql_type(size_t index) const
             {
-                if (index >= size_) {
+                if (index >= size_ || value_ == nullptr) {
                     return MYSQL_TYPE_NULL;
                 }
 

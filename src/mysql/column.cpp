@@ -60,6 +60,10 @@ namespace arg3
              */
             sql_value column::to_value() const
             {
+                if (res_ == nullptr) {
+                    throw no_such_column_exception();
+                }
+
                 auto field = mysql_fetch_field_direct(res_.get(), index_);
 
                 if (value_[index_] == nullptr || field == nullptr) {
@@ -73,6 +77,10 @@ namespace arg3
 
             int column::sql_type() const
             {
+                if (res_ == nullptr) {
+                    throw no_such_column_exception();
+                }
+
                 auto field = mysql_fetch_field_direct(res_.get(), index_);
 
                 if (field == nullptr) {
@@ -84,6 +92,10 @@ namespace arg3
 
             string column::name() const
             {
+                if (res_ == nullptr) {
+                    return string();
+                }
+
                 auto field = mysql_fetch_field_direct(res_.get(), index_);
 
                 if (field == nullptr || field->name == nullptr) {
@@ -130,14 +142,18 @@ namespace arg3
 
             sql_value stmt_column::to_value() const
             {
-                assert(value_ != nullptr);
+                if(value_ == nullptr)) {
+                    return sql_value();
+                }
 
                 return value_->to_value(position_);
             }
 
             int stmt_column::sql_type() const
             {
-                assert(value_ != nullptr);
+                if(value_ == nullptr) {
+                    return -1;
+                }
 
                 return value_->sql_type(position_);
             }

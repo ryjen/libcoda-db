@@ -25,8 +25,6 @@ namespace arg3
          */
         class query : public bindable
         {
-            friend class sqldb;
-
            private:
             /*!
             * ensures that the binding storage array is large enough

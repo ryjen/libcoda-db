@@ -13,10 +13,6 @@ namespace arg3
 {
     namespace db
     {
-        class sqldb;
-        class base_query;
-        class bindable;
-
         /*
          * a sql null type
          */

@@ -28,8 +28,6 @@ namespace arg3
              */
             class row : public row_impl
             {
-                friend class resultset;
-
                private:
                 std::shared_ptr<PGresult> stmt_;
                 postgres::db *db_;

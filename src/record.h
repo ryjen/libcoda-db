@@ -9,7 +9,9 @@
 #include <memory>
 #include <algorithm>
 #include "select_query.h"
-#include "modify_query.h"
+#include "insert_query.h"
+#include "update_query.h"
+#include "delete_query.h"
 #include "schema.h"
 
 namespace arg3

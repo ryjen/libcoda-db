@@ -67,7 +67,10 @@ namespace arg3
 
             bool resultset::next()
             {
-                assert(db_ != nullptr);
+                if(db_ == nullptr) {
+                    log::warn("resultset::next database not open");
+                    return false;
+                }
 
                 if (!is_valid() || !db_->is_open()) return false;
 
@@ -88,7 +91,9 @@ namespace arg3
 
             void resultset::reset()
             {
-                mysql_data_seek(res_.get(), 0);
+                if (res_ != nullptr) {
+                    mysql_data_seek(res_.get(), 0);
+                }
             }
 
             resultset::row_type resultset::current_row()
@@ -98,6 +103,10 @@ namespace arg3
 
             size_t resultset::size() const
             {
+                if (res_ == nullptr) {
+                    return 0;
+                }
+
                 return mysql_num_fields(res_.get());
             }
 
@@ -107,8 +116,12 @@ namespace arg3
             stmt_resultset::stmt_resultset(mysql::db *db, const shared_ptr<MYSQL_STMT> &stmt)
                 : stmt_(stmt), metadata_(nullptr), db_(db), bindings_(nullptr), status_(-1)
             {
-                assert(stmt_ != nullptr);
-                assert(db_ != nullptr);
+                if(stmt_ == nullptr) {
+                    throw database_exception("invalid statement provided to stmt_resultset");
+                }
+                if(db_ == nullptr) {
+                    throw database_exception("invalid database provided to stmt_resultset");
+                }
             }
 
             stmt_resultset::stmt_resultset(stmt_resultset &&other)
@@ -144,7 +157,10 @@ namespace arg3
 
             void stmt_resultset::prepare_results()
             {
-                if (stmt_ == nullptr || !stmt_ || bindings_ != nullptr || status_ != -1) return;
+                if (stmt_ == nullptr || !stmt_ || bindings_ != nullptr || status_ != -1) {
+                    log::warn("invalid stmt_result::prepare_results");
+                    return;
+                }
 
                 if ((status_ = mysql_stmt_execute(stmt_.get()))) {
                     throw database_exception(helper::last_stmt_error(stmt_.get()));
@@ -153,7 +169,9 @@ namespace arg3
                 // get information about the results
                 MYSQL_RES *temp = mysql_stmt_result_metadata(stmt_.get());
 
-                if (temp == nullptr) throw database_exception("No result data found.");
+                if (temp == nullptr) {
+                    throw database_exception("No result data found.");
+                }
 
                 metadata_ = shared_ptr<MYSQL_RES>(temp, helper::res_delete());
 
@@ -177,12 +195,16 @@ namespace arg3
 
             bool stmt_resultset::next()
             {
-                if (!is_valid()) return false;
+                if (!is_valid()) {
+                    return false;
+                }
 
                 if (status_ == -1) {
                     prepare_results();
 
-                    if (status_ == -1) return false;
+                    if (status_ == -1) {
+                        return false;
+                    }
                 }
 
                 int res = mysql_stmt_fetch(stmt_.get());
@@ -201,6 +223,7 @@ namespace arg3
             void stmt_resultset::reset()
             {
                 if (!is_valid()) {
+                    log::warn("stmt_resultset::reset invalid")
                     return;
                 }
 
@@ -213,14 +236,14 @@ namespace arg3
 
             resultset::row_type stmt_resultset::current_row()
             {
-                assert(db_ != nullptr);
-
                 return row_type(make_shared<stmt_row>(db_, stmt_, metadata_, bindings_));
             }
 
             size_t stmt_resultset::size() const
             {
-                if (!is_valid()) return 0;
+                if (!is_valid()) {
+                    return 0;
+                }
 
                 return mysql_stmt_field_count(stmt_.get());
             }

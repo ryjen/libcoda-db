@@ -2,6 +2,8 @@ add_library (${PROJECT_NAME}
 	alloc.cpp
 	bindable.cpp
 	column.cpp
+	delete_query.cpp
+	insert_query.cpp
 	join_clause.cpp
 	log.cpp
 	modify_query.cpp
@@ -13,6 +15,7 @@ add_library (${PROJECT_NAME}
 	select_query.cpp
 	sqldb.cpp
 	sql_value.cpp
+	update_query.cpp
 	where_clause.cpp
 	mysql/binding.cpp
 	mysql/column.cpp
@@ -40,11 +43,13 @@ target_link_libraries(${PROJECT_NAME} ${MYSQL_LIBRARIES} ${SQLITE3_LIBRARIES} ${
 set(${PROJECT_NAME}_HEADERS
 	bindable.h
 	column.h
+	delete_query.h
 	exception.h
-  join_clause.h
+	insert_query.h
+  	join_clause.h
 	modify_query.h
 	query.h
-  record.h
+  	record.h
 	resultset.h
 	row.h
 	schema.h
@@ -53,6 +58,7 @@ set(${PROJECT_NAME}_HEADERS
 	sql_value.h
 	sqldb.h
 	statement.h
+	update_query.h
 	where_clause.h
 )
 
