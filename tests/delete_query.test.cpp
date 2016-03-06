@@ -113,7 +113,7 @@ go_bandit([]() {
 
             query.where("first_name = $1", "Bryan");
 
-            query.set_flags(modify_query::Batch);
+            query.flags(modify_query::Batch);
 
             AssertThat(query.execute(), Equals(1));
 

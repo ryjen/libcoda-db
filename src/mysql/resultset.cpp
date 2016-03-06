@@ -81,7 +81,7 @@ namespace arg3
 
                 bool value = row_ != nullptr;
 
-                if (!value && !mysql_more_results(db_->db_.get())) {
+                if (!value && (db_->flags() & db::CACHE_RESULTS) && !mysql_more_results(db_->db_.get())) {
                     MYSQL_RES *temp = mysql_use_result(db_->db_.get());
                     if (temp != nullptr) {
                         res_ = shared_ptr<MYSQL_RES>(temp, helper::res_delete());
@@ -175,7 +175,7 @@ namespace arg3
 
                 bindings_->bind_result(stmt_.get());
 
-                if (mysql_stmt_store_result(stmt_.get())) {
+                if ((db_->flags() & db::CACHE_STATEMENTS) && mysql_stmt_store_result(stmt_.get())) {
                     throw database_exception(helper::last_stmt_error(stmt_.get()));
                 }
             }

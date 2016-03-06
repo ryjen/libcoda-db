@@ -30,8 +30,13 @@ namespace arg3
 
                protected:
                 std::shared_ptr<MYSQL> db_;
+                int flags_;
 
                public:
+                constexpr static int CACHE_RESULTS = (1 << 0);
+                constexpr static int CACHE_STATEMENTS = (1 << 1);
+                constexpr static int CACHE = CACHE_RESULTS | CACHE_STATEMENTS;
+
                 /*!
                  * default constructor takes a uri to connect to
                  * @param connInfo the uri connection info
@@ -44,6 +49,10 @@ namespace arg3
                 db &operator=(const db &other);
                 db &operator=(db &&other);
                 virtual ~db();
+
+                db &flags(int value);
+
+                int flags() const;
 
                 /* sqldb overrides */
                 bool is_open() const;

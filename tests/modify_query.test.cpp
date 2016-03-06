@@ -72,7 +72,7 @@ go_bandit([]() {
         it("can be batch executed", []() {
             insert_query query(testdb, "users", {"id", "first_name", "last_name"});
 
-            query.set_flags(modify_query::Batch);
+            query.flags(modify_query::Batch);
 
             for (int i = 0; i < 3; i++) {
                 char buf[100] = {0};

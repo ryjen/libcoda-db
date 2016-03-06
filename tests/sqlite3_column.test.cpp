@@ -52,7 +52,7 @@ go_bandit([]() {
 
             it("as a column", []() {
 
-                sqlite_testdb.set_cache_level(sqlite::cache::None);
+                sqlite_testdb.cache_level(sqlite::cache::None);
 
                 auto col = get_sqlite_column<sqlite::column>("first_name");
 
@@ -60,7 +60,7 @@ go_bandit([]() {
             });
 
             it("as a cached column", []() {
-                sqlite_testdb.set_cache_level(sqlite::cache::ResultSet);
+                sqlite_testdb.cache_level(sqlite::cache::ResultSet);
 
                 auto col = get_sqlite_column<sqlite::cached_column>("first_name");
 
@@ -71,7 +71,7 @@ go_bandit([]() {
         describe("has a name", []() {
             it("as a column", []() {
 
-                sqlite_testdb.set_cache_level(sqlite::cache::None);
+                sqlite_testdb.cache_level(sqlite::cache::None);
 
                 auto col = get_sqlite_column<sqlite::column>("last_name");
 
@@ -80,7 +80,7 @@ go_bandit([]() {
 
             it("as a cached column", []() {
 
-                sqlite_testdb.set_cache_level(sqlite::cache::ResultSet);
+                sqlite_testdb.cache_level(sqlite::cache::ResultSet);
 
                 auto col = get_sqlite_column<sqlite::cached_column>("last_name");
 

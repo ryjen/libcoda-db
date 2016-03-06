@@ -72,7 +72,7 @@ namespace arg3
                  * sets the cache level
                  * @param level of caching
                  */
-                void set_cache_level(cache::level level);
+                db &cache_level(cache::level level);
 
                 /*!
                  * gets the cache level for this database

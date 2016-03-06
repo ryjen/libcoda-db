@@ -70,6 +70,34 @@ go_bandit([]() {
 
             AssertThrows(database_exception, db.open());
         });
+
+        it("can disable caching", []() {
+            mysql::db other(mysql_testdb);
+
+            other.open();
+
+            other.flags(0);
+
+            Assert::That(other.flags(), Equals(0));
+
+            insert_query insert(&other);
+
+            insert.into("users").columns({"first_name", "last_name"}).values("harry", "potter");
+
+            Assert::That(insert.execute(), IsTrue());
+
+            auto rs = other.execute("select * from users");
+
+            Assert::That(rs.size(), Equals(1));
+
+            select_query select(&other);
+
+            select.from("users");
+
+            rs = select.execute();
+
+            Assert::That(rs.size(), Equals(1));
+        });
     });
 
 });

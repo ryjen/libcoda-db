@@ -51,7 +51,13 @@ namespace arg3
             /*!
              * sets flags for this query (@see query flags)
              */
-            modify_query &set_flags(int value);
+            modify_query &flags(int value);
+
+            /*!
+             * gets the flags for this query
+             * @return the query flags
+             */
+            int flags() const;
 
             /*!
              * executes this query using a replace statement
@@ -68,7 +74,6 @@ namespace arg3
             int flags_;
             int numChanges_;
         };
-
     }
 }
 

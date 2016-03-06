@@ -164,10 +164,11 @@ namespace arg3
 
                 shared_ptr<resultset_impl> impl;
 
-                if (cache_level() == cache::ResultSet)
+                if (cache_level() == cache::ResultSet) {
                     impl = make_shared<cached_resultset>(this, shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
-                else
+                } else {
                     impl = make_shared<resultset>(this, shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
+                }
 
                 resultset_type set(impl);
 
@@ -181,9 +182,10 @@ namespace arg3
                 return make_shared<statement>(this);
             }
 
-            void db::set_cache_level(cache::level level)
+            db &db::cache_level(cache::level level)
             {
                 cacheLevel_ = level;
+                return *this;
             }
 
             cache::level db::cache_level() const

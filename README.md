@@ -364,10 +364,22 @@ Caching
 -------
 
 For sqlite3 databases, results from a query will have a dependency on a database pointer that must remain open.
-Memory caching was add to pre-fetch the values and eliminate the dependency if needed.  It can be done at the resultset, row or column level.
-Mysql has pre-fetching built-in and it is used within the library.
+Memory caching was add to pre-fetch the values and eliminate the dependency if needed.  It can be done at the resultset, row or column level.  The default is none.
 
-Caching is also used for looking up schemas to reduce hits to the database.
+```c++
+  sqlite::db mydb;
+  mydb.cache_level(sqlite::cache::row);
+```
+
+Mysql has pre-fetching built-in and it is used within the library.  It is enabled by default.
+
+an example of turning caching off in mysql:
+```c++
+  mysql::db mydb;
+  mydb.flags(mydb.flags() & ~mysql::db::CACHE);
+```
+
+Memory caching is also used for looking up schemas to reduce hits to the database.
 
 Alternatives
 ============

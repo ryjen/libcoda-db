@@ -50,10 +50,15 @@ namespace arg3
             return numChanges_;
         }
 
-        modify_query &modify_query::set_flags(int value)
+        modify_query &modify_query::flags(int value)
         {
             flags_ = value;
             return *this;
+        }
+
+        int modify_query::flags() const
+        {
+            return flags_;
         }
 
         int modify_query::execute()
@@ -82,6 +87,5 @@ namespace arg3
 
             return numChanges_;
         }
-
     }
 }

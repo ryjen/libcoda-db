@@ -46,7 +46,7 @@ void run_tests(sqldb* db, const char* name)
 
     insert_query insert(db);
 
-    insert.set_flags(insert_query::Batch);
+    insert.flags(insert_query::Batch);
 
     insert.into(user::TABLE_NAME).columns({"first_name", "last_name", "dval"});
 

@@ -42,15 +42,15 @@ namespace arg3
                 }
             }
 
-            db::db(const uri &connInfo) : sqldb(connInfo), db_(nullptr)
+            db::db(const uri &connInfo) : sqldb(connInfo), db_(nullptr), flags_(CACHE)
             {
             }
 
-            db::db(const db &other) : sqldb(other), db_(other.db_)
+            db::db(const db &other) : sqldb(other), db_(other.db_), flags_(other.flags_)
             {
             }
 
-            db::db(db &&other) : sqldb(other), db_(other.db_)
+            db::db(db &&other) : sqldb(other), db_(other.db_), flags_(other.flags_)
             {
                 other.db_ = nullptr;
             }
@@ -60,6 +60,7 @@ namespace arg3
                 sqldb::operator=(other);
 
                 db_ = other.db_;
+                flags_ = other.flags_;
 
                 return *this;
             }
@@ -69,6 +70,7 @@ namespace arg3
                 sqldb::operator=(std::move(other));
 
                 db_ = other.db_;
+                flags_ = other.flags_;
                 other.db_ = nullptr;
 
                 return *this;
@@ -76,6 +78,17 @@ namespace arg3
 
             db::~db()
             {
+            }
+
+            db &db::flags(int value)
+            {
+                flags_ = value;
+                return *this;
+            }
+
+            int db::flags() const
+            {
+                return flags_;
             }
 
             void db::open()

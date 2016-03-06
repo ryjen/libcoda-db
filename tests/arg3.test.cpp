@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     }
 
     // run the cached test
-    sqlite_testdb.set_cache_level(arg3::db::sqlite::cache::ResultSet);
+    sqlite_testdb.cache_level(arg3::db::sqlite::cache::ResultSet);
     cout << "setting cache level" << endl;
     if (bandit::run(argc, argv)) {
         return 1;
