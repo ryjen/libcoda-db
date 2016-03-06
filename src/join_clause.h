@@ -21,11 +21,11 @@ namespace arg3
         {
            public:
             /*! types of sql joins */
-            typedef enum { none, natural, inner, left, right, full, cross } type;
+            typedef enum { none, natural, inner, left, right, full, cross } types;
 
            private:
             std::string tableName_;
-            type type_;
+            types type_;
             where_clause on_;
 
            public:
@@ -36,7 +36,7 @@ namespace arg3
              * @param tableName the required name of the table to join
              * @param joinType the type of sql query (default inner)
              */
-            explicit join_clause(const std::string &tableName, type joinType = none);
+            explicit join_clause(const std::string &tableName, types type = none);
 
             /*! boilerplate rule of 3 + move */
             join_clause(const join_clause &other);
@@ -65,13 +65,25 @@ namespace arg3
              * sets the join type
              * @param value the join type
              */
-            join_clause &set_type(type value);
+            join_clause &type(types value);
+
+            /*!
+             * gets the type of join
+             * @return the join type
+             */
+            types type() const;
 
             /*!
              * sets the table name
              * @param value the table name to set
              */
-            join_clause &set_table_name(const std::string &value);
+            join_clause &table(const std::string &value);
+
+            /*!
+             * gets the table for this join
+             * @return the table name
+             */
+            std::string table() const;
 
             /*!
              * sets the sql to join on (example 'col1 = col2')
@@ -87,12 +99,20 @@ namespace arg3
             join_clause &on(const where_clause &value);
 
             /*!
+             * get the on portion of the join clause
+             * @return the where clause
+             */
+            const where_clause &on() const;
+
+            /*!
              * the explicit cast operator to sql string representation
              */
             explicit operator std::string();
         };
 
-        /* simplify type name */
+        /*!
+         * simplify the type name
+         */
         typedef join_clause join;
 
         /*!

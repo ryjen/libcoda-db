@@ -213,6 +213,23 @@ go_bandit([]() {
             });
         });
 
+        it("can union another", []() {
+            select_query query(testdb);
+
+            query.from("users");
+
+            select_query other(testdb);
+
+            other.from("user_settings");
+
+            query.union_with(other);
+
+            Assert::That(query.to_string(), Equals("SELECT * FROM users UNION SELECT * FROM user_settings;"));
+
+            query.union_with(other, union_all);
+
+            Assert::That(query.to_string(), Equals("SELECT * FROM users UNION ALL SELECT * FROM user_settings;"));
+        });
     });
 
 });

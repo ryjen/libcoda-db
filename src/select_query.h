@@ -15,6 +15,9 @@ namespace arg3
     namespace db
     {
         class sqldb;
+        struct union_clause;
+
+        typedef enum { union_default, union_all } union_type;
 
         /*!
          * a query to select values from a table
@@ -30,6 +33,7 @@ namespace arg3
             std::string joinBy_;
             std::vector<std::string> columns_;
             std::string tableName_;
+            std::shared_ptr<union_clause> union_;
 
            public:
             /*!
@@ -176,7 +180,7 @@ namespace arg3
              * @param  type      the type of join
              * @return           a join clause to perform additional modification
              */
-            join_clause &join(const std::string &tableName, join::type type = join::inner);
+            join_clause &join(const std::string &tableName, join::types type = join::inner);
 
             /*!
              * sets the join clause for this query
@@ -184,6 +188,14 @@ namespace arg3
              * @return       a reference to this
              */
             select_query &join(const join_clause &value);
+
+            /*!
+             * sets a union query
+             * @param  query the query to union with
+             * @param  type  the type of union
+             * @return       a reference to this instance
+             */
+            select_query &union_with(const select_query &query, union_type type = union_default);
 
             /*!
              * converts this query into a sql string
@@ -254,6 +266,22 @@ namespace arg3
                 return col->to_value();
             }
         };
+
+        /*!
+         * union's one select query with another
+         */
+        struct union_clause {
+            select_query query;
+            union_type type;
+            union_clause(const select_query &query, union_type type) : query(query), type(type)
+            {
+            }
+        };
+
+        /*!
+         * output stream operator for a select query
+         */
+        std::ostream &operator<<(std::ostream &out, const select_query &other);
     }
 }
 

@@ -161,6 +161,43 @@ go_bandit([]() {
 
             Assert::That(rs.size(), Equals(1));
         });
+
+        it("can set the table name", []() {
+            join_clause join;
+
+            join.table("user_settings s").on("u.id = s.user_id");
+
+            Assert::That(join.table(), Equals("user_settings s"));
+        });
+        it("can set the type", []() {
+            join_clause join;
+
+            join.type(join::left).table("user_settings s").on("u.id = s.user_id");
+
+            Assert::That(join.type(), Equals(join::left));
+        });
+        it("can use a where clause", []() {
+            join_clause join;
+            where_clause where("u.id = s.user_id");
+
+            where and ("s.valid = 1");
+
+            join.table("user_settings s").on(where);
+
+            Assert::That(join.on().to_string(), Equals("u.id = s.user_id AND s.valid = 1"));
+        });
+
+        it("can reset", []() {
+            join_clause join("user_settings s");
+
+            join.on("u.id = s.user_id");
+
+            Assert::That(join.to_string(), Equals(" JOIN user_settings s ON u.id = s.user_id"));
+
+            join.reset();
+
+            Assert::That(join.empty(), IsTrue());
+        });
     });
 
 });

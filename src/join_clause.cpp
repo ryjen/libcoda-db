@@ -12,7 +12,7 @@ namespace arg3
         {
         }
 
-        join_clause::join_clause(const string &tableName, join::type type) : tableName_(tableName), type_(type)
+        join_clause::join_clause(const string &tableName, types type) : tableName_(tableName), type_(type)
         {
         }
 
@@ -50,47 +50,57 @@ namespace arg3
 
             switch (type_) {
                 default:
-                case join::none:
+                case none:
                     break;
-                case join::natural:
+                case natural:
                     buf << " NATURAL";
                     break;
-                case join::inner:
+                case inner:
                     buf << " INNER";
                     break;
-                case join::left:
+                case left:
                     buf << " LEFT";
                     break;
-                case join::right:
+                case right:
                     buf << " RIGHT";
                     break;
-                case join::full:
+                case full:
                     buf << " FULL OUTER";
                     break;
-                case join::cross:
+                case cross:
                     buf << " CROSS";
                     break;
             }
 
             buf << " JOIN " << tableName_;
 
-            if (type_ != join::cross) {
+            if (type_ != cross) {
                 buf << " ON " << on_;
             }
 
             return buf.str();
         }
 
-        join_clause &join_clause::set_table_name(const string &value)
+        join_clause &join_clause::table(const string &value)
         {
             tableName_ = value;
             return *this;
         }
 
-        join_clause &join_clause::set_type(join::type value)
+        std::string join_clause::table() const
+        {
+            return tableName_;
+        }
+
+        join_clause &join_clause::type(types value)
         {
             type_ = value;
             return *this;
+        }
+
+        join_clause::types join_clause::type() const
+        {
+            return type_;
         }
 
         where_clause &join_clause::on(const string &value)
@@ -103,6 +113,11 @@ namespace arg3
         {
             on_ = value;
             return *this;
+        }
+
+        const where_clause &join_clause::on() const
+        {
+            return on_;
         }
 
         bool join_clause::empty() const

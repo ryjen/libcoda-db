@@ -153,7 +153,7 @@ namespace arg3
             return *this;
         }
 
-        join_clause &select_query::join(const string &tableName, join::type type)
+        join_clause &select_query::join(const string &tableName, join::types type)
         {
             join_ = join_clause(tableName, type);
             return join_;
@@ -162,6 +162,12 @@ namespace arg3
         select_query &select_query::join(const join_clause &value)
         {
             join_ = value;
+            return *this;
+        }
+
+        select_query &select_query::union_with(const select_query &query, union_type type)
+        {
+            union_ = make_shared<union_clause>(query, type);
             return *this;
         }
 
@@ -195,8 +201,15 @@ namespace arg3
                 buf << " GROUP BY " << groupBy_;
             }
 
-            buf << ";";
-
+            if (union_) {
+                buf << " UNION ";
+                if (union_->type == union_all) {
+                    buf << "ALL ";
+                }
+                buf << union_->query;
+            } else {
+                buf << ";";
+            }
             return buf.str();
         }
 
@@ -245,6 +258,12 @@ namespace arg3
         {
             query::reset();
             stmt_ = nullptr;
+        }
+
+        std::ostream &operator<<(std::ostream &out, const select_query &other)
+        {
+            out << other.to_string();
+            return out;
         }
     }
 }
