@@ -36,6 +36,7 @@ go_bandit([]() {
 
         it("can be constructed", []() {
             insert_query query(testdb, "users");
+
 #if TEST_POSTGRES
             Assert::That(query.to_string(), Equals("INSERT INTO users() VALUES() RETURNING id;"));
 #else
@@ -51,24 +52,6 @@ go_bandit([]() {
 
             Assert::That(moved.to_string(), Equals(other.to_string()));
 
-        });
-
-        it("can be assigned", []() {
-            update_query query(testdb, "users");
-
-            update_query other(testdb, "other_users");
-
-            other = query;
-
-            Assert::That(query.to_string(), Equals(other.to_string()));
-
-            update_query moved(testdb, "moved_users");
-
-            moved = std::move(query);
-
-            Assert::That(query.is_valid(), Equals(false));
-
-            Assert::That(moved.to_string(), Equals(other.to_string()));
         });
 
         it("can modify", []() {

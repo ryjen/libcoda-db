@@ -109,6 +109,12 @@ namespace arg3
             }
 
             /*!
+             * gets the where clause
+             * @return the where clause
+             */
+            const where_clause &where() const;
+
+            /*!
              * a rename of the bind_all method so it makes sense to the query language
              * @param value a value to bind
              * @param argv the variadic list of values to bind
@@ -136,7 +142,6 @@ namespace arg3
             std::vector<std::string> columns_;
             std::string tableName_;
         };
-
     }
 }
 

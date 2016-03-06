@@ -15,6 +15,7 @@ set(TEST-SOURCES
   schema.test.cpp
   schema_factory.test.cpp
   select_query.test.cpp
+  update_query.test.cpp
 )
 
 add_executable (${PROJECT_NAME}-test-mysql

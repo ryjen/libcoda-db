@@ -7,7 +7,6 @@ namespace arg3
 {
     namespace db
     {
-
         /*!
          * @param db the database to modify
          * @param tableName the table to modify
@@ -132,5 +131,9 @@ namespace arg3
             return where_;
         }
 
+        const where_clause &update_query::where() const
+        {
+            return where_;
+        }
     }
 }
