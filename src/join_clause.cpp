@@ -58,13 +58,13 @@ namespace arg3
                 case join::inner:
                     buf << " INNER";
                     break;
-                case join::left_outer:
-                    buf << " LEFT OUTER";
+                case join::left:
+                    buf << " LEFT";
                     break;
-                case join::right_outer:
-                    buf << " RIGHT OUTER";
+                case join::right:
+                    buf << " RIGHT";
                     break;
-                case join::full_outer:
+                case join::full:
                     buf << " FULL OUTER";
                     break;
                 case join::cross:

@@ -23,7 +23,6 @@ Building
 After cloning run the following command to initialize submodules:
 
 ```bash
-
 git submodule update --init --recursive
 ```
 
@@ -188,8 +187,6 @@ Indexed binding parameters in queries should follow a doller sign index format:
 
  '$1', '$2', '$3', etc.
 
- NOTE: mysql implementation does not support re-using or re-arranging indexed parameters in a query string (02/09/16).
-
 Named parameters are also supported using a '@' or ':' prefix:
 
   'id = @id', 'name = :name', etc.
@@ -209,10 +206,11 @@ insert_query insert(&testdb);
 insert.into("users").columns({"id", "first_name", "last_name"})
       .values(4321, "dave", "patterson");
 
-if (!query.execute())
+if (!query.execute()) {
     cerr << testdb.last_error() << endl;
-else
+} else {
     cout << "last insert id " << query.last_insert_id() << endl;
+}
 ```
 
 ```c++
@@ -382,10 +380,10 @@ TODO / ROADMAP
 ==============
 
 * More and better quality tests, I demand 100% coverage
-* Support index parameter reuse in mysql
+* compare benchmarks with other libraries
 
-
-Buy me a beer! [![BitCoin donate button](https://img.shields.io/badge/bitcoin-donate-yellow.svg)](https://coinbase.com/checkouts/9ef59f5479eec1d97d63382c9ebcb93a "Donate once-off to this project using BitCoin")
+[![BitCoin donate button](https://img.shields.io/badge/bitcoin-donate-yellow.svg)](https://coinbase.com/checkouts/9ef59f5479eec1d97d63382c9ebcb93a "Donate once-off to this project using BitCoin")
+Buy me a beer! 
 
 
 

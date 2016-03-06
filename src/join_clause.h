@@ -21,7 +21,7 @@ namespace arg3
         {
            public:
             /*! types of sql joins */
-            typedef enum { none, natural, inner, left_outer, right_outer, full_outer, cross } type;
+            typedef enum { none, natural, inner, left, right, full, cross } type;
 
            private:
             std::string tableName_;

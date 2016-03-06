@@ -22,6 +22,13 @@ go_bandit([]() {
 
             u1.save();
 
+            user u2(testdb);
+
+            u2.set("first_name", "Jason");
+            u2.set("last_name", "Hendrick");
+
+            u2.save();
+
             insert_query query(testdb, "user_settings", {"user_id", "valid", "created_at"});
 
             time_t curr_time_val = time(0);
@@ -32,6 +39,7 @@ go_bandit([]() {
 
             query.execute();
         });
+
         after_each([]() { teardown_testdb(); });
 
         it("can be copied", []() {
@@ -40,6 +48,10 @@ go_bandit([]() {
             clause.on("columnA = columnB");
 
             join_clause other(clause);
+
+            Assert::That(other.to_string(), Equals(clause.to_string()));
+
+            other = clause;
 
             Assert::That(other.to_string(), Equals(clause.to_string()));
         });
@@ -51,7 +63,17 @@ go_bandit([]() {
 
             string test = clause.to_string();
 
-            join_clause&& other(std::move(clause));
+            join_clause other(std::move(clause));
+
+            Assert::That(other.to_string(), Equals(test));
+
+            join_clause temp("tablename");
+
+            temp.on("columnA = columnB");
+
+            test = temp.to_string();
+
+            other = std::move(temp);
 
             Assert::That(other.to_string(), Equals(test));
         });
@@ -70,51 +92,54 @@ go_bandit([]() {
         it("can be a cross join", []() {
             select_query query(testdb);
 
-            query.from("users u").join("user_settings s", join::cross);
+            query.from("users u").join("user_settings s", join::cross).on("u.id = s.user_id") and ("s.valid = 1");
 
             auto rs = query.execute();
 
-            Assert::That(rs.size() >= 1, IsTrue());
+            Assert::That(rs.size(), Equals(2));
         });
 
+#if !defined(TEST_MYSQL) && !defined(TEST_SQLITE)
         it("can be full outer", []() {
             select_query query(testdb);
 
-            query.from("users u").join("user_settings s", join::full_outer);
+            query.from("users u").join("user_settings s", join::full).on("u.id = s.user_id") and ("s.valid = 1");
 
             auto rs = query.execute();
 
-            Assert::That(rs.size() >= 1, IsTrue());
+            Assert::That(rs.size(), Equals(2));
         });
-
-        it("can be a right outer", []() {
+#endif
+#if !defined(TEST_SQLITE)
+        it("can be a right", []() {
             select_query query(testdb);
 
-            query.from("users u").join("user_settings s", join::right_outer);
+            query.from("users u").join("user_settings s", join::right).on("u.id = s.user_id") and ("s.valid = 1");
 
             auto rs = query.execute();
 
-            Assert::That(rs.size() >= 1, IsTrue());
+            Assert::That(rs.size(), Equals(1));
         });
+#endif
 
-        it("can be a left outer", []() {
+        it("can be a left", []() {
             select_query query(testdb);
 
-            query.from("users u").join("user_settings s", join::left_outer);
+            query.from("users u").join("user_settings s", join::left).on("u.id = s.user_id") and ("s.valid = 1");
 
             auto rs = query.execute();
 
-            Assert::That(rs.size() >= 1, IsTrue());
+            Assert::That(rs.size(), Equals(2));
         });
 
         it("can be a inner", []() {
             select_query query(testdb);
 
-            query.from("users u").join("user_settings s", join::inner);
+            query.from("users u").join("user_settings s", join::inner).on("u.id = s.user_id") and ("s.valid = 1");
 
             auto rs = query.execute();
 
-            Assert::That(rs.size() >= 1, IsTrue());
+            Assert::That(rs.size(), Equals(1));
         });
 
         it("can be a natural", []() {
@@ -124,17 +149,17 @@ go_bandit([]() {
 
             auto rs = query.execute();
 
-            Assert::That(rs.size() >= 1, IsTrue());
+            Assert::That(rs.size(), Equals(2));
         });
 
         it("can be a default", []() {
             select_query query(testdb);
 
-            query.from("users u").join("user_settings s", join::none);
+            query.from("users u").join("user_settings s", join::none).on("u.id = s.user_id") and ("s.valid = 1");
 
             auto rs = query.execute();
 
-            Assert::That(rs.size() >= 1, IsTrue());
+            Assert::That(rs.size(), Equals(1));
         });
     });
 
