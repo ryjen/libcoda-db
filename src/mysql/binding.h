@@ -13,7 +13,8 @@
 
 #include <mysql/mysql.h>
 #include <string>
-
+#include <unordered_map>
+#include <set>
 #include "../sql_value.h"
 #include "../bindable.h"
 
@@ -39,10 +40,12 @@ namespace arg3
                private:
                 MYSQL_BIND *value_;
                 size_t size_;
+                std::unordered_map<size_t, std::set<size_t>> indexes_;
                 void copy_value(const MYSQL_BIND *other, size_t size);
                 void clear_value();
                 void clear_value(size_t index);
                 bool reallocate_value(size_t index);
+                std::set<size_t> &get_indexes(size_t index);
 
                public:
                 /*!

@@ -49,28 +49,13 @@ namespace arg3
                 return stmt_ != nullptr && stmt_;
             }
 
-            size_t resultset::size() const
-            {
-                if (!is_valid()) {
-                    return 0;
-                }
-
-                int value = PQntuples(stmt_.get());
-
-                if (value < 0) {
-                    return 0;
-                }
-
-                return value;
-            }
-
             bool resultset::next()
             {
                 if (!is_valid()) {
                     return false;
                 }
 
-                return static_cast<unsigned>(++currentRow_) < size();
+                return ++currentRow_ < PQntuples(stmt_.get());
             }
 
             void resultset::reset()

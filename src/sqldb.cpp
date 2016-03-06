@@ -112,7 +112,7 @@ namespace arg3
 
             pkq.from("information_schema.table_constraints tc");
 
-            pkq.join("information_schema.key_column_usage kc").on("kc.table_name = tc.table_name") && "kc.table_schema = tc.table_schema";
+            pkq.join("information_schema.key_column_usage kc").on("kc.table_name = tc.table_name") and ("kc.table_schema = tc.table_schema");
 
             pkq.where("tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = $1", tableName);
 

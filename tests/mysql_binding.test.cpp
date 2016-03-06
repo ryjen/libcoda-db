@@ -150,6 +150,16 @@ go_bandit([]() {
             Assert::That(b.to_value(3).to_time().to_ulong(), Equals(tval));
         });
 
+        it("can reorder and reuse indexes", []() {
+            select_query select(&mysql_testdb);
+
+            select.from("users").where("first_name = $1 or last_name = $1", "Smith");
+
+            auto results = select.execute();
+
+            Assert::That(results.size(), Equals(1));
+        });
+
     });
 
 });

@@ -120,6 +120,7 @@ namespace arg3
             auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), named_regex);
             auto match_end = std::sregex_iterator();
 
+            mappings_.clear();
             unsigned index = 0;
             for (auto match = match_begin; match != match_end; ++match) {
                 add_named_param(match->str(), ++index);

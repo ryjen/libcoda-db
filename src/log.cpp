@@ -61,7 +61,7 @@ namespace arg3
 
                 strftime(buf, 80, "%Y-%m-%d %H:%M:%S", localtime(&curTime.tv_sec));
 
-                fprintf(log::file, "%s:%ld %s: ", buf, (curTime.tv_usec / 1000), LevelNames[level]);
+                fprintf(log::file, "%s:%03d %s: ", buf, unsigned(curTime.tv_usec / 1000), LevelNames[level]);
 
                 vfprintf(log::file, format, args);
                 fputs("\n", log::file);

@@ -50,14 +50,6 @@ namespace arg3
                 return stmt_ != nullptr && stmt_;
             }
 
-            size_t resultset::size() const
-            {
-                if (!is_valid()) {
-                    return 0;
-                }
-                return sqlite3_column_count(stmt_.get());
-            }
-
             bool resultset::next()
             {
                 if (!is_valid()) {
@@ -83,6 +75,7 @@ namespace arg3
                 if (sqlite3_reset(stmt_.get()) != SQLITE_OK) {
                     throw database_exception(db_->last_error());
                 }
+                status_ = -1;
             }
 
             resultset::row_type resultset::current_row()
@@ -98,7 +91,7 @@ namespace arg3
             cached_resultset::cached_resultset(sqlite::db *db, shared_ptr<sqlite3_stmt> stmt) : db_(db), currentRow_(-1)
             {
                 if (stmt == nullptr) {
-                    throw database_exception("cached_resultset:: invalidate statement");
+                    throw database_exception("postgres cached resultset invalidate statement");
                 }
 
                 int status = sqlite3_step(stmt.get());
@@ -132,11 +125,6 @@ namespace arg3
             bool cached_resultset::is_valid() const
             {
                 return db_ != NULL;
-            }
-
-            size_t cached_resultset::size() const
-            {
-                return rows_.size();
             }
 
             bool cached_resultset::next()

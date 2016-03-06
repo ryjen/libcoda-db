@@ -73,17 +73,20 @@ namespace arg3
                     return false;
                 }
 
-                if (!is_valid() || !db_->is_open()) return false;
+                if (!is_valid() || !db_->is_open()) {
+                    return false;
+                }
 
-                bool value = (row_ = mysql_fetch_row(res_.get())) != nullptr;
+                row_ = mysql_fetch_row(res_.get());
+
+                bool value = row_ != nullptr;
 
                 if (!value && !mysql_more_results(db_->db_.get())) {
-                    MYSQL_RES *temp;
-                    if ((temp = mysql_use_result(db_->db_.get())) != nullptr) {
+                    MYSQL_RES *temp = mysql_use_result(db_->db_.get());
+                    if (temp != nullptr) {
                         res_ = shared_ptr<MYSQL_RES>(temp, helper::res_delete());
-                        value = (row_ = mysql_fetch_row(temp)) != nullptr;
-                    } else {
-                        res_ = nullptr;
+                        row_ = mysql_fetch_row(temp);
+                        value = row_ != nullptr;
                     }
                 }
 
@@ -101,17 +104,6 @@ namespace arg3
             {
                 return row_type(make_shared<mysql::row>(db_, res_, row_));
             }
-
-            size_t resultset::size() const
-            {
-                if (res_ == nullptr) {
-                    return 0;
-                }
-
-                return mysql_num_fields(res_.get());
-            }
-
-
             /* Statement version */
 
             stmt_resultset::stmt_resultset(mysql::db *db, const shared_ptr<MYSQL_STMT> &stmt)
@@ -158,8 +150,7 @@ namespace arg3
 
             void stmt_resultset::prepare_results()
             {
-                if (stmt_ == nullptr || !stmt_ || bindings_ != nullptr || status_ != -1) {
-                    log::warn("invalid stmt_result::prepare_results");
+                if (stmt_ == nullptr || !stmt_ || status_ != -1) {
                     return;
                 }
 
@@ -225,7 +216,7 @@ namespace arg3
             void stmt_resultset::reset()
             {
                 if (!is_valid()) {
-                    log::warn("stmt_resultset::reset invalid");
+                    log::warn("mysql stmt resultset reset invalid");
                     return;
                 }
 
@@ -239,16 +230,6 @@ namespace arg3
             resultset::row_type stmt_resultset::current_row()
             {
                 return row_type(make_shared<stmt_row>(db_, stmt_, metadata_, bindings_));
-            }
-
-            size_t stmt_resultset::size() const
-            {
-                if (!is_valid()) {
-                    log::warn("mysql resultset size invalid");
-                    return 0;
-                }
-
-                return mysql_stmt_field_count(stmt_.get());
             }
         }
     }

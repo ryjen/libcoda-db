@@ -201,7 +201,7 @@ go_bandit([]() {
 
             query.from("users");
 
-            query.where("first_name = @name or last_name = @name");
+            query.where("first_name = @name OR last_name = @name");
 
             query.bind("@name", "Bryan");
 

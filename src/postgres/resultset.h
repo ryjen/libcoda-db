@@ -55,7 +55,6 @@ namespace arg3
                 row_type current_row();
                 void reset();
                 bool next();
-                size_t size() const;
             };
         }
     }

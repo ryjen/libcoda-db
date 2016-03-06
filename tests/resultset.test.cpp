@@ -79,13 +79,15 @@ go_bandit([]() {
 
             auto rs = q.from("users").execute();
 
-            Assert::That(rs.size() >= 2, IsTrue());
+            Assert::That(rs.size() == 2, IsTrue());
 
             auto i = rs.begin();
 
+            Assert::That(i != rs.end(), IsTrue());
+
             Assert::That(i->column(1).to_value(), Equals("Bryan"));
 
-            i++;
+            ++i;
 
             Assert::That(i != rs.end(), IsTrue());
 

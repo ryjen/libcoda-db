@@ -501,153 +501,194 @@ namespace arg3
                 return true;
             }
 
+            std::set<size_t> &binding::get_indexes(size_t index)
+            {
+                auto &indexes = indexes_[index];
+
+                if (indexes.size() == 0) {
+                    indexes.insert(index);
+                }
+                return indexes;
+            }
+
             /**
              * binding methods ensure the dynamic array is sized properly and store the value as a memory pointer
              */
-
             binding &binding::bind(size_t index, int value)
             {
-                if (reallocate_value(index)) {
-                    value_[index - 1].buffer_type = MYSQL_TYPE_LONG;
-                    value_[index - 1].buffer = helper::to_ptr(value);
-                    value_[index - 1].buffer_length = sizeof(value);
-                } else {
-                    log::error("unable to reallocate bindings for index %ld", index);
+                for (size_t i : get_indexes(index)) {
+                    if (reallocate_value(i)) {
+                        value_[i - 1].buffer_type = MYSQL_TYPE_LONG;
+                        value_[i - 1].buffer = helper::to_ptr(value);
+                        value_[i - 1].buffer_length = sizeof(value);
+                    } else {
+                        log::error("unable to reallocate bindings for index %ld", index);
+                        break;
+                    }
                 }
 
                 return *this;
             }
             binding &binding::bind(size_t index, unsigned value)
             {
-                if (reallocate_value(index)) {
-                    value_[index - 1].buffer_type = MYSQL_TYPE_LONG;
-                    value_[index - 1].buffer = helper::to_ptr(value);
-                    value_[index - 1].buffer_length = sizeof(value);
-                    value_[index - 1].is_unsigned = 1;
-                } else {
-                    log::error("unable to reallocate bindings for index %ld", index);
+                for (size_t i : get_indexes(index)) {
+                    if (reallocate_value(i)) {
+                        value_[i - 1].buffer_type = MYSQL_TYPE_LONG;
+                        value_[i - 1].buffer = helper::to_ptr(value);
+                        value_[i - 1].buffer_length = sizeof(value);
+                        value_[i - 1].is_unsigned = 1;
+                    } else {
+                        log::error("unable to reallocate bindings for index %ld", index);
+                        break;
+                    }
                 }
 
                 return *this;
             }
             binding &binding::bind(size_t index, long long value)
             {
-                if (reallocate_value(index)) {
-                    value_[index - 1].buffer_type = MYSQL_TYPE_LONGLONG;
-                    value_[index - 1].buffer = helper::to_ptr(value);
-                    value_[index - 1].buffer_length = sizeof(value);
-                } else {
-                    log::error("unable to reallocate bindings for index %ld", index);
+                for (size_t i : get_indexes(index)) {
+                    if (reallocate_value(i)) {
+                        value_[i - 1].buffer_type = MYSQL_TYPE_LONGLONG;
+                        value_[i - 1].buffer = helper::to_ptr(value);
+                        value_[i - 1].buffer_length = sizeof(value);
+                    } else {
+                        log::error("unable to reallocate bindings for index %ld", index);
+                        break;
+                    }
                 }
 
                 return *this;
             }
             binding &binding::bind(size_t index, unsigned long long value)
             {
-                if (reallocate_value(index)) {
-                    value_[index - 1].buffer_type = MYSQL_TYPE_LONGLONG;
-                    value_[index - 1].buffer = helper::to_ptr(value);
-                    value_[index - 1].buffer_length = sizeof(value);
-                    value_[index - 1].is_unsigned = 1;
-                } else {
-                    log::error("unable to reallocate bindings for index %ld", index);
+                for (size_t i : get_indexes(index)) {
+                    if (reallocate_value(i)) {
+                        value_[i - 1].buffer_type = MYSQL_TYPE_LONGLONG;
+                        value_[i - 1].buffer = helper::to_ptr(value);
+                        value_[i - 1].buffer_length = sizeof(value);
+                        value_[i - 1].is_unsigned = 1;
+                    } else {
+                        log::error("unable to reallocate bindings for index %ld", index);
+                        break;
+                    }
                 }
 
                 return *this;
             }
             binding &binding::bind(size_t index, float value)
             {
-                if (reallocate_value(index)) {
-                    value_[index - 1].buffer_type = MYSQL_TYPE_FLOAT;
-                    value_[index - 1].buffer = helper::to_ptr(value);
-                    value_[index - 1].buffer_length = sizeof(value);
-                } else {
-                    log::error("unable to reallocate bindings for index %ld", index);
+                for (size_t i : get_indexes(index)) {
+                    if (reallocate_value(i)) {
+                        value_[i - 1].buffer_type = MYSQL_TYPE_FLOAT;
+                        value_[i - 1].buffer = helper::to_ptr(value);
+                        value_[i - 1].buffer_length = sizeof(value);
+                    } else {
+                        log::error("unable to reallocate bindings for index %ld", index);
+                        break;
+                    }
                 }
 
                 return *this;
             }
             binding &binding::bind(size_t index, double value)
             {
-                if (reallocate_value(index)) {
-                    value_[index - 1].buffer_type = MYSQL_TYPE_DOUBLE;
-                    value_[index - 1].buffer = helper::to_ptr(value);
-                    value_[index - 1].buffer_length = sizeof(value);
-                } else {
-                    log::error("unable to reallocate bindings for index %ld", index);
+                for (size_t i : get_indexes(index)) {
+                    if (reallocate_value(i)) {
+                        value_[i - 1].buffer_type = MYSQL_TYPE_DOUBLE;
+                        value_[i - 1].buffer = helper::to_ptr(value);
+                        value_[i - 1].buffer_length = sizeof(value);
+                    } else {
+                        log::error("unable to reallocate bindings for index %ld", index);
+                        break;
+                    }
                 }
 
                 return *this;
             }
             binding &binding::bind(size_t index, const std::string &value, int len)
             {
-                if (reallocate_value(index)) {
-                    value_[index - 1].buffer_type = MYSQL_TYPE_STRING;
-                    auto size = len == -1 ? value.size() : len;
-                    value_[index - 1].buffer = strdup(value.c_str());
-                    value_[index - 1].buffer_length = size;
-                    if (!value_[index - 1].length) {
-                        value_[index - 1].length = c_alloc<unsigned long>();
+                for (size_t i : get_indexes(index)) {
+                    if (reallocate_value(i)) {
+                        value_[i - 1].buffer_type = MYSQL_TYPE_STRING;
+                        auto size = len == -1 ? value.size() : len;
+                        value_[i - 1].buffer = strdup(value.c_str());
+                        value_[i - 1].buffer_length = size;
+                        if (!value_[i - 1].length) {
+                            value_[i - 1].length = c_alloc<unsigned long>();
+                        }
+                        *value_[i - 1].length = size;
+                    } else {
+                        log::error("unable to reallocate bindings for index %ld", index);
+                        break;
                     }
-                    *value_[index - 1].length = size;
-                } else {
-                    log::error("unable to reallocate bindings for index %ld", index);
                 }
 
                 return *this;
             }
             binding &binding::bind(size_t index, const std::wstring &value, int len)
             {
-                if (reallocate_value(index)) {
-                    value_[index - 1].buffer_type = MYSQL_TYPE_STRING;
-                    auto size = len == -1 ? value.size() : len;
-                    value_[index - 1].buffer = wcsdup(value.c_str());
-                    value_[index - 1].buffer_length = size;
-                    if (!value_[index - 1].length) {
-                        value_[index - 1].length = c_alloc<unsigned long>();
+                for (size_t i : get_indexes(index)) {
+                    if (reallocate_value(i)) {
+                        value_[i - 1].buffer_type = MYSQL_TYPE_STRING;
+                        auto size = len == -1 ? value.size() : len;
+                        value_[i - 1].buffer = wcsdup(value.c_str());
+                        value_[i - 1].buffer_length = size;
+                        if (!value_[i - 1].length) {
+                            value_[i - 1].length = c_alloc<unsigned long>();
+                        }
+                        *value_[i - 1].length = size;
+                    } else {
+                        log::error("unable to reallocate bindings for index %ld", index);
+                        break;
                     }
-                    *value_[index - 1].length = size;
-                } else {
-                    log::error("unable to reallocate bindings for index %ld", index);
                 }
 
                 return *this;
             }
             binding &binding::bind(size_t index, const sql_blob &value)
             {
-                if (reallocate_value(index)) {
-                    value_[index - 1].buffer_type = MYSQL_TYPE_BLOB;
-                    void *ptr = c_alloc(value.size());
-                    memcpy(ptr, value.value(), value.size());
-                    value_[index - 1].buffer = ptr;
-                    value_[index - 1].buffer_length = value.size();
-                    if (!value_[index - 1].length) {
-                        value_[index - 1].length = c_alloc<unsigned long>();
+                for (size_t i : get_indexes(index)) {
+                    if (reallocate_value(i)) {
+                        value_[i - 1].buffer_type = MYSQL_TYPE_BLOB;
+                        void *ptr = c_alloc(value.size());
+                        memcpy(ptr, value.value(), value.size());
+                        value_[i - 1].buffer = ptr;
+                        value_[i - 1].buffer_length = value.size();
+                        if (!value_[i - 1].length) {
+                            value_[i - 1].length = c_alloc<unsigned long>();
+                        }
+                        *value_[i - 1].length = value.size();
+                    } else {
+                        log::warn("unable to reallocate bindings for index %ld", index);
+                        break;
                     }
-                    *value_[index - 1].length = value.size();
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
                 }
-
                 return *this;
             }
 
             binding &binding::bind(size_t index, const sql_null_type &value)
             {
-                if (reallocate_value(index)) {
-                    value_[index - 1].buffer_type = MYSQL_TYPE_NULL;
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
+                for (size_t i : get_indexes(index)) {
+                    if (reallocate_value(i)) {
+                        value_[i - 1].buffer_type = MYSQL_TYPE_NULL;
+                    } else {
+                        log::warn("unable to reallocate bindings for index %ld", index);
+                        break;
+                    }
                 }
                 return *this;
             }
 
             binding &binding::bind(size_t index, const sql_time &value)
             {
-                if (reallocate_value(index)) {
-                    data_mapper::set_time(&value_[index - 1], value);
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
+                for (size_t i : get_indexes(index)) {
+                    if (reallocate_value(i)) {
+                        data_mapper::set_time(&value_[i - 1], value);
+                    } else {
+                        log::warn("unable to reallocate bindings for index %ld", index);
+                        break;
+                    }
                 }
 
                 return *this;
@@ -685,6 +726,24 @@ namespace arg3
             std::string binding::prepare(const std::string &sql)
             {
                 static std::regex param_regex("(\\$[0-9]+|[@:]\\w+)");
+
+                static std::regex index_regex("\\$([0-9]+)");
+
+                auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), index_regex);
+                auto match_end = std::sregex_iterator();
+
+                indexes_.clear();
+
+                unsigned index = 0;
+                for (auto i = match_begin; i != match_end; ++i) {
+                    auto match = *i;
+                    try {
+                        auto pos = std::stol(match[1].str());
+                        indexes_[pos].insert(++index);
+                    } catch (const std::exception &e) {
+                        log::error(e.what());
+                    }
+                }
 
                 bind_mapping::prepare(sql);
 

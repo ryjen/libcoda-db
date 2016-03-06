@@ -119,30 +119,17 @@ namespace arg3
 
             auto results = query.execute();
 
-            if (!results.is_valid() || results.size() == 0) {
+            if (!results.is_valid()) {
                 return;
             }
 
-            funk(std::make_shared<T>(*results.begin()));
-        }
+            auto it = results.begin();
 
-        /*!
-         * finds one record for a column value
-         * @param schema the schema find records for
-         * @param funk the callback function for each record found
-         */
-        template <typename T>
-        inline void find_one(const std::shared_ptr<schema> &schema, const typename record<T>::callback &funk)
-        {
-            select_query query(schema);
-
-            auto results = query.execute();
-
-            if (!results.is_valid() || results.size() == 0) {
+            if (it == results.end()) {
                 return;
             }
 
-            funk(std::make_shared<T>(*results.begin()));
+            funk(std::make_shared<T>(*it));
         }
 
         /*!
@@ -159,22 +146,6 @@ namespace arg3
             std::shared_ptr<T> item;
 
             db::find_one<T>(schema, name, value, [&item](std::shared_ptr<T> record) { item = record; });
-
-            return item;
-        }
-
-        /*!
-         * finds one record for a column value
-         * @param schema the schema find records for
-         * @return a vector of results found
-         */
-        template <typename T>
-        inline std::shared_ptr<T> find_one(const std::shared_ptr<schema> &schema)
-        {
-            /* convert sql rows to objects */
-            std::shared_ptr<T> item;
-
-            db::find_one<T>(schema, [&item](std::shared_ptr<T> record) { item = record; });
 
             return item;
         }
@@ -458,7 +429,7 @@ namespace arg3
              */
             bool has(const std::string &name) const
             {
-                return values_.size() > 0 && values_.count(name) > 0;
+                return !name.empty() && values_.size() > 0 && values_.count(name) > 0;
             }
 
             /*!

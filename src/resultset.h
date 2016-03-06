@@ -56,12 +56,6 @@ namespace arg3
              * resets this resultset back to the first row
              */
             virtual void reset() = 0;
-
-            /*!
-             * gets the number of rows in the results
-             * @return the number of rows
-             */
-            virtual size_t size() const = 0;
         };
 
         /*!
@@ -76,8 +70,13 @@ namespace arg3
             NonConst value_;
 
            public:
-            resultset_iterator(const std::shared_ptr<resultset_impl> &rset, int position) : rs_(rset), pos_(position), value_(rset->current_row())
+            resultset_iterator(const std::shared_ptr<resultset_impl> &rset, int position) : rs_(rset), pos_(position)
             {
+                if (position >= 0) {
+                    value_ = rset->current_row();
+                } else {
+                    value_ = NonConst();
+                }
             }
 
             resultset_iterator(const resultset_iterator &other) : rs_(other.rs_), pos_(other.pos_), value_(other.value_)

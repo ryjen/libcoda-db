@@ -56,7 +56,6 @@ namespace arg3
                 resultset::row_type current_row();
                 void reset();
                 bool next();
-                size_t size() const;
             };
 
             /*!
@@ -96,7 +95,6 @@ namespace arg3
                 stmt_resultset::row_type current_row();
                 void reset();
                 bool next();
-                size_t size() const;
             };
 
             namespace helper

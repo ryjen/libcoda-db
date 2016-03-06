@@ -59,12 +59,12 @@ namespace arg3
 
         size_t resultset::size() const
         {
-            return impl_->size();
+            return distance(begin(), end());
         }
 
         bool resultset::empty() const
         {
-            return impl_->size() == 0;
+            return begin() == end();
         }
 
         void resultset::for_each(const std::function<void(const row &row)> &funk) const

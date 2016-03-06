@@ -40,21 +40,13 @@ void test_move_resultset(std::function<shared_ptr<resultset_impl>()> funk)
 
     auto f2 = funk();
 
-    auto f1Value = f1->size();
-
-    auto f2Value = f2->size();
-
     T c2(std::move(*static_pointer_cast<T>(f1)));
 
     Assert::That(c2.is_valid(), IsTrue());
 
-    Assert::That(c2.size() == f1Value, IsTrue());
-
     c2 = std::move(*static_pointer_cast<T>(f2));
 
     Assert::That(c2.is_valid(), IsTrue());
-
-    Assert::That(c2.size() == f2Value, IsTrue());
 }
 
 template <typename T>
