@@ -13,6 +13,12 @@ namespace arg3
 {
     namespace db
     {
+        namespace join
+        {
+            /*! types of sql joins */
+            typedef enum { none, inner, left, right, natural, full, cross } type;
+        }
+
         /*!
          * a utility class aimed at making join statements
          * ex. join("tablename").on("a", "b");
@@ -20,12 +26,9 @@ namespace arg3
         class join_clause
         {
            public:
-            /*! types of sql joins */
-            typedef enum { none, natural, inner, left, right, full, cross } types;
-
            private:
             std::string tableName_;
-            types type_;
+            join::type type_;
             where_clause on_;
 
            public:
@@ -36,7 +39,7 @@ namespace arg3
              * @param tableName the required name of the table to join
              * @param joinType the type of sql query (default inner)
              */
-            explicit join_clause(const std::string &tableName, types type = none);
+            explicit join_clause(const std::string &tableName, join::type type = join::none);
 
             /*! boilerplate rule of 3 + move */
             join_clause(const join_clause &other);
@@ -65,13 +68,13 @@ namespace arg3
              * sets the join type
              * @param value the join type
              */
-            join_clause &type(types value);
+            join_clause &type(join::type value);
 
             /*!
              * gets the type of join
              * @return the join type
              */
-            types type() const;
+            join::type type() const;
 
             /*!
              * sets the table name
@@ -109,11 +112,6 @@ namespace arg3
              */
             explicit operator std::string();
         };
-
-        /*!
-         * simplify the type name
-         */
-        typedef join_clause join;
 
         /*!
          * stream operator for joins

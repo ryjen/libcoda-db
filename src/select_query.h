@@ -15,9 +15,12 @@ namespace arg3
     namespace db
     {
         class sqldb;
-        struct union_clause;
+        struct union_operator;
 
-        typedef enum { union_default, union_all } union_type;
+        namespace union_op
+        {
+            typedef enum { none, all } type;
+        }
 
         /*!
          * a query to select values from a table
@@ -30,10 +33,9 @@ namespace arg3
             std::string limit_;
             std::string orderBy_;
             std::string groupBy_;
-            std::string joinBy_;
             std::vector<std::string> columns_;
             std::string tableName_;
-            std::shared_ptr<union_clause> union_;
+            std::shared_ptr<union_operator> union_;
 
            public:
             /*!
@@ -180,7 +182,7 @@ namespace arg3
              * @param  type      the type of join
              * @return           a join clause to perform additional modification
              */
-            join_clause &join(const std::string &tableName, join::types type = join::inner);
+            join_clause &join(const std::string &tableName, join::type type = join::inner);
 
             /*!
              * sets the join clause for this query
@@ -195,7 +197,7 @@ namespace arg3
              * @param  type  the type of union
              * @return       a reference to this instance
              */
-            select_query &union_with(const select_query &query, union_type type = union_default);
+            select_query &union_with(const select_query &query, union_op::type type = union_op::none);
 
             /*!
              * converts this query into a sql string
@@ -270,13 +272,14 @@ namespace arg3
         /*!
          * union's one select query with another
          */
-        struct union_clause {
+        struct union_operator {
             select_query query;
-            union_type type;
-            union_clause(const select_query &query, union_type type) : query(query), type(type)
+            union_op::type type;
+            union_operator(const select_query &query, union_op::type type = union_op::none) : query(query), type(type)
             {
             }
         };
+
 
         /*!
          * output stream operator for a select query

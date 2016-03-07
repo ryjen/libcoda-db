@@ -226,7 +226,7 @@ go_bandit([]() {
 
             Assert::That(query.to_string(), Equals("SELECT * FROM users UNION SELECT * FROM user_settings;"));
 
-            query.union_with(other, union_all);
+            query.union_with(other, union_op::all);
 
             Assert::That(query.to_string(), Equals("SELECT * FROM users UNION ALL SELECT * FROM user_settings;"));
         });

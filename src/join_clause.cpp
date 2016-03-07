@@ -12,7 +12,7 @@ namespace arg3
         {
         }
 
-        join_clause::join_clause(const string &tableName, types type) : tableName_(tableName), type_(type)
+        join_clause::join_clause(const string &tableName, join::type type) : tableName_(tableName), type_(type)
         {
         }
 
@@ -50,31 +50,31 @@ namespace arg3
 
             switch (type_) {
                 default:
-                case none:
+                case join::none:
                     break;
-                case natural:
+                case join::natural:
                     buf << " NATURAL";
                     break;
-                case inner:
+                case join::inner:
                     buf << " INNER";
                     break;
-                case left:
+                case join::left:
                     buf << " LEFT";
                     break;
-                case right:
+                case join::right:
                     buf << " RIGHT";
                     break;
-                case full:
+                case join::full:
                     buf << " FULL OUTER";
                     break;
-                case cross:
+                case join::cross:
                     buf << " CROSS";
                     break;
             }
 
             buf << " JOIN " << tableName_;
 
-            if (type_ != cross) {
+            if (type_ != join::cross) {
                 buf << " ON " << on_;
             }
 
@@ -92,13 +92,13 @@ namespace arg3
             return tableName_;
         }
 
-        join_clause &join_clause::type(types value)
+        join_clause &join_clause::type(join::type value)
         {
             type_ = value;
             return *this;
         }
 
-        join_clause::types join_clause::type() const
+        join::type join_clause::type() const
         {
             return type_;
         }

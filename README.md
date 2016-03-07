@@ -310,7 +310,7 @@ insert_query insert(&testdb);
 insert.into("users").columns({"counter"});
 
 /* turn on batch mode for this query */
-insert.set_flags(modify_query::Batch);
+insert.flags(insert_query::Batch);
 
 for(int i = 1000; i < 3000; i++) {
     insert.bind(1, i);
@@ -363,15 +363,16 @@ query.bind(1, value);
 Caching
 -------
 
-For sqlite3 databases, results from a query will have a dependency on a database pointer that must remain open.
-Memory caching was add to pre-fetch the values and eliminate the dependency if needed.  It can be done at the resultset, row or column level.  The default is none.
+For sqlite3 and mysql databases, results from a query will be limited to the scope of the statement.
+
+For sqlite, memory caching was add to pre-fetch the values.  It can be done at the resultset, row or column level.  The default is none.
 
 ```c++
   sqlite::db mydb;
   mydb.cache_level(sqlite::cache::row);
 ```
 
-Mysql has pre-fetching built-in and it is used within the library.  It is enabled by default.
+Mysql has pre-fetching built-in and it is used within the library.  It is enabled by default. 
 
 an example of turning caching off in mysql:
 ```c++
@@ -391,6 +392,7 @@ Alternatives
 TODO / ROADMAP
 ==============
 
+* transactions / sessions
 * More and better quality tests, I demand 100% coverage
 * compare benchmarks with other libraries
 
