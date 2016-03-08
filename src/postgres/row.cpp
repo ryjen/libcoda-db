@@ -1,6 +1,6 @@
 #include "row.h"
 #include "column.h"
-#include "db.h"
+#include "session.h"
 
 #ifdef HAVE_LIBPQ
 

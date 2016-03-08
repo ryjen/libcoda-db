@@ -7,7 +7,7 @@
 #include "row.h"
 #include "column.h"
 #include "binding.h"
-#include "db.h"
+#include "session.h"
 
 using namespace std;
 

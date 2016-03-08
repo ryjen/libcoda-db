@@ -2,6 +2,7 @@
 #define ARG3_DB_SQLDB_H
 
 #include <unordered_map>
+#include <memory>
 #include "uri.h"
 #include "session_factory.h"
 

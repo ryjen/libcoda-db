@@ -1,5 +1,5 @@
 #include "resultset.h"
-#include "db.h"
+#include "session.h"
 #include "row.h"
 
 #ifdef HAVE_LIBPQ

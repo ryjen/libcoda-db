@@ -13,7 +13,7 @@ namespace arg3
 {
     namespace db
     {
-        class session;
+        typedef class session session_type;
 
         /*!
          * Definition of a column in a schema
@@ -37,7 +37,7 @@ namespace arg3
         class schema
         {
            private:
-            std::shared_ptr<session> session_;
+            std::shared_ptr<session_type> session_;
             std::string tableName_;
             std::vector<column_definition> columns_;
 
@@ -46,7 +46,7 @@ namespace arg3
              * @param db the database in use
              * @param tablename the tablename to query
              */
-            schema(const std::shared_ptr<session> &session, const std::string &tablename);
+            schema(const std::shared_ptr<session_type> &sess, const std::string &tablename);
 
             /* boilerplate */
             virtual ~schema();
@@ -110,7 +110,7 @@ namespace arg3
              * gets the database for this schema
              * @return the database object
              */
-            std::shared_ptr<session> session() const;
+            std::shared_ptr<session_type> session() const;
         };
     }
 }

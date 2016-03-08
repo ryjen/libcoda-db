@@ -5,10 +5,9 @@
 #ifdef HAVE_LIBMYSQLCLIENT
 
 #include "resultset.h"
-#include "db.h"
+#include "session.h"
 #include "row.h"
 #include "binding.h"
-#include "session.h"
 #include "../log.h"
 
 using namespace std;

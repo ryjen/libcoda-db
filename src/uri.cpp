@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <type_traits>
+#include <algorithm>
 #include "uri.h"
 
 using namespace std;
