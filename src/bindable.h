@@ -7,6 +7,7 @@
 
 #include <unordered_map>
 #include <set>
+#include <regex>
 #include "sql_value.h"
 #include "exception.h"
 
@@ -48,6 +49,10 @@ namespace arg3
             }
 
            public:
+            static std::regex param_regex;
+            static std::regex index_regex;
+            static std::regex named_regex;
+
             template <typename T, typename... List>
             bindable &bind_all(const T &value, const List &... argv)
             {
@@ -167,10 +172,11 @@ namespace arg3
         class bind_mapping : public bindable
         {
            protected:
-            typedef std::unordered_map<std::string, std::set<unsigned>> type;
+            typedef std::unordered_map<std::string, std::set<size_t>> type;
 
-            void add_named_param(const std::string &name, unsigned index);
-            void rem_named_param(const std::string &name, unsigned index);
+            void add_named_param(const std::string &name, size_t index);
+            void rem_named_param(const std::string &name, size_t index);
+            std::set<size_t> get_named_param_indexes(const std::string &name);
 
            public:
             bind_mapping();

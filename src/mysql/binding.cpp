@@ -725,31 +725,37 @@ namespace arg3
 
             std::string binding::prepare(const std::string &sql)
             {
-                static std::regex param_regex("\\$([0-9]+)|[@:]\\w+");
+                // setup the named parameters
+                bind_mapping::prepare(sql);
 
-                auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), param_regex);
+                // now build the list of indexes
+                auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), bindable::index_regex);
                 auto match_end = std::sregex_iterator();
 
                 indexes_.clear();
 
                 unsigned index = 0;
                 for (auto i = match_begin; i != match_end; ++i) {
-                    auto match = *i;
-                    if (match.str()[0] != '$') {
-                        ++index;
-                        continue;
-                    }
-                    try {
-                        auto pos = std::stol(match[1].str());
-                        indexes_[pos].insert(++index);
-                    } catch (const std::exception &e) {
-                        log::error(e.what());
+                    auto str = i->str();
+                    switch (str[0]) {
+                        // if its a ? parameter...
+                        case '?': {
+                            // then go to the next index
+                            ++index;
+                            break;
+                        }
+                        case '$': {
+                            auto sub = *i;
+                            // if its a $ parameter, mapp the real index
+                            auto pos = std::stol(sub[1].str());
+                            indexes_[pos].insert(++index);
+                            break;
+                        }
                     }
                 }
 
-                bind_mapping::prepare(sql);
-
-                return regex_replace(sql, param_regex, std::string("?"));
+                // replace all parameters to the mysql ? parameters
+                return regex_replace(sql, bindable::param_regex, std::string("?"));
             }
         }
     }

@@ -321,10 +321,10 @@ namespace arg3
                 if (exists) {
                     update_query query(schema(), cols_to_save);
 
+                    bind_columns_to_query(query, cols_to_save);
+
                     query.where(pk + " = @" + pk);
                     query.bind("@" + pk, get(pk));
-
-                    bind_columns_to_query(query, cols_to_save);
 
                     rval = query.execute();
                 } else {

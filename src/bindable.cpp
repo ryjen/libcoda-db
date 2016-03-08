@@ -1,4 +1,4 @@
-#include <regex>
+
 #include "bindable.h"
 #include "exception.h"
 #include "log.h"
@@ -7,6 +7,10 @@ namespace arg3
 {
     namespace db
     {
+        std::regex bindable::param_regex("[@:]\\w+|\\$([0-9]+)|\\?");
+        std::regex bindable::index_regex("\\$([0-9]+)|\\?");
+        std::regex bindable::named_regex("[@:]\\w+");
+
         bindable &bindable::bind_value(size_t index, const sql_value &value)
         {
             switch (value.type()) {
@@ -94,7 +98,7 @@ namespace arg3
             return *this;
         }
 
-        void bind_mapping::add_named_param(const std::string &name, unsigned index)
+        void bind_mapping::add_named_param(const std::string &name, size_t index)
         {
             if (name.empty()) {
                 return;
@@ -103,7 +107,7 @@ namespace arg3
             mappings_[name].insert(index);
         }
 
-        void bind_mapping::rem_named_param(const std::string &name, unsigned index)
+        void bind_mapping::rem_named_param(const std::string &name, size_t index)
         {
             if (name.empty()) {
                 return;
@@ -112,23 +116,41 @@ namespace arg3
             mappings_[name].erase(index);
         }
 
+        std::set<size_t> bind_mapping::get_named_param_indexes(const std::string &name)
+        {
+            if (name.empty()) {
+                return std::set<size_t>();
+            }
+
+            return mappings_[name];
+        }
+
         std::string bind_mapping::prepare(const std::string &sql)
         {
-            static std::regex named_regex("[@:]\\w+|\\$[0-9]+");
-            std::smatch matches;
-
-            auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), named_regex);
+            auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), index_regex);
             auto match_end = std::sregex_iterator();
 
-            mappings_.clear();
-            unsigned index = 0;
+            // determine max index, to add named params at end
+            size_t max_index = 0;
             for (auto match = match_begin; match != match_end; ++match) {
                 auto str = match->str();
                 if (str[0] == '$') {
-                    index++;
-                    continue;
+                    auto sub = *match;
+                    auto pos = std::stol(sub[1].str());
+                    if (pos < max_index) {
+                        continue;
+                    }
                 }
-                add_named_param(match->str(), ++index);
+                ++max_index;
+            }
+
+            mappings_.clear();
+
+            match_begin = std::sregex_iterator(sql.begin(), sql.end(), named_regex);
+            match_end = std::sregex_iterator();
+
+            for (auto match = match_begin; match != match_end; ++match) {
+                add_named_param(match->str(), ++max_index);
             }
 
             return sql;

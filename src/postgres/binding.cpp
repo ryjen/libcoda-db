@@ -428,18 +428,46 @@ namespace arg3
 
             std::string binding::prepare(const string &sql)
             {
-                static std::regex param_regex("\\?|[@:]\\w+");
+                // map the named parameters
                 bind_mapping::prepare(sql);
 
+                // do replacing while searching
                 std::string formatted = sql;
 
-                auto match_begin = std::sregex_iterator(formatted.begin(), formatted.end(), param_regex);
+                auto match_begin = std::sregex_iterator(formatted.begin(), formatted.end(), bindable::param_regex);
                 auto match_end = std::sregex_iterator();
 
                 unsigned index = 0;
                 for (auto match = match_begin; match != match_end; ++match) {
+                    auto str = match->str();
+                    // if the match is already a postgres $ parameter...
+                    if (str[0] == '$') {
+                        auto sub = *match;
+                        auto pos = std::stol(sub[1].str());
+                        // check if the parameter position should increment the index
+                        if (pos <= index) {
+                            ++index;
+                        }
+                        // find next param
+                        continue;
+                    }
+                    // if it is a named parameter...
+                    if (str[0] == '@' || str[0] == ':') {
+                        // get the determined positions for the named parameter
+                        auto mapped = get_named_param_indexes(str);
+                        if (!mapped.empty()) {
+                            // postgres only needs the first determined index as it can re-use parameter indexes
+                            auto pos = *mapped.begin();
+                            // replace the sql with the positional parameter
+                            formatted.replace(match->position(), match->length(), "$" + std::to_string(pos));
+                        }
+                        continue;
+                    }
+
+                    // otherwise, replace the matched paramter with the current index
                     formatted.replace(match->position(), match->length(), "$" + std::to_string(++index));
                 }
+
                 return formatted;
             }
         }
