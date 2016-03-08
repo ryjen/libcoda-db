@@ -5,7 +5,7 @@
 #ifdef HAVE_LIBMYSQLCLIENT
 
 #include "statement.h"
-#include "db.h"
+#include "session.h"
 #include "resultset.h"
 #include "../log.h"
 
@@ -31,27 +31,25 @@ namespace arg3
                 };
             }
 
-            statement::statement(mysql::db *db) : db_(db), stmt_(nullptr)
+            statement::statement(const std::shared_ptr<session> &sess) : sess_(sess), stmt_(nullptr)
             {
-                if (db_ == nullptr) {
+                if (sess_ == nullptr) {
                     throw database_exception("No database provided for mysql statement");
                 }
             }
 
-            statement::statement(statement &&other)
+            statement::statement(statement &&other) : sess_(std::move(other.sess_)), stmt_(std::move(other.stmt_))
             {
-                db_ = other.db_;
-                stmt_ = other.stmt_;
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.stmt_ = nullptr;
             }
 
             statement &statement::operator=(statement &&other)
             {
-                db_ = other.db_;
-                stmt_ = other.stmt_;
+                sess_ = std::move(other.sess_);
+                stmt_ = std::move(other.stmt_);
 
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.stmt_ = nullptr;
 
                 return *this;
@@ -64,11 +62,11 @@ namespace arg3
 
             void statement::prepare(const string &sql)
             {
-                if (db_ == nullptr || !db_->is_open()) {
+                if (sess_ == nullptr || !sess_->is_open()) {
                     throw database_exception("database is not open");
                 }
 
-                MYSQL_STMT *temp = mysql_stmt_init(db_->db_.get());
+                MYSQL_STMT *temp = mysql_stmt_init(sess_->db_.get());
 
                 if (temp == nullptr) {
                     throw database_exception("out of memory");
@@ -79,7 +77,7 @@ namespace arg3
                 string formatted_sql = bindings_.prepare(sql);
 
                 if (mysql_stmt_prepare(stmt_.get(), formatted_sql.c_str(), formatted_sql.length())) {
-                    throw database_exception(db_->last_error());
+                    throw database_exception(sess_->last_error());
                 }
             }
 
@@ -172,7 +170,7 @@ namespace arg3
 
                 bindings_.bind_params(stmt_.get());
 
-                return resultset_type(make_shared<stmt_resultset>(db_, stmt_));
+                return resultset_type(make_shared<stmt_resultset>(sess_, stmt_));
             }
 
             bool statement::result()

@@ -8,6 +8,7 @@
 #include "db.h"
 #include "row.h"
 #include "binding.h"
+#include "session.h"
 #include "../log.h"
 
 using namespace std;
@@ -31,16 +32,17 @@ namespace arg3
             }
 
 
-            resultset::resultset(mysql::db *db, const shared_ptr<MYSQL_RES> &res) : res_(res), row_(nullptr), db_(db)
+            resultset::resultset(const std::shared_ptr<mysql::session> &sess, const shared_ptr<MYSQL_RES> &res)
+                : res_(res), row_(nullptr), sess_(sess)
             {
-                if (db_ == nullptr) {
+                if (sess_ == nullptr) {
                     throw database_exception("database not provided to mysql resultset");
                 }
             }
 
-            resultset::resultset(resultset &&other) : res_(std::move(other.res_)), row_(other.row_), db_(other.db_)
+            resultset::resultset(resultset &&other) : res_(std::move(other.res_)), row_(other.row_), sess_(std::move(other.sess_))
             {
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.res_ = nullptr;
                 other.row_ = nullptr;
             }
@@ -52,9 +54,9 @@ namespace arg3
             resultset &resultset::operator=(resultset &&other)
             {
                 res_ = std::move(other.res_);
-                db_ = other.db_;
+                sess_ = std::move(other.sess_);
                 row_ = other.row_;
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.res_ = nullptr;
                 other.row_ = nullptr;
 
@@ -68,12 +70,12 @@ namespace arg3
 
             bool resultset::next()
             {
-                if (db_ == nullptr) {
+                if (sess_ == nullptr) {
                     log::warn("mysql resultset next: database not open");
                     return false;
                 }
 
-                if (!is_valid() || !db_->is_open()) {
+                if (!is_valid() || !sess_->is_open()) {
                     return false;
                 }
 
@@ -81,8 +83,8 @@ namespace arg3
 
                 bool value = row_ != nullptr;
 
-                if (!value && (db_->flags() & db::CACHE_RESULTS) && !mysql_more_results(db_->db_.get())) {
-                    MYSQL_RES *temp = mysql_use_result(db_->db_.get());
+                if (!value && (sess_->flags() & session::CACHE_RESULTS) && !mysql_more_results(sess_->db_.get())) {
+                    MYSQL_RES *temp = mysql_use_result(sess_->db_.get());
                     if (temp != nullptr) {
                         res_ = shared_ptr<MYSQL_RES>(temp, helper::res_delete());
                         row_ = mysql_fetch_row(temp);
@@ -102,17 +104,17 @@ namespace arg3
 
             resultset::row_type resultset::current_row()
             {
-                return row_type(make_shared<mysql::row>(db_, res_, row_));
+                return row_type(make_shared<mysql::row>(sess_, res_, row_));
             }
             /* Statement version */
 
-            stmt_resultset::stmt_resultset(mysql::db *db, const shared_ptr<MYSQL_STMT> &stmt)
-                : stmt_(stmt), metadata_(nullptr), db_(db), bindings_(nullptr), status_(-1)
+            stmt_resultset::stmt_resultset(const std::shared_ptr<mysql::session> &sess, const shared_ptr<MYSQL_STMT> &stmt)
+                : stmt_(stmt), metadata_(nullptr), sess_(sess), bindings_(nullptr), status_(-1)
             {
                 if (stmt_ == nullptr) {
                     throw database_exception("invalid statement provided to mysql statement resultset");
                 }
-                if (db_ == nullptr) {
+                if (sess_ == nullptr) {
                     throw database_exception("invalid database provided to mysql statement resultset");
                 }
             }
@@ -120,11 +122,11 @@ namespace arg3
             stmt_resultset::stmt_resultset(stmt_resultset &&other)
                 : stmt_(std::move(other.stmt_)),
                   metadata_(std::move(other.metadata_)),
-                  db_(other.db_),
+                  sess_(std::move(other.sess_)),
                   bindings_(std::move(other.bindings_)),
                   status_(other.status_)
             {
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.stmt_ = nullptr;
                 other.bindings_ = nullptr;
                 other.metadata_ = nullptr;
@@ -137,11 +139,11 @@ namespace arg3
             stmt_resultset &stmt_resultset::operator=(stmt_resultset &&other)
             {
                 stmt_ = std::move(other.stmt_);
-                db_ = other.db_;
+                sess_ = std::move(other.sess_);
                 metadata_ = std::move(other.metadata_);
                 bindings_ = std::move(other.bindings_);
                 status_ = other.status_;
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.bindings_ = nullptr;
                 other.metadata_ = nullptr;
 
@@ -175,7 +177,7 @@ namespace arg3
 
                 bindings_->bind_result(stmt_.get());
 
-                if ((db_->flags() & db::CACHE_STATEMENTS) && mysql_stmt_store_result(stmt_.get())) {
+                if ((sess_->flags() & session::CACHE_STATEMENTS) && mysql_stmt_store_result(stmt_.get())) {
                     throw database_exception(helper::last_stmt_error(stmt_.get()));
                 }
             }
@@ -229,7 +231,7 @@ namespace arg3
 
             resultset::row_type stmt_resultset::current_row()
             {
-                return row_type(make_shared<stmt_row>(db_, stmt_, metadata_, bindings_));
+                return row_type(make_shared<stmt_row>(sess_, stmt_, metadata_, bindings_));
             }
         }
     }

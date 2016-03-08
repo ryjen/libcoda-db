@@ -11,9 +11,9 @@ using namespace arg3::db;
 go_bandit([]() {
 
     describe("schema", []() {
-        before_each([]() { setup_testdb(); });
+        before_each([]() { setup_current_session(); });
 
-        after_each([]() { teardown_testdb(); });
+        after_each([]() { teardown_current_session(); });
 
 
         it("has primary keys", []() {
@@ -27,7 +27,7 @@ go_bandit([]() {
         });
 
         it("has operators", []() {
-            schema s(testdb, "users");
+            schema s(current_session, "users");
 
             s.init();
 
@@ -37,13 +37,13 @@ go_bandit([]() {
 
             Assert::That(other.is_valid(), Equals(true));
 
-            schema copy(testdb, "other_users");
+            schema copy(current_session, "other_users");
 
             copy = other;
 
             Assert::That(copy.table_name(), Equals(other.table_name()));
 
-            schema moved(testdb, "moved_users");
+            schema moved(current_session, "moved_users");
 
             moved = std::move(other);
 
@@ -53,7 +53,7 @@ go_bandit([]() {
         });
 
         it("has columns", []() {
-            schema s(testdb, "users");
+            schema s(current_session, "users");
 
             s.init();
 

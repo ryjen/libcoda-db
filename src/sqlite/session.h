@@ -1,8 +1,8 @@
 /*!
- * @file db.h
+ * @file session.h
  */
-#ifndef ARG3_DB_SQLITE_SQLDB_H
-#define ARG3_DB_SQLITE_SQLDB_H
+#ifndef ARG3_DB_SQLITE_SESSION_H
+#define ARG3_DB_SQLITE_SESSION_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -11,7 +11,8 @@
 #ifdef HAVE_LIBSQLITE3
 
 #include <sqlite3.h>
-#include "../sqldb.h"
+#include "../session.h"
+#include "../session_factory.h"
 
 namespace arg3
 {
@@ -27,40 +28,50 @@ namespace arg3
                 typedef enum { None, ResultSet, Row, Column } level;
             }
 
+            class factory : public session_factory
+            {
+               public:
+                arg3::db::session *create(const uri &uri);
+            };
+
             /*!
              * a sqlite specific implementation of a database
              */
-            class db : public sqldb
+            class session : public arg3::db::session
             {
+                friend class factory;
                 friend class statement;
 
                protected:
                 std::shared_ptr<sqlite3> db_;
                 cache::level cacheLevel_;
 
-               public:
+               protected:
                 /*!
                  * @param info   the connection info
                  */
-                db(const uri &info);
+                session(const uri &info);
 
+               public:
                 /* boilerplate */
-                db(const db &other);
-                db(db &&other);
-                db &operator=(const db &other);
-                db &operator=(db &&other);
-                virtual ~db();
+                session(const session &other) = delete;
+                session(session &&other);
+                session &operator=(const session &other) = delete;
+                session &operator=(session &&other);
+                virtual ~session();
 
-                /* sqldb overrides */
+                /* sqlsession overrides */
                 bool is_open() const;
                 void open(int flags);
                 void open();
                 void close();
                 long long last_insert_id() const;
                 int last_number_of_changes() const;
-                resultset_type execute(const std::string &sql);
+                resultset_type query(const std::string &sql);
+                bool execute(const std::string &sql);
                 std::string last_error() const;
                 std::shared_ptr<statement_type> create_statement();
+                transaction_type create_transaction();
 
                 /*! @copydoc
                  *  overriden for sqlite3 specific pragma parsing
@@ -72,7 +83,7 @@ namespace arg3
                  * sets the cache level
                  * @param level of caching
                  */
-                db &cache_level(cache::level level);
+                session &cache_level(cache::level level);
 
                 /*!
                  * gets the cache level for this database

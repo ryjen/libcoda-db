@@ -13,23 +13,23 @@ go_bandit([]() {
 
     describe("a join", []() {
         before_each([&]() {
-            setup_testdb();
+            setup_current_session();
 
-            user u1(testdb);
+            user u1;
 
             u1.set("first_name", "Mike");
             u1.set("last_name", "Jones");
 
             u1.save();
 
-            user u2(testdb);
+            user u2;
 
             u2.set("first_name", "Jason");
             u2.set("last_name", "Hendrick");
 
             u2.save();
 
-            insert_query query(testdb, "user_settings", {"user_id", "valid", "created_at"});
+            insert_query query(current_session, "user_settings", {"user_id", "valid", "created_at"});
 
             time_t curr_time_val = time(0);
 
@@ -40,7 +40,7 @@ go_bandit([]() {
             query.execute();
         });
 
-        after_each([]() { teardown_testdb(); });
+        after_each([]() { teardown_current_session(); });
 
         it("can be copied", []() {
             join_clause clause("tablename");
@@ -80,7 +80,7 @@ go_bandit([]() {
 
         it("can join", []() {
 
-            select_query query(testdb, {"u.id", "s.created_at"});
+            select_query query(current_session, {"u.id", "s.created_at"});
 
             query.from("users u").join("user_settings s").on("u.id = s.user_id") and ("s.valid = 1");
 
@@ -90,7 +90,7 @@ go_bandit([]() {
         });
 
         it("can be a cross join", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             query.from("users u").join("user_settings s", join::cross).on("u.id = s.user_id") and ("s.valid = 1");
 
@@ -101,7 +101,7 @@ go_bandit([]() {
 
 #if !defined(TEST_MYSQL) && !defined(TEST_SQLITE)
         it("can be full outer", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             query.from("users u").join("user_settings s", join::full).on("u.id = s.user_id") and ("s.valid = 1");
 
@@ -112,7 +112,7 @@ go_bandit([]() {
 #endif
 #if !defined(TEST_SQLITE)
         it("can be a right", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             query.from("users u").join("user_settings s", join::right).on("u.id = s.user_id") and ("s.valid = 1");
 
@@ -123,7 +123,7 @@ go_bandit([]() {
 #endif
 
         it("can be a left", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             query.from("users u").join("user_settings s", join::left).on("u.id = s.user_id") and ("s.valid = 1");
 
@@ -133,7 +133,7 @@ go_bandit([]() {
         });
 
         it("can be a inner", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             query.from("users u").join("user_settings s", join::inner).on("u.id = s.user_id") and ("s.valid = 1");
 
@@ -143,17 +143,17 @@ go_bandit([]() {
         });
 
         it("can be a natural", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             query.from("users u").join("user_settings s", join::natural);
 
             auto rs = query.execute();
 
-            Assert::That(rs.size(), Equals(2));
+            Assert::That(rs.size(), Equals(1));
         });
 
         it("can be a default", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             query.from("users u").join("user_settings s", join::none).on("u.id = s.user_id") and ("s.valid = 1");
 

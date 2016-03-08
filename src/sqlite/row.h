@@ -20,7 +20,7 @@ namespace arg3
     {
         namespace sqlite
         {
-            class db;
+            class session;
 
             /*!
              *  a sqlite specific implementation of a row
@@ -29,7 +29,7 @@ namespace arg3
             {
                private:
                 std::shared_ptr<sqlite3_stmt> stmt_;
-                sqlite::db *db_;
+                std::shared_ptr<sqlite::session> sess_;
                 size_t size_;
 
                public:
@@ -37,7 +37,7 @@ namespace arg3
                  * @param db    the database in use
                  * @param stmt  the query statement in use
                  */
-                row(sqlite::db *db, const std::shared_ptr<sqlite3_stmt> &stmt);
+                row(const std::shared_ptr<sqlite::session> &sess, const std::shared_ptr<sqlite3_stmt> &stmt);
 
                 /* non-copyable boilerplate */
                 virtual ~row();
@@ -67,7 +67,7 @@ namespace arg3
                  * @param db    the database in use
                  * @param stmt  the query statement in use
                  */
-                cached_row(sqlite::db *db, std::shared_ptr<sqlite3_stmt> stmt);
+                cached_row(const std::shared_ptr<sqlite::session> &sess, std::shared_ptr<sqlite3_stmt> stmt);
 
                 /* non-copyable boilerplate */
                 virtual ~cached_row();

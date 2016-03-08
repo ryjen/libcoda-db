@@ -58,8 +58,13 @@ namespace arg3
 
             if (and_.size() > 0) {
                 buf << " AND ";
-                for (auto &w : and_) {
-                    buf << w.to_string();
+                auto it = and_.begin();
+                while (it < and_.end() - 1) {
+                    buf << it->to_string() << " AND ";
+                    ++it;
+                }
+                if (it != and_.end()) {
+                    buf << it->to_string();
                 }
                 if (or_.size() > 0) {
                     buf << ")";
@@ -72,8 +77,13 @@ namespace arg3
                 } else {
                     buf << " OR ";
                 }
-                for (auto &w : or_) {
-                    buf << w.to_string();
+                auto it = or_.begin();
+                while (it < or_.end() - 1) {
+                    buf << it->to_string() << " OR ";
+                    ++it;
+                }
+                if (it != or_.end()) {
+                    buf << it->to_string();
                 }
                 if (and_.size() > 0) {
                     buf << ")";

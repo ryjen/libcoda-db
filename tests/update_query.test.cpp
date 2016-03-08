@@ -13,7 +13,7 @@ go_bandit([]() {
     describe("update clause", []() {
 
         it("can be constructed", []() {
-            update_query query(testdb, "users", {"id"});
+            update_query query(current_session, "users", {"id"});
 
             Assert::That(query.to_string(), Equals("UPDATE users SET id = $1;"));
 
@@ -29,15 +29,15 @@ go_bandit([]() {
 
         });
         it("can be assigned", []() {
-            update_query query(testdb, "users");
+            update_query query(current_session, "users");
 
-            update_query other(testdb, "other_users");
+            update_query other(current_session, "other_users");
 
             other = query;
 
             Assert::That(query.to_string(), Equals(other.to_string()));
 
-            update_query moved(testdb, "moved_users");
+            update_query moved(current_session, "moved_users");
 
             moved = std::move(query);
 
@@ -47,7 +47,7 @@ go_bandit([]() {
         });
 
         it("can set the table", []() {
-            update_query query(testdb);
+            update_query query(current_session);
 
             query.table("users");
 
@@ -55,7 +55,7 @@ go_bandit([]() {
         });
 
         it("can set the columns", []() {
-            update_query query(testdb);
+            update_query query(current_session);
 
             query.columns({"id", "first_name"});
 
@@ -63,7 +63,7 @@ go_bandit([]() {
         });
 
         it("can set the where clause", []() {
-            update_query query(testdb);
+            update_query query(current_session);
 
             where_clause clause("a = b");
 

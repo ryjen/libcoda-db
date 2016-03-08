@@ -74,7 +74,7 @@ namespace arg3
 
             buf << " JOIN " << tableName_;
 
-            if (type_ != join::cross) {
+            if (type_ != join::cross && type_ != join::natural) {
                 buf << " ON " << on_;
             }
 

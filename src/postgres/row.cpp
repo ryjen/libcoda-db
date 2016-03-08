@@ -12,9 +12,10 @@ namespace arg3
     {
         namespace postgres
         {
-            row::row(postgres::db *db, const shared_ptr<PGresult> &stmt, int row) : row_impl(), stmt_(stmt), db_(db), row_(row)
+            row::row(const std::shared_ptr<postgres::session> &sess, const shared_ptr<PGresult> &stmt, int row)
+                : row_impl(), stmt_(stmt), sess_(sess), row_(row)
             {
-                if (db_ == NULL) {
+                if (sess_ == NULL) {
                     throw database_exception("no database provided to postgres row");
                 }
 
@@ -25,10 +26,11 @@ namespace arg3
                 size_ = PQnfields(stmt_.get());
             }
 
-            row::row(row &&other) : row_impl(std::move(other)), stmt_(std::move(other.stmt_)), db_(other.db_), size_(other.size_), row_(other.row_)
+            row::row(row &&other)
+                : row_impl(std::move(other)), stmt_(std::move(other.stmt_)), sess_(std::move(other.sess_)), size_(other.size_), row_(other.row_)
             {
                 other.stmt_ = nullptr;
-                other.db_ = NULL;
+                other.sess_ = NULL;
             }
 
             row::~row()
@@ -39,11 +41,11 @@ namespace arg3
             row &row::operator=(row &&other)
             {
                 stmt_ = std::move(other.stmt_);
-                db_ = other.db_;
+                sess_ = std::move(other.sess_);
                 size_ = other.size_;
                 row_ = other.row_;
                 other.stmt_ = nullptr;
-                other.db_ = NULL;
+                other.sess_ = NULL;
 
                 return *this;
             }

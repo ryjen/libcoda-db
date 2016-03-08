@@ -29,7 +29,7 @@ namespace arg3
         {
            private:
             where_clause where_;
-            join_clause join_;
+            std::vector<join_clause> join_;
             std::string limit_;
             std::string orderBy_;
             std::string groupBy_;
@@ -42,14 +42,14 @@ namespace arg3
              * defaults to 'select *'
              * @param db the database in use
              */
-            select_query(sqldb *db);
+            select_query(const std::shared_ptr<arg3::db::session> &session);
 
             /*!
              * @param db        the database in use
              * @param tableName the table name to query
              * @param columns   the columns to query
              */
-            select_query(sqldb *db, const std::vector<std::string> &columns);
+            select_query(const std::shared_ptr<arg3::db::session> &session, const std::vector<std::string> &columns);
 
             /*!
              * @param schema    the schema to query
@@ -61,7 +61,7 @@ namespace arg3
              * @param columns the columns to query
              * @param tableName the table to query from
              */
-            select_query(sqldb *db, const std::vector<std::string> &columns, const std::string &tableName);
+            select_query(const std::shared_ptr<arg3::db::session> &session, const std::vector<std::string> &columns, const std::string &tableName);
 
             /* boilerplate */
             select_query(const select_query &other);
@@ -112,6 +112,12 @@ namespace arg3
              * @return the group by sql string
              */
             std::string group_by() const;
+
+            /*!
+             * gets the where clause for this query
+             * @return the where clause
+             */
+            where_clause where() const;
 
             /*!
              * adds a where clause to this query

@@ -20,9 +20,9 @@ go_bandit([]() {
 
     describe("postgres binding", []() {
         before_each([]() {
-            postgres_testdb.setup();
+            setup_current_session();
 
-            user user1(&postgres_testdb);
+            user user1;
 
             user1.set_id(1);
             user1.set("first_name", "Bryan");
@@ -30,7 +30,7 @@ go_bandit([]() {
 
             user1.save();
 
-            user user2(&postgres_testdb);
+            user user2;
 
             user2.set_id(3);
 
@@ -42,7 +42,7 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { postgres_testdb.teardown(); });
+        after_each([]() { teardown_current_session(); });
 
         it("has a size contructor", []() {
             postgres::binding b(3);
@@ -104,7 +104,7 @@ go_bandit([]() {
         });
 
         it("can handle a bad bind", []() {
-            select_query query(&postgres_testdb);
+            select_query query(current_session);
 
             query.from("users").where("id = $1 and first_name = $2");
 

@@ -10,9 +10,9 @@ using namespace arg3::db;
 go_bandit([]() {
 
     describe("a user record", []() {
-        before_each([]() { setup_testdb(); });
+        before_each([]() { setup_current_session(); });
 
-        after_each([]() { teardown_testdb(); });
+        after_each([]() { teardown_current_session(); });
 
         it("should save", []() {
             try {
@@ -36,7 +36,7 @@ go_bandit([]() {
 
                 Assert::That(user1.get("first_name"), Equals("Bryan"));
             } catch (const database_exception& e) {
-                cerr << "Error1: " << testdb->last_error() << endl;
+                cerr << "Error1: " << current_session->last_error() << endl;
                 throw e;
             }
         });
@@ -50,7 +50,7 @@ go_bandit([]() {
 
                 Assert::That(u1.save(), IsTrue());
 
-                auto lastId = testdb->last_insert_id();
+                auto lastId = current_session->last_insert_id();
 
                 auto u2 = user().find_by_id(lastId);
 

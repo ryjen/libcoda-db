@@ -12,9 +12,10 @@ namespace arg3
     {
         namespace postgres
         {
-            resultset::resultset(postgres::db *db, const shared_ptr<PGresult> &stmt) : stmt_(stmt), db_(db), currentRow_(-1)
+            resultset::resultset(const std::shared_ptr<postgres::session> &sess, const shared_ptr<PGresult> &stmt)
+                : stmt_(stmt), sess_(sess), currentRow_(-1)
             {
-                if (db_ == nullptr) {
+                if (sess_ == nullptr) {
                     throw database_exception("No database provided to postgres resultset");
                 }
 
@@ -23,9 +24,9 @@ namespace arg3
                 }
             }
 
-            resultset::resultset(resultset &&other) : stmt_(std::move(other.stmt_)), db_(other.db_), currentRow_(other.currentRow_)
+            resultset::resultset(resultset &&other) : stmt_(std::move(other.stmt_)), sess_(std::move(other.sess_)), currentRow_(other.currentRow_)
             {
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.stmt_ = nullptr;
             }
 
@@ -36,9 +37,9 @@ namespace arg3
             resultset &resultset::operator=(resultset &&other)
             {
                 stmt_ = std::move(other.stmt_);
-                db_ = other.db_;
+                sess_ = std::move(other.sess_);
                 currentRow_ = other.currentRow_;
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.stmt_ = nullptr;
 
                 return *this;
@@ -65,7 +66,7 @@ namespace arg3
 
             resultset::row_type resultset::current_row()
             {
-                return row_type(make_shared<row>(db_, stmt_, currentRow_));
+                return row_type(make_shared<row>(sess_, stmt_, currentRow_));
             }
         }
     }

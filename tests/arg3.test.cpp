@@ -5,6 +5,8 @@
 #endif
 
 #include "db.test.h"
+#include "sqldb.h"
+#include "sqlite/session.h"
 
 using namespace bandit;
 using namespace std;
@@ -22,18 +24,27 @@ int main(int argc, char *argv[])
     } else {
         arg3::db::log::set_level(arg3::db::log::Error);
     }
+
+    register_test_sessions();
+
 #ifdef HAVE_LIBSQLITE3
 #ifdef TEST_SQLITE
     puts("running sqlite3 tests");
-    testdb = &sqlite_testdb;
+
+    auto sqlite_session = arg3::db::sqldb::create_session<arg3::db::sqlite::session>("file://testdb.db");
+
+    current_session = sqlite_session;
+
     // run the uncached test
     if (bandit::run(argc, argv)) {
         return 1;
     }
 
     // run the cached test
-    sqlite_testdb.cache_level(arg3::db::sqlite::cache::ResultSet);
+    sqlite_session->cache_level(arg3::db::sqlite::cache::ResultSet);
+
     cout << "setting cache level" << endl;
+
     if (bandit::run(argc, argv)) {
         return 1;
     }
@@ -45,12 +56,11 @@ int main(int argc, char *argv[])
 #ifdef HAVE_LIBMYSQLCLIENT
 #ifdef TEST_MYSQL
     puts("running mysql tests");
-    char *host = std::getenv("MYSQL_URI");
-    if (host) {
-        mysql_testdb.set_connection_info(arg3::db::uri(host));
-        cout << "connecting to " << mysql_testdb.connection_info().value << endl;
-    }
-    testdb = &mysql_testdb;
+
+    auto uri_s = get_env_uri("MYSQL_URI", "mysql://localhost/test");
+    current_session = arg3::db::sqldb::create_session(uri_s);
+    cout << "connecting to " << uri_s << endl;
+
     if (bandit::run(argc, argv)) {
         return 1;
     }
@@ -62,12 +72,11 @@ int main(int argc, char *argv[])
 #ifdef HAVE_LIBPQ
 #ifdef TEST_POSTGRES
     puts("running postgres tests");
-    char *host = std::getenv("POSTGRES_URI");
-    if (host) {
-        postgres_testdb.set_connection_info(arg3::db::uri(host));
-        cout << "connecting to " << postgres_testdb.connection_info().value << endl;
-    }
-    testdb = &postgres_testdb;
+
+    auto uri_s = get_env_uri("POSTGRES_URI", "postgres://localhost/test");
+    current_session = arg3::db::sqldb::create_session(uri_s);
+    cout << "connecting to " << uri_s << endl;
+
     if (bandit::run(argc, argv)) {
         return 1;
     }

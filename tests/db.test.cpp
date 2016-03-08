@@ -16,18 +16,7 @@ using namespace std;
 
 using namespace arg3::db;
 
-#if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
-test_mysql_db mysql_testdb;
-sqldb *testdb = &mysql_testdb;
-#elif defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
-test_sqlite3_db sqlite_testdb;
-sqldb *testdb = &sqlite_testdb;
-#elif defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
-test_postgres_db postgres_testdb;
-sqldb *testdb = &postgres_testdb;
-#else
-sqldb *testdb = nullptr;
-#endif
+std::shared_ptr<arg3::db::session> current_session;
 
 std::random_device r;
 std::default_random_engine rand_eng(r());
@@ -43,27 +32,39 @@ std::string get_env_uri(const char *name, const std::string &def)
     return def;
 }
 
-void setup_testdb()
-{
-    try {
-        test_db *thisdb = dynamic_cast<test_db *>(testdb);
 
-        thisdb->setup();
-    } catch (const std::exception &e) {
-        std::cout << e.what() << ": " << testdb->last_error() << std::endl;
-        throw e;
+void register_test_sessions()
+{
+#if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
+    auto sqlite_factory = std::make_shared<test_sqlite3_factory>();
+    sqldb::register_session("file", sqlite_factory);
+    sqldb::register_session("sqlite", sqlite_factory);
+#endif
+#if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
+    auto mysql_factory = std::make_shared<test_mysql_factory>();
+    sqldb::register_session("mysql", mysql_factory);
+#endif
+#if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
+    auto pq_factory = std::make_shared<test_postgres_factory>();
+    sqldb::register_session("postgres", pq_factory);
+    sqldb::register_session("postgresql", pq_factory);
+#endif
+}
+void setup_current_session()
+{
+    auto session = dynamic_pointer_cast<test_session>(current_session);
+
+    if (session) {
+        session->setup();
     }
 }
 
-void teardown_testdb()
+void teardown_current_session()
 {
-    try {
-        test_db *thisdb = dynamic_cast<test_db *>(testdb);
+    auto session = dynamic_pointer_cast<test_session>(current_session);
 
-        thisdb->teardown();
-    } catch (const std::exception &e) {
-        std::cout << e.what() << ": " << testdb->last_error() << std::endl;
-        throw e;
+    if (session) {
+        session->teardown();
     }
 }
 
@@ -83,7 +84,12 @@ string random_name()
 }
 
 #if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
-void test_sqlite3_db::setup()
+arg3::db::session *test_sqlite3_factory::create(const arg3::db::uri &value)
+{
+    return new test_sqlite3_session(value);
+}
+
+void test_sqlite3_session::setup()
 {
     open();
     execute(
@@ -94,17 +100,22 @@ void test_sqlite3_db::setup()
         "timestamp)");
 }
 
-void test_sqlite3_db::teardown()
+void test_sqlite3_session::teardown()
 {
     close();
     unlink(connection_info().path.c_str());
-    schemas()->clear("users");
-    schemas()->clear("user_settings");
+    clear_schema("users");
+    clear_schema("user_settings");
 }
 #endif
 
 #if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
-void test_mysql_db::setup()
+arg3::db::session *test_mysql_factory::create(const arg3::db::uri &value)
+{
+    return new test_mysql_session(value);
+}
+
+void test_mysql_session::setup()
 {
     open();
     execute(
@@ -115,18 +126,22 @@ void test_mysql_db::setup()
         "timestamp)");
 }
 
-void test_mysql_db::teardown()
+void test_mysql_session::teardown()
 {
     execute("drop table users");
     execute("drop table user_settings");
     close();
-    schemas()->clear("users");
-    schemas()->clear("user_settings");
+    clear_schema("users");
+    clear_schema("user_settings");
 }
 #endif
 
 #if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
-void test_postgres_db::setup()
+arg3::db::session *test_postgres_factory::create(const arg3::db::uri &value)
+{
+    return new test_postgres_session(value);
+}
+void test_postgres_session::setup()
 {
     open();
     execute(
@@ -136,37 +151,33 @@ void test_postgres_db::setup()
     execute("create table if not exists user_settings(id serial primary key unique, user_id integer not null, valid smallint, created_at timestamp)");
 }
 
-void test_postgres_db::teardown()
+void test_postgres_session::teardown()
 {
     execute("drop table users");
     execute("drop table user_settings");
     close();
-    schemas()->clear("users");
-    schemas()->clear("user_settings");
+    clear_schema("users");
+    clear_schema("user_settings");
 }
 #endif
 
 go_bandit([]() {
     describe("database", []() {
-        before_each([]() { setup_testdb(); });
-
-        after_each([]() { teardown_testdb(); });
-
         it("can_parse_uri", []() {
             try {
 #ifdef HAVE_LIBSQLITE3
-                auto file = sqldb::from_uri("file://test.db");
+                auto file = sqldb::create_session("file://test.db");
                 AssertThat(file.get() != NULL, IsTrue());
 #endif
 #ifdef HAVE_LIBMYSQLCLIENT
-                auto mysql = sqldb::from_uri("mysql://localhost:4000/test");
+                auto mysql = sqldb::create_session("mysql://localhost:4000/test");
                 AssertThat(mysql.get() != NULL, IsTrue());
                 AssertThat(mysql->connection_info().host, Equals("localhost"));
                 AssertThat(mysql->connection_info().port, Equals("4000"));
                 AssertThat(mysql->connection_info().path, Equals("test"));
 #endif
 #ifdef HAVE_LIBPQ
-                auto postgres = sqldb::from_uri("postgres://localhost:4000/test");
+                auto postgres = sqldb::create_session("postgres://localhost:4000/test");
                 AssertThat(postgres.get() != NULL, IsTrue());
                 AssertThat(mysql->connection_info().host, Equals("localhost"));
                 AssertThat(mysql->connection_info().port, Equals("4000"));

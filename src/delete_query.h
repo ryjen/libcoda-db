@@ -15,7 +15,7 @@ namespace arg3
            public:
             using modify_query::modify_query;
 
-            delete_query(sqldb *db, const std::string &tableName);
+            delete_query(const std::shared_ptr<arg3::db::session> &session, const std::string &tableName);
 
             delete_query(const std::shared_ptr<schema> &schema);
 

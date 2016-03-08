@@ -7,13 +7,14 @@
 #define ARG3_DB_MODIFY_QUERY_H
 
 #include "query.h"
-#include "sqldb.h"
 #include "where_clause.h"
 
 namespace arg3
 {
     namespace db
     {
+        class session;
+
         /*!
          * a query to modify a table
          */
@@ -29,7 +30,7 @@ namespace arg3
             /*!
              * @param db the database in use
              */
-            modify_query(sqldb *db);
+            modify_query(const std::shared_ptr<arg3::db::session> &session);
 
             /*!
              * @param schema the schema to modify

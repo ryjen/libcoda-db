@@ -5,15 +5,16 @@
 #include <unistd.h>
 #include "sqldb.h"
 #include "record.h"
-#include "sqlite/db.h"
-#include "mysql/db.h"
-#include "postgres/db.h"
+#include "sqlite/session.h"
+#include "mysql/session.h"
+#include "postgres/session.h"
+#include "uri.h"
 
 #if !defined(HAVE_LIBMYSQLCLIENT) && !defined(HAVE_LIBSQLITE3) && !defined(HAVE_LIBPQ)
 #error "Mysql, postgres or sqlite is not installed on the system"
 #endif
 
-class test_db
+class test_session
 {
    public:
     virtual void setup() = 0;
@@ -24,76 +25,77 @@ std::string get_env_uri(const char *name, const std::string &def);
 
 #if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
 
-class test_sqlite3_db : public arg3::db::sqlite::db, public test_db
+class test_sqlite3_factory : public arg3::db::session_factory
 {
    public:
-    test_sqlite3_db() : db(arg3::db::uri("file://testdb.db"))
-    {
-    }
+    arg3::db::session *create(const arg3::db::uri &value);
+};
+
+class test_sqlite3_session : public arg3::db::sqlite::session, public test_session
+{
+    friend class test_sqlite3_factory;
+
+   public:
+    using arg3::db::sqlite::session::session;
 
     void setup();
 
     void teardown();
-
-    sqlite3 *rawDb()
-    {
-        return db_.get();
-    }
 };
 
-extern test_sqlite3_db sqlite_testdb;
 #endif
 
 #if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
 
-class test_mysql_db : public arg3::db::mysql::db, public test_db
+class test_mysql_factory : public arg3::db::session_factory
 {
    public:
-    test_mysql_db() : db(arg3::db::uri(get_env_uri("MYSQL_URI", "mysql://test")))
-    {
-    }
+    arg3::db::session *create(const arg3::db::uri &value);
+};
+
+class test_mysql_session : public arg3::db::mysql::session, public test_session
+{
+    friend class test_mysql_factory;
+
+   public:
+    using arg3::db::mysql::session::session;
 
     void setup();
 
     void teardown();
-
-    MYSQL *rawDb()
-    {
-        return db_.get();
-    }
 };
-extern test_mysql_db mysql_testdb;
 
 #endif
 
 #if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
 
-class test_postgres_db : public arg3::db::postgres::db, public test_db
+class test_postgres_factory : public arg3::db::session_factory
 {
    public:
-    test_postgres_db() : db(arg3::db::uri(get_env_uri("POSTGRES_URI", "postgres://localhost/test")))
-    {
-    }
+    arg3::db::session *create(const arg3::db::uri &value);
+};
+
+class test_postgres_session : public arg3::db::postgres::session, public test_session
+{
+    friend class test_postgres_factory;
+
+   public:
+    using arg3::db::postgres::session::session;
 
     void setup();
 
     void teardown();
-
-    PGconn *rawDb()
-    {
-        return db_.get();
-    }
 };
-
-extern test_postgres_db postgres_testdb;
 
 #endif
 
-extern arg3::db::sqldb *testdb;
+extern std::shared_ptr<arg3::db::session> current_session;
 
-void setup_testdb();
+void register_test_sessions();
 
-void teardown_testdb();
+void setup_current_session();
+
+void teardown_current_session();
 
 std::string random_name();
 
@@ -111,41 +113,25 @@ class user : public arg3::db::record<user>
    public:
     constexpr static const char *const TABLE_NAME = "users";
 
-    user(arg3::db::sqldb *db = testdb) : record(db, TABLE_NAME, "id")
+    using arg3::db::record<user>::record;
+
+    user(const std::shared_ptr<arg3::db::session> &session = current_session) : record(session->get_schema(TABLE_NAME))
     {
     }
 
-    user(const arg3::db::row &values, arg3::db::sqldb *db = testdb) : record(db, TABLE_NAME, "id", values)
+    user(long long id, const std::shared_ptr<arg3::db::session> &session = current_session) : user(session->get_schema(TABLE_NAME))
+    {
+        set_id(id);
+        refresh();
+    }
+
+    /*!
+     * required constructor
+     */
+    user(const std::shared_ptr<arg3::db::schema> &schema) : record(schema)
     {
     }
 
-    user(long long id, arg3::db::sqldb *db = testdb) : record(db, TABLE_NAME, "id", id)
-    {
-    }
-
-    user(const user &other) : record(other)
-    {
-    }
-
-    user(user &&other) : record(std::move(other))
-    {
-    }
-
-    ~user()
-    {
-    }
-
-    user &operator=(const user &other)
-    {
-        record::operator=(other);
-        return *this;
-    }
-
-    user &operator=(user &&other)
-    {
-        record::operator=(std::move(other));
-        return *this;
-    }
     std::string to_string()
     {
         std::ostringstream buf;

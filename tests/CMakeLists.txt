@@ -15,6 +15,7 @@ set(TEST-SOURCES
   schema.test.cpp
   schema_factory.test.cpp
   select_query.test.cpp
+  transaction.test.cpp
   update_query.test.cpp
 )
 
@@ -22,9 +23,9 @@ add_executable (${PROJECT_NAME}-test-mysql
 	${TEST-SOURCES}
 	mysql_binding.test.cpp
 	mysql_column.test.cpp
-	mysql_db.test.cpp
 	mysql_resultset.test.cpp
 	mysql_row.test.cpp
+  mysql_session.test.cpp
 	mysql_statement.test.cpp
 )
 
@@ -40,11 +41,11 @@ set_target_properties(${PROJECT_NAME}-test-sqlite PROPERTIES COMPILE_FLAGS "-DTE
 
 add_executable (${PROJECT_NAME}-test-postgres
   ${TEST-SOURCES}
-  postgres_column.test.cpp
-  postgres_db.test.cpp
   postgres_binding.test.cpp
+  postgres_column.test.cpp
   postgres_resultset.test.cpp
   postgres_row.test.cpp
+  postgres_session.test.cpp
   postgres_statement.test.cpp
 )
 

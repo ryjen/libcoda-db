@@ -2,8 +2,8 @@
  * @file db.h
  * a postgres database
  */
-#ifndef POSTGRES_DB_H
-#define POSTGRES_DB_H
+#ifndef ARG3_DB_POSTGRES_SESSION_H
+#define ARG3_DB_POSTGRES_SESSION_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -12,7 +12,8 @@
 #ifdef HAVE_LIBPQ
 
 #include <libpq-fe.h>
-#include "../sqldb.h"
+#include "../session.h"
+#include "../session_factory.h"
 
 namespace arg3
 {
@@ -20,29 +21,35 @@ namespace arg3
     {
         namespace postgres
         {
+            class factory : public session_factory
+            {
+               public:
+                arg3::db::session *create(const uri &uri);
+            };
+
             /*!
              * a mysql specific implementation of a database
              */
-            class db : public sqldb
+            class session : public arg3::db::session
             {
                 friend class statement;
-                friend class resultset;
+                friend class factory;
 
                protected:
                 std::shared_ptr<PGconn> db_;
 
-               public:
                 /*!
                  * @param info the connection uri
                  */
-                db(const uri &info);
+                session(const uri &info);
 
+               public:
                 /* boilerplate */
-                db(const db &other);
-                db(db &&other);
-                db &operator=(const db &other);
-                db &operator=(db &&other);
-                virtual ~db();
+                session(const session &other) = delete;
+                session(session &&other);
+                session &operator=(const session &other) = delete;
+                session &operator=(session &&other);
+                virtual ~session();
 
                 /* sqldb overrides */
                 bool is_open() const;
@@ -51,8 +58,11 @@ namespace arg3
                 long long last_insert_id() const;
                 int last_number_of_changes() const;
                 std::string last_error() const;
-                resultset_type execute(const std::string &sql);
-                std::shared_ptr<statement_type> create_statement();
+                arg3::db::session::resultset_type query(const std::string &sql);
+                bool execute(const std::string &sql);
+                std::shared_ptr<arg3::db::session::statement_type> create_statement();
+                arg3::db::session::transaction_type create_transaction();
+                void query_schema(const std::string &tablename, std::vector<column_definition> &columns);
                 std::string insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
 
                private:
@@ -65,6 +75,6 @@ namespace arg3
     }
 }
 
-
 #endif
+
 #endif

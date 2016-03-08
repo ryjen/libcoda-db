@@ -7,8 +7,7 @@ namespace arg3
 {
     namespace db
     {
-
-        delete_query::delete_query(sqldb *db, const std::string &tableName) : modify_query(db)
+        delete_query::delete_query(const std::shared_ptr<arg3::db::session> &session, const std::string &tableName) : modify_query(session)
         {
             tableName_ = tableName;
         }

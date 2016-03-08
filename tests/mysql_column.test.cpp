@@ -18,7 +18,9 @@ using namespace arg3::db;
 
 shared_ptr<column_impl> get_results_column(size_t index, size_t iterations)
 {
-    auto rs = mysql_testdb.execute("select * from users");
+    auto mysql_session = dynamic_pointer_cast<test_mysql_session>(current_session);
+
+    auto rs = mysql_session->query("select * from users");
 
     if (iterations > 0 && iterations >= rs.size()) {
         throw database_exception("not enough rows");
@@ -39,7 +41,9 @@ shared_ptr<column_impl> get_results_column(size_t index, size_t iterations)
 
 shared_ptr<column_impl> get_stmt_column(size_t index, size_t iterations)
 {
-    select_query query(&mysql_testdb, {}, "users");
+    auto mysql_session = dynamic_pointer_cast<test_mysql_session>(current_session);
+
+    select_query query(mysql_session, {}, "users");
 
     auto rs = query.execute();
 
@@ -87,10 +91,12 @@ void test_move_column(std::function<shared_ptr<column_impl>(size_t, size_t)> fun
 go_bandit([]() {
 
     describe("mysql column", []() {
-        before_each([]() {
-            mysql_testdb.setup();
 
-            user user1(&mysql_testdb);
+        before_each([]() {
+
+            setup_current_session();
+
+            user user1;
 
             user1.set_id(1);
             user1.set("first_name", "Bryan");
@@ -108,7 +114,7 @@ go_bandit([]() {
 
             free(ptr);
 
-            user user2(&mysql_testdb);
+            user user2;
 
             user2.set_id(3);
 
@@ -122,7 +128,7 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { mysql_testdb.teardown(); });
+        after_each([]() { teardown_current_session(); });
 
         describe("is movable", []() {
 

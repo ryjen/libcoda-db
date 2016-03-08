@@ -44,7 +44,7 @@ Model
 -----
 
       /* database interfaces */
-      sqldb                                 - interface for a specific database
+      session                               - interface for an open database session
         └ statement                         - interface for a prepared statement
               └ resultset                   - results of a statement
                     └ row                   - a single result
@@ -53,12 +53,13 @@ Model
       /* implementations using the above*/
       schema                                - a definition of a table
       schema_factory                        - cached schemas
-      base_record                           - the active record (ish) implementation
+      record                                - the active record (ish) implementation
       select_query                          - builds select queries
       insert_query                          - inserts data
       update_query                          - updates data
       delete_query                          - builds delete queries
       sql_value                             - storage and conversion for basic sql types
+      transaction                           - transactional functionality
 
 
 Records
@@ -70,29 +71,27 @@ An simple user example
 Records should be implemented using the [curiously reoccuring template pattern (CRTP)](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
 
 ```c++
-arg3::db::sqlite::db testdb("test.db");
+auto current_session = sqldb::create_session("file://test.db");
 
 /* Other databases
 
-arg3::db::mysql::db testdb(arg3::db::uri("mysql://user@pass:localhost:3306/database"));
-arg3::db::postgres::db testdb(arg3::db::uri("postgres://localhost/test"))
+auto current_session = sqldb::create_session("mysql://user@pass:localhost:3306/database");
+auto current_session = sqldb::create_session("postgres://localhost/test");
 
 */
 
 class user : public arg3::db::record<user>
 {
-    constexpr static const char *const ID_COLUMN = "id";
 public:
     constexpr static const char *const TABLE_NAME = "users";
 
-    /* default constructor, no database hits */
-    user() : record(&testdb, TABLE_NAME, ID_COLUMN) {}
+    /* only required constructor */
+    user(const std::shared_ptr<schema> &schema) : record(schema) 
+    {}
 
-    /* results constructor */
-    user(const row &values) : record(&testdb, TABLE_NAME, ID_COLUMN, values) {}
-
-    /* id constructor, pulls data from database */
-    user(long id) : record(&testdb, TABLE_NAME, ID_COLUMN, id) {}
+    /* default constructor */
+    user(const std::shared_ptr<session> &session = current_session) : record(session->get_schema(TABLE_NAME))
+    {}
 
     /* utility method showing how to get columns */
     string to_string() const
@@ -119,7 +118,7 @@ public:
 Query records
 -------------
 
-Built in record queries include **find_all(), find_by(column, value)** and **find_one(column, value)**.  
+Built in record queries include **find_by_id(), find_all(), find_by()** and **find_one()**.  
 
 example using a callback:
 ```c++
@@ -140,9 +139,7 @@ example using a return value:
 
 the alternative way can be written using schema's instead of the user object:
 ```c++
-  schema_factory schemas(testdb);
-
-  auto schema = schemas.get(user::TABLE_NAME);
+  auto schema = current_session.get_schema(user::TABLE_NAME);
 
   find_xxx<user>(schema, ... [](const shared_ptr<user> &record) {
       cout << "User: " << record->to_string() << endl;
@@ -172,7 +169,9 @@ Save a record
 Delete a record
 ---------------
 ```c++
-    user obj(1); // id constructor
+    user obj;
+
+    obj.set_id(1);
 
     if(!obj.de1ete()) {
         cerr << testdb.last_error() << endl;
@@ -200,7 +199,7 @@ Modify Queries
 --------------
 ```c++
 /* insert a  user (INSERT INTO ...) */
-insert_query insert(&testdb);
+insert_query insert(current_session);
 
 /* insert column values into a table */
 insert.into("users").columns({"id", "first_name", "last_name"})
@@ -215,7 +214,7 @@ if (!query.execute()) {
 
 ```c++
 /* update a user (UPDATE ...) */
-update_query update(&testdb);
+update_query update(current_session);
 
 /* update columns in a table with values */
 update.table("users").columns({"id", "first_name", "last_name"})
@@ -232,7 +231,7 @@ query.execute();
 
 ```c++
 /* delete a user (DELETE FROM ...) */
-delete_query query(&testdb);
+delete_query query(current_session);
 
 query.from("users").where("id = $1 AND first_name = $2", 1234, "bob");
 
@@ -245,7 +244,7 @@ Select Query
 
 ```c++
 /* select some users */
-select_query query(&testdb);
+select_query query(current_session);
 
 query.from("users").where("last_name = $1 OR first_name = $2", "Jenkins", "Harry");
 
@@ -261,9 +260,9 @@ for ( auto &row : results) {
 The select query also supports a call back interface:
 
 ```c++
-select_query query(testdb, "users");
+select_query query(current_session);
 
-query.execute([](const resultset & rs)
+query.from("users").execute([](const resultset & rs)
 {
     // do something with a resultset
 
@@ -293,7 +292,7 @@ The **join_clause** is used to build join statements.
 
 ```c++
 
-select_query select(&testdb, {"u.id", "us.setting"});
+select_query select(current_session, {"u.id", "us.setting"});
 
 select.from("users u").join("user_settings s").on("u.id = s.user_id") and ("s.valid = 1");
 
@@ -305,7 +304,7 @@ Batch Queries
 -------------
 ```c++
 /* execute some raw sql */
-insert_query insert(&testdb);
+insert_query insert(current_session);
 
 insert.into("users").columns({"counter"});
 
@@ -321,10 +320,36 @@ for(int i = 1000; i < 3000; i++) {
 }
 ```
 
-Types
------
+Transactions
+============
 
-The **sql_time** class is a type for dealing with sql date/time formats.
+Transaction can be performed on a session object;
+
+```c++
+auto tx = current_session->create_transaction();
+
+tx->start();
+
+/* perform operations here */
+
+tx->save("savepoint");
+
+/* more operations here */
+
+tx->rollback("savepoint");
+
+tx->commit();
+```
+
+Types
+=====
+
+A [variant](http://github.com/ryjen/arg3variant) class is used for converting and storing data types. A few custom types exist:
+
+sql_time
+--------
+
+A type for dealing with sql date/time formats.
 
 ```c++
 time_t current_time = time(0);
@@ -343,7 +368,8 @@ query.bind(1, value);
 auto str = value.to_string();
 ```
 
-Queries can also handle binary data with **sql_blob**.
+sql_blob
+--------
 
 ```c++
 size_t sz = 30;
@@ -368,15 +394,15 @@ For sqlite3 and mysql databases, results from a query will be limited to the sco
 For sqlite, memory caching was add to pre-fetch the values.  It can be done at the resultset, row or column level.  The default is none.
 
 ```c++
-  sqlite::db mydb;
-  mydb.cache_level(sqlite::cache::row);
+  auto sqlite_session = sqldb::create_session<sqlite::session>("sqlite://testdb.db");
+  sqlite_session->cache_level(sqlite::cache::row);
 ```
 
 Mysql has pre-fetching built-in and it is used within the library.  It is enabled by default. 
 
 an example of turning caching off in mysql:
 ```c++
-  mysql::db mydb;
+  auto mysql_session = sqldb::create_session<mysql::session>("mysql://localhost/test");
   mydb.flags(mydb.flags() & ~mysql::db::CACHE);
 ```
 
@@ -392,7 +418,6 @@ Alternatives
 TODO / ROADMAP
 ==============
 
-* transactions / sessions
 * More and better quality tests, I demand 100% coverage
 * compare benchmarks with other libraries
 

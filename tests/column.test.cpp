@@ -12,7 +12,7 @@ using namespace arg3::db;
 
 column get_user_column(const string &name)
 {
-    select_query q(testdb);
+    select_query q(current_session);
 
     q.from("users");
 
@@ -33,9 +33,9 @@ column get_user_column(const string &name)
 
 go_bandit([]() {
     describe("column", []() {
-        before_each([]() { setup_testdb(); });
+        before_each([]() { setup_current_session(); });
 
-        after_each([]() { teardown_testdb(); });
+        after_each([]() { teardown_current_session(); });
 
         before_each([]() {
             user u;

@@ -5,7 +5,7 @@
 #include <cassert>
 #include "query.h"
 #include "exception.h"
-#include "sqldb.h"
+#include "session.h"
 #include "log.h"
 
 using namespace std;
@@ -14,23 +14,26 @@ namespace arg3
 {
     namespace db
     {
-        query::query(sqldb *db) : db_(db), stmt_(nullptr), params_(), named_params_()
+        query::query(const std::shared_ptr<arg3::db::session> &session) : session_(session), stmt_(nullptr), params_(), named_params_()
         {
-            if (db_ == nullptr) {
+            if (session_ == nullptr) {
                 throw database_exception("No database provided for query");
             }
         }
 
-        query::query(const query &other) noexcept : db_(other.db_), stmt_(other.stmt_), params_(other.params_), named_params_(other.named_params_)
+        query::query(const query &other) noexcept : session_(other.session_),
+                                                    stmt_(other.stmt_),
+                                                    params_(other.params_),
+                                                    named_params_(other.named_params_)
         {
         }
 
-        query::query(query &&other) noexcept : db_(other.db_),
+        query::query(query &&other) noexcept : session_(std::move(other.session_)),
                                                stmt_(std::move(other.stmt_)),
                                                params_(std::move(other.params_)),
                                                named_params_(std::move(other.named_params_))
         {
-            other.db_ = nullptr;
+            other.session_ = nullptr;
             other.stmt_ = nullptr;
         }
 
@@ -40,7 +43,7 @@ namespace arg3
 
         query &query::operator=(const query &other)
         {
-            db_ = other.db_;
+            session_ = other.session_;
             stmt_ = other.stmt_;
             params_ = other.params_;
             named_params_ = other.named_params_;
@@ -49,19 +52,19 @@ namespace arg3
 
         query &query::operator=(query &&other)
         {
-            db_ = other.db_;
+            session_ = std::move(other.session_);
             stmt_ = std::move(other.stmt_);
             params_ = std::move(other.params_);
             named_params_ = std::move(other.named_params_);
-            other.db_ = nullptr;
+            other.session_ = nullptr;
             other.stmt_ = nullptr;
 
             return *this;
         }
 
-        sqldb *query::db() const
+        std::shared_ptr<session> query::session() const
         {
-            return db_;
+            return session_;
         }
 
         void query::prepare(const string &sql)
@@ -72,7 +75,7 @@ namespace arg3
                     return;
                 }
             } else {
-                stmt_ = db_->create_statement();
+                stmt_ = session_->create_statement();
             }
 
             log::trace("Query: %s", sql.c_str());
@@ -195,7 +198,7 @@ namespace arg3
 
         bool query::is_valid() const
         {
-            return db_ != nullptr;
+            return session_ != nullptr;
         }
         void query::reset()
         {

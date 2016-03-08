@@ -1,6 +1,6 @@
 #include "row.h"
 #include "column.h"
-#include "db.h"
+#include "session.h"
 
 #ifdef HAVE_LIBSQLITE3
 
@@ -12,9 +12,9 @@ namespace arg3
     {
         namespace sqlite
         {
-            row::row(sqlite::db *db, const shared_ptr<sqlite3_stmt> &stmt) : row_impl(), stmt_(stmt), db_(db)
+            row::row(const std::shared_ptr<sqlite::session> &sess, const shared_ptr<sqlite3_stmt> &stmt) : row_impl(), stmt_(stmt), sess_(sess)
             {
-                if (db_ == NULL) {
+                if (sess_ == NULL) {
                     throw database_exception("no database provided to sqlite3 row");
                 }
 
@@ -25,10 +25,10 @@ namespace arg3
                 size_ = sqlite3_column_count(stmt_.get());
             }
 
-            row::row(row &&other) : row_impl(std::move(other)), stmt_(other.stmt_), db_(other.db_), size_(other.size_)
+            row::row(row &&other) : row_impl(std::move(other)), stmt_(std::move(other.stmt_)), sess_(std::move(other.sess_)), size_(other.size_)
             {
                 other.stmt_ = nullptr;
-                other.db_ = NULL;
+                other.sess_ = NULL;
             }
 
             row::~row()
@@ -38,11 +38,11 @@ namespace arg3
 
             row &row::operator=(row &&other)
             {
-                stmt_ = other.stmt_;
-                db_ = other.db_;
+                stmt_ = std::move(other.stmt_);
+                sess_ = std::move(other.sess_);
                 size_ = other.size_;
                 other.stmt_ = nullptr;
-                other.db_ = NULL;
+                other.sess_ = NULL;
 
                 return *this;
             }
@@ -53,7 +53,7 @@ namespace arg3
                     throw no_such_column_exception();
                 }
 
-                if (db_->cache_level() == cache::Column)
+                if (sess_->cache_level() == cache::Column)
                     return column_type(make_shared<cached_column>(stmt_, nPosition));
                 else
                     return column_type(make_shared<sqlite::column>(stmt_, nPosition));
@@ -97,9 +97,9 @@ namespace arg3
 
             /* cached version */
 
-            cached_row::cached_row(sqlite::db *db, shared_ptr<sqlite3_stmt> stmt)
+            cached_row::cached_row(const std::shared_ptr<sqlite::session> &sess, shared_ptr<sqlite3_stmt> stmt)
             {
-                if (db == NULL) {
+                if (sess == NULL) {
                     throw database_exception("no database provided to sqlite3 row");
                 }
 
@@ -124,7 +124,7 @@ namespace arg3
 
             cached_row &cached_row::operator=(cached_row &&other)
             {
-                columns_ = other.columns_;
+                columns_ = std::move(other.columns_);
                 other.columns_.clear();
 
                 return *this;

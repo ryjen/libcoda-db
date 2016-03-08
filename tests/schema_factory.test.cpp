@@ -11,36 +11,36 @@ using namespace arg3::db;
 go_bandit([]() {
 
     describe("schema factory", []() {
-        before_each([]() { setup_testdb(); });
+        before_each([]() { setup_current_session(); });
 
-        after_each([]() { teardown_testdb(); });
+        after_each([]() { teardown_current_session(); });
 
         it("has the rule of five", []() {
-            auto schemas = testdb->schemas();
+            schema_factory schemas;
 
-            schema_factory other((sqldb *)1);
+            schema_factory other;
 
-            other = *schemas;
+            other = schemas;
 
-            auto s = other.get("users");
+            auto s = other.get(current_session, "users");
 
             s->init();
 
             Assert::That(s->is_valid(), Equals(true));
 
-            schema_factory moved((sqldb *)1);
+            schema_factory moved;
 
             moved = std::move(other);
 
-            Assert::That(moved.get("users") != nullptr, Equals(true));
+            Assert::That(moved.get(current_session, "users") != nullptr, Equals(true));
 
             schema_factory a(moved);
 
-            Assert::That(a.get("users") != nullptr, Equals(true));
+            Assert::That(a.get(current_session, "users") != nullptr, Equals(true));
 
             schema_factory b(std::move(a));
 
-            Assert::That(a.get("users") != nullptr, Equals(true));
+            Assert::That(a.get(current_session, "users") != nullptr, Equals(true));
 
         });
 

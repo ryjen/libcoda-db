@@ -1,5 +1,6 @@
 #include "insert_query.h"
 #include "log.h"
+#include "session.h"
 
 using namespace std;
 
@@ -7,13 +8,12 @@ namespace arg3
 {
     namespace db
     {
-
         /*!
          * @param db the database to modify
          * @param tableName the table to modify
          * @param columns the columns to modify
          */
-        insert_query::insert_query(sqldb *db, const std::string &tableName) : modify_query(db)
+        insert_query::insert_query(const std::shared_ptr<arg3::db::session> &session, const std::string &tableName) : modify_query(session)
         {
             tableName_ = tableName;
         }
@@ -22,7 +22,9 @@ namespace arg3
          * @param db the database to modify
          * @param columns the columns to modify
          */
-        insert_query::insert_query(sqldb *db, const std::string &tableName, const std::vector<std::string> &columns) : modify_query(db)
+        insert_query::insert_query(const std::shared_ptr<arg3::db::session> &session, const std::string &tableName,
+                                   const std::vector<std::string> &columns)
+            : modify_query(session)
         {
             tableName_ = tableName;
             columns_ = columns;
@@ -32,7 +34,7 @@ namespace arg3
          * @param schema the schema to modify
          * @param column the specific columns to modify in the schema
          */
-        insert_query::insert_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) : modify_query(schema->db())
+        insert_query::insert_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) : modify_query(schema->session())
         {
             tableName_ = schema->table_name();
             columns_ = columns;
@@ -81,16 +83,16 @@ namespace arg3
 
         string insert_query::to_string() const
         {
-            if (db_ == nullptr) {
+            if (session_ == nullptr) {
                 throw database_exception("invalid query, no database");
             }
-            auto schema = db_->schemas()->get(tableName_);
+            auto schema = session_->get_schema(tableName_);
 
             if (schema == nullptr) {
                 throw database_exception("invalid query, schema not found or initialized yet");
             }
 
-            return db_->insert_sql(db_->schemas()->get(tableName_), columns_);
+            return session_->insert_sql(session_->get_schema(tableName_), columns_);
         }
 
         insert_query &insert_query::columns(const vector<string> &columns)
@@ -143,6 +145,5 @@ namespace arg3
         {
             return tableName_;
         }
-
     }
 }

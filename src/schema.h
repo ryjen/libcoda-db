@@ -12,7 +12,7 @@ namespace arg3
 {
     namespace db
     {
-        class sqldb;
+        class session;
 
         /*!
          * Definition of a column in a schema
@@ -20,6 +20,7 @@ namespace arg3
         struct column_definition {
             std::string name;
             bool pk;
+            bool autoincrement;
             std::string type;
         };
 
@@ -35,7 +36,7 @@ namespace arg3
         class schema
         {
            private:
-            sqldb *db_;
+            std::shared_ptr<session> session_;
             std::string tableName_;
             std::vector<column_definition> columns_;
 
@@ -44,7 +45,7 @@ namespace arg3
              * @param db the database in use
              * @param tablename the tablename to query
              */
-            schema(sqldb *db, const std::string &tablename);
+            schema(const std::shared_ptr<session> &session, const std::string &tablename);
 
             /* boilerplate */
             virtual ~schema();
@@ -72,6 +73,12 @@ namespace arg3
              * @return the primary keys for this schema
              */
             std::vector<std::string> primary_keys() const;
+
+            /*!
+             * gets the only auto incrementing primary key in a table
+             * @return the key name
+             */
+            std::string primary_key() const;
 
             /*!
              * gets the table name for this schema
@@ -102,7 +109,7 @@ namespace arg3
              * gets the database for this schema
              * @return the database object
              */
-            sqldb *db() const;
+            std::shared_ptr<session> session() const;
         };
     }
 }

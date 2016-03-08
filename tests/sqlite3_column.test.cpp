@@ -18,7 +18,7 @@ using namespace arg3::db;
 template <typename T>
 shared_ptr<T> get_sqlite_column(const string &name)
 {
-    select_query q(&sqlite_testdb);
+    select_query q(current_session);
 
     auto rs = q.from("users").execute();
 
@@ -34,9 +34,9 @@ go_bandit([]() {
 
     describe("sqlite column", []() {
         before_each([]() {
-            sqlite_testdb.setup();
+            setup_current_session();
 
-            user user1(&sqlite_testdb);
+            user user1;
 
             user1.set("first_name", "test");
             user1.set("last_name", "test");
@@ -46,13 +46,13 @@ go_bandit([]() {
         });
 
 
-        after_each([]() { sqlite_testdb.teardown(); });
+        after_each([]() { teardown_current_session(); });
 
         describe("has a type", []() {
 
             it("as a column", []() {
 
-                sqlite_testdb.cache_level(sqlite::cache::None);
+                dynamic_pointer_cast<sqlite::session>(current_session)->cache_level(sqlite::cache::None);
 
                 auto col = get_sqlite_column<sqlite::column>("first_name");
 
@@ -60,7 +60,7 @@ go_bandit([]() {
             });
 
             it("as a cached column", []() {
-                sqlite_testdb.cache_level(sqlite::cache::ResultSet);
+                dynamic_pointer_cast<sqlite::session>(current_session)->cache_level(sqlite::cache::ResultSet);
 
                 auto col = get_sqlite_column<sqlite::cached_column>("first_name");
 
@@ -71,7 +71,7 @@ go_bandit([]() {
         describe("has a name", []() {
             it("as a column", []() {
 
-                sqlite_testdb.cache_level(sqlite::cache::None);
+                dynamic_pointer_cast<sqlite::session>(current_session)->cache_level(sqlite::cache::None);
 
                 auto col = get_sqlite_column<sqlite::column>("last_name");
 
@@ -80,7 +80,7 @@ go_bandit([]() {
 
             it("as a cached column", []() {
 
-                sqlite_testdb.cache_level(sqlite::cache::ResultSet);
+                dynamic_pointer_cast<sqlite::session>(current_session)->cache_level(sqlite::cache::ResultSet);
 
                 auto col = get_sqlite_column<sqlite::cached_column>("last_name");
 

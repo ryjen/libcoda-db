@@ -1,7 +1,7 @@
 
 #include <algorithm>
 #include "statement.h"
-#include "db.h"
+#include "session.h"
 #include "resultset.h"
 #include "../log.h"
 
@@ -24,29 +24,29 @@ namespace arg3
                     }
                 }
             }
-            statement::statement(postgres::db *db) : db_(db), stmt_(nullptr)
+            statement::statement(const std::shared_ptr<postgres::session> &sess) : sess_(sess), stmt_(nullptr)
             {
-                if (db_ == nullptr) {
+                if (sess_ == nullptr) {
                     throw database_exception("no database provided to postgres statement");
                 }
             }
 
             statement::statement(statement &&other)
-                : db_(other.db_), stmt_(std::move(other.stmt_)), bindings_(std::move(other.bindings_)), sql_(std::move(other.sql_))
+                : sess_(std::move(other.sess_)), stmt_(std::move(other.stmt_)), bindings_(std::move(other.bindings_)), sql_(std::move(other.sql_))
             {
                 other.stmt_ = nullptr;
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
             }
 
             statement &statement::operator=(statement &&other)
             {
-                db_ = other.db_;
+                sess_ = std::move(other.sess_);
                 stmt_ = std::move(other.stmt_);
                 bindings_ = std::move(other.bindings_);
                 sql_ = std::move(other.sql_);
 
                 other.stmt_ = nullptr;
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.sql_.clear();
 
                 return *this;
@@ -58,7 +58,7 @@ namespace arg3
 
             void statement::prepare(const string &sql)
             {
-                if (!db_ || !db_->is_open()) {
+                if (!sess_ || !sess_->is_open()) {
                     throw database_exception("postgres database not open");
                 }
 
@@ -86,8 +86,8 @@ namespace arg3
                         value = 0;
                     }
                 }
-                if (db_ != nullptr) {
-                    db_->set_last_number_of_changes(value);
+                if (sess_ != nullptr) {
+                    sess_->set_last_number_of_changes(value);
                 }
 
                 return value;
@@ -95,10 +95,10 @@ namespace arg3
 
             string statement::last_error()
             {
-                if (db_ == nullptr) {
+                if (sess_ == nullptr) {
                     return "no database";
                 }
-                return db_->last_error();
+                return sess_->last_error();
             }
 
             statement &statement::bind(size_t index, int value)
@@ -166,12 +166,12 @@ namespace arg3
 
             statement::resultset_type statement::results()
             {
-                if (db_ == nullptr) {
+                if (sess_ == nullptr) {
                     throw database_exception("statement::results invalid database");
                 }
 
-                PGresult *res = PQexecParams(db_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,
-                                             bindings_.formats_, 0);
+                PGresult *res = PQexecParams(sess_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_,
+                                             bindings_.lengths_, bindings_.formats_, 0);
 
                 if (PQresultStatus(res) != PGRES_TUPLES_OK) {
                     throw database_exception(last_error());
@@ -179,17 +179,17 @@ namespace arg3
 
                 stmt_ = shared_ptr<PGresult>(res, helper::res_delete());
 
-                return resultset_type(make_shared<resultset>(db_, stmt_));
+                return resultset_type(make_shared<resultset>(sess_, stmt_));
             }
 
             bool statement::result()
             {
-                if (db_ == nullptr) {
+                if (sess_ == nullptr) {
                     throw database_exception("statement::results invalid database");
                 }
 
-                PGresult *res = PQexecParams(db_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_, bindings_.lengths_,
-                                             bindings_.formats_, 0);
+                PGresult *res = PQexecParams(sess_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_,
+                                             bindings_.lengths_, bindings_.formats_, 0);
 
                 if (PQresultStatus(res) != PGRES_COMMAND_OK && PQresultStatus(res) != PGRES_TUPLES_OK) {
                     log::error(last_error().c_str());
@@ -241,7 +241,7 @@ namespace arg3
                     }
                 }
 
-                db_->set_last_insert_id(value);
+                sess_->set_last_insert_id(value);
 
                 return value;
             }

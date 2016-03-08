@@ -12,7 +12,7 @@ go_bandit([]() {
 
     describe("modify query", []() {
         before_each([]() {
-            setup_testdb();
+            setup_current_session();
 
             user user1;
 
@@ -32,10 +32,10 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_testdb(); });
+        after_each([]() { teardown_current_session(); });
 
         it("can be constructed", []() {
-            insert_query query(testdb, "users");
+            insert_query query(current_session, "users");
 
 #if TEST_POSTGRES
             Assert::That(query.to_string(), Equals("INSERT INTO users() VALUES() RETURNING id;"));
@@ -55,7 +55,7 @@ go_bandit([]() {
         });
 
         it("can modify", []() {
-            insert_query insert(testdb);
+            insert_query insert(current_session);
 
             int id = rand() % 5000;
 
@@ -70,7 +70,7 @@ go_bandit([]() {
         });
 
         it("can be batch executed", []() {
-            insert_query query(testdb, "users", {"id", "first_name", "last_name"});
+            insert_query query(current_session, "users", {"id", "first_name", "last_name"});
 
             query.flags(modify_query::Batch);
 
@@ -90,7 +90,7 @@ go_bandit([]() {
                 Assert::That(query.execute(), Equals(1));
             }
 
-            select_query select(testdb);
+            select_query select(current_session);
 
             int count = select.from("users").count();
 

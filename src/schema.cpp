@@ -3,6 +3,7 @@
 #include "schema.h"
 #include "sqldb.h"
 #include "resultset.h"
+#include "session.h"
 
 using namespace std;
 
@@ -16,9 +17,9 @@ namespace arg3
             return os;
         }
 
-        schema::schema(sqldb *db, const string &tablename) : db_(db), tableName_(tablename)
+        schema::schema(const std::shared_ptr<arg3::db::session> &session, const string &tablename) : session_(session), tableName_(tablename)
         {
-            if (db_ == NULL) {
+            if (session_ == nullptr) {
                 throw database_exception("no database provided for schema");
             }
 
@@ -31,20 +32,21 @@ namespace arg3
         {
         }
 
-        schema::schema(const schema &other) : db_(other.db_), tableName_(other.tableName_), columns_(other.columns_)
+        schema::schema(const schema &other) : session_(other.session_), tableName_(other.tableName_), columns_(other.columns_)
         {
         }
 
-        schema::schema(schema &&other) : db_(other.db_), tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))
+        schema::schema(schema &&other)
+            : session_(std::move(other.session_)), tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))
         {
-            other.db_ = NULL;
+            other.session_ = nullptr;
             other.columns_.clear();
         }
 
         schema &schema::operator=(const schema &other)
         {
             columns_ = other.columns_;
-            db_ = other.db_;
+            session_ = other.session_;
             tableName_ = other.tableName_;
 
             return *this;
@@ -53,11 +55,11 @@ namespace arg3
         schema &schema::operator=(schema &&other)
         {
             columns_ = std::move(other.columns_);
-            db_ = std::move(other.db_);
+            session_ = std::move(other.session_);
             tableName_ = std::move(other.tableName_);
 
             other.columns_.clear();
-            other.db_ = NULL;
+            other.session_ = nullptr;
 
             return *this;
         }
@@ -69,11 +71,11 @@ namespace arg3
 
         void schema::init()
         {
-            if (!db_->is_open()) {
+            if (!session_->is_open()) {
                 throw database_exception("database is not open");
             }
 
-            db_->query_schema(tableName_, columns_);
+            session_->query_schema(tableName_, columns_);
         }
 
         vector<column_definition> schema::columns() const
@@ -104,14 +106,25 @@ namespace arg3
             return names;
         }
 
+        std::string schema::primary_key() const
+        {
+            for (auto &c : columns_) {
+                if (c.pk && c.autoincrement) {
+                    return c.name;
+                }
+            }
+
+            throw no_primary_key_exception("no primary key found for schema");
+        }
+
         string schema::table_name() const
         {
             return tableName_;
         }
 
-        sqldb *schema::db() const
+        std::shared_ptr<session> schema::session() const
         {
-            return db_;
+            return session_;
         }
 
         column_definition schema::operator[](size_t index) const

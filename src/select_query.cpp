@@ -10,14 +10,15 @@ namespace arg3
 {
     namespace db
     {
-        select_query::select_query(sqldb *db) : query(db)
+        select_query::select_query(const std::shared_ptr<arg3::db::session> &session) : query(session)
         {
         }
-        select_query::select_query(sqldb *db, const vector<string> &columns) : query(db), columns_(columns)
+        select_query::select_query(const std::shared_ptr<arg3::db::session> &session, const vector<string> &columns)
+            : query(session), columns_(columns)
         {
         }
-        select_query::select_query(sqldb *db, const vector<string> &columns, const string &tableName)
-            : query(db), columns_(columns), tableName_(tableName)
+        select_query::select_query(const std::shared_ptr<arg3::db::session> &session, const vector<string> &columns, const string &tableName)
+            : query(session), columns_(columns), tableName_(tableName)
         {
         }
 
@@ -32,7 +33,7 @@ namespace arg3
         {
         }
 
-        select_query::select_query(const shared_ptr<schema> &schema) : select_query(schema->db(), schema->column_names())
+        select_query::select_query(const shared_ptr<schema> &schema) : select_query(schema->session(), schema->column_names())
         {
             tableName_ = schema->table_name();
         }
@@ -122,6 +123,11 @@ namespace arg3
             return orderBy_;
         }
 
+        where_clause select_query::where() const
+        {
+            return where_;
+        }
+
         where_clause &select_query::where(const string &value)
         {
             where_ = where_clause(value);
@@ -155,13 +161,13 @@ namespace arg3
 
         join_clause &select_query::join(const string &tableName, join::type type)
         {
-            join_ = join_clause(tableName, type);
-            return join_;
+            join_.emplace_back(tableName, type);
+            return join_.back();
         }
 
         select_query &select_query::join(const join_clause &value)
         {
-            join_ = value;
+            join_.push_back(value);
             return *this;
         }
 
@@ -182,7 +188,9 @@ namespace arg3
             buf << " FROM " << tableName_;
 
             if (!join_.empty()) {
-                buf << join_;
+                for (auto &join : join_) {
+                    buf << join;
+                }
             }
 
             if (!where_.empty()) {
@@ -258,13 +266,6 @@ namespace arg3
         {
             query::reset();
             stmt_ = nullptr;
-            union_ = nullptr;
-            tableName_.clear();
-            join_.reset();
-            limit_.clear();
-            orderBy_.clear();
-            groupBy_.clear();
-            columns_.clear();
         }
 
         std::ostream &operator<<(std::ostream &out, const select_query &other)

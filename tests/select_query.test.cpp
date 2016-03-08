@@ -9,7 +9,7 @@ using namespace arg3::db;
 
 resultset get_results()
 {
-    select_query query(testdb);
+    select_query query(current_session);
 
     return query.from("users").execute();
 }
@@ -18,7 +18,7 @@ go_bandit([]() {
 
     describe("select query", []() {
         before_each([]() {
-            setup_testdb();
+            setup_current_session();
 
             user user1;
 
@@ -35,28 +35,28 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_testdb(); });
+        after_each([]() { teardown_current_session(); });
 
         it("has database info", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             query.from("users");
 
-            Assert::That(query.db(), Equals(testdb));
+            Assert::That(query.session(), Equals(current_session));
 
             Assert::That(query.table_name(), Equals("users"));
         });
 
         it("can be constructed with a schema", []() {
-            schema_factory factory(testdb);
+            schema_factory factory;
 
-            select_query query(factory.get("users"));
+            select_query query(factory.get(current_session, "users"));
 
             Assert::That(query.table_name(), Equals("users"));
         });
 
         it("can be copied and moved", []() {
-            select_query query(testdb, {"id"});
+            select_query query(current_session, {"id"});
 
             query.from("users");
 
@@ -70,7 +70,7 @@ go_bandit([]() {
 
             Assert::That(moved.to_string(), Equals(other.to_string()));
 
-            select_query other2(testdb);
+            select_query other2(current_session);
 
             other2.from("other_users");
 
@@ -78,7 +78,7 @@ go_bandit([]() {
 
             Assert::That(other.to_string(), Equals(other2.to_string()));
 
-            select_query moved2(testdb);
+            select_query moved2(current_session);
 
             moved2.from("moved_users");
 
@@ -99,7 +99,7 @@ go_bandit([]() {
         });
 
         it("can use callbacks", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             query.from("users");
 
@@ -115,7 +115,7 @@ go_bandit([]() {
         });
 
         it("can be used with a where clause", []() {
-            auto query = select_query(testdb);
+            auto query = select_query(current_session);
 
             query.from("users");
 
@@ -161,7 +161,7 @@ go_bandit([]() {
         it("can execute scalar", []() {
             vector<string> columns = {"first_name"};
 
-            auto query = select_query(testdb, columns);
+            auto query = select_query(current_session, columns);
 
             query.from("users");
 
@@ -175,7 +175,7 @@ go_bandit([]() {
         });
 
         it("can be binded", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             query.from("users");
 
@@ -197,7 +197,7 @@ go_bandit([]() {
         });
 
         it("can use named parameters", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             query.from("users");
 
@@ -214,11 +214,11 @@ go_bandit([]() {
         });
 
         it("can union another", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             query.from("users");
 
-            select_query other(testdb);
+            select_query other(current_session);
 
             other.from("user_settings");
 

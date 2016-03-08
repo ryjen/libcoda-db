@@ -54,6 +54,10 @@ namespace arg3
         ARG3_DECLARE_EXCEPTION(record_not_found_exception, database_exception);
 
         ARG3_DECLARE_EXCEPTION(binding_error, database_exception);
+
+        ARG3_DECLARE_EXCEPTION(transaction_exception, database_exception);
+
+        ARG3_DECLARE_EXCEPTION(no_primary_key_exception, database_exception);
     }
 }
 

@@ -13,6 +13,7 @@
 #include "update_query.h"
 #include "delete_query.h"
 #include "schema.h"
+#include "session.h"
 
 namespace arg3
 {
@@ -37,7 +38,8 @@ namespace arg3
 
             for (auto &row : results) {
                 if (row.is_valid()) {
-                    auto record = std::make_shared<T>(row);
+                    auto record = std::make_shared<T>(schema);
+                    record->init(row);
                     funk(record);
                 }
             }
@@ -79,7 +81,8 @@ namespace arg3
             if (!results.is_valid()) return;
 
             for (auto &row : results) {
-                auto record = std::make_shared<T>(row);
+                auto record = std::make_shared<T>(schema);
+                record->init(row);
                 funk(record);
             }
         }
@@ -129,7 +132,9 @@ namespace arg3
                 return;
             }
 
-            funk(std::make_shared<T>(*it));
+            auto record = std::make_shared<T>(schema);
+            record->init(*it);
+            funk(record);
         }
 
         /*!
@@ -150,6 +155,18 @@ namespace arg3
             return item;
         }
 
+        template <typename T>
+        inline void find_by_id(const std::shared_ptr<schema> &schema, const sql_value &value, const typename record<T>::callback &funk)
+        {
+            find_one<T>(schema, schema->primary_key(), value, funk);
+        }
+
+        template <typename T>
+        inline std::shared_ptr<T> find_by_id(const std::shared_ptr<schema> &schema, const sql_value &value)
+        {
+            return find_one<T>(schema, schema->primary_key(), value);
+        }
+
         /*!
          * an active-record (ish) pattern, should be used as a curiously reoccuring design pattern
          */
@@ -164,27 +181,13 @@ namespace arg3
            private:
             std::shared_ptr<schema_type> schema_;
             std::unordered_map<std::string, sql_value> values_;
-            std::string idColumnName_;
 
            public:
-            /*!
-             * @param db the database the record uses
-             * @param tablename the table in the database to use
-             * @param idColumnName the name of the id column in the table
-             */
-            record(sqldb *db, const std::string &tablename, const std::string &idColumnName)
-                : schema_(db->schemas()->get(tablename)), idColumnName_(idColumnName)
-            {
-                if (schema_ == nullptr) {
-                    throw database_exception("no schema for record " + tablename);
-                }
-            }
-
             /*!
              * @param schema the schema to operate on
              * @param columnName the name of the id column in the schema
              */
-            record(const std::shared_ptr<schema_type> &schema, const std::string &columnName) : schema_(schema), idColumnName_(columnName)
+            record(const std::shared_ptr<schema_type> &schema) : schema_(schema)
             {
                 if (schema_ == nullptr) {
                     throw database_exception("no schema for record");
@@ -192,50 +195,9 @@ namespace arg3
             }
 
             /*!
-             * @param schema the schema to operate on
-             * @param columnName the name of the column the id column in the schema
-             * @param value the value of the id column
-             */
-            template <typename V>
-            record(const std::shared_ptr<schema_type> &schema, const std::string &columnName, V value)
-                : record(schema, columnName)
-            {
-                set(idColumnName_, value);
-                // load up from database
-                if (!refresh()) {
-                    throw database_exception("no record found with " + columnName + " of " + std::to_string(value));
-                }
-            }
-
-            /*!
-             * @param db the database to operate on
-             * @param tableName the name of the table in the database
-             * @param columnName the name of the id column in the table
-             * @param value the value of the id column
-             */
-            template <typename V>
-            record(sqldb *db, const std::string &tableName, const std::string &columnName, const V &value)
-                : record(db, tableName, columnName)
-            {
-                set(idColumnName_, value);
-                // load up from database
-                if (!refresh()) {
-                    throw database_exception("no record found with " + columnName + " of " + std::to_string(value));
-                }
-            }
-
-            /*!
              * construct with values from a database row
              */
-            record(const std::shared_ptr<schema_type> &schema, const std::string &columnName, const row &values) : record(schema, columnName)
-            {
-                init(values);
-            }
-
-            /*!
-             * construct with values from a database row
-             */
-            record(sqldb *db, const std::string &tableName, const std::string &columnName, const row &values) : record(db, tableName, columnName)
+            record(const std::shared_ptr<schema_type> &schema, const row &values) : record(schema)
             {
                 init(values);
             }
@@ -243,15 +205,14 @@ namespace arg3
             /*!
              * copy constructor
              */
-            record(const record &other) : schema_(other.schema_), values_(other.values_), idColumnName_(other.idColumnName_)
+            record(const record &other) : schema_(other.schema_), values_(other.values_)
             {
             }
 
             /*!
              * move constructor
              */
-            record(record &&other)
-                : schema_(std::move(other.schema_)), values_(std::move(other.values_)), idColumnName_(std::move(other.idColumnName_))
+            record(record &&other) : schema_(std::move(other.schema_)), values_(std::move(other.values_))
             {
             }
 
@@ -266,7 +227,6 @@ namespace arg3
             {
                 values_ = other.values_;
                 schema_ = other.schema_;
-                idColumnName_ = other.idColumnName_;
 
                 return *this;
             }
@@ -278,25 +238,8 @@ namespace arg3
             {
                 values_ = std::move(other.values_);
                 schema_ = std::move(other.schema_);
-                idColumnName_ = std::move(other.idColumnName_);
 
                 return *this;
-            }
-
-            /*!
-             * sets the id column of the record
-             */
-            void set_id(const sql_value &value)
-            {
-                set(idColumnName_, value);
-            }
-
-            /*!
-             * @return the value of the id column in the record
-             */
-            sql_value id() const
-            {
-                return get(idColumnName_);
             }
 
             /*!
@@ -334,14 +277,6 @@ namespace arg3
             }
 
             /*!
-             * @return the name of the id column for this record
-             */
-            std::string id_column_name() const
-            {
-                return idColumnName_;
-            }
-
-            /*!
              * @return the schema for this record
              */
             std::shared_ptr<schema_type> schema() const
@@ -358,13 +293,15 @@ namespace arg3
              */
             bool exists() const
             {
-                if (!has(idColumnName_)) {
+                auto pk = schema()->primary_key();
+
+                if (!has(pk)) {
                     return false;
                 }
 
                 select_query query(schema());
 
-                query.where(idColumnName_ + " = $1", get(idColumnName_));
+                query.where(pk + " = $1", get(pk));
 
                 return query.count() > 0;
             }
@@ -376,20 +313,18 @@ namespace arg3
              */
             bool save()
             {
-                size_t index = 0;
                 bool rval = false;
                 bool exists = record::exists();
                 auto cols_to_save = available_columns(exists);
+                auto pk = schema()->primary_key();
 
                 if (exists) {
                     update_query query(schema(), cols_to_save);
 
-                    query.where(idColumnName_ + " = $" + std::to_string(cols_to_save.size() + 1));
+                    query.where(pk + " = @" + pk);
+                    query.bind("@" + pk, get(pk));
 
-                    index = bind_columns_to_query(query, cols_to_save);
-
-                    // add the where parameter
-                    query.bind_value(++index, get(idColumnName_));
+                    bind_columns_to_query(query, cols_to_save);
 
                     rval = query.execute();
                 } else {
@@ -401,11 +336,16 @@ namespace arg3
 
                     if (rval) {
                         // set the new id
-                        set(idColumnName_, query.last_insert_id());
+                        set(pk, query.last_insert_id());
                     }
                 }
 
                 return rval;
+            }
+
+            sql_value id() const
+            {
+                return get(schema()->primary_key());
             }
 
             /*!
@@ -432,6 +372,11 @@ namespace arg3
                 return !name.empty() && values_.size() > 0 && values_.count(name) > 0;
             }
 
+            void set_id(const sql_value &value)
+            {
+                set(schema()->primary_key(), value);
+            }
+
             /*!
              * sets a string for a column name
              * @param name the name of the column to set
@@ -451,6 +396,16 @@ namespace arg3
                 values_.erase(name);
             }
 
+            std::shared_ptr<T> find_by_id(const sql_value &value) const
+            {
+                return arg3::db::find_by_id<T>(schema(), value);
+            }
+
+            void find_by_id(const sql_value &value, const callback &funk) const
+            {
+                arg3::db::find_by_id<T>(schema(), value, funk);
+            }
+
             /*!
              * looks up and returns all objects of a record type
              * @return a vector of record objects of type T
@@ -467,26 +422,6 @@ namespace arg3
             void find_all(const callback &funk) const
             {
                 arg3::db::find_all<T>(schema(), funk);
-            }
-
-            /*!
-             * finds a single record by its id column
-             */
-            std::shared_ptr<T> find_by_id(const sql_value &value) const
-            {
-                select_query query(schema());
-
-                query.where(idColumnName_ + " = $1", value);
-
-                auto results = query.execute();
-
-                auto it = results.begin();
-
-                if (it != results.end()) {
-                    return std::make_shared<T>(*it);
-                }
-
-                throw record_not_found_exception();
             }
 
             /*!
@@ -548,7 +483,7 @@ namespace arg3
              */
             bool refresh()
             {
-                return refresh_by(idColumnName_);
+                return refresh_by(schema()->primary_key());
             }
 
             /*!
@@ -584,12 +519,14 @@ namespace arg3
              */
             bool de1ete() const
             {
-                if (!has(idColumnName_)) {
+                auto pk = schema()->primary_key();
+
+                if (!has(pk)) {
                     return false;
                 }
                 delete_query query(schema());
 
-                query.where(idColumnName_ + " = $1", id());
+                query.where(pk + " = $1", get(pk));
 
                 return query.execute();
             }
@@ -597,10 +534,11 @@ namespace arg3
            private:
             std::vector<std::string> available_columns(bool exists) const
             {
-                std::vector<std::string> columns = schema()->column_names();
+                auto columns = schema()->column_names();
+                auto pk = schema()->primary_key();
                 std::vector<std::string> values(columns.size());
                 auto it = std::copy_if(columns.begin(), columns.end(), values.begin(),
-                                       [&](const std::string &val) { return has(val) && (exists || val != idColumnName_); });
+                                       [&](const std::string &val) { return has(val) && (exists || val != pk); });
                 values.resize(std::distance(values.begin(), it));
                 return values;
             }

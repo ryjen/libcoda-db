@@ -18,7 +18,7 @@ using namespace arg3::db;
 
 shared_ptr<row_impl> get_results_row(size_t index)
 {
-    auto rs = mysql_testdb.execute("select * from users");
+    auto rs = current_session->query("select * from users");
 
     if (index > 0 && index >= rs.size()) {
         throw database_exception("not enough rows");
@@ -35,7 +35,7 @@ shared_ptr<row_impl> get_results_row(size_t index)
 
 shared_ptr<row_impl> get_stmt_row(size_t index)
 {
-    select_query query(&mysql_testdb, {}, "users");
+    select_query query(current_session, {}, "users");
 
     auto rs = query.execute();
 
@@ -96,16 +96,16 @@ go_bandit([]() {
 
     describe("mysql row", []() {
         before_each([]() {
-            mysql_testdb.setup();
+            setup_current_session();
 
-            user user1(&mysql_testdb);
+            user user1;
 
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
             user1.save();
 
-            user user2(&mysql_testdb);
+            user user2;
 
             user2.set("first_name", "Bob");
             user2.set("last_name", "Smith");
@@ -115,7 +115,7 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { mysql_testdb.teardown(); });
+        after_each([]() { teardown_current_session(); });
 
         describe("is movable", []() {
 
@@ -128,7 +128,7 @@ go_bandit([]() {
         describe("can get a column name", []() {
 
             it("as statement results", []() {
-                select_query query(&mysql_testdb, {}, "users");
+                select_query query(current_session, {}, "users");
                 auto rs = query.execute();
                 auto c = rs.begin();
 

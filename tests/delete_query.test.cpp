@@ -17,7 +17,7 @@ go_bandit([]() {
             user user2;
 
             try {
-                setup_testdb();
+                setup_current_session();
 
                 user1.set("first_name", "Bryan");
                 user1.set("last_name", "Jenkins");
@@ -35,10 +35,10 @@ go_bandit([]() {
             }
         });
 
-        after_each([]() { teardown_testdb(); });
+        after_each([]() { teardown_current_session(); });
 
         it("can delete", []() {
-            delete_query query(testdb);
+            delete_query query(current_session);
 
             query.from("users").where("first_name = $1", "Mark");
 
@@ -48,7 +48,7 @@ go_bandit([]() {
         });
 
         it("is copyable by constructor", []() {
-            delete_query query(testdb);
+            delete_query query(current_session);
 
             query.from("users").where("first_name = $1", "Mark");
 
@@ -58,7 +58,7 @@ go_bandit([]() {
         });
 
         it("is movable by constructor", []() {
-            delete_query query(testdb);
+            delete_query query(current_session);
 
             query.from("users").where("first_name = $1", "Bryan");
 
@@ -69,11 +69,11 @@ go_bandit([]() {
         });
 
         it("is copyable from assignment", []() {
-            delete_query query(testdb);
+            delete_query query(current_session);
 
             query.from("users").where("first_name = $1", "Bryan");
 
-            delete_query other(testdb, "other_users");
+            delete_query other(current_session, "other_users");
 
             other = query;
 
@@ -83,11 +83,11 @@ go_bandit([]() {
         });
 
         it("is movable from assignment", []() {
-            delete_query query(testdb);
+            delete_query query(current_session);
 
             query.from("users").where("first_name = $1", "Bryan");
 
-            delete_query other(testdb, "other_users");
+            delete_query other(current_session, "other_users");
 
             other = std::move(query);
 
@@ -97,7 +97,7 @@ go_bandit([]() {
         });
 
         it("can delete from where clause", []() {
-            delete_query query(testdb, "users");
+            delete_query query(current_session, "users");
 
             where_clause where("first_name = $1");
 
@@ -109,7 +109,7 @@ go_bandit([]() {
         });
 
         it("can be batch executed", []() {
-            delete_query query(testdb, "users");
+            delete_query query(current_session, "users");
 
             query.where("first_name = $1", "Bryan");
 

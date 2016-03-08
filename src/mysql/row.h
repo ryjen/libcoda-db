@@ -22,7 +22,7 @@ namespace arg3
     {
         namespace mysql
         {
-            class db;
+            class session;
             class binding;
 
             /*!
@@ -33,7 +33,7 @@ namespace arg3
                private:
                 MYSQL_ROW row_;
                 std::shared_ptr<MYSQL_RES> res_;
-                mysql::db *db_;
+                std::shared_ptr<mysql::session> sess_;
                 size_t size_;
 
                public:
@@ -42,7 +42,7 @@ namespace arg3
                  * @param res the query result
                  * @param row the row values
                  */
-                row(mysql::db *db, const std::shared_ptr<MYSQL_RES> &res, MYSQL_ROW row);
+                row(const std::shared_ptr<mysql::session> &db, const std::shared_ptr<MYSQL_RES> &res, MYSQL_ROW row);
 
                 /* non-copyable boilerplate */
                 virtual ~row();
@@ -68,7 +68,7 @@ namespace arg3
                 std::shared_ptr<mysql::binding> fields_;
                 std::shared_ptr<MYSQL_RES> metadata_;
                 std::shared_ptr<MYSQL_STMT> stmt_;
-                mysql::db *db_;
+                std::shared_ptr<mysql::session> sess_;
                 size_t size_;
 
                public:
@@ -78,8 +78,8 @@ namespace arg3
                  * @param metadata the query meta data
                  * @param fields the bindings for the statement
                  */
-                stmt_row(mysql::db *db, const std::shared_ptr<MYSQL_STMT> &stmt, const std::shared_ptr<MYSQL_RES> &metadata,
-                         const std::shared_ptr<mysql::binding> &fields);
+                stmt_row(const std::shared_ptr<mysql::session> &sess, const std::shared_ptr<MYSQL_STMT> &stmt,
+                         const std::shared_ptr<MYSQL_RES> &metadata, const std::shared_ptr<mysql::binding> &fields);
 
                 /* non-copyable boilerplate */
                 virtual ~stmt_row();

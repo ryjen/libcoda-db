@@ -55,7 +55,6 @@ go_bandit([]() {
 
         it("has different formats", [&tm]() {
 
-
             time_t current = timegm(&tm);
 
             sql_time date(current, sql_time::DATE);

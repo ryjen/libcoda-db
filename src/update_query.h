@@ -20,13 +20,13 @@ namespace arg3
              * @param tableName the table to modify
              * @param columns the columns to modify
              */
-            update_query(sqldb *db, const std::string &tableName);
+            update_query(const std::shared_ptr<arg3::db::session> &session, const std::string &tableName);
 
             /*!
              * @param db the database to modify
              * @param columns the columns to modify
              */
-            update_query(sqldb *db, const std::string &tableName, const std::vector<std::string> &columns);
+            update_query(const std::shared_ptr<arg3::db::session> &session, const std::string &tableName, const std::vector<std::string> &columns);
 
             /*!
              * @param schema the schema to modify

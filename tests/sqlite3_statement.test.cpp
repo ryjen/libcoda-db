@@ -14,13 +14,13 @@ using namespace arg3::db;
 go_bandit([]() {
 
     describe("sqlite3 statement", []() {
-        before_each([]() { sqlite_testdb.setup(); });
+        before_each([]() { setup_current_session(); });
 
-        after_each([]() { sqlite_testdb.teardown(); });
+        after_each([]() { teardown_current_session(); });
 
 
         it("is movable", []() {
-            sqlite::statement stmt(&sqlite_testdb);
+            sqlite::statement stmt(dynamic_pointer_cast<sqlite::session>(current_session));
 
             stmt.prepare("select * from users");
 
@@ -32,7 +32,7 @@ go_bandit([]() {
 
             AssertThat(stmt.is_valid(), IsFalse());
 
-            sqlite::statement s3(&sqlite_testdb);
+            sqlite::statement s3(dynamic_pointer_cast<sqlite::session>(current_session));
 
             AssertThat(s3.is_valid(), IsFalse());
 
@@ -44,13 +44,13 @@ go_bandit([]() {
         });
 
         it("throws exceptions", []() {
-            sqlite::db db(uri(""));
+            auto session = sqldb::create_session<sqlite::session>("file://");
 
-            sqlite::statement stmt(&db);
+            sqlite::statement stmt(session);
 
             AssertThrows(database_exception, stmt.prepare("select * from users"));
 
-            stmt = sqlite::statement(&sqlite_testdb);
+            stmt = sqlite::statement(dynamic_pointer_cast<sqlite::session>(current_session));
 
             AssertThrows(database_exception, stmt.prepare("asdfasdfasdf"));
 
@@ -71,7 +71,7 @@ go_bandit([]() {
         });
 
         it("can reset", []() {
-            sqlite::statement stmt(&sqlite_testdb);
+            sqlite::statement stmt(dynamic_pointer_cast<sqlite::session>(current_session));
 
             stmt.prepare("select * from users");
 

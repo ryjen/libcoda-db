@@ -114,7 +114,7 @@ namespace arg3
 
         std::string bind_mapping::prepare(const std::string &sql)
         {
-            static std::regex named_regex("([@:]\\w+)");
+            static std::regex named_regex("[@:]\\w+|\\$[0-9]+");
             std::smatch matches;
 
             auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), named_regex);
@@ -123,6 +123,11 @@ namespace arg3
             mappings_.clear();
             unsigned index = 0;
             for (auto match = match_begin; match != match_end; ++match) {
+                auto str = match->str();
+                if (str[0] == '$') {
+                    index++;
+                    continue;
+                }
                 add_named_param(match->str(), ++index);
             }
 

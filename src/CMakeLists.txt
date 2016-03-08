@@ -13,27 +13,33 @@ add_library (${PROJECT_NAME}
 	schema.cpp
 	schema_factory.cpp
 	select_query.cpp
+  session.cpp
 	sqldb.cpp
 	sql_value.cpp
+  transaction.cpp
 	update_query.cpp
+  uri.cpp
 	where_clause.cpp
 	mysql/binding.cpp
 	mysql/column.cpp
-	mysql/db.cpp
 	mysql/resultset.cpp
 	mysql/row.cpp
+  mysql/session.cpp
 	mysql/statement.cpp
+  mysql/transaction.cpp
 	postgres/binding.cpp
 	postgres/column.cpp
-	postgres/db.cpp
 	postgres/resultset.cpp
 	postgres/row.cpp
+  postgres/session.cpp
 	postgres/statement.cpp
+  postgres/transaction.cpp
 	sqlite/column.cpp
-	sqlite/db.cpp
 	sqlite/resultset.cpp
 	sqlite/row.cpp
+  sqlite/session.cpp
 	sqlite/statement.cpp
+  sqlite/transaction.cpp
 )
 
 include_directories(${PROJECT_SOURCE_DIR}/libs/variant/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
@@ -46,46 +52,52 @@ set(${PROJECT_NAME}_HEADERS
 	delete_query.h
 	exception.h
 	insert_query.h
-  	join_clause.h
+  join_clause.h
 	modify_query.h
 	query.h
-  	record.h
+  record.h
 	resultset.h
 	row.h
 	schema.h
 	schema_factory.h
 	select_query.h
+  session.h
 	sql_value.h
 	sqldb.h
 	statement.h
+  transaction.h
 	update_query.h
+  uri.h
 	where_clause.h
 )
 
 set(${PROJECT_NAME}_MYSQL_HEADERS
 	mysql/binding.h
 	mysql/column.h
-	mysql/db.h
 	mysql/resultset.h
 	mysql/row.h
+  mysql/session.h
 	mysql/statement.h
+  mysql/transaction.h
 )
 
 set(${PROJECT_NAME}_POSTGRES_HEADERS
-  postgres/db.h
-  postgres/statement.h
+  postgres/binding.h
+  postgres/column.h
   postgres/resultset.h
   postgres/row.h
-  postgres/column.h
-  postgres/binding.h
+  postgres/session.h
+  postgres/statement.h
+  postgres/transaction.h
 )
 
 set(${PROJECT_NAME}_SQLITE_HEADERS
 	sqlite/column.h
-	sqlite/db.h
 	sqlite/resultset.h
 	sqlite/row.h
+  sqlite/session.h
 	sqlite/statement.h
+  sqlite/transaction.h
 )
 
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}")

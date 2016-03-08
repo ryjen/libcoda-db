@@ -725,11 +725,9 @@ namespace arg3
 
             std::string binding::prepare(const std::string &sql)
             {
-                static std::regex param_regex("(\\$[0-9]+|[@:]\\w+)");
+                static std::regex param_regex("\\$([0-9]+)|[@:]\\w+");
 
-                static std::regex index_regex("\\$([0-9]+)");
-
-                auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), index_regex);
+                auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), param_regex);
                 auto match_end = std::sregex_iterator();
 
                 indexes_.clear();
@@ -737,6 +735,10 @@ namespace arg3
                 unsigned index = 0;
                 for (auto i = match_begin; i != match_end; ++i) {
                     auto match = *i;
+                    if (match.str()[0] != '$') {
+                        ++index;
+                        continue;
+                    }
                     try {
                         auto pos = std::stol(match[1].str());
                         indexes_[pos].insert(++index);

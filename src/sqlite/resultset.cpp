@@ -1,5 +1,5 @@
 #include "resultset.h"
-#include "db.h"
+#include "session.h"
 #include "row.h"
 #include "../log.h"
 
@@ -13,9 +13,10 @@ namespace arg3
     {
         namespace sqlite
         {
-            resultset::resultset(sqlite::db *db, const shared_ptr<sqlite3_stmt> &stmt) : stmt_(stmt), db_(db), status_(-1)
+            resultset::resultset(const std::shared_ptr<sqlite::session> &sess, const shared_ptr<sqlite3_stmt> &stmt)
+                : stmt_(stmt), sess_(sess), status_(-1)
             {
-                if (db_ == NULL) {
+                if (sess_ == NULL) {
                     throw database_exception("No database provided to sqlite3 resultset");
                 }
 
@@ -24,9 +25,9 @@ namespace arg3
                 }
             }
 
-            resultset::resultset(resultset &&other) : stmt_(other.stmt_), db_(other.db_), status_(other.status_)
+            resultset::resultset(resultset &&other) : stmt_(std::move(other.stmt_)), sess_(std::move(other.sess_)), status_(other.status_)
             {
-                other.db_ = NULL;
+                other.sess_ = NULL;
                 other.stmt_ = nullptr;
             }
 
@@ -36,10 +37,10 @@ namespace arg3
 
             resultset &resultset::operator=(resultset &&other)
             {
-                stmt_ = other.stmt_;
-                db_ = other.db_;
+                stmt_ = std::move(other.stmt_);
+                sess_ = std::move(other.sess_);
                 status_ = other.status_;
-                other.db_ = NULL;
+                other.sess_ = NULL;
                 other.stmt_ = nullptr;
 
                 return *this;
@@ -73,22 +74,23 @@ namespace arg3
                 }
 
                 if (sqlite3_reset(stmt_.get()) != SQLITE_OK) {
-                    throw database_exception(db_->last_error());
+                    throw database_exception(sess_->last_error());
                 }
                 status_ = -1;
             }
 
             resultset::row_type resultset::current_row()
             {
-                if (db_->cache_level() == cache::Row)
-                    return row_type(make_shared<cached_row>(db_, stmt_));
+                if (sess_->cache_level() == cache::Row)
+                    return row_type(make_shared<cached_row>(sess_, stmt_));
                 else
-                    return row_type(make_shared<row>(db_, stmt_));
+                    return row_type(make_shared<row>(sess_, stmt_));
             }
 
             /* cached version */
 
-            cached_resultset::cached_resultset(sqlite::db *db, shared_ptr<sqlite3_stmt> stmt) : db_(db), currentRow_(-1)
+            cached_resultset::cached_resultset(const std::shared_ptr<sqlite::session> &sess, shared_ptr<sqlite3_stmt> stmt)
+                : sess_(sess), currentRow_(-1)
             {
                 if (stmt == nullptr) {
                     throw database_exception("postgres cached resultset invalidate statement");
@@ -97,15 +99,16 @@ namespace arg3
                 int status = sqlite3_step(stmt.get());
 
                 while (status == SQLITE_ROW) {
-                    rows_.push_back(make_shared<cached_row>(db, stmt));
+                    rows_.push_back(make_shared<cached_row>(sess, stmt));
 
                     status = sqlite3_step(stmt.get());
                 }
             }
 
-            cached_resultset::cached_resultset(cached_resultset &&other) : db_(other.db_), rows_(other.rows_), currentRow_(other.currentRow_)
+            cached_resultset::cached_resultset(cached_resultset &&other)
+                : sess_(std::move(other.sess_)), rows_(std::move(other.rows_)), currentRow_(other.currentRow_)
             {
-                other.db_ = NULL;
+                other.sess_ = NULL;
             }
 
             cached_resultset::~cached_resultset()
@@ -114,17 +117,17 @@ namespace arg3
 
             cached_resultset &cached_resultset::operator=(cached_resultset &&other)
             {
-                db_ = other.db_;
-                rows_ = other.rows_;
+                sess_ = std::move(other.sess_);
+                rows_ = std::move(other.rows_);
                 currentRow_ = other.currentRow_;
-                other.db_ = NULL;
+                other.sess_ = NULL;
 
                 return *this;
             }
 
             bool cached_resultset::is_valid() const
             {
-                return db_ != NULL;
+                return sess_ != NULL;
             }
 
             bool cached_resultset::next()

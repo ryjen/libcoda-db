@@ -13,7 +13,7 @@ go_bandit([]() {
     describe("resultset", []() {
 
         before_each([&]() {
-            setup_testdb();
+            setup_current_session();
 
             user user1;
             user user2;
@@ -29,10 +29,10 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_testdb(); });
+        after_each([]() { teardown_current_session(); });
 
         it("is movable", []() {
-            auto rs = testdb->execute("select * from users");
+            auto rs = current_session->query("select * from users");
 
             Assert::That(rs.is_valid(), Equals(true));
 
@@ -44,7 +44,7 @@ go_bandit([]() {
         });
 
         it("has a current row", []() {
-            select_query q(testdb);
+            select_query q(current_session);
 
             auto rs = q.from("users").execute();
 
@@ -63,7 +63,7 @@ go_bandit([]() {
         });
 
         it("can use for each", []() {
-            select_query q(testdb);
+            select_query q(current_session);
 
             auto rs = q.from("users").execute();
 
@@ -75,7 +75,7 @@ go_bandit([]() {
         });
 
         it("can be reset", []() {
-            select_query q(testdb);
+            select_query q(current_session);
 
             auto rs = q.from("users").execute();
 
@@ -100,7 +100,7 @@ go_bandit([]() {
         });
 
         it("can construct iterators", []() {
-            select_query q(testdb);
+            select_query q(current_session);
 
             auto rs = q.from("users").execute();
 
@@ -122,7 +122,7 @@ go_bandit([]() {
         });
 
         it("can operate on iterators", []() {
-            select_query q(testdb);
+            select_query q(current_session);
 
             auto rs = q.from("users").execute();
 

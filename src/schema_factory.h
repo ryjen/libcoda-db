@@ -14,7 +14,7 @@ namespace arg3
 {
     namespace db
     {
-        class sqldb;
+        class session;
 
         /*!
          *  Schema factory handles caching of table schemas.
@@ -25,21 +25,20 @@ namespace arg3
         {
            private:
             std::unordered_map<std::string, std::shared_ptr<schema>> schema_cache_;
-            sqldb *db_;
-            std::shared_ptr<schema> create(const std::string &tableName);
+            std::shared_ptr<schema> create(const std::shared_ptr<session> &session, const std::string &tableName);
 
            public:
             /*
-             * @param db the database in use
+            * default constructor
              */
-            schema_factory(sqldb *db);
+            schema_factory();
 
             /* boilerplate */
             schema_factory(schema_factory &&other);
             schema_factory &operator=(schema_factory &&other);
             schema_factory(const schema_factory &other);
             schema_factory &operator=(const schema_factory &other);
-            std::shared_ptr<schema> get(const std::string &tableName);
+            std::shared_ptr<schema> get(const std::shared_ptr<session> &session, const std::string &tableName);
 
             /*!
              * clears a cached schema for the table name

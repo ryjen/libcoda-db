@@ -19,9 +19,9 @@ using namespace arg3::db;
 go_bandit([]() {
     describe("mysql statement", []() {
         before_each([]() {
-            mysql_testdb.setup();
+            setup_current_session();
 
-            user user1(&mysql_testdb);
+            user user1;
 
             user1.set_id(1);
             user1.set("first_name", "Bryan");
@@ -29,7 +29,7 @@ go_bandit([]() {
 
             user1.save();
 
-            user user2(&mysql_testdb);
+            user user2;
 
             user2.set_id(3);
 
@@ -41,9 +41,10 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { mysql_testdb.teardown(); });
+        after_each([]() { teardown_current_session(); });
+
         it("is movable", []() {
-            mysql::statement stmt(&mysql_testdb);
+            mysql::statement stmt(dynamic_pointer_cast<mysql::session>(current_session));
 
             mysql::statement other(std::move(stmt));
 
@@ -59,9 +60,9 @@ go_bandit([]() {
         });
 
         it("can handle an error", []() {
-            mysql::db db(uri(""));
+            auto db = dynamic_pointer_cast<mysql::session>(sqldb::create_session("mysql://xxxxxx/yyyyyy"));
 
-            mysql::statement stmt(&db);
+            mysql::statement stmt(db);
 
             AssertThrows(database_exception, stmt.prepare("update qwerqwer set asdfsdf='1'"));
         });

@@ -428,7 +428,7 @@ namespace arg3
 
             std::string binding::prepare(const string &sql)
             {
-                static std::regex param_regex("(\\?|[@:]\\w+)");
+                static std::regex param_regex("\\?|[@:]\\w+");
                 bind_mapping::prepare(sql);
 
                 std::string formatted = sql;

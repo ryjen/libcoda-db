@@ -20,7 +20,7 @@ namespace arg3
     {
         namespace sqlite
         {
-            class db;
+            class session;
 
             /*!
              * a sqlite specific implementation of a statement
@@ -28,14 +28,14 @@ namespace arg3
             class statement : public arg3::db::statement
             {
                private:
-                sqlite::db *db_;
+                std::shared_ptr<sqlite::session> sess_;
                 std::shared_ptr<sqlite3_stmt> stmt_;
 
                public:
                 /*!
                  * @param db    the database in use
                  */
-                statement(sqlite::db *db);
+                statement(const std::shared_ptr<sqlite::session> &sess);
 
                 /* non-copyable boilerplate */
                 statement(const statement &other) = delete;

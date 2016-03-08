@@ -17,9 +17,10 @@ namespace arg3
     {
         namespace mysql
         {
-            row::row(mysql::db *db, const shared_ptr<MYSQL_RES> &res, MYSQL_ROW row) : row_impl(), row_(row), res_(res), db_(db)
+            row::row(const std::shared_ptr<mysql::session> &sess, const shared_ptr<MYSQL_RES> &res, MYSQL_ROW row)
+                : row_impl(), row_(row), res_(res), sess_(sess)
             {
-                if (db_ == nullptr) {
+                if (sess_ == nullptr) {
                     throw database_exception("no database provided for mysql row");
                 }
 
@@ -34,10 +35,11 @@ namespace arg3
                 size_ = mysql_num_fields(res.get());
             }
 
-            row::row(row &&other) : row_impl(std::move(other)), row_(other.row_), res_(other.res_), db_(other.db_), size_(other.size_)
+            row::row(row &&other)
+                : row_impl(std::move(other)), row_(other.row_), res_(std::move(other.res_)), sess_(std::move(other.sess_)), size_(other.size_)
             {
                 other.row_ = nullptr;
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.res_ = nullptr;
             }
 
@@ -48,11 +50,11 @@ namespace arg3
             row &row::operator=(row &&other)
             {
                 row_ = other.row_;
-                res_ = other.res_;
-                db_ = other.db_;
+                res_ = std::move(other.res_);
+                sess_ = std::move(other.sess_);
                 size_ = other.size_;
                 other.row_ = nullptr;
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.res_ = nullptr;
 
                 return *this;
@@ -122,11 +124,11 @@ namespace arg3
             /* statement version */
 
 
-            stmt_row::stmt_row(mysql::db *db, const shared_ptr<MYSQL_STMT> &stmt, const shared_ptr<MYSQL_RES> &metadata,
+            stmt_row::stmt_row(const std::shared_ptr<mysql::session> &sess, const shared_ptr<MYSQL_STMT> &stmt, const shared_ptr<MYSQL_RES> &metadata,
                                const shared_ptr<mysql::binding> &fields)
-                : row_impl(), fields_(fields), metadata_(metadata), stmt_(stmt), db_(db), size_(0)
+                : row_impl(), fields_(fields), metadata_(metadata), stmt_(stmt), sess_(sess), size_(0)
             {
-                if (db_ == nullptr) {
+                if (sess_ == nullptr) {
                     throw database_exception("No database provided for mysql row");
                 }
 
@@ -140,10 +142,10 @@ namespace arg3
                   fields_(std::move(other.fields_)),
                   metadata_(std::move(other.metadata_)),
                   stmt_(std::move(other.stmt_)),
-                  db_(other.db_),
+                  sess_(std::move(other.sess_)),
                   size_(other.size_)
             {
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.fields_ = nullptr;
                 other.metadata_ = nullptr;
                 other.stmt_ = nullptr;
@@ -157,10 +159,10 @@ namespace arg3
             {
                 fields_ = std::move(other.fields_);
                 metadata_ = std::move(other.metadata_);
-                db_ = other.db_;
+                sess_ = std::move(other.sess_);
                 size_ = other.size_;
                 stmt_ = std::move(other.stmt_);
-                other.db_ = nullptr;
+                other.sess_ = nullptr;
                 other.fields_ = nullptr;
                 other.metadata_ = nullptr;
                 other.stmt_ = nullptr;

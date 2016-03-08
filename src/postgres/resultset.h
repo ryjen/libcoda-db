@@ -21,7 +21,7 @@ namespace arg3
     {
         namespace postgres
         {
-            class db;
+            class session;
 
             /*!
              * a postgres specific implmentation of a result set
@@ -33,7 +33,7 @@ namespace arg3
 
                private:
                 std::shared_ptr<PGresult> stmt_;
-                postgres::db *db_;
+                std::shared_ptr<postgres::session> sess_;
                 int currentRow_;
 
                public:
@@ -41,7 +41,7 @@ namespace arg3
                  * @param  db    the database in use
                  * @param  stmt  the query result in use
                  */
-                resultset(postgres::db *db, const std::shared_ptr<PGresult> &stmt);
+                resultset(const std::shared_ptr<postgres::session> &sess, const std::shared_ptr<PGresult> &stmt);
 
                 /* non-copyable boilerplate */
                 resultset(const resultset &other) = delete;

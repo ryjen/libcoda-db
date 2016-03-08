@@ -11,11 +11,11 @@ namespace arg3
 {
     namespace db
     {
-        modify_query::modify_query(sqldb *db) : query(db), flags_(0), numChanges_(0)
+        modify_query::modify_query(const std::shared_ptr<arg3::db::session> &session) : query(session), flags_(0), numChanges_(0)
         {
         }
 
-        modify_query::modify_query(const shared_ptr<schema> &schema) : modify_query(schema->db())
+        modify_query::modify_query(const shared_ptr<schema> &schema) : modify_query(schema->session())
         {
         }
 

@@ -2,8 +2,8 @@
  * @file db.h
  * a mysql specific database
  */
-#ifndef ARG3_DB_MYSQL_SQLDB_H
-#define ARG3_DB_MYSQL_SQLDB_H
+#ifndef ARG3_DB_MYSQL_SESSION_H
+#define ARG3_DB_MYSQL_SESSION_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -12,21 +12,32 @@
 #ifdef HAVE_LIBMYSQLCLIENT
 
 #include <mysql/mysql.h>
-#include "../sqldb.h"
+#include "../session.h"
+#include "../session_factory.h"
 
 namespace arg3
 {
     namespace db
     {
+        class sqldb;
+
         namespace mysql
         {
+            class factory : public session_factory
+            {
+               public:
+                arg3::db::session *create(const uri &uri);
+            };
+
             /*!
              * a mysql specific implementation of a database
              */
-            class db : public sqldb
+            class session : public arg3::db::session
             {
-                friend statement;
-                friend resultset;
+                friend sqldb;
+                friend class resultset;
+                friend class statement;
+                friend class factory;
 
                protected:
                 std::shared_ptr<MYSQL> db_;
@@ -37,20 +48,22 @@ namespace arg3
                 constexpr static int CACHE_STATEMENTS = (1 << 1);
                 constexpr static int CACHE = CACHE_RESULTS | CACHE_STATEMENTS;
 
+               protected:
                 /*!
                  * default constructor takes a uri to connect to
                  * @param connInfo the uri connection info
                  */
-                db(const uri &connInfo);
+                session(const uri &connInfo);
 
+               public:
                 /* boilerplate */
-                db(const db &other);
-                db(db &&other);
-                db &operator=(const db &other);
-                db &operator=(db &&other);
-                virtual ~db();
+                session(const session &other) = delete;
+                session(session &&other);
+                session &operator=(const session &other) = delete;
+                session &operator=(session &&other);
+                virtual ~session();
 
-                db &flags(int value);
+                session &flags(int value);
 
                 int flags() const;
 
@@ -61,8 +74,11 @@ namespace arg3
                 long long last_insert_id() const;
                 int last_number_of_changes() const;
                 std::string last_error() const;
-                resultset_type execute(const std::string &sql);
+                resultset_type query(const std::string &sql);
+                bool execute(const std::string &sql);
                 std::shared_ptr<statement_type> create_statement();
+                transaction_type create_transaction();
+                void query_schema(const std::string &tablename, std::vector<column_definition> &columns);
             };
         }
     }

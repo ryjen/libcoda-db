@@ -21,7 +21,7 @@ namespace arg3
     {
         namespace postgres
         {
-            class db;
+            class session;
 
             /*!
              *  a sqlite specific implementation of a row
@@ -30,7 +30,7 @@ namespace arg3
             {
                private:
                 std::shared_ptr<PGresult> stmt_;
-                postgres::db *db_;
+                std::shared_ptr<postgres::session> sess_;
                 size_t size_;
                 int row_;
 
@@ -40,7 +40,7 @@ namespace arg3
                  * @param stmt  the query statement result in use
                  * @param row   the row index
                  */
-                row(postgres::db *db, const std::shared_ptr<PGresult> &stmt, int row);
+                row(const std::shared_ptr<postgres::session> &sess, const std::shared_ptr<PGresult> &stmt, int row);
 
                 /* non-copyable boilerplate */
                 virtual ~row();

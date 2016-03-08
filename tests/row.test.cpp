@@ -10,7 +10,7 @@ using namespace arg3::db;
 
 row get_first_user_row()
 {
-    select_query query(testdb);
+    select_query query(current_session);
 
     auto rs = query.from("users").execute();
 
@@ -26,7 +26,7 @@ go_bandit([]() {
     describe("a row", []() {
 
         before_each([&]() {
-            setup_testdb();
+            setup_current_session();
 
             user user1;
             user user2;
@@ -42,7 +42,7 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_testdb(); });
+        after_each([]() { teardown_current_session(); });
 
         it("can be movable", []() {
             auto r = get_first_user_row();
@@ -55,7 +55,7 @@ go_bandit([]() {
         });
 
         it("can be copied", []() {
-            select_query q(testdb);
+            select_query q(current_session);
 
             auto rs = q.from("users").execute();
 
@@ -73,7 +73,7 @@ go_bandit([]() {
         });
 
         it("can use for each", []() {
-            select_query query(testdb);
+            select_query query(current_session);
 
             auto rs = query.from("users").execute();
 
@@ -84,7 +84,7 @@ go_bandit([]() {
 
         it("has an iterator", []() {
 
-            auto schema = testdb->schemas()->get("users");
+            auto schema = current_session->get_schema("users");
 
             if (!schema->is_valid()) {
                 schema->init();
@@ -94,7 +94,7 @@ go_bandit([]() {
 
             AssertThat(columns.size() > 0, IsTrue());
 
-            select_query query(testdb, columns);
+            select_query query(current_session, columns);
 
             auto rs = query.from("users").execute();
 

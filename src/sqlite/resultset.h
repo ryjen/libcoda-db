@@ -20,7 +20,7 @@ namespace arg3
     {
         namespace sqlite
         {
-            class db;
+            class session;
 
             /*!
              * a sqlite specific implmentation of a result set
@@ -32,7 +32,7 @@ namespace arg3
 
                private:
                 std::shared_ptr<sqlite3_stmt> stmt_;
-                sqlite::db *db_;
+                std::shared_ptr<sqlite::session> sess_;
                 int status_;
 
                public:
@@ -40,7 +40,7 @@ namespace arg3
                  * @param  db   the database in use
                  * @param  stmt the query statement in use
                  */
-                resultset(sqlite::db *db, const std::shared_ptr<sqlite3_stmt> &stmt);
+                resultset(const std::shared_ptr<sqlite::session> &sess, const std::shared_ptr<sqlite3_stmt> &stmt);
 
                 /* non-copyable boilerplate */
                 resultset(const resultset &other) = delete;
@@ -65,7 +65,7 @@ namespace arg3
                 friend class resultset_iterator;
 
                private:
-                sqlite::db *db_;
+                std::shared_ptr<sqlite::session> sess_;
                 std::vector<std::shared_ptr<row_impl>> rows_;
                 int currentRow_;
 
@@ -74,7 +74,7 @@ namespace arg3
                  * @param db    the database in use
                  * @param stmt  the statement in use
                  */
-                cached_resultset(sqlite::db *db, std::shared_ptr<sqlite3_stmt> stmt);
+                cached_resultset(const std::shared_ptr<sqlite::session> &sess, std::shared_ptr<sqlite3_stmt> stmt);
 
                 /* non-copyable boilerplate */
                 cached_resultset(const cached_resultset &other) = delete;

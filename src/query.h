@@ -17,7 +17,7 @@ namespace arg3
 {
     namespace db
     {
-        class sqldb;
+        class session;
 
         /*!
          * abstract class
@@ -35,7 +35,7 @@ namespace arg3
             size_t assert_binding_index(size_t index);
 
            protected:
-            sqldb *db_;
+            std::shared_ptr<session> session_;
             std::shared_ptr<statement> stmt_;
             std::vector<sql_value> params_;
             std::unordered_map<std::string, sql_value> named_params_;
@@ -51,7 +51,7 @@ namespace arg3
              * @param db the database to perform the query on
              * @param tableName the table to perform the query on
              */
-            query(sqldb *db);
+            query(const std::shared_ptr<session> &session);
 
             /*!
              * @param other the other query to copy from
@@ -77,7 +77,7 @@ namespace arg3
              * get the database in use
              * @return the database object
              */
-            sqldb *db() const;
+            std::shared_ptr<session> session() const;
 
             /*!
              * @param other the other query being copied from

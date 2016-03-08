@@ -21,7 +21,7 @@ namespace arg3
     {
         namespace postgres
         {
-            class db;
+            class session;
 
             /*!
              * a sqlite specific implementation of a statement
@@ -29,7 +29,7 @@ namespace arg3
             class statement : public arg3::db::statement
             {
                private:
-                postgres::db *db_;
+                std::shared_ptr<postgres::session> sess_;
                 std::shared_ptr<PGresult> stmt_;
                 binding bindings_;
                 std::string sql_;
@@ -38,7 +38,7 @@ namespace arg3
                 /*!
                  * @param db    the database in use
                  */
-                statement(postgres::db *db);
+                statement(const std::shared_ptr<postgres::session> &sess);
 
                 /* non-copyable boilerplate */
                 statement(const statement &other) = delete;

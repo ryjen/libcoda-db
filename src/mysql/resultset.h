@@ -21,7 +21,7 @@ namespace arg3
     {
         namespace mysql
         {
-            class db;
+            class session;
             class binding;
 
             /*!
@@ -35,14 +35,14 @@ namespace arg3
                private:
                 std::shared_ptr<MYSQL_RES> res_;
                 MYSQL_ROW row_;
-                mysql::db *db_;
+                std::shared_ptr<mysql::session> sess_;
 
                public:
                 /*!
                  * @param db the database in use
                  * @param res the query results
                  */
-                resultset(mysql::db *db, const std::shared_ptr<MYSQL_RES> &res);
+                resultset(const std::shared_ptr<mysql::session> &sess, const std::shared_ptr<MYSQL_RES> &res);
 
                 /* non-copyable boilerplate */
                 resultset(const resultset &other) = delete;
@@ -69,7 +69,7 @@ namespace arg3
                private:
                 std::shared_ptr<MYSQL_STMT> stmt_;
                 std::shared_ptr<MYSQL_RES> metadata_;
-                mysql::db *db_;
+                std::shared_ptr<mysql::session> sess_;
                 std::shared_ptr<mysql::binding> bindings_;
                 int status_;
                 void prepare_results();
@@ -79,7 +79,7 @@ namespace arg3
                  * @param db the database in use
                  * @param stmt the statement being executed
                  */
-                stmt_resultset(mysql::db *db, const std::shared_ptr<MYSQL_STMT> &stmt);
+                stmt_resultset(const std::shared_ptr<mysql::session> &sess, const std::shared_ptr<MYSQL_STMT> &stmt);
 
                 /* non-copyable boilerplate */
                 stmt_resultset(const stmt_resultset &other) = delete;

@@ -21,7 +21,7 @@ namespace arg3
     {
         namespace mysql
         {
-            class db;
+            class session;
 
             /*!
              * a mysql specific implementation of a statement
@@ -29,7 +29,7 @@ namespace arg3
             class statement : public arg3::db::statement
             {
                private:
-                mysql::db *db_;
+                std::shared_ptr<session> sess_;
                 std::shared_ptr<MYSQL_STMT> stmt_;
                 binding bindings_;
 
@@ -37,7 +37,7 @@ namespace arg3
                 /*!
                  * @param db the database in use
                  */
-                statement(mysql::db *db);
+                statement(const std::shared_ptr<session> &sess);
 
                 /* non-copyable boilerplate */
                 statement(const statement &other) = delete;
