@@ -725,9 +725,6 @@ namespace arg3
 
             std::string binding::prepare(const std::string &sql)
             {
-                // setup the named parameters
-                bind_mapping::prepare(sql);
-
                 // now build the list of indexes
                 auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), bindable::index_regex);
                 auto match_end = std::sregex_iterator();
@@ -735,9 +732,15 @@ namespace arg3
                 indexes_.clear();
 
                 unsigned index = 0;
+                char param_type = '\0';
                 for (auto i = match_begin; i != match_end; ++i) {
                     auto str = i->str();
-                    switch (str[0]) {
+                    if (param_type == '\0') {
+                        param_type = str[0];
+                    } else if (param_type != str[0]) {
+                        throw binding_error("mixed $ and ? parameters are not allowed.");
+                    }
+                    switch (param_type) {
                         // if its a ? parameter...
                         case '?': {
                             // then go to the next index
@@ -753,6 +756,9 @@ namespace arg3
                         }
                     }
                 }
+
+                // setup the named parameters
+                bind_mapping::prepare(sql, index);
 
                 // replace all parameters to the mysql ? parameters
                 return regex_replace(sql, bindable::param_regex, std::string("?"));

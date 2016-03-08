@@ -182,15 +182,31 @@ Delete a record
 Prepared Statements
 ===================
 
-Indexed binding parameters in queries should follow a doller sign index format:
+Indexed binding parameters in queries can use the dollar sign syntax:
 
- '$1', '$2', '$3', etc.
+```c++
+ "$1, $2, $3, $1, etc"
+```
+
+or the ? syntax:
+
+```c++
+ "?, ?, ?, ?, etc"
+```
 
 Named parameters are also supported using a '@' or ':' prefix:
 
-  'id = @id', 'name = :name', etc.
+```c++
+  "id = @id, name = :name, etc."
+```
 
-You can mix and match indexed and the named parameters.
+You **cannot** mix the index parameter syntaxes ($ and ?), however you **can** mix indexed and named parameters.
+
+```c++
+  "$1, $2, @name, $3"
+  // or
+  "?, ?, @name, ?"
+```
 
 Basic Queries
 =============

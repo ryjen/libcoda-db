@@ -125,29 +125,12 @@ namespace arg3
             return mappings_[name];
         }
 
-        std::string bind_mapping::prepare(const std::string &sql)
+        std::string bind_mapping::prepare(const std::string &sql, size_t max_index)
         {
-            auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), index_regex);
-            auto match_end = std::sregex_iterator();
-
-            // determine max index, to add named params at end
-            size_t max_index = 0;
-            for (auto match = match_begin; match != match_end; ++match) {
-                auto str = match->str();
-                if (str[0] == '$') {
-                    auto sub = *match;
-                    auto pos = std::stol(sub[1].str());
-                    if (pos < max_index) {
-                        continue;
-                    }
-                }
-                ++max_index;
-            }
-
             mappings_.clear();
 
-            match_begin = std::sregex_iterator(sql.begin(), sql.end(), named_regex);
-            match_end = std::sregex_iterator();
+            auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), named_regex);
+            auto match_end = std::sregex_iterator();
 
             for (auto match = match_begin; match != match_end; ++match) {
                 add_named_param(match->str(), ++max_index);

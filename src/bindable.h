@@ -189,10 +189,11 @@ namespace arg3
             /*!
              * prepares the bindings for a sql string.  should call prepare_params()
              * @param sql the sql string with parameters
+             * @param the number of indexed parameters in the sql already
              * @return the reformatted sql
              * @throws binding_error if the sql contains mixed named and indexed parameters
              */
-            virtual std::string prepare(const std::string &sql);
+            virtual std::string prepare(const std::string &sql, size_t max_index);
 
             bind_mapping &bind(const std::string &name, const sql_value &value);
 

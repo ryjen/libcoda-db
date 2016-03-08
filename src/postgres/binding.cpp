@@ -428,29 +428,44 @@ namespace arg3
 
             std::string binding::prepare(const string &sql)
             {
-                // map the named parameters
-                bind_mapping::prepare(sql);
+                auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), bindable::index_regex);
+                auto match_end = std::sregex_iterator();
 
-                // do replacing while searching
+                // determine max index, to add named params at end
+                // postgres can reuse indexes so this is necessary over just counting
+                size_t max_index = 0;
+                char param_type = '\0';
+                for (auto match = match_begin; match != match_end; ++match) {
+                    auto str = match->str();
+                    if (param_type == '\0') {
+                        param_type = str[0];
+                    } else if (param_type != str[0]) {
+                        throw binding_error("mixed $ and ? parameters are not allowed.");
+                    }
+                    if (param_type == '$') {
+                        auto sub = *match;
+                        auto pos = std::stol(sub[1].str());
+                        // don't increment max index if not needed
+                        if (pos < max_index) {
+                            continue;
+                        }
+                    }
+                    ++max_index;
+                }
+
+                // map the named parameters
+                bind_mapping::prepare(sql, max_index);
+
+                // do replacing while searching.
+                // TODO: this is ineffecient, find a better way
                 std::string formatted = sql;
 
-                auto match_begin = std::sregex_iterator(formatted.begin(), formatted.end(), bindable::param_regex);
-                auto match_end = std::sregex_iterator();
+                match_begin = std::sregex_iterator(sql.begin(), sql.end(), bindable::param_regex);
+                match_end = std::sregex_iterator();
 
                 unsigned index = 0;
                 for (auto match = match_begin; match != match_end; ++match) {
                     auto str = match->str();
-                    // if the match is already a postgres $ parameter...
-                    if (str[0] == '$') {
-                        auto sub = *match;
-                        auto pos = std::stol(sub[1].str());
-                        // check if the parameter position should increment the index
-                        if (pos <= index) {
-                            ++index;
-                        }
-                        // find next param
-                        continue;
-                    }
                     // if it is a named parameter...
                     if (str[0] == '@' || str[0] == ':') {
                         // get the determined positions for the named parameter
@@ -459,13 +474,16 @@ namespace arg3
                             // postgres only needs the first determined index as it can re-use parameter indexes
                             auto pos = *mapped.begin();
                             // replace the sql with the positional parameter
-                            formatted.replace(match->position(), match->length(), "$" + std::to_string(pos));
+                            formatted.replace(formatted.find(str), str.length(), "$" + std::to_string(pos));
                         }
                         continue;
                     }
 
-                    // otherwise, replace the matched paramter with the current index
-                    formatted.replace(match->position(), match->length(), "$" + std::to_string(++index));
+                    // if its not a postgres parameter, replace it with one
+                    if (str[0] != '$') {
+                        // otherwise, replace the matched paramter with the current index
+                        formatted.replace(formatted.find(str), str.length(), "$" + std::to_string(++index));
+                    }
                 }
 
                 return formatted;

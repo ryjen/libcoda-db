@@ -230,6 +230,36 @@ go_bandit([]() {
 
             Assert::That(query.to_string(), Equals("SELECT * FROM users UNION ALL SELECT * FROM user_settings;"));
         });
+
+        it("can use different parameter types", []() {
+            select_query query(current_session);
+
+            query.from("users");
+
+            query.where("(first_name = ? and last_name = ?) or (first_name = ? or last_name = ?) or last_name = @lname");
+            query.bind(1, "Bob");
+            query.bind(2, "Smith");
+            query.bind(3, "Bryan");
+            query.bind(4, "Smith");
+            query.bind("@lname", "Jenkins");
+            auto rs = query.execute();
+
+            Assert::That(rs.size() > 0, IsTrue());
+
+            query.reset();
+
+            query.where("(first_name = $1 and last_name = $2) or (first_name = $3 or last_name = $2) or last_name = @lname");
+
+            query.bind(1, "Bob");
+            query.bind(2, "Smith");
+            query.bind(3, "Bryan");
+            query.bind("@lname", "Jenkins");
+
+            rs = query.execute();
+
+            Assert::That(rs.size() > 0, IsTrue());
+
+        });
     });
 
 });
