@@ -431,24 +431,22 @@ namespace arg3
                 auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), bindable::index_regex);
                 auto match_end = std::sregex_iterator();
 
+                std::vector<size_t> indexes;
+
                 // determine max index, to add named params at end
                 // postgres can reuse indexes so this is necessary over just counting
                 size_t max_index = 0;
-                char param_type = '\0';
                 for (auto match = match_begin; match != match_end; ++match) {
                     auto str = match->str();
-                    if (param_type == '\0') {
-                        param_type = str[0];
-                    } else if (param_type != str[0]) {
-                        throw binding_error("mixed $ and ? parameters are not allowed.");
-                    }
-                    if (param_type == '$') {
+                    if (str[0] == '$') {
                         auto sub = *match;
                         auto pos = std::stol(sub[1].str());
                         // don't increment max index if not needed
                         if (pos < max_index) {
                             continue;
                         }
+                    } else {
+                        indexes.push_back(indexes.size() + 1);
                     }
                     ++max_index;
                 }
@@ -480,9 +478,12 @@ namespace arg3
                     }
 
                     // if its not a postgres parameter, replace it with one
-                    if (str[0] != '$') {
+                    if (str[0] == '?') {
                         // otherwise, replace the matched paramter with the current index
-                        formatted.replace(formatted.find(str), str.length(), "$" + std::to_string(++index));
+                        auto pos = indexes.back();
+                        log::error("replacing ? with $%d", pos);
+                        formatted.replace(formatted.find(str), str.length(), "$" + std::to_string(pos));
+                        indexes.pop_back();
                     }
                 }
 

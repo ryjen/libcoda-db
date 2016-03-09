@@ -259,6 +259,16 @@ go_bandit([]() {
 
             Assert::That(rs.size() > 0, IsTrue());
 
+            query.reset();
+
+            query.where("first_name = ? or last_name = $1 or last_name = @lname");
+            query.bind(1, "Bob");
+            query.bind("@lname", "Smith");
+
+            rs = query.execute();
+
+            Assert::That(rs.size() > 0, IsTrue());
+
         });
     });
 

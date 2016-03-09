@@ -200,13 +200,16 @@ Named parameters are also supported using a '@' or ':' prefix:
   "id = @id, name = :name, etc."
 ```
 
-You **cannot** mix the index parameter syntaxes ($ and ?), however you **can** mix indexed and named parameters.
+You **can** mix indexed and named parameters.
 
 ```c++
-  "$1, $2, @name, $3"
+  "?, $2, @name, $3"
   // or
   "?, ?, @name, ?"
 ```
+
+I've tried to include mixing and matching different parameters types, but if this proves to problematic I may remove it.
+When mixing indexed parameters, the first '?' is equivelent to parameter 1 or '$1' and so on.
 
 Basic Queries
 =============

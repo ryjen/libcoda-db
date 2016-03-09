@@ -1,7 +1,7 @@
+#include "session.h"
 #include "sqldb.h"
 #include "transaction.h"
 #include "log.h"
-#include "session.h"
 
 namespace arg3
 {

@@ -7,9 +7,10 @@ namespace arg3
 {
     namespace db
     {
-        std::regex bindable::param_regex("[@:]\\w+|\\$([0-9]+)|\\?");
-        std::regex bindable::index_regex("\\$([0-9]+)|\\?");
-        std::regex bindable::named_regex("[@:]\\w+");
+        // these ugly beasts will find parameters not in quotes
+        std::regex bindable::param_regex("([@:]\\w+|\\$([0-9]+)|\\?)(?=(?:[^\"']|[\"'][^\"']*[\"'])*$)");
+        std::regex bindable::index_regex("(\\$([0-9]+)|\\?)(?=(?:[^\"']|[\"'][^\"']*[\"'])*$)");
+        std::regex bindable::named_regex("([@:]\\w+)(?=(?:[^\"']|[\"'][^\"']*[\"'])*$)");
 
         bindable &bindable::bind_value(size_t index, const sql_value &value)
         {

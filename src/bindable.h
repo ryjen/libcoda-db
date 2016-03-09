@@ -5,9 +5,9 @@
 #ifndef ARG3_DB_BINDABLE_H
 #define ARG3_DB_BINDABLE_H
 
+#include <regex>
 #include <unordered_map>
 #include <set>
-#include <regex>
 #include "sql_value.h"
 #include "exception.h"
 
