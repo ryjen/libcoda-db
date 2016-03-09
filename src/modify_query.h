@@ -7,7 +7,6 @@
 #define ARG3_DB_MODIFY_QUERY_H
 
 #include "query.h"
-#include "where_clause.h"
 
 namespace arg3
 {

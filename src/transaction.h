@@ -26,28 +26,32 @@ namespace arg3
 
         class transaction
         {
-            friend class sqldb;
+            friend class session;
 
            public:
+            typedef session session_type;
             typedef enum { none, read_write, read_only } type;
-            transaction(const std::shared_ptr<session> &session, const std::shared_ptr<transaction_impl> &impl);
+            transaction(const std::shared_ptr<session_type> &session, const std::shared_ptr<transaction_impl> &impl);
             transaction(const transaction &other);
             transaction(transaction &&other);
             virtual ~transaction();
             transaction &operator=(const transaction &other);
             transaction &operator=(transaction &&other);
-            virtual void start();
             void save(const std::string &name);
-            void commit();
             void release(const std::string &name);
-            void rollback();
             void rollback(const std::string &name);
+            void start();
+            void commit();
+            void rollback();
             bool is_active() const;
+            void set_successful(bool value);
+            bool is_successful() const;
 
-            operator std::shared_ptr<session>() const;
+            std::shared_ptr<session_type> session() const;
 
            private:
-            std::shared_ptr<session> session_;
+            bool successful_;
+            std::shared_ptr<session_type> session_;
             std::shared_ptr<transaction_impl> impl_;
         };
     }

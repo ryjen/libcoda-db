@@ -2,6 +2,7 @@
 #define ARG3_DB_DELETE_QUERY_H
 
 #include "modify_query.h"
+#include "where_clause.h"
 
 namespace arg3
 {

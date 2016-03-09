@@ -1,5 +1,6 @@
 #include "update_query.h"
 #include "log.h"
+#include "schema.h"
 
 using namespace std;
 

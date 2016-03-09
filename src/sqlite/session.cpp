@@ -9,6 +9,7 @@
 #include "statement.h"
 #include "resultset.h"
 #include "transaction.h"
+#include "../schema.h"
 
 using namespace std;
 
@@ -30,23 +31,23 @@ namespace arg3
                 };
             }
 
-            arg3::db::session *factory::create(const uri &uri)
+            arg3::db::session_impl *factory::create(const uri &uri)
             {
                 return new session(uri);
             }
 
-            session::session(const uri &info) : arg3::db::session(info), db_(nullptr), cacheLevel_(cache::None)
+            session::session(const uri &info) : session_impl(info), db_(nullptr), cacheLevel_(cache::None)
             {
             }
 
-            session::session(session &&other) : arg3::db::session(std::move(other)), db_(std::move(other.db_)), cacheLevel_(other.cacheLevel_)
+            session::session(session &&other) : session_impl(std::move(other)), db_(std::move(other.db_)), cacheLevel_(other.cacheLevel_)
             {
                 other.db_ = nullptr;
             }
 
             session &session::operator=(session &&other)
             {
-                arg3::db::session::operator=(std::move(other));
+                session_impl::operator=(std::move(other));
 
                 db_ = std::move(other.db_);
                 cacheLevel_ = other.cacheLevel_;
@@ -58,6 +59,9 @@ namespace arg3
 
             session::~session()
             {
+                if (is_open()) {
+                    close();
+                }
             }
 
             void session::query_schema(const string &tableName, std::vector<column_definition> &columns)
@@ -146,7 +150,7 @@ namespace arg3
                 return sqlite3_changes(db_.get());
             }
 
-            session::resultset_type session::query(const string &sql)
+            std::shared_ptr<resultset_impl> session::query(const string &sql)
             {
                 sqlite3_stmt *stmt;
 
@@ -158,17 +162,11 @@ namespace arg3
                     throw database_exception(last_error());
                 }
 
-                shared_ptr<resultset_impl> impl;
-
-                auto this_sess = static_pointer_cast<sqlite::session>(shared_from_this());
-
                 if (cache_level() == cache::ResultSet) {
-                    impl = make_shared<cached_resultset>(this_sess, shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
+                    return make_shared<cached_resultset>(shared_from_this(), shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
                 } else {
-                    impl = make_shared<resultset>(this_sess, shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
+                    return make_shared<resultset>(shared_from_this(), shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
                 }
-
-                return resultset_type(impl);
             }
 
             bool session::execute(const string &sql)
@@ -197,9 +195,9 @@ namespace arg3
                 return make_shared<statement>(static_pointer_cast<sqlite::session>(shared_from_this()));
             }
 
-            arg3::db::session::transaction_type session::create_transaction()
+            std::shared_ptr<transaction_impl> session::create_transaction()
             {
-                return arg3::db::session::transaction_type(shared_from_this(), make_shared<sqlite::transaction>(db_));
+                return make_shared<sqlite::transaction>(db_);
             }
 
             session &session::cache_level(cache::level level)

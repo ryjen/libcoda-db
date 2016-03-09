@@ -1,5 +1,7 @@
 #include "insert_query.h"
 #include "log.h"
+#include "schema.h"
+#include "statement.h"
 #include "session.h"
 
 using namespace std;

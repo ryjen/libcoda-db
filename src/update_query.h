@@ -2,6 +2,7 @@
 #define ARG3_DB_UPDATE_QUERY_H
 
 #include "modify_query.h"
+#include "where_clause.h"
 
 namespace arg3
 {

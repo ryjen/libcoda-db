@@ -7,8 +7,9 @@
 #include "session.h"
 #include "statement.h"
 #include "resultset.h"
-#include "../select_query.h"
 #include "transaction.h"
+#include "../schema.h"
+#include "../select_query.h"
 
 using namespace std;
 
@@ -30,24 +31,24 @@ namespace arg3
                 };
             }
 
-            arg3::db::session *factory::create(const uri &uri)
+            arg3::db::session_impl *factory::create(const uri &uri)
             {
                 return new session(uri);
             }
 
-            session::session(const uri &info) : arg3::db::session(info), db_(nullptr), lastId_(0), lastNumChanges_(0)
+            session::session(const uri &info) : session_impl(info), db_(nullptr), lastId_(0), lastNumChanges_(0)
             {
             }
 
             session::session(session &&other)
-                : arg3::db::session(std::move(other)), db_(std::move(other.db_)), lastId_(other.lastId_), lastNumChanges_(other.lastNumChanges_)
+                : session_impl(std::move(other)), db_(std::move(other.db_)), lastId_(other.lastId_), lastNumChanges_(other.lastNumChanges_)
             {
                 other.db_ = nullptr;
             }
 
             session &session::operator=(session &&other)
             {
-                session::operator=(std::move(other));
+                session_impl::operator=(std::move(other));
 
                 db_ = std::move(other.db_);
                 lastId_ = other.lastId_;
@@ -59,6 +60,9 @@ namespace arg3
 
             session::~session()
             {
+                if (is_open()) {
+                    close();
+                }
             }
 
             void session::open()
@@ -117,7 +121,7 @@ namespace arg3
                 lastNumChanges_ = value;
             }
 
-            arg3::db::session::resultset_type session::query(const string &sql)
+            std::shared_ptr<resultset_impl> session::query(const string &sql)
             {
                 if (db_ == nullptr) {
                     throw database_exception("database is not open");
@@ -129,8 +133,7 @@ namespace arg3
                     throw database_exception(last_error());
                 }
 
-                return resultset_type(make_shared<resultset>(static_pointer_cast<postgres::session>(shared_from_this()),
-                                                             shared_ptr<PGresult>(res, helper::res_delete())));
+                return make_shared<resultset>(shared_from_this(), shared_ptr<PGresult>(res, helper::res_delete()));
             }
 
             bool session::execute(const string &sql)
@@ -149,9 +152,9 @@ namespace arg3
                 return make_shared<statement>(static_pointer_cast<postgres::session>(shared_from_this()));
             }
 
-            arg3::db::session::transaction_type session::create_transaction()
+            shared_ptr<transaction_impl> session::create_transaction()
             {
-                return arg3::db::session::transaction_type(shared_from_this(), make_shared<postgres::transaction>(db_));
+                return make_shared<postgres::transaction>(db_);
             }
 
             string session::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const

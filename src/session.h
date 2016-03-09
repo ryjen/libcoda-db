@@ -6,47 +6,41 @@
 #ifndef ARG3_DB_SESSION_H
 #define ARG3_DB_SESSION_H
 
+#include <vector>
+#include <memory>
 #include "sql_value.h"
 #include "schema_factory.h"
-#include "statement.h"
-#include "transaction.h"
 #include "uri.h"
 
 namespace arg3
 {
     namespace db
     {
-        /*!
-         *  abstract class for a specific implementation of a database
-         */
-        class session : public std::enable_shared_from_this<session>
+        struct column_definition;
+        class schema;
+        class transaction;
+        class transaction_impl;
+        class statement;
+        class resultset;
+        class resultset_impl;
+
+        class session_impl
         {
            public:
-            typedef resultset resultset_type;
             typedef statement statement_type;
-            typedef transaction transaction_type;
-
-           protected:
-            session();
+            typedef transaction_impl transaction_type;
+            typedef resultset_impl resultset_type;
 
             /*!
-             * @param info  the connection info
+             * default constructor expects a uri
              */
-            session(const uri &info);
+            session_impl(const uri &connectionInfo);
 
             /*!
-             * sets the connection info for this database
-             * @param value the uri value
+             * gets the connection info
+             * @return the uri
              */
-            void set_connection_info(const uri &value);
-
-           public:
-            /* default boilerplate */
-            session(const session &other) = delete;
-            session(session &&other) = default;
-            session &operator=(const session &other) = delete;
-            session &operator=(session &&other) = default;
-            virtual ~session() = default;
+            uri connection_info() const;
 
             /*!
              * tests if a connection to the database is open
@@ -77,11 +71,17 @@ namespace arg3
             virtual int last_number_of_changes() const = 0;
 
             /*!
+             * gets the last error for any statement
+             * @return the last error or an empty string
+             */
+            virtual std::string last_error() const = 0;
+
+            /*!
              * executes a sql statement that returns results
              * @param  sql   the sql string to execute
              * @return       the results of the query
              */
-            virtual resultset_type query(const std::string &sql) = 0;
+            virtual std::shared_ptr<resultset_type> query(const std::string &sql) = 0;
 
             /*!
              * executes a sql statement that does not return results
@@ -95,13 +95,117 @@ namespace arg3
              */
             virtual std::shared_ptr<statement_type> create_statement() = 0;
 
-            virtual transaction_type create_transaction() = 0;
+            /*!
+             * return the created transaction
+             */
+            virtual std::shared_ptr<transaction_type> create_transaction() const = 0;
+
+            /*!
+             * query the schema for a table
+             * @param tablename the table to query
+             * @param columns   an array to put columns found
+             */
+            void query_schema(const std::string &tablename, std::vector<column_definition> &columns);
+
+            /*!
+             * generates database specific insert sql
+             * @param  schema  the schema to insert to
+             * @param  columns the columns to insert
+             * @return         the sql string
+             */
+            virtual std::string insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
+
+           private:
+            uri connectionInfo_;
+        };
+
+        /*!
+         *  abstract class for a specific implementation of a database
+         */
+        class session : public std::enable_shared_from_this<session>
+        {
+            friend class sqldb;
+
+           public:
+            typedef resultset resultset_type;
+            typedef statement statement_type;
+            typedef transaction transaction_type;
+
+           protected:
+            session(const std::shared_ptr<session_impl> &impl);
+
+           public:
+            /* default boilerplate */
+            session(const session &other);
+            session(session &&other);
+            session &operator=(const session &other);
+            session &operator=(session &&other);
+            virtual ~session();
+
+            /*!
+             * tests if a connection to the database is open
+             * @return true if the connection is open
+             */
+            bool is_open() const;
+
+            /*!
+             * opens a connection to the database
+             */
+            void open();
+
+            /*!
+             * closes the connection to the database
+             */
+            void close();
+
+            /*!
+             * gets the last insert id from any statement
+             * @return the last insert id or zero
+             */
+            long long last_insert_id() const;
+
+            /*!
+             * gets the last number of modified records for any statement
+             * @return the last number of changes or zero
+             */
+            int last_number_of_changes() const;
+
+            /*!
+             * executes a sql statement that returns results
+             * @param  sql   the sql string to execute
+             * @return       the results of the query
+             */
+            resultset_type query(const std::string &sql);
+
+            /*!
+             * executes a sql statement that does not return results
+             * @param  sql the sql string to execute
+             * @return     true if successful
+             */
+            bool execute(const std::string &sql);
+
+            /*!
+             * @return a statement for this database
+             */
+            std::shared_ptr<statement_type> create_statement();
+
+            /*!
+             * creates a transaction, but won't start it yet
+             * @return the created transaction object
+             */
+            transaction_type create_transaction();
+
+            /*!
+             * creates a transaction and starts it
+             * @return the created transaction object
+             */
+            transaction_type start_transaction();
 
             /*!
              * gets the last error for any statement
              * @return the last error or an empty string
              */
-            virtual std::string last_error() const = 0;
+            std::string last_error() const;
 
             /*!
              * get the schemas for this database
@@ -120,7 +224,7 @@ namespace arg3
              * @param tablename the tablename
              * @param columns   the collection of columns to store the results
              */
-            virtual void query_schema(const std::string &tablename, std::vector<column_definition> &columns) = 0;
+            void query_schema(const std::string &tablename, std::vector<column_definition> &columns);
 
             /*!
              * gets the connection info for this database
@@ -134,10 +238,10 @@ namespace arg3
              * @param  columns the columns to insert
              * @return         the sql string
              */
-            virtual std::string insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
+            std::string insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
 
            private:
-            uri connectionInfo_;
+            std::shared_ptr<session_impl> impl_;
 
            protected:
             schema_factory schema_factory_;

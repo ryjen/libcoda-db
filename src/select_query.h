@@ -14,7 +14,6 @@ namespace arg3
 {
     namespace db
     {
-        class sqldb;
         struct union_operator;
 
         namespace union_op

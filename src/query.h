@@ -9,20 +9,27 @@
 #include <vector>
 #include <map>
 #include <sstream>
-#include "schema.h"
+#include <string>
+#include "bindable.h"
 #include "sql_value.h"
-#include "statement.h"
 
 namespace arg3
 {
     namespace db
     {
+        class statement;
+        class schema;
+        class session;
+
         /*!
          * abstract class
          * override to implement a query
          */
         class query : public bindable
         {
+           public:
+            typedef session session_type;
+
            private:
             /*!
             * ensures that the binding storage array is large enough

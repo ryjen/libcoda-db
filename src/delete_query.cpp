@@ -1,4 +1,5 @@
 #include "delete_query.h"
+#include "schema.h"
 #include "log.h"
 
 using namespace std;

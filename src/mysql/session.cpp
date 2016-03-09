@@ -9,6 +9,7 @@
 #include "statement.h"
 #include "resultset.h"
 #include "transaction.h"
+#include "../schema.h"
 #include "../select_query.h"
 
 using namespace std;
@@ -45,23 +46,23 @@ namespace arg3
                 }
             }
 
-            arg3::db::session *factory::create(const uri &uri)
+            arg3::db::session_impl *factory::create(const uri &uri)
             {
                 return new session(uri);
             }
 
-            session::session(const uri &connInfo) : arg3::db::session(connInfo), db_(nullptr), flags_(CACHE)
+            session::session(const uri &connInfo) : session_impl(connInfo), db_(nullptr), flags_(CACHE)
             {
             }
 
-            session::session(session &&other) : arg3::db::session(std::move(other)), db_(std::move(other.db_)), flags_(other.flags_)
+            session::session(session &&other) : session_impl(std::move(other)), db_(std::move(other.db_)), flags_(other.flags_)
             {
                 other.db_ = nullptr;
             }
 
             session &session::operator=(session &&other)
             {
-                arg3::db::session::operator=(std::move(other));
+                session_impl::operator=(std::move(other));
 
                 db_ = std::move(other.db_);
                 flags_ = other.flags_;
@@ -72,6 +73,9 @@ namespace arg3
 
             session::~session()
             {
+                if (is_open()) {
+                    close();
+                }
             }
 
             session &session::flags(int value)
@@ -161,7 +165,7 @@ namespace arg3
                 return mysql_affected_rows(db_.get());
             }
 
-            arg3::db::session::resultset_type session::query(const string &sql)
+            std::shared_ptr<resultset_impl> session::query(const string &sql)
             {
                 MYSQL_RES *res = nullptr;
 
@@ -179,8 +183,7 @@ namespace arg3
                     throw database_exception(last_error());
                 }
 
-                return resultset_type(make_shared<resultset>(static_pointer_cast<mysql::session>(shared_from_this()),
-                                                             shared_ptr<MYSQL_RES>(res, helper::res_delete())));
+                return make_shared<resultset>(shared_from_this(), shared_ptr<MYSQL_RES>(res, helper::res_delete()));
             }
 
             bool session::execute(const string &sql)
@@ -197,9 +200,9 @@ namespace arg3
                 return make_shared<statement>(static_pointer_cast<mysql::session>(shared_from_this()));
             }
 
-            arg3::db::session::transaction_type session::create_transaction()
+            std::shared_ptr<transaction_impl> session::create_transaction() const
             {
-                return arg3::db::session::transaction_type(shared_from_this(), make_shared<mysql::transaction>(db_));
+                return make_shared<mysql::transaction>(db_);
             }
             void session::query_schema(const string &tableName, std::vector<column_definition> &columns)
             {

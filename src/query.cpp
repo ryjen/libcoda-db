@@ -6,6 +6,7 @@
 #include "query.h"
 #include "exception.h"
 #include "session.h"
+#include "statement.h"
 #include "log.h"
 
 using namespace std;

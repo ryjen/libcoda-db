@@ -208,7 +208,7 @@ You **can** mix indexed and named parameters.
   "?, ?, @name, ?"
 ```
 
-While I've put a lot of work into being able mixing and match different parameters types, if it proves to problematic I may remove it.
+While I've put work into being able mixing and match different parameters types, if it proves too problematic I may remove it.
 When mixing indexed parameters, the first '?' is equivelent to parameter 1 or '$1' and so on.
 
 Basic Queries
@@ -319,8 +319,20 @@ select.execute();
 
 ```
 
+Where Clauses
+-------------
+
+Where clauses in select/delete/joins have a dedicated class. For my it is syntactically preferrable to use the 'and' and 'or' keywords with the where clauses operators.
+
+```c++
+query.where("this = $1") and ("that = $2") or ("test = $3");
+```
+
 Batch Queries
 -------------
+
+Batch queries means that instead of releasing the resources of a query upon execution, its will reset them to a pre-bind state.
+
 ```c++
 /* execute some raw sql */
 insert_query insert(current_session);
@@ -342,22 +354,25 @@ for(int i = 1000; i < 3000; i++) {
 Transactions
 ============
 
-Transaction can be performed on a session object;
+Transaction can be performed on a session object. 
 
 ```c++
-auto tx = current_session->create_transaction();
+{
+  auto tx = current_session->start_transaction();
 
-tx->start();
+  /* perform operations here */
 
-/* perform operations here */
+  tx->save("savepoint");
 
-tx->save("savepoint");
+  /* more operations here */
 
-/* more operations here */
+  tx->rollback("savepoint");
+  // tx->release("savepoint");
 
-tx->rollback("savepoint");
-
-tx->commit();
+  // set successful to commit on destruct
+  tx->set_successful(true);
+}
+// tx will be commited here
 ```
 
 Types
@@ -422,7 +437,7 @@ Mysql has pre-fetching built-in and it is used within the library.  It is enable
 an example of turning caching off in mysql:
 ```c++
   auto mysql_session = sqldb::create_session<mysql::session>("mysql://localhost/test");
-  mydb.flags(mydb.flags() & ~mysql::db::CACHE);
+  mysql_session->flags(mydb.flags() & ~mysql::db::CACHE);
 ```
 
 Memory caching is also used for looking up schemas to reduce hits to the database.

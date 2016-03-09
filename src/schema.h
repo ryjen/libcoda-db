@@ -13,7 +13,7 @@ namespace arg3
 {
     namespace db
     {
-        typedef class session session_type;
+        class session;
 
         /*!
          * Definition of a column in a schema
@@ -36,6 +36,9 @@ namespace arg3
          */
         class schema
         {
+           public:
+            typedef session session_type;
+
            private:
             std::shared_ptr<session_type> session_;
             std::string tableName_;

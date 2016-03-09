@@ -14,6 +14,8 @@ namespace arg3
         {
             class transaction : public transaction_impl
             {
+                friend class session;
+
                public:
                 typedef struct {
                     arg3::db::transaction::type type;
@@ -21,6 +23,7 @@ namespace arg3
                 } mode;
 
                 transaction(const std::shared_ptr<MYSQL> &db, const transaction::mode &mode = {});
+
                 void start();
                 void commit();
                 void rollback();

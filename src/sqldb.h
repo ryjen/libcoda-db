@@ -5,6 +5,7 @@
 #include <memory>
 #include "uri.h"
 #include "session_factory.h"
+#include "session.h"
 
 namespace arg3
 {
@@ -49,22 +50,22 @@ namespace arg3
              * parses a uri and returns a database object
              * @param value   the uri string to parse
              */
-            static std::shared_ptr<arg3::db::session> create_session(const std::string &value);
+            static arg3::db::session create_session(const std::string &value);
 
-            static std::shared_ptr<arg3::db::session> create_session(const uri &value);
+            static arg3::db::session create_session(const uri &value);
 
-            static void register_session(const std::string &scheme, const std::shared_ptr<session_factory> &factory);
+            static void register_session(const std::string &protocol, const std::shared_ptr<session_factory> &factory);
 
             template <typename T>
-            static std::shared_ptr<T> create_session(const uri &value)
+            static T create_session(const uri &value)
             {
-                return std::dynamic_pointer_cast<T>(create_session(value));
+                return dynamic_cast<T>(create_session(value));
             }
 
             template <typename T>
-            static std::shared_ptr<T> create_session(const std::string &value)
+            static T create_session(const std::string &value)
             {
-                return std::dynamic_pointer_cast<T>(create_session(value));
+                return dynamic_cast<T>(create_session(value));
             }
 
            private:

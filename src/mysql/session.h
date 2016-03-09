@@ -26,13 +26,13 @@ namespace arg3
             class factory : public session_factory
             {
                public:
-                arg3::db::session *create(const uri &uri);
+                arg3::db::session_impl *create(const uri &uri);
             };
 
             /*!
              * a mysql specific implementation of a database
              */
-            class session : public arg3::db::session
+            class session : public arg3::db::session_impl, public std::enable_shared_from_this<session>
             {
                 friend sqldb;
                 friend class resultset;
@@ -74,10 +74,10 @@ namespace arg3
                 long long last_insert_id() const;
                 int last_number_of_changes() const;
                 std::string last_error() const;
-                resultset_type query(const std::string &sql);
+                std::shared_ptr<resultset_impl> query(const std::string &sql);
                 bool execute(const std::string &sql);
                 std::shared_ptr<statement_type> create_statement();
-                transaction_type create_transaction();
+                std::shared_ptr<transaction_impl> create_transaction() const;
                 void query_schema(const std::string &tablename, std::vector<column_definition> &columns);
             };
         }

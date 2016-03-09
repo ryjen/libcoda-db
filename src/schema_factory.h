@@ -8,13 +8,14 @@
 #include <unordered_map>
 #include <functional>
 #include <memory>
-#include "schema.h"
+#include <string>
 
 namespace arg3
 {
     namespace db
     {
         class session;
+        class schema;
 
         /*!
          *  Schema factory handles caching of table schemas.

@@ -3,6 +3,8 @@
  */
 #include "modify_query.h"
 #include "exception.h"
+#include "schema.h"
+#include "statement.h"
 #include "log.h"
 
 using namespace std;
