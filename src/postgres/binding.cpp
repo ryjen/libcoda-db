@@ -440,7 +440,7 @@ namespace arg3
                     auto str = match->str();
                     if (str[0] == '$') {
                         auto sub = *match;
-                        auto pos = std::stol(sub[1].str());
+                        auto pos = std::stol(sub[2].str());
                         // don't increment max index if not needed
                         if (pos < max_index) {
                             continue;
@@ -481,7 +481,6 @@ namespace arg3
                     if (str[0] == '?') {
                         // otherwise, replace the matched paramter with the current index
                         auto pos = indexes.back();
-                        log::error("replacing ? with $%d", pos);
                         formatted.replace(formatted.find(str), str.length(), "$" + std::to_string(pos));
                         indexes.pop_back();
                     }

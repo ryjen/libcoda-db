@@ -208,7 +208,7 @@ You **can** mix indexed and named parameters.
   "?, ?, @name, ?"
 ```
 
-I've tried to include mixing and matching different parameters types, but if this proves to problematic I may remove it.
+While I've put a lot of work into being able mixing and match different parameters types, if it proves to problematic I may remove it.
 When mixing indexed parameters, the first '?' is equivelent to parameter 1 or '$1' and so on.
 
 Basic Queries
@@ -410,7 +410,7 @@ Caching
 
 For sqlite3 and mysql databases, results from a query will be limited to the scope of the statement.
 
-For sqlite, memory caching was add to pre-fetch the values.  It can be done at the resultset, row or column level.  The default is none.
+Memory caching was add to pre-fetch the values (sqlite only).  It can be done at the resultset, row or column level.  The default is none.
 
 ```c++
   auto sqlite_session = sqldb::create_session<sqlite::session>("sqlite://testdb.db");

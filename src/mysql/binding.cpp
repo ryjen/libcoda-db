@@ -744,7 +744,7 @@ namespace arg3
                         case '$': {
                             auto sub = *i;
                             // if its a $ parameter, mapp the real index
-                            auto pos = std::stol(sub[1].str());
+                            auto pos = std::stol(sub[2].str());
                             indexes_[pos].insert(++index);
                             break;
                         }
