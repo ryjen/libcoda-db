@@ -24,7 +24,7 @@ namespace arg3
             class factory : public session_factory
             {
                public:
-                arg3::db::session_impl *create(const uri &uri);
+                std::shared_ptr<arg3::db::session_impl> create(const uri &uri);
             };
 
             /*!
@@ -38,12 +38,12 @@ namespace arg3
                protected:
                 std::shared_ptr<PGconn> db_;
 
+               public:
                 /*!
                  * @param info the connection uri
                  */
                 session(const uri &info);
 
-               public:
                 /* boilerplate */
                 session(const session &other) = delete;
                 session(session &&other);
@@ -61,7 +61,7 @@ namespace arg3
                 std::shared_ptr<resultset_impl> query(const std::string &sql);
                 bool execute(const std::string &sql);
                 std::shared_ptr<arg3::db::session::statement_type> create_statement();
-                std::shared_ptr<transaction_impl> create_transaction();
+                std::shared_ptr<transaction_impl> create_transaction() const;
                 void query_schema(const std::string &tablename, std::vector<column_definition> &columns);
                 std::string insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
 

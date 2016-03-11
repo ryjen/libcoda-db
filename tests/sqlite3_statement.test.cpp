@@ -14,13 +14,14 @@ using namespace arg3::db;
 go_bandit([]() {
 
     describe("sqlite3 statement", []() {
+        auto sqlite_session = dynamic_pointer_cast<sqlite::session>(current_session->impl());
+
         before_each([]() { setup_current_session(); });
 
         after_each([]() { teardown_current_session(); });
 
-
-        it("is movable", []() {
-            sqlite::statement stmt(dynamic_pointer_cast<sqlite::session>(current_session));
+        it("is movable", [&sqlite_session]() {
+            sqlite::statement stmt(sqlite_session);
 
             stmt.prepare("select * from users");
 
@@ -32,7 +33,7 @@ go_bandit([]() {
 
             AssertThat(stmt.is_valid(), IsFalse());
 
-            sqlite::statement s3(dynamic_pointer_cast<sqlite::session>(current_session));
+            sqlite::statement s3(sqlite_session);
 
             AssertThat(s3.is_valid(), IsFalse());
 
@@ -43,14 +44,14 @@ go_bandit([]() {
             AssertThat(s2.is_valid(), IsFalse());
         });
 
-        it("throws exceptions", []() {
-            auto session = sqldb::create_session<sqlite::session>("file://");
+        it("throws exceptions", [&sqlite_session]() {
+            auto session = sqldb::create_session("file");
 
-            sqlite::statement stmt(session);
+            sqlite::statement stmt(dynamic_pointer_cast<arg3::db::sqlite::session>(session->impl()));
 
             AssertThrows(database_exception, stmt.prepare("select * from users"));
 
-            stmt = sqlite::statement(dynamic_pointer_cast<sqlite::session>(current_session));
+            stmt = sqlite::statement(sqlite_session);
 
             AssertThrows(database_exception, stmt.prepare("asdfasdfasdf"));
 
@@ -67,11 +68,10 @@ go_bandit([]() {
             AssertThrows(binding_error, stmt.bind(1, sql_blob()));
 
             AssertThrows(binding_error, stmt.bind(1, sql_null));
-
         });
 
-        it("can reset", []() {
-            sqlite::statement stmt(dynamic_pointer_cast<sqlite::session>(current_session));
+        it("can reset", [&sqlite_session]() {
+            sqlite::statement stmt(sqlite_session);
 
             stmt.prepare("select * from users");
 

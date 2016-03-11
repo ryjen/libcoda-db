@@ -4,7 +4,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 
-class sqldb;
+struct sqldb;
 
 int execute_test(const char *path);
 

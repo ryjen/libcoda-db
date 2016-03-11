@@ -34,7 +34,7 @@ namespace arg3
         {
         }
 
-        select_query::select_query(const shared_ptr<schema> &schema) : select_query(schema->session(), schema->column_names())
+        select_query::select_query(const shared_ptr<schema> &schema) : select_query(schema->get_session(), schema->column_names())
         {
             tableName_ = schema->table_name();
         }

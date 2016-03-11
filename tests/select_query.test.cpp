@@ -42,7 +42,7 @@ go_bandit([]() {
 
             query.from("users");
 
-            Assert::That(query.session(), Equals(current_session));
+            Assert::That(query.get_session(), Equals(current_session));
 
             Assert::That(query.table_name(), Equals("users"));
         });

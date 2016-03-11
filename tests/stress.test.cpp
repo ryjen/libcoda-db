@@ -1,3 +1,6 @@
+#ifndef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include "db.test.h"
 #include "select_query.h"
 #include "insert_query.h"
@@ -17,13 +20,17 @@ int main(int argc, char* argv[])
 {
     register_test_sessions();
 
-    auto sqlite_test_session = sqldb::create_session<test_sqlite3_session>("file://testdb.db");
-    auto mysql_test_session = sqldb::create_session<test_mysql_session>(get_env_uri("MYSQL_URI", "mysql://localhost/test"));
-    auto postgres_test_session = sqldb::create_session<test_postgres_session>(get_env_uri("POSTGRES_URI", "postgres://localhost/test"));
+    auto sqlite_test_session = sqldb::create_session("file://testdb.db");
+    auto mysql_test_session = sqldb::create_session(get_env_uri("MYSQL_URI", "mysql://localhost/test"));
+    auto postgres_test_session = sqldb::create_session(get_env_uri("POSTGRES_URI", "postgres://localhost/test"));
 
-    sqlite_test_session->setup();
-    mysql_test_session->setup();
-    postgres_test_session->setup();
+    auto sqlite_impl = dynamic_pointer_cast<test_session>(sqlite_test_session->impl());
+    auto mysql_impl = dynamic_pointer_cast<test_session>(mysql_test_session->impl());
+    auto postgres_impl = dynamic_pointer_cast<test_session>(postgres_test_session->impl());
+
+    sqlite_impl->setup();
+    mysql_impl->setup();
+    postgres_impl->setup();
 
     log::set_level(log::Info);
 
@@ -33,9 +40,9 @@ int main(int argc, char* argv[])
 
     run_tests(postgres_test_session, "postgres");
 
-    sqlite_test_session->teardown();
-    mysql_test_session->teardown();
-    postgres_test_session->teardown();
+    sqlite_impl->teardown();
+    mysql_impl->teardown();
+    postgres_impl->teardown();
 
     return 0;
 }

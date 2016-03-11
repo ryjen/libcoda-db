@@ -193,7 +193,7 @@ namespace arg3
              * @return the reformatted sql
              * @throws binding_error if the sql contains mixed named and indexed parameters
              */
-            virtual std::string prepare(const std::string &sql, size_t max_index);
+            std::string prepare(const std::string &sql, size_t max_index);
 
             bind_mapping &bind(const std::string &name, const sql_value &value);
 

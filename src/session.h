@@ -105,7 +105,7 @@ namespace arg3
              * @param tablename the table to query
              * @param columns   an array to put columns found
              */
-            void query_schema(const std::string &tablename, std::vector<column_definition> &columns);
+            virtual void query_schema(const std::string &tablename, std::vector<column_definition> &columns) = 0;
 
             /*!
              * generates database specific insert sql
@@ -124,17 +124,15 @@ namespace arg3
          */
         class session : public std::enable_shared_from_this<session>
         {
-            friend class sqldb;
+            friend struct sqldb;
 
            public:
             typedef resultset resultset_type;
             typedef statement statement_type;
             typedef transaction transaction_type;
 
-           protected:
             session(const std::shared_ptr<session_impl> &impl);
 
-           public:
             /* default boilerplate */
             session(const session &other);
             session(session &&other);
@@ -175,7 +173,7 @@ namespace arg3
              * @param  sql   the sql string to execute
              * @return       the results of the query
              */
-            resultset_type query(const std::string &sql);
+            resultset_type query(const std::string &sql) const;
 
             /*!
              * executes a sql statement that does not return results
@@ -239,6 +237,11 @@ namespace arg3
              * @return         the sql string
              */
             std::string insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
+
+            /*!
+             * gets the implementation
+             */
+            std::shared_ptr<session_impl> impl() const;
 
            private:
             std::shared_ptr<session_impl> impl_;

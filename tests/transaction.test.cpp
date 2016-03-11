@@ -48,7 +48,7 @@ go_bandit([]() {
 
             Assert::That(other_session->is_open(), IsTrue());
 
-            insert_query insert(trans.session());
+            insert_query insert(trans.get_session());
 
             insert.into("users").columns({"first_name", "last_name"}).values("Jerome", "Padington");
 

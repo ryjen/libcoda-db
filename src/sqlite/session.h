@@ -31,7 +31,7 @@ namespace arg3
             class factory : public session_factory
             {
                public:
-                arg3::db::session_impl *create(const uri &uri);
+                std::shared_ptr<arg3::db::session_impl> create(const uri &uri);
             };
 
             /*!
@@ -46,13 +46,12 @@ namespace arg3
                 std::shared_ptr<sqlite3> db_;
                 cache::level cacheLevel_;
 
-               protected:
+               public:
                 /*!
                  * @param info   the connection info
                  */
                 session(const uri &info);
 
-               public:
                 /* boilerplate */
                 session(const session &other) = delete;
                 session(session &&other);
@@ -71,13 +70,12 @@ namespace arg3
                 bool execute(const std::string &sql);
                 std::string last_error() const;
                 std::shared_ptr<statement_type> create_statement();
-                std::shared_ptr<transaction_impl> create_transaction();
+                std::shared_ptr<transaction_impl> create_transaction() const;
 
                 /*! @copydoc
                  *  overriden for sqlite3 specific pragma parsing
                  */
                 void query_schema(const std::string &tableName, std::vector<column_definition> &columns);
-
 
                 /*!
                  * sets the cache level

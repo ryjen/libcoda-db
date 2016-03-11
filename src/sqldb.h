@@ -47,26 +47,40 @@ namespace arg3
         struct sqldb {
            public:
             /*!
-             * parses a uri and returns a database object
+             * parses a uri and creates a session
              * @param value   the uri string to parse
+             * @return the database session based on the uri
              */
-            static arg3::db::session create_session(const std::string &value);
+            static std::shared_ptr<arg3::db::session> create_session(const std::string &value);
 
-            static arg3::db::session create_session(const uri &value);
+            /*!
+             * creates a database session
+             * @param value the uri for the session
+             * @return the created database session
+             */
+            static std::shared_ptr<arg3::db::session> create_session(const uri &value);
 
+            /*!
+             * parses a uri, creates a session, and opens it
+             * @param value the uri for the session
+             * @return the created and opened session
+             */
+            static std::shared_ptr<arg3::db::session> open_session(const std::string &value);
+
+            /*!
+             * creates a session and opens it
+             * @param value the uri for the session
+             * @return the created and opened session
+             */
+            static std::shared_ptr<arg3::db::session> open_session(const uri &value);
+
+            /*!
+             * registers a handler for a session protocol
+             * ex. "sqlite", my_sqlite_factory
+             * @param protocol the protocol, or the 'scheme' of a uri
+             * @param factory  a factory instance
+             */
             static void register_session(const std::string &protocol, const std::shared_ptr<session_factory> &factory);
-
-            template <typename T>
-            static T create_session(const uri &value)
-            {
-                return dynamic_cast<T>(create_session(value));
-            }
-
-            template <typename T>
-            static T create_session(const std::string &value)
-            {
-                return dynamic_cast<T>(create_session(value));
-            }
 
            private:
             static sqldb *instance();

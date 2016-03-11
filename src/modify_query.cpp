@@ -17,7 +17,7 @@ namespace arg3
         {
         }
 
-        modify_query::modify_query(const shared_ptr<schema> &schema) : modify_query(schema->session())
+        modify_query::modify_query(const shared_ptr<schema> &schema) : modify_query(schema->get_session())
         {
         }
 

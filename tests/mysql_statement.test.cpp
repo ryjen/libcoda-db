@@ -44,7 +44,7 @@ go_bandit([]() {
         after_each([]() { teardown_current_session(); });
 
         it("is movable", []() {
-            mysql::statement stmt(dynamic_pointer_cast<mysql::session>(current_session));
+            mysql::statement stmt(dynamic_pointer_cast<mysql::session>(current_session->impl()));
 
             mysql::statement other(std::move(stmt));
 
@@ -60,9 +60,9 @@ go_bandit([]() {
         });
 
         it("can handle an error", []() {
-            auto db = dynamic_pointer_cast<mysql::session>(sqldb::create_session("mysql://xxxxxx/yyyyyy"));
+            auto db = sqldb::create_session("mysql://xxxxxx/yyyyyy");
 
-            mysql::statement stmt(db);
+            mysql::statement stmt(dynamic_pointer_cast<mysql::session>(db->impl()));
 
             AssertThrows(database_exception, stmt.prepare("update qwerqwer set asdfsdf='1'"));
         });

@@ -63,7 +63,7 @@ namespace arg3
             return *this;
         }
 
-        std::shared_ptr<session> query::session() const
+        std::shared_ptr<query::session_type> query::get_session() const
         {
             return session_;
         }

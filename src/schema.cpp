@@ -122,7 +122,7 @@ namespace arg3
             return tableName_;
         }
 
-        std::shared_ptr<session> schema::session() const
+        std::shared_ptr<session> schema::get_session() const
         {
             return session_;
         }

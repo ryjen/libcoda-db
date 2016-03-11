@@ -47,7 +47,7 @@ namespace arg3
             void set_successful(bool value);
             bool is_successful() const;
 
-            std::shared_ptr<session_type> session() const;
+            std::shared_ptr<session_type> get_session() const;
 
            private:
             bool successful_;

@@ -108,7 +108,7 @@ namespace arg3
             return impl_->last_number_of_changes();
         }
 
-        session::resultset_type session::query(const std::string &sql)
+        session::resultset_type session::query(const std::string &sql) const
         {
             return resultset_type(impl_->query(sql));
         }
@@ -138,7 +138,7 @@ namespace arg3
             return impl_->query_schema(tablename, columns);
         }
 
-        string session::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
+        string session_impl::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
         {
             ostringstream buf;
 
@@ -155,6 +155,16 @@ namespace arg3
             buf << ");";
 
             return buf.str();
+        }
+
+        string session::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
+        {
+            return impl_->insert_sql(schema, columns);
+        }
+
+        shared_ptr<session_impl> session::impl() const
+        {
+            return impl_;
         }
     }
 }

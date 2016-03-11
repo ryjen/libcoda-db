@@ -461,7 +461,6 @@ namespace arg3
                 match_begin = std::sregex_iterator(sql.begin(), sql.end(), bindable::param_regex);
                 match_end = std::sregex_iterator();
 
-                unsigned index = 0;
                 for (auto match = match_begin; match != match_end; ++match) {
                     auto str = match->str();
                     // if it is a named parameter...

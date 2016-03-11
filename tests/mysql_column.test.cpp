@@ -18,9 +18,7 @@ using namespace arg3::db;
 
 shared_ptr<column_impl> get_results_column(size_t index, size_t iterations)
 {
-    auto mysql_session = dynamic_pointer_cast<test_mysql_session>(current_session);
-
-    auto rs = mysql_session->query("select * from users");
+    auto rs = current_session->query("select * from users");
 
     if (iterations > 0 && iterations >= rs.size()) {
         throw database_exception("not enough rows");
@@ -41,9 +39,7 @@ shared_ptr<column_impl> get_results_column(size_t index, size_t iterations)
 
 shared_ptr<column_impl> get_stmt_column(size_t index, size_t iterations)
 {
-    auto mysql_session = dynamic_pointer_cast<test_mysql_session>(current_session);
-
-    select_query query(mysql_session, {}, "users");
+    select_query query(current_session, {}, "users");
 
     auto rs = query.execute();
 

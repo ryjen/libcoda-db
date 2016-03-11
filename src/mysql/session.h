@@ -19,14 +19,14 @@ namespace arg3
 {
     namespace db
     {
-        class sqldb;
+        struct sqldb;
 
         namespace mysql
         {
             class factory : public session_factory
             {
                public:
-                arg3::db::session_impl *create(const uri &uri);
+                std::shared_ptr<arg3::db::session_impl> create(const uri &uri);
             };
 
             /*!
@@ -48,14 +48,12 @@ namespace arg3
                 constexpr static int CACHE_STATEMENTS = (1 << 1);
                 constexpr static int CACHE = CACHE_RESULTS | CACHE_STATEMENTS;
 
-               protected:
                 /*!
                  * default constructor takes a uri to connect to
                  * @param connInfo the uri connection info
                  */
                 session(const uri &connInfo);
 
-               public:
                 /* boilerplate */
                 session(const session &other) = delete;
                 session(session &&other);

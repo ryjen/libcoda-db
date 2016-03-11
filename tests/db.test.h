@@ -28,7 +28,7 @@ std::string get_env_uri(const char *name, const std::string &def);
 class test_sqlite3_factory : public arg3::db::session_factory
 {
    public:
-    arg3::db::session *create(const arg3::db::uri &value);
+    std::shared_ptr<arg3::db::session_impl> create(const arg3::db::uri &value);
 };
 
 class test_sqlite3_session : public arg3::db::sqlite::session, public test_session
@@ -50,7 +50,7 @@ class test_sqlite3_session : public arg3::db::sqlite::session, public test_sessi
 class test_mysql_factory : public arg3::db::session_factory
 {
    public:
-    arg3::db::session *create(const arg3::db::uri &value);
+    std::shared_ptr<arg3::db::session_impl> create(const arg3::db::uri &value);
 };
 
 class test_mysql_session : public arg3::db::mysql::session, public test_session
@@ -72,7 +72,7 @@ class test_mysql_session : public arg3::db::mysql::session, public test_session
 class test_postgres_factory : public arg3::db::session_factory
 {
    public:
-    arg3::db::session *create(const arg3::db::uri &value);
+    std::shared_ptr<arg3::db::session_impl> create(const arg3::db::uri &value);
 };
 
 class test_postgres_session : public arg3::db::postgres::session, public test_session
@@ -115,11 +115,11 @@ class user : public arg3::db::record<user>
 
     using arg3::db::record<user>::record;
 
-    user(const std::shared_ptr<arg3::db::session> &session = current_session) : record(session->get_schema(TABLE_NAME))
+    user(const std::shared_ptr<arg3::db::session> &sess = current_session) : record(sess->get_schema(TABLE_NAME))
     {
     }
 
-    user(long long id, const std::shared_ptr<arg3::db::session> &session = current_session) : user(session->get_schema(TABLE_NAME))
+    user(long long id, const std::shared_ptr<arg3::db::session> &sess = current_session) : user(sess->get_schema(TABLE_NAME))
     {
         set_id(id);
         refresh();

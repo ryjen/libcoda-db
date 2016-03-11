@@ -24,12 +24,12 @@ namespace arg3
 
         ARG3_IMPLEMENT_EXCEPTION(no_primary_key_exception, database_exception);
 
-        session sqldb::create_session(const std::string &uristr)
+        std::shared_ptr<session> sqldb::create_session(const std::string &uristr)
         {
             db::uri uri(uristr);
             return create_session(uri);
         }
-        session sqldb::create_session(const uri &uri)
+        std::shared_ptr<session> sqldb::create_session(const uri &uri)
         {
             auto factory = instance()->factories_[uri.protocol];
 
@@ -37,7 +37,28 @@ namespace arg3
                 throw database_exception("unknown database " + uri.value);
             }
 
-            return session(std::shared_ptr<arg3::db::session_impl>(factory->create(uri)));
+            return std::make_shared<session>(factory->create(uri));
+        }
+
+        std::shared_ptr<session> sqldb::open_session(const std::string &uristr)
+        {
+            db::uri uri(uristr);
+            return open_session(uri);
+        }
+
+        std::shared_ptr<session> sqldb::open_session(const uri &uri)
+        {
+            auto factory = instance()->factories_[uri.protocol];
+
+            if (factory == nullptr) {
+                throw database_exception("unknown database " + uri.value);
+            }
+
+            auto value = std::make_shared<session>(factory->create(uri));
+
+            value->open();
+
+            return value;
         }
 
         void sqldb::register_session(const std::string &protocol, const std::shared_ptr<session_factory> &factory)

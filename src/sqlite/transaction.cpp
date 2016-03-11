@@ -18,7 +18,7 @@ namespace arg3
             }
             bool transaction::is_active() const
             {
-                return sqlite3_get_autocommit(db_.get());
+                return !sqlite3_get_autocommit(db_.get());
             }
 
             void transaction::start()

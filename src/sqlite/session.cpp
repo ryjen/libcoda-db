@@ -31,9 +31,9 @@ namespace arg3
                 };
             }
 
-            arg3::db::session_impl *factory::create(const uri &uri)
+            std::shared_ptr<arg3::db::session_impl> factory::create(const uri &uri)
             {
-                return new session(uri);
+                return std::make_shared<session>(uri);
             }
 
             session::session(const uri &info) : session_impl(info), db_(nullptr), cacheLevel_(cache::None)
@@ -51,7 +51,6 @@ namespace arg3
 
                 db_ = std::move(other.db_);
                 cacheLevel_ = other.cacheLevel_;
-
                 other.db_ = nullptr;
 
                 return *this;
@@ -72,7 +71,8 @@ namespace arg3
 
                 auto rs = query("pragma table_info(" + tableName + ")");
 
-                for (auto &row : rs) {
+                while (rs->next()) {
+                    auto row = rs->current_row();
                     column_definition def;
 
                     // column name
@@ -195,7 +195,7 @@ namespace arg3
                 return make_shared<statement>(static_pointer_cast<sqlite::session>(shared_from_this()));
             }
 
-            std::shared_ptr<transaction_impl> session::create_transaction()
+            std::shared_ptr<transaction_impl> session::create_transaction() const
             {
                 return make_shared<sqlite::transaction>(db_);
             }

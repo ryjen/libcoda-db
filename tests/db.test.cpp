@@ -52,7 +52,7 @@ void register_test_sessions()
 }
 void setup_current_session()
 {
-    auto session = dynamic_pointer_cast<test_session>(current_session);
+    auto session = dynamic_pointer_cast<test_session>(current_session->impl());
 
     if (session) {
         session->setup();
@@ -61,7 +61,7 @@ void setup_current_session()
 
 void teardown_current_session()
 {
-    auto session = dynamic_pointer_cast<test_session>(current_session);
+    auto session = dynamic_pointer_cast<test_session>(current_session->impl());
 
     if (session) {
         session->teardown();
@@ -84,9 +84,9 @@ string random_name()
 }
 
 #if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
-arg3::db::session *test_sqlite3_factory::create(const arg3::db::uri &value)
+std::shared_ptr<arg3::db::session_impl> test_sqlite3_factory::create(const arg3::db::uri &value)
 {
-    return new test_sqlite3_session(value);
+    return std::make_shared<test_sqlite3_session>(value);
 }
 
 void test_sqlite3_session::setup()
@@ -104,15 +104,13 @@ void test_sqlite3_session::teardown()
 {
     close();
     unlink(connection_info().path.c_str());
-    clear_schema("users");
-    clear_schema("user_settings");
 }
 #endif
 
 #if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
-arg3::db::session *test_mysql_factory::create(const arg3::db::uri &value)
+std::shared_ptr<arg3::db::session_impl> test_mysql_factory::create(const arg3::db::uri &value)
 {
-    return new test_mysql_session(value);
+    return std::make_shared<test_mysql_session>(value);
 }
 
 void test_mysql_session::setup()
@@ -131,15 +129,13 @@ void test_mysql_session::teardown()
     execute("drop table users");
     execute("drop table user_settings");
     close();
-    clear_schema("users");
-    clear_schema("user_settings");
 }
 #endif
 
 #if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
-arg3::db::session *test_postgres_factory::create(const arg3::db::uri &value)
+std::shared_ptr<arg3::db::session_impl> test_postgres_factory::create(const arg3::db::uri &value)
 {
-    return new test_postgres_session(value);
+    return std::make_shared<test_postgres_session>(value);
 }
 void test_postgres_session::setup()
 {
@@ -156,8 +152,6 @@ void test_postgres_session::teardown()
     execute("drop table users");
     execute("drop table user_settings");
     close();
-    clear_schema("users");
-    clear_schema("user_settings");
 }
 #endif
 

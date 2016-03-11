@@ -10,8 +10,8 @@ namespace arg3
         class session_factory
         {
            public:
-            virtual arg3::db::session_impl *create(const uri &uri) = 0;
-            inline arg3::db::session_impl *create(const std::string &uri_s)
+            virtual std::shared_ptr<arg3::db::session_impl> create(const uri &uri) = 0;
+            inline std::shared_ptr<arg3::db::session_impl> create(const std::string &uri_s)
             {
                 return create(uri(uri_s));
             }

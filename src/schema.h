@@ -113,7 +113,7 @@ namespace arg3
              * gets the database for this schema
              * @return the database object
              */
-            std::shared_ptr<session_type> session() const;
+            std::shared_ptr<schema::session_type> get_session() const;
         };
     }
 }

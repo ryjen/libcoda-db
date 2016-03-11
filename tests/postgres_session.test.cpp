@@ -24,7 +24,7 @@ go_bandit([]() {
         after_each([]() { teardown_current_session(); });
 
         it("can handle bad parameters", []() {
-            auto db = sqldb::create_session<postgres::session>("postgres://zzzzz:zzzzz@zzzz/zzzzz:0");
+            auto db = sqldb::create_session("postgres://zzzzz:zzzzz@zzzz/zzzzz:0");
 
             AssertThrows(database_exception, db->open());
         });

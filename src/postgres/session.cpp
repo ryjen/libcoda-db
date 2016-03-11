@@ -31,9 +31,9 @@ namespace arg3
                 };
             }
 
-            arg3::db::session_impl *factory::create(const uri &uri)
+            std::shared_ptr<arg3::db::session_impl> factory::create(const uri &uri)
             {
-                return new session(uri);
+                return std::make_shared<session>(uri);
             }
 
             session::session(const uri &info) : session_impl(info), db_(nullptr), lastId_(0), lastNumChanges_(0)
@@ -152,7 +152,7 @@ namespace arg3
                 return make_shared<statement>(static_pointer_cast<postgres::session>(shared_from_this()));
             }
 
-            shared_ptr<transaction_impl> session::create_transaction()
+            shared_ptr<transaction_impl> session::create_transaction() const
             {
                 return make_shared<postgres::transaction>(db_);
             }
@@ -199,31 +199,22 @@ namespace arg3
             {
                 if (!is_open()) return;
 
-                select_query pkq(shared_from_this(), {"tc.table_schema, tc.table_name, kc.column_name, pg_get_serial_sequence('" + tableName +
-                                                      "', kc.column_name) as serial"});
+                string pk_sql =
+                    string("SELECT tc.table_schema, tc.table_name, kc.column_name FROM information_schema.table_constraints tc ") +
+                    "JOIN information_schema.key_column_usage kc ON kc.table_name = tc.table_name AND kc.table_schema = tc.table_schema " +
+                    "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '" + tableName +
+                    "' ORDER BY tc.table_schema, tc.table_name, kc.position_in_unique_constraint";
 
-                pkq.from("information_schema.table_constraints tc");
+                string col_sql =
+                    string("SELECT column_name, data_type, pg_get_serial_sequence('" + tableName + "', column_name) as serial ") +
+                    "FROM information_schema.columns WHERE table_name = '" + tableName + "'";
 
-                pkq.join("information_schema.key_column_usage kc").on("kc.table_name = tc.table_name") and ("kc.table_schema = tc.table_schema");
+                auto primary_keys = query(pk_sql);
 
-                pkq.join("information_schema.columns c").on("c.table_name = tc.table_name") and ("c.table_schema = tc.table_schema") and
-                    ("c.column_name = kc.column_name");
+                auto rs = query(col_sql);
 
-                pkq.where("tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = $1", tableName);
-
-                pkq.order_by("tc.table_schema, tc.table_name, kc.position_in_unique_constraint");
-
-                auto primary_keys = pkq.execute();
-
-                select_query info_schema(shared_from_this(), {"column_name", "data_type"});
-
-                info_schema.from("information_schema.columns");
-
-                info_schema.where("table_name = $1", tableName);
-
-                auto rs = info_schema.execute();
-
-                for (auto &row : rs) {
+                while (rs->next()) {
+                    auto row = rs->current_row();
                     column_definition def;
 
                     // column name
@@ -234,12 +225,16 @@ namespace arg3
                     }
 
                     def.pk = false;
+                    def.autoincrement = false;
 
-                    for (auto &pk : primary_keys) {
+                    primary_keys->reset();
+
+                    while (primary_keys->next()) {
+                        auto pk = primary_keys->current_row();
                         if (pk["column_name"].to_value() == def.name) {
                             def.pk = true;
+                            def.autoincrement = !row["serial"].to_value().to_string().empty();
                         }
-                        def.autoincrement = !pk["serial"].to_value().is_null();
                     }
 
                     // find type

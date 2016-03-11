@@ -31,9 +31,9 @@ int main(int argc, char *argv[])
 #ifdef TEST_SQLITE
     puts("running sqlite3 tests");
 
-    auto sqlite_session = arg3::db::sqldb::create_session<arg3::db::sqlite::session>("file://testdb.db");
+    current_session = arg3::db::sqldb::create_session("file://testdb.db");
 
-    current_session = sqlite_session;
+    auto sqlite_session = dynamic_pointer_cast<arg3::db::sqlite::session>(current_session->impl());
 
     // run the uncached test
     if (bandit::run(argc, argv)) {

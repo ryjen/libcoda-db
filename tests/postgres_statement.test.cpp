@@ -20,7 +20,7 @@ go_bandit([]() {
 
 
         it("is movable", []() {
-            postgres::statement stmt(dynamic_pointer_cast<postgres::session>(current_session));
+            postgres::statement stmt(dynamic_pointer_cast<postgres::session>(current_session->impl()));
 
             stmt.prepare("select * from users");
 
@@ -32,7 +32,7 @@ go_bandit([]() {
 
             AssertThat(stmt.is_valid(), IsFalse());
 
-            postgres::statement s3(dynamic_pointer_cast<postgres::session>(current_session));
+            postgres::statement s3(dynamic_pointer_cast<postgres::session>(current_session->impl()));
 
             AssertThat(s3.is_valid(), IsFalse());
 
@@ -44,15 +44,15 @@ go_bandit([]() {
         });
 
         it("throws exceptions", []() {
-            auto session = sqldb::create_session<postgres::session>("postgres://ssssss/tttttt");
+            auto session = sqldb::create_session("postgres://ssssss/tttttt");
 
-            postgres::statement stmt(session);
+            postgres::statement stmt(dynamic_pointer_cast<postgres::session>(session->impl()));
 
             AssertThrows(database_exception, stmt.prepare("select * from users"));
         });
 
         it("can reset", []() {
-            postgres::statement stmt(dynamic_pointer_cast<postgres::session>(current_session));
+            postgres::statement stmt(dynamic_pointer_cast<postgres::session>(current_session->impl()));
 
             stmt.prepare("select * from users");
 

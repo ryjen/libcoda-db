@@ -9,16 +9,16 @@ namespace arg3
     namespace db
     {
         transaction::transaction(const std::shared_ptr<session_type> &session, const std::shared_ptr<transaction_impl> &impl)
-            : session_(session), impl_(impl), successful_(false)
+            : successful_(false), session_(session), impl_(impl)
         {
         }
 
-        transaction::transaction(const transaction &other) : session_(other.session_), impl_(other.impl_), successful_(other.successful_)
+        transaction::transaction(const transaction &other) : successful_(other.successful_), session_(other.session_), impl_(other.impl_)
         {
         }
 
         transaction::transaction(transaction &&other)
-            : session_(std::move(other.session_)), impl_(std::move(other.impl_)), successful_(other.successful_)
+            : successful_(other.successful_), session_(std::move(other.session_)), impl_(std::move(other.impl_))
         {
         }
 
@@ -97,7 +97,7 @@ namespace arg3
             return impl_->is_active();
         }
 
-        std::shared_ptr<transaction::session_type> transaction::session() const
+        std::shared_ptr<transaction::session_type> transaction::get_session() const
         {
             return session_;
         }

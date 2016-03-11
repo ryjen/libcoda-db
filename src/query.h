@@ -82,7 +82,7 @@ namespace arg3
              * get the database in use
              * @return the database object
              */
-            std::shared_ptr<session_type> session() const;
+            std::shared_ptr<query::session_type> get_session() const;
 
             /*!
              * @param other the other query being copied from

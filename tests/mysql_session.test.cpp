@@ -31,7 +31,9 @@ go_bandit([]() {
         });
 
         it("can disable caching", []() {
-            auto other = dynamic_pointer_cast<mysql::session>(sqldb::create_session(get_env_uri("MYSQL_URI", "mysql://localhost/test")));
+            auto thesession = sqldb::create_session(get_env_uri("MYSQL_URI", "mysql://localhost/test"));
+
+            auto other = dynamic_pointer_cast<mysql::session>(thesession->impl());
 
             other->open();
 
@@ -39,17 +41,17 @@ go_bandit([]() {
 
             Assert::That(other->flags(), Equals(0));
 
-            insert_query insert(other);
+            insert_query insert(thesession);
 
             insert.into("users").columns({"first_name", "last_name"}).values("harry", "potter");
 
             Assert::That(insert.execute(), IsTrue());
 
-            auto rs = other->query("select * from users");
+            auto rs = thesession->query("select * from users");
 
             Assert::That(rs.size(), Equals(1));
 
-            select_query select(other);
+            select_query select(thesession);
 
             select.from("users");
 

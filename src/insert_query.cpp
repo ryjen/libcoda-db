@@ -36,7 +36,8 @@ namespace arg3
          * @param schema the schema to modify
          * @param column the specific columns to modify in the schema
          */
-        insert_query::insert_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) : modify_query(schema->session())
+        insert_query::insert_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns)
+            : modify_query(schema->get_session())
         {
             tableName_ = schema->table_name();
             columns_ = columns;

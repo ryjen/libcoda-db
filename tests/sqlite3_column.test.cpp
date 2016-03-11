@@ -45,22 +45,23 @@ go_bandit([]() {
 
         });
 
-
         after_each([]() { teardown_current_session(); });
 
-        describe("has a type", []() {
+        auto sqlite_session = dynamic_pointer_cast<sqlite::session>(current_session->impl());
 
-            it("as a column", []() {
+        describe("has a type", [&sqlite_session]() {
 
-                dynamic_pointer_cast<sqlite::session>(current_session)->cache_level(sqlite::cache::None);
+            it("as a column", [&sqlite_session]() {
+
+                sqlite_session->cache_level(sqlite::cache::None);
 
                 auto col = get_sqlite_column<sqlite::column>("first_name");
 
                 Assert::That(col->sql_type(), Equals(SQLITE_TEXT));
             });
 
-            it("as a cached column", []() {
-                dynamic_pointer_cast<sqlite::session>(current_session)->cache_level(sqlite::cache::ResultSet);
+            it("as a cached column", [&sqlite_session]() {
+                sqlite_session->cache_level(sqlite::cache::ResultSet);
 
                 auto col = get_sqlite_column<sqlite::cached_column>("first_name");
 
@@ -68,19 +69,20 @@ go_bandit([]() {
             });
         });
 
-        describe("has a name", []() {
-            it("as a column", []() {
+        describe("has a name", [&sqlite_session]() {
 
-                dynamic_pointer_cast<sqlite::session>(current_session)->cache_level(sqlite::cache::None);
+            it("as a column", [&sqlite_session]() {
+
+                sqlite_session->cache_level(sqlite::cache::None);
 
                 auto col = get_sqlite_column<sqlite::column>("last_name");
 
                 Assert::That(col->name(), Equals("last_name"));
             });
 
-            it("as a cached column", []() {
+            it("as a cached column", [&sqlite_session]() {
 
-                dynamic_pointer_cast<sqlite::session>(current_session)->cache_level(sqlite::cache::ResultSet);
+                sqlite_session->cache_level(sqlite::cache::ResultSet);
 
                 auto col = get_sqlite_column<sqlite::cached_column>("last_name");
 
