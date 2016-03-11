@@ -46,6 +46,7 @@ namespace arg3
             bool is_active() const;
             void set_successful(bool value);
             bool is_successful() const;
+            std::shared_ptr<transaction_impl> impl() const;
 
             std::shared_ptr<session_type> get_session() const;
 

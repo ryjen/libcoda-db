@@ -21,32 +21,32 @@ set(TEST-SOURCES
 
 add_executable (${PROJECT_NAME}-test-mysql
 	${TEST-SOURCES}
-	mysql_binding.test.cpp
-	mysql_column.test.cpp
-	mysql_resultset.test.cpp
-	mysql_row.test.cpp
-  mysql_session.test.cpp
-	mysql_statement.test.cpp
+	mysql/binding.test.cpp
+	mysql/column.test.cpp
+	mysql/resultset.test.cpp
+	mysql/row.test.cpp
+  mysql/session.test.cpp
+	mysql/statement.test.cpp
 )
 
 set_target_properties(${PROJECT_NAME}-test-mysql PROPERTIES COMPILE_FLAGS "-DTEST_MYSQL")
 
 add_executable (${PROJECT_NAME}-test-sqlite
   ${TEST-SOURCES}
-  sqlite3_column.test.cpp
-  sqlite3_statement.test.cpp
+  sqlite/column.test.cpp
+  sqlite/statement.test.cpp
 )
 
 set_target_properties(${PROJECT_NAME}-test-sqlite PROPERTIES COMPILE_FLAGS "-DTEST_SQLITE")
 
 add_executable (${PROJECT_NAME}-test-postgres
   ${TEST-SOURCES}
-  postgres_binding.test.cpp
-  postgres_column.test.cpp
-  postgres_resultset.test.cpp
-  postgres_row.test.cpp
-  postgres_session.test.cpp
-  postgres_statement.test.cpp
+  postgres/binding.test.cpp
+  postgres/column.test.cpp
+  postgres/resultset.test.cpp
+  postgres/row.test.cpp
+  postgres/session.test.cpp
+  postgres/statement.test.cpp
 )
 
 set_target_properties(${PROJECT_NAME}-test-postgres PROPERTIES COMPILE_FLAGS "-DTEST_POSTGRES")

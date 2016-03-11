@@ -43,6 +43,8 @@ namespace arg3
                 if (mysql_query(db_.get(), buf.c_str())) {
                     throw transaction_exception("unable to start transaction");
                 }
+
+                active_ = true;
             }
 
             void transaction::commit()
@@ -50,6 +52,7 @@ namespace arg3
                 if (mysql_commit(db_.get())) {
                     throw transaction_exception("unable to commit transaction");
                 }
+                active_ = false;
             }
 
             void transaction::rollback()
@@ -57,6 +60,7 @@ namespace arg3
                 if (mysql_rollback(db_.get())) {
                     throw transaction_exception("unable to rollback transaction");
                 }
+                active_ = false;
             }
         }
     }

@@ -57,7 +57,7 @@ namespace arg3
             void transaction::rollback()
             {
                 if (sqlite3_exec(db_.get(), "ROLLBACK TRANSACTION;", NULL, NULL, NULL) != SQLITE_OK) {
-                    throw transaction_exception("unable to commit transaction");
+                    throw transaction_exception("unable to rollback transaction");
                 }
             }
         }

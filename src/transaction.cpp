@@ -20,6 +20,8 @@ namespace arg3
         transaction::transaction(transaction &&other)
             : successful_(other.successful_), session_(std::move(other.session_)), impl_(std::move(other.impl_))
         {
+            other.impl_ = nullptr;
+            other.session_ = nullptr;
         }
 
         transaction::~transaction()
@@ -35,6 +37,7 @@ namespace arg3
 
         transaction &transaction::operator=(const transaction &other)
         {
+            successful_ = other.successful_;
             session_ = other.session_;
             impl_ = other.impl_;
             return *this;
@@ -42,8 +45,11 @@ namespace arg3
 
         transaction &transaction::operator=(transaction &&other)
         {
+            successful_ = other.successful_;
             session_ = std::move(other.session_);
             impl_ = std::move(other.impl_);
+            other.impl_ = nullptr;
+            other.session_ = nullptr;
             return *this;
         }
 
@@ -67,6 +73,9 @@ namespace arg3
 
         void transaction::save(const std::string &name)
         {
+            if (name.empty()) {
+                return;
+            }
             log::trace("SAVEPOINT");
 
             if (!session_->execute("SAVEPOINT " + name + ";")) {
@@ -76,25 +85,31 @@ namespace arg3
 
         void transaction::release(const std::string &name)
         {
+            if (name.empty()) {
+                return;
+            }
             log::trace("RELEASE SAVEPOINT");
 
-            if (!session_->execute("RELEASE TO " + name + ";")) {
+            if (!session_->execute("RELEASE SAVEPOINT " + name + ";")) {
                 throw transaction_exception("unable to release save point " + name + ": " + session_->last_error());
             }
         }
 
         void transaction::rollback(const std::string &name)
         {
+            if (name.empty()) {
+                return;
+            }
             log::trace("ROLLBACK SAVEPOINT");
 
-            if (!session_->execute("ROLLBACK TO " + name + ";")) {
-                throw transaction_exception("unable to rollback to save point " + name + ": " + session_->last_error());
+            if (!session_->execute("ROLLBACK TO SAVEPOINT " + name + ";")) {
+                throw transaction_exception("unable to rollback save point " + name + ": " + session_->last_error());
             }
         }
 
         bool transaction::is_active() const
         {
-            return impl_->is_active();
+            return impl_ != nullptr && impl_->is_active();
         }
 
         std::shared_ptr<transaction::session_type> transaction::get_session() const
@@ -110,6 +125,11 @@ namespace arg3
         bool transaction::is_successful() const
         {
             return successful_;
+        }
+
+        std::shared_ptr<transaction_impl> transaction::impl() const
+        {
+            return impl_;
         }
     }
 }

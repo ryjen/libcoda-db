@@ -21,7 +21,7 @@ namespace arg3
             {
                 PGTransactionStatusType type = PQtransactionStatus(db_.get());
 
-                return type == PQTRANS_ACTIVE;
+                return type == PQTRANS_ACTIVE || type == PQTRANS_INTRANS;
             }
             void transaction::start()
             {

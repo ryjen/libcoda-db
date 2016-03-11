@@ -11,7 +11,7 @@
 #include <postgres.h>
 #include <libpq-fe.h>
 #include <catalog/pg_type.h>
-#include "db.test.h"
+#include "../db.test.h"
 #include "postgres/column.h"
 #include <libpq-fe.h>
 

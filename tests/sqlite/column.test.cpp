@@ -6,7 +6,7 @@
 
 #include <bandit/bandit.h>
 #include <memory>
-#include "db.test.h"
+#include "../db.test.h"
 #include "sqlite/column.h"
 
 using namespace bandit;

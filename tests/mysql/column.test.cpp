@@ -7,7 +7,7 @@
 #if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
 
 #include <bandit/bandit.h>
-#include "db.test.h"
+#include "../db.test.h"
 #include "mysql/column.h"
 
 using namespace bandit;

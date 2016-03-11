@@ -7,7 +7,7 @@
 #if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
 
 #include <bandit/bandit.h>
-#include "db.test.h"
+#include "../db.test.h"
 #include "postgres/session.h"
 
 using namespace bandit;

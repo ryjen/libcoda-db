@@ -1,5 +1,5 @@
 #include <bandit/bandit.h>
-#include "db.test.h"
+#include "../db.test.h"
 #include "postgres/resultset.h"
 
 #if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)

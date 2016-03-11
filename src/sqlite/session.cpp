@@ -178,14 +178,12 @@ namespace arg3
                 }
 
                 if (sqlite3_prepare_v2(db_.get(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
-                    throw database_exception(last_error());
+                    return false;
                 }
 
                 int res = sqlite3_step(stmt);
 
-                if (sqlite3_finalize(stmt) != SQLITE_OK) {
-                    throw database_exception(last_error());
-                }
+                sqlite3_finalize(stmt);
 
                 return res == SQLITE_OK || res == SQLITE_ROW || res == SQLITE_DONE;
             }

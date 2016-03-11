@@ -4,11 +4,11 @@
 
 #undef VERSION
 
-#if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
+#if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
 
 #include <bandit/bandit.h>
-#include "db.test.h"
-#include "postgres/binding.h"
+#include "../db.test.h"
+#include "mysql/binding.h"
 
 using namespace bandit;
 
@@ -18,8 +18,10 @@ using namespace arg3::db;
 
 go_bandit([]() {
 
-    describe("postgres binding", []() {
+    describe("mysql binding", []() {
+
         before_each([]() {
+
             setup_current_session();
 
             user user1;
@@ -45,30 +47,42 @@ go_bandit([]() {
         after_each([]() { teardown_current_session(); });
 
         it("has a size contructor", []() {
-            postgres::binding b(3);
+            mysql::binding b(3);
 
             Assert::That(b.size(), Equals(3));
+
+            Assert::That(b.get(1)->buffer == NULL, IsTrue());
 
             Assert::That(b.to_value(1) == sql_null, IsTrue());
         });
 
         describe("is copyable", []() {
 
-            it("from another", []() {
-
-                postgres::binding b;
+            it("from a raw mysql binding", []() {
+                mysql::binding b;
 
                 b.bind(1, 24);
 
-                Assert::That(b.to_value(0), Equals(24));
+                mysql::binding other(*b.get(0));
 
-                postgres::binding other(b);
+                Assert::That(b.size(), Equals(other.size()));
+
+                Assert::That(other.to_value(0), Equals(24));
+            });
+
+            it("from another", []() {
+
+                mysql::binding b;
+
+                b.bind(1, 24);
+
+                mysql::binding other(b);
 
                 Assert::That(b.size(), Equals(other.size()));
 
                 Assert::That(other.to_value(0), Equals(24));
 
-                postgres::binding c;
+                mysql::binding c;
 
                 c = other;
 
@@ -79,11 +93,11 @@ go_bandit([]() {
         });
 
         it("is movable", []() {
-            postgres::binding b;
+            mysql::binding b;
 
             b.bind(1, 24);
 
-            postgres::binding other(std::move(b));
+            mysql::binding other(std::move(b));
 
             Assert::That(b.size(), Equals(0));
 
@@ -91,7 +105,7 @@ go_bandit([]() {
 
             Assert::That(other.to_value(0), Equals(24));
 
-            postgres::binding c;
+            mysql::binding c;
 
             c = std::move(other);
 
@@ -106,12 +120,46 @@ go_bandit([]() {
         it("can handle a bad bind", []() {
             select_query query(current_session);
 
-            query.from("users").where("id = $1 and first_name = $2");
+            query.from("users");
+
+            query.where("id = $1 and first_name = $2");
 
             query.bind(3, "someId");
 
             // TODO: why this test fails?
             // AssertThrows(binding_error, query.execute().next());
+        });
+
+        it("can bind a time value", []() {
+            time_t tval = time(0);
+
+            mysql::binding b;
+
+            b.bind(1, sql_time(tval, sql_time::TIME));
+
+            b.bind(2, sql_time(tval, sql_time::DATE));
+
+            b.bind(3, sql_time(tval, sql_time::DATETIME));
+
+            b.bind(4, sql_time(tval, sql_time::TIMESTAMP));
+
+            Assert::That(b.to_value(0).to_time().to_ulong(), Equals(tval));
+
+            Assert::That(b.to_value(1).to_time().to_ulong(), Equals(tval));
+
+            Assert::That(b.to_value(2).to_time().to_ulong(), Equals(tval));
+
+            Assert::That(b.to_value(3).to_time().to_ulong(), Equals(tval));
+        });
+
+        it("can reorder and reuse indexes", []() {
+            select_query select(current_session);
+
+            select.from("users").where("first_name = $1 or last_name = $1", "Smith");
+
+            auto results = select.execute();
+
+            Assert::That(results.size(), Equals(1));
         });
 
     });

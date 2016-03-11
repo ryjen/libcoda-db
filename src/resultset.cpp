@@ -23,11 +23,13 @@ namespace arg3
 
         resultset::resultset(resultset &&other) : impl_(std::move(other.impl_))
         {
+            other.impl_ = nullptr;
         }
 
         resultset &resultset::operator=(resultset &&other)
         {
             impl_ = std::move(other.impl_);
+            other.impl_ = nullptr;
             return *this;
         }
 
