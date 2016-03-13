@@ -17,6 +17,15 @@ Why
 
 Purely selfish reasons like learning, resume content, and a lack of desire to use other options.
 
+What makes this library great
+-----------------------------
+
+- concept of schema's and automatic primary key usage for records
+- support for major databases
+- flexible prepared statement parameter usage
+- in most cases forced prepared statement usage (no sql injection)
+- nice syntax that makes sense (I think)]
+
 Building
 --------
 
@@ -139,7 +148,7 @@ example using a return value:
 
 the alternative way can be written using schema's instead of the user object:
 ```c++
-  auto schema = current_session.get_schema(user::TABLE_NAME);
+  auto schema = current_session->get_schema(user::TABLE_NAME);
 
   find_xxx<user>(schema, ... [](const shared_ptr<user> &record) {
       cout << "User: " << record->to_string() << endl;
@@ -207,9 +216,27 @@ You **can** mix indexed and named parameters.
   // or
   "?, ?, @name, ?"
 ```
-
 While I've put work into being able mixing and match different parameters types, if it proves too problematic I may remove it.
 When mixing indexed parameters, the first '?' is equivelent to parameter 1 or '$1' and so on.
+
+Binding
+-------
+
+The binding interface looks like this:
+
+```c++
+// Bind by order (index)
+query.bind_all("value1", "value2", value3);
+// or
+query.where("param = $1, param2 = $2", value1, value2);
+
+// Bind by name
+query.bind("@param", "value");
+
+// Bind by generic type
+sql_value value(1234);
+query.bind_value(1, value);
+```
 
 Basic Queries
 =============
@@ -311,7 +338,7 @@ The **join_clause** is used to build join statements.
 
 ```c++
 
-select_query select(current_session, {"u.id", "us.setting"});
+select_query select(current_session, {"u.id", "s.setting"});
 
 select.from("users u").join("user_settings s").on("u.id = s.user_id") and ("s.valid = 1");
 
