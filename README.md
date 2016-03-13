@@ -24,7 +24,7 @@ What makes this library great
 - support for major databases
 - flexible prepared statement parameter usage
 - in most cases forced prepared statement usage (no sql injection)
-- nice syntax that makes sense (I think)]
+- nice syntax that makes sense (I think)
 
 Building
 --------
@@ -216,8 +216,9 @@ You **can** mix indexed and named parameters.
   // or
   "?, ?, @name, ?"
 ```
-While I've put work into being able mixing and match different parameters types, if it proves too problematic I may remove it.
+
 When mixing indexed parameters, the first '?' is equivelent to parameter 1 or '$1' and so on.
+Mixing parameter types is an area that has been tested, but nearly enough (03/13/16).
 
 Binding
 -------
@@ -354,6 +355,14 @@ Where clauses in select/delete/joins have a dedicated class. For me it is syntac
 ```c++
 query.where("this = $1") and ("that = $2") or ("test = $3");
 ```
+
+The library will try to put the appropriate combined AND/OR into brackets itself. In the above example it would result in:
+
+```
+(this = $1 AND that = $2) OR (test = $3)
+```
+
+This is also an area that has been tested, but not nearly enough (03/13/16).
 
 Batch Queries
 -------------
