@@ -1,5 +1,6 @@
 
 #include <bandit/bandit.h>
+#include <climits>
 #include "../db.test.h"
 #include "sqlite/statement.h"
 
@@ -47,7 +48,7 @@ go_bandit([]() {
         it("throws exceptions", [&sqlite_session]() {
             auto session = sqldb::create_session("file");
 
-            sqlite::statement stmt(dynamic_pointer_cast<arg3::db::sqlite::session>(session->impl()));
+            sqlite::statement stmt(dynamic_pointer_cast<sqlite::session>(session->impl()));
 
             AssertThrows(database_exception, stmt.prepare("select * from users"));
 
@@ -57,17 +58,61 @@ go_bandit([]() {
 
             AssertThat(stmt.last_error().empty(), IsFalse());
 
-            AssertThrows(binding_error, stmt.bind(1, 1));
+            AssertThat(stmt.result(), IsFalse());
+        });
 
-            AssertThrows(binding_error, stmt.bind(1, 1234LL));
+        it("can handle bad bindings", [&sqlite_session]() {
 
-            AssertThrows(binding_error, stmt.bind(1, 123.123));
+            sqlite::statement stmt(sqlite_session);
 
-            AssertThrows(binding_error, stmt.bind(1, "12134123"));
+            AssertThrows(binding_error, stmt.bind(INT_MAX, 12341234));
 
-            AssertThrows(binding_error, stmt.bind(1, sql_blob()));
+            AssertThrows(binding_error, stmt.bind(INT_MAX, 1234U));
 
-            AssertThrows(binding_error, stmt.bind(1, sql_null));
+            AssertThrows(binding_error, stmt.bind(INT_MAX, 1234LL));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, 1234ULL));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, 123.123));
+            AssertThrows(binding_error, stmt.bind(INT_MAX, 123.123f));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, "12134123"));
+            AssertThrows(binding_error, stmt.bind(INT_MAX, L"12134123"));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, sql_blob()));
+            AssertThrows(binding_error, stmt.bind(INT_MAX, sql_time()));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, sql_null));
+            AssertThrows(binding_error, stmt.bind("blah", sql_value()));
+        });
+
+
+        it("can handle bad bindings with prepared sql", [&sqlite_session]() {
+
+            sqlite::statement stmt(sqlite_session);
+
+            stmt.prepare("select * from users");
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, 12341234));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, 1234U));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, 1234LL));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, 1234ULL));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, 123.123));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, 123.123f));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, "12134123"));
+            AssertThrows(binding_error, stmt.bind(INT_MAX, L"12134123"));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, sql_blob()));
+            AssertThrows(binding_error, stmt.bind(INT_MAX, sql_time()));
+
+            AssertThrows(binding_error, stmt.bind(INT_MAX, sql_null));
+            AssertThrows(binding_error, stmt.bind("@blah", sql_value()));
         });
 
         it("can reset", [&sqlite_session]() {
@@ -83,7 +128,6 @@ go_bandit([]() {
 
             AssertThat(stmt.is_valid(), IsTrue());
         });
-
     });
 
 });

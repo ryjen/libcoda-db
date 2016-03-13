@@ -9,6 +9,8 @@
 #include <time.h>
 #include <cassert>
 #include <regex>
+#include <locale>
+#include <codecvt>
 
 #include "../exception.h"
 #include "../log.h"
@@ -630,9 +632,12 @@ namespace arg3
             {
                 for (size_t i : get_indexes(index)) {
                     if (reallocate_value(i)) {
+                        typedef std::codecvt_utf8<wchar_t> convert_type;
+                        std::wstring_convert<convert_type, wchar_t> converter;
+                        std::string converted_str = converter.to_bytes(value);
                         value_[i - 1].buffer_type = MYSQL_TYPE_STRING;
                         auto size = len == -1 ? value.size() : len;
-                        value_[i - 1].buffer = wcsdup(value.c_str());
+                        value_[i - 1].buffer = strdup(converted_str.c_str());
                         value_[i - 1].buffer_length = size;
                         if (!value_[i - 1].length) {
                             value_[i - 1].length = c_alloc<unsigned long>();

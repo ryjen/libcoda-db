@@ -14,10 +14,6 @@ namespace arg3
     {
         const nullptr_t sql_null = nullptr;
 
-        sql_time::sql_time() : value_(0), format_(TIMESTAMP)
-        {
-        }
-
         sql_time::sql_time(time_t value, formats format) : value_(value), format_(format)
         {
         }

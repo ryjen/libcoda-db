@@ -16,7 +16,7 @@ namespace arg3
             resultset::resultset(const std::shared_ptr<sqlite::session> &sess, const shared_ptr<sqlite3_stmt> &stmt)
                 : stmt_(stmt), sess_(sess), status_(-1)
             {
-                if (sess_ == NULL) {
+                if (sess_ == nullptr) {
                     throw database_exception("No database provided to sqlite3 resultset");
                 }
 
@@ -27,7 +27,7 @@ namespace arg3
 
             resultset::resultset(resultset &&other) : stmt_(std::move(other.stmt_)), sess_(std::move(other.sess_)), status_(other.status_)
             {
-                other.sess_ = NULL;
+                other.sess_ = nullptr;
                 other.stmt_ = nullptr;
             }
 
@@ -40,7 +40,7 @@ namespace arg3
                 stmt_ = std::move(other.stmt_);
                 sess_ = std::move(other.sess_);
                 status_ = other.status_;
-                other.sess_ = NULL;
+                other.sess_ = nullptr;
                 other.stmt_ = nullptr;
 
                 return *this;
@@ -108,7 +108,7 @@ namespace arg3
             cached_resultset::cached_resultset(cached_resultset &&other)
                 : sess_(std::move(other.sess_)), rows_(std::move(other.rows_)), currentRow_(other.currentRow_)
             {
-                other.sess_ = NULL;
+                other.sess_ = nullptr;
             }
 
             cached_resultset::~cached_resultset()
@@ -120,14 +120,14 @@ namespace arg3
                 sess_ = std::move(other.sess_);
                 rows_ = std::move(other.rows_);
                 currentRow_ = other.currentRow_;
-                other.sess_ = NULL;
+                other.sess_ = nullptr;
 
                 return *this;
             }
 
             bool cached_resultset::is_valid() const
             {
-                return sess_ != NULL;
+                return sess_ != nullptr;
             }
 
             bool cached_resultset::next()

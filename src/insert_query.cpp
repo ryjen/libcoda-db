@@ -123,7 +123,6 @@ namespace arg3
                 numChanges_ = stmt_->last_number_of_changes();
                 lastId_ = stmt_->last_insert_id();
             } else {
-                log::error(stmt_->last_error().c_str());
                 lastId_ = 0;
                 numChanges_ = 0;
             }

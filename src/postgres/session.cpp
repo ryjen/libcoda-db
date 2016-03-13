@@ -157,6 +157,11 @@ namespace arg3
                 return make_shared<postgres::transaction>(db_);
             }
 
+            shared_ptr<transaction_impl> session::create_transaction(const transaction::mode &mode) const
+            {
+                return make_shared<postgres::transaction>(db_, mode);
+            }
+
             string session::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
             {
                 if (schema == nullptr) {
@@ -205,9 +210,8 @@ namespace arg3
                     "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '" + tableName +
                     "' ORDER BY tc.table_schema, tc.table_name, kc.position_in_unique_constraint";
 
-                string col_sql =
-                    string("SELECT column_name, data_type, pg_get_serial_sequence('" + tableName + "', column_name) as serial ") +
-                    "FROM information_schema.columns WHERE table_name = '" + tableName + "'";
+                string col_sql = string("SELECT column_name, data_type, pg_get_serial_sequence('" + tableName + "', column_name) as serial ") +
+                                 "FROM information_schema.columns WHERE table_name = '" + tableName + "'";
 
                 auto primary_keys = query(pk_sql);
 

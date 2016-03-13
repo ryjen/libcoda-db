@@ -28,7 +28,7 @@ namespace arg3
             row::row(row &&other) : row_impl(std::move(other)), stmt_(std::move(other.stmt_)), sess_(std::move(other.sess_)), size_(other.size_)
             {
                 other.stmt_ = nullptr;
-                other.sess_ = NULL;
+                other.sess_ = nullptr;
             }
 
             row::~row()
@@ -42,7 +42,7 @@ namespace arg3
                 sess_ = std::move(other.sess_);
                 size_ = other.size_;
                 other.stmt_ = nullptr;
-                other.sess_ = NULL;
+                other.sess_ = nullptr;
 
                 return *this;
             }

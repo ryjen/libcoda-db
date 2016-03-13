@@ -13,6 +13,7 @@
 #include <sqlite3.h>
 #include "../session.h"
 #include "../session_factory.h"
+#include "transaction.h"
 
 namespace arg3
 {
@@ -71,6 +72,7 @@ namespace arg3
                 std::string last_error() const;
                 std::shared_ptr<statement_type> create_statement();
                 std::shared_ptr<transaction_impl> create_transaction() const;
+                std::shared_ptr<transaction_impl> create_transaction(transaction::type type) const;
 
                 /*! @copydoc
                  *  overriden for sqlite3 specific pragma parsing

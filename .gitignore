@@ -40,3 +40,4 @@ latex
 .vagrant-build
 .vagrant
 coverage
+xcode

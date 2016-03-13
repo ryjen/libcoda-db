@@ -14,6 +14,7 @@
 #include <libpq-fe.h>
 #include "../session.h"
 #include "../session_factory.h"
+#include "transaction.h"
 
 namespace arg3
 {
@@ -62,6 +63,7 @@ namespace arg3
                 bool execute(const std::string &sql);
                 std::shared_ptr<arg3::db::session::statement_type> create_statement();
                 std::shared_ptr<transaction_impl> create_transaction() const;
+                std::shared_ptr<transaction_impl> create_transaction(const transaction::mode &mode) const;
                 void query_schema(const std::string &tablename, std::vector<column_definition> &columns);
                 std::string insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
 

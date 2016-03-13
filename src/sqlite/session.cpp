@@ -198,6 +198,11 @@ namespace arg3
                 return make_shared<sqlite::transaction>(db_);
             }
 
+            std::shared_ptr<transaction_impl> session::create_transaction(transaction::type type) const
+            {
+                return make_shared<sqlite::transaction>(db_, type);
+            }
+
             session &session::cache_level(cache::level level)
             {
                 cacheLevel_ = level;

@@ -16,7 +16,7 @@ using namespace std;
 
 using namespace arg3::db;
 
-shared_ptr<row_impl> get_results_row(size_t index)
+shared_ptr<row_impl> get_mysql_results_row(size_t index)
 {
     auto rs = current_session->query("select * from users");
 
@@ -30,10 +30,14 @@ shared_ptr<row_impl> get_results_row(size_t index)
         i += index;
     }
 
+    if (i == rs.end()) {
+        throw database_exception("No row found");
+    }
+
     return i->impl();
 }
 
-shared_ptr<row_impl> get_stmt_row(size_t index)
+shared_ptr<row_impl> get_mysql_stmt_row(size_t index)
 {
     select_query query(current_session, {}, "users");
 
@@ -47,6 +51,10 @@ shared_ptr<row_impl> get_stmt_row(size_t index)
 
     if (index > 0) {
         i += index;
+    }
+
+    if (i == rs.end()) {
+        throw database_exception("No row found");
     }
 
     return i->impl();
@@ -119,9 +127,9 @@ go_bandit([]() {
 
         describe("is movable", []() {
 
-            it("as statement results", []() { test_move_row<mysql::stmt_row>(get_stmt_row); });
+            it("as statement results", []() { test_move_row<mysql::stmt_row>(get_mysql_stmt_row); });
 
-            it("as results", []() { test_move_row<mysql::row>(get_results_row); });
+            it("as results", []() { test_move_row<mysql::row>(get_mysql_results_row); });
 
         });
 
@@ -137,7 +145,7 @@ go_bandit([]() {
             });
 
             it("as results", []() {
-                auto c = std::move(get_results_row(0));
+                auto c = std::move(get_mysql_results_row(0));
 
                 Assert::That(c->column_name(0), Equals("id"));
 
@@ -148,9 +156,9 @@ go_bandit([]() {
 
         describe("can get a column", []() {
 
-            it("as statement results", []() { test_row_column<mysql::stmt_row>(get_stmt_row); });
+            it("as statement results", []() { test_row_column<mysql::stmt_row>(get_mysql_stmt_row); });
 
-            it("as results", []() { test_row_column<mysql::row>(get_results_row); });
+            it("as results", []() { test_row_column<mysql::row>(get_mysql_results_row); });
 
         });
     });

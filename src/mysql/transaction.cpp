@@ -41,7 +41,7 @@ namespace arg3
                 buf += ";";
 
                 if (mysql_query(db_.get(), buf.c_str())) {
-                    throw transaction_exception("unable to start transaction");
+                    throw transaction_exception(std::string("unable to start transaction: ") + mysql_error(db_.get()));
                 }
 
                 active_ = true;
@@ -50,7 +50,7 @@ namespace arg3
             void transaction::commit()
             {
                 if (mysql_commit(db_.get())) {
-                    throw transaction_exception("unable to commit transaction");
+                    throw transaction_exception(std::string("unable to commit transaction: ") + mysql_error(db_.get()));
                 }
                 active_ = false;
             }
@@ -58,7 +58,7 @@ namespace arg3
             void transaction::rollback()
             {
                 if (mysql_rollback(db_.get())) {
-                    throw transaction_exception("unable to rollback transaction");
+                    throw transaction_exception(std::string("unable to rollback transaction: ") + mysql_error(db_.get()));
                 }
                 active_ = false;
             }

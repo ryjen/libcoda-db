@@ -25,7 +25,11 @@ shared_ptr<postgres::row> get_postgres_row(size_t index)
         i += index;
     }
 
-    return static_pointer_cast<postgres::row>(i->impl());
+    if (i == rs.end()) {
+        throw database_exception("no row found");
+    }
+
+    return dynamic_pointer_cast<postgres::row>(i->impl());
 }
 
 go_bandit([]() {
@@ -56,7 +60,7 @@ go_bandit([]() {
         it("requires initializer parameters", []() {
             AssertThrows(database_exception, postgres::row(nullptr, nullptr, 0));
 
-            AssertThrows(database_exception, postgres::row(dynamic_pointer_cast<postgres::session>(current_session), nullptr, 0));
+            AssertThrows(database_exception, postgres::row(dynamic_pointer_cast<postgres::session>(current_session->impl()), nullptr, 0));
         });
 
         it("is movable", []() {

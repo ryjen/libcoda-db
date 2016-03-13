@@ -120,6 +120,7 @@ namespace arg3
 
             cached_column::cached_column(cached_column &&other) : name_(std::move(other.name_)), value_(std::move(other.value_)), type_(other.type_)
             {
+                other.type_ = -1;
             }
 
             cached_column::~cached_column()
@@ -132,12 +133,13 @@ namespace arg3
                 type_ = other.type_;
                 value_ = std::move(other.value_);
 
+                other.type_ = -1;
                 return *this;
             }
 
             bool cached_column::is_valid() const
             {
-                return true;
+                return type_ > -1;
             }
 
             sql_value cached_column::to_value() const

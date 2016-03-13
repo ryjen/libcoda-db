@@ -4,11 +4,11 @@
 
 #undef VERSION
 
-#if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
+#if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
 
 #include <bandit/bandit.h>
 #include "../db.test.h"
-#include "mysql/resultset.h"
+#include "sqlite/resultset.h"
 
 using namespace bandit;
 
@@ -16,14 +16,14 @@ using namespace std;
 
 using namespace arg3::db;
 
-shared_ptr<resultset_impl> get_mysql_resultset()
+shared_ptr<resultset_impl> get_sqlite_resultset()
 {
     auto rs = current_session->query("select * from users");
 
     return rs.impl();
 }
 
-shared_ptr<resultset_impl> get_mysql_stmt_resultset()
+shared_ptr<resultset_impl> get_sqlite_cached_resultset()
 {
     select_query query(current_session, {}, "users");
 
@@ -34,23 +34,23 @@ shared_ptr<resultset_impl> get_mysql_stmt_resultset()
 
 
 template <typename T>
-void test_move_resultset(std::function<shared_ptr<resultset_impl>()> funk)
+void test_move_resultset(const std::function<shared_ptr<resultset_impl>()> &funk)
 {
     auto f1 = funk();
 
     auto f2 = funk();
 
-    T c2(std::move(*static_pointer_cast<T>(f1)));
+    T c2(std::move(*dynamic_pointer_cast<T>(f1)));
 
     Assert::That(c2.is_valid(), IsTrue());
 
-    c2 = std::move(*static_pointer_cast<T>(f2));
+    c2 = std::move(*dynamic_pointer_cast<T>(f2));
 
     Assert::That(c2.is_valid(), IsTrue());
 }
 
 template <typename T>
-void test_resultset_row(std::function<shared_ptr<resultset_impl>()> funk)
+void test_resultset_row(const std::function<shared_ptr<resultset_impl>()> &funk)
 {
     auto r = funk();
 
@@ -63,7 +63,7 @@ void test_resultset_row(std::function<shared_ptr<resultset_impl>()> funk)
 
 go_bandit([]() {
 
-    describe("mysql resultset", []() {
+    describe("sqlite resultset", []() {
         before_each([]() {
             setup_current_session();
 
@@ -89,24 +89,33 @@ go_bandit([]() {
 
         after_each([]() { teardown_current_session(); });
 
-        describe("is movable", []() {
+        auto sqlite_session = dynamic_pointer_cast<sqlite::session>(current_session->impl());
 
+        describe("is movable", [&sqlite_session]() {
 
-            it("as statement results", []() { test_move_resultset<mysql::stmt_resultset>(get_mysql_stmt_resultset); });
+            it("as cached results", [&sqlite_session]() {
+                sqlite_session->cache_level(sqlite::cache::ResultSet);
+                test_move_resultset<sqlite::cached_resultset>(get_sqlite_cached_resultset);
+            });
 
-            it("as results", []() { test_move_resultset<mysql::resultset>(get_mysql_resultset); });
-
+            it("as results", [&sqlite_session]() {
+                sqlite_session->cache_level(sqlite::cache::None);
+                test_move_resultset<sqlite::resultset>(get_sqlite_resultset);
+            });
 
         });
 
-        describe("can get a row", []() {
+        describe("can get a row", [&sqlite_session]() {
 
-            it("as statement results", []() {
-                test_resultset_row<mysql::stmt_resultset>(get_mysql_stmt_resultset);
-
+            it("as cached results", [&sqlite_session]() {
+                sqlite_session->cache_level(sqlite::cache::ResultSet);
+                test_resultset_row<sqlite::cached_resultset>(get_sqlite_cached_resultset);
             });
 
-            it("as results", []() { test_resultset_row<mysql::resultset>(get_mysql_resultset); });
+            it("as results", [&sqlite_session]() {
+                sqlite_session->cache_level(sqlite::cache::None);
+                test_resultset_row<sqlite::resultset>(get_sqlite_resultset);
+            });
 
         });
 

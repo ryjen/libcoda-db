@@ -38,10 +38,10 @@ namespace arg3
                         buf += " ISOLATION LEVEL REPEATABLE READ";
                         break;
                     case isolation::read_commited:
-                        buf += " ISOLATION LEVEL READ COMMITED";
+                        buf += " ISOLATION LEVEL READ COMMITTED";
                         break;
                     case isolation::read_uncommited:
-                        buf += " ISOLATION LEVEL READ UNCOMMITED";
+                        buf += " ISOLATION LEVEL READ UNCOMMITTED";
                         break;
                 }
                 switch (mode_.type) {
@@ -68,7 +68,7 @@ namespace arg3
                 PGresult *res = PQexec(db_.get(), buf.c_str());
 
                 if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                    throw transaction_exception("unable to start transaction");
+                    throw transaction_exception(std::string("unable to start transaction: ") + PQerrorMessage(db_.get()));
                 }
             }
 
@@ -77,7 +77,7 @@ namespace arg3
                 PGresult *res = PQexec(db_.get(), "COMMIT;");
 
                 if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                    throw transaction_exception("unable to commit transaction");
+                    throw transaction_exception(std::string("unable to commit transaction: ") + PQerrorMessage(db_.get()));
                 }
             }
 
@@ -86,7 +86,7 @@ namespace arg3
                 PGresult *res = PQexec(db_.get(), "ROLLBACK;");
 
                 if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                    throw transaction_exception("unable to rollback transaction");
+                    throw transaction_exception(std::string("unable to rollback transaction: ") + PQerrorMessage(db_.get()));
                 }
             }
         }

@@ -16,6 +16,11 @@ using namespace std;
 
 using namespace arg3::db;
 
+bool AreSame(double a, double b)
+{
+    return std::fabs(a - b) < std::numeric_limits<double>::epsilon();
+}
+
 go_bandit([]() {
 
     describe("mysql binding", []() {
@@ -150,6 +155,34 @@ go_bandit([]() {
             Assert::That(b.to_value(2).to_time().to_ulong(), Equals(tval));
 
             Assert::That(b.to_value(3).to_time().to_ulong(), Equals(tval));
+        });
+
+        it("can bind different values", []() {
+
+            mysql::binding b;
+
+            b.bind(1, 1234LL);
+            Assert::That(b.to_value(0), Equals(1234LL));
+
+            b.bind(1, 1234ULL);
+            Assert::That(b.to_value(0), Equals(1234ULL));
+
+
+            b.bind(1, 1234U);
+            Assert::That(b.to_value(0), Equals(1234U));
+
+            b.bind(3, 1234.1234);
+            Assert::That(AreSame(b.to_value(2).to_double(), 1234.1234), IsTrue());
+            b.bind(3, 123.123f);
+            // Assert::That(AreSame(b.to_value(2).to_float(), 123.123), IsTrue());
+
+            b.bind(4, sql_time());
+
+            b.bind(2, sql_null);
+            Assert::That(b.to_value(1).is_null(), IsTrue());
+
+            b.bind(2, L"test");
+            Assert::That(b.to_value(1), Equals("test"));
         });
 
         it("can reorder and reuse indexes", []() {

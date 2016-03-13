@@ -34,7 +34,10 @@ set_target_properties(${PROJECT_NAME}-test-mysql PROPERTIES COMPILE_FLAGS "-DTES
 add_executable (${PROJECT_NAME}-test-sqlite
   ${TEST-SOURCES}
   sqlite/column.test.cpp
+  sqlite/resultset.test.cpp
+  sqlite/row.test.cpp
   sqlite/statement.test.cpp
+  sqlite/transaction.test.cpp
 )
 
 set_target_properties(${PROJECT_NAME}-test-sqlite PROPERTIES COMPILE_FLAGS "-DTEST_SQLITE")
@@ -47,6 +50,7 @@ add_executable (${PROJECT_NAME}-test-postgres
   postgres/row.test.cpp
   postgres/session.test.cpp
   postgres/statement.test.cpp
+  postgres/transaction.test.cpp
 )
 
 set_target_properties(${PROJECT_NAME}-test-postgres PROPERTIES COMPILE_FLAGS "-DTEST_POSTGRES")

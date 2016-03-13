@@ -36,9 +36,6 @@ namespace arg3
         {
             friend class sql_value;
 
-           private:
-            sql_time();
-
            public:
             /*!
              * types of date time values
@@ -49,7 +46,7 @@ namespace arg3
              * @param value the unix timestamp
              * @param format the format to display
              */
-            sql_time(time_t value, formats format = TIMESTAMP);
+            sql_time(time_t value = time(0), formats format = TIMESTAMP);
 
             sql_time(const sql_time &other);
             sql_time(sql_time &&other);
