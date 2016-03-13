@@ -322,7 +322,7 @@ select.execute();
 Where Clauses
 -------------
 
-Where clauses in select/delete/joins have a dedicated class. For my it is syntactically preferrable to use the 'and' and 'or' keywords with the where clauses operators.
+Where clauses in select/delete/joins have a dedicated class. For me it is syntactically preferrable to use the 'and' and 'or' keywords with the where clauses operators.
 
 ```c++
 query.where("this = $1") and ("that = $2") or ("test = $3");
