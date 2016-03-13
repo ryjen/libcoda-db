@@ -226,10 +226,14 @@ Binding
 The binding interface looks like this:
 
 ```c++
-// Bind by order (index)
+// Bind all by order (index)
 query.bind_all("value1", "value2", value3);
+
 // or
 query.where("param = $1, param2 = $2", value1, value2);
+
+// Bind by index
+query.bind(2, value2);
 
 // Bind by name
 query.bind("@param", "value");
