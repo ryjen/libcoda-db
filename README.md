@@ -35,7 +35,20 @@ After cloning run the following command to initialize submodules:
 git submodule update --init --recursive
 ```
 
-use [cmake](https://cmake.org) to generate for the build system of your choice.
+**Docker** builds are available mostly for testing compiles on different platforms:
+
+```c++
+docker build -t arg3db .
+```
+
+Use docker-compose for testing (there are still some glitches (03/13/16)).
+
+```c++
+docker-compose build
+docker-compose up
+```
+
+otherwise use [cmake](https://cmake.org) to generate for the build system of your choice.
 
 ```bash
 mkdir debug; cd debug;
@@ -59,7 +72,7 @@ Model
                     └ row                   - a single result
                          └ column           - a field in a row containing a value
 
-      /* implementations using the above*/
+      /* implementations using the above */
       schema                                - a definition of a table
       schema_factory                        - cached schemas
       record                                - the active record (ish) implementation
@@ -69,6 +82,8 @@ Model
       delete_query                          - builds delete queries
       sql_value                             - storage and conversion for basic sql types
       transaction                           - transactional functionality
+      join_clause                           - handles creating joins on select queries
+      where_clause                          - handles creating where clauses on select, update and delete queries
 
 
 Records
@@ -82,7 +97,7 @@ Records should be implemented using the [curiously reoccuring template pattern (
 ```c++
 auto current_session = sqldb::create_session("file://test.db");
 
-/* Other databases
+/* Other databases:
 
 auto current_session = sqldb::create_session("mysql://user@pass:localhost:3306/database");
 auto current_session = sqldb::create_session("postgres://localhost/test");
@@ -163,6 +178,7 @@ the alternative way can be written using schema's instead of the user object:
 
 Save a record
 -------------
+
 ```c++
     /* save a user */
     user obj;
@@ -177,6 +193,7 @@ Save a record
 
 Delete a record
 ---------------
+
 ```c++
     user obj;
 
@@ -186,7 +203,6 @@ Delete a record
         cerr << testdb.last_error() << endl;
     }
 ```
-
 
 Prepared Statements
 ===================
@@ -248,6 +264,7 @@ Basic Queries
 
 Modify Queries
 --------------
+
 ```c++
 /* insert a  user (INSERT INTO ...) */
 insert_query insert(current_session);
@@ -342,13 +359,11 @@ Joins
 The **join_clause** is used to build join statements.
 
 ```c++
-
 select_query select(current_session, {"u.id", "s.setting"});
 
 select.from("users u").join("user_settings s").on("u.id = s.user_id") and ("s.valid = 1");
 
 select.execute();
-
 ```
 
 Where Clauses
@@ -394,7 +409,7 @@ for(int i = 1000; i < 3000; i++) {
 Transactions
 ============
 
-Transaction can be performed on a session object. 
+Transactions can be performed on a session object. 
 
 ```c++
 {
@@ -494,6 +509,7 @@ TODO / ROADMAP
 
 * More and better quality tests, I demand 100% coverage
 * compare benchmarks with other libraries
+* NoSQL support? might be doable
 
 [![BitCoin donate button](https://img.shields.io/badge/bitcoin-donate-yellow.svg)](https://coinbase.com/checkouts/9ef59f5479eec1d97d63382c9ebcb93a "Donate once-off to this project using BitCoin")
 Buy me a beer! 
