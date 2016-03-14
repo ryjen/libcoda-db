@@ -246,7 +246,7 @@ The binding interface looks like this:
 query.bind_all("value1", "value2", value3);
 
 // or
-query.where("param = $1, param2 = $2", value1, value2);
+query.where("param = $1 and param2 = $2", value1, value2);
 
 // Bind by index
 query.bind(2, value2);
