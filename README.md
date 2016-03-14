@@ -20,9 +20,10 @@ Purely selfish reasons like learning, resume content, and a lack of desire to us
 What makes this library great
 -----------------------------
 
-- concept of schema's and automatic primary key usage for records
-- prepared statement oriented with flexible syntax (no sql injection please)
-- nice syntax that makes sense (I think)
+- concept/usage of schema's and automatic primary key usage for records
+- prepared statement oriented with flexible syntax
+- nice syntax that I think makes sense
+- makes good use of new c++11 features
 
 Building
 --------
