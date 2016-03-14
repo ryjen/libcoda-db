@@ -8,7 +8,7 @@ libarg3db
 
 a sqlite, mysql and postgres wrapper / active record (ish) implementation
 
-While this library I think is pretty awesome, use in production at your own risk. Still doing quite a bit of testing, refactoring and new features (2016/02/20).  
+While this library I think is pretty awesome, use in production at your own risk. Still under testing and refactoring (2016/02/20).  
 
 Pull requests are welcomed...
 
