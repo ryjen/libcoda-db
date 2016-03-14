@@ -35,7 +35,7 @@ After cloning run the following command to initialize submodules:
 git submodule update --init --recursive
 ```
 
-**Docker** builds are available mostly for testing compiles on different platforms:
+[Docker](https://www.docker.com) builds are available mostly for testing compiles on different platforms:
 
 ```c++
 docker build -t arg3db .
@@ -151,6 +151,7 @@ example using a callback:
       cout << "User: " << record->to_string() << endl;
   });
 ```
+
 example using a return value:
 ```c++
   /* find users returning the results */
@@ -395,7 +396,7 @@ insert_query insert(current_session);
 insert.into("users").columns({"counter"});
 
 /* turn on batch mode for this query */
-insert.flags(insert_query::Batch);
+insert.flags(insert.flags() | insert_query::Batch);
 
 for(int i = 1000; i < 3000; i++) {
     insert.bind(1, i);
