@@ -21,9 +21,7 @@ What makes this library great
 -----------------------------
 
 - concept of schema's and automatic primary key usage for records
-- support for major databases
-- flexible prepared statement parameter usage
-- in most cases forced prepared statement usage (no sql injection)
+- prepared statement oriented with flexible syntax (no sql injection please)
 - nice syntax that makes sense (I think)
 
 Building
