@@ -483,16 +483,18 @@ For sqlite3 and mysql databases, results from a query will be limited to the sco
 Memory caching was add to pre-fetch the values (sqlite only).  It can be done at the resultset, row or column level.  The default is none.
 
 ```c++
-  auto sqlite_session = sqldb::create_session<sqlite::session>("sqlite://testdb.db");
-  sqlite_session->cache_level(sqlite::cache::row);
+  auto current_session = sqldb::create_session<sqlite::session>("sqlite://testdb.db");
+  auto sqlite_session = current_session->impl<sqlite::session>();
+  sqlite_session->cache_level(sqlite::cache::Row);
 ```
 
 Mysql has pre-fetching built-in and it is used within the library.  It is enabled by default. 
 
 an example of turning caching off in mysql:
 ```c++
-  auto mysql_session = sqldb::create_session<mysql::session>("mysql://localhost/test");
-  mysql_session->flags(mydb.flags() & ~mysql::db::CACHE);
+  auto current_session = sqldb::create_session("mysql://localhost/test");
+  auto mysql_session = current_session->impl<mysql::session>();
+  mysql_session->flags(mysql_session->flags() & ~mysql::db::CACHE);
 ```
 
 Memory caching is also used for looking up schemas to reduce hits to the database.

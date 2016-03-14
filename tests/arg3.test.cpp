@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 
     current_session = arg3::db::sqldb::create_session("file://testdb.db");
 
-    auto sqlite_session = dynamic_pointer_cast<arg3::db::sqlite::session>(current_session->impl());
+    auto sqlite_session = current_session->impl<arg3::db::sqlite::session>();
 
     // run the uncached test
     if (bandit::run(argc, argv)) {

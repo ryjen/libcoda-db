@@ -243,6 +243,15 @@ namespace arg3
              */
             std::shared_ptr<session_impl> impl() const;
 
+            /*!
+             * gets the implementation casted to a subtype
+             */
+            template <typename T>
+            std::shared_ptr<T> impl() const
+            {
+                return std::dynamic_pointer_cast<T>(impl());
+            }
+
            private:
             std::shared_ptr<session_impl> impl_;
 
