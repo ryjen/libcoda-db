@@ -77,7 +77,7 @@ namespace arg3
                 /*! @copydoc
                  *  overriden for sqlite3 specific pragma parsing
                  */
-                void query_schema(const std::string &tableName, std::vector<column_definition> &columns);
+                void query_schema(const std::string &dbName, const std::string &tableName, std::vector<column_definition> &columns);
 
                 /*!
                  * sets the cache level

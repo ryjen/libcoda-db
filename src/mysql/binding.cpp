@@ -220,7 +220,7 @@ namespace arg3
                 sql_value to_value(int type, const char *value, size_t length)
                 {
                     if (value == nullptr) {
-                        throw sql_null;
+                        return sql_null;
                     }
 
                     switch (type) {

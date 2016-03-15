@@ -63,7 +63,7 @@ namespace arg3
                 }
             }
 
-            void session::query_schema(const string &tableName, std::vector<column_definition> &columns)
+            void session::query_schema(const string &dbName, const string &tableName, std::vector<column_definition> &columns)
             {
                 if (tableName.empty()) {
                     throw database_exception("no table name to query schema");
@@ -85,6 +85,8 @@ namespace arg3
                     def.type = row["type"].to_value().to_string();
 
                     def.autoincrement = def.pk;
+
+                    def.default_value = row["dflt_value"].to_value().to_string();
 
                     columns.push_back(def);
                 }

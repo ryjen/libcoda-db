@@ -76,7 +76,7 @@ namespace arg3
                 bool execute(const std::string &sql);
                 std::shared_ptr<statement_type> create_statement();
                 std::shared_ptr<transaction_impl> create_transaction() const;
-                void query_schema(const std::string &tablename, std::vector<column_definition> &columns);
+                void query_schema(const std::string &dbName, const std::string &tablename, std::vector<column_definition> &columns);
             };
         }
     }

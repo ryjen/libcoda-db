@@ -61,6 +61,15 @@ options supported are:
     -DCODE_COVERAGE=ON   :   enable code coverage using lcov
     -DMEMORY_CHECK=ON    :   enable valgrind memory checking on tests
 
+Debugging
+---------
+
+Debugging on docker can be done with docker compose:
+
+```
+docker-compose run test gdb /usr/src/arg3db/build/tests/arg3db-test-xxx
+```
+
 Model
 -----
 
@@ -109,7 +118,7 @@ public:
     constexpr static const char *const TABLE_NAME = "users";
 
     /* only required constructor */
-    user(const std::shared_ptr<schema> &schema) : record(schema) 
+    user(const std::shared_ptr<schema> &schema) : record(schema)
     {}
 
     /* default constructor */
@@ -409,7 +418,7 @@ for(int i = 1000; i < 3000; i++) {
 Transactions
 ============
 
-Transactions can be performed on a session object. 
+Transactions can be performed on a session object.
 
 ```c++
 {
@@ -488,7 +497,7 @@ Memory caching was add to pre-fetch the values (sqlite only).  It can be done at
   sqlite_session->cache_level(sqlite::cache::Row);
 ```
 
-Mysql has pre-fetching built-in and it is used within the library.  It is enabled by default. 
+Mysql has pre-fetching built-in and it is used within the library.  It is enabled by default.
 
 an example of turning caching off in mysql:
 ```c++
@@ -514,7 +523,4 @@ TODO / ROADMAP
 * NoSQL support? might be doable
 
 [![BitCoin donate button](https://img.shields.io/badge/bitcoin-donate-yellow.svg)](https://coinbase.com/checkouts/9ef59f5479eec1d97d63382c9ebcb93a "Donate once-off to this project using BitCoin")
-Buy me a beer! 
-
-
-
+Buy me a beer!

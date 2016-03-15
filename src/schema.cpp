@@ -117,6 +117,17 @@ namespace arg3
             throw no_primary_key_exception("no primary key found for schema");
         }
 
+        sql_value schema::default_value(const std::string &name) const
+        {
+            for (auto &c : columns_) {
+                if (c.name == name) {
+                    return c.default_value;
+                }
+            }
+
+            return sql_value();
+        }
+
         string schema::table_name() const
         {
             return tableName_;

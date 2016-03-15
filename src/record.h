@@ -550,7 +550,11 @@ namespace arg3
                 // bind the column values
                 for (auto &column : columns) {
                     auto value = get(column);
-                    query.bind_value(++index, value);
+                    if (value.is_null()) {
+                        query.bind(++index);
+                    } else {
+                        query.bind_value(++index, value);
+                    }
                 }
 
                 return index;

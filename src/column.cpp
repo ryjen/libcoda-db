@@ -70,5 +70,45 @@ namespace arg3
         {
             return impl_;
         }
+
+        sql_blob column::to_blob() const
+        {
+            return impl_->to_value();
+        }
+
+        sql_time column::to_time() const
+        {
+            return impl_->to_value();
+        }
+
+        column::operator int() const {
+            return impl_->to_value();
+        }
+
+        column::operator unsigned() const {
+            return impl_->to_value();
+        }
+        column::operator long long() const {
+            return impl_->to_value();
+        }
+
+        column::operator unsigned long long() const {
+            return impl_->to_value();
+        }
+        column::operator double() const {
+            return impl_->to_value();
+        }
+
+        column::operator float() const {
+            return impl_->to_value();
+        }
+
+        column::operator std::string() const {
+            return impl_->to_value();
+        }
+        
+        column::operator std::wstring() const {
+            return impl_->to_value();
+        }
     }
 }

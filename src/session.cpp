@@ -135,7 +135,7 @@ namespace arg3
 
         void session::query_schema(const std::string &tablename, std::vector<column_definition> &columns)
         {
-            return impl_->query_schema(tablename, columns);
+            return impl_->query_schema(connection_info().path, tablename, columns);
         }
 
         string session_impl::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const

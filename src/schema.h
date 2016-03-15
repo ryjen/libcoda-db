@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "sql_value.h"
 
 namespace arg3
 {
@@ -23,6 +24,7 @@ namespace arg3
             bool pk;
             bool autoincrement;
             std::string type;
+            std::string default_value;
         };
 
         /*!
@@ -89,6 +91,12 @@ namespace arg3
              * @return the table name string
              */
             std::string table_name() const;
+
+            /*!
+             * gets the default value for a column
+             * @param name the name of the column
+             */
+            sql_value default_value(const std::string &name) const;
 
             /*!
              * gets a column definition by index

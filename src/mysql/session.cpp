@@ -204,7 +204,7 @@ namespace arg3
             {
                 return make_shared<mysql::transaction>(db_);
             }
-            void session::query_schema(const string &tableName, std::vector<column_definition> &columns)
+            void session::query_schema(const string &dbName, const string &tableName, std::vector<column_definition> &columns)
             {
                 if (!is_open()) return;
 
@@ -213,10 +213,10 @@ namespace arg3
                     string("SELECT tc.table_schema, tc.table_name, kc.column_name FROM information_schema.table_constraints tc ") +
                     "JOIN information_schema.key_column_usage kc ON kc.table_name = tc.table_name AND kc.table_schema = tc.table_schema  " +
                     "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '" + tableName +
-                    "' ORDER BY tc.table_schema, tc.table_name, "
-                    "kc.position_in_unique_constraint";
+                    "' AND tc.table_schema = '" + dbName + "' ORDER BY tc.table_schema, tc.table_name, "
+                    "kc.position_in_unique_constraint;";
 
-                string col_sql = "SELECT column_name, data_type, extra FROM information_schema.columns WHERE table_name = '" + tableName + "'";
+                string col_sql = "SELECT column_name, data_type, extra, column_default FROM information_schema.columns WHERE table_name = '" + tableName + "' AND table_schema = '" + dbName + "';";
 
                 auto rs = query(col_sql);
 
@@ -248,6 +248,8 @@ namespace arg3
 
                     // find type
                     def.type = row["data_type"].to_value().to_string();
+
+                    def.default_value = row["column_default"].to_value().to_string();
 
                     columns.push_back(def);
                 }

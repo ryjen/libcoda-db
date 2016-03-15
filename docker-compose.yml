@@ -5,6 +5,10 @@ services:
     links:
       - mysql
       - postgres
+    privileged: true
+    stdin_open: true
+    working_dir: /usr/src/arg3db/build
+    tty: true
     environment:
       MYSQL_URI: mysql://mysql:3306/test
       POSTGRES_URI: postgres://postgres:5432/test

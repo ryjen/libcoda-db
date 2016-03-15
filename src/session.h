@@ -105,7 +105,7 @@ namespace arg3
              * @param tablename the table to query
              * @param columns   an array to put columns found
              */
-            virtual void query_schema(const std::string &tablename, std::vector<column_definition> &columns) = 0;
+            virtual void query_schema(const std::string &dbName, const std::string &tablename, std::vector<column_definition> &columns) = 0;
 
             /*!
              * generates database specific insert sql

@@ -200,7 +200,7 @@ namespace arg3
 
                 return buf.str();
             }
-            void session::query_schema(const string &tableName, std::vector<column_definition> &columns)
+            void session::query_schema(const string &dbName, const string &tableName, std::vector<column_definition> &columns)
             {
                 if (!is_open()) return;
 
@@ -210,7 +210,7 @@ namespace arg3
                     "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '" + tableName +
                     "' ORDER BY tc.table_schema, tc.table_name, kc.position_in_unique_constraint";
 
-                string col_sql = string("SELECT column_name, data_type, pg_get_serial_sequence('" + tableName + "', column_name) as serial ") +
+                string col_sql = string("SELECT column_name, data_type, pg_get_serial_sequence('" + tableName + "', column_name) as serial, column_default ") +
                                  "FROM information_schema.columns WHERE table_name = '" + tableName + "'";
 
                 auto primary_keys = query(pk_sql);
@@ -243,6 +243,7 @@ namespace arg3
 
                     // find type
                     def.type = row["data_type"].to_value().to_string();
+                    def.default_value = row["column_default"].to_value().to_string();
 
                     columns.push_back(def);
                 }

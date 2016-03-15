@@ -63,10 +63,10 @@ namespace arg3
                 if (res_ == nullptr) {
                     throw no_such_column_exception();
                 }
-
+                
                 auto field = mysql_fetch_field_direct(res_.get(), index_);
 
-                if (value_[index_] == nullptr || field == nullptr) {
+                if (field == nullptr) {
                     throw no_such_column_exception();
                 }
 

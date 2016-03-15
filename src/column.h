@@ -93,6 +93,16 @@ namespace arg3
             sql_value to_value() const;
 
             /*!
+             * converts this column to a blob value_
+             */
+            sql_blob to_blob() const;
+
+            /*!
+             * converts this column to a sql time value
+             */
+            sql_time to_time() const;
+
+            /*!
              * @return the name of this column
              */
             std::string name() const;
@@ -101,6 +111,19 @@ namespace arg3
              * @return the instance of the implementation
              */
             std::shared_ptr<column_impl> impl() const;
+
+            /*!
+             * primitive operators
+             */
+            operator std::string() const;
+            operator unsigned() const;
+            operator double() const;
+            operator std::wstring() const;
+            operator int() const;
+            operator long long() const;
+            operator unsigned long long() const;
+            operator float() const;
+
         };
     }
 }
