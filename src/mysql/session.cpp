@@ -107,7 +107,7 @@ namespace arg3
 
                 try {
                     if (!info.port.empty()) {
-                        port = stoi(info.port);
+                        port = std::stoi(info.port);
                     }
                 } catch (const std::exception &e) {
                     throw database_exception("unable to parse port " + info.port);
@@ -212,11 +212,12 @@ namespace arg3
                 string pk_sql =
                     string("SELECT tc.table_schema, tc.table_name, kc.column_name FROM information_schema.table_constraints tc ") +
                     "JOIN information_schema.key_column_usage kc ON kc.table_name = tc.table_name AND kc.table_schema = tc.table_schema  " +
-                    "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '" + tableName +
-                    "' AND tc.table_schema = '" + dbName + "' ORDER BY tc.table_schema, tc.table_name, "
+                    "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '" + tableName + "' AND tc.table_schema = '" + dbName +
+                    "' ORDER BY tc.table_schema, tc.table_name, "
                     "kc.position_in_unique_constraint;";
 
-                string col_sql = "SELECT column_name, data_type, extra, column_default FROM information_schema.columns WHERE table_name = '" + tableName + "' AND table_schema = '" + dbName + "';";
+                string col_sql = "SELECT column_name, data_type, extra, column_default FROM information_schema.columns WHERE table_name = '" +
+                                 tableName + "' AND table_schema = '" + dbName + "';";
 
                 auto rs = query(col_sql);
 

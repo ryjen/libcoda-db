@@ -402,7 +402,6 @@ namespace arg3
                 for (size_t i = 0; i < size; i++) {
                     const MYSQL_BIND *other = &others[i];
                     MYSQL_BIND *value = &value_[i];
-
                     helper::bind_value_copy(value, other);
                 }
 
@@ -562,6 +561,7 @@ namespace arg3
 
                 return *this;
             }
+
             binding &binding::bind(size_t index, unsigned long long value)
             {
                 for (size_t i : get_indexes(index)) {
