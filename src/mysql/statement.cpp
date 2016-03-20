@@ -93,19 +93,16 @@ namespace arg3
             statement &statement::bind(size_t index, int value)
             {
                 bindings_.bind(index, value);
-
                 return *this;
             }
             statement &statement::bind(size_t index, unsigned value)
             {
                 bindings_.bind(index, value);
-
                 return *this;
             }
             statement &statement::bind(size_t index, long long value)
             {
                 bindings_.bind(index, value);
-
                 return *this;
             }
             statement &statement::bind(size_t index, unsigned long long value)
@@ -140,13 +137,11 @@ namespace arg3
             statement &statement::bind(size_t index, const sql_blob &value)
             {
                 bindings_.bind(index, value);
-
                 return *this;
             }
             statement &statement::bind(size_t index, const sql_null_type &value)
             {
                 bindings_.bind(index, value);
-
                 return *this;
             }
 

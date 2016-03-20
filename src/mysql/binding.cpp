@@ -90,19 +90,19 @@ namespace arg3
                     value->is_unsigned = other->is_unsigned;
                 }
 
-                time_t parse_time(MYSQL_BIND *binding)
+                sql_value parse_time(MYSQL_BIND *binding, sql_time::formats format)
                 {
                     struct tm sys;
                     MYSQL_TIME *db_tm;
 
-                    if (binding == nullptr) {
-                        return 0;
+                    if (binding == nullptr || (binding->is_null && *binding->is_null)) {
+                        return sql_null;
                     }
 
                     db_tm = (MYSQL_TIME *)binding->buffer;
 
                     if (db_tm == nullptr) {
-                        return 0;
+                        return sql_null;
                     }
 
                     memset(&sys, 0, sizeof(sys));
@@ -114,7 +114,7 @@ namespace arg3
                     sys.tm_min = db_tm->minute;
                     sys.tm_sec = db_tm->second;
 
-                    return timegm(&sys);
+                    return sql_time(timegm(&sys), format);
                 }
 
                 time_t parse_time(const char *value)
@@ -173,13 +173,13 @@ namespace arg3
                         case MYSQL_TYPE_NULL:
                             return sql_null;
                         case MYSQL_TYPE_TIME:
-                            return sql_time(helper::parse_time(binding), sql_time::TIME);
+                            return helper::parse_time(binding, sql_time::TIME);
                         case MYSQL_TYPE_DATE:
-                            return sql_time(helper::parse_time(binding), sql_time::DATE);
+                            return helper::parse_time(binding, sql_time::DATE);
                         case MYSQL_TYPE_TIMESTAMP:
-                            return sql_time(helper::parse_time(binding), sql_time::TIMESTAMP);
+                            return helper::parse_time(binding, sql_time::TIMESTAMP);
                         case MYSQL_TYPE_DATETIME:
-                            return sql_time(helper::parse_time(binding), sql_time::DATETIME);
+                            return helper::parse_time(binding, sql_time::DATETIME);
                         case MYSQL_TYPE_VAR_STRING:
                         case MYSQL_TYPE_VARCHAR:
                         case MYSQL_TYPE_DECIMAL:

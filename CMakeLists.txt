@@ -4,6 +4,7 @@ set(CMAKE_CXX_STANDARD 11)
 # add options for testing
 option(CODE_COVERAGE "Enable code coverage testing." OFF)
 option(MEMORY_CHECK "Enable testing for memory leaks." OFF)
+option(ENABLE_LOGGING "Enable internal library logging." OFF)
 
 # define project name
 project (arg3db VERSION 0.5.0)
@@ -25,6 +26,10 @@ if(CODE_COVERAGE)
 	include(CodeCoverage)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_COVERAGE}")
 	setup_target_for_coverage(${PROJECT_NAME}-coverage ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test ${PROJECT_SOURCE_DIR}/coverage)
+endif()
+
+if (ENABLE_LOGGING)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_LOGGING")
 endif()
 
 # add config header file

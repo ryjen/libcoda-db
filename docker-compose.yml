@@ -11,7 +11,7 @@ services:
     tty: true
     environment:
       MYSQL_URI: mysql://mysql:3306/test
-      POSTGRES_URI: postgres://postgres:5432/test
+      POSTGRES_URI: postgres://test:test@postgres:5432/test
     depends_on:
       - mysql
       - postgres
@@ -31,3 +31,5 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_DB: test
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test

@@ -1,6 +1,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
 #include <cstdarg>
 #include <cstdlib>
 #include <cstdio>
@@ -31,6 +32,7 @@ namespace arg3
 
             void set_level(const char *arg)
             {
+#ifdef ENABLE_LOGGING
                 if (arg == NULL || *arg == 0) {
                     return;
                 }
@@ -46,10 +48,12 @@ namespace arg3
                 } else if (!strcasecmp(arg, "TRACE")) {
                     current::level = Trace;
                 }
+#endif
             }
 
             static void lvargs(log::level level, const char *const format, va_list args)
             {
+#ifdef ENABLE_LOGGING
                 char buf[80] = {0};
                 timeval curTime;
 
@@ -66,10 +70,12 @@ namespace arg3
                 vfprintf(log::file, format, args);
                 fputs("\n", log::file);
                 fflush(log::file);
+#endif
             }
 
             void error(const char *const format, ...)
             {
+#ifdef ENABLE_LOGGING
                 va_list args;
 
                 if (Error > current::level || !format || !*format) {
@@ -79,10 +85,12 @@ namespace arg3
                 va_start(args, format);
                 lvargs(Error, format, args);
                 va_end(args);
+#endif
             }
 
             void warn(const char *const format, ...)
             {
+#ifdef ENABLE_LOGGING
                 va_list args;
 
                 if (Warn > current::level || !format || !*format) {
@@ -92,10 +100,12 @@ namespace arg3
                 va_start(args, format);
                 lvargs(Warn, format, args);
                 va_end(args);
+#endif
             }
 
             void info(const char *const format, ...)
             {
+#ifdef ENABLE_LOGGING
                 va_list args;
 
                 if (Info > current::level || !format || !*format) {
@@ -105,10 +115,12 @@ namespace arg3
                 va_start(args, format);
                 lvargs(Info, format, args);
                 va_end(args);
+#endif
             }
 
             void debug(const char *const format, ...)
             {
+#ifdef ENABLE_LOGGING
                 va_list args;
 
                 if (Debug > current::level || !format || !*format) {
@@ -118,10 +130,12 @@ namespace arg3
                 va_start(args, format);
                 lvargs(Debug, format, args);
                 va_end(args);
+#endif
             }
 
             void trace(const char *const format, ...)
             {
+#ifdef ENABLE_LOGGING
                 va_list args;
 
                 if (Trace > current::level || !format || !*format) {
@@ -131,11 +145,14 @@ namespace arg3
                 va_start(args, format);
                 lvargs(Trace, format, args);
                 va_end(args);
+#endif
             }
 
             void error(int errnum)
             {
+#ifdef ENABLE_LOGGING
                 error("%s (%d)", strerror(errnum), errnum);
+#endif
             }
         }
     }

@@ -14,7 +14,7 @@ RUN tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.2.0.tar.gz
 
 RUN mkdir -p /usr/src/arg3db/build
 
-COPY . /usr/src/arg3db
+ADD . /usr/src/arg3db
 
 WORKDIR /usr/src/arg3db/build
 
@@ -22,4 +22,4 @@ RUN cmake -DCMAKE_BUILD_TYPE=Debug -DMEMORY_CHECK=ON -DPostgreSQL_TYPE_INCLUDE_D
 
 RUN make
 
-CMD ["tests/arg3db-test"]
+CMD "make", "test", "ARGS=-V"

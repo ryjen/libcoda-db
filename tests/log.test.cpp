@@ -1,3 +1,9 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef ENABLE_LOGGING
+
 #include <bandit/bandit.h>
 #include "row.h"
 #include "db.test.h"
@@ -112,3 +118,5 @@ go_bandit([]() {
         });
     });
 });
+
+#endif
