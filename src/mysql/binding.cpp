@@ -143,7 +143,7 @@ namespace arg3
                  */
                 sql_value to_value(MYSQL_BIND *binding)
                 {
-                    if (binding == nullptr) {
+                    if (binding == nullptr || (binding->is_null && *binding->is_null)) {
                         return sql_null;
                     }
 

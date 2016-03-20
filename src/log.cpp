@@ -16,6 +16,7 @@ namespace arg3
     {
         namespace log
         {
+#ifdef ENABLE_LOGGING
             const char *LevelNames[] = {"UNKNOWN", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"};
 
             FILE *file = stdout;
@@ -24,10 +25,12 @@ namespace arg3
             {
                 level level;
             }
-
+#endif
             void set_level(log::level level)
             {
+#ifdef ENABLE_LOGGING
                 current::level = level;
+#endif
             }
 
             void set_level(const char *arg)
@@ -51,9 +54,9 @@ namespace arg3
 #endif
             }
 
+#ifdef ENABLE_LOGGING
             static void lvargs(log::level level, const char *const format, va_list args)
             {
-#ifdef ENABLE_LOGGING
                 char buf[80] = {0};
                 timeval curTime;
 
@@ -70,9 +73,8 @@ namespace arg3
                 vfprintf(log::file, format, args);
                 fputs("\n", log::file);
                 fflush(log::file);
-#endif
             }
-
+#endif
             void error(const char *const format, ...)
             {
 #ifdef ENABLE_LOGGING

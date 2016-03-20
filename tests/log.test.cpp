@@ -2,8 +2,6 @@
 #include "config.h"
 #endif
 
-#ifdef ENABLE_LOGGING
-
 #include <bandit/bandit.h>
 #include "row.h"
 #include "db.test.h"
@@ -15,10 +13,14 @@ using namespace std;
 
 using namespace arg3::db;
 
+#ifdef ENABLE_LOGGING
 extern FILE *log::file;
+#endif
 
 bool test_last_log(log::level level, const char *test)
 {
+#ifdef ENABLE_LOGGING
+
     char buf[BUFSIZ] = {0};
     char type[BUFSIZ] = {0};
     char logstr[BUFSIZ] = {0};
@@ -38,15 +40,21 @@ bool test_last_log(log::level level, const char *test)
         return false;
     }
     return !strcmp(logstr, test);
+#else
+    return true;
+#endif
 }
 
 go_bandit([]() {
 
+#ifdef ENABLE_LOGGING
     before_each([]() { log::file = tmpfile(); });
     after_each([]() {
+
         fclose(log::file);
         log::file = stdout;
     });
+#endif
 
     describe("a log", []() {
         it("can set level to trace", []() {
@@ -65,9 +73,11 @@ go_bandit([]() {
 
             Assert::That(test_last_log(log::Debug, "this is a debug"), IsTrue());
 
+#ifdef ENABLE_LOGGING
             log::trace("this is a trace");
 
             Assert::That(test_last_log(log::Trace, "this is a trace"), IsFalse());
+#endif
         });
 
         it("can set level to warn", []() {
@@ -80,7 +90,9 @@ go_bandit([]() {
 
             log::trace("this is a trace");
 
+#ifdef ENABLE_LOGGING
             Assert::That(test_last_log(log::Trace, "this is a trace"), IsFalse());
+#endif
         });
 
         it("can set level to error", []() {
@@ -93,7 +105,9 @@ go_bandit([]() {
 
             log::trace("this is a trace");
 
+#ifdef ENABLE_LOGGING
             Assert::That(test_last_log(log::Trace, "this is a trace"), IsFalse());
+#endif
         });
 
         it("can set level to none", []() {
@@ -102,7 +116,9 @@ go_bandit([]() {
 
             log::error("this is an error");
 
+#ifdef ENABLE_LOGGING
             Assert::That(test_last_log(log::Error, "this is an error"), IsFalse());
+#endif
 
         });
 
@@ -118,5 +134,3 @@ go_bandit([]() {
         });
     });
 });
-
-#endif

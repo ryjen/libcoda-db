@@ -479,6 +479,8 @@ sql_blob value(data, sz);
 query.bind(1, value);
 ```
 
+Additional custom types can be implemented by subclassing **variant::complex**. For example, the JSON postgres type.
+
 Caching
 -------
 
