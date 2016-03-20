@@ -22,6 +22,10 @@ namespace arg3
 {
     namespace db
     {
+        namespace helper
+        {
+            time_t parse_time(const char *value);
+        }
         namespace mysql
         {
             namespace helper
@@ -115,22 +119,6 @@ namespace arg3
                     sys.tm_sec = db_tm->second;
 
                     return sql_time(timegm(&sys), format);
-                }
-
-                time_t parse_time(const char *value)
-                {
-                    struct tm *tp;
-
-                    if (value == nullptr) {
-                        return 0;
-                    }
-
-                    if ((tp = getdate(value))) {
-                        return timegm(tp);
-                    } else {
-                        log::error("unable to get date of %s (%d)", value, getdate_err);
-                        return 0;
-                    }
                 }
 
                 extern std::string last_stmt_error(MYSQL_STMT *stmt);
@@ -256,13 +244,13 @@ namespace arg3
                             return value;
                         case MYSQL_TYPE_NEWDATE:
                         case MYSQL_TYPE_DATE:
-                            return sql_time(helper::parse_time(value), sql_time::DATE);
+                            return sql_time(db::helper::parse_time(value), sql_time::DATE);
                         case MYSQL_TYPE_DATETIME:
-                            return sql_time(helper::parse_time(value), sql_time::DATETIME);
+                            return sql_time(db::helper::parse_time(value), sql_time::DATETIME);
                         case MYSQL_TYPE_TIMESTAMP:
-                            return sql_time(helper::parse_time(value), sql_time::TIMESTAMP);
+                            return sql_time(db::helper::parse_time(value), sql_time::TIMESTAMP);
                         case MYSQL_TYPE_TIME: {
-                            return sql_time(helper::parse_time(value), sql_time::TIME);
+                            return sql_time(db::helper::parse_time(value), sql_time::TIME);
                         }
                         case MYSQL_TYPE_FLOAT: {
                             try {

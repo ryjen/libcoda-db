@@ -5,6 +5,7 @@
 #include "query.h"
 #include "sqldb.h"
 #include "exception.h"
+#include "log.h"
 
 using namespace std;
 
@@ -12,6 +13,31 @@ namespace arg3
 {
     namespace db
     {
+        namespace helper
+        {
+            time_t parse_time(const char *value)
+            {
+                struct tm tp;
+
+                if (value == nullptr) {
+                    return 0;
+                }
+
+                if (!strptime(value, "%Y-%m-%d %H:%M:%S", &tp)) {
+                    if (!strptime(value, "%Y-%m-%d", &tp)) {
+                        if (!strptime(value, "%H:%M:%S", &tp)) {
+                            try {
+                                return std::stoul(value);
+                            } catch (...) {
+                                return 0;
+                            }
+                        }
+                    }
+                }
+
+                return timegm(&tp);
+            }
+        }
         const nullptr_t sql_null = nullptr;
 
         sql_time::sql_time(time_t value, formats format) : value_(value), format_(format)
@@ -55,7 +81,10 @@ namespace arg3
             std::size_t h2 = std::hash<unsigned int>()(format_);
             return h1 ^ (h2 << 1);
         }
-
+        unsigned sql_time::to_uint() const
+        {
+            return value_;
+        }
         unsigned long sql_time::to_ulong() const
         {
             return value_;
@@ -133,10 +162,20 @@ namespace arg3
 
         sql_time sql_value::to_time() const
         {
-            auto ptr = dynamic_pointer_cast<sql_time>(to_complex());
+            if (is_string()) {
+                time_t value = helper::parse_time(to_string().c_str());
+                return sql_time(value);
+            }
 
-            if (ptr) {
-                return *ptr;
+            if (is_numeric()) {
+                return sql_time(to_uint());
+            }
+
+            if (is_complex()) {
+                auto ptr = dynamic_pointer_cast<sql_time>(to_complex());
+                if (ptr) {
+                    return *ptr;
+                }
             }
 
             return sql_time();

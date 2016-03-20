@@ -60,6 +60,11 @@ namespace arg3
             size_t size() const;
 
             /*!
+             * @return the timestamp as an unsigned int
+             */
+            unsigned to_uint() const;
+
+            /*!
              * @return the timestamp as an unsigned long
              */
             unsigned long to_ulong() const;
