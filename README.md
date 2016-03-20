@@ -34,13 +34,8 @@ After cloning run the following command to initialize submodules:
 git submodule update --init --recursive
 ```
 
-[Docker](https://www.docker.com) builds are available mostly for testing compiles on different platforms:
-
-```c++
-docker build -t arg3db .
-```
-
-Use docker-compose for testing (there are still some glitches (03/13/16)).
+[Docker](https://www.docker.com) builds are available,
+docker-compose will run the tests with mysql and postgres images:
 
 ```c++
 docker-compose build
