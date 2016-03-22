@@ -25,8 +25,6 @@ namespace arg3
                 transaction(const std::shared_ptr<MYSQL> &db, const transaction::mode &mode = {});
 
                 void start();
-                void commit();
-                void rollback();
                 bool is_active() const;
 
                private:

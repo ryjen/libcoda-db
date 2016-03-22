@@ -25,63 +25,71 @@ go_bandit([]() {
             it("can be deferred", [&sqlite_session]() {
                 sqlite::transaction::type mode = sqlite::transaction::deferred;
 
-                auto tx = sqlite_session->create_transaction(mode);
+                auto sqlite_tx = sqlite_session->create_transaction(mode);
 
-                tx->start();
+                transaction tx(current_session, sqlite_tx);
+
+                tx.start();
 
                 insert_query insert(current_session);
 
-                insert.into("users").columns({"first_name", "last_name"}).values("Sam", "Baggins");
+                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
-                tx->commit();
+                tx.commit();
             });
 
             it("can be immediate", [&sqlite_session]() {
                 sqlite::transaction::type mode = sqlite::transaction::immediate;
 
-                auto tx = sqlite_session->create_transaction(mode);
+                auto sqlite_tx = sqlite_session->create_transaction(mode);
 
-                tx->start();
+                transaction tx(current_session, sqlite_tx);
+
+                tx.start();
 
                 insert_query insert(current_session);
 
-                insert.into("users").columns({"first_name", "last_name"}).values("Sam", "Baggins");
+                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
-                tx->commit();
+                tx.commit();
             });
 
             it("can be exclusive", [&sqlite_session]() {
                 sqlite::transaction::type mode = sqlite::transaction::exclusive;
 
-                auto tx = sqlite_session->create_transaction(mode);
+                auto sqlite_tx = sqlite_session->create_transaction(mode);
 
-                tx->start();
+                transaction tx(current_session, sqlite_tx);
+
+                tx.start();
 
                 insert_query insert(current_session);
 
-                insert.into("users").columns({"first_name", "last_name"}).values("Sam", "Baggins");
+                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
-                tx->commit();
+                tx.commit();
             });
 
             it("can error", [&sqlite_session]() {
                 sqlite::transaction::type mode = sqlite::transaction::exclusive;
 
-                auto tx = sqlite_session->create_transaction(mode);
+                auto sqlite_tx = sqlite_session->create_transaction(mode);
 
-                tx->start();
+                transaction tx(current_session, sqlite_tx);
 
-                tx->commit();
+                tx.start();
 
-                AssertThrows(transaction_exception, tx->rollback());
+                tx.commit();
 
-                AssertThrows(transaction_exception, tx->commit());
+                AssertThrows(transaction_exception, tx.rollback());
+
+                AssertThrows(transaction_exception, tx.commit());
             });
         });
 

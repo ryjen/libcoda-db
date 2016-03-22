@@ -14,8 +14,6 @@ namespace arg3
         {
            public:
             virtual void start() = 0;
-            virtual void commit() = 0;
-            virtual void rollback() = 0;
             virtual bool is_active() const = 0;
         };
 

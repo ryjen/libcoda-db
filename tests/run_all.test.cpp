@@ -6,7 +6,7 @@
 
 struct sqldb;
 
-int execute_test(const char *path);
+int execute_test(const char *path, char *argv[]);
 
 int main(int argc, char *argv[])
 {
@@ -20,26 +20,26 @@ int main(int argc, char *argv[])
     snprintf(postgres, BUFSIZ, "%s-postgres", argv[0]);
     snprintf(util, BUFSIZ, "%s-util", argv[0]);
 
-    if (execute_test(mysql)) {
+    if (execute_test(mysql, argv)) {
         return 1;
     }
 
-    if (execute_test(sqlite)) {
+    if (execute_test(sqlite, argv)) {
         return 1;
     }
 
-    if (execute_test(postgres)) {
+    if (execute_test(postgres, argv)) {
         return 1;
     }
 
-    if (execute_test(util)) {
+    if (execute_test(util, argv)) {
         return 1;
     }
 
     return 0;
 }
 
-int execute_test(const char *path)
+int execute_test(const char *path, char *argv[])
 {
     pid_t pid = 0;
     int loc = 0;
@@ -72,7 +72,7 @@ int execute_test(const char *path)
     }
 
     if (pid == 0) {
-        execl(path, path, NULL);
+        execvp(path, argv);
         return 1;
     }
 

@@ -46,20 +46,6 @@ namespace arg3
                     throw transaction_exception(std::string("unable to start transaction: ") + sqlite3_errmsg(db_.get()));
                 }
             }
-
-            void transaction::commit()
-            {
-                if (sqlite3_exec(db_.get(), "COMMIT TRANSACTION;", NULL, NULL, NULL) != SQLITE_OK) {
-                    throw transaction_exception(std::string("unable to commit transaction: ") + sqlite3_errmsg(db_.get()));
-                }
-            }
-
-            void transaction::rollback()
-            {
-                if (sqlite3_exec(db_.get(), "ROLLBACK TRANSACTION;", NULL, NULL, NULL) != SQLITE_OK) {
-                    throw transaction_exception(std::string("unable to rollback transaction: ") + sqlite3_errmsg(db_.get()));
-                }
-            }
         }
     }
 }

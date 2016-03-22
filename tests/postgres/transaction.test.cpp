@@ -25,65 +25,73 @@ go_bandit([]() {
             it("can be serializable", [&pg_session]() {
                 postgres::transaction::mode mode{isolation::serializable};
 
-                auto tx = pg_session->create_transaction(mode);
+                auto pg_tx = pg_session->create_transaction(mode);
 
-                tx->start();
+                transaction tx(current_session, pg_tx);
+
+                tx.start();
 
                 insert_query insert(current_session);
 
-                insert.into("users").columns({"first_name", "last_name"}).values("Sam", "Baggins");
+                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
-                tx->commit();
+                tx.commit();
             });
 
             it("can be repeatable read", [&pg_session]() {
                 postgres::transaction::mode mode{isolation::repeatable_read};
 
-                auto tx = pg_session->create_transaction(mode);
+                auto pg_tx = pg_session->create_transaction(mode);
 
-                tx->start();
+                transaction tx(current_session, pg_tx);
+
+                tx.start();
 
                 insert_query insert(current_session);
 
-                insert.into("users").columns({"first_name", "last_name"}).values("Sam", "Baggins");
+                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
-                tx->commit();
+                tx.commit();
             });
 
             it("can be read commited", [&pg_session]() {
                 postgres::transaction::mode mode{isolation::read_commited};
 
-                auto tx = pg_session->create_transaction(mode);
+                auto pg_tx = pg_session->create_transaction(mode);
 
-                tx->start();
+                transaction tx(current_session, pg_tx);
+
+                tx.start();
 
                 insert_query insert(current_session);
 
-                insert.into("users").columns({"first_name", "last_name"}).values("Sam", "Baggins");
+                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
-                tx->commit();
+                tx.commit();
             });
 
             it("can be read uncommited", [&pg_session]() {
                 postgres::transaction::mode mode{isolation::read_uncommited};
 
-                auto tx = pg_session->create_transaction(mode);
+                auto pg_tx = pg_session->create_transaction(mode);
 
-                tx->start();
+                transaction tx(current_session, pg_tx);
+
+                tx.start();
 
                 insert_query insert(current_session);
 
-                insert.into("users").columns({"first_name", "last_name"}).values("Sam", "Baggins");
+                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
-                tx->commit();
+                tx.commit();
             });
         });
 
@@ -91,48 +99,54 @@ go_bandit([]() {
             it("can be read write", [&pg_session]() {
                 postgres::transaction::mode mode{isolation::serializable, transaction::read_write};
 
-                auto tx = pg_session->create_transaction(mode);
+                auto pg_tx = pg_session->create_transaction(mode);
 
-                tx->start();
+                transaction tx(current_session, pg_tx);
+
+                tx.start();
 
                 insert_query insert(current_session);
 
-                insert.into("users").columns({"first_name", "last_name"}).values("Sam", "Baggins");
+                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
-                tx->commit();
+                tx.commit();
             });
             it("can be read only", [&pg_session]() {
                 postgres::transaction::mode mode{isolation::serializable, transaction::read_only};
 
-                auto tx = pg_session->create_transaction(mode);
+                auto pg_tx = pg_session->create_transaction(mode);
 
-                tx->start();
+                transaction tx(current_session, pg_tx);
+
+                tx.start();
 
                 insert_query insert(current_session);
 
-                insert.into("users").columns({"first_name", "last_name"}).values("Sam", "Baggins");
+                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsFalse());
 
-                tx->commit();
+                tx.commit();
             });
         });
         it("can be deferrable", [&pg_session]() {
             postgres::transaction::mode mode{isolation::serializable, transaction::read_write, true};
 
-            auto tx = pg_session->create_transaction(mode);
+            auto pg_tx = pg_session->create_transaction(mode);
 
-            tx->start();
+            transaction tx(current_session, pg_tx);
+
+            tx.start();
 
             insert_query insert(current_session);
 
-            insert.into("users").columns({"first_name", "last_name"}).values("Sam", "Baggins");
+            insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
 
             Assert::That(insert.execute(), IsTrue());
 
-            tx->commit();
+            tx.commit();
         });
     });
 

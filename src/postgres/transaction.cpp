@@ -71,24 +71,6 @@ namespace arg3
                     throw transaction_exception(std::string("unable to start transaction: ") + PQerrorMessage(db_.get()));
                 }
             }
-
-            void transaction::commit()
-            {
-                PGresult *res = PQexec(db_.get(), "COMMIT;");
-
-                if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                    throw transaction_exception(std::string("unable to commit transaction: ") + PQerrorMessage(db_.get()));
-                }
-            }
-
-            void transaction::rollback()
-            {
-                PGresult *res = PQexec(db_.get(), "ROLLBACK;");
-
-                if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                    throw transaction_exception(std::string("unable to rollback transaction: ") + PQerrorMessage(db_.get()));
-                }
-            }
         }
     }
 }

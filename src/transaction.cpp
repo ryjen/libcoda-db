@@ -62,13 +62,17 @@ namespace arg3
         void transaction::commit()
         {
             log::trace("COMMIT TRANSACTION");
-            impl_->commit();
+            if (!session_->execute("COMMIT;")) {
+                throw transaction_exception("unable to commit transaction: " + session_->last_error());
+            }
         }
 
         void transaction::rollback()
         {
             log::trace("ROLLBACK TRANSACTION");
-            impl_->rollback();
+            if (!session_->execute("ROLLBACK;")) {
+                throw transaction_exception("unable to rollback transaction: " + session_->last_error());
+            }
         }
 
         void transaction::save(const std::string &name)

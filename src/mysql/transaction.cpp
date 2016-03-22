@@ -46,22 +46,6 @@ namespace arg3
 
                 active_ = true;
             }
-
-            void transaction::commit()
-            {
-                if (mysql_commit(db_.get())) {
-                    throw transaction_exception(std::string("unable to commit transaction: ") + mysql_error(db_.get()));
-                }
-                active_ = false;
-            }
-
-            void transaction::rollback()
-            {
-                if (mysql_rollback(db_.get())) {
-                    throw transaction_exception(std::string("unable to rollback transaction: ") + mysql_error(db_.get()));
-                }
-                active_ = false;
-            }
         }
     }
 }

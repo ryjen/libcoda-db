@@ -84,7 +84,7 @@ go_bandit([]() {
 
                 insert_query insert(tx.get_session());
 
-                insert.into("users").columns({"first_name", "last_name"}).values("Mike", "Johnson");
+                insert.into("users").columns("first_name", "last_name").values("Mike", "Johnson");
 
                 Assert::That(insert.execute(), IsTrue());
 

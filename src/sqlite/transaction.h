@@ -19,8 +19,6 @@ namespace arg3
 
                 transaction(const std::shared_ptr<sqlite3> &db, transaction::type type = none);
                 void start();
-                void commit();
-                void rollback();
                 bool is_active() const;
 
                private:
