@@ -59,7 +59,22 @@ go_bandit([]() {
 
             int id = rand() % 5000;
 
-            insert.into("users").columns({"id", "first_name", "last_name"}).values(id, "blah", "bleh");
+            insert.into("users").columns("id", "first_name", "last_name").values(id, "blah", "bleh");
+
+            Assert::That(insert.execute() > 0, Equals(true));
+
+            user u1(id);
+
+            Assert::That(u1.get("first_name"), Equals("blah"));
+            Assert::That(u1.get("last_name"), Equals("bleh"));
+        });
+
+        it("can modify with a set of values", []() {
+            insert_query insert(current_session);
+
+            int id = rand() % 5000;
+
+            insert.into("users").columns({"id", "first_name", "last_name"}).values({id, "blah", "bleh"});
 
             Assert::That(insert.execute() > 0, Equals(true));
 

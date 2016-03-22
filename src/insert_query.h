@@ -64,6 +64,14 @@ namespace arg3
              */
             insert_query &columns(const std::vector<std::string> &value);
 
+            template<typename... List>
+            insert_query &columns(const std::string &value, const List &... args)
+            {
+                column(value);
+                columns(args...);
+                return *this;
+            }
+
             /*!
              * set the table to insert into
              * @see modify_query::table_name
@@ -92,6 +100,10 @@ namespace arg3
                 return *this;
             }
 
+            insert_query &values(const std::vector<sql_value> &value);
+
+            insert_query &values(const std::unordered_map<std::string, sql_value> &value);
+
             /*!
              * executes the insert query
              * @return the number of records inserted
@@ -105,6 +117,11 @@ namespace arg3
             bool is_valid() const;
 
            private:
+            insert_query &column(const std::string &value) {
+                columns_.push_back(value);
+                return *this;
+            }
+
             long long lastId_;
             std::vector<std::string> columns_;
             std::string tableName_;

@@ -58,6 +58,21 @@ namespace arg3
             return *this;
         }
 
+        bindable &bindable::bind(const std::vector<sql_value> &values, size_t start_index) {
+            size_t index = start_index;
+            for(auto &value : values) {
+                bind_value(index++, value);
+            }
+            return *this;
+        }
+
+        bindable &bindable::bind(const std::unordered_map<std::string, sql_value> &values) {
+            for(auto &pair : values) {
+                bind(pair.first, pair.second);
+            }
+            return *this;
+        }
+
         bind_mapping::bind_mapping()
         {
         }

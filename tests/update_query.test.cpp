@@ -57,7 +57,7 @@ go_bandit([]() {
         it("can set the columns", []() {
             update_query query(current_session);
 
-            query.columns({"id", "first_name"});
+            query.columns("id", "first_name");
 
             Assert::That(query.columns().size(), Equals(2));
         });

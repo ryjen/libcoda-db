@@ -147,5 +147,15 @@ namespace arg3
         {
             return tableName_;
         }
+
+        insert_query &insert_query::values(const std::vector<sql_value> &value) {
+            bindable::bind(value);
+            return *this;
+        }
+
+        insert_query &insert_query::values(const std::unordered_map<std::string, sql_value> &value) {
+            bindable::bind(value);
+            return *this;
+        }
     }
 }

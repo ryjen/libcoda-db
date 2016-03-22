@@ -117,7 +117,7 @@ go_bandit([]() {
         it("can be used with a where clause", []() {
             auto query = select_query(current_session);
 
-            query.from("users");
+            query.columns("first_name", "last_name").from("users");
 
             try {
                 query.where("first_name=$1 OR last_name=$2");
@@ -159,11 +159,9 @@ go_bandit([]() {
         });
 
         it("can execute scalar", []() {
-            vector<string> columns = {"first_name"};
+            auto query = select_query(current_session);
 
-            auto query = select_query(current_session, columns);
-
-            query.from("users");
+            query.columns("first_name").from("users");
 
             query.where("first_name=$1");
 

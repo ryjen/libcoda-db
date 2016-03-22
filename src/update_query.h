@@ -55,6 +55,14 @@ namespace arg3
              */
             update_query &columns(const std::vector<std::string> &value);
 
+            template<typename... List>
+            update_query &columns(const std::string &value, const List &... args)
+            {
+                column(value);
+                columns(args...);
+                return *this;
+            }
+
             /*!
              * set the table to insert into
              * @see modify_query::table_name
@@ -127,6 +135,10 @@ namespace arg3
                 return *this;
             }
 
+            update_query &values(const std::vector<sql_value> &value);
+
+            update_query &values(const std::unordered_map<std::string, sql_value> &value);
+
             /*!
              * @return the string/sql representation of this query
              */
@@ -138,7 +150,12 @@ namespace arg3
              */
             bool is_valid() const;
 
-           protected:
+        private:
+            update_query &column(const std::string &value) {
+                columns_.push_back(value);
+                return *this;
+            }
+
             where_clause where_;
             std::vector<std::string> columns_;
             std::string tableName_;

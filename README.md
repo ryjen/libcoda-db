@@ -274,7 +274,7 @@ Modify Queries
 insert_query insert(current_session);
 
 /* insert column values into a table */
-insert.into("users").columns({"id", "first_name", "last_name"})
+insert.into("users").columns("id", "first_name", "last_name")
       .values(4321, "dave", "patterson");
 
 if (!query.execute()) {
@@ -289,7 +289,7 @@ if (!query.execute()) {
 update_query update(current_session);
 
 /* update columns in a table with values */
-update.table("users").columns({"id", "first_name", "last_name"})
+update.table("users").columns("id", "first_name", "last_name")
      .values(3432, "mark", "anthony");
 
 /* using where clause with named parameters */
@@ -363,9 +363,9 @@ Joins
 The **join_clause** is used to build join statements.
 
 ```c++
-select_query select(current_session, {"u.id", "s.setting"});
+select_query select(current_session);
 
-select.from("users u").join("user_settings s").on("u.id = s.user_id") and ("s.valid = 1");
+select.columns("u.id", "s.setting").from("users u").join("user_settings s").on("u.id = s.user_id") and ("s.valid = 1");
 
 select.execute();
 ```
@@ -396,7 +396,7 @@ Batch queries means that instead of releasing the resources of a query upon exec
 /* execute some raw sql */
 insert_query insert(current_session);
 
-insert.into("users").columns({"counter"});
+insert.into("users").columns("counter");
 
 /* turn on batch mode for this query */
 insert.flags(insert.flags() | insert_query::Batch);

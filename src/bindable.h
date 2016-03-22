@@ -68,6 +68,21 @@ namespace arg3
             bindable &bind_value(size_t index, const sql_value &value);
 
             /*!
+             * Binds a vector of values by index
+             * @param values the vector of values
+             * @param start_index the starting index for the values
+             * @return a reference to this instance
+             */
+            bindable &bind(const std::vector<sql_value> &values, size_t start_index = 1);
+
+            /*!
+             * Binds a map of named parameters
+             * @param values the map of values
+             * @return a reference to this instance
+             */
+            bindable &bind(const std::unordered_map<std::string, sql_value> &values);
+
+            /*!
              * binds an integer value
              * @param  index the index of the binding
              * @param  value the value to bind
