@@ -106,8 +106,6 @@ go_bandit([]() {
 
             sql_value other(std::move(v));
 
-            AssertThat(other != v, IsTrue());
-
             AssertThat(other == 1234, IsTrue());
         });
 
