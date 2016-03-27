@@ -127,6 +127,8 @@ namespace arg3
            public:
             using arg3::variant::variant;
 
+            virtual ~sql_value();
+
             /*!
              * @param value the sql time value
              */

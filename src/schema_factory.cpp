@@ -34,6 +34,10 @@ namespace arg3
         {
         }
 
+        schema_factory::~schema_factory()
+        {
+        }
+
         schema_factory::schema_factory(schema_factory &&other) : schema_cache_(std::move(other.schema_cache_))
         {
         }

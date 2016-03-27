@@ -39,18 +39,42 @@ namespace arg3
                     return ptr;
                 }
 
-                void bind_value_from_field(MYSQL_BIND *value, MYSQL_FIELD *field)
+                void prepare_binding_from_field(MYSQL_BIND *value, MYSQL_FIELD *field)
                 {
                     if (value == nullptr || field == nullptr) {
                         return;
                     }
                     value->buffer_type = field->type;
-                    value->is_null = c_alloc<my_bool>();
-                    value->is_unsigned = 0;
+                    value->is_null = (field->flags & NOT_NULL_FLAG) ? 0 : c_alloc<my_bool>();
+                    value->is_unsigned = field->flags & UNSIGNED_FLAG;
                     value->error = 0;
-                    value->length = c_alloc<unsigned long>();
+                    value->length = 0;
                     switch (field->type) {
                         default:
+                            value->buffer_length = field->length;
+                            break;
+                        case MYSQL_TYPE_FLOAT:
+                            value->buffer_length = std::max(field->length, sizeof(float));
+                            break;
+                        case MYSQL_TYPE_DOUBLE:
+                            value->buffer_length = std::max(field->length, sizeof(double));
+                            break;
+                        case MYSQL_TYPE_TINY:
+                        case MYSQL_TYPE_SHORT:
+                        case MYSQL_TYPE_LONG:
+                            value->buffer_length = std::max(field->length, sizeof(long));
+                            break;
+                        case MYSQL_TYPE_LONGLONG:
+                            value->buffer_length = std::max(field->length, sizeof(long long));
+                            break;
+                        case MYSQL_TYPE_STRING:
+                        case MYSQL_TYPE_VAR_STRING:
+                        case MYSQL_TYPE_VARCHAR:
+                        case MYSQL_TYPE_BLOB:
+                        case MYSQL_TYPE_TINY_BLOB:
+                        case MYSQL_TYPE_MEDIUM_BLOB:
+                        case MYSQL_TYPE_LONG_BLOB:
+                            value->length = c_alloc<unsigned long>();
                             value->buffer_length = field->length;
                             break;
                         case MYSQL_TYPE_DATETIME:
@@ -60,7 +84,11 @@ namespace arg3
                             value->buffer_length = sizeof(MYSQL_TIME);
                             break;
                     }
-                    value->buffer = c_alloc(value->buffer_length);
+                    if (value->buffer_length > 0) {
+                        value->buffer = c_alloc(value->buffer_length);
+                    } else {
+                        value->buffer = nullptr;
+                    }
                 }
 
                 void bind_value_copy(MYSQL_BIND *value, const MYSQL_BIND *other)
@@ -340,7 +368,7 @@ namespace arg3
                 value_ = c_alloc<MYSQL_BIND>(size);
 
                 for (size_t i = 0; i < size; i++) {
-                    helper::bind_value_from_field(&value_[i], &fields[i]);
+                    helper::prepare_binding_from_field(&value_[i], &fields[i]);
                 }
             }
 
@@ -440,7 +468,7 @@ namespace arg3
 
             void binding::bind_result(MYSQL_STMT *stmt) const
             {
-                if (stmt == nullptr || value_ == nullptr) {
+                if (stmt == nullptr || value_ == nullptr || size_ == 0) {
                     return;
                 }
                 if (mysql_stmt_bind_result(stmt, value_) != 0) {
@@ -695,7 +723,7 @@ namespace arg3
 
             void binding::bind_params(MYSQL_STMT *stmt) const
             {
-                if (value_ == nullptr || stmt == nullptr) {
+                if (value_ == nullptr || stmt == nullptr || size_ == 0) {
                     return;
                 }
 
@@ -712,7 +740,6 @@ namespace arg3
             void binding::reset()
             {
                 bind_mapping::reset();
-
                 clear_value();
             }
 

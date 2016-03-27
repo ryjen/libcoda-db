@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
     if (bandit::run(argc, argv)) {
         return 1;
     }
+    mysql_library_end();
 #endif
 #else
     cout << "Mysql not supported" << endl;
@@ -85,5 +86,8 @@ int main(int argc, char *argv[])
 #else
     cout << "Postgres not supported" << endl;
 #endif
+
+    current_session = nullptr;
+
     return 0;
 }

@@ -17,8 +17,11 @@ namespace arg3
         template <typename T>
         T *c_alloc(size_t num = 1)
         {
+            if (num == 0) {
+                return nullptr;
+            }
             void *mem = calloc(num, sizeof(T));
-            if (mem == NULL) {
+            if (mem == nullptr) {
                 throw std::bad_alloc();
             }
             return static_cast<T *>(mem);
@@ -39,7 +42,10 @@ namespace arg3
         template <typename T>
         T *c_alloc(T *value, size_t num, size_t oldSize)
         {
-            void *mem = realloc(value, sizeof(T) * num);
+            if (num == 0) {
+                return value;
+            }
+            void *mem = realloc(value, sizeof(T) * num + 1);
 
             if (mem == nullptr) {
                 throw std::bad_alloc();
@@ -48,6 +54,7 @@ namespace arg3
             T *val = static_cast<T *>(mem);
 
             // make sure new values are initialized
+            // will be ignored if oldSize is greater than the new size
             for (size_t i = oldSize; i < num; i++) {
                 memset(&val[i], 0, sizeof(T));
             }

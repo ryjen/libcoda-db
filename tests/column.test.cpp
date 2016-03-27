@@ -143,7 +143,7 @@ go_bandit([]() {
 
             unsigned long long val2 = col;
 
-            AssertThat(val > 0, IsTrue());
+            AssertThat(val2 > 0, IsTrue());
         });
 
         it("can be a string", []() {

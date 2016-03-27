@@ -160,6 +160,10 @@ namespace arg3
         {
         }
 
+        sql_value::~sql_value()
+        {
+        }
+
         sql_time sql_value::to_time() const
         {
             if (is_string()) {

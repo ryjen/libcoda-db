@@ -12,11 +12,19 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/v0.2.0/dockerize
 
 RUN tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.2.0.tar.gz
 
-RUN mkdir -p /usr/src/arg3db/build
+ENV BUILD_SRC /usr/src/arg3db
 
-ADD . /usr/src/arg3db
+WORKDIR ${BUILD_SRC}
 
-WORKDIR /usr/src/arg3db/build
+RUN mkdir -p build cmake libs src tests
+
+COPY cmake/ cmake/
+COPY libs/ libs/
+COPY src/ src/
+COPY tests/ tests/
+COPY CMakeLists.txt .
+
+WORKDIR ${BUILD_SRC}/build
 
 RUN cmake -DCMAKE_BUILD_TYPE=Debug -DMEMORY_CHECK=ON -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/9.3/server ..
 

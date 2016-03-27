@@ -36,7 +36,8 @@ namespace arg3
             std::string tableName_;
             std::shared_ptr<union_operator> union_;
 
-            select_query &column(const std::string &value) {
+            select_query &column(const std::string &value)
+            {
                 columns_.push_back(value);
                 return *this;
             }
@@ -86,7 +87,7 @@ namespace arg3
              * @return the table name
              */
             std::string from() const;
-            
+
             /*!
              * sets the columns to select
              * @param other a vector of column names
@@ -94,8 +95,9 @@ namespace arg3
              */
             select_query &columns(const std::vector<std::string> &other);
 
-            template<typename... List>
-            select_query &columns(const std::string &value, const List &... args) {
+            template <typename... List>
+            select_query &columns(const std::string &value, const List &... args)
+            {
                 column(value);
                 columns(args...);
                 return *this;

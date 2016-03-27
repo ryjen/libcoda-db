@@ -17,6 +17,33 @@ namespace arg3
             {
             }
 
+            transaction::transaction(const transaction &other) : db_(other.db_), mode_(other.mode_), active_(other.active_)
+            {
+            }
+
+            transaction::transaction(transaction &&other)
+                : db_(std::move(other.db_)), mode_(std::move(other.mode_)), active_(std::move(other.active_))
+            {
+                other.db_ = nullptr;
+            }
+            transaction::~transaction()
+            {
+            }
+            transaction &transaction::operator=(const transaction &other)
+            {
+                db_ = other.db_;
+                mode_ = other.mode_;
+                active_ = other.active_;
+                return *this;
+            }
+            transaction &transaction::operator=(transaction &&other)
+            {
+                db_ = std::move(other.db_);
+                mode_ = std::move(other.mode_);
+                active_ = std::move(other.active_);
+                return *this;
+            }
+
             bool transaction::is_active() const
             {
                 return active_;

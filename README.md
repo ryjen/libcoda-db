@@ -261,6 +261,14 @@ query.bind("@param", "value");
 // Bind by generic type
 sql_value value(1234);
 query.bind_value(1, value);
+
+// Bind by vector of values
+vector<sql_value> values = { 1234, "bob", "smith" };
+query.bind(values);
+
+// Bind by a map of named values
+unordered_map<string,sql_value> values = { {"@name", "harry"}, {"@id", 1234} };
+query.bind(values);
 ```
 
 Basic Queries

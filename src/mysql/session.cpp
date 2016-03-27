@@ -110,11 +110,13 @@ namespace arg3
                         port = std::stoi(info.port);
                     }
                 } catch (const std::exception &e) {
+                    mysql_close(conn);
                     throw database_exception("unable to parse port " + info.port);
                 }
 
                 if (mysql_real_connect(conn, info.host.c_str(), info.user.c_str(), info.password.c_str(), info.path.c_str(), port, nullptr, 0) ==
                     nullptr) {
+                    mysql_close(conn);
                     throw database_exception("No connection could be made to the database");
                 }
 
@@ -123,7 +125,7 @@ namespace arg3
 
             bool session::is_open() const
             {
-                return db_ != nullptr;
+                return db_ != nullptr && db_;
             }
 
             void session::close()

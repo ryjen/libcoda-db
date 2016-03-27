@@ -18,8 +18,8 @@ using namespace arg3::db;
 
 std::shared_ptr<arg3::db::session> current_session;
 
-std::random_device r;
-std::default_random_engine rand_eng(r());
+std::random_device rd;
+std::default_random_engine rand_eng(rd());
 
 std::string get_env_uri(const char *name, const std::string &def)
 {
@@ -66,6 +66,9 @@ void teardown_current_session()
     if (session) {
         session->teardown();
     }
+
+    current_session->clear_schema("users");
+    current_session->clear_schema("user_settings");
 }
 
 string random_name()

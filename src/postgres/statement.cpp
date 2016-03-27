@@ -192,6 +192,7 @@ namespace arg3
                                              bindings_.lengths_, bindings_.formats_, 0);
 
                 if (PQresultStatus(res) != PGRES_COMMAND_OK && PQresultStatus(res) != PGRES_TUPLES_OK) {
+                    PQclear(res);
                     log::error(last_error().c_str());
                     return false;
                 }

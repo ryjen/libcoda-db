@@ -42,6 +42,7 @@ namespace arg3
 
         session::session(session &&other) : impl_(std::move(other.impl_)), schema_factory_(std::move(other.schema_factory_))
         {
+            other.impl_ = nullptr;
         }
 
         session &session::operator=(const session &other)
@@ -54,6 +55,7 @@ namespace arg3
         {
             impl_ = std::move(other.impl_);
             schema_factory_ = std::move(other.schema_factory_);
+            other.impl_ = nullptr;
             return *this;
         }
         session::~session()

@@ -74,7 +74,9 @@ namespace arg3
                 PGconn *conn = PQconnectdb(connection_info().value.c_str());
 
                 if (PQstatus(conn) != CONNECTION_OK) {
-                    throw database_exception(PQerrorMessage(conn));
+                    std::string errmsg = PQerrorMessage(conn);
+                    PQfinish(conn);
+                    throw database_exception(errmsg);
                 }
 
                 db_ = shared_ptr<PGconn>(conn, helper::close_db());
@@ -82,7 +84,7 @@ namespace arg3
 
             bool session::is_open() const
             {
-                return db_ != nullptr;
+                return db_ != nullptr && db_;
             }
 
             void session::close()
@@ -144,7 +146,11 @@ namespace arg3
 
                 PGresult *res = PQexec(db_.get(), sql.c_str());
 
-                return PQresultStatus(res) == PGRES_COMMAND_OK || PQresultStatus(res) == PGRES_TUPLES_OK;
+                bool rval = PQresultStatus(res) == PGRES_COMMAND_OK || PQresultStatus(res) == PGRES_TUPLES_OK;
+
+                PQclear(res);
+
+                return rval;
             }
 
             shared_ptr<arg3::db::session::statement_type> session::create_statement()
@@ -210,8 +216,9 @@ namespace arg3
                     "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '" + tableName +
                     "' ORDER BY tc.table_schema, tc.table_name, kc.position_in_unique_constraint";
 
-                string col_sql = string("SELECT column_name, data_type, pg_get_serial_sequence('" + tableName + "', column_name) as serial, column_default ") +
-                                 "FROM information_schema.columns WHERE table_name = '" + tableName + "'";
+                string col_sql =
+                    string("SELECT column_name, data_type, pg_get_serial_sequence('" + tableName + "', column_name) as serial, column_default ") +
+                    "FROM information_schema.columns WHERE table_name = '" + tableName + "'";
 
                 auto primary_keys = query(pk_sql);
 

@@ -38,6 +38,7 @@ namespace arg3
             schema_factory(schema_factory &&other);
             schema_factory &operator=(schema_factory &&other);
             schema_factory(const schema_factory &other);
+            virtual ~schema_factory();
             schema_factory &operator=(const schema_factory &other);
             std::shared_ptr<schema> get(const std::shared_ptr<session> &session, const std::string &tableName);
 

@@ -145,7 +145,7 @@ go_bandit([]() {
             });
 
             it("as results", []() {
-                auto c = std::move(get_mysql_results_row(0));
+                auto c = get_mysql_results_row(0);
 
                 Assert::That(c->column_name(0), Equals("id"));
 

@@ -67,7 +67,11 @@ namespace arg3
 
                 PGresult *res = PQexec(db_.get(), buf.c_str());
 
-                if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+                bool error = PQresultStatus(res) != PGRES_COMMAND_OK;
+
+                PQclear(res);
+
+                if (error) {
                     throw transaction_exception(std::string("unable to start transaction: ") + PQerrorMessage(db_.get()));
                 }
             }

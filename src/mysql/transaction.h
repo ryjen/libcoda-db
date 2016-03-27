@@ -23,6 +23,11 @@ namespace arg3
                 } mode;
 
                 transaction(const std::shared_ptr<MYSQL> &db, const transaction::mode &mode = {});
+                transaction(const transaction &other);
+                transaction(transaction &&other);
+                virtual ~transaction();
+                transaction &operator=(const transaction &other);
+                transaction &operator=(transaction &&other);
 
                 void start();
                 bool is_active() const;

@@ -151,7 +151,7 @@ namespace arg3
 
             void stmt_resultset::prepare_results()
             {
-                if (stmt_ == nullptr || !stmt_ || status_ != -1) {
+                if (stmt_ == nullptr || !stmt_ || status_ != INVALID) {
                     return;
                 }
 
@@ -193,10 +193,10 @@ namespace arg3
                     return false;
                 }
 
-                if (status_ == -1) {
+                if (status_ == INVALID) {
                     prepare_results();
 
-                    if (status_ == -1) {
+                    if (status_ == INVALID) {
                         return false;
                     }
                 }
@@ -216,16 +216,18 @@ namespace arg3
 
             void stmt_resultset::reset()
             {
+                bindings_.reset();
+
                 if (!is_valid()) {
                     log::warn("mysql stmt resultset reset invalid");
                     return;
                 }
+                
+                status_ = INVALID;
 
                 if (mysql_stmt_reset(stmt_.get())) {
                     throw database_exception(helper::last_stmt_error(stmt_.get()));
                 }
-
-                status_ = -1;
             }
 
             resultset::row_type stmt_resultset::current_row()

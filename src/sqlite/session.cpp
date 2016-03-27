@@ -114,7 +114,7 @@ namespace arg3
 
             bool session::is_open() const
             {
-                return db_ != nullptr;
+                return db_ != nullptr && db_;
             }
 
             void session::close()

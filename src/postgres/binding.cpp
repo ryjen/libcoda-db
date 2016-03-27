@@ -45,7 +45,9 @@ namespace arg3
                         case BYTEAOID: {
                             size_t blen = 0;
                             unsigned char *b = PQunescapeBytea(reinterpret_cast<const unsigned char *>(value), &blen);
-                            return binary(b, blen);
+                            binary bin(b, blen);
+                            free(b);
+                            return bin;
                         }
                         case BOOLOID:
                         case CHAROID:

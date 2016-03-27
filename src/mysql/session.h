@@ -44,9 +44,9 @@ namespace arg3
                 int flags_;
 
                public:
-                constexpr static int CACHE_RESULTS = (1 << 0);
-                constexpr static int CACHE_STATEMENTS = (1 << 1);
-                constexpr static int CACHE = CACHE_RESULTS | CACHE_STATEMENTS;
+                constexpr static const int CACHE_RESULTS = (1 << 0);
+                constexpr static const int CACHE_STATEMENTS = (1 << 1);
+                constexpr static const int CACHE = CACHE_RESULTS | CACHE_STATEMENTS;
 
                 /*!
                  * default constructor takes a uri to connect to

@@ -5,7 +5,7 @@ libraries {
 	arg3db {
 		source sources.arg3db
 
-		targetFlavors("coverage", "sqlite", "mysql")
+		targetFlavors("coverage", "sqlite", "mysql", "postgres")
 	}
 }
 
@@ -13,14 +13,16 @@ executables {
     main {
 		source sources.main
 
-	    targetFlavors("sqlite", "mysql")
+	    targetFlavors("sqlite", "mysql", "postgres")
 
 		binaries.all {
 			if(flavor == flavors.mysql) {
-				cppCompiler.define "TEST_MYSQL"
+				cppCompiler.define "TEST_MYSQL HAVE_LIBMYSQLCLIENT"
 			} else if(flavor == flavors.sqlite) {
-				cppCompiler.define "TEST_SQLITE"
-			}
+				cppCompiler.define "TEST_SQLITE HAVE_LIBSQLITE3"
+			} else if(flavor == flavors.postgres) {
+        cppCompiler.define "TEST_POSTGRES HAVE_LIBPQ"
+      }
 		}
     }
 }
@@ -60,6 +62,7 @@ model {
     flavors {
 	    mysql
 	    sqlite
+      postgres
 	    coverage
     }
 }
@@ -81,7 +84,7 @@ binaries.all {
 	    } else if (toolChain in Gcc) {
 	    	cppCompiler.args "-std=c++0x", "-Wall", "-Werror"
 	    }
-	    linker.args "-lsqlite3", "-lmysqlclient"
+	    linker.args "-lsqlite3", "-lmysqlclient", "-lpq"
     }
     else if (toolChain in VisualCpp && buildType == buildTypes.debug) {
         cppCompiler.args '/Zi'
