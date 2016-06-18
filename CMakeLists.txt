@@ -48,9 +48,11 @@ add_subdirectory(tests)
 # Setup testing
 enable_testing()
 
-include(MemCheckTest)
+include(ValgrindTest)
 
-add_opt_memcheck_test(MEMORY_CHECK ${PROJECT_NAME}-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test)
+add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test)
+
+add_valgrind_profile(${PROJECT_NAME}-profile ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-profile)
 
 if (DOXYGEN)
     add_custom_target(html WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND ${DOXYGEN} ${PROJECT_SOURCE_DIR}/Doxyfile)

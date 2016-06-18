@@ -20,8 +20,8 @@ Purely selfish reasons like learning, resume content, and a lack of desire to us
 What makes this library great
 -----------------------------
 
-- concept/usage of schema's and automatic primary key usage for records
-- prepared statement oriented with flexible syntax
+- schema's with automatic primary key usage for records
+- prepared statement oriented with flexible sql syntax
 - nice query interface that I think makes sense
 - makes good use of new c++11 features
 
@@ -97,6 +97,7 @@ An simple user example
 
 Records should be implemented using the [curiously reoccuring template pattern (CRTP)](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
 
+First initialize a session
 ```c++
 auto current_session = sqldb::create_session("file://test.db");
 
@@ -106,6 +107,12 @@ auto current_session = sqldb::create_session("mysql://user@pass:localhost:3306/d
 auto current_session = sqldb::create_session("postgres://localhost/test");
 
 */
+```
+
+Create a record
+```c++
+
+extern std::shared_ptr<arg3::db::session> current_session;
 
 class user : public arg3::db::record<user>
 {
@@ -142,38 +149,46 @@ public:
 };
 ```
 
-Query records
--------------
+Querying records
+----------------  
 
-Built in record queries include **find_by_id(), find_all(), find_by()** and **find_one()**.  
+The libary includes the following schema functions for quering:
+
+- **find_by_id()**
+- **find_all()**
+- **find_by()**
+- **find_one()**
 
 example using a callback:
-```c++
-  /* find users with a callback */
-  user().find_xxx(... [](const shared_ptr<user> &record) {
-      cout << "User: " << record->to_string() << endl;
-  });
-```
-
-example using a return value:
-```c++
-  /* find users returning the results */
-  auto results = user().find_xxx(...);
-
-  for (auto user : results) {
-      cout << "User: " << record->to_string() << endl;
-  }
-```
-
-the alternative way can be written using schema's instead of the user object:
 ```c++
   auto schema = current_session->get_schema(user::TABLE_NAME);
 
   find_xxx<user>(schema, ... [](const shared_ptr<user> &record) {
       cout << "User: " << record->to_string() << endl;
   });
+```
 
+example using a return value:
+
+```c++
   auto results = find_xxx<user>(schema, ...);
+
+  for (auto user : results) {
+      cout << "User: " << record->to_string() << endl;
+  }
+```
+
+
+Record objects have their equivalent methods using their internal schema:
+
+```c++
+  /* find users with a callback */
+  user().find_xxx(... [](const shared_ptr<user> &record) {
+      cout << "User: " << record->to_string() << endl;
+  });
+
+  /* find users returning the results */
+  auto results = user().find_xxx(...);
 
   for (auto user : results) {
       cout << "User: " << record->to_string() << endl;
@@ -393,7 +408,7 @@ The library will try to put the appropriate combined AND/OR into brackets itself
 (this = $1 AND that = $2) OR (test = $3)
 ```
 
-This is also an area that has been tested, but not nearly enough (03/13/16).
+Grouping where clauses is also an area that has been tested, but not nearly enough (03/13/16).
 
 Batch Queries
 -------------
