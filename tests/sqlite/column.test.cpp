@@ -2,7 +2,7 @@
 #include "config.h"
 #endif
 
-#if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
+#ifdef HAVE_LIBSQLITE3
 
 #include <bandit/bandit.h>
 #include <memory>

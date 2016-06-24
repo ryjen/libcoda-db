@@ -50,13 +50,13 @@ go_bandit([]() {
 
                 Assert::That(u1.save(), IsTrue());
 
-                auto lastId = current_session->last_insert_id();
+                auto u2 = user().find_by_id(u1.id());
 
-                auto u2 = user().find_by_id(lastId);
+                Assert::That(u2 != nullptr, IsTrue());
 
                 Assert::That(u2->is_valid(), IsTrue());
 
-                Assert::That(u2->id(), Equals(lastId));
+                Assert::That(u2->id(), Equals(u1.id()));
             } catch (const std::exception& e) {
                 cerr << "Error2: " << e.what() << endl;
                 throw e;

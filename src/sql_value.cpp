@@ -217,5 +217,9 @@ namespace arg3
             out << value.to_string();
             return out;
         }
+
+        bool operator==(const sql_null_type &null, const sql_value &value) {
+            return value.is_null();
+        }
     }
 }

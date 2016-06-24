@@ -211,7 +211,7 @@ namespace arg3
             void statement::reset()
             {
                 if (stmt_ != nullptr) {
-                    PQclear(stmt_.get());
+                    stmt_ = nullptr;
                 }
                 sql_.clear();
             }

@@ -5,8 +5,8 @@
 #ifndef ARG3_DB_SQL_VALUE_H
 #define ARG3_DB_SQL_VALUE_H
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 #include "variant.h"
 
 namespace arg3
@@ -170,6 +170,8 @@ namespace arg3
         std::ostream &operator<<(std::ostream &out, const sql_time &value);
 
         std::ostream &operator<<(std::ostream &out, const sql_value &value);
+
+        bool operator==(const sql_null_type &null, const sql_value &value);
     }
 }
 

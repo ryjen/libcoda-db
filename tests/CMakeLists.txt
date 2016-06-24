@@ -4,8 +4,8 @@ link_directories("${PROJECT_BINARY_DIR}/libs/variant/src")
 
 set(TEST-SOURCES
   arg3.test.cpp
-  column.test.cpp
   db.test.cpp
+  column.test.cpp
   delete_query.test.cpp
   join_clause.test.cpp
   modify_query.test.cpp
@@ -19,13 +19,17 @@ set(TEST-SOURCES
   update_query.test.cpp
 )
 
+add_library(${PROJECT_NAME}-testlib
+    random.test.cpp
+)
+
 add_executable (${PROJECT_NAME}-test-mysql
 	${TEST-SOURCES}
 	mysql/binding.test.cpp
 	mysql/column.test.cpp
 	mysql/resultset.test.cpp
 	mysql/row.test.cpp
-  mysql/session.test.cpp
+    mysql/session.test.cpp
 	mysql/statement.test.cpp
 )
 
@@ -62,23 +66,16 @@ add_executable (${PROJECT_NAME}-test-util
   where_clause.test.cpp
 )
 
-add_executable (${PROJECT_NAME}-test-perf
-  db.test.cpp
-  stress.test.cpp
-)
+include_directories(SYSTEM vendor/bandit SYSTEM vendor/benchpress/src ${PROJECT_SOURCE_DIR}/libs/variant/src ${PROJECT_SOURCE_DIR}/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
 
-set_target_properties(${PROJECT_NAME}-test-perf PROPERTIES COMPILE_FLAGS "-DTEST_POSTGRES -DTEST_SQLITE -DTEST_MYSQL")
+target_link_libraries (${PROJECT_NAME}-test-mysql ${PROJECT_NAME} ${PROJECT_NAME}-testlib arg3variant)
 
-include_directories(SYSTEM vendor/bandit ${PROJECT_SOURCE_DIR}/libs/variant/src ${PROJECT_SOURCE_DIR}/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
+target_link_libraries (${PROJECT_NAME}-test-sqlite ${PROJECT_NAME} ${PROJECT_NAME}-testlib arg3variant)
 
-target_link_libraries (${PROJECT_NAME}-test-mysql ${PROJECT_NAME} arg3variant)
+target_link_libraries (${PROJECT_NAME}-test-postgres ${PROJECT_NAME} ${PROJECT_NAME}-testlib arg3variant)
 
-target_link_libraries (${PROJECT_NAME}-test-sqlite ${PROJECT_NAME} arg3variant)
-
-target_link_libraries (${PROJECT_NAME}-test-postgres ${PROJECT_NAME} arg3variant)
-
-target_link_libraries (${PROJECT_NAME}-test-util ${PROJECT_NAME} arg3variant)
-
-target_link_libraries (${PROJECT_NAME}-test-perf ${PROJECT_NAME} arg3variant)
+target_link_libraries (${PROJECT_NAME}-test-util ${PROJECT_NAME} ${PROJECT_NAME}-testlib arg3variant)
 
 add_executable (${PROJECT_NAME}-test run_all.test.cpp)
+
+add_subdirectory(benchmarks)

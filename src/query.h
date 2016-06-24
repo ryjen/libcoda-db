@@ -6,10 +6,10 @@
 #ifndef ARG3_DB_QUERY_H
 #define ARG3_DB_QUERY_H
 
-#include <vector>
 #include <map>
 #include <sstream>
 #include <string>
+#include <vector>
 #include "bindable.h"
 #include "sql_value.h"
 
@@ -38,6 +38,8 @@ namespace arg3
             * @throws invalid_argument if there is no specifier for the argument
             */
             size_t assert_binding_index(size_t index);
+            query &set_modified();
+            bool is_dirty_;
 
            protected:
             std::shared_ptr<session_type> session_;

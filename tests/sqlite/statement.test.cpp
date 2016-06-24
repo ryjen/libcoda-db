@@ -4,7 +4,7 @@
 #include "../db.test.h"
 #include "sqlite/statement.h"
 
-#if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
+#ifdef HAVE_LIBSQLITE3
 
 using namespace bandit;
 

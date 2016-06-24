@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 option(CODE_COVERAGE "Enable code coverage testing." OFF)
 option(MEMORY_CHECK "Enable testing for memory leaks." OFF)
 option(ENABLE_LOGGING "Enable internal library logging." OFF)
+option(ENABLE_PROFILING "Enable valgrind profiling." OFF)
 
 # define project name
 project (arg3db VERSION 0.5.0)
@@ -52,7 +53,7 @@ include(ValgrindTest)
 
 add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test)
 
-add_valgrind_profile(${PROJECT_NAME}-profile ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-profile)
+add_opt_valgrind_profile(ENABLE_PROFILING ${PROJECT_NAME}-profile ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test)
 
 if (DOXYGEN)
     add_custom_target(html WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND ${DOXYGEN} ${PROJECT_SOURCE_DIR}/Doxyfile)

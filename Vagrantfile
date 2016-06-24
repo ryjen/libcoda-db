@@ -70,13 +70,21 @@ Vagrant.configure(2) do |config|
       sudo add-apt-repository ppa:ubuntu-toolchain-r/test
       sudo apt-get update
       export DEBIAN_FRONTEND=noninteractive
-      sudo apt-get -q -y install build-essential gcc-5 g++-5 cmake cmake-data valgrind lcov mysql-client-5.5 libmysqlclient-dev libsqlite3-dev libpq-dev postgresql-server-dev-9.3 mysql-server-5.5 postgresql-9.3
+      sudo apt-get -q -y install build-essential wget unzip gcc-5 g++-5 cmake cmake-data valgrind lcov mysql-client-5.5 libmysqlclient-dev libsqlite3-dev libpq-dev postgresql-server-dev-9.3 mysql-server-5.5 postgresql-9.3 libpoco-dev
       sudo service mysql start
       sudo service postgresql start
       sudo mysql -e "create database IF NOT EXISTS test;"
       sudo -u postgres psql -c "create user vagrant with password 'vagrant';"
       sudo -u postgres psql -c "create database test owner vagrant;"
-      sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5      
+      sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+      wget http://downloads.sourceforge.net/project/soci/soci/soci-3.2.3/soci-3.2.3.zip
+      unzip soci-3.2.3.zip
+      cd soci-3.2.3
+      mkdir debug
+      cd debug
+      cmake ..
+      make
+      make install
       mkdir -p /vagrant/.vagrant-build
       cd /vagrant/.vagrant-build
       cmake -DCMAKE_BUILD_TYPE=Debug -DMEMORY_CHECK=ON -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/9.3/server ..

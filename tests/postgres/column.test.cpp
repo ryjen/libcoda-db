@@ -2,7 +2,7 @@
 #include "config.h"
 #endif
 
-#if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
+#ifdef HAVE_LIBPQ
 
 #include <bandit/bandit.h>
 #include <memory>

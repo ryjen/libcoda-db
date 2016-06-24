@@ -18,9 +18,6 @@ using namespace arg3::db;
 
 std::shared_ptr<arg3::db::session> current_session;
 
-std::random_device rd;
-std::default_random_engine rand_eng(rd());
-
 std::string get_env_uri(const char *name, const std::string &def)
 {
     char *temp = getenv(name);
@@ -32,19 +29,18 @@ std::string get_env_uri(const char *name, const std::string &def)
     return def;
 }
 
-
 void register_test_sessions()
 {
-#if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
+#if defined(HAVE_LIBSQLITE3)
     auto sqlite_factory = std::make_shared<test_sqlite3_factory>();
     sqldb::register_session("file", sqlite_factory);
     sqldb::register_session("sqlite", sqlite_factory);
 #endif
-#if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
+#if defined(HAVE_LIBMYSQLCLIENT)
     auto mysql_factory = std::make_shared<test_mysql_factory>();
     sqldb::register_session("mysql", mysql_factory);
 #endif
-#if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
+#if defined(HAVE_LIBPQ)
     auto pq_factory = std::make_shared<test_postgres_factory>();
     sqldb::register_session("postgres", pq_factory);
     sqldb::register_session("postgresql", pq_factory);
@@ -71,22 +67,7 @@ void teardown_current_session()
     current_session->clear_schema("user_settings");
 }
 
-string random_name()
-{
-    char alpha[27] = "abcdefghijklmnopqrstuvwxyz";
-
-    const int len = random_num(5, 9);
-    char buf[20] = {0};
-
-    for (int i = 0; i < len; i++) {
-        int c = random_num<int>(0, 27);
-        buf[i] = alpha[c];
-    }
-    buf[len] = 0;
-    return string(buf) + std::to_string(random_num<int>(1000, 9999));
-}
-
-#if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
+#if defined(HAVE_LIBSQLITE3)
 std::shared_ptr<arg3::db::session_impl> test_sqlite3_factory::create(const arg3::db::uri &value)
 {
     return std::make_shared<test_sqlite3_session>(value);
@@ -110,7 +91,7 @@ void test_sqlite3_session::teardown()
 }
 #endif
 
-#if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
+#if defined(HAVE_LIBMYSQLCLIENT)
 std::shared_ptr<arg3::db::session_impl> test_mysql_factory::create(const arg3::db::uri &value)
 {
     return std::make_shared<test_mysql_session>(value);
@@ -135,7 +116,7 @@ void test_mysql_session::teardown()
 }
 #endif
 
-#if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
+#if defined(HAVE_LIBPQ)
 std::shared_ptr<arg3::db::session_impl> test_postgres_factory::create(const arg3::db::uri &value)
 {
     return std::make_shared<test_postgres_session>(value);

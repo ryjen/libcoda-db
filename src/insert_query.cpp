@@ -127,12 +127,12 @@ namespace arg3
                 numChanges_ = 0;
             }
 
-            if (flags_ & Batch) {
-                reset();
-            } else {
-                stmt_->finish();
-                stmt_ = nullptr;
-            }
+            //if (flags_ & Batch) {
+            stmt_->reset();
+            //} else {
+            //    stmt_->finish();
+            //    stmt_ = nullptr;
+            //}
 
             return numChanges_;
         }

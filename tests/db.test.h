@@ -1,7 +1,6 @@
 #ifndef ARG3_TEST_DB_H
 #define ARG3_TEST_DB_H
 
-#include <random>
 #include <unistd.h>
 #include "sqldb.h"
 #include "record.h"
@@ -23,7 +22,7 @@ class test_session
 
 std::string get_env_uri(const char *name, const std::string &def);
 
-#if defined(HAVE_LIBSQLITE3) && defined(TEST_SQLITE)
+#if defined(HAVE_LIBSQLITE3)
 
 class test_sqlite3_factory : public arg3::db::session_factory
 {
@@ -45,7 +44,7 @@ class test_sqlite3_session : public arg3::db::sqlite::session, public test_sessi
 
 #endif
 
-#if defined(HAVE_LIBMYSQLCLIENT) && defined(TEST_MYSQL)
+#if defined(HAVE_LIBMYSQLCLIENT)
 
 class test_mysql_factory : public arg3::db::session_factory
 {
@@ -67,7 +66,7 @@ class test_mysql_session : public arg3::db::mysql::session, public test_session
 
 #endif
 
-#if defined(HAVE_LIBPQ) && defined(TEST_POSTGRES)
+#if defined(HAVE_LIBPQ)
 
 class test_postgres_factory : public arg3::db::session_factory
 {
@@ -96,17 +95,6 @@ void register_test_sessions();
 void setup_current_session();
 
 void teardown_current_session();
-
-std::string random_name();
-
-extern std::default_random_engine rand_eng;
-
-template <typename T>
-T random_num(T min, T max)
-{
-    std::uniform_int_distribution<T> uniform_dist(min, max);
-    return uniform_dist(rand_eng);
-}
 
 class user : public arg3::db::record<user>
 {

@@ -7,3 +7,6 @@
 [submodule "libs/variant"]
 	path = libs/variant
 	url = http://github.com/ryjen/arg3variant.git
+[submodule "tests/vendor/benchpress"]
+	path = tests/vendor/benchpress
+	url = https://github.com/blockchaindev/benchpress.git
