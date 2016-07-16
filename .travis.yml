@@ -1,20 +1,20 @@
 sudo: false
 language: cpp
-compiler: 
+compiler:
   - clang
   - gcc
-before_script: 
+before_script:
   - git submodule update --init --recursive
   - mkdir build
   - gem install coveralls-lcov
 install:
-  - mysql -e "create database IF NOT EXISTS test;" -uroot 
+  - mysql -e "create database IF NOT EXISTS test;" -uroot
   - psql -c 'create database test;' -U postgres
   - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.7"; fi
   - if [ "$CXX" == "g++" ]; then export CXX="g++-5" CC="gcc-5" GCOV="gcov-5"; fi
   - wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.12.orig.tar.gz
   - tar xf lcov_1.12.orig.tar.gz
-  - export PATH=$TRAVIS_BUILD_DIR/lcov-1.12/bin:$PATH  
+  - export PATH=$TRAVIS_BUILD_DIR/lcov-1.12/bin:$PATH
 addons:
   apt:
     sources:
@@ -35,7 +35,7 @@ services:
   - postgresql
 script:
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DMEMORY_CHECK=ON -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/9.5/server ..
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DMEMORY_CHECK=ON -DENHANCED_PARAMETER_MAPPING -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/9.5/server ..
   - make
   - make arg3db-coverage-clean
   - make test ARGS=-V
