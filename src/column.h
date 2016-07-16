@@ -6,9 +6,9 @@
 #ifndef ARG3_DB_COLUMN_VALUE_H
 #define ARG3_DB_COLUMN_VALUE_H
 
-#include <string>
 #include <cassert>
 #include <memory>
+#include <string>
 #include "exception.h"
 #include "sql_value.h"
 
@@ -123,7 +123,6 @@ namespace arg3
             operator long long() const;
             operator unsigned long long() const;
             operator float() const;
-
         };
     }
 }

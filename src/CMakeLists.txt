@@ -1,5 +1,6 @@
 add_library (${PROJECT_NAME}
 	alloc.cpp
+  bind_mapping.cpp
 	bindable.cpp
 	column.cpp
 	delete_query.cpp
@@ -47,6 +48,7 @@ include_directories(${PROJECT_SOURCE_DIR}/libs/variant/src ${MYSQL_INCLUDE_DIR} 
 target_link_libraries(${PROJECT_NAME} ${MYSQL_LIBRARIES} ${SQLITE3_LIBRARIES} ${PostgreSQL_LIBRARIES})
 
 set(${PROJECT_NAME}_HEADERS
+  bind_mapping.h
 	bindable.h
 	column.h
 	delete_query.h

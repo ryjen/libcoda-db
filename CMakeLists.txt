@@ -6,6 +6,7 @@ option(CODE_COVERAGE "Enable code coverage testing." OFF)
 option(MEMORY_CHECK "Enable testing for memory leaks." OFF)
 option(ENABLE_LOGGING "Enable internal library logging." OFF)
 option(ENABLE_PROFILING "Enable valgrind profiling." OFF)
+option(ENHANCED_PARAMETER_MAPPING "Use regex to map different parameter syntaxes." ON)
 
 # define project name
 project (arg3db VERSION 0.5.0)
@@ -33,6 +34,10 @@ if (ENABLE_LOGGING)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_LOGGING")
 endif()
 
+if (ENHANCED_PARAMETER_MAPPING)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENHANCED_PARAMETER_MAPPING")
+endif()
+
 # add config header file
 include(CreateConfigHeader)
 create_config_header()
@@ -58,6 +63,6 @@ add_opt_valgrind_profile(ENABLE_PROFILING ${PROJECT_NAME}-profile ${PROJECT_BINA
 if (DOXYGEN)
     add_custom_target(html WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND ${DOXYGEN} ${PROJECT_SOURCE_DIR}/Doxyfile)
 elseif (HEADERDOC)
-  add_custom_target(html COMMAND ${HEADERDOC} -o ${PROJECT_BINARY_DIR}/html ${CMAKE_SOURCE_DIR}/src/**.h
+    add_custom_target(html COMMAND ${HEADERDOC} -o ${PROJECT_BINARY_DIR}/html ${CMAKE_SOURCE_DIR}/src/**.h
                                  COMMAND ${GATHERDOC} ${PROJECT_BINARY_DIR}/html)
 endif()

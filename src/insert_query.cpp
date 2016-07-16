@@ -1,8 +1,8 @@
 #include "insert_query.h"
 #include "log.h"
 #include "schema.h"
-#include "statement.h"
 #include "session.h"
+#include "statement.h"
 
 using namespace std;
 
@@ -127,7 +127,7 @@ namespace arg3
                 numChanges_ = 0;
             }
 
-            //if (flags_ & Batch) {
+            // if (flags_ & Batch) {
             stmt_->reset();
             //} else {
             //    stmt_->finish();
@@ -148,12 +148,14 @@ namespace arg3
             return tableName_;
         }
 
-        insert_query &insert_query::values(const std::vector<sql_value> &value) {
+        insert_query &insert_query::values(const std::vector<sql_value> &value)
+        {
             bindable::bind(value);
             return *this;
         }
 
-        insert_query &insert_query::values(const std::unordered_map<std::string, sql_value> &value) {
+        insert_query &insert_query::values(const std::unordered_map<std::string, sql_value> &value)
+        {
             bindable::bind(value);
             return *this;
         }

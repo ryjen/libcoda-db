@@ -214,7 +214,7 @@ namespace arg3
 
             void statement::reset()
             {
-                bindings_.reset();
+                //bindings_.reset();
 
                 if (!is_valid()) {
                     log::warn("mysql statement reset invalid");

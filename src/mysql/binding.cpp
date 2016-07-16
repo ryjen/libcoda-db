@@ -15,7 +15,6 @@
 #include "../exception.h"
 #include "../log.h"
 #include "../alloc.h"
-
 #include "binding.h"
 
 namespace arg3
@@ -30,17 +29,23 @@ namespace arg3
         {
             namespace helper
             {
-                // small util method to make a dynamic c pointer for a type
+                // small util method to make a c pointer for a type
                 template <typename T>
-                void *to_ptr(const T &value)
+                void *to_cptr(const T &value)
                 {
                     T *ptr = c_alloc<T>(sizeof(T));
                     *ptr = value;
                     return ptr;
                 }
 
+                /**
+                 * function to assign a mysql field to a mysql binding value
+                 * @param value the binding value
+                 * @param field the field
+                 */
                 void prepare_binding_from_field(MYSQL_BIND *value, MYSQL_FIELD *field)
                 {
+                    // sanity check
                     if (value == nullptr || field == nullptr) {
                         return;
                     }
@@ -49,6 +54,8 @@ namespace arg3
                     value->is_unsigned = field->flags & UNSIGNED_FLAG;
                     value->error = 0;
                     value->length = 0;
+
+                    // so now we have to prepare the buffer size for storing a value
                     switch (field->type) {
                         default:
                             value->buffer_length = field->length;
@@ -91,8 +98,15 @@ namespace arg3
                     }
                 }
 
+                /**
+                 * function to copy a mysql bind structure
+                 * NOTE: will copy pointers by value
+                 * @param value the value to copy to
+                 * @param other the value to copy from
+                 */
                 void bind_value_copy(MYSQL_BIND *value, const MYSQL_BIND *other)
                 {
+                    // sanity check
                     if (value == nullptr || other == nullptr) {
                         return;
                     }
@@ -122,11 +136,18 @@ namespace arg3
                     value->is_unsigned = other->is_unsigned;
                 }
 
+                /**
+                 * parses a sql time from a binding
+                 * @param  binding the binding value
+                 * @param  format  the format of the time value
+                 * @return         the parsed sql_time value or sql_null
+                 */
                 sql_value parse_time(MYSQL_BIND *binding, sql_time::formats format)
                 {
                     struct tm sys;
                     MYSQL_TIME *db_tm;
 
+                    // sanity check
                     if (binding == nullptr || (binding->is_null && *binding->is_null)) {
                         return sql_null;
                     }
@@ -153,12 +174,15 @@ namespace arg3
             }
             namespace data_mapper
             {
-                /*
+                /**
                  * Key method here, handles conversion from MYSQL_BIND to sql_value
                  * TODO: test this more
+                 * @param binding the binding value
+                 * @return the sql_value
                  */
                 sql_value to_value(MYSQL_BIND *binding)
                 {
+                    // sanity check
                     if (binding == nullptr || (binding->is_null && *binding->is_null)) {
                         return sql_null;
                     }
@@ -228,10 +252,14 @@ namespace arg3
                     }
                 }
 
-                /*
+                /**
                  * Key method here, handles conversion from a field to sql_value
                  * TODO: test this more with different types
                  * Doesn't throw, prefers to return a null value
+                 * @param type the type of field
+                 * @param value the value
+                 * @param length the length of the value
+                 * @return the sql_value
                  */
                 sql_value to_value(int type, const char *value, size_t length)
                 {
@@ -307,8 +335,8 @@ namespace arg3
                     }
                 }
 
-                /*!
-                 * TODO: test this more
+                /**
+                 * set a time value to a binding
                  */
                 void set_time(MYSQL_BIND *binding, const sql_time &value)
                 {
@@ -518,6 +546,12 @@ namespace arg3
                 return true;
             }
 
+            /**
+             * Mysql does not support using an index more than once in a query
+             * So this method was added to implement it
+             * @param index the parameter index
+             * @return the set of "real" indexes for binding
+             */
             std::set<size_t> &binding::get_indexes(size_t index)
             {
                 auto &indexes = indexes_[index];
@@ -536,7 +570,7 @@ namespace arg3
                 for (size_t i : get_indexes(index)) {
                     if (reallocate_value(i)) {
                         value_[i - 1].buffer_type = MYSQL_TYPE_LONG;
-                        value_[i - 1].buffer = helper::to_ptr(value);
+                        value_[i - 1].buffer = helper::to_cptr(value);
                         value_[i - 1].buffer_length = sizeof(value);
                     } else {
                         log::error("unable to reallocate bindings for index %ld", index);
@@ -551,7 +585,7 @@ namespace arg3
                 for (size_t i : get_indexes(index)) {
                     if (reallocate_value(i)) {
                         value_[i - 1].buffer_type = MYSQL_TYPE_LONG;
-                        value_[i - 1].buffer = helper::to_ptr(value);
+                        value_[i - 1].buffer = helper::to_cptr(value);
                         value_[i - 1].buffer_length = sizeof(value);
                         value_[i - 1].is_unsigned = 1;
                     } else {
@@ -567,7 +601,7 @@ namespace arg3
                 for (size_t i : get_indexes(index)) {
                     if (reallocate_value(i)) {
                         value_[i - 1].buffer_type = MYSQL_TYPE_LONGLONG;
-                        value_[i - 1].buffer = helper::to_ptr(value);
+                        value_[i - 1].buffer = helper::to_cptr(value);
                         value_[i - 1].buffer_length = sizeof(value);
                     } else {
                         log::error("unable to reallocate bindings for index %ld", index);
@@ -583,7 +617,7 @@ namespace arg3
                 for (size_t i : get_indexes(index)) {
                     if (reallocate_value(i)) {
                         value_[i - 1].buffer_type = MYSQL_TYPE_LONGLONG;
-                        value_[i - 1].buffer = helper::to_ptr(value);
+                        value_[i - 1].buffer = helper::to_cptr(value);
                         value_[i - 1].buffer_length = sizeof(value);
                         value_[i - 1].is_unsigned = 1;
                     } else {
@@ -599,7 +633,7 @@ namespace arg3
                 for (size_t i : get_indexes(index)) {
                     if (reallocate_value(i)) {
                         value_[i - 1].buffer_type = MYSQL_TYPE_FLOAT;
-                        value_[i - 1].buffer = helper::to_ptr(value);
+                        value_[i - 1].buffer = helper::to_cptr(value);
                         value_[i - 1].buffer_length = sizeof(value);
                     } else {
                         log::error("unable to reallocate bindings for index %ld", index);
@@ -614,7 +648,7 @@ namespace arg3
                 for (size_t i : get_indexes(index)) {
                     if (reallocate_value(i)) {
                         value_[i - 1].buffer_type = MYSQL_TYPE_DOUBLE;
-                        value_[i - 1].buffer = helper::to_ptr(value);
+                        value_[i - 1].buffer = helper::to_cptr(value);
                         value_[i - 1].buffer_length = sizeof(value);
                     } else {
                         log::error("unable to reallocate bindings for index %ld", index);
@@ -745,6 +779,7 @@ namespace arg3
 
             std::string binding::prepare(const std::string &sql)
             {
+#ifdef ENHANCED_PARAMETER_MAPPING
                 // now build the list of indexes
                 auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), bindable::index_regex);
                 auto match_end = std::sregex_iterator();
@@ -776,6 +811,9 @@ namespace arg3
 
                 // replace all parameters to the mysql ? parameters
                 return regex_replace(sql, bindable::param_regex, std::string("?"));
+#else
+                return sql;
+#endif
             }
         }
     }

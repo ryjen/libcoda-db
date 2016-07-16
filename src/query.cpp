@@ -80,7 +80,7 @@ namespace arg3
                 stmt_->prepare(sql);
             }
 
-            if (!is_dirty_) {
+            else if (!is_dirty_) {
                 return;
             }
 
@@ -216,7 +216,7 @@ namespace arg3
             params_.clear();
             named_params_.clear();
             is_dirty_ = false;
-            stmt_ = nullptr;
+            stmt_->reset();
         }
     }
 

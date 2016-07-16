@@ -13,8 +13,8 @@
 
 #include <libpq-fe.h>
 #include <string>
+#include "../bind_mapping.h"
 #include "../sql_value.h"
-#include "../bindable.h"
 
 namespace arg3
 {

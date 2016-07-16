@@ -424,12 +424,12 @@ namespace arg3
             void binding::reset()
             {
                 bind_mapping::reset();
-
                 clear_value();
             }
 
             std::string binding::prepare(const string &sql)
             {
+#ifdef ENHANCED_PARAMETER_MAPPING
                 auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), bindable::index_regex);
                 auto match_end = std::sregex_iterator();
 
@@ -488,6 +488,9 @@ namespace arg3
                 }
 
                 return formatted;
+#else
+                return sql;
+#endif
             }
         }
     }

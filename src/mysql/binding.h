@@ -12,11 +12,11 @@
 #ifdef HAVE_LIBMYSQLCLIENT
 
 #include <mysql/mysql.h>
+#include <set>
 #include <string>
 #include <unordered_map>
-#include <set>
+#include "../bind_mapping.h"
 #include "../sql_value.h"
-#include "../bindable.h"
 
 namespace arg3
 {

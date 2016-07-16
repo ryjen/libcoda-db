@@ -61,7 +61,7 @@ go_bandit([]() {
 
             auto i = rs.begin();
 
-            row other = get_first_user_row();
+            row other;
 
             other = *i;
 

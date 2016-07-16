@@ -213,7 +213,6 @@ namespace arg3
                 if (stmt_ != nullptr) {
                     stmt_ = nullptr;
                 }
-                sql_.clear();
             }
 
             long long statement::last_insert_id()

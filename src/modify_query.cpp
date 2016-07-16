@@ -81,7 +81,7 @@ namespace arg3
             }
 
             //if (flags_ & Batch) {
-                stmt_->reset();
+            stmt_->reset();
             //} else {
             //    stmt_->finish();
             //    stmt_ = nullptr;
