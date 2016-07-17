@@ -1,11 +1,11 @@
 #ifndef HAVE_CONFIG_H
 #include "config.h"
 #endif
+#include "random.test.h"
 #define BENCHPRESS_CONFIG_MAIN
 #include <benchpress/benchpress.hpp>
 #include "db.test.h"
 #include "log.h"
-#include "random.test.h"
 
 using namespace arg3::db;
 
