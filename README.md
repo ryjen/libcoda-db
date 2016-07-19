@@ -8,7 +8,7 @@ libarg3db
 
 a sqlite, mysql and postgres wrapper / active record (ish) implementation
 
-While this library I think is pretty awesome, use in production at your own risk. Still under testing and refactoring (2016/02/20).  
+While this library I think is pretty awesome it is not fully tested and should be used in production at your own risk.
 
 Pull requests are welcomed...
 
@@ -21,8 +21,8 @@ What makes this library great
 -----------------------------
 
 - schema's with automatic primary key usage for records
-- prepared statement oriented with flexible sql syntax
-- nice query interface that I think makes sense
+- supports multiple prepared statement syntaxes across databases
+- a query interface that reads like sql
 - makes good use of new c++11 features
 
 Building
@@ -53,8 +53,8 @@ make test
 
 options supported are:
 
-    -DCODE_COVERAGE=ON   :   enable code coverage using lcov
-    -DMEMORY_CHECK=ON    :   enable valgrind memory checking on tests
+		-DCODE_COVERAGE=ON   :   enable code coverage using lcov
+		-DMEMORY_CHECK=ON    :   enable valgrind memory checking on tests
 
 Debugging
 ---------
@@ -68,25 +68,25 @@ docker-compose run test gdb /usr/src/arg3db/build/tests/arg3db-test-xxx
 Model
 -----
 
-      /* database interfaces */
-      session                               - interface for an open database session
-        └ statement                         - interface for a prepared statement
-              └ resultset                   - results of a statement
-                    └ row                   - a single result
-                         └ column           - a field in a row containing a value
+			/* database interfaces */
+			session                               - interface for an open database session
+				└ statement                         - interface for a prepared statement
+							└ resultset                   - results of a statement
+										└ row                   - a single result
+												 └ column           - a field in a row containing a value
 
-      /* implementations using the above */
-      schema                                - a definition of a table
-      schema_factory                        - cached schemas
-      record                                - the active record (ish) implementation
-      select_query                          - builds select queries
-      insert_query                          - inserts data
-      update_query                          - updates data
-      delete_query                          - builds delete queries
-      sql_value                             - storage and conversion for basic sql types
-      transaction                           - transactional functionality
-      join_clause                           - handles creating joins on select queries
-      where_clause                          - handles creating where clauses on select, update and delete queries
+			/* implementations using the above */
+			schema                                - a definition of a table
+			schema_factory                        - cached schemas
+			record                                - the active record (ish) implementation
+			select_query                          - builds select queries
+			insert_query                          - inserts data
+			update_query                          - updates data
+			delete_query                          - builds delete queries
+			sql_value                             - storage and conversion for basic sql types
+			transaction                           - transactional functionality
+			join_clause                           - handles creating joins on select queries
+			where_clause                          - handles creating where clauses on select, update and delete queries
 
 
 Records
@@ -117,40 +117,40 @@ extern std::shared_ptr<arg3::db::session> current_session;
 class user : public arg3::db::record<user>
 {
 public:
-    constexpr static const char *const TABLE_NAME = "users";
+		constexpr static const char *const TABLE_NAME = "users";
 
-    /* only required constructor */
-    user(const std::shared_ptr<schema> &schema) : record(schema)
-    {}
+		/* only required constructor */
+		user(const std::shared_ptr<schema> &schema) : record(schema)
+		{}
 
-    /* default constructor */
-    user(const std::shared_ptr<session> &session = current_session) : record(session->get_schema(TABLE_NAME))
-    {}
+		/* default constructor */
+		user(const std::shared_ptr<session> &session = current_session) : record(session->get_schema(TABLE_NAME))
+		{}
 
-    /* utility method showing how to get columns */
-    string to_string() const
-    {
-        ostringstream buf;
+		/* utility method showing how to get columns */
+		string to_string() const
+		{
+				ostringstream buf;
 
-        buf << id() << ": " << get("first_name") << " " << get("last_name");
+				buf << id() << ": " << get("first_name") << " " << get("last_name");
 
-        return buf.str();
-    }
+				return buf.str();
+		}
 
-    // optional overridden method to do custom initialization
-    void on_record_init(const arg3::db::row &row) {
-        set("customValue", row.column("customName").to_value());
-    }   
+		// optional overridden method to do custom initialization
+		void on_record_init(const arg3::db::row &row) {
+				set("customValue", row.column("customName").to_value());
+		}
 
-    // custom find method using the schema functions
-    vector<shared_ptr<user>> find_by_first_name(const string &value) {
-        return arg3::db::find_by<user>(this->schema(), "first_name", value);
-    }
+		// custom find method using the schema functions
+		vector<shared_ptr<user>> find_by_first_name(const string &value) {
+				return arg3::db::find_by<user>(this->schema(), "first_name", value);
+		}
 };
 ```
 
 Querying records
-----------------  
+----------------
 
 The libary includes the following schema functions for quering:
 
@@ -161,70 +161,73 @@ The libary includes the following schema functions for quering:
 
 example using a callback:
 ```c++
-  auto schema = current_session->get_schema(user::TABLE_NAME);
+	auto schema = current_session->get_schema(user::TABLE_NAME);
 
-  find_xxx<user>(schema, ... [](const shared_ptr<user> &record) {
-      cout << "User: " << record->to_string() << endl;
-  });
+	find_xxx<user>(schema, ... [](const shared_ptr<user> &record) {
+			cout << "User: " << record->to_string() << endl;
+	});
 ```
 
 example using a return value:
 
 ```c++
-  auto results = find_xxx<user>(schema, ...);
+	auto results = find_xxx<user>(schema, ...);
 
-  for (auto user : results) {
-      cout << "User: " << record->to_string() << endl;
-  }
+	for (auto user : results) {
+			cout << "User: " << record->to_string() << endl;
+	}
 ```
-
 
 Record objects have their equivalent methods using their internal schema:
 
 ```c++
-  /* find users with a callback */
-  user().find_xxx(... [](const shared_ptr<user> &record) {
-      cout << "User: " << record->to_string() << endl;
-  });
+	/* find users with a callback */
+	user().find_xxx(... [](const shared_ptr<user> &record) {
+			cout << "User: " << record->to_string() << endl;
+	});
 
-  /* find users returning the results */
-  auto results = user().find_xxx(...);
+	/* find users returning the results */
+	auto results = user().find_xxx(...);
 
-  for (auto user : results) {
-      cout << "User: " << record->to_string() << endl;
-  }
+	for (auto user : results) {
+			cout << "User: " << record->to_string() << endl;
+	}
 ```
 
 Save a record
 -------------
 
 ```c++
-    /* save a user */
-    user obj;
+		/* save a user */
+		user obj;
 
-    obj.set("first_name", "John");
-    obj.set("last_name", "Doe");
+		obj.set("first_name", "John");
+		obj.set("last_name", "Doe");
 
-    if(!obj.save()) {
-    	cerr << testdb.last_error() << endl;
-    }
+		if(!obj.save()) {
+			cerr << testdb.last_error() << endl;
+		}
 ```
 
 Delete a record
 ---------------
 
 ```c++
-    user obj;
+		user obj;
 
-    obj.set_id(1);
+		obj.set_id(1);
 
-    if(!obj.de1ete()) {
-        cerr << testdb.last_error() << endl;
-    }
+		if(!obj.de1ete()) {
+				cerr << testdb.last_error() << endl;
+		}
 ```
 
 Prepared Statements
 ===================
+
+By default, the library will use the prepared statement syntax of the database being used.
+
+If you turn on ENHANCED_PARAMENTER_MAPPING at compile time, then the syntaxes are universal.
 
 Indexed binding parameters in queries can use the dollar sign syntax:
 
@@ -241,15 +244,15 @@ or the ? syntax:
 Named parameters are also supported using a '@' or ':' prefix:
 
 ```c++
-  "id = @id, name = :name, etc."
+	"id = @id, name = :name, etc."
 ```
 
 You **can** mix indexed and named parameters.
 
 ```c++
-  "?, $2, @name, $3"
-  // or
-  "?, ?, @name, ?"
+	"?, $2, @name, $3"
+	// or
+	"?, ?, @name, ?"
 ```
 
 When mixing indexed parameters, the first '?' is equivelent to parameter 1 or '$1' and so on.
@@ -298,12 +301,12 @@ insert_query insert(current_session);
 
 /* insert column values into a table */
 insert.into("users").columns("id", "first_name", "last_name")
-      .values(4321, "dave", "patterson");
+			.values(4321, "dave", "patterson");
 
 if (!query.execute()) {
-    cerr << testdb.last_error() << endl;
+		cerr << testdb.last_error() << endl;
 } else {
-    cout << "last insert id " << query.last_insert_id() << endl;
+		cout << "last insert id " << query.last_insert_id() << endl;
 }
 ```
 
@@ -313,7 +316,7 @@ update_query update(current_session);
 
 /* update columns in a table with values */
 update.table("users").columns("id", "first_name", "last_name")
-     .values(3432, "mark", "anthony");
+		 .values(3432, "mark", "anthony");
 
 /* using where clause with named parameters */
 query.where("id = @id") or ("last_name = @last_name");
@@ -346,8 +349,8 @@ query.from("users").where("last_name = $1 OR first_name = $2", "Jenkins", "Harry
 auto results = query.execute();
 
 for ( auto &row : results) {
-    string lName = row["last_name"]; // "Jenkins"
-    // do more stuff
+		string lName = row["last_name"]; // "Jenkins"
+		// do more stuff
 }
 
 ```
@@ -359,22 +362,22 @@ select_query query(current_session);
 
 query.from("users").execute([](const resultset & rs)
 {
-    // do something with a resultset
+		// do something with a resultset
 
-    rs.for_each([](const row & r)
-    {
-        // do something with a row
+		rs.for_each([](const row & r)
+		{
+				// do something with a row
 
-        r.for_each([](const column & c)
-        {
-            // do something with a column
-        });
-    });
+				r.for_each([](const column & c)
+				{
+						// do something with a column
+				});
+		});
 });
 
 std::function<void (const resultset &)> handler = [](const resultset &results)
 {
-    printf("found %d results", results.size());
+		printf("found %d results", results.size());
 }
 
 query.execute(handler);
@@ -396,7 +399,7 @@ select.execute();
 Where Clauses
 -------------
 
-Where clauses in select/delete/joins have a dedicated class. For me it is syntactically preferrable to use the 'and' and 'or' keywords with the where clauses operators.
+Where clauses in select/delete/joins have a dedicated class. For me it is syntactically preferrable to use the 'and' and 'or' keywords with the where clause operators.
 
 ```c++
 query.where("this = $1") and ("that = $2") or ("test = $3");
@@ -413,7 +416,7 @@ Grouping where clauses is also an area that has been tested, but not nearly enou
 Batch Queries
 -------------
 
-Batch queries means that instead of releasing the resources of a query upon execution, its will reset them to a pre-bind state.
+The library supports batch mode by default. This means upon execution, its will reset the query to a pre-bind state.
 
 ```c++
 /* execute some raw sql */
@@ -421,15 +424,13 @@ insert_query insert(current_session);
 
 insert.into("users").columns("counter");
 
-/* turn on batch mode for this query */
-insert.flags(insert.flags() | insert_query::Batch);
-
 for(int i = 1000; i < 3000; i++) {
-    insert.bind(1, i);
+		// set new values for the insert
+		insert.bind(1, i);
 
-    if (!insert.execute()) {
-        cerr << testdb.last_error() << endl;
-    }
+		if (!insert.execute()) {
+				cerr << testdb.last_error() << endl;
+		}
 }
 ```
 
@@ -440,19 +441,19 @@ Transactions can be performed on a session object.
 
 ```c++
 {
-  auto tx = current_session->start_transaction();
+	auto tx = current_session->start_transaction();
 
-  /* perform operations here */
+	/* perform operations here */
 
-  tx->save("savepoint");
+	tx->save("savepoint");
 
-  /* more operations here */
+	/* more operations here */
 
-  tx->rollback("savepoint");
-  // tx->release("savepoint");
+	tx->rollback("savepoint");
+	tx->release("savepoint");
 
-  // set successful to commit on destruct
-  tx->set_successful(true);
+	// set successful to commit on destruct
+	tx->set_successful(true);
 }
 // tx will be commited here
 ```
@@ -512,18 +513,18 @@ For sqlite3 and mysql databases, results from a query will be limited to the sco
 Memory caching was add to pre-fetch the values (sqlite only).  It can be done at the resultset, row or column level.  The default is none.
 
 ```c++
-  auto current_session = sqldb::create_session<sqlite::session>("sqlite://testdb.db");
-  auto sqlite_session = current_session->impl<sqlite::session>();
-  sqlite_session->cache_level(sqlite::cache::Row);
+	auto current_session = sqldb::create_session<sqlite::session>("sqlite://testdb.db");
+	auto sqlite_session = current_session->impl<sqlite::session>();
+	sqlite_session->cache_level(sqlite::cache::Row);
 ```
 
 Mysql has pre-fetching built-in and it is used within the library.  It is enabled by default.
 
 an example of turning caching off in mysql:
 ```c++
-  auto current_session = sqldb::create_session("mysql://localhost/test");
-  auto mysql_session = current_session->impl<mysql::session>();
-  mysql_session->flags(mysql_session->flags() & ~mysql::db::CACHE);
+	auto current_session = sqldb::create_session("mysql://localhost/test");
+	auto mysql_session = current_session->impl<mysql::session>();
+	mysql_session->flags(mysql_session->flags() & ~mysql::db::CACHE);
 ```
 
 Memory caching is also used for looking up schemas to reduce hits to the database.
