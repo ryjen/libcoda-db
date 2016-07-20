@@ -4,10 +4,10 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include <string>
 #include <time.h>
-#include "column.h"
+#include <string>
 #include "binding.h"
+#include "column.h"
 
 using namespace std;
 
@@ -63,7 +63,7 @@ namespace arg3
                 if (res_ == nullptr) {
                     throw no_such_column_exception();
                 }
-                
+
                 auto field = mysql_fetch_field_direct(res_.get(), index_);
 
                 if (field == nullptr) {

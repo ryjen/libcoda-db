@@ -139,12 +139,14 @@ namespace arg3
             return where_;
         }
 
-        update_query &update_query::values(const std::vector<sql_value> &value) {
+        update_query &update_query::values(const std::vector<sql_value> &value)
+        {
             bindable::bind(value);
             return *this;
         }
 
-        update_query &update_query::values(const std::unordered_map<std::string, sql_value> &value) {
+        update_query &update_query::values(const std::unordered_map<std::string, sql_value> &value)
+        {
             bindable::bind(value);
             return *this;
         }

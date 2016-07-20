@@ -6,16 +6,16 @@
 #endif
 
 #include <algorithm>
-#include "session.h"
-#include "query.h"
 #include "exception.h"
-#include "resultset.h"
-#include "schema.h"
-#include "transaction.h"
-#include "sqlite/session.h"
 #include "mysql/session.h"
 #include "postgres/session.h"
+#include "query.h"
+#include "resultset.h"
+#include "schema.h"
 #include "select_query.h"
+#include "session.h"
+#include "sqlite/session.h"
+#include "transaction.h"
 
 using namespace std;
 

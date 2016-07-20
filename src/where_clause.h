@@ -4,8 +4,8 @@
 #ifndef ARG3_DB_WHERE_CLAUSE_H
 #define ARG3_DB_WHERE_CLAUSE_H
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "sqldb.h"
 

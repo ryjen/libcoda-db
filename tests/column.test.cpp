@@ -1,6 +1,6 @@
 #include <bandit/bandit.h>
-#include "record.h"
 #include "db.test.h"
+#include "record.h"
 #include "sqlite/column.h"
 
 using namespace bandit;

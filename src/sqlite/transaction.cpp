@@ -4,8 +4,8 @@
 
 #ifdef HAVE_LIBSQLITE3
 
-#include "transaction.h"
 #include "../exception.h"
+#include "transaction.h"
 
 namespace arg3
 {

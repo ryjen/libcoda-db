@@ -1,7 +1,7 @@
 #include "resultset.h"
-#include "session.h"
-#include "row.h"
 #include "../log.h"
+#include "row.h"
+#include "session.h"
 
 #ifdef HAVE_LIBSQLITE3
 
@@ -81,73 +81,7 @@ namespace arg3
 
             resultset::row_type resultset::current_row()
             {
-                if (sess_->cache_level() == cache::Row)
-                    return row_type(make_shared<cached_row>(sess_, stmt_));
-                else
-                    return row_type(make_shared<row>(sess_, stmt_));
-            }
-
-            /* cached version */
-
-            cached_resultset::cached_resultset(const std::shared_ptr<sqlite::session> &sess, shared_ptr<sqlite3_stmt> stmt)
-                : sess_(sess), currentRow_(-1)
-            {
-                if (stmt == nullptr) {
-                    throw database_exception("postgres cached resultset invalidate statement");
-                }
-
-                int status = sqlite3_step(stmt.get());
-
-                while (status == SQLITE_ROW) {
-                    rows_.push_back(make_shared<cached_row>(sess, stmt));
-
-                    status = sqlite3_step(stmt.get());
-                }
-            }
-
-            cached_resultset::cached_resultset(cached_resultset &&other)
-                : sess_(std::move(other.sess_)), rows_(std::move(other.rows_)), currentRow_(other.currentRow_)
-            {
-                other.sess_ = nullptr;
-            }
-
-            cached_resultset::~cached_resultset()
-            {
-            }
-
-            cached_resultset &cached_resultset::operator=(cached_resultset &&other)
-            {
-                sess_ = std::move(other.sess_);
-                rows_ = std::move(other.rows_);
-                currentRow_ = other.currentRow_;
-                other.sess_ = nullptr;
-
-                return *this;
-            }
-
-            bool cached_resultset::is_valid() const
-            {
-                return sess_ != nullptr;
-            }
-
-            bool cached_resultset::next()
-            {
-                if (rows_.empty()) return false;
-
-                return static_cast<unsigned>(++currentRow_) < rows_.size();
-            }
-
-            void cached_resultset::reset()
-            {
-                currentRow_ = -1;
-            }
-
-            cached_resultset::row_type cached_resultset::current_row()
-            {
-                if (currentRow_ >= 0 && static_cast<unsigned>(currentRow_) < rows_.size())
-                    return row_type(rows_[currentRow_]);
-                else
-                    return row_type();
+                return row_type(make_shared<row>(sess_, stmt_));
             }
         }
     }

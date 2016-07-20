@@ -91,33 +91,9 @@ go_bandit([]() {
 
         auto sqlite_session = dynamic_pointer_cast<sqlite::session>(current_session->impl());
 
-        describe("is movable", [&sqlite_session]() {
+        it("is movable", [&sqlite_session]() { test_move_resultset<sqlite::resultset>(get_sqlite_resultset); });
 
-            it("as cached results", [&sqlite_session]() {
-                sqlite_session->cache_level(sqlite::cache::ResultSet);
-                test_move_resultset<sqlite::cached_resultset>(get_sqlite_cached_resultset);
-            });
-
-            it("as results", [&sqlite_session]() {
-                sqlite_session->cache_level(sqlite::cache::None);
-                test_move_resultset<sqlite::resultset>(get_sqlite_resultset);
-            });
-
-        });
-
-        describe("can get a row", [&sqlite_session]() {
-
-            it("as cached results", [&sqlite_session]() {
-                sqlite_session->cache_level(sqlite::cache::ResultSet);
-                test_resultset_row<sqlite::cached_resultset>(get_sqlite_cached_resultset);
-            });
-
-            it("as results", [&sqlite_session]() {
-                sqlite_session->cache_level(sqlite::cache::None);
-                test_resultset_row<sqlite::resultset>(get_sqlite_resultset);
-            });
-
-        });
+        it("can get a row", [&sqlite_session]() { test_resultset_row<sqlite::resultset>(get_sqlite_resultset); });
 
         it("can handle a bad query", []() {
             AssertThat(current_session->execute("select * from asdfasdfasdf"), Equals(false));

@@ -1,8 +1,8 @@
 #ifndef ARG3_DB_TRANSACTION_H
 #define ARG3_DB_TRANSACTION_H
 
-#include <string>
 #include <memory>
+#include <string>
 
 namespace arg3
 {

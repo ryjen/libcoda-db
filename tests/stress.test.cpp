@@ -2,9 +2,9 @@
 #include "config.h"
 #endif
 #include "db.test.h"
-#include "select_query.h"
 #include "insert_query.h"
 #include "log.h"
+#include "select_query.h"
 
 #include <chrono>
 

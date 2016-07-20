@@ -1,11 +1,11 @@
 #ifndef ARG3_DB_SQLDB_H
 #define ARG3_DB_SQLDB_H
 
-#include <unordered_map>
 #include <memory>
-#include "uri.h"
-#include "session_factory.h"
+#include <unordered_map>
 #include "session.h"
+#include "session_factory.h"
+#include "uri.h"
 
 namespace arg3
 {

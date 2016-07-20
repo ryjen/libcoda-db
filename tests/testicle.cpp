@@ -1,4 +1,4 @@
-#include "random.test.h"
+#include "testicle.h"
 
 std::random_device rd;
 std::default_random_engine rand_eng(rd());
@@ -16,4 +16,15 @@ std::string random_name()
     }
     buf[len] = 0;
     return std::string(buf) + std::to_string(random_num<int>(1000, 9999));
+}
+
+std::string get_env_uri(const char *name, const std::string &def)
+{
+    char *temp = getenv(name);
+
+    if (temp != NULL) {
+        return temp;
+    }
+
+    return def;
 }

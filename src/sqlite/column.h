@@ -48,38 +48,6 @@ namespace arg3
                 int sql_type() const;
                 std::string name() const;
             };
-
-            /*!
-             * a column that contains pre-fetched values
-             */
-            class cached_column : public column_impl
-            {
-               private:
-                std::string name_;
-                sql_value value_;
-                int type_;
-                void set_value(const std::shared_ptr<sqlite3_stmt> &stmt, int column);
-
-               public:
-                /*!
-                 * @param stmt    the sqlite3 statement in use
-                 * @param column  the column index
-                 */
-                cached_column(const std::shared_ptr<sqlite3_stmt> &stmt, int column);
-
-                /* non-copyable boilerplate */
-                cached_column(const cached_column &other) = delete;
-                cached_column(cached_column &&other);
-                virtual ~cached_column();
-                cached_column &operator=(const cached_column &other) = delete;
-                cached_column &operator=(cached_column &&other);
-
-                /* column_impl overrides */
-                bool is_valid() const;
-                sql_value to_value() const;
-                int sql_type() const;
-                std::string name() const;
-            };
         }
     }
 }

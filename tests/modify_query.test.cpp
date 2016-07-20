@@ -1,6 +1,6 @@
 #include <bandit/bandit.h>
-#include "modify_query.h"
 #include "db.test.h"
+#include "modify_query.h"
 
 using namespace bandit;
 
@@ -88,8 +88,6 @@ go_bandit([]() {
 
         it("can be batch executed", []() {
             insert_query query(current_session, "users", {"id", "first_name", "last_name"});
-
-            query.flags(modify_query::Batch);
 
             for (int i = 0; i < 3; i++) {
                 char buf[100] = {0};

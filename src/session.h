@@ -6,10 +6,10 @@
 #ifndef ARG3_DB_SESSION_H
 #define ARG3_DB_SESSION_H
 
-#include <vector>
 #include <memory>
-#include "sql_value.h"
+#include <vector>
 #include "schema_factory.h"
+#include "sql_value.h"
 #include "uri.h"
 
 namespace arg3

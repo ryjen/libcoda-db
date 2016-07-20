@@ -4,10 +4,10 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include "statement.h"
-#include "session.h"
-#include "resultset.h"
 #include "../log.h"
+#include "resultset.h"
+#include "session.h"
+#include "statement.h"
 
 using namespace std;
 
@@ -214,7 +214,7 @@ namespace arg3
 
             void statement::reset()
             {
-                //bindings_.reset();
+                // bindings_.reset();
 
                 if (!is_valid()) {
                     log::warn("mysql statement reset invalid");

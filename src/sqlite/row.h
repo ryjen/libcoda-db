@@ -53,36 +53,6 @@ namespace arg3
                 size_t size() const;
                 bool is_valid() const;
             };
-
-            /*!
-             * a row that contains pre-fetched columns
-             */
-            class cached_row : public row_impl
-            {
-               private:
-                std::vector<std::shared_ptr<cached_column>> columns_;
-
-               public:
-                /*!
-                 * @param db    the database in use
-                 * @param stmt  the query statement in use
-                 */
-                cached_row(const std::shared_ptr<sqlite::session> &sess, std::shared_ptr<sqlite3_stmt> stmt);
-
-                /* non-copyable boilerplate */
-                virtual ~cached_row();
-                cached_row(const cached_row &other) = delete;
-                cached_row(cached_row &&other);
-                cached_row &operator=(const cached_row &other) = delete;
-                cached_row &operator=(cached_row &&other);
-
-                /* row_impl overrides */
-                std::string column_name(size_t nPosition) const;
-                column_type column(size_t nPosition) const;
-                column_type column(const std::string &name) const;
-                size_t size() const;
-                bool is_valid() const;
-            };
         }
     }
 }

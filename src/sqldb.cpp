@@ -2,11 +2,11 @@
 #include "config.h"
 #endif
 
-#include "sqldb.h"
 #include "exception.h"
-#include "sqlite/session.h"
 #include "mysql/session.h"
 #include "postgres/session.h"
+#include "sqldb.h"
+#include "sqlite/session.h"
 
 namespace arg3
 {

@@ -4,8 +4,8 @@
 
 #ifdef HAVE_LIBPQ
 
-#include "transaction.h"
 #include "../exception.h"
+#include "transaction.h"
 
 namespace arg3
 {

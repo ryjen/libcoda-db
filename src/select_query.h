@@ -5,10 +5,10 @@
 #ifndef ARG3_DB_SELECT_QUERY_H
 #define ARG3_DB_SELECT_QUERY_H
 
+#include "join_clause.h"
 #include "query.h"
 #include "resultset.h"
 #include "where_clause.h"
-#include "join_clause.h"
 
 namespace arg3
 {

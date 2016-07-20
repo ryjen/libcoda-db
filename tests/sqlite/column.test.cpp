@@ -49,84 +49,34 @@ go_bandit([]() {
 
         auto sqlite_session = dynamic_pointer_cast<sqlite::session>(current_session->impl());
 
-        describe("is movable", [&sqlite_session]() {
-            it("as a column", [&sqlite_session]() {
+        it("is movable", [&sqlite_session]() {
+            auto col = get_sqlite_column<sqlite::column>("first_name");
 
-                sqlite_session->cache_level(sqlite::cache::None);
+            sqlite::column other(std::move(*col));
 
-                auto col = get_sqlite_column<sqlite::column>("first_name");
+            Assert::That(other.is_valid(), IsTrue());
+            Assert::That(col->is_valid(), IsFalse());
 
-                sqlite::column other(std::move(*col));
+            col = get_sqlite_column<sqlite::column>("last_name");
 
-                Assert::That(other.is_valid(), IsTrue());
-                Assert::That(col->is_valid(), IsFalse());
+            other = std::move(*col);
 
-                col = get_sqlite_column<sqlite::column>("last_name");
-
-                other = std::move(*col);
-
-                Assert::That(other.is_valid(), IsTrue());
-                Assert::That(col->is_valid(), IsFalse());
-            });
-
-            it("as a cached column", [&sqlite_session]() {
-                sqlite_session->cache_level(sqlite::cache::Column);
-
-                auto col = get_sqlite_column<sqlite::cached_column>("first_name");
-
-                sqlite::cached_column other(std::move(*col));
-
-                Assert::That(other.is_valid(), IsTrue());
-                Assert::That(col->is_valid(), IsFalse());
-
-                col = get_sqlite_column<sqlite::cached_column>("last_name");
-
-                other = std::move(*col);
-
-                Assert::That(other.is_valid(), IsTrue());
-                Assert::That(col->is_valid(), IsFalse());
-            });
+            Assert::That(other.is_valid(), IsTrue());
+            Assert::That(col->is_valid(), IsFalse());
         });
 
-        describe("has a type", [&sqlite_session]() {
+        it("has a type", [&sqlite_session]() {
 
-            it("as a column", [&sqlite_session]() {
+            auto col = get_sqlite_column<sqlite::column>("first_name");
 
-                sqlite_session->cache_level(sqlite::cache::None);
-
-                auto col = get_sqlite_column<sqlite::column>("first_name");
-
-                Assert::That(col->sql_type(), Equals(SQLITE_TEXT));
-            });
-
-            it("as a cached column", [&sqlite_session]() {
-                sqlite_session->cache_level(sqlite::cache::Column);
-
-                auto col = get_sqlite_column<sqlite::cached_column>("first_name");
-
-                Assert::That(col->sql_type(), Equals(SQLITE_TEXT));
-            });
+            Assert::That(col->sql_type(), Equals(SQLITE_TEXT));
         });
 
-        describe("has a name", [&sqlite_session]() {
+        it("has a name", [&sqlite_session]() {
 
-            it("as a column", [&sqlite_session]() {
+            auto col = get_sqlite_column<sqlite::column>("last_name");
 
-                sqlite_session->cache_level(sqlite::cache::None);
-
-                auto col = get_sqlite_column<sqlite::column>("last_name");
-
-                Assert::That(col->name(), Equals("last_name"));
-            });
-
-            it("as a cached column", [&sqlite_session]() {
-
-                sqlite_session->cache_level(sqlite::cache::ResultSet);
-
-                auto col = get_sqlite_column<sqlite::cached_column>("last_name");
-
-                Assert::That(col->name(), Equals("last_name"));
-            });
+            Assert::That(col->name(), Equals("last_name"));
         });
     });
 });

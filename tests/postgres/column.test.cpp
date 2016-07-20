@@ -8,12 +8,12 @@
 #include <memory>
 #undef PACKAGE_NAME
 #undef PACKAGE_VERSION
-#include <postgres.h>
-#include <libpq-fe.h>
 #include <catalog/pg_type.h>
+#include <libpq-fe.h>
+#include <libpq-fe.h>
+#include <postgres.h>
 #include "../db.test.h"
 #include "postgres/column.h"
-#include <libpq-fe.h>
 
 using namespace bandit;
 

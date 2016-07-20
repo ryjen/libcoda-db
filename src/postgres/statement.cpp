@@ -1,9 +1,9 @@
 
-#include <algorithm>
 #include "statement.h"
-#include "session.h"
-#include "resultset.h"
+#include <algorithm>
 #include "../log.h"
+#include "resultset.h"
+#include "session.h"
 
 #ifdef HAVE_LIBPQ
 

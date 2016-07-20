@@ -5,7 +5,7 @@ namespace arg3
 {
     namespace db
     {
-        #ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENHANCED_PARAMETER_MAPPING
 
         bind_mapping::bind_mapping()
         {
@@ -101,4 +101,3 @@ namespace arg3
 #endif
     }
 }
-

@@ -93,69 +93,6 @@ namespace arg3
                 }
                 return sqlite3_column_name(stmt_.get(), column_);
             }
-
-
-            /* cached version */
-
-            cached_column::cached_column(const shared_ptr<sqlite3_stmt> &stmt, int column)
-            {
-                set_value(stmt, column);
-            }
-
-            void cached_column::set_value(const shared_ptr<sqlite3_stmt> &stmt, int column)
-            {
-                if (stmt == nullptr) {
-                    throw database_exception("no statement provided to sqlite3 column");
-                }
-
-                if (column < 0 || column >= sqlite3_column_count(stmt.get())) {
-                    throw no_such_column_exception();
-                }
-
-                name_ = sqlite3_column_name(stmt.get(), column);
-                type_ = sqlite3_column_type(stmt.get(), column);
-                value_ = data_mapper::to_value(stmt, column);
-            }
-
-
-            cached_column::cached_column(cached_column &&other) : name_(std::move(other.name_)), value_(std::move(other.value_)), type_(other.type_)
-            {
-                other.type_ = -1;
-            }
-
-            cached_column::~cached_column()
-            {
-            }
-
-            cached_column &cached_column::operator=(cached_column &&other)
-            {
-                name_ = std::move(other.name_);
-                type_ = other.type_;
-                value_ = std::move(other.value_);
-
-                other.type_ = -1;
-                return *this;
-            }
-
-            bool cached_column::is_valid() const
-            {
-                return type_ > -1;
-            }
-
-            sql_value cached_column::to_value() const
-            {
-                return value_;
-            }
-
-            int cached_column::sql_type() const
-            {
-                return type_;
-            }
-
-            string cached_column::name() const
-            {
-                return name_;
-            }
         }
     }
 }

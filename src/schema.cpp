@@ -1,9 +1,9 @@
 
-#include <cassert>
 #include "schema.h"
-#include "sqldb.h"
+#include <cassert>
 #include "resultset.h"
 #include "session.h"
+#include "sqldb.h"
 
 using namespace std;
 

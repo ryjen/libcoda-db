@@ -9,4 +9,4 @@
 	url = http://github.com/ryjen/arg3variant.git
 [submodule "tests/vendor/benchpress"]
 	path = tests/vendor/benchpress
-	url = http://github.com/blockchaindev/benchpress.git
+	url = http://github.com/ryjen/benchpress.git

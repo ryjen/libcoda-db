@@ -2,8 +2,8 @@
  * @copyright ryan jennings (arg3.com), 2013
  */
 #include "select_query.h"
-#include "statement.h"
 #include "schema.h"
+#include "statement.h"
 
 using namespace std;
 

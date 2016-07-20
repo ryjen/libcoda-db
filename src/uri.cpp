@@ -1,9 +1,9 @@
 
-#include <string>
-#include <sstream>
-#include <type_traits>
-#include <algorithm>
 #include "uri.h"
+#include <algorithm>
+#include <sstream>
+#include <string>
+#include <type_traits>
 
 using namespace std;
 

@@ -21,12 +21,6 @@ namespace arg3
         {
            public:
             /*!
-             * query flags
-             */
-            /*! perform subsequent executes in batches */
-            constexpr static const int Batch = (1 << 0);
-
-            /*!
              * @param db the database in use
              */
             modify_query(const std::shared_ptr<arg3::db::session> &session);
@@ -47,17 +41,6 @@ namespace arg3
              * @return a string/sql representation of this query
              */
             virtual std::string to_string() const = 0;
-
-            /*!
-             * sets flags for this query (@see query flags)
-             */
-            modify_query &flags(int value);
-
-            /*!
-             * gets the flags for this query
-             * @return the query flags
-             */
-            int flags() const;
 
             /*!
              * executes this query using a replace statement

@@ -2,12 +2,12 @@
  * implementation of a query
  * @copyright ryan jennings (arg3.com), 2013
  */
-#include <cassert>
 #include "query.h"
+#include <cassert>
 #include "exception.h"
+#include "log.h"
 #include "session.h"
 #include "statement.h"
-#include "log.h"
 
 using namespace std;
 
@@ -15,24 +15,25 @@ namespace arg3
 {
     namespace db
     {
-        query::query(const std::shared_ptr<arg3::db::session> &session) : is_dirty_(false), session_(session), stmt_(nullptr), params_(), named_params_()
+        query::query(const std::shared_ptr<arg3::db::session> &session)
+            : is_dirty_(false), session_(session), stmt_(nullptr), params_(), named_params_()
         {
             if (session_ == nullptr) {
                 throw database_exception("No database provided for query");
             }
         }
 
-        query::query(const query &other) noexcept : is_dirty_(false), session_(other.session_),
-                                                    stmt_(other.stmt_),
-                                                    params_(other.params_),
-                                                    named_params_(other.named_params_)
+        query::query(const query &other) noexcept
+            : is_dirty_(false), session_(other.session_), stmt_(other.stmt_), params_(other.params_), named_params_(other.named_params_)
         {
         }
 
-        query::query(query &&other) noexcept : is_dirty_(false), session_(std::move(other.session_)),
-                                               stmt_(std::move(other.stmt_)),
-                                               params_(std::move(other.params_)),
-                                               named_params_(std::move(other.named_params_))
+        query::query(query &&other) noexcept
+            : is_dirty_(false),
+              session_(std::move(other.session_)),
+              stmt_(std::move(other.stmt_)),
+              params_(std::move(other.params_)),
+              named_params_(std::move(other.named_params_))
         {
             other.session_ = nullptr;
             other.stmt_ = nullptr;
@@ -111,7 +112,8 @@ namespace arg3
             return index - 1;
         }
 
-        query &query::set_modified() {
+        query &query::set_modified()
+        {
             is_dirty_ = true;
             return *this;
         }

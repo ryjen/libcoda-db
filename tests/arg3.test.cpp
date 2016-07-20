@@ -8,6 +8,7 @@
 #include "db.test.h"
 #include "sqldb.h"
 #include "sqlite/session.h"
+#include "testicle.h"
 
 using namespace bandit;
 using namespace std;
@@ -37,15 +38,6 @@ int main(int argc, char *argv[])
     auto sqlite_session = current_session->impl<arg3::db::sqlite::session>();
 
     // run the uncached test
-    if (bandit::run(argc, argv)) {
-        return 1;
-    }
-
-    // run the cached test
-    sqlite_session->cache_level(arg3::db::sqlite::cache::ResultSet);
-
-    cout << "setting cache level" << endl;
-
     if (bandit::run(argc, argv)) {
         return 1;
     }

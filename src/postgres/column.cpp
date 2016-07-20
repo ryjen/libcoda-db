@@ -4,8 +4,8 @@
 
 #ifdef HAVE_LIBPQ
 
-#include "column.h"
 #include "binding.h"
+#include "column.h"
 
 using namespace std;
 

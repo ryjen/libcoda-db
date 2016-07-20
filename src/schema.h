@@ -5,9 +5,9 @@
 #ifndef ARG3_DB_SCHEMA_H
 #define ARG3_DB_SCHEMA_H
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 #include "sql_value.h"
 
 namespace arg3

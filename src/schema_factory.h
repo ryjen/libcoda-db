@@ -5,10 +5,10 @@
 #ifndef ARG3_DB_SCHEMA_FACTORY_H
 #define ARG3_DB_SCHEMA_FACTORY_H
 
-#include <unordered_map>
 #include <functional>
 #include <memory>
 #include <string>
+#include <unordered_map>
 
 namespace arg3
 {

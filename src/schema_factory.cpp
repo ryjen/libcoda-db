@@ -1,7 +1,7 @@
 
 #include "schema_factory.h"
-#include "schema.h"
 #include "exception.h"
+#include "schema.h"
 
 using namespace std;
 

@@ -1,10 +1,12 @@
 #ifndef ARG3_DB_RANDOM_TEST_H_
 #define ARG3_DB_RANDOM_TEST_H_
 
-#include <string>
 #include <random>
+#include <string>
 
 std::string random_name();
+
+std::string get_env_uri(const char *name, const std::string &def);
 
 extern std::default_random_engine rand_eng;
 

@@ -11,8 +11,8 @@
 
 #ifdef HAVE_LIBPQ
 
-#include <vector>
 #include <libpq-fe.h>
+#include <vector>
 #include "../resultset.h"
 
 namespace arg3

@@ -1,6 +1,6 @@
 #include "resultset.h"
-#include "session.h"
 #include "row.h"
+#include "session.h"
 
 #ifdef HAVE_LIBPQ
 

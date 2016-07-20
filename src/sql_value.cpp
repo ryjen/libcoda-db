@@ -1,11 +1,11 @@
 
-#include <sstream>
-#include <cwchar>
 #include "sql_value.h"
-#include "query.h"
-#include "sqldb.h"
+#include <cwchar>
+#include <sstream>
 #include "exception.h"
 #include "log.h"
+#include "query.h"
+#include "sqldb.h"
 
 using namespace std;
 
@@ -218,7 +218,8 @@ namespace arg3
             return out;
         }
 
-        bool operator==(const sql_null_type &null, const sql_value &value) {
+        bool operator==(const sql_null_type &null, const sql_value &value)
+        {
             return value.is_null();
         }
     }

@@ -3,9 +3,9 @@
  */
 #include "modify_query.h"
 #include "exception.h"
+#include "log.h"
 #include "schema.h"
 #include "statement.h"
-#include "log.h"
 
 using namespace std;
 
@@ -52,17 +52,6 @@ namespace arg3
             return numChanges_;
         }
 
-        modify_query &modify_query::flags(int value)
-        {
-            flags_ = value;
-            return *this;
-        }
-
-        int modify_query::flags() const
-        {
-            return flags_;
-        }
-
         int modify_query::execute()
         {
             if (!is_valid()) {
@@ -80,12 +69,7 @@ namespace arg3
                 numChanges_ = 0;
             }
 
-            //if (flags_ & Batch) {
             stmt_->reset();
-            //} else {
-            //    stmt_->finish();
-            //    stmt_ = nullptr;
-            //}
 
             return numChanges_;
         }

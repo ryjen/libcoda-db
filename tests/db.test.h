@@ -2,11 +2,11 @@
 #define ARG3_TEST_DB_H
 
 #include <unistd.h>
-#include "sqldb.h"
-#include "record.h"
-#include "sqlite/session.h"
 #include "mysql/session.h"
 #include "postgres/session.h"
+#include "record.h"
+#include "sqldb.h"
+#include "sqlite/session.h"
 #include "uri.h"
 
 #if !defined(HAVE_LIBMYSQLCLIENT) && !defined(HAVE_LIBSQLITE3) && !defined(HAVE_LIBPQ)
@@ -19,8 +19,6 @@ class test_session
     virtual void setup() = 0;
     virtual void teardown() = 0;
 };
-
-std::string get_env_uri(const char *name, const std::string &def);
 
 #if defined(HAVE_LIBSQLITE3)
 

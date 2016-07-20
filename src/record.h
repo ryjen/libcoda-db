@@ -6,14 +6,14 @@
 #ifndef ARG3_DB_BASE_RECORD_H
 #define ARG3_DB_BASE_RECORD_H
 
-#include <memory>
 #include <algorithm>
-#include "select_query.h"
-#include "insert_query.h"
-#include "update_query.h"
+#include <memory>
 #include "delete_query.h"
+#include "insert_query.h"
 #include "schema.h"
+#include "select_query.h"
 #include "session.h"
+#include "update_query.h"
 
 namespace arg3
 {

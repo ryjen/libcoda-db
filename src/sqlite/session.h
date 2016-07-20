@@ -21,14 +21,6 @@ namespace arg3
     {
         namespace sqlite
         {
-            namespace cache
-            {
-                /*!
-                 * level of caching results in a database
-                 */
-                typedef enum { None, ResultSet, Row, Column } level;
-            }
-
             class factory : public session_factory
             {
                public:
@@ -45,7 +37,6 @@ namespace arg3
 
                protected:
                 std::shared_ptr<sqlite3> db_;
-                cache::level cacheLevel_;
 
                public:
                 /*!
@@ -78,18 +69,6 @@ namespace arg3
                  *  overriden for sqlite3 specific pragma parsing
                  */
                 void query_schema(const std::string &dbName, const std::string &tableName, std::vector<column_definition> &columns);
-
-                /*!
-                 * sets the cache level
-                 * @param level of caching
-                 */
-                session &cache_level(cache::level level);
-
-                /*!
-                 * gets the cache level for this database
-                 * @return the level of caching
-                 */
-                cache::level cache_level() const;
             };
         }
     }

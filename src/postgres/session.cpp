@@ -4,12 +4,12 @@
 
 #ifdef HAVE_LIBPQ
 
-#include "session.h"
-#include "statement.h"
-#include "resultset.h"
-#include "transaction.h"
 #include "../schema.h"
 #include "../select_query.h"
+#include "resultset.h"
+#include "session.h"
+#include "statement.h"
+#include "transaction.h"
 
 using namespace std;
 

@@ -5,10 +5,10 @@
 #include "config.h"
 #endif
 #include <bandit/bandit.h>
+#include "db.test.h"
 #include "record.h"
 #include "select_query.h"
 #include "sqldb.h"
-#include "db.test.h"
 
 using namespace bandit;
 
@@ -17,17 +17,6 @@ using namespace std;
 using namespace arg3::db;
 
 std::shared_ptr<arg3::db::session> current_session;
-
-std::string get_env_uri(const char *name, const std::string &def)
-{
-    char *temp = getenv(name);
-
-    if (temp != NULL) {
-        return temp;
-    }
-
-    return def;
-}
 
 void register_test_sessions()
 {

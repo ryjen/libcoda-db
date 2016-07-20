@@ -1,7 +1,7 @@
 #include "statement.h"
-#include "session.h"
-#include "resultset.h"
 #include "../log.h"
+#include "resultset.h"
+#include "session.h"
 
 #ifdef HAVE_LIBSQLITE3
 
@@ -217,10 +217,8 @@ namespace arg3
                 if (sess_ == nullptr) {
                     throw database_exception("sqlite statement results invalid database");
                 }
-                if (sess_->cache_level() == cache::ResultSet)
-                    return resultset_type(make_shared<cached_resultset>(sess_, stmt_));
-                else
-                    return resultset_type(make_shared<resultset>(sess_, stmt_));
+
+                return resultset_type(make_shared<resultset>(sess_, stmt_));
             }
 
             bool statement::result()

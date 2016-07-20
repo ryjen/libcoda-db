@@ -6,8 +6,8 @@
 #define ARG3_DB_RESULTSET_H
 
 #include <memory>
-#include "row.h"
 #include "exception.h"
+#include "row.h"
 
 namespace arg3
 {

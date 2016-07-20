@@ -1,6 +1,6 @@
 #include <bandit/bandit.h>
-#include "update_query.h"
 #include "db.test.h"
+#include "update_query.h"
 
 using namespace bandit;
 

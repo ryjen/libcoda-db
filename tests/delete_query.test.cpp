@@ -1,6 +1,6 @@
 #include <bandit/bandit.h>
-#include "modify_query.h"
 #include "db.test.h"
+#include "modify_query.h"
 
 using namespace bandit;
 
@@ -112,8 +112,6 @@ go_bandit([]() {
             delete_query query(current_session, "users");
 
             query.where("first_name = $1", "Bryan");
-
-            query.flags(modify_query::Batch);
 
             AssertThat(query.execute(), Equals(1));
 

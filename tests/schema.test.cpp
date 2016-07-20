@@ -1,6 +1,6 @@
 #include <bandit/bandit.h>
-#include "schema.h"
 #include "db.test.h"
+#include "schema.h"
 
 using namespace bandit;
 

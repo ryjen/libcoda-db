@@ -55,7 +55,7 @@ namespace arg3
              */
             update_query &columns(const std::vector<std::string> &value);
 
-            template<typename... List>
+            template <typename... List>
             update_query &columns(const std::string &value, const List &... args)
             {
                 column(value);
@@ -150,8 +150,9 @@ namespace arg3
              */
             bool is_valid() const;
 
-        private:
-            update_query &column(const std::string &value) {
+           private:
+            update_query &column(const std::string &value)
+            {
                 columns_.push_back(value);
                 return *this;
             }

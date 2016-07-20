@@ -1,6 +1,6 @@
 #include <bandit/bandit.h>
-#include "resultset.h"
 #include "db.test.h"
+#include "resultset.h"
 
 using namespace bandit;
 

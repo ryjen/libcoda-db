@@ -4,17 +4,17 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include <memory>
-#include <cstdlib>
 #include <time.h>
 #include <cassert>
-#include <regex>
-#include <locale>
 #include <codecvt>
+#include <cstdlib>
+#include <locale>
+#include <memory>
+#include <regex>
 
+#include "../alloc.h"
 #include "../exception.h"
 #include "../log.h"
-#include "../alloc.h"
 #include "binding.h"
 
 namespace arg3
@@ -39,10 +39,10 @@ namespace arg3
                 }
 
                 /**
-                 * function to assign a mysql field to a mysql binding value
-                 * @param value the binding value
-                 * @param field the field
-                 */
+                * function to assign a mysql field to a mysql binding value
+                * @param value the binding value
+                * @param field the field
+                */
                 void prepare_binding_from_field(MYSQL_BIND *value, MYSQL_FIELD *field)
                 {
                     // sanity check

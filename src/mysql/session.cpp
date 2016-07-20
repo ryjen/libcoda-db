@@ -5,12 +5,12 @@
 #ifdef HAVE_LIBMYSQLCLIENT
 
 #include <sstream>
-#include "session.h"
-#include "statement.h"
-#include "resultset.h"
-#include "transaction.h"
 #include "../schema.h"
 #include "../select_query.h"
+#include "resultset.h"
+#include "session.h"
+#include "statement.h"
+#include "transaction.h"
 
 using namespace std;
 
@@ -51,11 +51,11 @@ namespace arg3
                 return std::make_shared<session>(uri);
             }
 
-            session::session(const uri &connInfo) : session_impl(connInfo), db_(nullptr), flags_(CACHE)
+            session::session(const uri &connInfo) : session_impl(connInfo), db_(nullptr)
             {
             }
 
-            session::session(session &&other) : session_impl(std::move(other)), db_(std::move(other.db_)), flags_(other.flags_)
+            session::session(session &&other) : session_impl(std::move(other)), db_(std::move(other.db_))
             {
                 other.db_ = nullptr;
             }
@@ -65,7 +65,6 @@ namespace arg3
                 session_impl::operator=(std::move(other));
 
                 db_ = std::move(other.db_);
-                flags_ = other.flags_;
                 other.db_ = nullptr;
 
                 return *this;
@@ -76,17 +75,6 @@ namespace arg3
                 if (is_open()) {
                     close();
                 }
-            }
-
-            session &session::flags(int value)
-            {
-                flags_ = value;
-                return *this;
-            }
-
-            int session::flags() const
-            {
-                return flags_;
             }
 
             void session::open()

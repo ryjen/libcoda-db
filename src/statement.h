@@ -19,7 +19,8 @@ namespace arg3
         {
            public:
             typedef arg3::db::resultset resultset_type;
-        private:
+
+           private:
            public:
             /*!
              * prepares this statement for execution

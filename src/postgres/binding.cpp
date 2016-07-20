@@ -6,20 +6,20 @@
 
 #undef PACKAGE_NAME
 #undef PACKAGE_VERSION
-#include <postgres.h>
-#include <libpq-fe.h>
 #include <catalog/pg_type.h>
-#include <memory>
-#include <cstdlib>
+#include <libpq-fe.h>
+#include <postgres.h>
 #include <time.h>
 #include <cassert>
-#include <locale>
 #include <codecvt>
+#include <cstdlib>
+#include <locale>
+#include <memory>
 #include <regex>
 
+#include "../alloc.h"
 #include "../exception.h"
 #include "../log.h"
-#include "../alloc.h"
 
 #include "binding.h"
 
@@ -247,7 +247,8 @@ namespace arg3
             }
 
             /**
-             * binding methods ensure the dynamic array is sized properly and store the value as a memory pointer
+             * binding methods ensure the dynamic array is sized properly and store the
+             * value as a memory pointer
              */
 
             binding &binding::bind(size_t index, int value)
@@ -470,7 +471,8 @@ namespace arg3
                         // get the determined positions for the named parameter
                         auto mapped = get_named_param_indexes(str);
                         if (!mapped.empty()) {
-                            // postgres only needs the first determined index as it can re-use parameter indexes
+                            // postgres only needs the first determined index as it can re-use
+                            // parameter indexes
                             auto pos = *mapped.begin();
                             // replace the sql with the positional parameter
                             formatted.replace(formatted.find(str), str.length(), "$" + std::to_string(pos));

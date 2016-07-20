@@ -5,11 +5,11 @@
 #ifdef HAVE_LIBSQLITE3
 
 #include <sstream>
+#include "../schema.h"
+#include "resultset.h"
 #include "session.h"
 #include "statement.h"
-#include "resultset.h"
 #include "transaction.h"
-#include "../schema.h"
 
 using namespace std;
 
@@ -36,11 +36,11 @@ namespace arg3
                 return std::make_shared<session>(uri);
             }
 
-            session::session(const uri &info) : session_impl(info), db_(nullptr), cacheLevel_(cache::None)
+            session::session(const uri &info) : session_impl(info), db_(nullptr)
             {
             }
 
-            session::session(session &&other) : session_impl(std::move(other)), db_(std::move(other.db_)), cacheLevel_(other.cacheLevel_)
+            session::session(session &&other) : session_impl(std::move(other)), db_(std::move(other.db_))
             {
                 other.db_ = nullptr;
             }
@@ -50,7 +50,6 @@ namespace arg3
                 session_impl::operator=(std::move(other));
 
                 db_ = std::move(other.db_);
-                cacheLevel_ = other.cacheLevel_;
                 other.db_ = nullptr;
 
                 return *this;
@@ -164,11 +163,7 @@ namespace arg3
                     throw database_exception(last_error());
                 }
 
-                if (cache_level() == cache::ResultSet) {
-                    return make_shared<cached_resultset>(shared_from_this(), shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
-                } else {
-                    return make_shared<resultset>(shared_from_this(), shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
-                }
+                return make_shared<resultset>(shared_from_this(), shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
             }
 
             bool session::execute(const string &sql)
@@ -203,17 +198,6 @@ namespace arg3
             std::shared_ptr<transaction_impl> session::create_transaction(transaction::type type) const
             {
                 return make_shared<sqlite::transaction>(db_, type);
-            }
-
-            session &session::cache_level(cache::level level)
-            {
-                cacheLevel_ = level;
-                return *this;
-            }
-
-            cache::level session::cache_level() const
-            {
-                return cacheLevel_;
             }
         }
     }

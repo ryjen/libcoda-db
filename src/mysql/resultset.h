@@ -11,8 +11,8 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include <vector>
 #include <mysql/mysql.h>
+#include <vector>
 #include "../resultset.h"
 
 namespace arg3
@@ -36,7 +36,7 @@ namespace arg3
                 std::shared_ptr<MYSQL_RES> res_;
                 MYSQL_ROW row_;
                 std::shared_ptr<mysql::session> sess_;
-                
+
                public:
                 /*!
                  * @param db the database in use
@@ -73,8 +73,9 @@ namespace arg3
                 std::shared_ptr<mysql::binding> bindings_;
                 int status_;
                 void prepare_results();
-                
+
                 constexpr static const int INVALID = -1;
+
                public:
                 /*!
                  * @param db the database in use

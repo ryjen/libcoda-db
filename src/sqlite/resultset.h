@@ -10,8 +10,8 @@
 
 #ifdef HAVE_LIBSQLITE3
 
-#include <vector>
 #include <sqlite3.h>
+#include <vector>
 #include "../resultset.h"
 
 namespace arg3
@@ -48,40 +48,6 @@ namespace arg3
                 virtual ~resultset();
                 resultset &operator=(const resultset &other) = delete;
                 resultset &operator=(resultset &&other);
-
-                /* resultset_impl overrides */
-                bool is_valid() const;
-                row_type current_row();
-                void reset();
-                bool next();
-            };
-
-            /*!
-             * a resultset that contains pre-fetched rows
-             */
-            class cached_resultset : public resultset_impl
-            {
-                template <typename, typename>
-                friend class resultset_iterator;
-
-               private:
-                std::shared_ptr<sqlite::session> sess_;
-                std::vector<std::shared_ptr<row_impl>> rows_;
-                int currentRow_;
-
-               public:
-                /*!
-                 * @param db    the database in use
-                 * @param stmt  the statement in use
-                 */
-                cached_resultset(const std::shared_ptr<sqlite::session> &sess, std::shared_ptr<sqlite3_stmt> stmt);
-
-                /* non-copyable boilerplate */
-                cached_resultset(const cached_resultset &other) = delete;
-                cached_resultset(cached_resultset &&other);
-                virtual ~cached_resultset();
-                cached_resultset &operator=(const cached_resultset &other) = delete;
-                cached_resultset &operator=(cached_resultset &&other);
 
                 /* resultset_impl overrides */
                 bool is_valid() const;

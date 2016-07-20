@@ -1,6 +1,6 @@
 #include <bandit/bandit.h>
-#include "transaction.h"
 #include "db.test.h"
+#include "transaction.h"
 
 using namespace bandit;
 

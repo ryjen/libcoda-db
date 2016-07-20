@@ -66,81 +66,36 @@ go_bandit([]() {
             AssertThrows(database_exception, sqlite::row(sqlite_session, nullptr));
         });
 
-        describe("is movable", [&sqlite_session]() {
+        it("is movable", [&sqlite_session]() {
 
-            it("without a cache", [&sqlite_session]() {
-                sqlite_session->cache_level(sqlite::cache::None);
+            auto row = get_sqlite_row<sqlite::row>(0);
 
-                auto row = get_sqlite_row<sqlite::row>(0);
+            Assert::That(row != nullptr, IsTrue());
 
-                Assert::That(row != nullptr, IsTrue());
+            sqlite::row other(std::move(*row));
 
-                sqlite::row other(std::move(*row));
+            Assert::That(other.is_valid(), IsTrue());
 
-                Assert::That(other.is_valid(), IsTrue());
+            row = get_sqlite_row<sqlite::row>(0);
 
-                row = get_sqlite_row<sqlite::row>(0);
+            other = std::move(*row);
 
-                other = std::move(*row);
-
-                Assert::That(other.is_valid(), IsTrue());
-            });
-
-            it("with a cache", [&sqlite_session]() {
-                sqlite_session->cache_level(sqlite::cache::Row);
-
-                auto row = get_sqlite_row<sqlite::cached_row>(0);
-
-                Assert::That(row != nullptr, IsTrue());
-
-                sqlite::cached_row other(std::move(*row));
-
-                Assert::That(other.is_valid(), IsTrue());
-
-                row = get_sqlite_row<sqlite::cached_row>(0);
-
-                other = std::move(*row);
-
-                Assert::That(other.is_valid(), IsTrue());
-            });
+            Assert::That(other.is_valid(), IsTrue());
         });
 
-        describe("can handle invalid column selection", [&sqlite_session]() {
+        it("can handle invalid column selection", [&sqlite_session]() {
 
-            it("without a cache", [&sqlite_session]() {
-                sqlite_session->cache_level(sqlite::cache::None);
+            auto row = get_sqlite_row<sqlite::row>(0);
 
-                auto row = get_sqlite_row<sqlite::row>(0);
+            Assert::That(row != nullptr, IsTrue());
 
-                Assert::That(row != nullptr, IsTrue());
+            AssertThrows(no_such_column_exception, row->column(1234));
 
-                AssertThrows(no_such_column_exception, row->column(1234));
+            AssertThrows(no_such_column_exception, row->column(""));
 
-                AssertThrows(no_such_column_exception, row->column(""));
+            AssertThrows(no_such_column_exception, row->column("abracadabra"));
 
-                AssertThrows(no_such_column_exception, row->column("abracadabra"));
-
-                AssertThrows(no_such_column_exception, row->column_name(1234));
-            });
-
-            it("with a cache", [&sqlite_session]() {
-                sqlite_session->cache_level(sqlite::cache::Row);
-
-                auto row = get_sqlite_row<sqlite::cached_row>(0);
-
-                Assert::That(row != nullptr, IsTrue());
-
-                AssertThrows(no_such_column_exception, row->column(1234));
-
-                AssertThrows(no_such_column_exception, row->column(""));
-
-                AssertThrows(no_such_column_exception, row->column("abracadabra"));
-
-                AssertThrows(no_such_column_exception, row->column_name(1234));
-
-            });
-
-
+            AssertThrows(no_such_column_exception, row->column_name(1234));
         });
     });
 });

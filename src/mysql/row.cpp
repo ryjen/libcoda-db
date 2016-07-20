@@ -4,9 +4,9 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include "row.h"
-#include "column.h"
 #include "binding.h"
+#include "column.h"
+#include "row.h"
 #include "session.h"
 
 using namespace std;

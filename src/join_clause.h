@@ -5,8 +5,8 @@
 #ifndef ARG3_DB_JOIN_CLAUSE_H
 #define ARG3_DB_JOIN_CLAUSE_H
 
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 #include "where_clause.h"
 
 namespace arg3

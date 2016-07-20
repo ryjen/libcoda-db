@@ -4,11 +4,11 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include "resultset.h"
-#include "session.h"
-#include "row.h"
-#include "binding.h"
 #include "../log.h"
+#include "binding.h"
+#include "resultset.h"
+#include "row.h"
+#include "session.h"
 
 using namespace std;
 
@@ -80,18 +80,7 @@ namespace arg3
 
                 row_ = mysql_fetch_row(res_.get());
 
-                bool value = row_ != nullptr;
-
-                if (!value && (sess_->flags() & session::CACHE_RESULTS) && !mysql_more_results(sess_->db_.get())) {
-                    MYSQL_RES *temp = mysql_use_result(sess_->db_.get());
-                    if (temp != nullptr) {
-                        res_ = shared_ptr<MYSQL_RES>(temp, helper::res_delete());
-                        row_ = mysql_fetch_row(temp);
-                        value = row_ != nullptr;
-                    }
-                }
-
-                return value;
+                return row_ != nullptr;
             }
 
             void resultset::reset()
@@ -175,10 +164,6 @@ namespace arg3
                 bindings_ = make_shared<mysql::binding>(fields, size);
 
                 bindings_->bind_result(stmt_.get());
-
-                if ((sess_->flags() & session::CACHE_STATEMENTS) && mysql_stmt_store_result(stmt_.get())) {
-                    throw database_exception(helper::last_stmt_error(stmt_.get()));
-                }
             }
 
             bool stmt_resultset::is_valid() const
@@ -222,7 +207,7 @@ namespace arg3
                     log::warn("mysql stmt resultset reset invalid");
                     return;
                 }
-                
+
                 status_ = INVALID;
 
                 if (mysql_stmt_reset(stmt_.get())) {

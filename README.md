@@ -53,8 +53,12 @@ make test
 
 options supported are:
 
-		-DCODE_COVERAGE=ON   :   enable code coverage using lcov
-		-DMEMORY_CHECK=ON    :   enable valgrind memory checking on tests
+		-DCODE_COVERAGE=ON           : enable code coverage using lcov
+		-DMEMORY_CHECK=ON            : enable valgrind memory checking on tests
+		-DENABLE_LOGGING 	           : enable internal library logging
+		-DENABLE_PROFILING           : enable valgrind profiling on tests
+		-DENHANCED_PARAMETER_MAPPING : use regex to map different parameter syntaxes
+		-DENABLE_BENCHMARKING        : benchmark with other database libraries
 
 Debugging
 ---------
@@ -505,29 +509,22 @@ query.bind(1, value);
 
 Additional custom types can be implemented by subclassing **variant::complex**. For example, the JSON postgres type.
 
-Caching
--------
+Benchmarking
+============
 
-For sqlite3 and mysql databases, results from a query will be limited to the scope of the statement.
+Here are some preliminary tests on sqlite (see tests/benchmarks).  Slightly faster write performance but trades less read performance.
 
-Memory caching was add to pre-fetch the values (sqlite only).  It can be done at the resultset, row or column level.  The default is none.
+	sqlite insert                              5000      406684 ns/op
+	sqlite select                              2000     1841120 ns/op
+	tests/benchmarks/arg3db/arg3db-benchmark 10.182s
 
-```c++
-	auto current_session = sqldb::create_session<sqlite::session>("sqlite://testdb.db");
-	auto sqlite_session = current_session->impl<sqlite::session>();
-	sqlite_session->cache_level(sqlite::cache::Row);
-```
+	sqlite insert                              5000      409861 ns/op
+	sqlite select                              2000     1560117 ns/op
+	tests/benchmarks/poco/arg3db-benchmark-poco 9.407s
 
-Mysql has pre-fetching built-in and it is used within the library.  It is enabled by default.
-
-an example of turning caching off in mysql:
-```c++
-	auto current_session = sqldb::create_session("mysql://localhost/test");
-	auto mysql_session = current_session->impl<mysql::session>();
-	mysql_session->flags(mysql_session->flags() & ~mysql::db::CACHE);
-```
-
-Memory caching is also used for looking up schemas to reduce hits to the database.
+	sqlite insert                              5000      403932 ns/op
+	sqlite select                              2000     1430914 ns/op
+	tests/benchmarks/soci/arg3db-benchmark-soci 9.082s
 
 Alternatives
 ============
