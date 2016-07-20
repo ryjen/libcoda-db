@@ -20,7 +20,7 @@ set(TEST-SOURCES
 )
 
 add_library(testicle
-		testicle.cpp
+	testicle.cpp
 )
 
 add_executable (${PROJECT_NAME}-test-mysql

@@ -97,9 +97,9 @@ set(${PROJECT_NAME}_SQLITE_HEADERS
 	sqlite/column.h
 	sqlite/resultset.h
 	sqlite/row.h
-  sqlite/session.h
+  	sqlite/session.h
 	sqlite/statement.h
-  sqlite/transaction.h
+  	sqlite/transaction.h
 )
 
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}")

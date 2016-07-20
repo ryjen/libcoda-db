@@ -6,7 +6,6 @@
 
 #undef PACKAGE_NAME
 #undef PACKAGE_VERSION
-#include <catalog/pg_type.h>
 #include <libpq-fe.h>
 #include <postgres.h>
 #include <time.h>
@@ -16,6 +15,7 @@
 #include <locale>
 #include <memory>
 #include <regex>
+#include "catalog/pg_type.h"
 
 #include "../alloc.h"
 #include "../exception.h"

@@ -4,7 +4,6 @@
 #define BENCHPRESS_CONFIG_MAIN
 #include <benchpress/benchpress.hpp>
 #include "benchmark.h"
-#include "db.test.h"
 #include "log.h"
 #include "testicle.h"
 

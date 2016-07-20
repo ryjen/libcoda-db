@@ -5,6 +5,7 @@
 #ifndef ARG3_DB_LOG_H
 #define ARG3_DB_LOG_H
 
+#include <cstdio>
 #include <cstring>
 
 #ifndef __attribute__

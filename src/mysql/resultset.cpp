@@ -4,6 +4,7 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
+#include <string>
 #include "../log.h"
 #include "binding.h"
 #include "resultset.h"
