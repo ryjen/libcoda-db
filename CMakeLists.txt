@@ -57,18 +57,18 @@ enable_testing()
 
 include(ValgrindTest)
 
-add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test)
+add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test --reporter=spec)
 
 if (MYSQL_FOUND)
-	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_mysql ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_mysql)
+	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_mysql ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_mysql --reporter=spec --suppressions=suppresion.map)
 endif()
 
 if (PostgreSQL_FOUND)
-	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_postgres ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_postgres)
+	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_postgres ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_postgres --reporter=spec --suppressions=suppresion.map)
 endif()
 
 if (SQLITE3_FOUND)
-	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_sqlite ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_sqlite)
+	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_sqlite ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_sqlite --reporter=spec)
 endif()
 
 if (DOXYGEN)
