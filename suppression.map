@@ -1,5 +1,5 @@
 {
-    getpwuid_r
+    nss_parse_service_list
     Memcheck:Leak
-    fun:getpwuid_r
+    fun:nss_parse_service_list
 }
