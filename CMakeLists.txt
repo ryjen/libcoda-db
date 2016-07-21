@@ -60,15 +60,15 @@ include(ValgrindTest)
 add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test)
 
 if (MYSQL_FOUND)
-	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_mysql ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_mysql_test)
+	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_mysql ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_mysql)
 endif()
 
 if (PostgreSQL_FOUND)
-	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_postgres ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_postgres_test)
+	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_postgres ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_postgres)
 endif()
 
 if (SQLITE3_FOUND)
-	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_sqlite ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_sqlite_test)
+	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_sqlite ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_sqlite)
 endif()
 
 if (DOXYGEN)

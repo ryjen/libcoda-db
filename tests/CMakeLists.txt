@@ -3,7 +3,7 @@
 link_directories("${PROJECT_BINARY_DIR}/libs/variant/src")
 
 set(TEST_SOURCES
-	main.test.cpp
+	main.db.test.cpp
 	db.test.cpp
 	column.test.cpp
 	delete_query.test.cpp
