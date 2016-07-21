@@ -17,7 +17,7 @@
 #include "../log.h"
 #include "binding.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

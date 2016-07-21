@@ -1,10 +1,10 @@
-#ifndef ARG3_DB_DELETE_QUERY_H
-#define ARG3_DB_DELETE_QUERY_H
+#ifndef RJ_DB_DELETE_QUERY_H
+#define RJ_DB_DELETE_QUERY_H
 
 #include "modify_query.h"
 #include "where_clause.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -16,7 +16,7 @@ namespace arg3
            public:
             using modify_query::modify_query;
 
-            delete_query(const std::shared_ptr<arg3::db::session> &session, const std::string &tableName);
+            delete_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName);
 
             delete_query(const std::shared_ptr<schema> &schema);
 

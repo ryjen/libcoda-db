@@ -37,9 +37,9 @@ script:
   - cd build
   - cmake -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DMEMORY_CHECK=ON -DENHANCED_PARAMETER_MAPPING=ON -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/9.5/server ..
   - make
-  - make arg3db-coverage-clean
+  - make rj_db_coverage_clean
   - make test ARGS=-V
-  - make arg3db-coverage-info
+  - make rj_db_coverage_info
 after_success:
   - coveralls-lcov $TRAVIS_BUILD_DIR/coverage.info
 

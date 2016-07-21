@@ -1,10 +1,10 @@
 /*!
  * @file session.h
  * a sql database
- * @copyright ryan jennings (arg3.com), 2013
+ * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifndef ARG3_DB_SESSION_H
-#define ARG3_DB_SESSION_H
+#ifndef RJ_DB_SESSION_H
+#define RJ_DB_SESSION_H
 
 #include <memory>
 #include <vector>
@@ -12,7 +12,7 @@
 #include "sql_value.h"
 #include "uri.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

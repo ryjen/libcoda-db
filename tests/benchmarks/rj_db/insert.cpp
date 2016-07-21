@@ -7,14 +7,14 @@
 #include "log.h"
 #include "testicle.h"
 
-using namespace arg3::db;
+using namespace rj::db;
 
-void benchmark_insert(insert_query &insert, const std::shared_ptr<arg3::db::session> &session)
+void benchmark_insert(insert_query &insert, const std::shared_ptr<rj::db::session> &session)
 {
     insert.values(random_name(), random_name(), random_num<int>(-123012, 1231232));
 
     if (!insert.execute()) {
-        arg3::db::log::error("unable to prepare test: %s", session->last_error().c_str());
+        rj::db::log::error("unable to prepare test: %s", session->last_error().c_str());
     }
 }
 
@@ -23,7 +23,7 @@ BENCHMARK("sqlite insert", [](benchpress::context *context) {
 
     benchmark_setup(uri_s);
 
-    arg3::db::insert_query query(current_session);
+    rj::db::insert_query query(current_session);
 
     query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
 
@@ -46,7 +46,7 @@ BENCHMARK("sqlite insert", [](benchpress::context *context) {
 
 //    benchmark_setup(uri_s);
 
-//    arg3::db::insert_query query(current_session);
+//    rj::db::insert_query query(current_session);
 
 //    query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
 
@@ -68,7 +68,7 @@ BENCHMARK("sqlite insert", [](benchpress::context *context) {
 
 //    benchmark_setup(uri_s);
 
-//    arg3::db::insert_query query(current_session);
+//    rj::db::insert_query query(current_session);
 
 //    query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
 

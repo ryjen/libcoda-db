@@ -4,11 +4,11 @@
 
 using namespace std;
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
-        delete_query::delete_query(const std::shared_ptr<arg3::db::session> &session, const std::string &tableName) : modify_query(session)
+        delete_query::delete_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName) : modify_query(session)
         {
             tableName_ = tableName;
         }

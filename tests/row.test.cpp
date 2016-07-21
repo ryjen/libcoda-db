@@ -6,7 +6,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace arg3::db;
+using namespace rj::db;
 
 row get_first_user_row()
 {
@@ -79,7 +79,7 @@ go_bandit([]() {
 
             auto r = rs.begin();
 
-            r->for_each([](const arg3::db::column& c) { Assert::That(c.is_valid(), IsTrue()); });
+            r->for_each([](const rj::db::column& c) { Assert::That(c.is_valid(), IsTrue()); });
         });
 
         it("has an iterator", []() {

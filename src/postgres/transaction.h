@@ -1,12 +1,12 @@
-#ifndef ARG3_DB_POSTGRES_TRANSACTION_H
-#define ARG3_DB_POSTGRES_TRANSACTION_H
+#ifndef RJ_DB_POSTGRES_TRANSACTION_H
+#define RJ_DB_POSTGRES_TRANSACTION_H
 
 #ifdef HAVE_LIBPQ
 
 #include <libpq-fe.h>
 #include "../transaction.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -17,7 +17,7 @@ namespace arg3
                public:
                 typedef struct {
                     isolation::level isolation;
-                    arg3::db::transaction::type type;
+                    rj::db::transaction::type type;
                     int deferrable;
                 } mode;
 

@@ -1,10 +1,10 @@
 /*!
  * @file query.h
  * implementation of a query
- * @copyright ryan jennings (arg3.com), 2013
+ * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifndef ARG3_DB_QUERY_H
-#define ARG3_DB_QUERY_H
+#ifndef RJ_DB_QUERY_H
+#define RJ_DB_QUERY_H
 
 #include <map>
 #include <sstream>
@@ -14,7 +14,7 @@
 #include "bindable.h"
 #include "sql_value.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

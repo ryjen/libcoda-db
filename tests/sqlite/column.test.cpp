@@ -13,7 +13,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace arg3::db;
+using namespace rj::db;
 
 template <typename T>
 shared_ptr<T> get_sqlite_column(const string &name)

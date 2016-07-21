@@ -1,12 +1,12 @@
 /*!
- * @copyright ryan jennings (arg3.com), 2013
+ * @copyright ryan jennings (ryan-jennings.net), 2013
  */
 #include "row.h"
 #include "resultset.h"
 
 using namespace std;
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <new>
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

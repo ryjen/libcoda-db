@@ -10,7 +10,7 @@
 #include "log.h"
 #include "sqldb.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

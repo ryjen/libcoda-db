@@ -8,7 +8,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace arg3::db;
+using namespace rj::db;
 
 
 shared_ptr<postgres::resultset> get_postgres_resultset()

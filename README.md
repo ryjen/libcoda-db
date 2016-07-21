@@ -1,9 +1,9 @@
 
-libarg3db
-=========
+rj_db
+=====
 
-[![Build Status](http://img.shields.io/travis/ryjen/arg3db.svg)](https://travis-ci.org/ryjen/arg3db)
-[![Coverage Status](https://coveralls.io/repos/ryjen/arg3db/badge.svg?branch=master&service=github)](https://coveralls.io/github/ryjen/arg3db?branch=master)
+[![Build Status](http://img.shields.io/travis/ryjen/db.svg)](https://travis-ci.org/ryjen/db)
+[![Coverage Status](https://coveralls.io/repos/ryjen/db/badge.svg?branch=master&service=github)](https://coveralls.io/github/ryjen/db?branch=master)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://ryjen.mit-license.org)
 
 a sqlite, mysql and postgres wrapper / active record (ish) implementation
@@ -66,7 +66,7 @@ Debugging
 Debugging on docker can be done with docker compose:
 
 ```
-docker-compose run test gdb /usr/src/arg3db/build/tests/arg3db-test-xxx
+docker-compose run test gdb /usr/src/build/tests/rj_db-test-xxx
 ```
 
 Model
@@ -116,9 +116,9 @@ auto current_session = sqldb::create_session("postgres://localhost/test");
 Create a record
 ```c++
 
-extern std::shared_ptr<arg3::db::session> current_session;
+extern std::shared_ptr<rj::db::session> current_session;
 
-class user : public arg3::db::record<user>
+class user : public rj::db::record<user>
 {
 public:
 		constexpr static const char *const TABLE_NAME = "users";
@@ -142,13 +142,13 @@ public:
 		}
 
 		// optional overridden method to do custom initialization
-		void on_record_init(const arg3::db::row &row) {
+		void on_record_init(const rj::db::row &row) {
 				set("customValue", row.column("customName").to_value());
 		}
 
 		// custom find method using the schema functions
 		vector<shared_ptr<user>> find_by_first_name(const string &value) {
-				return arg3::db::find_by<user>(this->schema(), "first_name", value);
+				return rj::db::find_by<user>(this->schema(), "first_name", value);
 		}
 };
 ```
@@ -465,7 +465,7 @@ Transactions can be performed on a session object.
 Types
 =====
 
-A [variant](http://github.com/ryjen/arg3variant) class is used for converting and storing data types. A few custom types exist:
+A [variant](http://github.com/ryjen/variant) class is used for converting and storing data types. A few custom types exist:
 
 sql_time
 --------
@@ -516,15 +516,15 @@ Here are some preliminary tests on sqlite (see tests/benchmarks).  Slightly fast
 
 	sqlite insert                              5000      406684 ns/op
 	sqlite select                              2000     1841120 ns/op
-	tests/benchmarks/arg3db/arg3db-benchmark 10.182s
+	tests/benchmarks/rj_db/rj_db-benchmark 10.182s
 
 	sqlite insert                              5000      409861 ns/op
 	sqlite select                              2000     1560117 ns/op
-	tests/benchmarks/poco/arg3db-benchmark-poco 9.407s
+	tests/benchmarks/poco/rj_db-benchmark-poco 9.407s
 
 	sqlite insert                              5000      403932 ns/op
 	sqlite select                              2000     1430914 ns/op
-	tests/benchmarks/soci/arg3db-benchmark-soci 9.082s
+	tests/benchmarks/soci/rj_db-benchmark-soci 9.082s
 
 Alternatives
 ============

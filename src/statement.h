@@ -2,13 +2,13 @@
  * @file statement.h
  * an interface for a query statement
  */
-#ifndef ARG3_DB_STATEMENT_H
-#define ARG3_DB_STATEMENT_H
+#ifndef RJ_DB_STATEMENT_H
+#define RJ_DB_STATEMENT_H
 
 #include "bindable.h"
 #include "resultset.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -18,7 +18,7 @@ namespace arg3
         class statement : public bindable
         {
            public:
-            typedef arg3::db::resultset resultset_type;
+            typedef rj::db::resultset resultset_type;
 
            private:
            public:

@@ -1,12 +1,12 @@
-#ifndef ARG3_DB_MYSQL_TRANSACTION_H
-#define ARG3_DB_MYSQL_TRANSACTION_H
+#ifndef RJ_DB_MYSQL_TRANSACTION_H
+#define RJ_DB_MYSQL_TRANSACTION_H
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
 #include <mysql/mysql.h>
 #include "../transaction.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -18,7 +18,7 @@ namespace arg3
 
                public:
                 typedef struct {
-                    arg3::db::transaction::type type;
+                    rj::db::transaction::type type;
                     isolation::level isolation;
                 } mode;
 

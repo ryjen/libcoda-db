@@ -7,7 +7,7 @@ services:
       - postgres
     privileged: true
     stdin_open: true
-    working_dir: /usr/src/arg3db/build
+    working_dir: /usr/src/build
     tty: true
     environment:
       MYSQL_URI: mysql://mysql:3306/test
@@ -15,7 +15,7 @@ services:
     depends_on:
       - mysql
       - postgres
-    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 tests/arg3db-test
+    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 tests/rj_db-test
   mysql:
     image: mysql:5.6
     hostname: mysql

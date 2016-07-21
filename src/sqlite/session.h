@@ -1,8 +1,8 @@
 /*!
  * @file session.h
  */
-#ifndef ARG3_DB_SQLITE_SESSION_H
-#define ARG3_DB_SQLITE_SESSION_H
+#ifndef RJ_DB_SQLITE_SESSION_H
+#define RJ_DB_SQLITE_SESSION_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -15,7 +15,7 @@
 #include "../session_factory.h"
 #include "transaction.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -24,13 +24,13 @@ namespace arg3
             class factory : public session_factory
             {
                public:
-                std::shared_ptr<arg3::db::session_impl> create(const uri &uri);
+                std::shared_ptr<rj::db::session_impl> create(const uri &uri);
             };
 
             /*!
              * a sqlite specific implementation of a database
              */
-            class session : public arg3::db::session_impl, public std::enable_shared_from_this<session>
+            class session : public rj::db::session_impl, public std::enable_shared_from_this<session>
             {
                 friend class factory;
                 friend class statement;

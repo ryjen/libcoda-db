@@ -2,8 +2,8 @@
  * @file db.h
  * a postgres database
  */
-#ifndef ARG3_DB_POSTGRES_SESSION_H
-#define ARG3_DB_POSTGRES_SESSION_H
+#ifndef RJ_DB_POSTGRES_SESSION_H
+#define RJ_DB_POSTGRES_SESSION_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -16,7 +16,7 @@
 #include "../session_factory.h"
 #include "transaction.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -25,13 +25,13 @@ namespace arg3
             class factory : public session_factory
             {
                public:
-                std::shared_ptr<arg3::db::session_impl> create(const uri &uri);
+                std::shared_ptr<rj::db::session_impl> create(const uri &uri);
             };
 
             /*!
              * a mysql specific implementation of a database
              */
-            class session : public arg3::db::session_impl, public std::enable_shared_from_this<session>
+            class session : public rj::db::session_impl, public std::enable_shared_from_this<session>
             {
                 friend class statement;
                 friend class factory;
@@ -61,7 +61,7 @@ namespace arg3
                 std::string last_error() const;
                 std::shared_ptr<resultset_impl> query(const std::string &sql);
                 bool execute(const std::string &sql);
-                std::shared_ptr<arg3::db::session::statement_type> create_statement();
+                std::shared_ptr<rj::db::session::statement_type> create_statement();
                 std::shared_ptr<transaction_impl> create_transaction() const;
                 std::shared_ptr<transaction_impl> create_transaction(const transaction::mode &mode) const;
                 void query_schema(const std::string &dbName, const std::string &tablename, std::vector<column_definition> &columns);

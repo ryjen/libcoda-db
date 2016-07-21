@@ -2,15 +2,15 @@
  * @file schema_factory.h
  * a factory for caching schemas
  */
-#ifndef ARG3_DB_SCHEMA_FACTORY_H
-#define ARG3_DB_SCHEMA_FACTORY_H
+#ifndef RJ_DB_SCHEMA_FACTORY_H
+#define RJ_DB_SCHEMA_FACTORY_H
 
 #include <functional>
 #include <memory>
 #include <string>
 #include <unordered_map>
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

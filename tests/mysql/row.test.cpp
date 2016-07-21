@@ -14,7 +14,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace arg3::db;
+using namespace rj::db;
 
 shared_ptr<row_impl> get_mysql_results_row(size_t index)
 {

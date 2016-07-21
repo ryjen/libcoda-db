@@ -1,5 +1,5 @@
-#ifndef ARG3_DB_RANDOM_TEST_H_
-#define ARG3_DB_RANDOM_TEST_H_
+#ifndef RJ_DB_RANDOM_TEST_H_
+#define RJ_DB_RANDOM_TEST_H_
 
 #include <random>
 #include <string>

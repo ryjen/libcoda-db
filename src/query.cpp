@@ -1,6 +1,6 @@
 /*!
  * implementation of a query
- * @copyright ryan jennings (arg3.com), 2013
+ * @copyright ryan jennings (ryan-jennings.net), 2013
  */
 #include "query.h"
 #include <cassert>
@@ -11,11 +11,11 @@
 
 using namespace std;
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
-        query::query(const std::shared_ptr<arg3::db::session> &session)
+        query::query(const std::shared_ptr<rj::db::session> &session)
             : is_dirty_(false), session_(session), stmt_(nullptr), params_(), named_params_()
         {
             if (session_ == nullptr) {

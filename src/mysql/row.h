@@ -2,8 +2,8 @@
  * Mysql specific implementations of a row
  * @file row.h
  */
-#ifndef ARG3_DB_MYSQL_ROW_H
-#define ARG3_DB_MYSQL_ROW_H
+#ifndef RJ_DB_MYSQL_ROW_H
+#define RJ_DB_MYSQL_ROW_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -16,7 +16,7 @@
 #include "../row.h"
 #include "column.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

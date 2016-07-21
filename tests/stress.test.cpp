@@ -10,9 +10,9 @@
 
 using namespace std;
 
-using namespace arg3::db;
+using namespace rj::db;
 
-void run_tests(const std::shared_ptr<arg3::db::session>& session, const char* name);
+void run_tests(const std::shared_ptr<rj::db::session>& session, const char* name);
 
 #define TEST_SIZE 100000
 
@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-void run_tests(const std::shared_ptr<arg3::db::session>& session, const char* name)
+void run_tests(const std::shared_ptr<rj::db::session>& session, const char* name)
 {
     log::info("starting %s performance test...", name);
 

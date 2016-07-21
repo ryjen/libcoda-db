@@ -1,14 +1,14 @@
 /*!
  * @file modify_query.h
  * representation of sql queries that modify data
- * @copyright ryan jennings (arg3.com), 2013
+ * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifndef ARG3_DB_MODIFY_QUERY_H
-#define ARG3_DB_MODIFY_QUERY_H
+#ifndef RJ_DB_MODIFY_QUERY_H
+#define RJ_DB_MODIFY_QUERY_H
 
 #include "query.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -23,7 +23,7 @@ namespace arg3
             /*!
              * @param db the database in use
              */
-            modify_query(const std::shared_ptr<arg3::db::session> &session);
+            modify_query(const std::shared_ptr<rj::db::session> &session);
 
             /*!
              * @param schema the schema to modify

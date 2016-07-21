@@ -10,7 +10,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace arg3::db;
+using namespace rj::db;
 
 go_bandit([]() {
 

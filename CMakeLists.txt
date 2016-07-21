@@ -10,7 +10,7 @@ option(ENHANCED_PARAMETER_MAPPING "Use regex to map different parameter syntaxes
 option(ENABLE_BENCHMARKING "Benchmark with other database libraries." OFF)
 
 # define project name
-project (arg3db VERSION 0.5.0)
+project (rj_db VERSION 0.5.0)
 
 # set path to custom modules
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
@@ -28,7 +28,7 @@ find_program(DOXYGEN doxygen)
 if(CODE_COVERAGE)
 	include(CodeCoverage)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_COVERAGE}")
-	setup_target_for_coverage(${PROJECT_NAME}-coverage ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test ${PROJECT_SOURCE_DIR}/coverage)
+	setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_all ${PROJECT_SOURCE_DIR}/coverage)
 endif()
 
 if (ENABLE_LOGGING)
@@ -57,13 +57,23 @@ enable_testing()
 
 include(ValgrindTest)
 
-add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}-test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test)
+add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test)
 
-add_opt_valgrind_profile(ENABLE_PROFILING ${PROJECT_NAME}-profile ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-test)
+if (MYSQL_FOUND)
+	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_mysql ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-mysql-test)
+endif()
+
+if (PostgreSQL_FOUND)
+	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_postgres ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-postgres-test)
+endif()
+
+if (SQLITE3_FOUND)
+	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_sqlite ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}-sqlite-test)
+endif()
 
 if (DOXYGEN)
-		add_custom_target(html WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND ${DOXYGEN} ${PROJECT_SOURCE_DIR}/Doxyfile)
+	add_custom_target(html WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND ${DOXYGEN} ${PROJECT_SOURCE_DIR}/Doxyfile)
 elseif (HEADERDOC)
-		add_custom_target(html COMMAND ${HEADERDOC} -o ${PROJECT_BINARY_DIR}/html ${CMAKE_SOURCE_DIR}/src/**.h
+	add_custom_target(html COMMAND ${HEADERDOC} -o ${PROJECT_BINARY_DIR}/html ${CMAKE_SOURCE_DIR}/src/**.h
 																 COMMAND ${GATHERDOC} ${PROJECT_BINARY_DIR}/html)
 endif()

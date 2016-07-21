@@ -22,7 +22,7 @@ RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .
 
 RUN make install
 
-ENV BUILD_SRC /usr/src/arg3db
+ENV BUILD_SRC /usr/src
 
 WORKDIR ${BUILD_SRC}
 

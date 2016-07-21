@@ -1,5 +1,5 @@
-#ifndef ARG3_TEST_DB_H
-#define ARG3_TEST_DB_H
+#ifndef RJ_TEST_DB_H
+#define RJ_TEST_DB_H
 
 #include <unistd.h>
 #include "mysql/session.h"
@@ -22,18 +22,18 @@ class test_session
 
 #if defined(HAVE_LIBSQLITE3)
 
-class test_sqlite3_factory : public arg3::db::session_factory
+class test_sqlite3_factory : public rj::db::session_factory
 {
    public:
-    std::shared_ptr<arg3::db::session_impl> create(const arg3::db::uri &value);
+    std::shared_ptr<rj::db::session_impl> create(const rj::db::uri &value);
 };
 
-class test_sqlite3_session : public arg3::db::sqlite::session, public test_session
+class test_sqlite3_session : public rj::db::sqlite::session, public test_session
 {
     friend class test_sqlite3_factory;
 
    public:
-    using arg3::db::sqlite::session::session;
+    using rj::db::sqlite::session::session;
 
     void setup();
 
@@ -44,18 +44,18 @@ class test_sqlite3_session : public arg3::db::sqlite::session, public test_sessi
 
 #if defined(HAVE_LIBMYSQLCLIENT)
 
-class test_mysql_factory : public arg3::db::session_factory
+class test_mysql_factory : public rj::db::session_factory
 {
    public:
-    std::shared_ptr<arg3::db::session_impl> create(const arg3::db::uri &value);
+    std::shared_ptr<rj::db::session_impl> create(const rj::db::uri &value);
 };
 
-class test_mysql_session : public arg3::db::mysql::session, public test_session
+class test_mysql_session : public rj::db::mysql::session, public test_session
 {
     friend class test_mysql_factory;
 
    public:
-    using arg3::db::mysql::session::session;
+    using rj::db::mysql::session::session;
 
     void setup();
 
@@ -66,18 +66,18 @@ class test_mysql_session : public arg3::db::mysql::session, public test_session
 
 #if defined(HAVE_LIBPQ)
 
-class test_postgres_factory : public arg3::db::session_factory
+class test_postgres_factory : public rj::db::session_factory
 {
    public:
-    std::shared_ptr<arg3::db::session_impl> create(const arg3::db::uri &value);
+    std::shared_ptr<rj::db::session_impl> create(const rj::db::uri &value);
 };
 
-class test_postgres_session : public arg3::db::postgres::session, public test_session
+class test_postgres_session : public rj::db::postgres::session, public test_session
 {
     friend class test_postgres_factory;
 
    public:
-    using arg3::db::postgres::session::session;
+    using rj::db::postgres::session::session;
 
     void setup();
 
@@ -86,7 +86,7 @@ class test_postgres_session : public arg3::db::postgres::session, public test_se
 
 #endif
 
-extern std::shared_ptr<arg3::db::session> current_session;
+extern std::shared_ptr<rj::db::session> current_session;
 
 void register_test_sessions();
 
@@ -94,18 +94,18 @@ void setup_current_session();
 
 void teardown_current_session();
 
-class user : public arg3::db::record<user>
+class user : public rj::db::record<user>
 {
    public:
     constexpr static const char *const TABLE_NAME = "users";
 
-    using arg3::db::record<user>::record;
+    using rj::db::record<user>::record;
 
-    user(const std::shared_ptr<arg3::db::session> &sess = current_session) : record(sess->get_schema(TABLE_NAME))
+    user(const std::shared_ptr<rj::db::session> &sess = current_session) : record(sess->get_schema(TABLE_NAME))
     {
     }
 
-    user(long long id, const std::shared_ptr<arg3::db::session> &sess = current_session) : user(sess->get_schema(TABLE_NAME))
+    user(long long id, const std::shared_ptr<rj::db::session> &sess = current_session) : user(sess->get_schema(TABLE_NAME))
     {
         set_id(id);
         refresh();
@@ -114,7 +114,7 @@ class user : public arg3::db::record<user>
     /*!
      * required constructor
      */
-    user(const std::shared_ptr<arg3::db::schema> &schema) : record(schema)
+    user(const std::shared_ptr<rj::db::schema> &schema) : record(schema)
     {
     }
 

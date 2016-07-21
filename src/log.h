@@ -2,13 +2,13 @@
  * @file log.h
  * internal logging for the library
  */
-#ifndef ARG3_DB_LOG_H
-#define ARG3_DB_LOG_H
+#ifndef RJ_DB_LOG_H
+#define RJ_DB_LOG_H
 
 #include <cstdio>
 #include <cstring>
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

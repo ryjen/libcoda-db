@@ -1,10 +1,10 @@
 /*!
  * @file record.h
  * implementation of a database record (model)
- * @copyright ryan jennings (arg3.com), 2013
+ * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifndef ARG3_DB_BASE_RECORD_H
-#define ARG3_DB_BASE_RECORD_H
+#ifndef RJ_DB_BASE_RECORD_H
+#define RJ_DB_BASE_RECORD_H
 
 #include <algorithm>
 #include <memory>
@@ -15,7 +15,7 @@
 #include "session.h"
 #include "update_query.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -174,7 +174,7 @@ namespace arg3
         class record
         {
            public:
-            typedef arg3::db::schema schema_type;
+            typedef rj::db::schema schema_type;
             typedef std::function<void(const std::shared_ptr<T> &)> callback;
             typedef std::function<void(const std::shared_ptr<T> &, const std::shared_ptr<T> &)> comparator;
 
@@ -398,12 +398,12 @@ namespace arg3
 
             std::shared_ptr<T> find_by_id(const sql_value &value) const
             {
-                return arg3::db::find_by_id<T>(schema(), value);
+                return rj::db::find_by_id<T>(schema(), value);
             }
 
             void find_by_id(const sql_value &value, const callback &funk) const
             {
-                arg3::db::find_by_id<T>(schema(), value, funk);
+                rj::db::find_by_id<T>(schema(), value, funk);
             }
 
             /*!
@@ -412,7 +412,7 @@ namespace arg3
              */
             std::vector<std::shared_ptr<T>> find_all() const
             {
-                return arg3::db::find_all<T>(schema());
+                return rj::db::find_all<T>(schema());
             }
 
             /*!
@@ -421,7 +421,7 @@ namespace arg3
              */
             void find_all(const callback &funk) const
             {
-                arg3::db::find_all<T>(schema(), funk);
+                rj::db::find_all<T>(schema(), funk);
             }
 
             /*!
@@ -432,7 +432,7 @@ namespace arg3
              */
             std::vector<std::shared_ptr<T>> find_by(const std::string &name, const sql_value &value) const
             {
-                return arg3::db::find_by<T>(schema(), name, value);
+                return rj::db::find_by<T>(schema(), name, value);
             }
 
             /*!
@@ -443,7 +443,7 @@ namespace arg3
              */
             void find_by(const std::string &name, const sql_value &value, const callback &funk) const
             {
-                arg3::db::find_by<T>(schema(), name, value, funk);
+                rj::db::find_by<T>(schema(), name, value, funk);
             }
 
 
@@ -455,7 +455,7 @@ namespace arg3
              */
             std::shared_ptr<T> find_one(const std::string &name, const sql_value &value) const
             {
-                return arg3::db::find_one<T>(schema(), name, value);
+                return rj::db::find_one<T>(schema(), name, value);
             }
 
             /*!
@@ -466,7 +466,7 @@ namespace arg3
              */
             void find_one(const std::string &name, const sql_value &value, const callback &funk) const
             {
-                arg3::db::find_one<T>(schema(), name, value, funk);
+                rj::db::find_one<T>(schema(), name, value, funk);
             }
 
             /*!

@@ -6,7 +6,7 @@
 	url = http://github.com/ryjen/cmake.git
 [submodule "libs/variant"]
 	path = libs/variant
-	url = http://github.com/ryjen/arg3variant.git
+	url = http://github.com/ryjen/variant.git
 [submodule "tests/vendor/benchpress"]
 	path = tests/vendor/benchpress
 	url = http://github.com/ryjen/benchpress.git

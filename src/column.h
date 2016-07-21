@@ -1,10 +1,10 @@
 /*!
  * @file column.h
  * represents a column in a row in a database
- * @copyright ryan jennings (arg3.com), 2013
+ * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifndef ARG3_DB_COLUMN_VALUE_H
-#define ARG3_DB_COLUMN_VALUE_H
+#ifndef RJ_DB_COLUMN_VALUE_H
+#define RJ_DB_COLUMN_VALUE_H
 
 #include <cassert>
 #include <memory>
@@ -12,7 +12,7 @@
 #include "exception.h"
 #include "sql_value.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

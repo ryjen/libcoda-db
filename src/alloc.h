@@ -3,10 +3,10 @@
  * @abstract Functions for dealing with C-style memory allocation
  * @discussion These functions exist because we need to be able to use realloc in some cases
  */
-#ifndef ARG3_DB_ALLOC_H
-#define ARG3_DB_ALLOC_H
+#ifndef RJ_DB_ALLOC_H
+#define RJ_DB_ALLOC_H
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

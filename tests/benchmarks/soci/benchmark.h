@@ -1,5 +1,5 @@
-#ifndef ARG3_DB_BENCHMARK_H
-#define ARG3_DB_BENCHMARK_H
+#ifndef RJ_DB_BENCHMARK_H
+#define RJ_DB_BENCHMARK_H
 
 struct User {
     std::string first_name;

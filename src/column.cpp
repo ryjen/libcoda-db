@@ -1,7 +1,7 @@
 #include "column.h"
 #include "log.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
