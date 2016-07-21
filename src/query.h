@@ -10,6 +10,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
 #include "bindable.h"
 #include "sql_value.h"
 

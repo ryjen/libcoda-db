@@ -65,7 +65,7 @@ namespace arg3
             if (success) {
                 numChanges_ = stmt_->last_number_of_changes();
             } else {
-                log::error(stmt_->last_error().c_str());
+                log::error("%s", stmt_->last_error().c_str());
                 numChanges_ = 0;
             }
 

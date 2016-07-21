@@ -193,7 +193,7 @@ namespace arg3
 
                 if (PQresultStatus(res) != PGRES_COMMAND_OK && PQresultStatus(res) != PGRES_TUPLES_OK) {
                     PQclear(res);
-                    log::error(last_error().c_str());
+                    log::error("%s", last_error().c_str());
                     return false;
                 }
 

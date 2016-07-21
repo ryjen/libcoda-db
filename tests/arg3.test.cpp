@@ -1,11 +1,10 @@
-#include <bandit/bandit.h>
-#include "log.h"
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
+#include <bandit/bandit.h>
 #include "db.test.h"
+#include "log.h"
 #include "sqldb.h"
 #include "sqlite/session.h"
 #include "testicle.h"

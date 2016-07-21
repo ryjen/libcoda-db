@@ -8,10 +8,6 @@
 #include <cstdio>
 #include <cstring>
 
-#ifndef __attribute__
-#define __attribute__(x)
-#endif
-
 namespace arg3
 {
     namespace db

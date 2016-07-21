@@ -8,9 +8,11 @@
 #ifdef ENHANCED_PARAMETER_MAPPING
 #include <regex>
 #endif
+
 #include <set>
 #include <unordered_map>
 #include <vector>
+
 #include "exception.h"
 #include "sql_value.h"
 
