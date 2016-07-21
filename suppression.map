@@ -1,0 +1,5 @@
+{
+    getpwuid_r
+    Memcheck:Leak
+    fun:getpwuid_r
+}
