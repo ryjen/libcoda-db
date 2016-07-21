@@ -2,8 +2,8 @@
  * @file resultset.h
  * representation of results from a mysql query
  */
-#ifndef ARG3_DB_MYSQL_RESULTSET_H
-#define ARG3_DB_MYSQL_RESULTSET_H
+#ifndef RJ_DB_MYSQL_RESULTSET_H
+#define RJ_DB_MYSQL_RESULTSET_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -15,7 +15,7 @@
 #include <vector>
 #include "../resultset.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

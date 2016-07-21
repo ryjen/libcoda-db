@@ -1,7 +1,7 @@
 
 #include "bind_mapping.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

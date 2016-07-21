@@ -2,14 +2,14 @@
  * @file row.h
  * A row in a result set
  */
-#ifndef ARG3_DB_ROW_H
-#define ARG3_DB_ROW_H
+#ifndef RJ_DB_ROW_H
+#define RJ_DB_ROW_H
 
 #include <iterator>
 #include <memory>
 #include "column.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -19,7 +19,7 @@ namespace arg3
         class row_impl
         {
            public:
-            typedef arg3::db::column column_type;
+            typedef rj::db::column column_type;
 
             row_impl() = default;
             row_impl(const row_impl &other) = default;
@@ -256,7 +256,7 @@ namespace arg3
             std::shared_ptr<row_impl> impl_;
 
            public:
-            typedef arg3::db::column column_type;
+            typedef rj::db::column column_type;
             typedef row_iterator<column_type, column_type, row_impl> iterator;
             typedef row_iterator<const column_type, column_type, const row_impl> const_iterator;
 

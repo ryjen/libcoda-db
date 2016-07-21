@@ -1,16 +1,16 @@
 /*!
  * @file select_query.h
- * @copyright ryan jennings (arg3.com), 2013
+ * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifndef ARG3_DB_SELECT_QUERY_H
-#define ARG3_DB_SELECT_QUERY_H
+#ifndef RJ_DB_SELECT_QUERY_H
+#define RJ_DB_SELECT_QUERY_H
 
 #include "join_clause.h"
 #include "query.h"
 #include "resultset.h"
 #include "where_clause.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -47,14 +47,14 @@ namespace arg3
              * defaults to 'select *'
              * @param db the database in use
              */
-            select_query(const std::shared_ptr<arg3::db::session> &session);
+            select_query(const std::shared_ptr<rj::db::session> &session);
 
             /*!
              * @param db        the database in use
              * @param tableName the table name to query
              * @param columns   the columns to query
              */
-            select_query(const std::shared_ptr<arg3::db::session> &session, const std::vector<std::string> &columns);
+            select_query(const std::shared_ptr<rj::db::session> &session, const std::vector<std::string> &columns);
 
             /*!
              * @param schema    the schema to query
@@ -66,7 +66,7 @@ namespace arg3
              * @param columns the columns to query
              * @param tableName the table to query from
              */
-            select_query(const std::shared_ptr<arg3::db::session> &session, const std::vector<std::string> &columns, const std::string &tableName);
+            select_query(const std::shared_ptr<rj::db::session> &session, const std::vector<std::string> &columns, const std::string &tableName);
 
             /* boilerplate */
             select_query(const select_query &other);

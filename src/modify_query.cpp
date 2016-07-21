@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (arg3.com), 2013
+ * @copyright ryan jennings (ryan-jennings.net), 2013
  */
 #include "modify_query.h"
 #include "exception.h"
@@ -9,11 +9,11 @@
 
 using namespace std;
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
-        modify_query::modify_query(const std::shared_ptr<arg3::db::session> &session) : query(session), flags_(0), numChanges_(0)
+        modify_query::modify_query(const std::shared_ptr<rj::db::session> &session) : query(session), flags_(0), numChanges_(0)
         {
         }
 
@@ -65,7 +65,7 @@ namespace arg3
             if (success) {
                 numChanges_ = stmt_->last_number_of_changes();
             } else {
-                log::error(stmt_->last_error().c_str());
+                log::error("%s", stmt_->last_error().c_str());
                 numChanges_ = 0;
             }
 

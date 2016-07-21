@@ -1,5 +1,5 @@
-#ifndef ARG3_DB_BIND_MAPPING_H
-#define ARG3_DB_BIND_MAPPING_H
+#ifndef RJ_DB_BIND_MAPPING_H
+#define RJ_DB_BIND_MAPPING_H
 
 #include "bindable.h"
 
@@ -7,7 +7,7 @@
 #include "exception.h"
 #endif
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

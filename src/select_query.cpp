@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (arg3.com), 2013
+ * @copyright ryan jennings (ryan-jennings.net), 2013
  */
 #include "select_query.h"
 #include "schema.h"
@@ -7,18 +7,17 @@
 
 using namespace std;
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
-        select_query::select_query(const std::shared_ptr<arg3::db::session> &session) : query(session)
+        select_query::select_query(const std::shared_ptr<rj::db::session> &session) : query(session)
         {
         }
-        select_query::select_query(const std::shared_ptr<arg3::db::session> &session, const vector<string> &columns)
-            : query(session), columns_(columns)
+        select_query::select_query(const std::shared_ptr<rj::db::session> &session, const vector<string> &columns) : query(session), columns_(columns)
         {
         }
-        select_query::select_query(const std::shared_ptr<arg3::db::session> &session, const vector<string> &columns, const string &tableName)
+        select_query::select_query(const std::shared_ptr<rj::db::session> &session, const vector<string> &columns, const string &tableName)
             : query(session), columns_(columns), tableName_(tableName)
         {
         }

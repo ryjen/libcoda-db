@@ -1,9 +1,9 @@
-#ifndef ARG3_DB_URI_H
-#define ARG3_DB_URI_H
+#ifndef RJ_DB_URI_H
+#define RJ_DB_URI_H
 
 #include <string>
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

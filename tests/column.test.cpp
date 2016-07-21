@@ -7,7 +7,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace arg3::db;
+using namespace rj::db;
 
 
 column get_user_column(const string &name)

@@ -14,7 +14,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace arg3::db;
+using namespace rj::db;
 
 shared_ptr<column_impl> get_results_column(size_t index, size_t iterations)
 {
@@ -186,7 +186,7 @@ go_bandit([]() {
 
                 c = get_stmt_column(1, 0);
 
-                AssertThrows(arg3::illegal_conversion, c->to_value().to_double());
+                AssertThrows(rj::illegal_conversion, c->to_value().to_double());
             });
 
             it("as results", []() {
@@ -197,7 +197,7 @@ go_bandit([]() {
 
                 c = get_results_column(1, 0);
 
-                AssertThrows(arg3::illegal_conversion, c->to_value().to_double());
+                AssertThrows(rj::illegal_conversion, c->to_value().to_double());
             });
 
         });
@@ -211,7 +211,7 @@ go_bandit([]() {
 
                 c = get_stmt_column(1, 0);
 
-                AssertThrows(arg3::illegal_conversion, c->to_value().to_int());
+                AssertThrows(rj::illegal_conversion, c->to_value().to_int());
             });
 
             it("as results", []() {
@@ -221,7 +221,7 @@ go_bandit([]() {
 
                 c = get_results_column(1, 0);
 
-                AssertThrows(arg3::illegal_conversion, c->to_value().to_int());
+                AssertThrows(rj::illegal_conversion, c->to_value().to_int());
             });
 
         });
@@ -235,7 +235,7 @@ go_bandit([]() {
 
                 c = get_stmt_column(1, 0);
 
-                AssertThrows(arg3::illegal_conversion, c->to_value().to_llong());
+                AssertThrows(rj::illegal_conversion, c->to_value().to_llong());
             });
 
             it("as results", []() {
@@ -245,7 +245,7 @@ go_bandit([]() {
 
                 c = get_results_column(1, 0);
 
-                AssertThrows(arg3::illegal_conversion, c->to_value().to_llong());
+                AssertThrows(rj::illegal_conversion, c->to_value().to_llong());
             });
 
         });

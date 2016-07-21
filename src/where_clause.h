@@ -1,15 +1,15 @@
 /*!
  * @file where_clause.h
  */
-#ifndef ARG3_DB_WHERE_CLAUSE_H
-#define ARG3_DB_WHERE_CLAUSE_H
+#ifndef RJ_DB_WHERE_CLAUSE_H
+#define RJ_DB_WHERE_CLAUSE_H
 
 #include <string>
 #include <vector>
 
 #include "sqldb.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

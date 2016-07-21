@@ -14,7 +14,7 @@
 
 using namespace std;
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -46,7 +46,7 @@ namespace arg3
                 }
             }
 
-            std::shared_ptr<arg3::db::session_impl> factory::create(const uri &uri)
+            std::shared_ptr<rj::db::session_impl> factory::create(const uri &uri)
             {
                 return std::make_shared<session>(uri);
             }
@@ -185,7 +185,7 @@ namespace arg3
                 return !mysql_real_query(db_.get(), sql.c_str(), sql.length());
             }
 
-            shared_ptr<arg3::db::session::statement_type> session::create_statement()
+            shared_ptr<rj::db::session::statement_type> session::create_statement()
             {
                 return make_shared<statement>(static_pointer_cast<mysql::session>(shared_from_this()));
             }

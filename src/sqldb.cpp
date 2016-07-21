@@ -8,21 +8,21 @@
 #include "sqldb.h"
 #include "sqlite/session.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
-        ARG3_IMPLEMENT_EXCEPTION(database_exception, std::exception);
+        RJ_IMPLEMENT_EXCEPTION(database_exception, std::exception);
 
-        ARG3_IMPLEMENT_EXCEPTION(no_such_column_exception, database_exception);
+        RJ_IMPLEMENT_EXCEPTION(no_such_column_exception, database_exception);
 
-        ARG3_IMPLEMENT_EXCEPTION(record_not_found_exception, database_exception);
+        RJ_IMPLEMENT_EXCEPTION(record_not_found_exception, database_exception);
 
-        ARG3_IMPLEMENT_EXCEPTION(binding_error, database_exception);
+        RJ_IMPLEMENT_EXCEPTION(binding_error, database_exception);
 
-        ARG3_IMPLEMENT_EXCEPTION(transaction_exception, database_exception);
+        RJ_IMPLEMENT_EXCEPTION(transaction_exception, database_exception);
 
-        ARG3_IMPLEMENT_EXCEPTION(no_primary_key_exception, database_exception);
+        RJ_IMPLEMENT_EXCEPTION(no_primary_key_exception, database_exception);
 
         std::shared_ptr<session> sqldb::create_session(const std::string &uristr)
         {

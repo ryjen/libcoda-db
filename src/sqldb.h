@@ -1,5 +1,5 @@
-#ifndef ARG3_DB_SQLDB_H
-#define ARG3_DB_SQLDB_H
+#ifndef RJ_DB_SQLDB_H
+#define RJ_DB_SQLDB_H
 
 #include <memory>
 #include <unordered_map>
@@ -7,7 +7,7 @@
 #include "session_factory.h"
 #include "uri.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -51,28 +51,28 @@ namespace arg3
              * @param value   the uri string to parse
              * @return the database session based on the uri
              */
-            static std::shared_ptr<arg3::db::session> create_session(const std::string &value);
+            static std::shared_ptr<rj::db::session> create_session(const std::string &value);
 
             /*!
              * creates a database session
              * @param value the uri for the session
              * @return the created database session
              */
-            static std::shared_ptr<arg3::db::session> create_session(const uri &value);
+            static std::shared_ptr<rj::db::session> create_session(const uri &value);
 
             /*!
              * parses a uri, creates a session, and opens it
              * @param value the uri for the session
              * @return the created and opened session
              */
-            static std::shared_ptr<arg3::db::session> open_session(const std::string &value);
+            static std::shared_ptr<rj::db::session> open_session(const std::string &value);
 
             /*!
              * creates a session and opens it
              * @param value the uri for the session
              * @return the created and opened session
              */
-            static std::shared_ptr<arg3::db::session> open_session(const uri &value);
+            static std::shared_ptr<rj::db::session> open_session(const uri &value);
 
             /*!
              * registers a handler for a session protocol

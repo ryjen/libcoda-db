@@ -6,7 +6,7 @@
 #include "log.h"
 #include "testicle.h"
 
-using namespace arg3::db;
+using namespace rj::db;
 
 void benchmark_select(const std::string &tableName)
 {
@@ -19,7 +19,7 @@ void benchmark_select(const std::string &tableName)
     }
 }
 
-void benchmark_setup(const arg3::db::uri &uri_s)
+void benchmark_setup(const rj::db::uri &uri_s)
 {
     register_test_sessions();
 
@@ -30,7 +30,7 @@ void benchmark_setup(const arg3::db::uri &uri_s)
 
 void benchmark_populate(benchpress::context *context)
 {
-    arg3::db::insert_query query(current_session);
+    rj::db::insert_query query(current_session);
 
     query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
 

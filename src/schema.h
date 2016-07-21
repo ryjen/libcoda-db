@@ -2,15 +2,15 @@
  * @file schema.h
  * table definition in a database
  */
-#ifndef ARG3_DB_SCHEMA_H
-#define ARG3_DB_SCHEMA_H
+#ifndef RJ_DB_SCHEMA_H
+#define RJ_DB_SCHEMA_H
 
 #include <memory>
 #include <string>
 #include <vector>
 #include "sql_value.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

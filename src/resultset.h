@@ -2,14 +2,14 @@
  * @file resultset.h
  * a query result set in a database
  */
-#ifndef ARG3_DB_RESULTSET_H
-#define ARG3_DB_RESULTSET_H
+#ifndef RJ_DB_RESULTSET_H
+#define RJ_DB_RESULTSET_H
 
 #include <memory>
 #include "exception.h"
 #include "row.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -21,7 +21,7 @@ namespace arg3
         class resultset_impl
         {
            public:
-            typedef arg3::db::row row_type;
+            typedef rj::db::row row_type;
 
            protected:
             resultset_impl() = default;
@@ -203,7 +203,7 @@ namespace arg3
         class resultset
         {
            public:
-            typedef arg3::db::row row_type;
+            typedef rj::db::row row_type;
 
            private:
             std::shared_ptr<resultset_impl> impl_;

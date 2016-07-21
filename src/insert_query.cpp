@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -15,7 +15,7 @@ namespace arg3
          * @param tableName the table to modify
          * @param columns the columns to modify
          */
-        insert_query::insert_query(const std::shared_ptr<arg3::db::session> &session, const std::string &tableName) : modify_query(session)
+        insert_query::insert_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName) : modify_query(session)
         {
             tableName_ = tableName;
         }
@@ -24,7 +24,7 @@ namespace arg3
          * @param db the database to modify
          * @param columns the columns to modify
          */
-        insert_query::insert_query(const std::shared_ptr<arg3::db::session> &session, const std::string &tableName,
+        insert_query::insert_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName,
                                    const std::vector<std::string> &columns)
             : modify_query(session)
         {

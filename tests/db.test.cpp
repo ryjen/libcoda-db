@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (arg3.com), 2013 under LGPL
+ * @copyright ryan jennings (ryan-jennings.net), 2013 under LGPL
  */
 #ifndef HAVE_CONFIG_H
 #include "config.h"
@@ -14,9 +14,9 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace arg3::db;
+using namespace rj::db;
 
-std::shared_ptr<arg3::db::session> current_session;
+std::shared_ptr<rj::db::session> current_session;
 
 void register_test_sessions()
 {
@@ -57,7 +57,7 @@ void teardown_current_session()
 }
 
 #if defined(HAVE_LIBSQLITE3)
-std::shared_ptr<arg3::db::session_impl> test_sqlite3_factory::create(const arg3::db::uri &value)
+std::shared_ptr<rj::db::session_impl> test_sqlite3_factory::create(const rj::db::uri &value)
 {
     return std::make_shared<test_sqlite3_session>(value);
 }
@@ -81,7 +81,7 @@ void test_sqlite3_session::teardown()
 #endif
 
 #if defined(HAVE_LIBMYSQLCLIENT)
-std::shared_ptr<arg3::db::session_impl> test_mysql_factory::create(const arg3::db::uri &value)
+std::shared_ptr<rj::db::session_impl> test_mysql_factory::create(const rj::db::uri &value)
 {
     return std::make_shared<test_mysql_session>(value);
 }
@@ -106,7 +106,7 @@ void test_mysql_session::teardown()
 #endif
 
 #if defined(HAVE_LIBPQ)
-std::shared_ptr<arg3::db::session_impl> test_postgres_factory::create(const arg3::db::uri &value)
+std::shared_ptr<rj::db::session_impl> test_postgres_factory::create(const rj::db::uri &value)
 {
     return std::make_shared<test_postgres_session>(value);
 }

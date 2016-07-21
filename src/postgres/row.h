@@ -2,8 +2,8 @@
  * @file row.h
  * A postgres row
  */
-#ifndef ARG3_DB_POSTGRES_ROW_H
-#define ARG3_DB_POSTGRES_ROW_H
+#ifndef RJ_DB_POSTGRES_ROW_H
+#define RJ_DB_POSTGRES_ROW_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -15,7 +15,7 @@
 #include "../row.h"
 #include "column.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

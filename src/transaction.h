@@ -1,10 +1,10 @@
-#ifndef ARG3_DB_TRANSACTION_H
-#define ARG3_DB_TRANSACTION_H
+#ifndef RJ_DB_TRANSACTION_H
+#define RJ_DB_TRANSACTION_H
 
 #include <memory>
 #include <string>
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

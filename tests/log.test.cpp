@@ -11,7 +11,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace arg3::db;
+using namespace rj::db;
 
 #ifdef ENABLE_LOGGING
 extern FILE *log::file;

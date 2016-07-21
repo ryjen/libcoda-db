@@ -2,8 +2,8 @@
  * @file binding.h
  * utility for binding data to a postgres query
  */
-#ifndef ARG3_DB_POSTGRES_BINDING_H
-#define ARG3_DB_POSTGRES_BINDING_H
+#ifndef RJ_DB_POSTGRES_BINDING_H
+#define RJ_DB_POSTGRES_BINDING_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -16,7 +16,7 @@
 #include "../bind_mapping.h"
 #include "../sql_value.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -29,7 +29,7 @@ namespace arg3
             /*
              * utility class to simplify binding query parameters
              */
-            class binding : public arg3::db::bind_mapping
+            class binding : public rj::db::bind_mapping
             {
                 friend class column;
                 friend class statement;

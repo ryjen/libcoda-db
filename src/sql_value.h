@@ -2,14 +2,14 @@
  * @file sql_value.h
  * a value in a column
  */
-#ifndef ARG3_DB_SQL_VALUE_H
-#define ARG3_DB_SQL_VALUE_H
+#ifndef RJ_DB_SQL_VALUE_H
+#define RJ_DB_SQL_VALUE_H
 
 #include <cmath>
 #include <iostream>
 #include "variant.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -27,7 +27,7 @@ namespace arg3
         /*!
          * A sql blob type
          */
-        typedef arg3::binary sql_blob;
+        typedef rj::binary sql_blob;
 
         /*!
          * a date/time column format
@@ -122,10 +122,10 @@ namespace arg3
         /*!
          * A sql value
          */
-        class sql_value : public arg3::variant
+        class sql_value : public rj::variant
         {
            public:
-            using arg3::variant::variant;
+            using rj::variant::variant;
 
             virtual ~sql_value();
 

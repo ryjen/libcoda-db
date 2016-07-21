@@ -2,14 +2,14 @@
  * @file join_clause.h
  * representation of a join clause in a sql query
  */
-#ifndef ARG3_DB_JOIN_CLAUSE_H
-#define ARG3_DB_JOIN_CLAUSE_H
+#ifndef RJ_DB_JOIN_CLAUSE_H
+#define RJ_DB_JOIN_CLAUSE_H
 
 #include <string>
 #include <unordered_map>
 #include "where_clause.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

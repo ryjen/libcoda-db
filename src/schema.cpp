@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -17,7 +17,7 @@ namespace arg3
             return os;
         }
 
-        schema::schema(const std::shared_ptr<arg3::db::session> &session, const string &tablename) : session_(session), tableName_(tablename)
+        schema::schema(const std::shared_ptr<rj::db::session> &session, const string &tablename) : session_(session), tableName_(tablename)
         {
             if (session_ == nullptr) {
                 throw database_exception("no database provided for schema");

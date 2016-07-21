@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (arg3.com), 2013
+ * @copyright ryan jennings (ryan-jennings.net), 2013
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -19,7 +19,7 @@
 
 using namespace std;
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

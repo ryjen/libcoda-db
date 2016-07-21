@@ -5,7 +5,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace arg3::db;
+using namespace rj::db;
 
 go_bandit([]() {
 
@@ -169,7 +169,7 @@ go_bandit([]() {
         it("throws errors on conversion", []() {
             sql_value v = "asdfcv";
 
-            AssertThrows(arg3::illegal_conversion, v.to_double());
+            AssertThrows(rj::illegal_conversion, v.to_double());
         });
 
 

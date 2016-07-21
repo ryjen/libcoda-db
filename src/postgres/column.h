@@ -2,8 +2,8 @@
  * @file column.h
  * column in a postgres database
  */
-#ifndef ARG3_DB_POSTGRES_COLUMN_H
-#define ARG3_DB_POSTGRES_COLUMN_H
+#ifndef RJ_DB_POSTGRES_COLUMN_H
+#define RJ_DB_POSTGRES_COLUMN_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -14,7 +14,7 @@
 #include <libpq-fe.h>
 #include "../column.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

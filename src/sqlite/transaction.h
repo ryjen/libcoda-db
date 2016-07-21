@@ -1,18 +1,18 @@
-#ifndef ARG3_DB_SQLITE_TRANSACTION_H
-#define ARG3_DB_SQLITE_TRANSACTION_H
+#ifndef RJ_DB_SQLITE_TRANSACTION_H
+#define RJ_DB_SQLITE_TRANSACTION_H
 
 #ifdef HAVE_LIBSQLITE3
 
 #include <sqlite3.h>
 #include "../transaction.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
         namespace sqlite
         {
-            class transaction : public arg3::db::transaction_impl
+            class transaction : public rj::db::transaction_impl
             {
                public:
                 typedef enum { none, deferred, immediate, exclusive } type;

@@ -1,10 +1,10 @@
-#ifndef ARG3_DB_UPDATE_QUERY_H
-#define ARG3_DB_UPDATE_QUERY_H
+#ifndef RJ_DB_UPDATE_QUERY_H
+#define RJ_DB_UPDATE_QUERY_H
 
 #include "modify_query.h"
 #include "where_clause.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -21,13 +21,13 @@ namespace arg3
              * @param tableName the table to modify
              * @param columns the columns to modify
              */
-            update_query(const std::shared_ptr<arg3::db::session> &session, const std::string &tableName);
+            update_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName);
 
             /*!
              * @param db the database to modify
              * @param columns the columns to modify
              */
-            update_query(const std::shared_ptr<arg3::db::session> &session, const std::string &tableName, const std::vector<std::string> &columns);
+            update_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName, const std::vector<std::string> &columns);
 
             /*!
              * @param schema the schema to modify

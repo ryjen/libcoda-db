@@ -2,8 +2,8 @@
  * @file binding.h
  * utilities for binding data to a mysql query
  */
-#ifndef ARG3_DB_MYSQL_BINDING_H
-#define ARG3_DB_MYSQL_BINDING_H
+#ifndef RJ_DB_MYSQL_BINDING_H
+#define RJ_DB_MYSQL_BINDING_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -18,7 +18,7 @@
 #include "../bind_mapping.h"
 #include "../sql_value.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -33,7 +33,7 @@ namespace arg3
             /*!
              * makes binding mysql queries simpler
              */
-            class binding : public arg3::db::bind_mapping
+            class binding : public rj::db::bind_mapping
             {
                 friend class mysql_column;
 

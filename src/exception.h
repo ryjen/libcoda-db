@@ -1,14 +1,14 @@
 /*!
  * @file exception.h
  * declaration of exceptions used in the library
- * @copyright ryan jennings (arg3.com), 2013
+ * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifndef ARG3_DB_EXCEPTION_H
-#define ARG3_DB_EXCEPTION_H
+#ifndef RJ_DB_EXCEPTION_H
+#define RJ_DB_EXCEPTION_H
 
 #include <string>
 
-#define ARG3_DECLARE_EXCEPTION(CLASS, BASE)                         \
+#define RJ_DECLARE_EXCEPTION(CLASS, BASE)                           \
     class CLASS : public BASE                                       \
     {                                                               \
        private:                                                     \
@@ -23,7 +23,7 @@
         virtual const char *context() const noexcept;               \
     }
 
-#define ARG3_IMPLEMENT_EXCEPTION(CLASS, BASE)                                                                  \
+#define RJ_IMPLEMENT_EXCEPTION(CLASS, BASE)                                                                    \
     CLASS::CLASS(const std::string &what) : BASE(), what_(what)                                                \
     {                                                                                                          \
     }                                                                                                          \
@@ -43,21 +43,21 @@
     }
 
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
-        ARG3_DECLARE_EXCEPTION(database_exception, std::exception);
+        RJ_DECLARE_EXCEPTION(database_exception, std::exception);
 
-        ARG3_DECLARE_EXCEPTION(no_such_column_exception, database_exception);
+        RJ_DECLARE_EXCEPTION(no_such_column_exception, database_exception);
 
-        ARG3_DECLARE_EXCEPTION(record_not_found_exception, database_exception);
+        RJ_DECLARE_EXCEPTION(record_not_found_exception, database_exception);
 
-        ARG3_DECLARE_EXCEPTION(binding_error, database_exception);
+        RJ_DECLARE_EXCEPTION(binding_error, database_exception);
 
-        ARG3_DECLARE_EXCEPTION(transaction_exception, database_exception);
+        RJ_DECLARE_EXCEPTION(transaction_exception, database_exception);
 
-        ARG3_DECLARE_EXCEPTION(no_primary_key_exception, database_exception);
+        RJ_DECLARE_EXCEPTION(no_primary_key_exception, database_exception);
     }
 }
 

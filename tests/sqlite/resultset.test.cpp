@@ -14,7 +14,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace arg3::db;
+using namespace rj::db;
 
 shared_ptr<resultset_impl> get_sqlite_resultset()
 {

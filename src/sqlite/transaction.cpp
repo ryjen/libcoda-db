@@ -7,7 +7,7 @@
 #include "../exception.h"
 #include "transaction.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

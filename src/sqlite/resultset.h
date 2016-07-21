@@ -1,8 +1,8 @@
 /*!
  * @file resultset.h
  */
-#ifndef ARG3_DB_SQLITE_RESULTSET_H
-#define ARG3_DB_SQLITE_RESULTSET_H
+#ifndef RJ_DB_SQLITE_RESULTSET_H
+#define RJ_DB_SQLITE_RESULTSET_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -14,7 +14,7 @@
 #include <vector>
 #include "../resultset.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {

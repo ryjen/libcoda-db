@@ -2,8 +2,8 @@
  * a sqlite3 sql statement
  * @file statement.h
  */
-#ifndef ARG3_DB_SQLITE_STATEMENT_H
-#define ARG3_DB_SQLITE_STATEMENT_H
+#ifndef RJ_DB_SQLITE_STATEMENT_H
+#define RJ_DB_SQLITE_STATEMENT_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -14,7 +14,7 @@
 #include <sqlite3.h>
 #include "../statement.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
@@ -25,7 +25,7 @@ namespace arg3
             /*!
              * a sqlite specific implementation of a statement
              */
-            class statement : public arg3::db::statement
+            class statement : public rj::db::statement
             {
                private:
                 std::shared_ptr<sqlite::session> sess_;

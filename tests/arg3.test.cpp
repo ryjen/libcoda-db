@@ -1,11 +1,10 @@
-#include <bandit/bandit.h>
-#include "log.h"
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
+#include <bandit/bandit.h>
 #include "db.test.h"
+#include "log.h"
 #include "sqldb.h"
 #include "sqlite/session.h"
 #include "testicle.h"
@@ -22,9 +21,9 @@ int main(int argc, char *argv[])
     int opt = getopt(argc, argv, "l::");
 
     if (opt == 'l') {
-        arg3::db::log::set_level(optarg);
+        rj::db::log::set_level(optarg);
     } else {
-        arg3::db::log::set_level(arg3::db::log::Error);
+        rj::db::log::set_level(rj::db::log::Error);
     }
 
     register_test_sessions();
@@ -33,9 +32,9 @@ int main(int argc, char *argv[])
 #ifdef TEST_SQLITE
     puts("running sqlite3 tests");
 
-    current_session = arg3::db::sqldb::create_session("file://testdb.db");
+    current_session = rj::db::sqldb::create_session("file://testdb.db");
 
-    auto sqlite_session = current_session->impl<arg3::db::sqlite::session>();
+    auto sqlite_session = current_session->impl<rj::db::sqlite::session>();
 
     // run the uncached test
     if (bandit::run(argc, argv)) {
@@ -51,7 +50,7 @@ int main(int argc, char *argv[])
     puts("running mysql tests");
 
     auto uri_s = get_env_uri("MYSQL_URI", "mysql://localhost/test");
-    current_session = arg3::db::sqldb::create_session(uri_s);
+    current_session = rj::db::sqldb::create_session(uri_s);
     cout << "connecting to " << uri_s << endl;
 
     if (bandit::run(argc, argv)) {
@@ -68,7 +67,7 @@ int main(int argc, char *argv[])
     puts("running postgres tests");
 
     auto uri_s = get_env_uri("POSTGRES_URI", "postgres://localhost/test");
-    current_session = arg3::db::sqldb::create_session(uri_s);
+    current_session = rj::db::sqldb::create_session(uri_s);
     cout << "connecting to " << uri_s << endl;
 
     if (bandit::run(argc, argv)) {

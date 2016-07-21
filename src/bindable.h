@@ -2,19 +2,21 @@
  * @file bindable.h
  * An interface for data binding
  */
-#ifndef ARG3_DB_BINDABLE_H
-#define ARG3_DB_BINDABLE_H
+#ifndef RJ_DB_BINDABLE_H
+#define RJ_DB_BINDABLE_H
 
 #ifdef ENHANCED_PARAMETER_MAPPING
 #include <regex>
 #endif
+
 #include <set>
 #include <unordered_map>
 #include <vector>
+
 #include "exception.h"
 #include "sql_value.h"
 
-namespace arg3
+namespace rj
 {
     namespace db
     {
