@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -15,10 +16,15 @@ int main(int argc, char *argv[])
     char postgres[BUFSIZ + 1] = {0};
     char util[BUFSIZ + 1] = {0};
 
-    snprintf(mysql, BUFSIZ, "%s-mysql", argv[0]);
-    snprintf(sqlite, BUFSIZ, "%s-sqlite", argv[0]);
-    snprintf(postgres, BUFSIZ, "%s-postgres", argv[0]);
-    snprintf(util, BUFSIZ, "%s-util", argv[0]);
+    char buf[BUFSIZ + 1] = {0};
+    strncpy(buf, argv[0], BUFSIZ);
+
+    buf[strlen(buf) - 4] = 0;
+
+    snprintf(mysql, BUFSIZ, "%s_mysql", buf);
+    snprintf(sqlite, BUFSIZ, "%s_sqlite", buf);
+    snprintf(postgres, BUFSIZ, "%s_postgres", buf);
+    snprintf(util, BUFSIZ, "%s", buf);
 
     if (execute_test(mysql, argv)) {
         return 1;
