@@ -6,16 +6,16 @@ services:
       - mysql
       - postgres
     privileged: true
-    stdin_open: true
+    #stdin_open: true
     working_dir: /usr/src/build
-    tty: true
+    #tty: true
     environment:
       MYSQL_URI: mysql://mysql:3306/test
       POSTGRES_URI: postgres://test:test@postgres:5432/test
     depends_on:
       - mysql
       - postgres
-    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 tests/rj_db_test_all
+    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 20s tests/rj_db_test_all
   mysql:
     image: mysql:5.6
     hostname: mysql

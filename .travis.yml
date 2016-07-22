@@ -1,45 +1,6 @@
-sudo: false
-language: cpp
-compiler:
-  - clang
-  - gcc
-before_script:
-  - git submodule update --init --recursive
-  - mkdir build
-  - gem install coveralls-lcov
-install:
-  - mysql -e "create database IF NOT EXISTS test;" -uroot
-  - psql -c 'create database test;' -U postgres
-  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.7"; fi
-  - if [ "$CXX" == "g++" ]; then export CXX="g++-5" CC="gcc-5" GCOV="gcov-5"; fi
-  - wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.12.orig.tar.gz
-  - tar xf lcov_1.12.orig.tar.gz
-  - export PATH=$TRAVIS_BUILD_DIR/lcov-1.12/bin:$PATH
-addons:
-  apt:
-    sources:
-      - george-edison55-precise-backports
-      - llvm-toolchain-precise-3.7
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-5
-      - clang-3.7
-      - valgrind
-      - libmysqlclient-dev
-      - libsqlite3-dev
-      - libpq-dev
-      - postgresql-server-dev-all
-      - cmake-data
-      - cmake
+sudo: required
 services:
-  - postgresql
+    - docker
 script:
-  - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DMEMORY_CHECK=ON -DENHANCED_PARAMETER_MAPPING=ON -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/9.5/server ..
-  - make
-  - make rj_db_coverage_clean
-  - make test ARGS=-V
-  - make rj_db_coverage_info
-after_success:
-  - coveralls-lcov $TRAVIS_BUILD_DIR/coverage.info
-
+    docker-compose build
+    docker-compose run-test
