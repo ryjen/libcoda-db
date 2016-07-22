@@ -1,14 +1,14 @@
 version: '2'
 services:
   test:
-    build: .
+    build:
+      context: .
+      args: CMAKE_DEFINES="-DCMAKE_BUILD_TYPE=Release -DMEMORY_CHECK=ON"
     links:
       - mysql
       - postgres
     privileged: true
-    #stdin_open: true
     working_dir: /usr/src/build
-    #tty: true
     environment:
       MYSQL_URI: mysql://mysql:3306/test
       POSTGRES_URI: postgres://test:test@postgres:5432/test
@@ -16,6 +16,22 @@ services:
       - mysql
       - postgres
     command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 20s tests/rj_db_test_all
+  coverage:
+    build:
+      context: .
+      args: CMAKE_DEFINES="-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON"
+    links:
+      - mysql
+      - postgres
+    privileged: true
+    working_dir: /usr/src/build
+    environment:
+      MYSQL_URI: mysql://mysql:3306/test
+      POSTGRES_URI: postgres://test:test@postgres:5432/test
+    depends_on:
+      - mysql
+      - postgres
+    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 20s run_coverage
   mysql:
     image: mysql:5.6
     hostname: mysql

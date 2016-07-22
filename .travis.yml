@@ -5,11 +5,14 @@ env:
   DOCKER_COMPOSE_VERSION: 1.7.1
   DOCKER_VERSION: 1.11.2
 before_install:
-  - curl -L https://get.docker.com/builds/`uname -s`/`uname -m`/docker-${DOCKER_VERSION}.tgz > docker.tgz
-  - sudo tar -xzpf docker.tgz -C /usr/local/bin
-  - sudo curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - sudo mv -f docker-compose /usr/local/bin
-  - sudo chmod +x /usr/local/bin/docker*
+  # - curl -L https://get.docker.com/builds/`uname -s`/`uname -m`/docker-${DOCKER_VERSION}.tgz > docker.tgz
+  # - sudo tar -xzpf docker.tgz -C /usr/local/bin
+  # - sudo curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  # - sudo mv -f docker-compose /usr/local/bin
+  # - sudo chmod +x /usr/local/bin/docker*
+  - sudo apt-get update
+  - sudo apt-get install docker-engine  -y
 script:
     - docker-compose build
     - docker-compose run test
+    - docker-compose run coverage
