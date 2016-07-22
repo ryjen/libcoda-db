@@ -3,7 +3,8 @@ services:
   test:
     build:
       context: .
-      args: CMAKE_DEFINES="-DCMAKE_BUILD_TYPE=Release -DMEMORY_CHECK=ON"
+      args:
+          CMAKE_DEFINES: -DCMAKE_BUILD_TYPE=Release -DMEMORY_CHECK=ON
     links:
       - mysql
       - postgres
@@ -19,7 +20,8 @@ services:
   coverage:
     build:
       context: .
-      args: CMAKE_DEFINES="-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON"
+      args:
+          CMAKE_DEFINES: -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON
     links:
       - mysql
       - postgres
