@@ -1,9 +1,9 @@
 sudo: required
+dist: trusty
 services:
     - docker
 env:
   DOCKER_COMPOSE_VERSION: 1.7.1
-  DOCKER_VERSION: 1.11.2
 before_install:
   - sudo curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - sudo chmod +x docker-compose

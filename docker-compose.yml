@@ -11,8 +11,8 @@ services:
     privileged: true
     working_dir: /usr/src/build
     environment:
-      MYSQL_URI: mysql://mysql:3306/test
-      POSTGRES_URI: postgres://test:test@postgres:5432/test
+      MYSQL_URI: mysql://mysql:7878/test
+      POSTGRES_URI: postgres://test:test@postgres:7979/test
     depends_on:
       - mysql
       - postgres
@@ -28,25 +28,25 @@ services:
     privileged: true
     working_dir: /usr/src/build
     environment:
-      MYSQL_URI: mysql://mysql:3306/test
-      POSTGRES_URI: postgres://test:test@postgres:5432/test
+      MYSQL_URI: mysql://mysql:7878/test
+      POSTGRES_URI: postgres://test:test@postgres:7979/test
     depends_on:
       - mysql
       - postgres
-    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 20s run_coverage
+    command: dockerize -wait tcp://mysql:7878 -wait tcp://postgres:7979 -timeout 20s run_coverage
   mysql:
-    image: mysql:5.6
+    image: mysql
     hostname: mysql
     ports:
-      - "3306:3306"
+      - "7878:7878"
     environment:
       MYSQL_DATABASE: test
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
   postgres:
-    image: postgres:9.3
+    image: postgres
     hostname: postgres
     ports:
-      - "5432:5432"
+      - "7979:7979"
     environment:
       POSTGRES_DB: test
       POSTGRES_USER: test
