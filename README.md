@@ -38,8 +38,7 @@ git submodule update --init --recursive
 docker-compose will run the tests with mysql and postgres images:
 
 ```c++
-docker-compose build
-docker-compose up
+docker-compose run test
 ```
 
 otherwise use [cmake](https://cmake.org) to generate for the build system of your choice.
@@ -53,12 +52,13 @@ make test
 
 options supported are:
 
-		-DCODE_COVERAGE=ON           : enable code coverage using lcov
-		-DMEMORY_CHECK=ON            : enable valgrind memory checking on tests
-		-DENABLE_LOGGING 	           : enable internal library logging
-		-DENABLE_PROFILING           : enable valgrind profiling on tests
-		-DENHANCED_PARAMETER_MAPPING : use regex to map different parameter syntaxes
-		-DENABLE_BENCHMARKING        : benchmark with other database libraries
+		-DCODE_COVERAGE=ON              : enable code coverage using lcov
+		-DMEMORY_CHECK=ON               : enable valgrind memory checking on tests
+		-DENABLE_LOGGING=ON             : enable internal library logging
+		-DENABLE_PROFILING=ON           : enable valgrind profiling on tests
+		-DENHANCED_PARAMETER_MAPPING=ON : use regex to map different parameter syntaxes
+		-DENABLE_BENCHMARKING=ON        : benchmark with other database libraries
+
 
 Debugging
 ---------
@@ -66,7 +66,7 @@ Debugging
 Debugging on docker can be done with docker compose:
 
 ```
-docker-compose run test gdb /usr/src/build/tests/rj_db-test-xxx
+docker-compose run test gdb /usr/src/build/tests/rj_db_test_xxx
 ```
 
 Model
@@ -99,7 +99,7 @@ Records
 An simple user example
 ----------------------
 
-Records should be implemented using the [curiously reoccuring template pattern (CRTP)](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
+Records should be implemented using the [curiously re-occuring template pattern (CRTP)](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
 
 First initialize a session
 ```c++
@@ -156,7 +156,7 @@ public:
 Querying records
 ----------------
 
-The libary includes the following schema functions for quering:
+The library includes the following schema functions for querying:
 
 - **find_by_id()**
 - **find_all()**
@@ -259,7 +259,7 @@ You **can** mix indexed and named parameters.
 	"?, ?, @name, ?"
 ```
 
-When mixing indexed parameters, the first '?' is equivelent to parameter 1 or '$1' and so on.
+When mixing indexed parameters, the first '?' is equivalent to parameter 1 or '$1' and so on.
 Mixing parameter types is an area that has been tested, but nearly enough (03/13/16).
 
 Binding
@@ -356,7 +356,6 @@ for ( auto &row : results) {
 		string lName = row["last_name"]; // "Jenkins"
 		// do more stuff
 }
-
 ```
 
 The select query also supports a call back interface:
@@ -403,7 +402,7 @@ select.execute();
 Where Clauses
 -------------
 
-Where clauses in select/delete/joins have a dedicated class. For me it is syntactically preferrable to use the 'and' and 'or' keywords with the where clause operators.
+Where clauses in select/delete/joins have a dedicated class. For me it is syntactically preferable to use the 'and' and 'or' keywords with the where clause operators.
 
 ```c++
 query.where("this = $1") and ("that = $2") or ("test = $3");
@@ -516,15 +515,15 @@ Here are some preliminary tests on sqlite (see tests/benchmarks).  Slightly fast
 
 	sqlite insert                              5000      406684 ns/op
 	sqlite select                              2000     1841120 ns/op
-	tests/benchmarks/rj_db/rj_db-benchmark 10.182s
+	tests/benchmarks/rj_db/rj_db_benchmark 10.182s
 
 	sqlite insert                              5000      409861 ns/op
 	sqlite select                              2000     1560117 ns/op
-	tests/benchmarks/poco/rj_db-benchmark-poco 9.407s
+	tests/benchmarks/poco/rj_db_benchmark_poco 9.407s
 
 	sqlite insert                              5000      403932 ns/op
 	sqlite select                              2000     1430914 ns/op
-	tests/benchmarks/soci/rj_db-benchmark-soci 9.082s
+	tests/benchmarks/soci/rj_db_benchmark_soci 9.082s
 
 Alternatives
 ============

@@ -1,6 +1,7 @@
 version: '2'
 services:
   test:
+    image: rj_db_test
     build:
       context: .
       args:
@@ -16,8 +17,9 @@ services:
     depends_on:
       - mysql
       - postgres
-    command: dockerize -wait tcp://mysql:7878 -wait tcp://postgres:7979 -timeout 20s tests/rj_db_test_all
+    command: dockerize -wait tcp://mysql:7878 -wait tcp://postgres:7979 -timeout 30s tests/rj_db_test_all
   coverage:
+    image: rj_db_coverage
     build:
       context: .
       args:
@@ -33,12 +35,12 @@ services:
     depends_on:
       - mysql
       - postgres
-    command: dockerize -wait tcp://mysql:7878 -wait tcp://postgres:7979 -timeout 20s run_coverage
+    command: dockerize -wait tcp://mysql:7878 -wait tcp://postgres:7979 -timeout 30s run_coverage
   mysql:
     image: mysql
     hostname: mysql
     ports:
-      - "7878:7878"
+      - "7878:3306"
     environment:
       MYSQL_DATABASE: test
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
@@ -46,7 +48,7 @@ services:
     image: postgres
     hostname: postgres
     ports:
-      - "7979:7979"
+      - "7979:5432"
     environment:
       POSTGRES_DB: test
       POSTGRES_USER: test
