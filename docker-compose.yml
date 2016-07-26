@@ -12,12 +12,12 @@ services:
     privileged: true
     working_dir: /usr/src/build
     environment:
-      MYSQL_URI: mysql://mysql:7878/test
-      POSTGRES_URI: postgres://test:test@postgres:7979/test
+      MYSQL_URI: mysql://mysql:3306/test
+      POSTGRES_URI: postgres://test:test@postgres:5432/test
     depends_on:
       - mysql
       - postgres
-    command: dockerize -wait tcp://mysql:7878 -wait tcp://postgres:7979 -timeout 30s tests/rj_db_test_all
+    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s tests/rj_db_test_all
   coverage:
     image: rj_db_coverage
     build:
@@ -30,17 +30,17 @@ services:
     privileged: true
     working_dir: /usr/src/build
     environment:
-      MYSQL_URI: mysql://mysql:7878/test
-      POSTGRES_URI: postgres://test:test@postgres:7979/test
+      MYSQL_URI: mysql://mysql:3306/test
+      POSTGRES_URI: postgres://test:test@postgres:5432/test
     depends_on:
       - mysql
       - postgres
-    command: dockerize -wait tcp://mysql:7878 -wait tcp://postgres:7979 -timeout 30s run_coverage
+    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s run_coverage
   mysql:
     image: mysql
     hostname: mysql
     ports:
-      - "7878:3306"
+      - "3306:3306"
     environment:
       MYSQL_DATABASE: test
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
@@ -48,7 +48,7 @@ services:
     image: postgres
     hostname: postgres
     ports:
-      - "7979:5432"
+      - "5432:5432"
     environment:
       POSTGRES_DB: test
       POSTGRES_USER: test
