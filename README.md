@@ -74,10 +74,10 @@ Model
 
 			/* database interfaces */
 			session                               - interface for an open database session
-				└ statement                         - interface for a prepared statement
-							└ resultset                   - results of a statement
-										└ row                   - a single result
-												 └ column           - a field in a row containing a value
+				└ statement                       - interface for a prepared statement
+					└ resultset                   - results of a statement
+						  └ row                   - a single result
+							 └ column             - a field in a row containing a value
 
 			/* implementations using the above */
 			schema                                - a definition of a table
@@ -353,7 +353,7 @@ query.from("users").where("last_name = $1 OR first_name = $2", "Jenkins", "Harry
 auto results = query.execute();
 
 for ( auto &row : results) {
-		string lName = row["last_name"]; // "Jenkins"
+		string lName = row["last_name"];
 		// do more stuff
 }
 ```
@@ -511,7 +511,7 @@ Additional custom types can be implemented by subclassing **variant::complex**. 
 Benchmarking
 ============
 
-Here are some preliminary tests on sqlite (see tests/benchmarks).  Slightly faster write performance but trades less read performance.
+Here are some preliminary tests on sqlite (see tests/benchmarks).  
 
 	sqlite insert                              5000      406684 ns/op
 	sqlite select                              2000     1841120 ns/op
