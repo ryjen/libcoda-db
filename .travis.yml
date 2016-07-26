@@ -12,5 +12,5 @@ before_install:
   - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine
 script:
     - docker-compose build
-    - docker-compose run test
-    - docker-compose run coverage
+    - docker-compose run --service-ports test
+    - docker-compose run --service-ports coverage
