@@ -9,4 +9,5 @@
 	url = http://github.com/ryjen/benchpress.git
 [submodule "cmake"]
 	path = cmake
-	url = git@github.com:ryjen/cmake
+	url = http://github.com/ryjen/cmake.git
+
