@@ -9,6 +9,8 @@ services:
     links:
       - mysql
       - postgres
+    environment:
+      - TRAVIS_JOB_ID      
     privileged: true
     working_dir: /usr/src/build
     environment:
@@ -24,6 +26,8 @@ services:
       context: .
       args:
           CMAKE_DEFINES: -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON
+    environment:
+      - TRAVIS_JOB_ID          
     links:
       - mysql
       - postgres
