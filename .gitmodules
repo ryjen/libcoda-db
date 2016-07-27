@@ -1,12 +1,12 @@
 [submodule "tests/vendor/bandit"]
 	path = tests/vendor/bandit
 	url = http://github.com/joakimkarlsson/bandit.git
-[submodule "cmake"]
-	path = cmake
-	url = http://github.com/ryjen/cmake.git
 [submodule "libs/variant"]
 	path = libs/variant
 	url = http://github.com/ryjen/variant.git
 [submodule "tests/vendor/benchpress"]
 	path = tests/vendor/benchpress
 	url = http://github.com/ryjen/benchpress.git
+[submodule "cmake"]
+	path = cmake
+	url = git@github.com:ryjen/cmake
