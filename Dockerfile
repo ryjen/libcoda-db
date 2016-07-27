@@ -1,30 +1,17 @@
 
-FROM ubuntu
+FROM ryjen/cpp-coveralls
 
 ARG CMAKE_DEFINES
 
-RUN apt-get update
-
-RUN apt-get -y install build-essential g++ clang gdb cmake valgrind lcov libmysqlclient-dev libsqlite3-dev libpq-dev postgresql-server-dev-all wget libsoci-dev libpoco-dev ruby-coveralls
-
-# dockerize for docker-compose
-# used to wait for databases to be ready
-RUN wget https://github.com/jwilder/dockerize/releases/download/v0.2.0/dockerize-linux-amd64-v0.2.0.tar.gz
-
-RUN tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.2.0.tar.gz
+RUN apt-get -y install libmysqlclient-dev libsqlite3-dev libpq-dev postgresql-server-dev-all libsoci-dev libpoco-dev
 
 ENV BUILD_SRC /usr/src
 
 WORKDIR ${BUILD_SRC}
 
-RUN mkdir -p build cmake libs src tests
+COPY . ${BUILD_SRC}
 
-COPY cmake/ cmake/
-COPY libs/ libs/
-COPY src/ src/
-COPY tests/ tests/
-COPY CMakeLists.txt .
-COPY run_coverage build
+RUN mkdir -p ${BUILD_SRC}/build
 
 WORKDIR ${BUILD_SRC}/build
 
