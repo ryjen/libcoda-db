@@ -17,7 +17,7 @@ services:
     depends_on:
       - mysql
       - postgres
-    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s tests/rj_db_test_all
+    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s make test ARGS=-V
   coverage:
     image: rj_db_coverage
     build:
@@ -35,7 +35,7 @@ services:
     depends_on:
       - mysql
       - postgres
-    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s ./run_coverage
+    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s make rj_db_coverage_coveralls
   mysql:
     image: mysql
     hostname: mysql
