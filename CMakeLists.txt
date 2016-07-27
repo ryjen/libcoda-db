@@ -28,7 +28,7 @@ find_program(DOXYGEN doxygen)
 if(CODE_COVERAGE)
 	include(CodeCoverage)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_COVERAGE}")
-	setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_all ${PROJECT_BINARY_DIR}/gen/coverage)
+	setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_BINARY_DIR}/gen/coverage)
 endif()
 
 if (ENABLE_LOGGING)
