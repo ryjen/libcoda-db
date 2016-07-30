@@ -3,7 +3,7 @@ FROM ryjen/cpp-coveralls
 
 ARG CMAKE_DEFINES
 
-RUN apt-get -y install libmysqlclient-dev libsqlite3-dev libpq-dev postgresql-server-dev-all libsoci-dev libpoco-dev
+RUN apt-get -y install libmysqlclient-dev libsqlite3-dev libpq-dev postgresql-server-dev-all
 
 ENV BUILD_SRC /usr/src
 
@@ -15,7 +15,7 @@ RUN mkdir -p ${BUILD_SRC}/build
 
 WORKDIR ${BUILD_SRC}/build
 
-RUN cmake ${CMAKE_DEFINES} -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/9.5/server ..
+RUN cmake ${CMAKE_DEFINES} -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/9.3/server ..
 
 RUN make
 
