@@ -4,18 +4,16 @@ rj_db
 
 [![Build Status](http://img.shields.io/travis/ryjen/db.svg)](https://travis-ci.org/ryjen/db)
 [![Coverage Status](https://coveralls.io/repos/ryjen/db/badge.svg?branch=master&service=github)](https://coveralls.io/github/ryjen/db?branch=master)
-[![License](http://img.shields.io/:license-mit-blue.svg)](http://ryjen.mit-license.org)
+[![License](http://img.shields.io/:license-gpl.v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![Code Grade](https://img.shields.io/codacy/grade/e98c311926b94b068ef6705245d77739.svg)](https://www.codacy.com/app/ryjen/rj_db/dashboard)
+[![Beer Pay](https://img.shields.io/beerpay/ryjen/db.svg)](https://beerpay.io/ryjen/db)
 
-a sqlite, mysql and postgres wrapper / active record (ish) implementation
+a sqlite, mysql and postgres wrapper / active record (ish) implementation.   use in production at your own risk, no support or warrenty.
 
-While this library I think is pretty awesome it is not fully tested and should be used in production at your own risk.
+Why another library
+-------------------
 
-Pull requests are welcomed...
-
-Why
----
-
-Mostly for the challenge, but other selfish reasons like learning, resume content, and a lack of desire to use other options.
+Mostly for the challenge and to use newer features of c++11 in a database context.  Other libraries have added C++11 after the fact, which isn't always pleasing.  I also wanted an interface that was natural like linq.
 
 Building
 --------
@@ -337,6 +335,7 @@ query.from("users").execute([](const resultset & rs)
 		});
 });
 
+// use a function for a callback
 std::function<void (const resultset &)> handler = [](const resultset &results)
 {
 		printf("found %d results", results.size());
@@ -353,7 +352,8 @@ The **join_clause** is used to build join statements.
 ```c++
 select_query select(current_session);
 
-select.columns("u.id", "s.setting").from("users u").join("user_settings s").on("u.id = s.user_id") and ("s.valid = 1");
+select.columns("u.id", "s.setting").from("users u")
+    .join("user_settings s").on("u.id = s.user_id") and ("s.valid = 1");
 
 select.execute();
 ```
@@ -361,7 +361,7 @@ select.execute();
 Where Clauses
 -------------
 
-Where clauses in select/delete/joins have a dedicated class. For me it is syntactically preferable to use the 'and' and 'or' keywords with the where clause operators.
+Where clauses in select/delete/joins have a dedicated class. For me it is syntactically preferable to use the 'and' and 'or' keywords with the where clause operators.  This is the same as calling the && || operators.
 
 ```c++
 query.where("this = $1") and ("that = $2") or ("test = $3");
@@ -394,6 +394,19 @@ for(int i = 1000; i < 3000; i++) {
 				cerr << testdb.last_error() << endl;
 		}
 }
+```
+
+Raw Queries
+-----------
+
+Perform raw queries on a session object:
+
+```c++
+	auto results = session->query("select * from users");
+
+	if (!session->execute("insert into users values(...)")) {
+		cerr << session->last_error() << endl;
+	}
 ```
 
 Transactions
@@ -470,7 +483,7 @@ Additional custom types can be implemented by subclassing **variant::complex**. 
 Benchmarking
 ============
 
-Here are some preliminary benchmarks on sqlite (see tests/benchmarks).  Tested on max osx pro using clang++.
+Here are some preliminary benchmarks on sqlite (see tests/benchmarks).  Tested on mac osx pro using clang release mode.
 
 	sqlite insert                              5000      406684 ns/op
 	sqlite select                              2000     1841120 ns/op
@@ -498,5 +511,3 @@ TODO / ROADMAP
 * cbetter benchmarking and perf improvements
 * NoSQL support? might be doable
 
-[![BitCoin donate button](https://img.shields.io/badge/bitcoin-donate-yellow.svg)](https://coinbase.com/checkouts/9ef59f5479eec1d97d63382c9ebcb93a "Donate once-off to this project using BitCoin")
-Buy me a beer!
