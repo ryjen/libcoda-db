@@ -1,6 +1,7 @@
 /*!
  * @copyright ryan jennings (ryan-jennings.net), 2013
  */
+
 #include "select_query.h"
 #include "schema.h"
 #include "statement.h"
@@ -100,16 +101,6 @@ namespace rj
             return *this;
         }
 
-        string select_query::table_name() const
-        {
-            return tableName_;
-        }
-
-        select_query &select_query::table_name(const string &value)
-        {
-            tableName_ = value;
-            return *this;
-        }
         string select_query::limit() const
         {
             return limit_;
@@ -183,7 +174,7 @@ namespace rj
 
             buf << "SELECT ";
 
-            buf << (columns_.size() == 0 ? "*" : join_csv(columns_));
+            buf << (columns_.size() == 0 ? "*" : helper::join_csv(columns_));
 
             buf << " FROM " << tableName_;
 

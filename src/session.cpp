@@ -148,11 +148,11 @@ namespace rj
 
             buf << "(";
 
-            buf << join_csv(columns);
+            buf << helper::join_csv(columns);
 
             buf << ") VALUES(";
 
-            buf << join_params(columns, false);
+            buf << helper::join_params(columns, false);
 
             buf << ");";
 

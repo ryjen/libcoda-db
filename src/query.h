@@ -122,32 +122,33 @@ namespace rj
              * @return true if the internals are open and valid
              */
             virtual bool is_valid() const;
+
+            virtual std::string to_string() const = 0;
         };
-    }
+        namespace helper
+        {
+            /*!
+             * utility method used in creating sql
+             */
+            template <typename T>
+            std::string join_csv(const std::vector<T> &list)
+            {
+                std::ostringstream buf;
 
-    /*!
-     * utility method used in creating sql
-     */
-    template <typename T>
-    std::string join_csv(const std::vector<T> &list)
-    {
-        std::ostringstream buf;
+                if (list.size() > 0) {
+                    std::ostream_iterator<T> it(buf, ",");
 
-        if (list.size() > 0) {
-            std::ostream_iterator<T> it(buf, ",");
+                    copy(list.begin(), list.end() - 1, it);
 
-            copy(list.begin(), list.end() - 1, it);
+                    buf << *(list.end() - 1);
+                }
 
-            buf << *(list.end() - 1);
+                return buf.str();
+            }
+
+            std::string join_params(const std::vector<std::string> &columns, bool update);
         }
-
-        return buf.str();
     }
-
-    /*!
-     * utility method used in creating sql
-     */
-    std::string join_params(const std::vector<std::string> &columns, bool update);
 }
 
 #endif

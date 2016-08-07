@@ -15,15 +15,7 @@ Pull requests are welcomed...
 Why
 ---
 
-Purely selfish reasons like learning, resume content, and a lack of desire to use other options.
-
-What makes this library great
------------------------------
-
-- schema's with automatic primary key usage for records
-- supports multiple prepared statement syntaxes across databases
-- a query interface that reads like sql
-- makes good use of new c++11 features
+Mostly for the challenge, but other selfish reasons like learning, resume content, and a lack of desire to use other options.
 
 Building
 --------
@@ -52,12 +44,12 @@ make test
 
 options supported are:
 
-		-DCODE_COVERAGE=ON              : enable code coverage using lcov
-		-DMEMORY_CHECK=ON               : enable valgrind memory checking on tests
-		-DENABLE_LOGGING=ON             : enable internal library logging
-		-DENABLE_PROFILING=ON           : enable valgrind profiling on tests
-		-DENHANCED_PARAMETER_MAPPING=ON : use regex to map different parameter syntaxes
-		-DENABLE_BENCHMARKING=ON        : benchmark with other database libraries
+		-DCODE_COVERAGE=OFF              : enable code coverage using lcov
+		-DMEMORY_CHECK=OFF               : enable valgrind memory checking on tests
+		-DENABLE_LOGGING=OFF             : enable internal library logging
+		-DENABLE_PROFILING=OFF           : enable valgrind profiling on tests
+		-DENHANCED_PARAMETER_MAPPING=OFF : use regex to map different parameter syntaxes
+		-DENABLE_BENCHMARKING=OFF        : benchmark with other database libraries
 
 
 Debugging
@@ -72,26 +64,11 @@ docker-compose run test gdb /usr/src/build/tests/rj_db_test_xxx
 Model
 -----
 
-			/* database interfaces */
-			session                               - interface for an open database session
-				└ statement                       - interface for a prepared statement
-					└ resultset                   - results of a statement
-						  └ row                   - a single result
-							 └ column             - a field in a row containing a value
+![session interface](db_sessions.png)
 
-			/* implementations using the above */
-			schema                                - a definition of a table
-			schema_factory                        - cached schemas
-			record                                - the active record (ish) implementation
-			select_query                          - builds select queries
-			insert_query                          - inserts data
-			update_query                          - updates data
-			delete_query                          - builds delete queries
-			sql_value                             - storage and conversion for basic sql types
-			transaction                           - transactional functionality
-			join_clause                           - handles creating joins on select queries
-			where_clause                          - handles creating where clauses on select, update and delete queries
+![query interface](db_query.png)
 
+![results interface](db_results.png)
 
 Records
 =======
@@ -229,29 +206,11 @@ Delete a record
 Prepared Statements
 ===================
 
-By default, the library will use the prepared statement syntax of the database being used.
+By default and for performance, the library will use the prepared statement syntax of the database being used.
 
-If you turn on ENHANCED_PARAMENTER_MAPPING at compile time, then the syntaxes are universal.
+If you turn on ENHANCED_PARAMENTER_MAPPING at compile time, then the syntaxes are universal - including named parameters and mixing parameter syntaxes.
 
-Indexed binding parameters in queries can use the dollar sign syntax:
-
-```c++
- "$1, $2, $3, $1, etc"
-```
-
-or the ? syntax:
-
-```c++
- "?, ?, ?, ?, etc"
-```
-
-Named parameters are also supported using a '@' or ':' prefix:
-
-```c++
-	"id = @id, name = :name, etc."
-```
-
-You **can** mix indexed and named parameters.
+Enhanced parameter mapping example:
 
 ```c++
 	"?, $2, @name, $3"
@@ -511,7 +470,7 @@ Additional custom types can be implemented by subclassing **variant::complex**. 
 Benchmarking
 ============
 
-Here are some preliminary tests on sqlite (see tests/benchmarks).  
+Here are some preliminary benchmarks on sqlite (see tests/benchmarks).  Tested on max osx pro using clang++.
 
 	sqlite insert                              5000      406684 ns/op
 	sqlite select                              2000     1841120 ns/op
@@ -536,7 +495,7 @@ TODO / ROADMAP
 ==============
 
 * More and better quality tests, I demand 100% coverage
-* compare benchmarks with other libraries
+* cbetter benchmarking and perf improvements
 * NoSQL support? might be doable
 
 [![BitCoin donate button](https://img.shields.io/badge/bitcoin-donate-yellow.svg)](https://coinbase.com/checkouts/9ef59f5479eec1d97d63382c9ebcb93a "Donate once-off to this project using BitCoin")

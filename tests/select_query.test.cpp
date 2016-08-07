@@ -44,7 +44,7 @@ go_bandit([]() {
 
             Assert::That(query.get_session(), Equals(current_session));
 
-            Assert::That(query.table_name(), Equals("users"));
+            Assert::That(query.from(), Equals("users"));
         });
 
         it("can be constructed with a schema", []() {
@@ -52,7 +52,7 @@ go_bandit([]() {
 
             select_query query(factory.get(current_session, "users"));
 
-            Assert::That(query.table_name(), Equals("users"));
+            Assert::That(query.from(), Equals("users"));
         });
 
         it("can be copied and moved", []() {

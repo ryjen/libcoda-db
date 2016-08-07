@@ -248,19 +248,6 @@ namespace rj
             void reset();
 
             /*!
-             * gets the table name of this query
-             * @return the table name string
-             */
-            std::string table_name() const;
-
-            /*!
-             * sets the table name
-             * @param  value the table name to set
-             * @return       a reference to this
-             */
-            select_query &table_name(const std::string &value);
-
-            /*!
              * return the first column in the first row of the result set
              */
             template <typename T>

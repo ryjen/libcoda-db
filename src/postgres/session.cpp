@@ -180,11 +180,11 @@ namespace rj
 
                 buf << "(";
 
-                buf << join_csv(columns);
+                buf << rj::db::helper::join_csv(columns);
 
                 buf << ") VALUES(";
 
-                buf << join_params(columns, false);
+                buf << rj::db::helper::join_params(columns, false);
 
                 buf << ")";
 
