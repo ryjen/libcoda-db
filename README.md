@@ -13,7 +13,7 @@ a sqlite, mysql and postgres wrapper / active record (ish) implementation.   use
 Why another library
 -------------------
 
-Mostly for the challenge and to use newer features of c++11 in a database context.  Other libraries have added C++11 after the fact, which isn't always pleasing.  I also wanted an interface that was natural like linq.
+Mostly for the challenge and to use newer features of c++11 in a database context.  Other libraries have added C++11 after the fact.
 
 Building
 --------

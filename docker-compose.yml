@@ -9,9 +9,6 @@ services:
     links:
       - mysql
       - postgres
-    environment:
-      - TRAVIS_JOB_ID      
-    privileged: true
     working_dir: /usr/src/build
     environment:
       MYSQL_URI: mysql://mysql:3306/test
@@ -27,11 +24,10 @@ services:
       args:
           CMAKE_DEFINES: -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON
     environment:
-      - TRAVIS_JOB_ID          
+      - TRAVIS_JOB_ID
     links:
       - mysql
       - postgres
-    privileged: true
     working_dir: /usr/src/build
     environment:
       MYSQL_URI: mysql://mysql:3306/test
@@ -39,7 +35,7 @@ services:
     depends_on:
       - mysql
       - postgres
-    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s make rj_db_coverage_coveralls
+    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s make rj_db_coverage_coveralls TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
   mysql:
     image: mysql
     hostname: mysql
