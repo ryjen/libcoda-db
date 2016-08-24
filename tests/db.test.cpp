@@ -146,9 +146,9 @@ go_bandit([]() {
 #ifdef HAVE_LIBPQ
                 auto postgres = sqldb::create_session("postgres://localhost:4000/test");
                 AssertThat(postgres.get() != NULL, IsTrue());
-                AssertThat(mysql->connection_info().host, Equals("localhost"));
-                AssertThat(mysql->connection_info().port, Equals("4000"));
-                AssertThat(mysql->connection_info().path, Equals("test"));
+                AssertThat(postgres->connection_info().host, Equals("localhost"));
+                AssertThat(postgres->connection_info().port, Equals("4000"));
+                AssertThat(postgres->connection_info().path, Equals("test"));
 #endif
 
             } catch (const std::exception &e) {
