@@ -48,48 +48,50 @@ namespace rj
 
         string where_clause::to_string() const
         {
-            ostringstream buf;
+            string buf;
 
             if (and_.size() > 0 && or_.size() > 0) {
-                buf << "(";
+                buf += "(";
             }
 
-            buf << value_;
+            buf += value_;
 
             if (and_.size() > 0) {
-                buf << " AND ";
+                buf += " AND ";
                 auto it = and_.begin();
                 while (it < and_.end() - 1) {
-                    buf << it->to_string() << " AND ";
+                    buf += it->to_string();
+                    buf += " AND ";
                     ++it;
                 }
                 if (it != and_.end()) {
-                    buf << it->to_string();
+                    buf += it->to_string();
                 }
                 if (or_.size() > 0) {
-                    buf << ")";
+                    buf += ")";
                 }
             }
 
             if (or_.size() > 0) {
                 if (and_.size() > 0) {
-                    buf << " OR (";
+                    buf += " OR (";
                 } else {
-                    buf << " OR ";
+                    buf += " OR ";
                 }
                 auto it = or_.begin();
                 while (it < or_.end() - 1) {
-                    buf << it->to_string() << " OR ";
+                    buf += it->to_string();
+                    buf += " OR ";
                     ++it;
                 }
                 if (it != or_.end()) {
-                    buf << it->to_string();
+                    buf += it->to_string();
                 }
                 if (and_.size() > 0) {
-                    buf << ")";
+                    buf += ")";
                 }
             }
-            return buf.str();
+            return buf;
         }
 
         bool where_clause::empty() const

@@ -140,13 +140,15 @@ namespace rj
 
             bool session::execute(const string &sql)
             {
+                bool rval = false;
+
                 if (db_ == nullptr) {
                     throw database_exception("database is not open");
                 }
 
                 PGresult *res = PQexec(db_.get(), sql.c_str());
 
-                bool rval = PQresultStatus(res) == PGRES_COMMAND_OK || PQresultStatus(res) == PGRES_TUPLES_OK;
+                rval = PQresultStatus(res) == PGRES_COMMAND_OK || PQresultStatus(res) == PGRES_TUPLES_OK;
 
                 PQclear(res);
 
@@ -170,41 +172,43 @@ namespace rj
 
             string session::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
             {
+                string buf;
+
                 if (schema == nullptr) {
                     return string();
                 }
 
-                ostringstream buf;
+                buf += "INSERT INTO ";
+                buf += schema->table_name();
 
-                buf << "INSERT INTO " << schema->table_name();
+                buf += "(";
 
-                buf << "(";
+                buf += rj::db::helper::join_csv(columns);
 
-                buf << rj::db::helper::join_csv(columns);
+                buf += ") VALUES(";
 
-                buf << ") VALUES(";
+                buf += rj::db::helper::join_params(columns, false);
 
-                buf << rj::db::helper::join_params(columns, false);
-
-                buf << ")";
+                buf += ")";
 
                 auto keys = schema->primary_keys();
 
                 auto it = keys.begin();
 
                 if (it != keys.end()) {
-                    buf << " RETURNING ";
+                    buf += " RETURNING ";
 
                     while (it < keys.end() - 1) {
-                        buf << *it << ",";
+                        buf += *it;
+                        buf += ",";
                     }
 
-                    buf << *it;
+                    buf += *it;
                 }
 
-                buf << ";";
+                buf += ";";
 
-                return buf.str();
+                return buf;
             }
             void session::query_schema(const string &dbName, const string &tableName, std::vector<column_definition> &columns)
             {

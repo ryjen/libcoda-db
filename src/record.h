@@ -534,9 +534,10 @@ namespace rj
            private:
             std::vector<std::string> available_columns(bool exists) const
             {
+                std::vector<std::string> values;
                 auto columns = schema()->column_names();
                 auto pk = schema()->primary_key();
-                std::vector<std::string> values(columns.size());
+                values.reserve(columns.size());
                 auto it = std::copy_if(columns.begin(), columns.end(), values.begin(),
                                        [&](const std::string &val) { return has(val) && (exists || val != pk); });
                 values.resize(std::distance(values.begin(), it));

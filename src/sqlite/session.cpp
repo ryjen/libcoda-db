@@ -124,15 +124,17 @@ namespace rj
 
             string session::last_error() const
             {
+                string buf;
+
                 if (db_ == nullptr) {
                     return string();
                 }
-                ostringstream buf;
 
-                buf << sqlite3_errcode(db_.get());
-                buf << ": " << sqlite3_errmsg(db_.get());
+                buf += sqlite3_errcode(db_.get());
+                buf += ": ";
+                buf += sqlite3_errmsg(db_.get());
 
-                return buf.str();
+                return buf;
             }
 
             long long session::last_insert_id() const

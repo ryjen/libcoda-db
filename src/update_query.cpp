@@ -91,24 +91,26 @@ namespace rj
 
         string update_query::to_string() const
         {
-            ostringstream buf;
+            string buf;
 
-            buf << "UPDATE " << tableName_;
+            buf += "UPDATE ";
+            buf += tableName_;
 
             if (columns_.size() > 0) {
-                buf << " SET ";
-                buf << helper::join_params(columns_, true);
+                buf += " SET ";
+                buf += helper::join_params(columns_, true);
             }
 
             if (!where_.empty()) {
-                buf << " WHERE " << where_;
+                buf += " WHERE ";
+                buf += where_.to_string();
             } else {
                 log::warn("empty where clause for update query");
             }
 
-            buf << ";";
+            buf += ";";
 
-            return buf.str();
+            return buf;
         }
 
         update_query &update_query::columns(const vector<string> &columns)

@@ -76,19 +76,21 @@ namespace rj
 
         string delete_query::to_string() const
         {
-            ostringstream buf;
+            string buf;
 
-            buf << "DELETE FROM " << tableName_;
+            buf += "DELETE FROM ";
+            buf += tableName_;
 
             if (!where_.empty()) {
-                buf << " WHERE " << where_;
+                buf += " WHERE ";
+                buf += where_.to_string();
             } else {
                 log::warn("empty where clause for delete query");
             }
 
-            buf << ";";
+            buf += ";";
 
-            return buf.str();
+            return buf;
         }
     }
 }

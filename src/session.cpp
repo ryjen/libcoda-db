@@ -142,21 +142,22 @@ namespace rj
 
         string session_impl::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
         {
-            ostringstream buf;
+            string buf;
 
-            buf << "INSERT INTO " << schema->table_name();
+            buf += "INSERT INTO ";
+            buf += schema->table_name();
 
-            buf << "(";
+            buf += "(";
 
-            buf << helper::join_csv(columns);
+            buf += helper::join_csv(columns);
 
-            buf << ") VALUES(";
+            buf += ") VALUES(";
 
-            buf << helper::join_params(columns, false);
+            buf += helper::join_params(columns, false);
 
-            buf << ");";
+            buf += ");";
 
-            return buf.str();
+            return buf;
         }
 
         string session::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const

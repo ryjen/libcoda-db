@@ -17,10 +17,12 @@ namespace rj
         template <typename T>
         T *c_alloc(size_t num = 1)
         {
+            void *mem = nullptr;
+
             if (num == 0) {
                 return nullptr;
             }
-            void *mem = calloc(num, sizeof(T));
+            mem = calloc(num, sizeof(T));
             if (mem == nullptr) {
                 throw std::bad_alloc();
             }
@@ -42,16 +44,19 @@ namespace rj
         template <typename T>
         T *c_alloc(T *value, size_t num, size_t oldSize)
         {
+            void *mem = nullptr;
+            T *val = nullptr;
+
             if (num == 0) {
                 return value;
             }
-            void *mem = realloc(value, sizeof(T) * num + 1);
+            mem = realloc(value, sizeof(T) * num + 1);
 
             if (mem == nullptr) {
                 throw std::bad_alloc();
             }
 
-            T *val = static_cast<T *>(mem);
+            val = static_cast<T *>(mem);
 
             // make sure new values are initialized
             // will be ignored if oldSize is greater than the new size

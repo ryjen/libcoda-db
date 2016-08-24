@@ -11,10 +11,12 @@ namespace rj
     {
         shared_ptr<schema> schema_factory::create(const std::shared_ptr<session> &session, const string &tableName)
         {
+            shared_ptr<schema> p = nullptr;
+
             if (session == nullptr) {
                 throw database_exception("invalid session for schema create");
             }
-            shared_ptr<schema> p = make_shared<schema>(session, tableName);
+            p = make_shared<schema>(session, tableName);
             schema_cache_[tableName] = p;
             return p;
         }

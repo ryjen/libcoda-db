@@ -170,46 +170,52 @@ namespace rj
 
         string select_query::to_string() const
         {
-            ostringstream buf;
+            string buf;
 
-            buf << "SELECT ";
+            buf += "SELECT ";
 
-            buf << (columns_.size() == 0 ? "*" : helper::join_csv(columns_));
+            buf += (columns_.size() == 0 ? "*" : helper::join_csv(columns_));
 
-            buf << " FROM " << tableName_;
+            buf += " FROM ";
+
+            buf += tableName_;
 
             if (!join_.empty()) {
                 for (auto &join : join_) {
-                    buf << join;
+                    buf += join.to_string();
                 }
             }
 
             if (!where_.empty()) {
-                buf << " WHERE " << where_.to_string();
+                buf += " WHERE ";
+                buf += where_.to_string();
             }
 
             if (!orderBy_.empty()) {
-                buf << " ORDER BY " << orderBy_;
+                buf += " ORDER BY ";
+                buf += orderBy_;
             }
 
             if (!limit_.empty()) {
-                buf << " LIMIT " << limit_;
+                buf += " LIMIT ";
+                buf += limit_;
             }
 
             if (!groupBy_.empty()) {
-                buf << " GROUP BY " << groupBy_;
+                buf += " GROUP BY ";
+                buf += groupBy_;
             }
 
             if (union_) {
-                buf << " UNION ";
+                buf += " UNION ";
                 if (union_->type == union_op::all) {
-                    buf << "ALL ";
+                    buf += "ALL ";
                 }
-                buf << union_->query;
+                buf += union_->query.to_string();
             } else {
-                buf << ";";
+                buf += ";";
             }
-            return buf.str();
+            return buf;
         }
 
         long long select_query::count()

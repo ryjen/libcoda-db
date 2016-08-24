@@ -7,10 +7,13 @@ namespace rj
     {
         void *c_alloc(size_t size, size_t num = 1)
         {
+            void *mem = nullptr;
+
             if (size == 0) {
                 return nullptr;
             }
-            void *mem = calloc(num, size);
+
+            mem = calloc(num, size);
 
             if (mem == nullptr) {
                 throw std::bad_alloc();

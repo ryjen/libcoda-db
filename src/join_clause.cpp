@@ -46,39 +46,41 @@ namespace rj
 
         string join_clause::to_string() const
         {
-            ostringstream buf;
+            string buf;
 
             switch (type_) {
                 default:
                 case join::none:
                     break;
                 case join::natural:
-                    buf << " NATURAL";
+                    buf = " NATURAL";
                     break;
                 case join::inner:
-                    buf << " INNER";
+                    buf = " INNER";
                     break;
                 case join::left:
-                    buf << " LEFT";
+                    buf = " LEFT";
                     break;
                 case join::right:
-                    buf << " RIGHT";
+                    buf = " RIGHT";
                     break;
                 case join::full:
-                    buf << " FULL OUTER";
+                    buf = " FULL OUTER";
                     break;
                 case join::cross:
-                    buf << " CROSS";
+                    buf = " CROSS";
                     break;
             }
 
-            buf << " JOIN " << tableName_;
+            buf += " JOIN ";
+            buf += tableName_;
 
             if (type_ != join::cross && type_ != join::natural) {
-                buf << " ON " << on_;
+                buf += " ON ";
+                buf += on_.to_string();
             }
 
-            return buf.str();
+            return buf;
         }
 
         join_clause &join_clause::table(const string &value)
