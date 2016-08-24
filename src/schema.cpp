@@ -75,7 +75,7 @@ namespace rj
                 throw database_exception("database is not open");
             }
 
-            session_->query_schema(tableName_, columns_);
+            columns_ = session_->get_columns_for_schema(tableName_);
         }
 
         vector<column_definition> schema::columns() const

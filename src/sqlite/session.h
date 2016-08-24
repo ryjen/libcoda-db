@@ -68,7 +68,7 @@ namespace rj
                 /*! @copydoc
                  *  overriden for sqlite3 specific pragma parsing
                  */
-                void query_schema(const std::string &dbName, const std::string &tableName, std::vector<column_definition> &columns);
+                std::vector<column_definition> get_columns_for_schema(const std::string &dbName, const std::string &tableName);
             };
         }
     }

@@ -170,7 +170,7 @@ namespace rj
                 return make_shared<postgres::transaction>(db_, mode);
             }
 
-            string session::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
+            string session::get_insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
             {
                 string buf;
 
@@ -210,9 +210,13 @@ namespace rj
 
                 return buf;
             }
-            void session::query_schema(const string &dbName, const string &tableName, std::vector<column_definition> &columns)
+            std::vector<column_definition> session::get_columns_for_schema(const string &dbName, const string &tableName)
             {
-                if (!is_open()) return;
+                std::vector<column_definition> columns;
+
+                if (!is_open()) {
+                    return columns;
+                }
 
                 string pk_sql =
                     string("SELECT tc.table_schema, tc.table_name, kc.column_name FROM information_schema.table_constraints tc ") +
@@ -258,6 +262,7 @@ namespace rj
 
                     columns.push_back(def);
                 }
+                return columns;
             }
         }
     }

@@ -93,14 +93,17 @@ namespace rj
             sql_value to_value() const;
 
             /*!
-             * converts this column to a blob value_
-             */
-            sql_blob to_blob() const;
-
-            /*!
-             * converts this column to a sql time value
+             * converts this column to a time value
+             * @return the value of this column
              */
             sql_time to_time() const;
+
+
+            /*!
+             * converts this column to a binary value
+             * @return the value of this column
+             */
+            sql_blob to_blob() const;
 
             /*!
              * @return the name of this column
@@ -123,7 +126,12 @@ namespace rj
             operator long long() const;
             operator unsigned long long() const;
             operator float() const;
+            operator sql_value() const;
+
+            bool operator==(const sql_value &other) const;
         };
+
+        bool operator==(const sql_value &value, const column &column);
     }
 }
 

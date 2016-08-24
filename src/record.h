@@ -315,13 +315,13 @@ namespace rj
             {
                 bool rval = false;
                 bool exists = record::exists();
-                auto cols_to_save = available_columns(exists);
                 auto pk = schema()->primary_key();
+                auto cols_to_save = available_columns(exists, pk);
 
                 if (exists) {
                     update_query query(schema(), cols_to_save);
 
-                    bind_columns_to_query(query, cols_to_save);
+                    query.bind(get(cols_to_save));
 
                     query.where(pk + " = @" + pk);
                     query.bind("@" + pk, get(pk));
@@ -330,7 +330,7 @@ namespace rj
                 } else {
                     insert_query query(schema(), cols_to_save);
 
-                    bind_columns_to_query(query, cols_to_save);
+                    query.bind(get(cols_to_save));
 
                     rval = query.execute();
 
@@ -359,6 +359,18 @@ namespace rj
                 }
 
                 return values_.at(name);
+            }
+
+            std::vector<sql_value> get(const std::vector<std::string> &columns) const
+            {
+                std::vector<sql_value> values;
+
+                for (auto &column : columns) {
+                    if (has(column)) {
+                        values.push_back(get(column));
+                    }
+                }
+                return values;
             }
 
             /*!
@@ -532,33 +544,15 @@ namespace rj
             }
 
            private:
-            std::vector<std::string> available_columns(bool exists) const
+            std::vector<std::string> available_columns(bool exists, const std::string &pk) const
             {
                 std::vector<std::string> values;
                 auto columns = schema()->column_names();
-                auto pk = schema()->primary_key();
-                values.reserve(columns.size());
+                values.resize(columns.size());
                 auto it = std::copy_if(columns.begin(), columns.end(), values.begin(),
                                        [&](const std::string &val) { return has(val) && (exists || val != pk); });
                 values.resize(std::distance(values.begin(), it));
                 return values;
-            }
-
-            size_t bind_columns_to_query(query &query, const std::vector<std::string> &columns) const
-            {
-                size_t index = 0;
-
-                // bind the column values
-                for (auto &column : columns) {
-                    auto value = get(column);
-                    if (value.is_null()) {
-                        query.bind(++index);
-                    } else {
-                        query.bind_value(++index, value);
-                    }
-                }
-
-                return index;
             }
         };
     }

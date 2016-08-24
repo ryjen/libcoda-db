@@ -62,8 +62,10 @@ namespace rj
                 }
             }
 
-            void session::query_schema(const string &dbName, const string &tableName, std::vector<column_definition> &columns)
+            std::vector<column_definition> session::get_columns_for_schema(const string &dbName, const string &tableName)
             {
+                std::vector<column_definition> columns;
+
                 if (tableName.empty()) {
                     throw database_exception("no table name to query schema");
                 }
@@ -89,6 +91,8 @@ namespace rj
 
                     columns.push_back(def);
                 }
+
+                return columns;
             }
 
             void session::open()

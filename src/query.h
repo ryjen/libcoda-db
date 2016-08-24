@@ -111,6 +111,7 @@ namespace rj
             query &bind(size_t index, const sql_null_type &value);
             query &bind(size_t index, const sql_time &value);
             query &bind(const std::string &name, const sql_value &value);
+            query &bind(const std::vector<sql_value> &values, size_t start_index = 1);
 
             /*!
              * returns the last error the query encountered, if any

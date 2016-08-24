@@ -135,12 +135,12 @@ namespace rj
             return impl_->last_error();
         }
 
-        void session::query_schema(const std::string &tablename, std::vector<column_definition> &columns)
+        std::vector<column_definition> session::get_columns_for_schema(const std::string &tablename)
         {
-            return impl_->query_schema(connection_info().path, tablename, columns);
+            return impl_->get_columns_for_schema(connection_info().path, tablename);
         }
 
-        string session_impl::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
+        string session_impl::get_insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
         {
             string buf;
 
@@ -160,9 +160,9 @@ namespace rj
             return buf;
         }
 
-        string session::insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
+        string session::get_insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
         {
-            return impl_->insert_sql(schema, columns);
+            return impl_->get_insert_sql(schema, columns);
         }
 
         shared_ptr<session_impl> session::impl() const

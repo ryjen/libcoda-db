@@ -194,9 +194,13 @@ namespace rj
             {
                 return make_shared<mysql::transaction>(db_);
             }
-            void session::query_schema(const string &dbName, const string &tableName, std::vector<column_definition> &columns)
+            std::vector<column_definition> session::get_columns_for_schema(const string &dbName, const string &tableName)
             {
-                if (!is_open()) return;
+                std::vector<column_definition> columns;
+
+                if (!is_open()) {
+                    return columns;
+                }
 
                 // TODO: use binding for table parameter
                 string pk_sql =
@@ -231,7 +235,7 @@ namespace rj
 
                     while (primary_keys->next()) {
                         auto pk = primary_keys->current_row();
-                        if (pk["column_name"].to_value() == def.name) {
+                        if (pk["column_name"] == def.name) {
                             def.pk = true;
                             def.autoincrement = row["extra"].to_value() == "auto_increment";
                         }
@@ -244,6 +248,8 @@ namespace rj
 
                     columns.push_back(def);
                 }
+
+                return columns;
             }
         }
     }

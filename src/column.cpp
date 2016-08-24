@@ -118,5 +118,15 @@ namespace rj
         {
             return impl_->to_value();
         }
+
+        bool column::operator==(const sql_value &other) const
+        {
+            return impl_->to_value() == other;
+        }
+
+        bool operator==(const sql_value &other, const column &column)
+        {
+            return other == column.to_value();
+        }
     }
 }

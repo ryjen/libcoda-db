@@ -95,7 +95,7 @@ namespace rj
                 throw database_exception("invalid query, schema not found or initialized yet");
             }
 
-            return session_->insert_sql(session_->get_schema(tableName_), columns_);
+            return session_->get_insert_sql(schema, columns_);
         }
 
         insert_query &insert_query::columns(const vector<string> &columns)

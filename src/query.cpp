@@ -225,6 +225,12 @@ namespace rj
             return set_modified();
         }
 
+        query &query::bind(const std::vector<sql_value> &values, size_t start_index)
+        {
+            bindable::bind(values, start_index);
+            return *this;
+        }
+
         string query::last_error()
         {
             if (stmt_ == nullptr) {

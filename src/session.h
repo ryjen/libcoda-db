@@ -105,7 +105,7 @@ namespace rj
              * @param tablename the table to query
              * @param columns   an array to put columns found
              */
-            virtual void query_schema(const std::string &dbName, const std::string &tablename, std::vector<column_definition> &columns) = 0;
+            virtual std::vector<column_definition> get_columns_for_schema(const std::string &dbName, const std::string &tablename) = 0;
 
             /*!
              * generates database specific insert sql
@@ -113,7 +113,7 @@ namespace rj
              * @param  columns the columns to insert
              * @return         the sql string
              */
-            virtual std::string insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
+            virtual std::string get_insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
 
            private:
             uri connectionInfo_;
@@ -218,25 +218,10 @@ namespace rj
             void clear_schema(const std::string &tableName);
 
             /*!
-             * queries the database for a tables column definitions
-             * @param tablename the tablename
-             * @param columns   the collection of columns to store the results
-             */
-            void query_schema(const std::string &tablename, std::vector<column_definition> &columns);
-
-            /*!
              * gets the connection info for this database
              * @return the connection info uri
              */
             uri connection_info() const;
-
-            /*!
-             * generates database specific insert sql
-             * @param  schema  the schema to insert to
-             * @param  columns the columns to insert
-             * @return         the sql string
-             */
-            std::string insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
 
             /*!
              * gets the implementation
@@ -256,6 +241,24 @@ namespace rj
             std::shared_ptr<session_impl> impl_;
 
            protected:
+            friend class insert_query;
+            friend class schema;
+
+            /*!
+             * generates database specific insert sql
+             * @param  schema  the schema to insert to
+             * @param  columns the columns to insert
+             * @return         the sql string
+             */
+            std::string get_insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
+
+            /*!
+             * queries the database for a tables column definitions
+             * @param tablename the tablename
+             * @param columns   the collection of columns to store the results
+             */
+            std::vector<column_definition> get_columns_for_schema(const std::string &tablename);
+
             schema_factory schema_factory_;
         };
     }
