@@ -8,12 +8,17 @@ rj_db
 [![Code Grade](https://img.shields.io/codacy/grade/e98c311926b94b068ef6705245d77739.svg)](https://www.codacy.com/app/ryjen/rj_db/dashboard)
 [![Beer Pay](https://img.shields.io/beerpay/ryjen/db.svg)](https://beerpay.io/ryjen/db)
 
-a sqlite, mysql and postgres wrapper / active record (ish) implementation.   use in production at your own risk, no support or warrenty.
+a sqlite, mysql and postgres wrapper + active record (ish) implementation.   
 
-Why another library
--------------------
+Disclaimers:
+- this library favours ease of programmer use over speed
+- use in production at your own risk, no support or warranty
+- my code style does not use camel case.  Try to match the std library.
 
-Mostly for the challenge and to use newer features of c++11 in a database context.  Other libraries have added C++11 after the fact.
+Why yet another library
+-----------------------
+
+Mostly for the challenge and to use newer features of c++11 in a database context.  I also wanted to make something I would actually use myself.
 
 Building
 --------
@@ -62,11 +67,7 @@ docker-compose run test gdb /usr/src/build/tests/rj_db_test_xxx
 Model
 -----
 
-![session interface](db_sessions.png)
-
-![query interface](db_query.png)
-
-![results interface](db_results.png)
+View some [diagrams here](https://github.com/ryjen/db/wiki/Model).
 
 Records
 =======
@@ -131,7 +132,7 @@ public:
 Querying records
 ----------------
 
-The library includes the following schema functions for querying:
+The library includes the following "schema functions" for querying with a schema object:
 
 - **find_by_id()**
 - **find_all()**
@@ -483,7 +484,7 @@ Additional custom types can be implemented by subclassing **variant::complex**. 
 Benchmarking
 ============
 
-Here are some preliminary benchmarks on sqlite (see tests/benchmarks).  Tested on mac osx pro using clang release mode.
+Here are some preliminary benchmarks on sqlite (see [tests/benchmarks](tests/benchmarks)).  Tested on mac osx pro (2.5ghz), clang, release build.
 
 	sqlite insert                              5000      406684 ns/op
 	sqlite select                              2000     1841120 ns/op
@@ -499,7 +500,7 @@ Here are some preliminary benchmarks on sqlite (see tests/benchmarks).  Tested o
 
 Alternatives
 ============
-
+- [sqlite3pp](https://github.com/iwongu/sqlite3pp)
 - [Poco Data](http://pocoproject.org/docs/00200-DataUserManual.html)
 - [SQLAPI++](http://www.sqlapi.com)
 - [SOCI](http://soci.sourceforge.net)
@@ -508,6 +509,6 @@ TODO / ROADMAP
 ==============
 
 * More and better quality tests, I demand 100% coverage
-* cbetter benchmarking and perf improvements
+* better benchmarking and perf improvements (preallocing?)
 * NoSQL support? might be doable
 
