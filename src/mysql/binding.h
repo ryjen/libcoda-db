@@ -106,17 +106,7 @@ namespace rj
                 int sql_type(size_t index) const;
 
                 /* bindable overrides */
-                binding &bind(size_t index, int value);
-                binding &bind(size_t index, unsigned value);
-                binding &bind(size_t index, long long value);
-                binding &bind(size_t index, unsigned long long value);
-                binding &bind(size_t index, float value);
-                binding &bind(size_t index, double value);
-                binding &bind(size_t index, const std::string &value, int len = -1);
-                binding &bind(size_t index, const std::wstring &value, int len = -1);
-                binding &bind(size_t index, const sql_blob &value);
-                binding &bind(size_t index, const sql_null_type &value);
-                binding &bind(size_t index, const sql_time &value);
+                binding &bind(size_t index, const sql_value &value);
                 binding &bind(const std::string &name, const sql_value &value);
 
                 /*!

@@ -113,7 +113,7 @@ namespace rj
             for (size_t i = 1; i <= params_.size(); i++) {
                 auto &value = params_[i - 1];
 
-                stmt_->bind_value(i, value);
+                stmt_->bind(i, value);
             }
 
             for (auto &it : named_params_) {
@@ -143,78 +143,9 @@ namespace rj
             return *this;
         }
 
-        query &query::bind(size_t index, const string &value, int len)
-        {
-            params_[assert_binding_index(index)] = len > 0 ? value.substr(0, len) : value;
-
-            return set_modified();
-        }
-        query &query::bind(size_t index, const wstring &value, int len)
-        {
-            params_[assert_binding_index(index)] = len > 0 ? value.substr(0, len) : value;
-
-            return set_modified();
-        }
-        query &query::bind(size_t index, int value)
+        query &query::bind(size_t index, const sql_value &value)
         {
             params_[assert_binding_index(index)] = value;
-
-            return set_modified();
-        }
-        query &query::bind(size_t index, unsigned value)
-        {
-            params_[assert_binding_index(index)] = value;
-
-            return set_modified();
-        }
-
-        query &query::bind(size_t index, long long value)
-        {
-            params_[assert_binding_index(index)] = value;
-
-            return set_modified();
-        }
-        query &query::bind(size_t index, unsigned long long value)
-        {
-            params_[assert_binding_index(index)] = value;
-
-            return set_modified();
-        }
-
-        query &query::bind(size_t index)
-        {
-            params_[assert_binding_index(index)] = nullptr;
-
-            return set_modified();
-        }
-
-        query &query::bind(size_t index, const sql_null_type &value)
-        {
-            return bind(index);
-        }
-        query &query::bind(size_t index, float value)
-        {
-            params_[assert_binding_index(index)] = value;
-
-            return set_modified();
-        }
-        query &query::bind(size_t index, double value)
-        {
-            params_[assert_binding_index(index)] = value;
-
-            return set_modified();
-        }
-
-        query &query::bind(size_t index, const sql_blob &value)
-        {
-            params_[assert_binding_index(index)] = value;
-
-            return set_modified();
-        }
-        query &query::bind(size_t index, const sql_time &value)
-        {
-            params_[assert_binding_index(index)] = value;
-
             return set_modified();
         }
 
@@ -223,12 +154,6 @@ namespace rj
             named_params_[name] = value;
 
             return set_modified();
-        }
-
-        query &query::bind(const std::vector<sql_value> &values, size_t start_index)
-        {
-            bindable::bind(values, start_index);
-            return *this;
         }
 
         string query::last_error()

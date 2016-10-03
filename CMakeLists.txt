@@ -1,5 +1,6 @@
 cmake_minimum_required (VERSION 3.1)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
 
 # add options for testing
 option(CODE_COVERAGE "Enable code coverage testing." OFF)
@@ -48,7 +49,6 @@ include(CreatePackage)
 create_package("A c++11 database interface.")
 
 # add directories
-add_subdirectory(libs/variant)
 add_subdirectory(src)
 add_subdirectory(tests)
 

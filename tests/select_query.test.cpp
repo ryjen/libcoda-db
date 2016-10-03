@@ -131,7 +131,7 @@ go_bandit([]() {
 
                 Assert::That(row != results.end(), Equals(true));
 
-                string lastName = row->column("last_name").to_value();
+                string lastName = row->column("last_name").value();
 
                 Assert::That(lastName, Equals("Jenkins"));
 
@@ -149,7 +149,7 @@ go_bandit([]() {
 
                 Assert::That(row != results.end(), Equals(true));
 
-                lastName = row->column("last_name").to_value().to_string();
+                lastName = row->column("last_name").value().to_string();
 
                 Assert::That(lastName, Equals("Smith"));
             } catch (const database_exception& e) {
@@ -189,7 +189,7 @@ go_bandit([]() {
 
                 auto u = rs.begin()->column("first_name");
 
-                Assert::That(u.to_value(), Equals("Bryan"));
+                Assert::That(u.value(), Equals("Bryan"));
             });
 
         });
@@ -205,7 +205,7 @@ go_bandit([]() {
 
             query.execute([](const resultset& rs) {
                 rs.for_each([](const row& row) {
-                    Assert::That(row.column("first_name").to_value() == "Bryan" || row.column("last_name").to_value() == "Bryan");
+                    Assert::That(row.column("first_name").value().to_string() == "Bryan" || row.column("last_name").value().to_string() == "Bryan");
                 });
 
             });

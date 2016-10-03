@@ -49,7 +49,7 @@ go_bandit([]() {
 
             *data = 4;
 
-            u.set("data", sql_blob(data, sizeof(int)));
+            u.set("data", sql_blob(data, data + sizeof(int)));
 
             u.set("tval", sql_time());
 
@@ -65,19 +65,19 @@ go_bandit([]() {
 
             AssertThat(other.is_valid(), IsTrue());
 
-            AssertThat(other.to_value(), Equals(col.to_value()));
+            AssertThat(other.value(), Equals(col.value()));
         });
 
         it("is movable", []() {
             auto col = get_user_column("first_name");
 
-            auto val = col.to_value();
+            auto val = col.value();
 
             column &&other(std::move(col));
 
             AssertThat(other.is_valid(), IsTrue());
 
-            AssertThat(other.to_value(), Equals(val));
+            AssertThat(other.value(), Equals(val));
 
             column &&last = get_user_column("last_name");
 
@@ -85,27 +85,27 @@ go_bandit([]() {
 
             AssertThat(other.is_valid(), IsFalse());
             AssertThat(last.is_valid(), IsTrue());
-            AssertThat(last.to_value(), Equals(val));
+            AssertThat(last.value(), Equals(val));
         });
 
         it("can be a blob", []() {
             auto col = get_user_column("data");
 
-            AssertThat(col.to_value().is_binary(), IsTrue());
+            AssertThat(col.value().is<sql_blob>(), IsTrue());
 
-            AssertThat(col.to_blob().size(), Equals(sizeof(int)));
+            AssertThat(col.value().as<sql_blob>().size(), Equals(sizeof(int)));
         });
 
         it("can be a time", []() {
             auto col = get_user_column("tval");
 
-            AssertThat(col.to_time().to_uint() > 0, IsTrue());
+            AssertThat(col.value().as<sql_time>().value() > 0, IsTrue());
         });
 
         it("can be a double", []() {
             auto col = get_user_column("dval");
 
-            AssertThat(col.to_value(), Equals(123.321));
+            AssertThat(col.value().as<double>(), Equals(123.321));
 
             double val = col;
 
@@ -115,7 +115,7 @@ go_bandit([]() {
         it("can be a float", []() {
             auto col = get_user_column("dval");
 
-            AssertThat(col.to_value(), Equals(123.321f));
+            AssertThat(col.value().as<float>(), Equals(123.321f));
 
             float val = col;
 
@@ -125,7 +125,7 @@ go_bandit([]() {
         it("can be an int64", []() {
             auto col = get_user_column("id");
 
-            AssertThat(col.to_value().to_llong() > 0, IsTrue());
+            AssertThat(col.value().as<long long>() > 0, IsTrue());
 
             long long val = col;
 
@@ -135,7 +135,7 @@ go_bandit([]() {
         it("can be an unsigned int", []() {
             auto col = get_user_column("id");
 
-            AssertThat(col.to_value().to_uint() > 0, IsTrue());
+            AssertThat(col.value().as<unsigned int>() > 0, IsTrue());
 
             unsigned val = col;
 
@@ -149,7 +149,7 @@ go_bandit([]() {
         it("can be a string", []() {
             auto col = get_user_column("first_name");
 
-            AssertThat(col.to_value(), Equals("Bob"));
+            AssertThat(col.value(), Equals("Bob"));
 
             std::string val = col;
 

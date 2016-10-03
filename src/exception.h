@@ -19,8 +19,8 @@
         CLASS(const std::string &what);                             \
         CLASS(const std::string &what, const std::string &context); \
         CLASS();                                                    \
-        virtual const char *what() const noexcept;                  \
-        virtual const char *context() const noexcept;               \
+        virtual const char *what() const throw();                  \
+        virtual const char *context() const throw();               \
     }
 
 #define RJ_IMPLEMENT_EXCEPTION(CLASS, BASE)                                                                    \
@@ -58,6 +58,8 @@ namespace rj
         RJ_DECLARE_EXCEPTION(transaction_exception, database_exception);
 
         RJ_DECLARE_EXCEPTION(no_primary_key_exception, database_exception);
+
+        RJ_DECLARE_EXCEPTION(value_conversion_error, database_exception);
     }
 }
 

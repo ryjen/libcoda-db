@@ -148,13 +148,13 @@ go_bandit([]() {
 
             b.bind(4, sql_time(tval, sql_time::TIMESTAMP));
 
-            Assert::That(b.to_value(0).to_time().to_ulong(), Equals(tval));
+            Assert::That(b.to_value(0).as<sql_time>().value(), Equals(tval));
 
-            Assert::That(b.to_value(1).to_time().to_ulong(), Equals(tval));
+            Assert::That(b.to_value(1).as<sql_time>().value(), Equals(tval));
 
-            Assert::That(b.to_value(2).to_time().to_ulong(), Equals(tval));
+            Assert::That(b.to_value(2).as<sql_time>().value(), Equals(tval));
 
-            Assert::That(b.to_value(3).to_time().to_ulong(), Equals(tval));
+            Assert::That(b.to_value(3).as<sql_time>().value(), Equals(tval));
         });
 
         it("can bind different values", []() {
@@ -172,14 +172,14 @@ go_bandit([]() {
             Assert::That(b.to_value(0), Equals(1234U));
 
             b.bind(3, 1234.1234);
-            Assert::That(AreSame(b.to_value(2).to_double(), 1234.1234), IsTrue());
+            Assert::That(AreSame(b.to_value(2).as<double>(), 1234.1234), IsTrue());
             b.bind(3, 123.123f);
             // Assert::That(AreSame(b.to_value(2).to_float(), 123.123), IsTrue());
 
             b.bind(4, sql_time());
 
             b.bind(2, sql_null);
-            Assert::That(b.to_value(1).is_null(), IsTrue());
+            Assert::That(b.to_value(1).is<sql_null_type>(), IsTrue());
 
             b.bind(2, L"test");
             Assert::That(b.to_value(1), Equals("test"));

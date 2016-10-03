@@ -24,6 +24,8 @@ namespace rj
         {
             namespace data_mapper
             {
+                class from_number;
+                class from_value;
                 sql_value to_value(Oid type, const char *value, int len);
             }
             /*
@@ -33,6 +35,8 @@ namespace rj
             {
                 friend class column;
                 friend class statement;
+                friend class data_mapper::from_number;
+                friend class data_mapper::from_value;
 
                private:
                 char **values_;
@@ -83,17 +87,7 @@ namespace rj
                 int sql_type(size_t index) const;
 
                 /* bindable overrides */
-                binding &bind(size_t index, int value);
-                binding &bind(size_t index, unsigned value);
-                binding &bind(size_t index, long long value);
-                binding &bind(size_t index, unsigned long long value);
-                binding &bind(size_t index, float value);
-                binding &bind(size_t index, double value);
-                binding &bind(size_t index, const std::string &value, int len = -1);
-                binding &bind(size_t index, const std::wstring &value, int len = -1);
-                binding &bind(size_t index, const sql_blob &value);
-                binding &bind(size_t index, const sql_null_type &value);
-                binding &bind(size_t index, const sql_time &value);
+                binding &bind(size_t index, const sql_value &value);
                 binding &bind(const std::string &name, const sql_value &value);
 
                 std::string prepare(const std::string &sql);

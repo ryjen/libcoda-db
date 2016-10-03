@@ -174,6 +174,18 @@ namespace rj
             }
             namespace data_mapper
             {
+                template <typename T>
+                typename std::enable_if<std::is_integral<T>::value, sql_value>::type to_number(MYSQL_BIND *binding)
+                {
+                    if (binding->is_unsigned) {
+                        typedef typename std::make_unsigned<T>::type U;
+                        U *p = static_cast<U *>(binding->buffer);
+                        return sql_number(*p);
+                    } else {
+                        T *p = static_cast<T *>(binding->buffer);
+                        return sql_number(*p);
+                    }
+                }
                 /**
                  * Key method here, handles conversion from MYSQL_BIND to sql_value
                  * TODO: test this more
@@ -190,26 +202,14 @@ namespace rj
                     switch (binding->buffer_type) {
                         case MYSQL_TYPE_BIT:
                         case MYSQL_TYPE_TINY:
+                            return to_number<char>(binding);
                         case MYSQL_TYPE_SHORT:
+                            return to_number<short>(binding);
+                        case MYSQL_TYPE_INT24:
                         case MYSQL_TYPE_LONG:
-                        case MYSQL_TYPE_INT24: {
-                            if (binding->is_unsigned) {
-                                unsigned *p = static_cast<unsigned *>(binding->buffer);
-                                return *p;
-                            } else {
-                                int *p = static_cast<int *>(binding->buffer);
-                                return *p;
-                            }
-                        }
-                        case MYSQL_TYPE_LONGLONG: {
-                            if (binding->is_unsigned) {
-                                unsigned long long *p = static_cast<unsigned long long *>(binding->buffer);
-                                return *p;
-                            } else {
-                                long long *p = static_cast<long long *>(binding->buffer);
-                                return *p;
-                            }
-                        }
+                            return to_number<long>(binding);
+                        case MYSQL_TYPE_LONGLONG:
+                            return to_number<long long>(binding);
                         case MYSQL_TYPE_NULL:
                             return sql_null;
                         case MYSQL_TYPE_TIME:
@@ -229,22 +229,23 @@ namespace rj
                         case MYSQL_TYPE_NEWDECIMAL:
                         case MYSQL_TYPE_STRING:
                         default: {
-                            return static_cast<const char *>(binding->buffer);
+                            return sql_string(static_cast<const char *>(binding->buffer));
                         }
                         case MYSQL_TYPE_FLOAT: {
                             float *p = static_cast<float *>(binding->buffer);
-                            return *p;
+                            return sql_number(*p);
                         }
                         case MYSQL_TYPE_DOUBLE: {
                             double *p = static_cast<double *>(binding->buffer);
-                            return *p;
+                            return sql_number(*p);
                         }
                         case MYSQL_TYPE_TINY_BLOB:
                         case MYSQL_TYPE_MEDIUM_BLOB:
                         case MYSQL_TYPE_LONG_BLOB:
                         case MYSQL_TYPE_BLOB: {
                             if (binding->length) {
-                                return sql_blob(binding->buffer, *binding->length);
+                                unsigned char *blob = reinterpret_cast<unsigned char *>(binding->buffer);
+                                return sql_blob(blob, blob + *binding->length);
                             }
 
                             return sql_blob();
@@ -271,18 +272,18 @@ namespace rj
                         case MYSQL_TYPE_BIT:
                         case MYSQL_TYPE_TINY:
                         case MYSQL_TYPE_SHORT:
+                        case MYSQL_TYPE_INT24:
                         case MYSQL_TYPE_LONG: {
                             try {
-                                return std::stoi(value);
+                                return sql_number(std::stoi(value));
                             } catch (const std::exception &e) {
                                 log::error("unable to get integer from %s", value);
                                 return sql_value();
                             }
                         }
-                        case MYSQL_TYPE_INT24:
                         case MYSQL_TYPE_LONGLONG: {
                             try {
-                                return std::stoll(value);
+                                return sql_number(std::stoll(value));
                             } catch (const std::exception &e) {
                                 log::error("unable to get long from %s", value);
                                 return sql_value();
@@ -297,7 +298,7 @@ namespace rj
                         case MYSQL_TYPE_SET:
                         case MYSQL_TYPE_STRING:
                         default:
-                            return value;
+                            return sql_string(value);
                         case MYSQL_TYPE_NEWDATE:
                         case MYSQL_TYPE_DATE:
                             return sql_time(db::helper::parse_time(value), sql_time::DATE);
@@ -310,7 +311,7 @@ namespace rj
                         }
                         case MYSQL_TYPE_FLOAT: {
                             try {
-                                return std::stof(value);
+                                return sql_number(std::stof(value));
                             } catch (const std::exception &e) {
                                 log::error("unable to get float of %s", value);
                                 return sql_value();
@@ -318,7 +319,7 @@ namespace rj
                         }
                         case MYSQL_TYPE_DOUBLE: {
                             try {
-                                return std::stod(value);
+                                return sql_number(std::stod(value));
                             } catch (const std::exception &e) {
                                 log::error("unable to get double of %s", value);
                                 return sql_value();
@@ -328,7 +329,7 @@ namespace rj
                         case MYSQL_TYPE_MEDIUM_BLOB:
                         case MYSQL_TYPE_LONG_BLOB:
                         case MYSQL_TYPE_BLOB: {
-                            return sql_blob(value, length);
+                            return sql_blob(value, value + length);
                         }
                         case MYSQL_TYPE_NULL:
                             return sql_null;
@@ -370,6 +371,174 @@ namespace rj
                     binding->buffer = tm;
                     binding->buffer_length = sizeof(MYSQL_TIME);
                 }
+
+                class from_number : public boost::static_visitor<void>
+                {
+                   public:
+                    from_number(MYSQL_BIND *bind) : bind_(bind)
+                    {
+                    }
+                    void operator()(const sql_null_type &null)
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_NULL;
+                    }
+                    void operator()(char value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_TINY;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                    }
+                    void operator()(unsigned char value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_TINY;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                        bind_->is_unsigned = 1;
+                    }
+                    void operator()(wchar_t value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_TINY;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                    }
+                    void operator()(long double value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_DOUBLE;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                    }
+                    void operator()(double value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_DOUBLE;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                    }
+                    void operator()(float value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_FLOAT;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                    }
+                    void operator()(unsigned long long value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_LONGLONG;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                        bind_->is_unsigned = 1;
+                    }
+                    void operator()(long long value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_LONGLONG;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                    }
+                    void operator()(unsigned int value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_LONG;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                        bind_->is_unsigned = 1;
+                    }
+                    void operator()(unsigned long value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_LONG;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                        bind_->is_unsigned = 1;
+                    }
+                    void operator()(int value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_LONG;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                    }
+                    void operator()(long value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_LONG;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                    }
+                    void operator()(short value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_SHORT;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                    }
+                    void operator()(unsigned short value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_SHORT;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = sizeof(value);
+                        bind_->is_unsigned = 1;
+                    }
+                    void operator()(bool value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_TINY;
+                        bind_->buffer = helper::to_cptr(value);
+                        bind_->buffer_length = 1;
+                    }
+
+                   private:
+                    MYSQL_BIND *bind_;
+                };
+
+                class from_value : public boost::static_visitor<void>
+                {
+                   public:
+                    from_value(MYSQL_BIND *bind) : bind_(bind)
+                    {
+                    }
+                    void operator()(const sql_time &value) const
+                    {
+                        data_mapper::set_time(bind_, value);
+                    }
+                    void operator()(const sql_null_type &value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_NULL;
+                    }
+                    void operator()(const sql_blob &value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_BLOB;
+                        void *ptr = c_alloc(value.size());
+                        memcpy(ptr, value.data(), value.size());
+                        bind_->buffer = ptr;
+                        bind_->buffer_length = value.size();
+                        if (!bind_->length) {
+                            bind_->length = c_alloc<unsigned long>();
+                        }
+                        *bind_->length = value.size();
+                    }
+                    void operator()(const sql_number &value) const
+                    {
+                        value.apply_visitor(data_mapper::from_number(bind_));
+                    }
+                    void operator()(const sql_string &value) const
+                    {
+                        bind_->buffer_type = MYSQL_TYPE_STRING;
+                        bind_->buffer = strdup(value.c_str());
+                        bind_->buffer_length = value.size();
+                        if (!bind_->length) {
+                            bind_->length = c_alloc<unsigned long>();
+                        }
+                        *bind_->length = value.size();
+                    }
+                    void operator()(const sql_wstring &value) const
+                    {
+                        typedef std::codecvt_utf8<wchar_t> convert_type;
+                        std::wstring_convert<convert_type, wchar_t> converter;
+                        std::string converted_str = converter.to_bytes(value);
+                        bind_->buffer_type = MYSQL_TYPE_STRING;
+                        bind_->buffer = strdup(converted_str.c_str());
+                        bind_->buffer_length = value.size();
+                        if (!bind_->length) {
+                            bind_->length = c_alloc<unsigned long>();
+                        }
+                        *bind_->length = value.size();
+                    }
+
+                   private:
+                    MYSQL_BIND *bind_;
+                };
             }
 
 
@@ -562,184 +731,11 @@ namespace rj
                 return indexes;
             }
 
-            /**
-             * binding methods ensure the dynamic array is sized properly and store the value as a memory pointer
-             */
-            binding &binding::bind(size_t index, int value)
+            binding &binding::bind(size_t index, const sql_value &value)
             {
                 for (size_t i : get_indexes(index)) {
                     if (reallocate_value(i)) {
-                        value_[i - 1].buffer_type = MYSQL_TYPE_LONG;
-                        value_[i - 1].buffer = helper::to_cptr(value);
-                        value_[i - 1].buffer_length = sizeof(value);
-                    } else {
-                        log::error("unable to reallocate bindings for index %ld", index);
-                        break;
-                    }
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, unsigned value)
-            {
-                for (size_t i : get_indexes(index)) {
-                    if (reallocate_value(i)) {
-                        value_[i - 1].buffer_type = MYSQL_TYPE_LONG;
-                        value_[i - 1].buffer = helper::to_cptr(value);
-                        value_[i - 1].buffer_length = sizeof(value);
-                        value_[i - 1].is_unsigned = 1;
-                    } else {
-                        log::error("unable to reallocate bindings for index %ld", index);
-                        break;
-                    }
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, long long value)
-            {
-                for (size_t i : get_indexes(index)) {
-                    if (reallocate_value(i)) {
-                        value_[i - 1].buffer_type = MYSQL_TYPE_LONGLONG;
-                        value_[i - 1].buffer = helper::to_cptr(value);
-                        value_[i - 1].buffer_length = sizeof(value);
-                    } else {
-                        log::error("unable to reallocate bindings for index %ld", index);
-                        break;
-                    }
-                }
-
-                return *this;
-            }
-
-            binding &binding::bind(size_t index, unsigned long long value)
-            {
-                for (size_t i : get_indexes(index)) {
-                    if (reallocate_value(i)) {
-                        value_[i - 1].buffer_type = MYSQL_TYPE_LONGLONG;
-                        value_[i - 1].buffer = helper::to_cptr(value);
-                        value_[i - 1].buffer_length = sizeof(value);
-                        value_[i - 1].is_unsigned = 1;
-                    } else {
-                        log::error("unable to reallocate bindings for index %ld", index);
-                        break;
-                    }
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, float value)
-            {
-                for (size_t i : get_indexes(index)) {
-                    if (reallocate_value(i)) {
-                        value_[i - 1].buffer_type = MYSQL_TYPE_FLOAT;
-                        value_[i - 1].buffer = helper::to_cptr(value);
-                        value_[i - 1].buffer_length = sizeof(value);
-                    } else {
-                        log::error("unable to reallocate bindings for index %ld", index);
-                        break;
-                    }
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, double value)
-            {
-                for (size_t i : get_indexes(index)) {
-                    if (reallocate_value(i)) {
-                        value_[i - 1].buffer_type = MYSQL_TYPE_DOUBLE;
-                        value_[i - 1].buffer = helper::to_cptr(value);
-                        value_[i - 1].buffer_length = sizeof(value);
-                    } else {
-                        log::error("unable to reallocate bindings for index %ld", index);
-                        break;
-                    }
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, const std::string &value, int len)
-            {
-                for (size_t i : get_indexes(index)) {
-                    if (reallocate_value(i)) {
-                        value_[i - 1].buffer_type = MYSQL_TYPE_STRING;
-                        auto size = len == -1 ? value.size() : len;
-                        value_[i - 1].buffer = strdup(value.c_str());
-                        value_[i - 1].buffer_length = size;
-                        if (!value_[i - 1].length) {
-                            value_[i - 1].length = c_alloc<unsigned long>();
-                        }
-                        *value_[i - 1].length = size;
-                    } else {
-                        log::error("unable to reallocate bindings for index %ld", index);
-                        break;
-                    }
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, const std::wstring &value, int len)
-            {
-                for (size_t i : get_indexes(index)) {
-                    if (reallocate_value(i)) {
-                        typedef std::codecvt_utf8<wchar_t> convert_type;
-                        std::wstring_convert<convert_type, wchar_t> converter;
-                        std::string converted_str = converter.to_bytes(value);
-                        value_[i - 1].buffer_type = MYSQL_TYPE_STRING;
-                        auto size = len == -1 ? value.size() : len;
-                        value_[i - 1].buffer = strdup(converted_str.c_str());
-                        value_[i - 1].buffer_length = size;
-                        if (!value_[i - 1].length) {
-                            value_[i - 1].length = c_alloc<unsigned long>();
-                        }
-                        *value_[i - 1].length = size;
-                    } else {
-                        log::error("unable to reallocate bindings for index %ld", index);
-                        break;
-                    }
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, const sql_blob &value)
-            {
-                for (size_t i : get_indexes(index)) {
-                    if (reallocate_value(i)) {
-                        value_[i - 1].buffer_type = MYSQL_TYPE_BLOB;
-                        void *ptr = c_alloc(value.size());
-                        memcpy(ptr, value.value(), value.size());
-                        value_[i - 1].buffer = ptr;
-                        value_[i - 1].buffer_length = value.size();
-                        if (!value_[i - 1].length) {
-                            value_[i - 1].length = c_alloc<unsigned long>();
-                        }
-                        *value_[i - 1].length = value.size();
-                    } else {
-                        log::warn("unable to reallocate bindings for index %ld", index);
-                        break;
-                    }
-                }
-                return *this;
-            }
-
-            binding &binding::bind(size_t index, const sql_null_type &value)
-            {
-                for (size_t i : get_indexes(index)) {
-                    if (reallocate_value(i)) {
-                        value_[i - 1].buffer_type = MYSQL_TYPE_NULL;
-                    } else {
-                        log::warn("unable to reallocate bindings for index %ld", index);
-                        break;
-                    }
-                }
-                return *this;
-            }
-
-            binding &binding::bind(size_t index, const sql_time &value)
-            {
-                for (size_t i : get_indexes(index)) {
-                    if (reallocate_value(i)) {
-                        data_mapper::set_time(&value_[i - 1], value);
+                        value.apply_visitor(data_mapper::from_value(&value_[i - 1]));
                     } else {
                         log::warn("unable to reallocate bindings for index %ld", index);
                         break;

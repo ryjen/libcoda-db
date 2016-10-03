@@ -54,11 +54,11 @@ go_bandit([]() {
 
             Assert::That(row.is_valid(), Equals(true));
 
-            auto rowCol = row[0].to_value().to_string();
+            auto rowCol = row[0].value().to_string();
 
             Assert::That(rowCol.empty(), Equals(false));
 
-            Assert::That(rowCol, Equals(i->column(0).to_value().to_string()));
+            Assert::That(rowCol, Equals(i->column(0).value().to_string()));
 
         });
 
@@ -85,17 +85,17 @@ go_bandit([]() {
 
             Assert::That(i != rs.end(), IsTrue());
 
-            Assert::That(i->column(1).to_value(), Equals("Bryan"));
+            Assert::That(i->column(1).value(), Equals("Bryan"));
 
             ++i;
 
             Assert::That(i != rs.end(), IsTrue());
 
-            Assert::That(i->column(1).to_value(), Equals("Mark"));
+            Assert::That(i->column(1).value(), Equals("Mark"));
 
             rs.reset();
 
-            if (rs.next()) Assert::That(rs.current_row().column(1).to_value(), Equals("Bryan"));
+            if (rs.next()) Assert::That(rs.current_row().column(1).value(), Equals("Bryan"));
 
         });
 

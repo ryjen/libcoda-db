@@ -250,7 +250,7 @@ namespace rj
             /*!
              * return the first column in the first row of the result set
              */
-            template <typename T>
+            template <typename T, typename = std::enable_if<is_sql_value<T>::value || is_sql_number<T>::value>>
             T execute_scalar()
             {
                 auto rs = execute();
@@ -271,7 +271,7 @@ namespace rj
                     return T();
                 }
 
-                return col->to_value();
+                return col->value();
             }
         };
 

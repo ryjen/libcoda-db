@@ -50,7 +50,7 @@ namespace rj
         /*!
          * a column holds a value
          */
-        class column
+        class column : public sql_value_convertible
         {
             template <class A, class B, class C>
             friend class row_iterator;
@@ -90,20 +90,7 @@ namespace rj
              * converts this column to a value
              * @return the value of this column
              */
-            sql_value to_value() const;
-
-            /*!
-             * converts this column to a time value
-             * @return the value of this column
-             */
-            sql_time to_time() const;
-
-
-            /*!
-             * converts this column to a binary value
-             * @return the value of this column
-             */
-            sql_blob to_blob() const;
+            sql_value value() const;
 
             /*!
              * @return the name of this column
@@ -115,18 +102,51 @@ namespace rj
              */
             std::shared_ptr<column_impl> impl() const;
 
-            /*!
-             * primitive operators
-             */
-            operator std::string() const;
-            operator unsigned() const;
-            operator double() const;
-            operator std::wstring() const;
+            operator sql_string() const;
+            operator sql_wstring() const;
+            operator sql_number() const;
+            operator sql_time() const;
+            operator sql_null_type() const;
+            operator sql_blob() const;
+
+            operator bool() const;
+            operator char() const;
+            operator unsigned char() const;
+            operator wchar_t() const;
+            operator short() const;
+            operator unsigned short() const;
             operator int() const;
+            operator unsigned int() const;
+            operator long() const;
+            operator unsigned long() const;
             operator long long() const;
             operator unsigned long long() const;
             operator float() const;
-            operator sql_value() const;
+            operator double() const;
+            operator long double() const;
+
+            bool operator==(const sql_null_type &other) const;
+            bool operator==(const sql_number &value) const;
+            bool operator==(const sql_string &value) const;
+            bool operator==(const sql_wstring &value) const;
+            bool operator==(const sql_time &value) const;
+            bool operator==(const sql_blob &value) const;
+
+            bool operator==(const bool &value) const;
+            bool operator==(const char &value) const;
+            bool operator==(const unsigned char &value) const;
+            bool operator==(const wchar_t &value) const;
+            bool operator==(const short &value) const;
+            bool operator==(const unsigned short &value) const;
+            bool operator==(const int &value) const;
+            bool operator==(const unsigned int &value) const;
+            bool operator==(const long &value) const;
+            bool operator==(const unsigned long &value) const;
+            bool operator==(const long long &value) const;
+            bool operator==(const unsigned long long &value) const;
+            bool operator==(const float &value) const;
+            bool operator==(const double &value) const;
+            bool operator==(const long double &value) const;
 
             bool operator==(const sql_value &other) const;
         };

@@ -24,19 +24,21 @@ namespace rj
 
                     switch (sqlite3_column_type(stmt.get(), column)) {
                         case SQLITE_INTEGER:
-                            return sqlite3_column_int64(stmt.get(), column);
+                            return sql_number(sqlite3_column_int64(stmt.get(), column));
                         case SQLITE3_TEXT:
                         default: {
                             const unsigned char *textValue = sqlite3_column_text(stmt.get(), column);
                             if (textValue != NULL) {
-                                return reinterpret_cast<const char *>(textValue);
+                                return sql_string(reinterpret_cast<const char *>(textValue));
                             }
                             return sql_value();
                         }
                         case SQLITE_FLOAT:
-                            return sqlite3_column_double(stmt.get(), column);
-                        case SQLITE_BLOB:
-                            return sql_blob(sqlite3_column_blob(stmt.get(), column), sqlite3_column_bytes(stmt.get(), column));
+                            return sql_number(sqlite3_column_double(stmt.get(), column));
+                        case SQLITE_BLOB: {
+                            const unsigned char *blob = reinterpret_cast<const unsigned char *>(sqlite3_column_blob(stmt.get(), column));
+                            return sql_blob(blob, blob + sqlite3_column_bytes(stmt.get(), column));
+                        }
                     }
                 }
             }

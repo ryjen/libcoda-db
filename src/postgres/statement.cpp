@@ -101,58 +101,7 @@ namespace rj
                 return sess_->last_error();
             }
 
-            statement &statement::bind(size_t index, int value)
-            {
-                bindings_.bind(index, value);
-                return *this;
-            }
-            statement &statement::bind(size_t index, unsigned value)
-            {
-                bindings_.bind(index, value);
-                return *this;
-            }
-            statement &statement::bind(size_t index, long long value)
-            {
-                bindings_.bind(index, value);
-                return *this;
-            }
-            statement &statement::bind(size_t index, unsigned long long value)
-            {
-                bindings_.bind(index, value);
-                return *this;
-            }
-            statement &statement::bind(size_t index, float value)
-            {
-                bindings_.bind(index, value);
-                return *this;
-            }
-            statement &statement::bind(size_t index, double value)
-            {
-                bindings_.bind(index, value);
-                return *this;
-            }
-            statement &statement::bind(size_t index, const std::string &value, int len)
-            {
-                bindings_.bind(index, value, len);
-                return *this;
-            }
-            statement &statement::bind(size_t index, const std::wstring &value, int len)
-            {
-                bindings_.bind(index, value, len);
-                return *this;
-            }
-            statement &statement::bind(size_t index, const sql_blob &value)
-            {
-                bindings_.bind(index, value);
-                return *this;
-            }
-
-            statement &statement::bind(size_t index, const sql_null_type &value)
-            {
-                bindings_.bind(index, value);
-                return *this;
-            }
-            statement &statement::bind(size_t index, const sql_time &value)
+            statement &statement::bind(size_t index, const sql_value &value)
             {
                 bindings_.bind(index, value);
                 return *this;

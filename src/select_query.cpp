@@ -230,11 +230,11 @@ namespace rj
 
                 prepare(to_string());
 
-                long long value = execute_scalar<long long>();
+                sql_number value = execute_scalar<sql_number>();
 
                 columns_ = cols;
 
-                return value;
+                return value.as<long long>();
             } catch (...) {
                 // make sure we don't leave this query in a temp state
                 columns_ = cols;

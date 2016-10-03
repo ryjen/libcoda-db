@@ -77,17 +77,17 @@ namespace rj
                     column_definition def;
 
                     // column name
-                    def.name = row["name"].to_value().to_string();
+                    def.name = row["name"].value().to_string();
 
                     // primary key check
-                    def.pk = row["pk"].to_value().to_bool();
+                    def.pk = row["pk"].value().as<sql_number>();
 
                     // find type
-                    def.type = row["type"].to_value().to_string();
+                    def.type = row["type"].value().to_string();
 
                     def.autoincrement = def.pk;
 
-                    def.default_value = row["dflt_value"].to_value().to_string();
+                    def.default_value = row["dflt_value"].value().to_string();
 
                     columns.push_back(def);
                 }

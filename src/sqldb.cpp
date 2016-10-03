@@ -24,6 +24,8 @@ namespace rj
 
         RJ_IMPLEMENT_EXCEPTION(no_primary_key_exception, database_exception);
 
+        RJ_IMPLEMENT_EXCEPTION(value_conversion_error, database_exception);
+
         std::shared_ptr<session> sqldb::create_session(const std::string &uristr)
         {
             db::uri uri(uristr);

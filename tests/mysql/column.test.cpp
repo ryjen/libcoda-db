@@ -98,9 +98,9 @@ go_bandit([]() {
             user1.set("first_name", "Bryan");
             user1.set("last_name", "true");
 
-            void* ptr = calloc(4, sizeof(int));
+            unsigned char* ptr = (unsigned char*)calloc(4, sizeof(int));
 
-            sql_blob data(ptr, 4 * sizeof(int));
+            sql_blob data(ptr, ptr + (4 * sizeof(int)));
 
             user1.set("data", data);
 
@@ -186,7 +186,7 @@ go_bandit([]() {
 
                 c = get_stmt_column(1, 0);
 
-                AssertThrows(rj::illegal_conversion, c->to_value().to_double());
+                AssertThrows(value_conversion_error, c->to_value().as<double>());
             });
 
             it("as results", []() {
@@ -197,7 +197,7 @@ go_bandit([]() {
 
                 c = get_results_column(1, 0);
 
-                AssertThrows(rj::illegal_conversion, c->to_value().to_double());
+                AssertThrows(value_conversion_error, c->to_value().as<double>());
             });
 
         });
@@ -211,7 +211,7 @@ go_bandit([]() {
 
                 c = get_stmt_column(1, 0);
 
-                AssertThrows(rj::illegal_conversion, c->to_value().to_int());
+                AssertThrows(value_conversion_error, c->to_value().as<int>());
             });
 
             it("as results", []() {
@@ -221,7 +221,7 @@ go_bandit([]() {
 
                 c = get_results_column(1, 0);
 
-                AssertThrows(rj::illegal_conversion, c->to_value().to_int());
+                AssertThrows(value_conversion_error, c->to_value().as<int>());
             });
 
         });
@@ -235,7 +235,7 @@ go_bandit([]() {
 
                 c = get_stmt_column(1, 0);
 
-                AssertThrows(rj::illegal_conversion, c->to_value().to_llong());
+                AssertThrows(value_conversion_error, c->to_value().as<long long>());
             });
 
             it("as results", []() {
@@ -245,7 +245,7 @@ go_bandit([]() {
 
                 c = get_results_column(1, 0);
 
-                AssertThrows(rj::illegal_conversion, c->to_value().to_llong());
+                AssertThrows(value_conversion_error, c->to_value().as<long long>());
             });
 
         });

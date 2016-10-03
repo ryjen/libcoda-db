@@ -10,7 +10,6 @@
 #include <postgres.h>
 #include <time.h>
 #include <cassert>
-#include <codecvt>
 #include <cstdlib>
 #include <locale>
 #include <memory>
@@ -45,7 +44,7 @@ namespace rj
                         case BYTEAOID: {
                             size_t blen = 0;
                             unsigned char *b = PQunescapeBytea(reinterpret_cast<const unsigned char *>(value), &blen);
-                            binary bin(b, blen);
+                            sql_blob bin(b, b + blen);
                             free(b);
                             return bin;
                         }
@@ -57,19 +56,19 @@ namespace rj
                         case TIMESTAMPOID:
                         case BITOID:
                             try {
-                                return stol(value);
+                                return sql_number(stol(value));
                             } catch (const std::exception &e) {
                                 return sql_null;
                             }
                         case FLOAT4OID:
                             try {
-                                return stod(value);
+                                return sql_number(stod(value));
                             } catch (const std::exception &e) {
                                 return sql_null;
                             }
                         case FLOAT8OID:
                             try {
-                                return stold(value);
+                                return sql_number(stold(value));
                             } catch (const std::exception &e) {
                                 return sql_null;
                             }
@@ -80,11 +79,204 @@ namespace rj
                         case DATEOID:
                         case TIMEOID:
                         case UUIDOID:
-                            return value;
+                            return sql_string(value);
                         default:
-                            return value;
+                            return sql_string(value);
                     }
                 }
+
+                class from_number : public boost::static_visitor<void>
+                {
+                   public:
+                    from_number(binding &bind, size_t index) : bind_(bind), index_(index)
+                    {
+                    }
+                    void operator()(wchar_t value) const
+                    {
+                        wchar_t buf[10] = {0};
+                        swprintf(buf, 10, L"%c", value);
+                        bind_.values_[index_] = strdup(helper::convert_string(buf).c_str());
+                        bind_.types_[index_] = CHAROID;
+                        bind_.lengths_[index_] = sizeof(wchar_t);
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(unsigned char value) const
+                    {
+                        char buf[10] = {0};
+                        sprintf(buf, "%uc", value);
+                        bind_.values_[index_] = strdup(buf);
+                        bind_.types_[index_] = CHAROID;
+                        bind_.lengths_[index_] = sizeof(unsigned char);
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(char value) const
+                    {
+                        char buf[10] = {0};
+                        sprintf(buf, "%c", value);
+                        bind_.values_[index_] = strdup(buf);
+                        bind_.types_[index_] = CHAROID;
+                        bind_.lengths_[index_] = sizeof(char);
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(bool value) const
+                    {
+                        bind_.values_[index_] = strdup(std::to_string(value).c_str());
+                        bind_.types_[index_] = BOOLOID;
+                        bind_.lengths_[index_] = sizeof(double);
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(double value) const
+                    {
+                        bind_.values_[index_] = strdup(std::to_string(value).c_str());
+                        bind_.types_[index_] = FLOAT4OID;
+                        bind_.lengths_[index_] = sizeof(double);
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(float value) const
+                    {
+                        bind_.values_[index_] = strdup(std::to_string(value).c_str());
+                        bind_.types_[index_] = FLOAT4OID;
+                        bind_.lengths_[index_] = sizeof(float);
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(long double value) const
+                    {
+                        bind_.values_[index_] = strdup(std::to_string(value).c_str());
+                        bind_.types_[index_] = FLOAT8OID;
+                        bind_.lengths_[index_] = sizeof(long double);
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(unsigned long long value) const
+                    {
+                        bind_.values_[index_] = strdup(std::to_string(value).c_str());
+                        bind_.types_[index_] = INT8OID;
+                        bind_.lengths_[index_] = sizeof(unsigned long long);
+                        bind_.formats_[index_] = 0;
+                    }
+
+                    void operator()(long long value) const
+                    {
+                        bind_.values_[index_] = strdup(std::to_string(value).c_str());
+                        bind_.types_[index_] = INT8OID;
+                        bind_.lengths_[index_] = sizeof(long long);
+                        bind_.formats_[index_] = 0;
+                    }
+
+                    void operator()(unsigned int value) const
+                    {
+                        bind_.values_[index_] = strdup(std::to_string(value).c_str());
+                        bind_.types_[index_] = INT4OID;
+                        bind_.lengths_[index_] = sizeof(unsigned);
+                        bind_.formats_[index_] = 0;
+                    }
+
+                    void operator()(int value) const
+                    {
+                        bind_.values_[index_] = strdup(std::to_string(value).c_str());
+                        bind_.types_[index_] = INT4OID;
+                        bind_.lengths_[index_] = sizeof(int);
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(unsigned long value) const
+                    {
+                        bind_.values_[index_] = strdup(std::to_string(value).c_str());
+                        bind_.types_[index_] = INT4OID;
+                        bind_.lengths_[index_] = sizeof(unsigned long);
+                        bind_.formats_[index_] = 0;
+                    }
+
+                    void operator()(long value) const
+                    {
+                        bind_.values_[index_] = strdup(std::to_string(value).c_str());
+                        bind_.types_[index_] = INT4OID;
+                        bind_.lengths_[index_] = sizeof(long);
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(short value) const
+                    {
+                        bind_.values_[index_] = strdup(std::to_string(value).c_str());
+                        bind_.types_[index_] = INT2OID;
+                        bind_.lengths_[index_] = sizeof(short);
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(unsigned short value) const
+                    {
+                        bind_.values_[index_] = strdup(std::to_string(value).c_str());
+                        bind_.types_[index_] = INT2OID;
+                        bind_.lengths_[index_] = sizeof(unsigned short);
+                        bind_.formats_[index_] = 0;
+                    }
+
+                   private:
+                    binding &bind_;
+                    size_t index_;
+                };
+
+                class from_value : public boost::static_visitor<void>
+                {
+                   public:
+                    from_value(binding &bind, size_t index) : bind_(bind), index_(index)
+                    {
+                    }
+                    void operator()(const sql_time &value) const
+                    {
+                        bind_.values_[index_] = strdup(value.to_string().c_str());
+                        switch (value.format()) {
+                            case sql_time::DATE:
+                                bind_.types_[index_] = DATEOID;
+                                break;
+                            case sql_time::TIME:
+                                bind_.types_[index_] = TIMEOID;
+                                break;
+                            case sql_time::DATETIME:
+                            case sql_time::TIMESTAMP:
+                                bind_.types_[index_] = TIMESTAMPOID;
+                                break;
+                        }
+                        bind_.lengths_[index_] = sizeof(time_t);
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(const sql_null_type &value) const
+                    {
+                        if (bind_.values_[index_]) {
+                            free(bind_.values_[index_]);
+                        }
+                        bind_.values_[index_] = nullptr;
+                        bind_.lengths_[index_] = 0;
+                        bind_.types_[index_] = UNKNOWNOID;
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(const sql_blob &value) const
+                    {
+                        string temp(value.begin(), value.end());
+                        bind_.values_[index_] = strdup(temp.c_str());
+                        bind_.types_[index_] = BYTEAOID;
+                        bind_.lengths_[index_] = value.size();
+                        bind_.formats_[index_] = 1;
+                    }
+                    void operator()(const sql_wstring &value) const
+                    {
+                        bind_.values_[index_] = strdup(helper::convert_string(value).c_str());
+                        bind_.types_[index_] = TEXTOID;
+                        bind_.lengths_[index_] = value.size();
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(const sql_string &value) const
+                    {
+                        bind_.values_[index_] = strdup(value.c_str());
+                        bind_.types_[index_] = TEXTOID;
+                        bind_.lengths_[index_] = value.size();
+                        bind_.formats_[index_] = 0;
+                    }
+                    void operator()(const sql_number &value) const
+                    {
+                        value.apply_visitor(from_number(bind_, index_));
+                    }
+
+                   private:
+                    binding &bind_;
+                    size_t index_;
+                };
             }
 
             binding::binding() : values_(nullptr), types_(nullptr), lengths_(nullptr), formats_(nullptr), size_(0)
@@ -250,167 +442,13 @@ namespace rj
              * binding methods ensure the dynamic array is sized properly and store the
              * value as a memory pointer
              */
-
-            binding &binding::bind(size_t index, int value)
+            binding &binding::bind(size_t index, const sql_value &value)
             {
                 if (reallocate_value(index)) {
-                    values_[index - 1] = strdup(std::to_string(value).c_str());
-                    types_[index - 1] = sizeof(int) == 2 ? INT2OID : sizeof(int) == 4 ? INT4OID : INT8OID;
-                    lengths_[index - 1] = sizeof(int);
-                    formats_[index - 1] = 0;
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, unsigned value)
-            {
-                if (reallocate_value(index)) {
-                    values_[index - 1] = strdup(std::to_string(value).c_str());
-                    types_[index - 1] = sizeof(unsigned) <= 2 ? INT2OID : sizeof(unsigned) <= 4 ? INT4OID : INT8OID;
-                    lengths_[index - 1] = sizeof(unsigned);
-                    formats_[index - 1] = 0;
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, long long value)
-            {
-                if (reallocate_value(index)) {
-                    values_[index - 1] = strdup(std::to_string(value).c_str());
-                    types_[index - 1] = sizeof(long long) == 2 ? INT2OID : sizeof(long long) == 4 ? INT4OID : INT8OID;
-                    lengths_[index - 1] = sizeof(long long);
-                    formats_[index - 1] = 0;
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, unsigned long long value)
-            {
-                if (reallocate_value(index)) {
-                    values_[index - 1] = strdup(std::to_string(value).c_str());
-                    types_[index - 1] = sizeof(unsigned long long) <= 2 ? INT2OID : sizeof(unsigned long long) <= 4 ? INT4OID : INT8OID;
-                    lengths_[index - 1] = sizeof(unsigned long long);
-                    formats_[index - 1] = 0;
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, float value)
-            {
-                if (reallocate_value(index)) {
-                    values_[index - 1] = strdup(std::to_string(value).c_str());
-                    types_[index - 1] = FLOAT4OID;
-                    lengths_[index - 1] = sizeof(float);
-                    formats_[index - 1] = 0;
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, double value)
-            {
-                if (reallocate_value(index)) {
-                    values_[index - 1] = strdup(std::to_string(value).c_str());
-                    types_[index - 1] = sizeof(double) <= 4 ? FLOAT4OID : FLOAT8OID;
-                    lengths_[index - 1] = sizeof(double);
-                    formats_[index - 1] = 0;
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, const std::string &value, int len)
-            {
-                if (reallocate_value(index)) {
-                    values_[index - 1] = strdup(value.c_str());
-                    types_[index - 1] = TEXTOID;
-                    lengths_[index - 1] = value.size();
-                    formats_[index - 1] = 0;
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, const std::wstring &value, int len)
-            {
-                if (reallocate_value(index)) {
-                    typedef std::codecvt_utf8<wchar_t> convert_type;
-                    std::wstring_convert<convert_type, wchar_t> converter;
-                    std::string converted_str = converter.to_bytes(value);
-                    values_[index - 1] = strdup(converted_str.c_str());
-                    types_[index - 1] = TEXTOID;
-                    lengths_[index - 1] = value.size();
-                    formats_[index - 1] = 0;
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, const sql_blob &value)
-            {
-                if (reallocate_value(index)) {
-                    values_[index - 1] = strdup(value.to_string().c_str());
-                    types_[index - 1] = BYTEAOID;
-                    lengths_[index - 1] = value.size();
-                    formats_[index - 1] = 1;
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
-                }
-
-                return *this;
-            }
-            binding &binding::bind(size_t index, const sql_null_type &value)
-            {
-                if (reallocate_value(index)) {
-                    if (values_[index - 1]) {
-                        free(values_[index - 1]);
-                    }
-                    values_[index - 1] = nullptr;
-                    lengths_[index - 1] = 0;
-                    types_[index - 1] = UNKNOWNOID;
-                    formats_[index - 1] = 0;
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
+                    value.apply_visitor(data_mapper::from_value(*this, index - 1));
                 }
                 return *this;
             }
-            binding &binding::bind(size_t index, const sql_time &value)
-            {
-                if (reallocate_value(index)) {
-                    values_[index - 1] = strdup(value.to_string().c_str());
-                    switch (value.format()) {
-                        case sql_time::DATE:
-                            types_[index - 1] = DATEOID;
-                            break;
-                        case sql_time::TIME:
-                            types_[index - 1] = TIMEOID;
-                            break;
-                        case sql_time::DATETIME:
-                        case sql_time::TIMESTAMP:
-                            types_[index - 1] = TIMESTAMPOID;
-                            break;
-                    }
-                    lengths_[index - 1] = value.size();
-                    formats_[index - 1] = 0;
-                } else {
-                    log::warn("unable to reallocate bindings for index %ld", index);
-                }
-
-                return *this;
-            }
-
             binding &binding::bind(const string &name, const sql_value &value)
             {
                 bind_mapping::bind(name, value);

@@ -56,17 +56,7 @@ namespace rj
                 long long last_insert_id();
 
                 /* bindable overrides */
-                statement &bind(size_t index, int value);
-                statement &bind(size_t index, unsigned value);
-                statement &bind(size_t index, long long value);
-                statement &bind(size_t index, unsigned long long value);
-                statement &bind(size_t index, float value);
-                statement &bind(size_t index, double value);
-                statement &bind(size_t index, const std::string &value, int len = -1);
-                statement &bind(size_t index, const std::wstring &value, int len = -1);
-                statement &bind(size_t index, const sql_blob &value);
-                statement &bind(size_t index, const sql_null_type &value);
-                statement &bind(size_t index, const sql_time &value);
+                statement &bind(size_t index, const sql_value &value);
                 statement &bind(const std::string &name, const sql_value &value);
             };
 

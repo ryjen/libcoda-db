@@ -5,6 +5,7 @@
 #ifndef RJ_DB_ROW_H
 #define RJ_DB_ROW_H
 
+#include <functional>
 #include <iterator>
 #include <memory>
 #include "column.h"

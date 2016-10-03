@@ -16,6 +16,9 @@ add_library (${PROJECT_NAME}
 	select_query.cpp
   	session.cpp
 	sqldb.cpp
+	sql_common.cpp
+	sql_number.cpp
+	sql_time.cpp
 	sql_value.cpp
   	transaction.cpp
 	update_query.cpp
@@ -43,7 +46,7 @@ add_library (${PROJECT_NAME}
  	sqlite/transaction.cpp
 )
 
-include_directories(${PROJECT_SOURCE_DIR}/libs/variant/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
+include_directories(${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
 
 target_link_libraries(${PROJECT_NAME} ${MYSQL_LIBRARIES} ${SQLITE3_LIBRARIES} ${PostgreSQL_LIBRARIES})
 
@@ -64,6 +67,9 @@ set(${PROJECT_NAME}_HEADERS
 	schema_factory.h
 	select_query.h
   	session.h
+  	sql_types.h
+  	sql_common.h
+  	sql_number.h
 	sql_value.h
 	sqldb.h
 	statement.h

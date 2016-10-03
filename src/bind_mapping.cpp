@@ -43,7 +43,7 @@ namespace rj
             auto indexes = mappings_[name];
 
             for (auto &index : indexes) {
-                bind_value(index, value);
+                bind(index, value);
             }
             return *this;
         }

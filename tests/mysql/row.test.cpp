@@ -93,7 +93,7 @@ void test_row_column(std::function<shared_ptr<row_impl>(size_t)> funk)
 
     Assert::That(r->column(0).is_valid(), IsTrue());
 
-    Assert::That(r->column(1).to_value(), Equals("Bryan"));
+    Assert::That(r->column(1).value(), Equals("Bryan"));
 
     AssertThrows(database_exception, r->column(1234));
 

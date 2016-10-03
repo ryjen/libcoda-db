@@ -252,7 +252,7 @@ namespace rj
                 }
 
                 for (auto v = values.begin(); v != values.end(); ++v) {
-                    set(v.name(), v->to_value());
+                    set(v.name(), v->value());
                 }
 
                 on_record_init(values);

@@ -68,13 +68,13 @@ add_executable (${PROJECT_NAME}_test
 
 include_directories(SYSTEM vendor/bandit SYSTEM vendor/benchpress/src ${PROJECT_SOURCE_DIR}/libs/variant/src ${PROJECT_SOURCE_DIR}/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
 
-target_link_libraries (${PROJECT_NAME}_test_mysql ${PROJECT_NAME} testicle rj_variant)
+target_link_libraries (${PROJECT_NAME}_test_mysql ${PROJECT_NAME} testicle)
 
-target_link_libraries (${PROJECT_NAME}_test_sqlite ${PROJECT_NAME} testicle rj_variant)
+target_link_libraries (${PROJECT_NAME}_test_sqlite ${PROJECT_NAME} testicle)
 
-target_link_libraries (${PROJECT_NAME}_test_postgres ${PROJECT_NAME} testicle rj_variant)
+target_link_libraries (${PROJECT_NAME}_test_postgres ${PROJECT_NAME} testicle)
 
-target_link_libraries (${PROJECT_NAME}_test ${PROJECT_NAME} testicle rj_variant)
+target_link_libraries (${PROJECT_NAME}_test ${PROJECT_NAME} testicle)
 
 add_executable (${PROJECT_NAME}_test_all run_all.test.cpp)
 

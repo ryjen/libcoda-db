@@ -222,7 +222,7 @@ namespace rj
                     column_definition def;
 
                     // column name
-                    def.name = row["column_name"].to_value().to_string();
+                    def.name = row["column_name"].value().to_string();
 
                     if (def.name.empty()) {
                         continue;
@@ -237,14 +237,14 @@ namespace rj
                         auto pk = primary_keys->current_row();
                         if (pk["column_name"] == def.name) {
                             def.pk = true;
-                            def.autoincrement = row["extra"].to_value() == "auto_increment";
+                            def.autoincrement = row["extra"].value().to_string() == "auto_increment";
                         }
                     }
 
                     // find type
-                    def.type = row["data_type"].to_value().to_string();
+                    def.type = row["data_type"].value().to_string();
 
-                    def.default_value = row["column_default"].to_value().to_string();
+                    def.default_value = row["column_default"].value().to_string();
 
                     columns.push_back(def);
                 }
