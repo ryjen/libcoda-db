@@ -94,7 +94,7 @@ namespace rj
                     {
                         wchar_t buf[10] = {0};
                         swprintf(buf, 10, L"%c", value);
-                        wstring temp = helper::convert_string(buf);
+                        string temp = helper::convert_string(buf);
                         bind_.values_[index_] = strdup(temp.c_str());
                         bind_.types_[index_] = INT2OID;
                         bind_.lengths_[index_] = sizeof(wchar_t);
