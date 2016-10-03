@@ -87,10 +87,7 @@ namespace rj
         {
             return impl_->to_value();
         }
-        column::operator sql_null_type() const
-        {
-            return impl_->to_value();
-        }
+
         column::operator sql_blob() const
         {
             return impl_->to_value();

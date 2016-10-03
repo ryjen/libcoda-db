@@ -1,7 +1,5 @@
 
 
-link_directories("${PROJECT_BINARY_DIR}/libs/variant/src")
-
 set(TEST_SOURCES
 	main.db.test.cpp
 	db.test.cpp
@@ -66,7 +64,7 @@ add_executable (${PROJECT_NAME}_test
 	where_clause.test.cpp
 )
 
-include_directories(SYSTEM vendor/bandit SYSTEM vendor/benchpress/src ${PROJECT_SOURCE_DIR}/libs/variant/src ${PROJECT_SOURCE_DIR}/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
+include_directories(SYSTEM vendor/bandit SYSTEM vendor/benchpress/src ${PROJECT_SOURCE_DIR}/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
 
 target_link_libraries (${PROJECT_NAME}_test_mysql ${PROJECT_NAME} testicle)
 

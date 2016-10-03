@@ -378,7 +378,7 @@ namespace rj
                     from_number(MYSQL_BIND *bind) : bind_(bind)
                     {
                     }
-                    void operator()(const sql_null_type &null)
+                    void operator()(const sql_null_type &null) const
                     {
                         bind_->buffer_type = MYSQL_TYPE_NULL;
                     }

@@ -3,7 +3,7 @@ FROM ryjen/cpp-coveralls
 
 ARG CMAKE_DEFINES
 
-RUN apt-get -y install libmysqlclient-dev libsqlite3-dev libpq-dev postgresql-server-dev-9.3
+RUN apt-get -y install libmysqlclient-dev libsqlite3-dev libpq-dev postgresql-server-dev-9.3 libboost-dev
 
 ENV BUILD_SRC /usr/src
 

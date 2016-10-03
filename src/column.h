@@ -106,7 +106,6 @@ namespace rj
             operator sql_wstring() const;
             operator sql_number() const;
             operator sql_time() const;
-            operator sql_null_type() const;
             operator sql_blob() const;
 
             operator bool() const;

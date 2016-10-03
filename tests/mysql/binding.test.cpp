@@ -7,6 +7,8 @@
 #ifdef HAVE_LIBMYSQLCLIENT
 
 #include <bandit/bandit.h>
+#include <cmath>
+#include <cstdlib>
 #include "../db.test.h"
 #include "mysql/binding.h"
 

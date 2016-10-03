@@ -11,7 +11,6 @@
 #include <time.h>
 #include <cassert>
 #include <cstdlib>
-#include <locale>
 #include <memory>
 #include <regex>
 #include "catalog/pg_type.h"
@@ -95,8 +94,9 @@ namespace rj
                     {
                         wchar_t buf[10] = {0};
                         swprintf(buf, 10, L"%c", value);
-                        bind_.values_[index_] = strdup(helper::convert_string(buf).c_str());
-                        bind_.types_[index_] = CHAROID;
+                        wstring temp = helper::convert_string(buf);
+                        bind_.values_[index_] = strdup(temp.c_str());
+                        bind_.types_[index_] = INT2OID;
                         bind_.lengths_[index_] = sizeof(wchar_t);
                         bind_.formats_[index_] = 0;
                     }
@@ -206,6 +206,13 @@ namespace rj
                         bind_.lengths_[index_] = sizeof(unsigned short);
                         bind_.formats_[index_] = 0;
                     }
+                    void operator()(const sql_null_type &value) const
+                    {
+                        bind_.values_[index_] = 0;
+                        bind_.types_[index_] = UNKNOWNOID;
+                        bind_.lengths_[index_] = 0;
+                        bind_.formats_[index_] = 0;
+                    }
 
                    private:
                     binding &bind_;
@@ -238,9 +245,6 @@ namespace rj
                     }
                     void operator()(const sql_null_type &value) const
                     {
-                        if (bind_.values_[index_]) {
-                            free(bind_.values_[index_]);
-                        }
                         bind_.values_[index_] = nullptr;
                         bind_.lengths_[index_] = 0;
                         bind_.types_[index_] = UNKNOWNOID;
@@ -256,9 +260,10 @@ namespace rj
                     }
                     void operator()(const sql_wstring &value) const
                     {
-                        bind_.values_[index_] = strdup(helper::convert_string(value).c_str());
+                        string temp = helper::convert_string(value);
+                        bind_.values_[index_] = strdup(temp.c_str());
                         bind_.types_[index_] = TEXTOID;
-                        bind_.lengths_[index_] = value.size();
+                        bind_.lengths_[index_] = temp.size();
                         bind_.formats_[index_] = 0;
                     }
                     void operator()(const sql_string &value) const

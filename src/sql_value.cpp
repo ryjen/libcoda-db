@@ -18,6 +18,10 @@ namespace rj
         {
             struct as_sql_time : public boost::static_visitor<sql_time> {
                public:
+                as_sql_time(bool throw_errors = false) : throw_(throw_errors)
+                {
+                }
+
                 sql_time operator()(const sql_number &value) const
                 {
                     return value;
@@ -28,20 +32,40 @@ namespace rj
                 }
                 sql_time operator()(const sql_blob &value) const
                 {
+                    if (!throw_) {
+                        return sql_time(0);
+                    }
                     throw value_conversion_error();
                 }
                 sql_time operator()(const sql_string &value) const
                 {
-                    return sql_number(value);
+                    try {
+                        return sql_number(value);
+                    } catch (value_conversion_error &e) {
+                        if (!throw_) {
+                            return sql_number(sql_null);
+                        }
+                        throw e;
+                    }
                 }
                 sql_time operator()(const sql_wstring &value) const
                 {
-                    return sql_number(value);
+                    try {
+                        return sql_number(value);
+                    } catch (value_conversion_error &e) {
+                        if (!throw_) {
+                            return sql_number(sql_null);
+                        }
+                        throw e;
+                    }
                 }
                 sql_time operator()(const sql_null_type &value) const
                 {
                     throw value_conversion_error();
                 }
+
+               private:
+                bool throw_;
             };
 
             struct as_sql_blob : public boost::static_visitor<sql_blob> {
@@ -169,6 +193,13 @@ namespace rj
         sql_value::sql_value(const long double &value) : value_(sql_number(value))
         {
         }
+        sql_value::sql_value(const char *value) : value_(sql_string(value))
+        {
+        }
+        sql_value::sql_value(const wchar_t *value) : value_(sql_wstring(value))
+        {
+        }
+
         template <>
         sql_string sql_value::as() const
         {
@@ -194,10 +225,7 @@ namespace rj
         {
             return boost::apply_visitor(helper::as_sql_number(), value_);
         }
-        sql_value::operator sql_null_type() const
-        {
-            return boost::get<sql_null_type>(value_);
-        }
+
         sql_value::operator sql_number() const
         {
             return as<sql_number>();
@@ -281,17 +309,12 @@ namespace rj
         }
         bool sql_value::operator==(const sql_value &value) const
         {
-            return value.value_ == value_;
+            return boost::apply_visitor(helper::value_equality(value), value_);
         }
 
         bool sql_value::operator==(const sql_null_type &value) const
         {
-            try {
-                boost::get<sql_null_type>(value_);
-                return true;
-            } catch (const boost::bad_get &e) {
-                return false;
-            }
+            return is<sql_null_type>();
         }
 
         bool sql_value::operator==(const sql_number &value) const
@@ -318,63 +341,123 @@ namespace rj
         /* numeric equality */
         bool sql_value::operator==(const bool &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false == value;
+            }
         }
         bool sql_value::operator==(const char &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const unsigned char &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const wchar_t &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const short &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const unsigned short &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const int &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const unsigned int &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const long &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::sql_value::operator==(const unsigned long &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const long long &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const unsigned long long &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const float &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const double &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const long double &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
 
         std::string sql_value::to_string() const

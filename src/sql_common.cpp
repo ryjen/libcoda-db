@@ -1,5 +1,7 @@
 #include "sql_common.h"
 #include <codecvt>
+#include <locale>
+#include <string>
 #include "sql_number.h"
 #include "sql_time.h"
 
@@ -9,12 +11,12 @@ namespace rj
     {
         std::ostream &operator<<(std::ostream &out, const sql_blob &value)
         {
-            out << std::hex << value.data();
+            out << std::string(value.begin(), value.end());
             return out;
         }
         std::wostream &operator<<(std::wostream &out, const sql_blob &value)
         {
-            out << std::hex << value.data();
+            out << std::wstring(value.begin(), value.end());
             return out;
         }
         std::ostream &operator<<(std::ostream &out, const sql_null_type &null)
@@ -51,6 +53,17 @@ namespace rj
 
         namespace helper
         {
+            bool equals(const std::string &s1, const std::string &s2)
+            {
+                return ((s1.size() == s2.size()) &&
+                        std::equal(s1.begin(), s1.end(), s2.begin(), [](char a, char b) { return toupper(a) == toupper(b); }));
+            }
+            bool equals(const std::wstring &s1, const std::wstring &s2)
+            {
+                return ((s1.size() == s2.size()) &&
+                        std::equal(s1.begin(), s1.end(), s2.begin(), [](wchar_t a, wchar_t b) { return towupper(a) == towupper(b); }));
+            }
+
             sql_number &&to_number(const sql_string &value)
             {
                 return std::move(sql_number(value));
@@ -62,6 +75,45 @@ namespace rj
             sql_number &&to_number(const sql_time &value)
             {
                 return std::move(sql_number(value.value()));
+            }
+
+            bool is_positive_bool(const sql_string &value)
+            {
+                return equals(value, "true") || equals(value, "yes") || value == "1";
+            }
+            bool is_positive_bool(const sql_wstring &value)
+            {
+                return equals(value, L"true") || equals(value, L"yes") || value == L"1";
+            }
+
+            bool is_negative_bool(const sql_string &value)
+            {
+                return equals(value, "false") || equals(value, "no") || value == "0";
+            }
+            bool is_negative_bool(const sql_wstring &value)
+            {
+                return equals(value, L"false") || equals(value, L"no") || value == L"0";
+            }
+
+            int is_bool(const sql_string &value)
+            {
+                if (is_positive_bool(value)) {
+                    return 1;
+                }
+                if (is_negative_bool(value)) {
+                    return -1;
+                }
+                return 0;
+            }
+            int is_bool(const sql_wstring &value)
+            {
+                if (is_positive_bool(value)) {
+                    return 1;
+                }
+                if (is_negative_bool(value)) {
+                    return -1;
+                }
+                return 0;
             }
 
             std::string convert_string(const std::wstring &buf)

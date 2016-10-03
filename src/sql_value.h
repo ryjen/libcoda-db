@@ -32,7 +32,7 @@ namespace rj
              * numeric constructors
              * would be nice to use a template here, but it can't deduce the type very well
              */
-            sql_value(const bool &value);
+            explicit sql_value(const bool &value);
             sql_value(const char &value);
             sql_value(const unsigned char &value);
             sql_value(const wchar_t &value);
@@ -48,6 +48,9 @@ namespace rj
             sql_value(const double &value);
             sql_value(const long double &value);
 
+            sql_value(const char *value);
+            sql_value(const wchar_t *value);
+
             template <typename T, typename = std::enable_if<is_sql_value<T>::value || is_sql_number<T>::value>>
             bool is() const
             {
@@ -60,7 +63,6 @@ namespace rj
                 return boost::apply_visitor(helper::as_number<T>(), value_);
             }
 
-            operator sql_null_type() const;
             operator sql_number() const;
             operator sql_string() const;
             operator sql_wstring() const;

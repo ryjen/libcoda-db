@@ -20,6 +20,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 find_package(MySQL)
 find_package(SQLite3)
 find_package(PostgreSQL)
+find_package(Boost)
 
 find_program(HEADERDOC headerdoc2html)
 find_program(GATHERDOC gatherheaderdoc)

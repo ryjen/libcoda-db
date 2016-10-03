@@ -19,7 +19,7 @@ namespace rj
            public:
             sql_number();
 
-            sql_number(const bool &value);
+            explicit sql_number(const bool &value);
             sql_number(const char &value);
             sql_number(const unsigned char &value);
             sql_number(const wchar_t &value);
@@ -48,6 +48,12 @@ namespace rj
             virtual ~sql_number();
 
             template <typename T, typename = std::enable_if<is_sql_number<T>::value>>
+            bool is() const
+            {
+                return boost::apply_visitor(helper::is_type<T>(), value_);
+            }
+
+            template <typename T, typename = std::enable_if<is_sql_number<T>::value>>
             T as() const
             {
                 return boost::apply_visitor(helper::as_number<T>(), value_);
@@ -56,7 +62,6 @@ namespace rj
             /**
              * not a template because it some cases it can't deduce the type
              */
-            operator sql_null_type() const;
             operator sql_string() const;
             operator sql_wstring() const;
             operator sql_time() const;
@@ -172,6 +177,8 @@ namespace rj
                     return false;
                 }
             }
+            bool parse_bool(const sql_string &value);
+            bool parse_bool(const sql_wstring &value);
 
             boost::variant<sql_null_type, bool, char, unsigned char, wchar_t, short, unsigned short, int, unsigned int, long, unsigned long,
                            long long, unsigned long long, float, double, long double>

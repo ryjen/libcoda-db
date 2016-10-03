@@ -30,6 +30,15 @@ namespace rj
         {
             std::string convert_string(const std::wstring &buf);
             std::wstring convert_string(const std::string &buf);
+            
+            bool is_positive_bool(const sql_string &value);
+            bool is_positive_bool(const sql_wstring &value);
+            
+            bool is_negative_bool(const sql_string &value);
+            bool is_negative_bool(const sql_wstring &value);
+            
+            int is_bool(const sql_string &value);
+            int is_bool(const sql_wstring &value);
 
             sql_number &&to_number(const sql_string &value);
             sql_number &&to_number(const sql_wstring &value);
@@ -82,6 +91,31 @@ namespace rj
                 {
                     return std::is_same<T, V>::value || std::is_convertible<V, T>::value;
                 }
+            };
+            
+
+            struct number_equality : public boost::static_visitor<bool> {
+            public:
+                number_equality(const sql_number &num) : num_(num) {}
+                template <typename V>
+                bool operator()(const V &value) const
+                {
+                    return num_ == value;
+                }
+            private:
+                const sql_number &num_;
+            };
+            
+            struct value_equality : public boost::static_visitor<bool> {
+            public:
+                value_equality(const sql_value &value) : value_(value) {}
+                template <typename V>
+                bool operator()(const V &value) const
+                {
+                    return value_ == value;
+                }
+            private:
+                const sql_value &value_;
             };
 
             class as_sql_string : public boost::static_visitor<sql_string>

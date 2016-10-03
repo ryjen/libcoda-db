@@ -200,17 +200,14 @@ go_bandit([]() {
     describe("sql blob", []() {
         it("can be a string", []() {
             sql_blob blob;
+            
+            AssertThat(to_string(blob), Equals(""));
+            
             unsigned char data[] = {"123456"};
 
-            AssertThat(to_string(blob), Equals("0x0"));
+            sql_blob other(data, data + sizeof(data) / sizeof(data[0]) - 1);
 
-            sql_blob other(data, data + sizeof(data) / sizeof(data[0]));
-
-            char buf[100];
-
-            sprintf(buf, "%p", other.data());
-
-            AssertThat(to_string(other), Equals(string(buf)));
+            AssertThat(to_string(other), Equals("123456"));
         });
 
         // it("can be moved", []() {

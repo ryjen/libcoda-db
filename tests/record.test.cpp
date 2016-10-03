@@ -42,25 +42,22 @@ go_bandit([]() {
         });
 
         it("should find by id", []() {
-            try {
-                user u1;
 
-                u1.set("first_name", "test");
-                u1.set("last_name", "testing");
+            user u1;
 
-                Assert::That(u1.save(), IsTrue());
+            u1.set("first_name", "test");
+            u1.set("last_name", "testing");
 
-                auto u2 = user().find_by_id(u1.id());
+            Assert::That(u1.save(), IsTrue());
 
-                Assert::That(u2 != nullptr, IsTrue());
+            auto u2 = user().find_by_id(u1.id());
 
-                Assert::That(u2->is_valid(), IsTrue());
+            Assert::That(u2 != nullptr, IsTrue());
 
-                Assert::That(u2->id(), Equals(u1.id()));
-            } catch (const std::exception& e) {
-                cerr << "Error2: " << e.what() << endl;
-                throw e;
-            }
+            Assert::That(u2->is_valid(), IsTrue());
+
+            Assert::That(u2->id(), Equals(u1.id()));
+
         });
 
         it("can find all", []() {

@@ -26,6 +26,7 @@ namespace rj
 
         class sql_number;
         class sql_time;
+        class sql_value;
 
         /**
          * template helper to see if a type is appropriate for a sql number
@@ -44,7 +45,6 @@ namespace rj
         {
            public:
             /* convertibles */
-            virtual operator sql_null_type() const = 0;
             virtual operator sql_string() const = 0;
             virtual operator sql_wstring() const = 0;
             virtual operator sql_time() const = 0;

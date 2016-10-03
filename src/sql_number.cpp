@@ -1,4 +1,5 @@
 #include "sql_number.h"
+#include <algorithm>
 #include "exception.h"
 #include "sql_common.h"
 
@@ -95,11 +96,28 @@ namespace rj
         {
         }
 
-
+        bool sql_number::parse_bool(const sql_string &value)
+        {
+            int test = helper::is_bool(value);
+            if (test) {
+                value_ = test > 0;
+                return true;
+            }
+            return false;
+        }
+        bool sql_number::parse_bool(const sql_wstring &value)
+        {
+            int test = helper::is_bool(value);
+            if (test) {
+                value_ = test > 0;
+                return true;
+            }
+            return false;
+        }
         bool sql_number::parse(const std::string &value)
         {
             if (!std::any_of(value.begin(), value.end(), ::isdigit)) {
-                return false;
+                return parse_bool(value);
             }
             if (value.find('.') != std::string::npos) {
                 return parse_floating<float>(value, std::stof) || parse_floating<double>(value, std::stod) ||
@@ -113,7 +131,7 @@ namespace rj
         bool sql_number::parse(const std::wstring &value)
         {
             if (!std::any_of(value.begin(), value.end(), ::isdigit)) {
-                return false;
+                return parse_bool(value);
             }
             if (value.find('.') != std::string::npos) {
                 return parse_floating<float>(value, std::stof) || parse_floating<double>(value, std::stod) ||
@@ -138,11 +156,6 @@ namespace rj
         sql_time sql_number::as() const
         {
             return sql_time(as<long>());
-        }
-
-        sql_number::operator sql_null_type() const
-        {
-            return boost::get<sql_null_type>(value_);
         }
 
         sql_number::operator bool() const
@@ -220,17 +233,12 @@ namespace rj
 
         bool sql_number::operator==(const sql_number &other) const
         {
-            return value_ == other.value_;
+            return boost::apply_visitor(helper::number_equality(other), value_);
         }
 
         bool sql_number::operator==(const sql_null_type &value) const
         {
-            try {
-                boost::get<sql_null_type>(value_);
-                return true;
-            } catch (const boost::bad_get &e) {
-                return false;
-            }
+            return is<sql_null_type>();
         }
         bool sql_number::operator==(const sql_string &value) const
         {
