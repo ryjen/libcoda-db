@@ -7,17 +7,17 @@ namespace rj
     {
         namespace helper
         {
-            time_t parse_time(const char *value)
+            time_t parse_time(const std::string &value)
             {
                 struct tm tp;
 
-                if (value == nullptr) {
+                if (value.length() == 0) {
                     return 0;
                 }
 
-                if (!strptime(value, "%Y-%m-%d %H:%M:%S", &tp)) {
-                    if (!strptime(value, "%Y-%m-%d", &tp)) {
-                        if (!strptime(value, "%H:%M:%S", &tp)) {
+                if (!strptime(value.c_str(), "%Y-%m-%d %H:%M:%S", &tp)) {
+                    if (!strptime(value.c_str(), "%Y-%m-%d", &tp)) {
+                        if (!strptime(value.c_str(), "%H:%M:%S", &tp)) {
                             try {
                                 return std::stoul(value);
                             } catch (...) {

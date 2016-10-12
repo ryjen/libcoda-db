@@ -131,7 +131,7 @@ namespace rj
             sql_string as_sql_string::operator()(const sql_blob &value) const
             {
                 std::ostringstream ss;
-                ss << std::hex << value.data();
+                operator<<(ss, value);
                 return ss.str();
             }
 
@@ -160,7 +160,7 @@ namespace rj
             sql_wstring as_sql_wstring::operator()(const sql_blob &value) const
             {
                 std::wostringstream ss;
-                ss << std::hex << value.data();
+                operator<<(ss, value);
                 return ss.str();
             }
 

@@ -23,7 +23,7 @@ namespace rj
     {
         namespace helper
         {
-            time_t parse_time(const char *value);
+            time_t parse_time(const std::string &value);
         }
         namespace mysql
         {
@@ -293,7 +293,7 @@ namespace rj
                         case MYSQL_TYPE_INT24:
                         case MYSQL_TYPE_LONG: {
                             try {
-                                return sql_number(std::stoi(value));
+                                return sql_number(std::stoi(std::string(value, 0, length)));
                             } catch (const std::exception &e) {
                                 log::error("unable to get integer from %s", value);
                                 return sql_value();
@@ -301,7 +301,7 @@ namespace rj
                         }
                         case MYSQL_TYPE_LONGLONG: {
                             try {
-                                return sql_number(std::stoll(value));
+                                return sql_number(std::stoll(std::string(value, 0, length)));
                             } catch (const std::exception &e) {
                                 log::error("unable to get long from %s", value);
                                 return sql_value();
@@ -319,17 +319,17 @@ namespace rj
                             return sql_string(value);
                         case MYSQL_TYPE_NEWDATE:
                         case MYSQL_TYPE_DATE:
-                            return sql_time(db::helper::parse_time(value), sql_time::DATE);
+                            return sql_time(db::helper::parse_time(std::string(value, 0, length)), sql_time::DATE);
                         case MYSQL_TYPE_DATETIME:
-                            return sql_time(db::helper::parse_time(value), sql_time::DATETIME);
+                            return sql_time(db::helper::parse_time(std::string(value, 0, length)), sql_time::DATETIME);
                         case MYSQL_TYPE_TIMESTAMP:
-                            return sql_time(db::helper::parse_time(value), sql_time::TIMESTAMP);
+                            return sql_time(db::helper::parse_time(std::string(value, 0, length)), sql_time::TIMESTAMP);
                         case MYSQL_TYPE_TIME: {
-                            return sql_time(db::helper::parse_time(value), sql_time::TIME);
+                            return sql_time(db::helper::parse_time(std::string(value, 0, length)), sql_time::TIME);
                         }
                         case MYSQL_TYPE_FLOAT: {
                             try {
-                                return sql_number(std::stof(value));
+                                return sql_number(std::stof(std::string(value, 0, length)));
                             } catch (const std::exception &e) {
                                 log::error("unable to get float of %s", value);
                                 return sql_value();
@@ -337,7 +337,7 @@ namespace rj
                         }
                         case MYSQL_TYPE_DOUBLE: {
                             try {
-                                return sql_number(std::stod(value));
+                                return sql_number(std::stod(std::string(value, 0, length)));
                             } catch (const std::exception &e) {
                                 log::error("unable to get double of %s", value);
                                 return sql_value();
