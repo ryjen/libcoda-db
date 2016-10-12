@@ -115,7 +115,7 @@ go_bandit([]() {
 
             AssertThat(i64, Equals(1234));
 
-            string str = v.as<string>();
+            sql_string str = v.as<sql_string>();
 
             AssertThat(str, Equals("1234"));
 
@@ -200,9 +200,9 @@ go_bandit([]() {
     describe("sql blob", []() {
         it("can be a string", []() {
             sql_blob blob;
-            
+
             AssertThat(to_string(blob), Equals(""));
-            
+
             unsigned char data[] = {"123456"};
 
             sql_blob other(data, data + sizeof(data) / sizeof(data[0]) - 1);

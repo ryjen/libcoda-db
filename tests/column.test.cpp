@@ -43,19 +43,15 @@ go_bandit([]() {
             u.set("last_name", "Jenkins");
             u.set("dval", 123.321);
 
-            int *data = (int *)malloc(sizeof(int));
+            sql_blob data;
 
-            memset(data, 0, sizeof(int));
+            data.push_back(4);
 
-            *data = 4;
-
-            u.set("data", sql_blob(data, data + sizeof(int)));
+            u.set("data", data);
 
             u.set("tval", sql_time());
 
             u.save();
-
-            free(data);
         });
 
         it("is copyable", []() {
@@ -93,7 +89,9 @@ go_bandit([]() {
 
             AssertThat(col.value().is<sql_blob>(), IsTrue());
 
-            AssertThat(col.value().as<sql_blob>().size(), Equals(sizeof(int)));
+            AssertThat(col.value().as<sql_blob>().size(), Equals(1));
+
+            AssertThat(col.value().as<sql_blob>()[0], Equals(4));
         });
 
         it("can be a time", []() {

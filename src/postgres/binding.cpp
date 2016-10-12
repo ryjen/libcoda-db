@@ -84,6 +84,9 @@ namespace rj
                     }
                 }
 
+                /**
+                 * a visitor to apply a number to a postgres binding
+                 */
                 class from_number : public boost::static_visitor<void>
                 {
                    public:
@@ -219,6 +222,9 @@ namespace rj
                     size_t index_;
                 };
 
+                /**
+                 * a visitor to apply a value to a postgres binding
+                 */
                 class from_value : public boost::static_visitor<void>
                 {
                    public:

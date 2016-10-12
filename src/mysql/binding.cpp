@@ -30,10 +30,10 @@ namespace rj
             namespace helper
             {
                 // small util method to make a c pointer for a type
-                template <typename T>
+                template <typename T, typename = std::enable_if<std::is_arithmetic<T>::value>>
                 void *to_cptr(const T &value)
                 {
-                    T *ptr = c_alloc<T>(sizeof(T));
+                    T *ptr = c_alloc<T>();
                     *ptr = value;
                     return ptr;
                 }
@@ -172,17 +172,27 @@ namespace rj
 
                 extern std::string last_stmt_error(MYSQL_STMT *stmt);
             }
+            // namespace for converting data
             namespace data_mapper
             {
+                /**
+                 * handle unsigned/signed flag in binding when converting a number
+                 */
                 template <typename T>
                 typename std::enable_if<std::is_integral<T>::value, sql_value>::type to_number(MYSQL_BIND *binding)
                 {
                     if (binding->is_unsigned) {
                         typedef typename std::make_unsigned<T>::type U;
                         U *p = static_cast<U *>(binding->buffer);
+                        if (p == nullptr) {
+                            return sql_number(sql_null);
+                        }
                         return sql_number(*p);
                     } else {
                         T *p = static_cast<T *>(binding->buffer);
+                        if (p == nullptr) {
+                            return sql_number(sql_null);
+                        }
                         return sql_number(*p);
                     }
                 }
@@ -202,12 +212,20 @@ namespace rj
                     switch (binding->buffer_type) {
                         case MYSQL_TYPE_BIT:
                         case MYSQL_TYPE_TINY:
-                            return to_number<char>(binding);
                         case MYSQL_TYPE_SHORT:
-                            return to_number<short>(binding);
                         case MYSQL_TYPE_INT24:
                         case MYSQL_TYPE_LONG:
-                            return to_number<long>(binding);
+                            switch (binding->buffer_length) {
+                                case sizeof(char):
+                                    return to_number<char>(binding);
+                                case sizeof(short):
+                                    return to_number<short>(binding);
+                                case sizeof(int):
+                                default:
+                                    return to_number<int>(binding);
+                                case sizeof(long):
+                                    return to_number<long>(binding);
+                            }
                         case MYSQL_TYPE_LONGLONG:
                             return to_number<long long>(binding);
                         case MYSQL_TYPE_NULL:
@@ -372,6 +390,9 @@ namespace rj
                     binding->buffer_length = sizeof(MYSQL_TIME);
                 }
 
+                /**
+                 * a value visitor to apply to a mysql binding
+                 */
                 class from_number : public boost::static_visitor<void>
                 {
                    public:
@@ -482,6 +503,9 @@ namespace rj
                     MYSQL_BIND *bind_;
                 };
 
+                /**
+                 * a visitor to apply a value to a mysql binding
+                 */
                 class from_value : public boost::static_visitor<void>
                 {
                    public:

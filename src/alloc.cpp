@@ -9,7 +9,7 @@ namespace rj
         {
             void *mem = nullptr;
 
-            if (size == 0) {
+            if (size == 0 || num == 0) {
                 return nullptr;
             }
 

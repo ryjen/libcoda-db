@@ -15,73 +15,41 @@ namespace rj
 {
     namespace db
     {
+        // stream operators for different types
         std::ostream &operator<<(std::ostream &out, const sql_blob &value);
         std::wostream &operator<<(std::wostream &out, const sql_blob &value);
         std::ostream &operator<<(std::ostream &out, const sql_null_type &null);
         std::wostream &operator<<(std::wostream &out, const sql_null_type &null);
 
+        // to string functions
         std::string to_string(const sql_blob &value);
         std::wstring to_wstring(const sql_blob &value);
-
         std::string to_string(const sql_null_type &value);
         std::wstring to_wstring(const sql_null_type &value);
 
         namespace helper
         {
+            // convert between different string types
             std::string convert_string(const std::wstring &buf);
             std::wstring convert_string(const std::string &buf);
-            
+
+            // test if a string value is a positive boolean value
             bool is_positive_bool(const sql_string &value);
             bool is_positive_bool(const sql_wstring &value);
-            
+
+            // test if a string value is a negative bool value
             bool is_negative_bool(const sql_string &value);
             bool is_negative_bool(const sql_wstring &value);
-            
+
+            /**
+             * test if a string value is a positive or negative bool value
+             * @returns 0 if not a boolean, -1 if false, 1 if true
+             */
             int is_bool(const sql_string &value);
             int is_bool(const sql_wstring &value);
 
-            sql_number &&to_number(const sql_string &value);
-            sql_number &&to_number(const sql_wstring &value);
-            sql_number &&to_number(const sql_time &value);
-
             template <typename T, typename = std::enable_if<is_sql_number<T>::value>>
-            class as_number : public boost::static_visitor<T>
-            {
-               public:
-                template <typename V>
-                T operator()(const V &value) const
-                {
-                    return value;
-                }
-                T operator()(const sql_null_type &value) const
-                {
-                    return 0;
-                }
-                T operator()(const sql_blob &value) const
-                {
-                    throw value_conversion_error();
-                }
-                T operator()(const sql_time &value) const
-                {
-                    if (std::is_same<T, time_t>::value || std::is_convertible<time_t, T>::value) {
-                        return to_number(value);
-                    }
-                    throw value_conversion_error();
-                }
-                T operator()(const sql_string &value) const
-                {
-                    return to_number(value);
-                }
-                T operator()(const sql_wstring &value) const
-                {
-                    return to_number(value);
-                }
-                T operator()(const sql_number &value) const
-                {
-                    return value;
-                }
-            };
-
+            class as_number;
 
             template <typename T>
             struct is_type : public boost::static_visitor<bool> {
@@ -92,29 +60,35 @@ namespace rj
                     return std::is_same<T, V>::value || std::is_convertible<V, T>::value;
                 }
             };
-            
+
 
             struct number_equality : public boost::static_visitor<bool> {
-            public:
-                number_equality(const sql_number &num) : num_(num) {}
+               public:
+                number_equality(const sql_number &num) : num_(num)
+                {
+                }
                 template <typename V>
                 bool operator()(const V &value) const
                 {
                     return num_ == value;
                 }
-            private:
+
+               private:
                 const sql_number &num_;
             };
-            
+
             struct value_equality : public boost::static_visitor<bool> {
-            public:
-                value_equality(const sql_value &value) : value_(value) {}
+               public:
+                value_equality(const sql_value &value) : value_(value)
+                {
+                }
                 template <typename V>
                 bool operator()(const V &value) const
                 {
                     return value_ == value;
                 }
-            private:
+
+               private:
                 const sql_value &value_;
             };
 

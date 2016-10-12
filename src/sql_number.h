@@ -8,7 +8,6 @@
 #include "exception.h"
 #include "sql_common.h"
 #include "sql_time.h"
-#include "sql_types.h"
 
 namespace rj
 {
@@ -195,6 +194,47 @@ namespace rj
         sql_time sql_number::as() const;
 
         std::ostream &operator<<(std::ostream &out, const sql_number &value);
+
+        namespace helper
+        {
+            template <typename T, typename>
+            class as_number : public boost::static_visitor<typename std::enable_if<is_sql_number<T>::value, T>::type>
+            {
+               public:
+                template <typename V>
+                T operator()(const V &value) const
+                {
+                    return value;
+                }
+                T operator()(const sql_null_type &value) const
+                {
+                    return 0;
+                }
+                T operator()(const sql_blob &value) const
+                {
+                    throw value_conversion_error();
+                }
+                T operator()(const sql_time &value) const
+                {
+                    if (std::is_same<T, time_t>::value || std::is_convertible<time_t, T>::value) {
+                        return sql_number(value);
+                    }
+                    throw value_conversion_error();
+                }
+                T operator()(const sql_string &value) const
+                {
+                    return sql_number(value);
+                }
+                T operator()(const sql_wstring &value) const
+                {
+                    return sql_number(value);
+                }
+                T operator()(const sql_number &value) const
+                {
+                    return value;
+                }
+            };
+        }
     }
 }
 

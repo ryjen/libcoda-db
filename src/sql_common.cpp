@@ -64,19 +64,6 @@ namespace rj
                         std::equal(s1.begin(), s1.end(), s2.begin(), [](wchar_t a, wchar_t b) { return towupper(a) == towupper(b); }));
             }
 
-            sql_number &&to_number(const sql_string &value)
-            {
-                return std::move(sql_number(value));
-            }
-            sql_number &&to_number(const sql_wstring &value)
-            {
-                return std::move(sql_number(value));
-            }
-            sql_number &&to_number(const sql_time &value)
-            {
-                return std::move(sql_number(value.value()));
-            }
-
             bool is_positive_bool(const sql_string &value)
             {
                 return equals(value, "true") || equals(value, "yes") || value == "1";
