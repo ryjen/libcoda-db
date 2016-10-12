@@ -13,7 +13,8 @@ a sqlite, mysql and postgres wrapper + active record (ish) implementation.
 Disclaimers:
 - this library favours ease of programmer use over speed
 - use in production at your own risk, no support or warranty
-- my code style does not use camel case.  Try to match the std library.
+- my code style does not use camel case for c++
+- boost::variant used in this code is going to be replaced with std::variant in c++17
 
 Why yet another library
 -----------------------
@@ -508,7 +509,8 @@ Alternatives
 TODO / ROADMAP
 ==============
 
-* More and better quality tests, I demand 100% coverage
-* better benchmarking and perf improvements (preallocing?)
-* NoSQL support? might be doable
+* More and better quality tests, especially around binding and data types
+* better benchmarking and perf improvements (pre-allocing?)
+* NoSQL support? other databases?
+
 
