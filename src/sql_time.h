@@ -23,7 +23,8 @@ namespace rj
              * @param value the unix timestamp
              * @param format the format to display
              */
-            explicit sql_time(time_t value = time(0), formats format = TIMESTAMP);
+            sql_time(time_t value = time(0), formats format = TIMESTAMP);
+            sql_time(const std::string &value);
 
             sql_time(const sql_time &other);
             sql_time(sql_time &&other);
@@ -54,6 +55,7 @@ namespace rj
             bool operator==(const sql_time &other) const;
 
            private:
+            bool parse(const std::string &value);
             time_t value_;
             formats format_;
         };

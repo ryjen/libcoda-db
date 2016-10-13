@@ -18,7 +18,7 @@ namespace rj
         {
             struct as_sql_time : public boost::static_visitor<sql_time> {
                public:
-                as_sql_time(bool throw_errors = false) : throw_(throw_errors)
+                as_sql_time()
                 {
                 }
 
@@ -32,32 +32,15 @@ namespace rj
                 }
                 sql_time operator()(const sql_blob &value) const
                 {
-                    if (!throw_) {
-                        return sql_time(0);
-                    }
                     throw value_conversion_error();
                 }
                 sql_time operator()(const sql_string &value) const
                 {
-                    try {
-                        return sql_number(value);
-                    } catch (value_conversion_error &e) {
-                        if (!throw_) {
-                            return sql_number(sql_null);
-                        }
-                        throw e;
-                    }
+                    return sql_time(value);
                 }
                 sql_time operator()(const sql_wstring &value) const
                 {
-                    try {
-                        return sql_number(value);
-                    } catch (value_conversion_error &e) {
-                        if (!throw_) {
-                            return sql_number(sql_null);
-                        }
-                        throw e;
-                    }
+                    return sql_number(value);
                 }
                 sql_time operator()(const sql_null_type &value) const
                 {
@@ -228,84 +211,164 @@ namespace rj
 
         sql_value::operator sql_number() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return sql_number();
+            }
         }
         sql_value::operator sql_string() const
         {
-            return as<sql_string>();
+            try {
+                return as<sql_string>();
+            } catch (const value_conversion_error &e) {
+                return sql_string();
+            }
         }
         sql_value::operator sql_wstring() const
         {
-            return as<sql_wstring>();
+            try {
+                return as<sql_wstring>();
+            } catch (const value_conversion_error &e) {
+                return sql_wstring();
+            }
         }
         sql_value::operator sql_time() const
         {
-            return as<sql_time>();
+            try {
+                return as<sql_time>();
+            } catch (const value_conversion_error &e) {
+                return sql_time();
+            }
         }
         sql_value::operator sql_blob() const
         {
-            return boost::get<sql_blob>(value_);
+            try {
+                return as<sql_blob>();
+            } catch (const value_conversion_error &e) {
+                return sql_blob();
+            }
         }
 
         sql_value::operator bool() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         sql_value::operator char() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator unsigned char() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator wchar_t() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator short() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator unsigned short() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator int() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator unsigned int() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator long() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator unsigned long() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator long long() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator unsigned long long() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator float() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator double() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         sql_value::operator long double() const
         {
-            return as<sql_number>();
+            try {
+                return as<sql_number>();
+            } catch (const value_conversion_error &e) {
+                return 0;
+            }
         }
         bool sql_value::operator==(const sql_value &value) const
         {
@@ -319,23 +382,43 @@ namespace rj
 
         bool sql_value::operator==(const sql_number &value) const
         {
-            return as<sql_number>() == value;
+            try {
+                return as<sql_number>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const sql_string &value) const
         {
-            return as<sql_string>() == value;
+            try {
+                return as<sql_string>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const sql_wstring &value) const
         {
-            return as<sql_wstring>() == value;
+            try {
+                return as<sql_wstring>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const sql_time &value) const
         {
-            return as<sql_time>() == value;
+            try {
+                return as<sql_time>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
         bool sql_value::operator==(const sql_blob &value) const
         {
-            return as<sql_blob>() == value;
+            try {
+                return as<sql_blob>() == value;
+            } catch (const value_conversion_error &e) {
+                return false;
+            }
         }
 
         /* numeric equality */
@@ -462,7 +545,11 @@ namespace rj
 
         std::string sql_value::to_string() const
         {
-            return as<string>();
+            try {
+                return as<sql_string>();
+            } catch (const value_conversion_error &e) {
+                return std::string();
+            }
         }
 
         ostream &operator<<(ostream &out, const sql_value &value)

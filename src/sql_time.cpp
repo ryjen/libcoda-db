@@ -1,38 +1,61 @@
 #include "sql_time.h"
+#include "exception.h"
 #include "sql_number.h"
 
 namespace rj
 {
     namespace db
     {
-        namespace helper
+        bool sql_time::parse(const std::string &value)
         {
-            time_t parse_time(const std::string &value)
-            {
-                struct tm tp;
+            struct tm tp;
 
-                if (value.length() == 0) {
-                    return 0;
-                }
+            if (value.length() == 0) {
+                return false;
+            }
 
-                if (!strptime(value.c_str(), "%Y-%m-%d %H:%M:%S", &tp)) {
-                    if (!strptime(value.c_str(), "%Y-%m-%d", &tp)) {
-                        if (!strptime(value.c_str(), "%H:%M:%S", &tp)) {
-                            try {
-                                return std::stoul(value);
-                            } catch (...) {
-                                return 0;
-                            }
-                        }
-                    }
-                }
+            memset(&tp, 0, sizeof(tp));
 
-                return timegm(&tp);
+            if (strptime(value.c_str(), "%Y-%m-%d %H:%M:%S", &tp)) {
+                value_ = timegm(&tp);
+                format_ = DATETIME;
+                return true;
+            }
+
+            if (strptime(value.c_str(), "%Y-%m-%d", &tp)) {
+                value_ = timegm(&tp);
+                format_ = DATE;
+                return true;
+            }
+
+            if (strptime(value.c_str(), "%H:%M:%S", &tp)) {
+                /* set date to 1970-1-1 */
+                tp.tm_year = 70;
+                tp.tm_mon = 0;
+                tp.tm_mday = 1;
+                value_ = timegm(&tp);
+                format_ = TIME;
+                return true;
+            }
+
+            try {
+                value_ = std::stoul(value);
+                format_ = TIMESTAMP;
+                return true;
+            } catch (...) {
+                return false;
             }
         }
 
         sql_time::sql_time(time_t value, formats format) : value_(value), format_(format)
         {
+        }
+
+        sql_time::sql_time(const std::string &value) : value_(0), format_(TIMESTAMP)
+        {
+            if (!parse(value)) {
+                throw value_conversion_error("unable to convert string to time");
+            }
         }
 
         sql_time::sql_time(const sql_time &other) : value_(other.value_), format_(other.format_)

@@ -21,10 +21,6 @@ namespace rj
 {
     namespace db
     {
-        namespace helper
-        {
-            time_t parse_time(const std::string &value);
-        }
         namespace mysql
         {
             namespace helper
@@ -316,16 +312,17 @@ namespace rj
                         case MYSQL_TYPE_SET:
                         case MYSQL_TYPE_STRING:
                         default:
-                            return sql_string(value);
+                            return sql_string(value, 0, length);
                         case MYSQL_TYPE_NEWDATE:
                         case MYSQL_TYPE_DATE:
-                            return sql_time(db::helper::parse_time(std::string(value, 0, length)), sql_time::DATE);
                         case MYSQL_TYPE_DATETIME:
-                            return sql_time(db::helper::parse_time(std::string(value, 0, length)), sql_time::DATETIME);
                         case MYSQL_TYPE_TIMESTAMP:
-                            return sql_time(db::helper::parse_time(std::string(value, 0, length)), sql_time::TIMESTAMP);
                         case MYSQL_TYPE_TIME: {
-                            return sql_time(db::helper::parse_time(std::string(value, 0, length)), sql_time::TIME);
+                            try {
+                                return sql_time(std::string(value, 0, length));
+                            } catch (const value_conversion_error &e) {
+                                return sql_time();
+                            }
                         }
                         case MYSQL_TYPE_FLOAT: {
                             try {

@@ -104,67 +104,78 @@ go_bandit([]() {
             AssertThat(other == 1234, IsTrue());
         });
 
-        it("can be converted", []() {
-            sql_value v = 1234;
+        describe("conversion", []() {
 
-            double d = v.as<sql_number>();
+            describe("an integer", []() {
+                sql_value v = 1234;
 
-            AssertThat(d, Equals(1234.0));
+                it("as a double", [&v]() {
+                    double d = v.as<double>();
 
-            long long i64 = v.as<sql_number>();
+                    AssertThat(d, Equals(1234.0));
+                });
 
-            AssertThat(i64, Equals(1234));
+                it("as a long long", [&v]() {
+                    long long i64 = v.as<long long>();
 
-            sql_string str = v.as<sql_string>();
+                    AssertThat(i64, Equals(1234));
+                });
 
-            AssertThat(str, Equals("1234"));
+                it("as a string", [&v]() {
+                    sql_string str = v.as<sql_string>();
 
-            bool b = v.as<sql_number>();
+                    AssertThat(str, Equals("1234"));
+                });
 
-            AssertThat(b, IsTrue());
+                it("as a bool", [&v]() {
+                    bool b = v.as<bool>();
 
-        });
+                    AssertThat(b, IsTrue());
+                });
+            });
 
-        /*
-         * Not sure I want this test case anymore... conversion errors should be raised
-         *
-        it("can be converted without error", []() {
-            sql_value v = "asdfb";
+            describe("a string", []() {
 
-            double d = v;
+                it("as a conversion error", []() {
+                    sql_value v = "asdfcv";
 
-            AssertThat(d, Equals(0.0));
+                    AssertThrows(rj::db::value_conversion_error, v.as<int>());
+                });
 
-            long long i64 = v;
+                it("as a sql_time", []() {
+                    sql_value v = "2016-06-12 10:32:23";
 
-            AssertThat(i64, Equals(0LL));
+                    sql_time t = v.as<sql_time>();
 
-            bool b = v;
+                    AssertThat(t.value(), Equals(1465727543));
 
-            AssertThat(b, IsFalse());
+                    AssertThat(t.format(), Equals(sql_time::DATETIME));
 
-            sql_value boolTest = "true";
+                    v = "2016-06-12";
 
-            b = boolTest;
+                    t = v.as<sql_time>();
 
-            AssertThat(b, IsTrue());
+                    AssertThat(t.value(), Equals(1465689600));
 
-            boolTest = "YES";
+                    AssertThat(t.format(), Equals(sql_time::DATE));
 
-            b = boolTest;
+                    v = "10:32:23";
 
-            AssertThat(b, IsTrue());
+                    t = v.as<sql_time>();
 
-            int i = v;
+                    AssertThat(t.value(), Equals(37943));
 
-            AssertThat(i, Equals(0));
+                    AssertThat(t.format(), Equals(sql_time::TIME));
+                });
+            });
 
-        });*/
-
-        it("throws errors on conversion", []() {
-            sql_value v = "asdfcv";
-
-            AssertThrows(rj::db::value_conversion_error, v.as<sql_number>());
+            // describe("a blob", []() {
+            //     it("is not a sql time", []() {
+            //         std::string abc = "abc123";
+            //         sql_value v(sql_blob(abc.begin(), abc.end()));
+            //         AssertThrows(rj::db::value_conversion_error, v.as<sql_blob>());
+            //     });
+            // });
         });
 
 
@@ -181,6 +192,7 @@ go_bandit([]() {
 
     describe("sql null", []() {
         it("can be a string", []() { AssertThat(to_string(sql_null), Equals("NULL")); });
+        it("can be a wide string", []() { AssertThat(to_wstring(sql_null), Equals(std::wstring(L"NULL"))); });
 
         it("can be a sql value", []() {
             sql_value value;
@@ -203,36 +215,16 @@ go_bandit([]() {
 
             AssertThat(to_string(blob), Equals(""));
 
+            AssertThat(to_wstring(blob), Equals(std::wstring(L"")));
+
             unsigned char data[] = {"123456"};
 
             sql_blob other(data, data + sizeof(data) / sizeof(data[0]) - 1);
 
             AssertThat(to_string(other), Equals("123456"));
+
+            AssertThat(to_wstring(other), Equals(std::wstring(L"123456")));
         });
-
-        // it("can be moved", []() {
-        //     int a = 1234;
-
-        //     sql_blob b(&a, sizeof(int));
-
-        //     sql_blob other(std::move(b));
-
-        //     AssertThat(b.is_null(), IsTrue());
-
-        //     int* x = static_cast<int*>(other.value());
-
-        //     AssertThat(*x == a, IsTrue());
-
-        //     sql_blob moved;
-
-        //     moved = std::move(other);
-
-        //     AssertThat(other.is_null(), IsTrue());
-
-        //     x = static_cast<int*>(moved.data());
-
-        //     AssertThat(*x == a, IsTrue());
-        // });
 
     });
 
