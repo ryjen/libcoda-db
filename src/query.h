@@ -7,7 +7,7 @@
 #define RJ_DB_QUERY_H
 
 #include <map>
-#include <sstream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -53,6 +53,8 @@ namespace rj
              * @param sql the sql string
              */
             void prepare(const std::string &sql);
+
+            friend class where_builder;
 
            public:
             /*!
@@ -101,6 +103,7 @@ namespace rj
 
             query &bind(size_t index, const sql_value &value);
             query &bind(const std::string &name, const sql_value &value);
+            size_t num_of_bindings() const;
 
             using bindable::bind;
 
@@ -117,29 +120,6 @@ namespace rj
 
             virtual std::string to_string() const = 0;
         };
-        namespace helper
-        {
-            /*!
-             * utility method used in creating sql
-             */
-            template <typename T>
-            std::string join_csv(const std::vector<T> &list)
-            {
-                std::ostringstream buf;
-
-                if (list.size() > 0) {
-                    std::ostream_iterator<T> it(buf, ",");
-
-                    copy(list.begin(), list.end() - 1, it);
-
-                    buf << *(list.end() - 1);
-                }
-
-                return buf.str();
-            }
-
-            std::string join_params(const std::vector<std::string> &columns, bool update);
-        }
     }
 }
 

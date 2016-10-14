@@ -12,14 +12,15 @@ namespace rj
 {
     namespace db
     {
-        select_query::select_query(const std::shared_ptr<rj::db::session> &session) : query(session)
+        select_query::select_query(const std::shared_ptr<rj::db::session> &session) : query(session), where_(session->impl(), this)
         {
         }
-        select_query::select_query(const std::shared_ptr<rj::db::session> &session, const vector<string> &columns) : query(session), columns_(columns)
+        select_query::select_query(const std::shared_ptr<rj::db::session> &session, const vector<string> &columns)
+            : query(session), columns_(columns), where_(session->impl(), this)
         {
         }
         select_query::select_query(const std::shared_ptr<rj::db::session> &session, const vector<string> &columns, const string &tableName)
-            : query(session), columns_(columns), tableName_(tableName)
+            : query(session), columns_(columns), tableName_(tableName), where_(session->impl(), this)
         {
         }
 
@@ -114,20 +115,20 @@ namespace rj
             return orderBy_;
         }
 
-        where_clause select_query::where() const
+        where_builder select_query::where() const
         {
             return where_;
         }
 
-        where_clause &select_query::where(const string &value)
+        where_builder &select_query::where(const string &value)
         {
-            where_ = where_clause(value);
+            where_.reset(value);
             return where_;
         }
 
         select_query &select_query::where(const where_clause &value)
         {
-            where_ = value;
+            where_.reset(value);
             return *this;
         }
 

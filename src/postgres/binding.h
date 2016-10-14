@@ -69,7 +69,7 @@ namespace rj
                 /*!
                  * @return the number of bindings
                  */
-                size_t size() const;
+                size_t num_of_bindings() const;
 
                 /*!
                  * @return the current capcity of the storage

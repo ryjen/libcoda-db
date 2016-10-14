@@ -179,6 +179,11 @@ namespace rj
 
                 return mysql_stmt_insert_id(stmt_.get());
             }
+
+            size_t statement::num_of_bindings() const
+            {
+                return bindings_.num_of_bindings();
+            }
         }
     }
 }

@@ -23,7 +23,6 @@ namespace rj
     {
         namespace mysql
         {
-
             namespace helper
             {
                 // small util method to make a c pointer for a type
@@ -789,10 +788,10 @@ namespace rj
                 }
             }
 
-            size_t binding::size() const
+            size_t binding::num_of_bindings() const
             {
                 size_t count = 0;
-                for(size_t i = 0; i < size_; i++) {
+                for (size_t i = 0; i < size_; i++) {
                     if (value_[i].buffer != nullptr) {
                         count++;
                     }

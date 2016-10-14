@@ -38,6 +38,18 @@ namespace rj
                 return bind(index, value);
             }
 
+           public:
+#ifdef ENHANCED_PARAMETER_MAPPING
+            static std::regex param_regex;
+            static std::regex index_regex;
+            static std::regex named_regex;
+#endif
+            template <typename T, typename... List>
+            bindable &bind_all(const T &value, const List &... argv)
+            {
+                return bind_list(1, value, argv...);
+            }
+
             /*!
              * bind a list of a values, using the order of values as the index
              * @param index the initial index for the list
@@ -51,18 +63,6 @@ namespace rj
                 bind(index, value);
                 bind_list(index + 1, argv...);
                 return *this;
-            }
-
-           public:
-#ifdef ENHANCED_PARAMETER_MAPPING
-            static std::regex param_regex;
-            static std::regex index_regex;
-            static std::regex named_regex;
-#endif
-            template <typename T, typename... List>
-            bindable &bind_all(const T &value, const List &... argv)
-            {
-                return bind_list(1, value, argv...);
             }
 
             /*!
@@ -95,6 +95,8 @@ namespace rj
              * @return a reference to this instance
              */
             virtual bindable &bind(const std::string &name, const sql_value &value) = 0;
+
+            virtual size_t num_of_bindings() const = 0;
         };
     }
 }

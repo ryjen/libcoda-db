@@ -8,6 +8,7 @@
 #include "log.h"
 #include "session.h"
 #include "statement.h"
+#include "where_clause.h"
 
 using namespace std;
 
@@ -15,31 +16,6 @@ namespace rj
 {
     namespace db
     {
-        namespace helper
-        {
-            /*!
-             * utility method used in creating sql
-             */
-            string join_params(const vector<string> &columns, bool update)
-            {
-                ostringstream buf;
-
-                for (string::size_type i = 0; i < columns.size(); i++) {
-                    if (update) {
-                        buf << columns[i];
-                        buf << " = ";
-                    }
-
-                    buf.put('$');
-                    buf << (i + 1);
-
-                    if (i + 1 < columns.size()) {
-                        buf.put(',');
-                    }
-                }
-                return buf.str();
-            }
-        }
         query::query(const std::shared_ptr<rj::db::session> &session)
             : is_dirty_(false), session_(session), stmt_(nullptr), params_(), named_params_()
         {
@@ -163,6 +139,11 @@ namespace rj
             }
 
             return stmt_->last_error();
+        }
+
+        size_t query::num_of_bindings() const
+        {
+            return params_.size();
         }
 
         bool query::is_valid() const

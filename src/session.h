@@ -115,6 +115,13 @@ namespace rj
              */
             virtual std::string get_insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
 
+            virtual std::string bind_param(size_t index) const = 0;
+
+            /*!
+             * utility method used in creating sql
+             */
+            std::string join_params(const std::vector<std::string> &columns, const std::string &op = "") const;
+
            private:
             uri connectionInfo_;
         };

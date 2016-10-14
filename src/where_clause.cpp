@@ -1,6 +1,7 @@
 
 #include "where_clause.h"
 #include <sstream>
+#include "bindable.h"
 
 using namespace std;
 
@@ -145,10 +146,163 @@ namespace rj
             or_.clear();
         }
 
+        void where_clause::reset(const std::string &value)
+        {
+            reset();
+            value_ = value;
+        }
+        void where_clause::reset(const where_clause &other)
+        {
+            value_ = other.value_;
+            and_ = other.and_;
+            or_ = other.or_;
+        }
+
         ostream &operator<<(ostream &out, const where_clause &where)
         {
             out << where.to_string();
             return out;
+        }
+
+
+        where_builder::where_builder(const std::shared_ptr<session_impl> &session, bindable *binder) : session_(session), binder_(binder)
+        {
+            assert(binder != nullptr);
+        }
+
+        where_builder::where_builder(const where_builder &other) : where_clause(other), session_(other.session_), binder_(other.binder_)
+        {
+        }
+
+        where_builder::where_builder(where_builder &&other)
+            : where_clause(std::move(other)), session_(std::move(other.session_)), binder_(other.binder_)
+        {
+        }
+
+        where_builder &where_builder::operator=(const where_builder &other)
+        {
+            where_clause::operator=(other);
+            session_ = other.session_;
+            binder_ = other.binder_;
+            return *this;
+        }
+
+        where_builder &where_builder::operator=(where_builder &&other)
+        {
+            where_clause::operator=(std::move(other));
+            session_ = std::move(other.session_);
+            binder_ = other.binder_;
+            return *this;
+        }
+
+        where_builder::~where_builder()
+        {
+        }
+
+        where_builder &where_builder::equals(const std::string &column, const sql_value &value)
+        {
+            size_t index = binder_->num_of_bindings() + 1;
+            reset(column + " " + op::EQ + " " + session_->bind_param(index));
+            binder_->bind(index, value);
+            return *this;
+        }
+
+        where_builder &where_builder::and_equals(const std::string &column, const sql_value &value)
+        {
+            size_t index = binder_->num_of_bindings() + 1;
+            operator&&(column + " " + op::EQ + " " + session_->bind_param(index));
+            binder_->bind(index, value);
+            return *this;
+        }
+
+        where_builder &where_builder::or_equals(const std::string &column, const sql_value &value)
+        {
+            size_t index = binder_->num_of_bindings() + 1;
+            operator||(column + " " + op::EQ + " " + session_->bind_param(index));
+            binder_->bind(index, value);
+            return *this;
+        }
+
+        where_builder &where_builder::nequals(const std::string &column, const sql_value &value)
+        {
+            size_t index = binder_->num_of_bindings() + 1;
+            reset(column + " " + op::NEQ + " " + session_->bind_param(index));
+            binder_->bind(index, value);
+            return *this;
+        }
+        where_builder &where_builder::and_nequals(const std::string &column, const sql_value &value)
+        {
+            size_t index = binder_->num_of_bindings() + 1;
+            operator&&(column + " " + op::NEQ + " " + session_->bind_param(index));
+            binder_->bind(index, value);
+            return *this;
+        }
+        where_builder &where_builder::or_nequals(const std::string &column, const sql_value &value)
+        {
+            size_t index = binder_->num_of_bindings() + 1;
+            operator&&(column + " " + op::NEQ + " " + session_->bind_param(index));
+            binder_->bind(index, value);
+            return *this;
+        }
+
+        where_builder &where_builder::like(const std::string &column, const std::string &pattern)
+        {
+            reset(column + " " + op::LIKE + " " + pattern);
+            return *this;
+        }
+        where_builder &where_builder::and_like(const std::string &column, const std::string &pattern)
+        {
+            operator&&(column + " " + op::LIKE + " " + pattern);
+            return *this;
+        }
+        where_builder &where_builder::or_like(const std::string &column, const std::string &pattern)
+        {
+            operator||(column + " " + op::LIKE + " " + pattern);
+            return *this;
+        }
+
+        where_builder &where_builder::in(const std::string &column, const std::vector<sql_value> &values)
+        {
+            reset(column + " " + op::IN + " (" + helper::join_csv(values) + ")");
+            binder_->bind(values, binder_->num_of_bindings() + 1);
+            return *this;
+        }
+        where_builder &where_builder::and_in(const std::string &column, const std::vector<sql_value> &values)
+        {
+            operator&&(column + " " + op::IN + " (" + helper::join_csv(values) + ")");
+            binder_->bind(values, binder_->num_of_bindings() + 1);
+            return *this;
+        }
+        where_builder &where_builder::or_in(const std::string &column, const std::vector<sql_value> &values)
+        {
+            operator||(column + " " + op::IN + " (" + helper::join_csv(values) + ")");
+            binder_->bind(values, binder_->num_of_bindings() + 1);
+            return *this;
+        }
+
+        where_builder &where_builder::between(const std::string &column, const sql_value &value1, const sql_value &value2)
+        {
+            size_t index = binder_->num_of_bindings() + 1;
+            reset(column + " " + op::BETWEEN + " " + session_->bind_param(index));
+            binder_->bind(index, value1);
+            binder_->bind(index + 1, value2);
+            return *this;
+        }
+        where_builder &where_builder::and_between(const std::string &column, const sql_value &value1, const sql_value &value2)
+        {
+            size_t index = binder_->num_of_bindings() + 1;
+            operator&&(column + " " + op::BETWEEN + " " + session_->bind_param(index));
+            binder_->bind(index, value1);
+            binder_->bind(index + 1, value2);
+            return *this;
+        }
+        where_builder &where_builder::or_between(const std::string &column, const sql_value &value1, const sql_value &value2)
+        {
+            size_t index = binder_->num_of_bindings() + 1;
+            operator||(column + " " + op::BETWEEN + " " + session_->bind_param(index));
+            binder_->bind(index, value1);
+            binder_->bind(index + 1, value2);
+            return *this;
         }
     }
 }

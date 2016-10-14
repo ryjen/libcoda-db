@@ -98,7 +98,7 @@ namespace rj
 
             if (columns_.size() > 0) {
                 buf += " SET ";
-                buf += helper::join_params(columns_, true);
+                buf += session_->impl()->join_params(columns_, op::EQ);
             }
 
             if (!where_.empty()) {

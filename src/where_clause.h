@@ -13,6 +13,15 @@ namespace rj
 {
     namespace db
     {
+        namespace op
+        {
+            constexpr static const char *const EQ = "=";
+            constexpr static const char *const NEQ = "!=";
+            constexpr static const char *const LIKE = "LIKE";
+            constexpr static const char *const IN = "IN";
+            constexpr static const char *const BETWEEN = "BETWEEN";
+        }
+
         /*!
          * a utility class aimed at making logic where statements
          * ex. where("a = b") || "c == d" && "e == f";
@@ -87,6 +96,45 @@ namespace rj
              * resets this where clause
              */
             void reset();
+            void reset(const std::string &value);
+            void reset(const where_clause &value);
+        };
+
+        class bindable;
+
+        class where_builder : public where_clause
+        {
+           private:
+            bindable *binder_;
+            std::shared_ptr<session_impl> session_;
+
+           public:
+            where_builder(const std::shared_ptr<session_impl> &session, bindable *bindable);
+            where_builder(const where_builder &other);
+            where_builder(where_builder &&other);
+            where_builder &operator=(const where_builder &other);
+            where_builder &operator=(where_builder &&other);
+            virtual ~where_builder();
+
+            where_builder &equals(const std::string &column, const sql_value &value);
+            where_builder &and_equals(const std::string &column, const sql_value &value);
+            where_builder &or_equals(const std::string &column, const sql_value &value);
+
+            where_builder &nequals(const std::string &column, const sql_value &value);
+            where_builder &and_nequals(const std::string &column, const sql_value &value);
+            where_builder &or_nequals(const std::string &column, const sql_value &value);
+
+            where_builder &like(const std::string &column, const std::string &pattern);
+            where_builder &and_like(const std::string &column, const std::string &pattern);
+            where_builder &or_like(const std::string &column, const std::string &pattern);
+
+            where_builder &in(const std::string &column, const std::vector<sql_value> &values);
+            where_builder &and_in(const std::string &column, const std::vector<sql_value> &values);
+            where_builder &or_in(const std::string &column, const std::vector<sql_value> &values);
+
+            where_builder &between(const std::string &column, const sql_value &value1, const sql_value &value2);
+            where_builder &and_between(const std::string &column, const sql_value &value1, const sql_value &value2);
+            where_builder &or_between(const std::string &column, const sql_value &value1, const sql_value &value2);
         };
 
         /*!

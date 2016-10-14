@@ -187,7 +187,7 @@ namespace rj
 
                 buf += ") VALUES(";
 
-                buf += rj::db::helper::join_params(columns, false);
+                buf += join_params(columns);
 
                 buf += ")";
 
@@ -263,6 +263,11 @@ namespace rj
                     columns.push_back(def);
                 }
                 return columns;
+            }
+
+            std::string session::bind_param(size_t index) const
+            {
+                return "$" + std::to_string(index);
             }
         }
     }

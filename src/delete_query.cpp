@@ -8,12 +8,17 @@ namespace rj
 {
     namespace db
     {
-        delete_query::delete_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName) : modify_query(session)
+        delete_query::delete_query(const std::shared_ptr<rj::db::session> &session) : modify_query(session), where_(session->impl(), this)
+        {
+        }
+
+        delete_query::delete_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName)
+            : modify_query(session), where_(session->impl(), this)
         {
             tableName_ = tableName;
         }
 
-        delete_query::delete_query(const shared_ptr<schema> &schema) : modify_query(schema)
+        delete_query::delete_query(const shared_ptr<schema> &schema) : modify_query(schema), where_(schema->get_session()->impl(), this)
         {
             tableName_ = schema->table_name();
         }
@@ -51,15 +56,20 @@ namespace rj
             return query::is_valid() && !tableName_.empty();
         }
 
+        where_builder &delete_query::where()
+        {
+            return where_;
+        }
+
         delete_query &delete_query::where(const where_clause &value)
         {
-            where_ = value;
+            where_.reset(value);
             return *this;
         }
 
         where_clause &delete_query::where(const string &value)
         {
-            where_ = where_clause(value);
+            where_.reset(value);
             return where_;
         }
 

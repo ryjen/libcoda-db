@@ -119,7 +119,7 @@ namespace rj
                     throw database_exception("statement::results invalid database");
                 }
 
-                PGresult *res = PQexecParams(sess_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_,
+                PGresult *res = PQexecParams(sess_->db_.get(), sql_.c_str(), bindings_.num_of_bindings(), bindings_.types_, bindings_.values_,
                                              bindings_.lengths_, bindings_.formats_, 0);
 
                 if (PQresultStatus(res) != PGRES_TUPLES_OK) {
@@ -137,7 +137,7 @@ namespace rj
                     throw database_exception("statement::results invalid database");
                 }
 
-                PGresult *res = PQexecParams(sess_->db_.get(), sql_.c_str(), bindings_.size(), bindings_.types_, bindings_.values_,
+                PGresult *res = PQexecParams(sess_->db_.get(), sql_.c_str(), bindings_.num_of_bindings(), bindings_.types_, bindings_.values_,
                                              bindings_.lengths_, bindings_.formats_, 0);
 
                 if (PQresultStatus(res) != PGRES_COMMAND_OK && PQresultStatus(res) != PGRES_TUPLES_OK) {
@@ -193,6 +193,11 @@ namespace rj
                 sess_->set_last_insert_id(value);
 
                 return value;
+            }
+
+            size_t statement::num_of_bindings() const
+            {
+                return bindings_.num_of_bindings();
             }
         }
     }

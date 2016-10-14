@@ -470,10 +470,10 @@ namespace rj
                 return *this;
             }
 
-            size_t binding::size() const
+            size_t binding::num_of_bindings() const
             {
                 size_t count = 0;
-                for(size_t i = 0; i < size_; i++) {
+                for (size_t i = 0; i < size_; i++) {
                     if (types_[i] != 0) {
                         count++;
                     }

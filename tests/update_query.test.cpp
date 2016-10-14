@@ -15,7 +15,7 @@ go_bandit([]() {
         it("can be constructed", []() {
             update_query query(current_session, "users", {"id"});
 
-            Assert::That(query.to_string(), Equals("UPDATE users SET id = $1;"));
+            Assert::That(query.to_string(), Equals("UPDATE users SET id=" + current_session->impl()->bind_param(1) + ";"));
 
             update_query other(query);
 

@@ -205,6 +205,11 @@ namespace rj
             {
                 return make_shared<sqlite::transaction>(db_, type);
             }
+
+            std::string session::bind_param(size_t index) const
+            {
+                return "?" + std::to_string(index);
+            }
         }
     }
 }

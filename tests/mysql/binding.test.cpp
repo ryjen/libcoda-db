@@ -58,7 +58,7 @@ go_bandit([]() {
 
             Assert::That(b.capacity(), Equals(3));
 
-            Assert::That(b.size(), Equals(0));
+            Assert::That(b.num_of_bindings(), Equals(0));
 
             Assert::That(b.get(1)->buffer == NULL, IsTrue());
 
@@ -74,7 +74,7 @@ go_bandit([]() {
 
                 mysql::binding other(*b.get(0));
 
-                Assert::That(b.size(), Equals(other.size()));
+                Assert::That(b.num_of_bindings(), Equals(other.num_of_bindings()));
 
                 Assert::That(other.to_value(0), Equals(24));
             });
@@ -87,7 +87,7 @@ go_bandit([]() {
 
                 mysql::binding other(b);
 
-                Assert::That(b.size(), Equals(other.size()));
+                Assert::That(b.num_of_bindings(), Equals(other.num_of_bindings()));
 
                 Assert::That(other.to_value(0), Equals(24));
 
@@ -95,7 +95,7 @@ go_bandit([]() {
 
                 c = other;
 
-                Assert::That(c.size(), Equals(other.size()));
+                Assert::That(c.num_of_bindings(), Equals(other.num_of_bindings()));
 
                 Assert::That(c.to_value(0), Equals(other.to_value(0)));
             });
@@ -108,9 +108,9 @@ go_bandit([]() {
 
             mysql::binding other(std::move(b));
 
-            Assert::That(b.size(), Equals(0));
+            Assert::That(b.num_of_bindings(), Equals(0));
 
-            Assert::That(other.size() > 0, IsTrue());
+            Assert::That(other.num_of_bindings() > 0, IsTrue());
 
             Assert::That(other.to_value(0), Equals(24));
 
@@ -118,9 +118,9 @@ go_bandit([]() {
 
             c = std::move(other);
 
-            Assert::That(other.size(), Equals(0));
+            Assert::That(other.num_of_bindings(), Equals(0));
 
-            Assert::That(c.size() > 0, IsTrue());
+            Assert::That(c.num_of_bindings() > 0, IsTrue());
 
             Assert::That(c.to_value(0), Equals(24));
 
@@ -131,7 +131,7 @@ go_bandit([]() {
 
             query.from("users");
 
-            query.where("id = $1 and first_name = $2");
+            query.where("id = ? and first_name = ?");
 
             query.bind(3, "someId");
 
@@ -189,6 +189,7 @@ go_bandit([]() {
             Assert::That(b.to_value(1), Equals("test"));
         });
 
+#ifdef ENHANCED_PARAMETER_MAPPING
         it("can reorder and reuse indexes", []() {
             select_query select(current_session);
 
@@ -198,6 +199,7 @@ go_bandit([]() {
 
             Assert::That(results.size(), Equals(1));
         });
+#endif
 
     });
 

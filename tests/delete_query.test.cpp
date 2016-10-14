@@ -40,7 +40,7 @@ go_bandit([]() {
         it("can delete", []() {
             delete_query query(current_session);
 
-            query.from("users").where("first_name = $1", "Mark");
+            query.from("users").where().equals("first_name", "Mark");
 
             AssertThat(query.execute(), Equals(1));
 
@@ -50,7 +50,7 @@ go_bandit([]() {
         it("is copyable by constructor", []() {
             delete_query query(current_session);
 
-            query.from("users").where("first_name = $1", "Mark");
+            query.from("users").where().equals("first_name", "Mark");
 
             delete_query other(query);
 
@@ -60,7 +60,7 @@ go_bandit([]() {
         it("is movable by constructor", []() {
             delete_query query(current_session);
 
-            query.from("users").where("first_name = $1", "Bryan");
+            query.from("users").where().equals("first_name", "Bryan");
 
             delete_query other(std::move(query));
 
@@ -71,7 +71,7 @@ go_bandit([]() {
         it("is copyable from assignment", []() {
             delete_query query(current_session);
 
-            query.from("users").where("first_name = $1", "Bryan");
+            query.from("users").where().equals("first_name", "Bryan");
 
             delete_query other(current_session, "other_users");
 
@@ -85,7 +85,7 @@ go_bandit([]() {
         it("is movable from assignment", []() {
             delete_query query(current_session);
 
-            query.from("users").where("first_name = $1", "Bryan");
+            query.from("users").where().equals("first_name", "Bryan");
 
             delete_query other(current_session, "other_users");
 
@@ -99,11 +99,9 @@ go_bandit([]() {
         it("can delete from where clause", []() {
             delete_query query(current_session, "users");
 
-            where_clause where("first_name = $1");
+            where_clause where("first_name = 'Mark'");
 
             query.where(where);
-
-            query.bind(1, "Mark");
 
             AssertThat(query.execute(), Equals(1));
         });
@@ -111,7 +109,7 @@ go_bandit([]() {
         it("can be batch executed", []() {
             delete_query query(current_session, "users");
 
-            query.where("first_name = $1", "Bryan");
+            query.where().equals("first_name", "Bryan");
 
             AssertThat(query.execute(), Equals(1));
 

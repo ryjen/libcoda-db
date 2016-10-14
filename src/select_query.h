@@ -27,7 +27,7 @@ namespace rj
         class select_query : public query
         {
            private:
-            where_clause where_;
+            where_builder where_;
             std::vector<join_clause> join_;
             std::string limit_;
             std::string orderBy_;
@@ -130,14 +130,14 @@ namespace rj
              * gets the where clause for this query
              * @return the where clause
              */
-            where_clause where() const;
+            where_builder where() const;
 
             /*!
              * adds a where clause to this query
              * @param  value the sql string
              * @return       a reference to this
              */
-            where_clause &where(const std::string &value);
+            where_builder &where(const std::string &value);
 
             /*!
              * adds a where clause to this query and binds parameters to it

@@ -251,6 +251,10 @@ namespace rj
 
                 return columns;
             }
+            std::string session::bind_param(size_t index) const
+            {
+                return "?";
+            }
         }
     }
 }

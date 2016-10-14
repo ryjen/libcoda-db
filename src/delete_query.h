@@ -14,7 +14,7 @@ namespace rj
         class delete_query : public modify_query
         {
            public:
-            using modify_query::modify_query;
+            delete_query(const std::shared_ptr<rj::db::session> &session);
 
             delete_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName);
 
@@ -46,6 +46,8 @@ namespace rj
              * @return the string/sql representation of this query
              */
             std::string to_string() const;
+
+            where_builder &where();
 
             /*!
              * sets the where clause for the update query
@@ -93,7 +95,7 @@ namespace rj
             bool is_valid() const;
 
            private:
-            where_clause where_;
+            where_builder where_;
             std::string tableName_;
         };
     }

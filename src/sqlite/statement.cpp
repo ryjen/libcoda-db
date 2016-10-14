@@ -130,14 +130,14 @@ namespace rj
                 };
             }
 
-            statement::statement(const std::shared_ptr<sqlite::session> &sess) : sess_(sess), stmt_(nullptr)
+            statement::statement(const std::shared_ptr<sqlite::session> &sess) : sess_(sess), stmt_(nullptr), bound_(0)
             {
                 if (sess_ == NULL) {
                     throw database_exception("no database provided to sqlite3 statement");
                 }
             }
 
-            statement::statement(statement &&other) : sess_(std::move(other.sess_)), stmt_(std::move(other.stmt_))
+            statement::statement(statement &&other) : sess_(std::move(other.sess_)), stmt_(std::move(other.stmt_)), bound_(other.bound_)
             {
                 other.stmt_ = nullptr;
                 other.sess_ = NULL;
@@ -147,6 +147,7 @@ namespace rj
             {
                 sess_ = std::move(other.sess_);
                 stmt_ = std::move(other.stmt_);
+                bound_ = std::move(other.bound_);
 
                 other.stmt_ = nullptr;
                 other.sess_ = NULL;
@@ -202,6 +203,9 @@ namespace rj
                 if (!value.apply_visitor<data_mapper::from_value, bool>(data_mapper::from_value(stmt_, index))) {
                     throw binding_error(sess_->last_error());
                 }
+
+                bound_++;
+
                 return *this;
             }
 
@@ -218,6 +222,7 @@ namespace rj
                 }
 
                 bind(index, value);
+
                 return *this;
             }
 
@@ -261,6 +266,11 @@ namespace rj
                     return 0;
                 }
                 return sess_->last_insert_id();
+            }
+
+            size_t statement::num_of_bindings() const
+            {
+                return bound_;
             }
         }
     }

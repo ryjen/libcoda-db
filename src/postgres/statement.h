@@ -61,6 +61,7 @@ namespace rj
                 /* bindable overrides */
                 statement &bind(size_t index, const sql_value &value);
                 statement &bind(const std::string &name, const sql_value &value);
+                size_t num_of_bindings() const;
             };
 
 

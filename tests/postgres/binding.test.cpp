@@ -49,7 +49,7 @@ go_bandit([]() {
 
             Assert::That(b.capacity(), Equals(3));
 
-            Assert::That(b.size(), Equals(0));
+            Assert::That(b.num_of_bindings(), Equals(0));
 
             Assert::That(b.to_value(1) == sql_null, IsTrue());
         });
@@ -66,7 +66,7 @@ go_bandit([]() {
 
                 postgres::binding other(b);
 
-                Assert::That(b.size(), Equals(other.size()));
+                Assert::That(b.num_of_bindings(), Equals(other.num_of_bindings()));
 
                 Assert::That(other.to_value(0), Equals(24));
 
@@ -74,7 +74,7 @@ go_bandit([]() {
 
                 c = other;
 
-                Assert::That(c.size(), Equals(other.size()));
+                Assert::That(c.num_of_bindings(), Equals(other.num_of_bindings()));
 
                 Assert::That(c.to_value(0), Equals(other.to_value(0)));
             });
@@ -87,9 +87,9 @@ go_bandit([]() {
 
             postgres::binding other(std::move(b));
 
-            Assert::That(b.size(), Equals(0));
+            Assert::That(b.num_of_bindings(), Equals(0));
 
-            Assert::That(other.size() > 0, IsTrue());
+            Assert::That(other.num_of_bindings() > 0, IsTrue());
 
             Assert::That(other.to_value(0), Equals(24));
 
@@ -97,9 +97,9 @@ go_bandit([]() {
 
             c = std::move(other);
 
-            Assert::That(other.size(), Equals(0));
+            Assert::That(other.num_of_bindings(), Equals(0));
 
-            Assert::That(c.size() > 0, IsTrue());
+            Assert::That(c.num_of_bindings() > 0, IsTrue());
 
             Assert::That(c.to_value(0), Equals(24));
 

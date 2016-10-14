@@ -153,11 +153,34 @@ namespace rj
 
             buf += ") VALUES(";
 
-            buf += helper::join_params(columns, false);
+            buf += join_params(columns);
 
             buf += ");";
 
             return buf;
+        }
+
+
+        /*!
+         * utility method used in creating sql
+         */
+        string session_impl::join_params(const vector<string> &columns, const std::string &op) const
+        {
+            ostringstream buf;
+
+            for (string::size_type i = 0; i < columns.size(); i++) {
+                if (op.size() > 0) {
+                    buf << columns[i];
+                    buf << op;
+                }
+
+                buf << bind_param(i + 1);
+
+                if (i + 1 < columns.size()) {
+                    buf.put(',');
+                }
+            }
+            return buf.str();
         }
 
         string session::get_insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const

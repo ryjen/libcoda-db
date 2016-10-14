@@ -1,4 +1,5 @@
 #include "sql_time.h"
+#include <cstring>
 #include "exception.h"
 #include "sql_number.h"
 

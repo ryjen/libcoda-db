@@ -3,6 +3,7 @@
 
 
 #include <boost/variant/static_visitor.hpp>
+#include <iterator>
 #include <sstream>
 #include <string>
 #include <type_traits>
@@ -29,6 +30,25 @@ namespace rj
 
         namespace helper
         {
+            /*!
+             * utility method used in creating sql
+             */
+            template <typename T>
+            std::string join_csv(const std::vector<T> &list)
+            {
+                std::ostringstream buf;
+
+                if (list.size() > 0) {
+                    std::ostream_iterator<T> it(buf, ",");
+
+                    copy(list.begin(), list.end() - 1, it);
+
+                    buf << *(list.end() - 1);
+                }
+
+                return buf.str();
+            }
+
             // convert between different string types
             std::string convert_string(const std::wstring &buf);
             std::wstring convert_string(const std::string &buf);
