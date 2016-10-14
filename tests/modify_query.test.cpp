@@ -16,15 +16,12 @@ go_bandit([]() {
 
             user user1;
 
-            user1.set_id(1);
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
             user1.save();
 
             user user2;
-
-            user2.set_id(3);
 
             user2.set("first_name", "Bob");
             user2.set("last_name", "Smith");
@@ -57,15 +54,13 @@ go_bandit([]() {
         it("can modify", []() {
             insert_query insert(current_session);
 
-            int id = rand() % 5000;
+            vector<sql_value> values = {"blah", "bleh"};
 
-            vector<sql_value> values = {id, "blah", "bleh"};
-
-            insert.into("users").columns("id", "first_name", "last_name").values(values);
+            insert.into("users").columns("first_name", "last_name").values(values);
 
             Assert::That(insert.execute() > 0, Equals(true));
 
-            user u1(id);
+            user u1(insert.last_insert_id());
 
             Assert::That(u1.get("first_name"), Equals("blah"));
             Assert::That(u1.get("last_name"), Equals("bleh"));
@@ -74,33 +69,29 @@ go_bandit([]() {
         it("can modify with a set of values", []() {
             insert_query insert(current_session);
 
-            int id = rand() % 5000;
-
-            insert.into("users").columns({"id", "first_name", "last_name"}).values({id, "blah", "bleh"});
+            insert.into("users").columns({"first_name", "last_name"}).values(std::vector<sql_value>({"blah", "bleh"}));
 
             Assert::That(insert.execute() > 0, Equals(true));
 
-            user u1(id);
+            user u1(insert.last_insert_id());
 
             Assert::That(u1.get("first_name"), Equals("blah"));
             Assert::That(u1.get("last_name"), Equals("bleh"));
         });
 
         it("can be batch executed", []() {
-            insert_query query(current_session, "users", {"id", "first_name", "last_name"});
+            insert_query query(current_session, "users", {"first_name", "last_name"});
 
             for (int i = 0; i < 3; i++) {
                 char buf[100] = {0};
 
-                query.bind(1, i + 5);
-
                 snprintf(buf, sizeof(buf) - 1, "firstName%d", i + 1);
 
-                query.bind(2, string(buf));
+                query.bind(1, string(buf));
 
                 snprintf(buf, sizeof(buf) - 1, "lastName%d", i + 1);
 
-                query.bind(3, string(buf));
+                query.bind(2, string(buf));
 
                 Assert::That(query.execute(), Equals(1));
             }

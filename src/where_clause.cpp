@@ -1,7 +1,6 @@
 
 #include "where_clause.h"
 #include <sstream>
-#include "bindable.h"
 
 using namespace std;
 
@@ -302,6 +301,61 @@ namespace rj
             operator||(column + " " + op::BETWEEN + " " + session_->bind_param(index));
             binder_->bind(index, value1);
             binder_->bind(index + 1, value2);
+            return *this;
+        }
+
+        where_builder &where_builder::bind(size_t index, const sql_value &value)
+        {
+            binder_->bind(index, value);
+            return *this;
+        }
+        where_builder &where_builder::bind(const std::string &name, const sql_value &value)
+        {
+            binder_->bind(name, value);
+            return *this;
+        }
+
+        size_t where_builder::num_of_bindings() const
+        {
+            return binder_->num_of_bindings();
+        }
+
+        /*!
+         * Appends and AND part to this where clause
+         * @param value   the sql to append
+         */
+        where_builder &where_builder::operator&&(const std::string &value)
+        {
+            where_clause::operator&&(value);
+            return *this;
+        }
+        /*!
+         * Appends and AND part to this where clause
+         * @param value   the sql to append
+         */
+        where_builder &where_builder::operator&&(const where_clause &value)
+        {
+            where_clause::operator&&(value);
+            return *this;
+        }
+
+        /*!
+         * Appends and OR part to this where clause
+         * @param value   the sql to append
+         */
+        where_builder &where_builder::operator||(const where_clause &value)
+        {
+            where_clause::operator||(value);
+            return *this;
+        }
+
+        /*!
+         * Appends and OR part to this where clause
+         * @param value   the sql to append
+         */
+        where_builder &where_builder::operator||(const std::string &value)
+        {
+            where_clause::operator||(value);
             return *this;
         }
     }

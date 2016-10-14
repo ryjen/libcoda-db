@@ -14,7 +14,15 @@ namespace rj
         class update_query : public modify_query
         {
            public:
-            using modify_query::modify_query;
+            /*!
+             * @param db the database in use
+             */
+            update_query(const std::shared_ptr<rj::db::session> &session);
+
+            /*!
+             * @param schema the schema to modify
+             */
+            update_query(const std::shared_ptr<schema> &schema);
 
             /*!
              * @param db the database to modify
@@ -82,7 +90,7 @@ namespace rj
              * sets the where clause for the update query
              * @param value the where clause to set
              */
-            update_query &where(const where_clause &value);
+            where_builder &where(const where_clause &value);
 
             /*!
              * sets the where clause and binds a list of values
@@ -101,7 +109,7 @@ namespace rj
             /*!
              * @param value the where sql/string to set
              */
-            where_clause &where(const std::string &value);
+            where_builder &where(const std::string &value);
 
             /*!
              * sets the where clause and binds a list of values
@@ -121,7 +129,7 @@ namespace rj
              * gets the where clause
              * @return the where clause
              */
-            const where_clause &where() const;
+            where_builder &where();
 
             /*!
              * a rename of the bind_all method so it makes sense to the query language
@@ -157,7 +165,7 @@ namespace rj
                 return *this;
             }
 
-            where_clause where_;
+            where_builder where_;
             std::vector<std::string> columns_;
             std::string tableName_;
         };

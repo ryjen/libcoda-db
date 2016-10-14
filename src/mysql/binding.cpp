@@ -663,6 +663,7 @@ namespace rj
             binding &binding::operator=(binding &&other)
             {
                 bind_mapping::operator=(std::move(other));
+                clear_value();
                 value_ = other.value_;
                 size_ = other.size_;
                 other.value_ = nullptr;

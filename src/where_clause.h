@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "bindable.h"
 #include "sqldb.h"
 
 namespace rj
@@ -100,9 +101,7 @@ namespace rj
             void reset(const where_clause &value);
         };
 
-        class bindable;
-
-        class where_builder : public where_clause
+        class where_builder : public where_clause, public bindable
         {
            private:
             bindable *binder_;
@@ -135,6 +134,35 @@ namespace rj
             where_builder &between(const std::string &column, const sql_value &value1, const sql_value &value2);
             where_builder &and_between(const std::string &column, const sql_value &value1, const sql_value &value2);
             where_builder &or_between(const std::string &column, const sql_value &value1, const sql_value &value2);
+
+            where_builder &bind(size_t index, const sql_value &value);
+            where_builder &bind(const std::string &name, const sql_value &value);
+
+            size_t num_of_bindings() const;
+
+
+            /*!
+             * Appends and AND part to this where clause
+             * @param value   the sql to append
+             */
+            where_builder &operator&&(const std::string &value);
+            /*!
+             * Appends and AND part to this where clause
+             * @param value   the sql to append
+             */
+            where_builder &operator&&(const where_clause &value);
+
+            /*!
+             * Appends and OR part to this where clause
+             * @param value   the sql to append
+             */
+            where_builder &operator||(const where_clause &value);
+
+            /*!
+             * Appends and OR part to this where clause
+             * @param value   the sql to append
+             */
+            where_builder &operator||(const std::string &value);
         };
 
         /*!

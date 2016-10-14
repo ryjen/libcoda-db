@@ -115,7 +115,7 @@ namespace rj
             return orderBy_;
         }
 
-        where_builder select_query::where() const
+        where_builder &select_query::where()
         {
             return where_;
         }

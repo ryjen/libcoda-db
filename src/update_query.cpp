@@ -8,12 +8,24 @@ namespace rj
 {
     namespace db
     {
+        update_query::update_query(const std::shared_ptr<rj::db::session> &session) : modify_query(session), where_(session->impl(), this)
+        {
+        }
+
+        /*!
+         * @param schema the schema to modify
+         */
+        update_query::update_query(const std::shared_ptr<schema> &schema) : modify_query(schema), where_(schema->get_session()->impl(), this)
+        {
+        }
+
         /*!
          * @param db the database to modify
          * @param tableName the table to modify
          * @param columns the columns to modify
          */
-        update_query::update_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName) : modify_query(session)
+        update_query::update_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName)
+            : modify_query(session), where_(session->impl(), this)
         {
             tableName_ = tableName;
         }
@@ -24,7 +36,7 @@ namespace rj
          */
         update_query::update_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName,
                                    const std::vector<std::string> &columns)
-            : modify_query(session)
+            : modify_query(session), where_(session->impl(), this)
         {
             tableName_ = tableName;
             columns_ = columns;
@@ -34,7 +46,8 @@ namespace rj
          * @param schema the schema to modify
          * @param column the specific columns to modify in the schema
          */
-        update_query::update_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) : modify_query(schema)
+        update_query::update_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns)
+            : modify_query(schema), where_(schema->get_session()->impl(), this)
         {
             tableName_ = schema->table_name();
             columns_ = columns;
@@ -124,19 +137,19 @@ namespace rj
             return columns_;
         }
 
-        update_query &update_query::where(const where_clause &value)
+        where_builder &update_query::where(const where_clause &value)
         {
-            where_ = value;
-            return *this;
-        }
-
-        where_clause &update_query::where(const string &value)
-        {
-            where_ = where_clause(value);
+            where_.reset(value);
             return where_;
         }
 
-        const where_clause &update_query::where() const
+        where_builder &update_query::where(const string &value)
+        {
+            where_.reset(value);
+            return where_;
+        }
+
+        where_builder &update_query::where()
         {
             return where_;
         }

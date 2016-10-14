@@ -122,6 +122,8 @@ namespace rj
              */
             std::string join_params(const std::vector<std::string> &columns, const std::string &op = "") const;
 
+            virtual bool supports_named_parameters() const;
+
            private:
             uri connectionInfo_;
         };

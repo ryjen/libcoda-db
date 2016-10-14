@@ -108,7 +108,7 @@ go_bandit([]() {
         it("can handle a bad bind", []() {
             select_query query(current_session);
 
-            query.from("users").where("id = $1 and first_name = $2");
+            query.from("users").where("id != ''");
 
             query.bind(3, "someId");
 

@@ -77,7 +77,7 @@ go_bandit([]() {
 
             select_query select(other_session);
 
-            select.from("users").where("first_name = $1 and last_name = $2", "Mike", "Johnson");
+            select.from("users").where().equals("first_name", "Mike").and_equals("last_name", "Johnson");
 
             {
                 auto tx = current_session->start_transaction();
@@ -121,7 +121,7 @@ go_bandit([]() {
             // now try to read the work before its committed
             select_query select(other_session);
 
-            select.from("users").where("first_name = $1 and last_name = $2", "Jerome", "Padington");
+            select.from("users").where().equals("first_name", "Jerome").and_equals("last_name", "Padington");
 
             auto results = select.execute();
 
@@ -157,7 +157,7 @@ go_bandit([]() {
             // now try to read the work before its committed
             select_query select(other_session);
 
-            select.from("users").where("first_name = $1 and last_name = $2", "Jerome", "Padington");
+            select.from("users").where().equals("first_name", "Jerome").and_equals("last_name", "Padington");
 
             auto results = select.execute();
 
@@ -195,7 +195,7 @@ go_bandit([]() {
 
             select_query select(current_session);
 
-            select.from("users").where("last_name = $1", "Padington");
+            select.from("users").where().equals("last_name", "Padington");
 
             auto rs = select.execute();
 

@@ -130,7 +130,7 @@ namespace rj
              * gets the where clause for this query
              * @return the where clause
              */
-            where_builder where() const;
+            where_builder &where();
 
             /*!
              * adds a where clause to this query

@@ -74,7 +74,7 @@ namespace rj
         {
             select_query query(schema);
 
-            query.where(name + " = $1", value);
+            query.where().equals(name, value);
 
             auto results = query.execute();
 
@@ -118,7 +118,8 @@ namespace rj
         {
             select_query query(schema);
 
-            query.where(name + " = $1", value).limit("1");
+            query.where().equals(name, value);
+            query.limit("1");
 
             auto results = query.execute();
 
@@ -301,7 +302,7 @@ namespace rj
 
                 select_query query(schema());
 
-                query.where(pk + " = $1", get(pk));
+                query.where().equals(pk, get(pk));
 
                 return query.count() > 0;
             }
@@ -323,8 +324,7 @@ namespace rj
 
                     query.bind(get(cols_to_save));
 
-                    query.where(pk + " = @" + pk);
-                    query.bind("@" + pk, get(pk));
+                    query.where().equals(pk, get(pk));
 
                     rval = query.execute();
                 } else {
@@ -511,7 +511,8 @@ namespace rj
 
                 select_query query(schema());
 
-                query.where(name + " = $1", get(name)).limit("1");
+                query.where().equals(name, get(name));
+                query.limit("1");
 
                 auto result = query.execute();
 
@@ -538,7 +539,7 @@ namespace rj
                 }
                 delete_query query(schema());
 
-                query.where(pk + " = $1", get(pk));
+                query.where().equals(pk, get(pk));
 
                 return query.execute();
             }

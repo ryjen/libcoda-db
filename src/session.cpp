@@ -183,6 +183,11 @@ namespace rj
             return buf.str();
         }
 
+        bool session_impl::supports_named_parameters() const
+        {
+            return false;
+        }
+
         string session::get_insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
         {
             return impl_->get_insert_sql(schema, columns);

@@ -210,6 +210,11 @@ namespace rj
             {
                 return "?" + std::to_string(index);
             }
+
+            bool session::supports_named_parameters() const
+            {
+                return true;
+            }
         }
     }
 }

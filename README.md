@@ -227,21 +227,18 @@ Binding
 The binding interface looks like this:
 
 ```c++
-// Bind all by order (index)
+// Bind all by order (index starting at 1)
 query.bind_all("value1", "value2", value3);
 
-// or
-query.where("param = $1 and param2 = $2", value1, value2);
+// using a where clause builder
+query.where().equals("param1", value1).and_equals("param2", value2).or_nequals("param3", value3);
+query.where("abc = ?").bind(value1) || 
 
 // Bind by index
 query.bind(2, value2);
 
 // Bind by name
 query.bind("@param", "value");
-
-// Bind by generic type
-sql_value value(1234);
-query.bind_value(1, value);
 
 // Bind by vector of values
 vector<sql_value> values = { 1234, "bob", "smith" };
@@ -375,7 +372,7 @@ The library will try to put the appropriate combined AND/OR into brackets itself
 (this = $1 AND that = $2) OR (test = $3)
 ```
 
-Grouping where clauses is also an area that has been tested, but not nearly enough (03/13/16).
+Grouping where clauses is also an area that could be tested more (03/13/16).
 
 Batch Queries
 -------------

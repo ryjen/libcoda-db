@@ -391,6 +391,7 @@ namespace rj
             binding &binding::operator=(binding &&other)
             {
                 bind_mapping::operator=(std::move(other));
+                clear_value();
                 values_ = other.values_;
                 types_ = other.types_;
                 lengths_ = other.lengths_;

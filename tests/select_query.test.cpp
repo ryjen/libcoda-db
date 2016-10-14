@@ -120,10 +120,7 @@ go_bandit([]() {
             query.columns("first_name", "last_name").from("users");
 
             try {
-                query.where("first_name=$1 OR last_name=$2");
-
-                query.bind(1, "Bryan");
-                query.bind(2, "Jenkins");
+                query.where().equals("first_name", "Bryan").or_equals("last_name", "Jenkins");
 
                 auto results = query.execute();
 
@@ -137,11 +134,7 @@ go_bandit([]() {
 
                 query.reset();
 
-                where_clause w("last_name = $1");
-
-                query.where(w);
-
-                query.bind(1, "Smith");
+                query.where().equals("last_name", "Smith");
 
                 results = query.execute();
 
@@ -163,35 +156,11 @@ go_bandit([]() {
 
             query.columns("first_name").from("users");
 
-            query.where("first_name=$1");
-
-            query.bind(1, "Bryan");
+            query.where().equals("first_name", "Bryan");
 
             string value = query.execute_scalar<string>();
 
             Assert::That(value, Equals("Bryan"));
-        });
-
-        it("can be binded", []() {
-            select_query query(current_session);
-
-            query.from("users");
-
-            // sneaky, bind first, should be able to handle it
-            query.bind(1, "Bryan");
-
-            query.bind(2, "Jenkins");
-
-            query.where("first_name=$1 and last_name=$2");
-
-            query.execute([](const resultset& rs) {
-                Assert::That(rs.is_valid(), Equals(true));
-
-                auto u = rs.begin()->column("first_name");
-
-                Assert::That(u.value(), Equals("Bryan"));
-            });
-
         });
 
         it("can use named parameters", []() {
@@ -203,12 +172,22 @@ go_bandit([]() {
 
             query.bind("@name", "Bryan");
 
-            query.execute([](const resultset& rs) {
+            auto callback = [](const resultset& rs) {
                 rs.for_each([](const row& row) {
                     Assert::That(row.column("first_name").value().to_string() == "Bryan" || row.column("last_name").value().to_string() == "Bryan");
                 });
 
-            });
+            };
+
+#ifdef ENHANCED_PARAMETER_MAPPING
+            query.execute(callback);
+#else
+            if (current_session->impl()->supports_named_parameters()) {
+                query.execute(callback);
+            } else {
+                AssertThrows(database_exception, query.execute());
+            }
+#endif
         });
 
         it("can union another", []() {
@@ -229,6 +208,7 @@ go_bandit([]() {
             Assert::That(query.to_string(), Equals("SELECT * FROM users UNION ALL SELECT * FROM user_settings;"));
         });
 
+#ifdef ENHANCED_PARAMETER_MAPPING
         it("can use different parameter types", []() {
             select_query query(current_session);
 
@@ -270,6 +250,7 @@ go_bandit([]() {
             Assert::That(rs.size() > 0, IsTrue());*/
 
         });
+#endif
     });
 
 });
