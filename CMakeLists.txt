@@ -7,7 +7,7 @@ option(CODE_COVERAGE "Enable code coverage testing." OFF)
 option(MEMORY_CHECK "Enable testing for memory leaks." OFF)
 option(ENABLE_LOGGING "Enable internal library logging." OFF)
 option(ENABLE_PROFILING "Enable valgrind profiling." OFF)
-option(ENHANCED_PARAMETER_MAPPING "Use regex to map different parameter syntaxes." ON)
+option(ENHANCED_PARAMETER_MAPPING "Use regex to map different parameter syntaxes." OFF)
 option(ENABLE_BENCHMARKING "Benchmark with other database libraries." OFF)
 
 # define project name

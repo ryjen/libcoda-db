@@ -46,9 +46,6 @@ namespace rj
                 {
                     throw value_conversion_error();
                 }
-
-               private:
-                bool throw_;
             };
 
             struct as_sql_blob : public boost::static_visitor<sql_blob> {

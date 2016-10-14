@@ -290,7 +290,7 @@ namespace rj
                 };
             }
 
-            binding::binding() : values_(nullptr), types_(nullptr), lengths_(nullptr), formats_(nullptr), size_(0)
+            binding::binding() : binding(DEFAULT_BINDING_SIZE)
             {
             }
 
@@ -437,7 +437,11 @@ namespace rj
                     return true;
                 }
 
-                // dynamic array of parameter values
+                index += DEFAULT_BINDING_INCREMENT;
+
+                if (index < size_) {
+                    throw std::bad_alloc();
+                }
 
                 values_ = c_alloc<char *>(values_, index, size_);
                 types_ = c_alloc<Oid>(types_, index, size_);
@@ -467,6 +471,17 @@ namespace rj
             }
 
             size_t binding::size() const
+            {
+                size_t count = 0;
+                for(size_t i = 0; i < size_; i++) {
+                    if (types_[i] != 0) {
+                        count++;
+                    }
+                }
+                return count;
+            }
+
+            size_t binding::capacity() const
             {
                 return size_;
             }

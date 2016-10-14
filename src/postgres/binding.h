@@ -72,6 +72,11 @@ namespace rj
                 size_t size() const;
 
                 /*!
+                 * @return the current capcity of the storage
+                 */
+                size_t capacity() const;
+
+                /*!
                  * gets the value of a binding
                  * @param  index the index of the binding parameter
                  * @return       the value of the binding at the given index

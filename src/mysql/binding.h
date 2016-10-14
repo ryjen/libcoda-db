@@ -88,6 +88,11 @@ namespace rj
                 size_t size() const;
 
                 /*!
+                 * @return the capcity of the storage of this instance
+                 */
+                size_t capacity() const;
+
+                /*!
                  * @param index the index of the binding to get
                  * @return the raw binding value for the given index
                  */

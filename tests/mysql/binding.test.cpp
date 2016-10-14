@@ -56,7 +56,9 @@ go_bandit([]() {
         it("has a size contructor", []() {
             mysql::binding b(3);
 
-            Assert::That(b.size(), Equals(3));
+            Assert::That(b.capacity(), Equals(3));
+
+            Assert::That(b.size(), Equals(0));
 
             Assert::That(b.get(1)->buffer == NULL, IsTrue());
 

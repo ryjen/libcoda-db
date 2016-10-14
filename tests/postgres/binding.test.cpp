@@ -47,7 +47,9 @@ go_bandit([]() {
         it("has a size contructor", []() {
             postgres::binding b(3);
 
-            Assert::That(b.size(), Equals(3));
+            Assert::That(b.capacity(), Equals(3));
+
+            Assert::That(b.size(), Equals(0));
 
             Assert::That(b.to_value(1) == sql_null, IsTrue());
         });

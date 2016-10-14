@@ -23,6 +23,7 @@ namespace rj
     {
         namespace mysql
         {
+
             namespace helper
             {
                 // small util method to make a c pointer for a type
@@ -562,8 +563,7 @@ namespace rj
                 };
             }
 
-
-            binding::binding() : value_(nullptr), size_(0)
+            binding::binding() : binding(DEFAULT_BINDING_SIZE)
             {
             }
 
@@ -724,6 +724,12 @@ namespace rj
                     return true;
                 }
 
+                index += DEFAULT_BINDING_INCREMENT;
+
+                if (index < size_) {
+                    throw std::bad_alloc();
+                }
+
                 // dynamic array of parameter values
                 if (value_ == nullptr) {
                     value_ = c_alloc<MYSQL_BIND>(index);
@@ -784,6 +790,17 @@ namespace rj
             }
 
             size_t binding::size() const
+            {
+                size_t count = 0;
+                for(size_t i = 0; i < size_; i++) {
+                    if (value_[i].buffer != nullptr) {
+                        count++;
+                    }
+                }
+                return count;
+            }
+
+            size_t binding::capacity() const
             {
                 return size_;
             }

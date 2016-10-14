@@ -7,6 +7,9 @@
 #include "exception.h"
 #endif
 
+#define DEFAULT_BINDING_SIZE 10
+#define DEFAULT_BINDING_INCREMENT 5
+
 namespace rj
 {
     namespace db
