@@ -119,16 +119,21 @@ namespace rj
         {
             return where_;
         }
-
-        where_builder &select_query::where(const string &value)
+        where_builder &select_query::where(const sql_operator &value)
         {
             where_.reset(value);
             return where_;
         }
 
+        where_builder &select_query::where(const string &value)
+        {
+            where_.where_clause::reset(value);
+            return where_;
+        }
+
         select_query &select_query::where(const where_clause &value)
         {
-            where_.reset(value);
+            where_.where_clause::reset(value);
             return *this;
         }
 

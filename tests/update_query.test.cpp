@@ -62,15 +62,6 @@ go_bandit([]() {
             Assert::That(query.columns().size(), Equals(2));
         });
 
-        it("can set the where clause", []() {
-            update_query query(current_session);
-
-            where_clause clause("a = b");
-
-            query.where(clause);
-
-            Assert::That(query.where().to_string(), Equals("a = b"));
-        });
     });
 
 });

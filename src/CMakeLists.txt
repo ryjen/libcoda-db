@@ -9,6 +9,7 @@ add_library (${PROJECT_NAME}
 	log.cpp
 	modify_query.cpp
 	query.cpp
+	record.cpp
 	resultset.cpp
 	row.cpp
 	schema.cpp

@@ -127,10 +127,16 @@ namespace rj
             std::string group_by() const;
 
             /*!
+             * gets the where builder for the query
+             * @return a writeable reference to the where builder
+             */
+            where_builder &where();
+
+            /*!
              * gets the where clause for this query
              * @return the where clause
              */
-            where_builder &where();
+            where_builder &where(const sql_operator &value);
 
             /*!
              * adds a where clause to this query

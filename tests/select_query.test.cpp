@@ -120,7 +120,7 @@ go_bandit([]() {
             query.columns("first_name", "last_name").from("users");
 
             try {
-                query.where().equals("first_name", "Bryan").or_equals("last_name", "Jenkins");
+                query.where(op::equals("first_name", "Bryan")) || op::equals("last_name", "Jenkins");
 
                 auto results = query.execute();
 
@@ -134,7 +134,7 @@ go_bandit([]() {
 
                 query.reset();
 
-                query.where().equals("last_name", "Smith");
+                query.where(op::equals("last_name", "Smith"));
 
                 results = query.execute();
 
@@ -156,7 +156,7 @@ go_bandit([]() {
 
             query.columns("first_name").from("users");
 
-            query.where().equals("first_name", "Bryan");
+            query.where(op::equals("first_name", "Bryan"));
 
             string value = query.execute_scalar<string>();
 

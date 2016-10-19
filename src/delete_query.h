@@ -46,8 +46,18 @@ namespace rj
              * @return the string/sql representation of this query
              */
             std::string to_string() const;
-
+            /*!
+             * gets the where builder for the query
+             * @return a reference to the where builder
+             */
             where_builder &where();
+
+            /*!
+             * sets the where clause using an operator
+             * @param value the sql operator
+             * @return a reference to the where builder
+             */
+            where_builder &where(const sql_operator &value);
 
             /*!
              * sets the where clause for the update query

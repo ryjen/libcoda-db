@@ -8,6 +8,129 @@ namespace rj
 {
     namespace db
     {
+        sql_operator::sql_op() : rvalue()
+        {
+        }
+
+        sql_operator::sql_op(const sql_operator &other)
+        {
+            copy(other);
+        }
+
+        sql_operator::sql_op(sql_operator &&other)
+        {
+            move(std::move(other));
+        }
+
+        sql_operator &sql_operator::operator=(const sql_operator &other)
+        {
+            copy(other);
+            return *this;
+        }
+
+        sql_operator &sql_operator::operator=(sql_operator &&other)
+        {
+            move(std::move(other));
+            return *this;
+        }
+
+        sql_operator::~sql_op()
+        {
+            switch (type) {
+                case op::EQ:
+                case op::NEQ:
+                case op::LIKE:
+                    rvalue.~sql_value();
+                    break;
+                case op::IN:
+                    rvalues.~vector<sql_value>();
+                    break;
+                case op::BETWEEN:
+                    rrange.~pair<sql_value, sql_value>();
+                    break;
+            }
+        }
+
+        void sql_operator::copy(const sql_operator &other)
+        {
+            lvalue = other.lvalue;
+            type = other.type;
+            switch (type) {
+                case op::EQ:
+                case op::NEQ:
+                case op::LIKE:
+                    new (&rvalue) sql_value(other.rvalue);
+                    break;
+                case op::IN:
+                    new (&rvalues) std::vector<sql_value>(other.rvalues);
+                    break;
+                case op::BETWEEN:
+                    new (&rrange) std::pair<sql_value, sql_value>(other.rrange);
+                    break;
+            }
+        }
+
+        void sql_operator::move(sql_operator &&other)
+        {
+            lvalue = std::move(other.lvalue);
+            type = std::move(other.type);
+            switch (type) {
+                case op::EQ:
+                case op::NEQ:
+                case op::LIKE:
+                    new (&rvalue) sql_value(std::move(other.rvalue));
+                    break;
+                case op::IN:
+                    new (&rvalues) std::vector<sql_value>(std::move(other.rvalues));
+                    break;
+                case op::BETWEEN:
+                    new (&rrange) std::pair<sql_value, sql_value>(std::move(other.rrange));
+                    break;
+            }
+        }
+        namespace op
+        {
+            sql_operator equals(const sql_value &lvalue, const sql_value &rvalue)
+            {
+                sql_operator op;
+                op.lvalue = lvalue;
+                op.rvalue = rvalue;
+                op.type = op::EQ;
+                return op;
+            }
+            sql_operator nequals(const sql_value &lvalue, const sql_value &rvalue)
+            {
+                sql_operator op;
+                op.lvalue = lvalue;
+                op.rvalue = rvalue;
+                op.type = op::NEQ;
+                return op;
+            }
+            sql_operator like(const sql_value &lvalue, const std::string &rvalue)
+            {
+                sql_operator op;
+                op.lvalue = lvalue;
+                op.rvalue = rvalue;
+                op.type = op::LIKE;
+                return op;
+            }
+            sql_operator in(const sql_value &lvalue, const std::vector<sql_value> &rvalue)
+            {
+                sql_operator op;
+                op.lvalue = lvalue;
+                op.rvalues = rvalue;
+                op.type = op::IN;
+                return op;
+            }
+            sql_operator between(const sql_value &lvalue, const sql_value rvalue1, const sql_value rvalue2)
+            {
+                sql_operator op;
+                op.lvalue = lvalue;
+                op.rrange = {rvalue1, rvalue2};
+                op.type = op::BETWEEN;
+                return op;
+            }
+        }
         where_clause::where_clause()
         {
         }
@@ -198,110 +321,30 @@ namespace rj
         {
         }
 
-        where_builder &where_builder::equals(const std::string &column, const sql_value &value)
+        where_builder &where_builder::bind(size_t index, const sql_operator &value)
         {
-            size_t index = binder_->num_of_bindings() + 1;
-            reset(column + " " + op::EQ + " " + session_->bind_param(index));
-            binder_->bind(index, value);
+            switch (value.type) {
+                case op::EQ:
+                case op::NEQ:
+                case op::LIKE:
+                    binder_->bind(index, value.rvalue);
+                    break;
+                case op::IN:
+                    for (size_t i = 0; i < value.rvalues.size(); i++) {
+                        binder_->bind(index + i, value.rvalues[i]);
+                    }
+                    break;
+                case op::BETWEEN:
+                    binder_->bind(index, value.rrange.first);
+                    binder_->bind(index, value.rrange.second);
+                    break;
+            }
             return *this;
         }
 
-        where_builder &where_builder::and_equals(const std::string &column, const sql_value &value)
+        std::string where_builder::to_sql(size_t index, const sql_operator &value)
         {
-            size_t index = binder_->num_of_bindings() + 1;
-            operator&&(column + " " + op::EQ + " " + session_->bind_param(index));
-            binder_->bind(index, value);
-            return *this;
-        }
-
-        where_builder &where_builder::or_equals(const std::string &column, const sql_value &value)
-        {
-            size_t index = binder_->num_of_bindings() + 1;
-            operator||(column + " " + op::EQ + " " + session_->bind_param(index));
-            binder_->bind(index, value);
-            return *this;
-        }
-
-        where_builder &where_builder::nequals(const std::string &column, const sql_value &value)
-        {
-            size_t index = binder_->num_of_bindings() + 1;
-            reset(column + " " + op::NEQ + " " + session_->bind_param(index));
-            binder_->bind(index, value);
-            return *this;
-        }
-        where_builder &where_builder::and_nequals(const std::string &column, const sql_value &value)
-        {
-            size_t index = binder_->num_of_bindings() + 1;
-            operator&&(column + " " + op::NEQ + " " + session_->bind_param(index));
-            binder_->bind(index, value);
-            return *this;
-        }
-        where_builder &where_builder::or_nequals(const std::string &column, const sql_value &value)
-        {
-            size_t index = binder_->num_of_bindings() + 1;
-            operator&&(column + " " + op::NEQ + " " + session_->bind_param(index));
-            binder_->bind(index, value);
-            return *this;
-        }
-
-        where_builder &where_builder::like(const std::string &column, const std::string &pattern)
-        {
-            reset(column + " " + op::LIKE + " " + pattern);
-            return *this;
-        }
-        where_builder &where_builder::and_like(const std::string &column, const std::string &pattern)
-        {
-            operator&&(column + " " + op::LIKE + " " + pattern);
-            return *this;
-        }
-        where_builder &where_builder::or_like(const std::string &column, const std::string &pattern)
-        {
-            operator||(column + " " + op::LIKE + " " + pattern);
-            return *this;
-        }
-
-        where_builder &where_builder::in(const std::string &column, const std::vector<sql_value> &values)
-        {
-            reset(column + " " + op::IN + " (" + helper::join_csv(values) + ")");
-            binder_->bind(values, binder_->num_of_bindings() + 1);
-            return *this;
-        }
-        where_builder &where_builder::and_in(const std::string &column, const std::vector<sql_value> &values)
-        {
-            operator&&(column + " " + op::IN + " (" + helper::join_csv(values) + ")");
-            binder_->bind(values, binder_->num_of_bindings() + 1);
-            return *this;
-        }
-        where_builder &where_builder::or_in(const std::string &column, const std::vector<sql_value> &values)
-        {
-            operator||(column + " " + op::IN + " (" + helper::join_csv(values) + ")");
-            binder_->bind(values, binder_->num_of_bindings() + 1);
-            return *this;
-        }
-
-        where_builder &where_builder::between(const std::string &column, const sql_value &value1, const sql_value &value2)
-        {
-            size_t index = binder_->num_of_bindings() + 1;
-            reset(column + " " + op::BETWEEN + " " + session_->bind_param(index));
-            binder_->bind(index, value1);
-            binder_->bind(index + 1, value2);
-            return *this;
-        }
-        where_builder &where_builder::and_between(const std::string &column, const sql_value &value1, const sql_value &value2)
-        {
-            size_t index = binder_->num_of_bindings() + 1;
-            operator&&(column + " " + op::BETWEEN + " " + session_->bind_param(index));
-            binder_->bind(index, value1);
-            binder_->bind(index + 1, value2);
-            return *this;
-        }
-        where_builder &where_builder::or_between(const std::string &column, const sql_value &value1, const sql_value &value2)
-        {
-            size_t index = binder_->num_of_bindings() + 1;
-            operator||(column + " " + op::BETWEEN + " " + session_->bind_param(index));
-            binder_->bind(index, value1);
-            binder_->bind(index + 1, value2);
-            return *this;
+            return value.lvalue.to_string() + std::string(" ") + op::type_values[value.type] + std::string(" ") + session_->bind_param(index);
         }
 
         where_builder &where_builder::bind(size_t index, const sql_value &value)
@@ -315,6 +358,13 @@ namespace rj
             return *this;
         }
 
+        void where_builder::reset(const sql_operator &value)
+        {
+            size_t index = binder_->num_of_bindings() + 1;
+            where_clause::reset(to_sql(index, value));
+            bind(index, value);
+        }
+
         size_t where_builder::num_of_bindings() const
         {
             return binder_->num_of_bindings();
@@ -324,39 +374,21 @@ namespace rj
          * Appends and AND part to this where clause
          * @param value   the sql to append
          */
-        where_builder &where_builder::operator&&(const std::string &value)
+        where_builder &where_builder::operator&&(const sql_operator &value)
         {
-            where_clause::operator&&(value);
-            return *this;
+            size_t index = binder_->num_of_bindings() + 1;
+            where_clause::operator&&(to_sql(index, value));
+            return bind(index, value);
         }
-        /*!
-         * Appends and AND part to this where clause
-         * @param value   the sql to append
-         */
-        where_builder &where_builder::operator&&(const where_clause &value)
-        {
-            where_clause::operator&&(value);
-            return *this;
-        }
-
         /*!
          * Appends and OR part to this where clause
          * @param value   the sql to append
          */
-        where_builder &where_builder::operator||(const where_clause &value)
+        where_builder &where_builder::operator||(const sql_operator &value)
         {
-            where_clause::operator||(value);
-            return *this;
-        }
-
-        /*!
-         * Appends and OR part to this where clause
-         * @param value   the sql to append
-         */
-        where_builder &where_builder::operator||(const std::string &value)
-        {
-            where_clause::operator||(value);
-            return *this;
+            size_t index = binder_->num_of_bindings() + 1;
+            where_clause::operator&&(to_sql(index, value));
+            return bind(index, value);
         }
     }
 }

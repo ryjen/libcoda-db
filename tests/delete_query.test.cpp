@@ -40,7 +40,7 @@ go_bandit([]() {
         it("can delete", []() {
             delete_query query(current_session);
 
-            query.from("users").where().equals("first_name", "Mark");
+            query.from("users").where(op::equals("first_name", "Mark"));
 
             AssertThat(query.execute(), Equals(1));
 
@@ -50,7 +50,7 @@ go_bandit([]() {
         it("is copyable by constructor", []() {
             delete_query query(current_session);
 
-            query.from("users").where().equals("first_name", "Mark");
+            query.from("users").where(op::equals("first_name", "Mark"));
 
             delete_query other(query);
 
@@ -60,7 +60,7 @@ go_bandit([]() {
         it("is movable by constructor", []() {
             delete_query query(current_session);
 
-            query.from("users").where().equals("first_name", "Bryan");
+            query.from("users").where(op::equals("first_name", "Bryan"));
 
             delete_query other(std::move(query));
 
@@ -71,7 +71,7 @@ go_bandit([]() {
         it("is copyable from assignment", []() {
             delete_query query(current_session);
 
-            query.from("users").where().equals("first_name", "Bryan");
+            query.from("users").where(op::equals("first_name", "Bryan"));
 
             delete_query other(current_session, "other_users");
 
@@ -85,7 +85,7 @@ go_bandit([]() {
         it("is movable from assignment", []() {
             delete_query query(current_session);
 
-            query.from("users").where().equals("first_name", "Bryan");
+            query.from("users").where(op::equals("first_name", "Bryan"));
 
             delete_query other(current_session, "other_users");
 
@@ -109,7 +109,7 @@ go_bandit([]() {
         it("can be batch executed", []() {
             delete_query query(current_session, "users");
 
-            query.where().equals("first_name", "Bryan");
+            query.where(op::equals("first_name", "Bryan"));
 
             AssertThat(query.execute(), Equals(1));
 

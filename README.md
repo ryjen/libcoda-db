@@ -11,15 +11,13 @@ rj_db
 a sqlite, mysql and postgres wrapper + active record (ish) implementation.   
 
 Disclaimers:
-- this library favours ease of programmer use over speed
 - use in production at your own risk, no support or warranty
 - my code style does not use camel case for c++
-- boost::variant used in this code is going to be replaced with std::variant in c++17
 
-Why yet another library
------------------------
+Why another library?
+--------------------
 
-Mostly for the challenge and to use newer features of c++11 in a database context.  I also wanted to make something I would actually use myself.
+Why not? It was good fun and I like it better than the other libraries.
 
 Building
 --------
@@ -37,13 +35,11 @@ docker-compose will run the tests with mysql and postgres images:
 docker-compose run test
 ```
 
-otherwise use [cmake](https://cmake.org) to generate for the build system of your choice.
+otherwise use [cmake](https://cmake.org) to generate for the build system of your choice, including Xcode.
 
 ```bash
-mkdir debug; cd debug;
-cmake -DCMAKE_BUILD_TYPE=Debug ..
-make
-make test
+cmake -G Xcode .
+open rj_db.xcodeproj
 ```
 
 options supported are:
@@ -73,27 +69,34 @@ View some [diagrams here](https://github.com/ryjen/db/wiki/Model).
 Records
 =======
 
-An simple user example
+An user object example
 ----------------------
 
-Records should be implemented using the [curiously re-occuring template pattern (CRTP)](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
+Record objects should be implemented using the [curiously re-occuring template pattern (CRTP)](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
 
-First initialize a session
+First I have a global session variable:
+
 ```c++
-auto current_session = sqldb::create_session("file://test.db");
+
+extern std::shared_ptr<rj::db::session> current_session;
+```
+
+That gets initialized:
+
+```c++
+current_session = sqldb::create_session("file://test.db");
 
 /* Other databases:
 
-auto current_session = sqldb::create_session("mysql://user@pass:localhost:3306/database");
-auto current_session = sqldb::create_session("postgres://localhost/test");
+current_session = sqldb::create_session("mysql://user@pass:localhost:3306/database");
+current_session = sqldb::create_session("postgres://localhost/test");
 
 */
 ```
 
-Create a record
-```c++
+Implement a record:
 
-extern std::shared_ptr<rj::db::session> current_session;
+```c++
 
 class user : public rj::db::record<user>
 {
@@ -112,9 +115,7 @@ public:
 		string to_string() const
 		{
 				ostringstream buf;
-
 				buf << id() << ": " << get("first_name") << " " << get("last_name");
-
 				return buf.str();
 		}
 
@@ -140,37 +141,39 @@ The library includes the following "schema functions" for querying with a schema
 - **find_by()**
 - **find_one()**
 
-example using a callback:
+example using a callback for a user type:
 ```c++
 	auto schema = current_session->get_schema(user::TABLE_NAME);
 
-	find_xxx<user>(schema, ... [](const shared_ptr<user> &record) {
+	find_by_id<user>(schema, 1234, [](const shared_ptr<user> &record) {
 			cout << "User: " << record->to_string() << endl;
 	});
 ```
 
-example using a return value:
+example using a return value for a generic record type:
 
 ```c++
-	auto results = find_xxx<user>(schema, ...);
+	auto schema = current_session->get_schema(user::TABLE_NAME);
 
-	for (auto user : results) {
+	auto results = find_all(schema);
+
+	for (auto record : results) {
 			cout << "User: " << record->to_string() << endl;
 	}
 ```
 
-Record objects have their equivalent methods using their internal schema:
+Equivalent methods using the example user class:
 
 ```c++
 	/* find users with a callback */
-	user().find_xxx(... [](const shared_ptr<user> &record) {
+	user().find_by_id(1234, [](const shared_ptr<user> &record) {
 			cout << "User: " << record->to_string() << endl;
 	});
 
 	/* find users returning the results */
-	auto results = user().find_xxx(...);
+	auto results = user().find_all();
 
-	for (auto user : results) {
+	for (auto &user : results) {
 			cout << "User: " << record->to_string() << endl;
 	}
 ```
@@ -209,6 +212,7 @@ Prepared Statements
 By default and for performance, the library will use the prepared statement syntax of the database being used.
 
 If you turn on ENHANCED_PARAMENTER_MAPPING at compile time, then the syntaxes are universal - including named parameters and mixing parameter syntaxes.
+The cost is performance.
 
 Enhanced parameter mapping example:
 
@@ -227,12 +231,17 @@ Binding
 The binding interface looks like this:
 
 ```c++
-// Bind all by order (index starting at 1)
-query.bind_all("value1", "value2", value3);
 
 // using a where clause builder
-query.where().equals("param1", value1).and_equals("param2", value2).or_nequals("param3", value3);
-query.where("abc = ?").bind(value1) || 
+query.where(equals("param1", value1)) and equals("param2", value2) or nequals("param3", value3);
+```
+
+```c++
+// using a where clause
+query.where("abc = ?", value1);
+
+// Bind all by order (index starting at 1)
+query.bind_all(value1, value2, value3);
 
 // Bind by index
 query.bind(2, value2);
@@ -248,6 +257,21 @@ query.bind(values);
 unordered_map<string,sql_value> values = { {"@name", "harry"}, {"@id", 1234} };
 query.bind(values);
 ```
+
+Operator Helpers
+================
+
+There exists operator functions for building queries (see above example) including:
+
+```c++
+op::equals
+op::nequals
+op::like
+op::in
+op::between
+```
+
+They handle binding using the correct placeholder for the database implementation.
 
 Basic Queries
 =============
@@ -279,10 +303,7 @@ update.table("users").columns("id", "first_name", "last_name")
 		 .values(3432, "mark", "anthony");
 
 /* using where clause with named parameters */
-query.where("id = @id") or ("last_name = @last_name");
-
-/* bind named parameters */
-query.bind("@id", 1234).bind("@last_name", "henry");
+query.where(op::equals("id", 1234)) or op::equals("last_name", "henry");
 
 query.execute();
 ```
@@ -291,7 +312,7 @@ query.execute();
 /* delete a user (DELETE FROM ...) */
 delete_query query(current_session);
 
-query.from("users").where("id = $1 AND first_name = $2", 1234, "bob");
+query.from("users").where(equals("id", 1234)) and equals("first_name", "bob");
 
 query.execute();
 
@@ -304,7 +325,7 @@ Select Query
 /* select some users */
 select_query query(current_session);
 
-query.from("users").where("last_name = $1 OR first_name = $2", "Jenkins", "Harry");
+query.from("users").where(equals("last_name", "Jenkins")) or equals("first_name", "Harry");
 
 auto results = query.execute();
 
@@ -360,16 +381,16 @@ select.execute();
 Where Clauses
 -------------
 
-Where clauses in select/delete/joins have a dedicated class. For me it is syntactically preferable to use the 'and' and 'or' keywords with the where clause operators.  This is the same as calling the && || operators.
+Where clauses in select/delete/joins have a dedicated class. (the 'and' and 'or' keywords are the same as calling the && || operators).
 
 ```c++
-query.where("this = $1") and ("that = $2") or ("test = $3");
+query.where(equals("this", 1)) and equals("that", 2) or nequals("test", 3);
 ```
 
 The library will try to put the appropriate combined AND/OR into brackets itself. In the above example it would result in:
 
 ```
-(this = $1 AND that = $2) OR (test = $3)
+(this = $1 AND that = $2) OR (test != $3)
 ```
 
 Grouping where clauses is also an area that could be tested more (03/13/16).
@@ -435,12 +456,33 @@ Transactions can be performed on a session object.
 Types
 =====
 
-A [variant](http://github.com/ryjen/variant) class is used for converting and storing data types. A few custom types exist:
+sql_value is implemented using a variant (currently boost::variant, untill c++17).
+
+sql_value is capable of converting between the basic SQL values if supported.
+
+Subtypes include:
+
+sql_string
+----------
+defined as std::string
+
+sql_wstring
+-----------
+defined as std::wstring
+
+sql_null
+-------- 
+defined as nullptr
+
+sql_number
+----------
+
+A custom type for storing and converting numeric values only.
 
 sql_time
 --------
 
-A type for dealing with sql date/time formats.
+A type for storing and converting sql date/time formats.
 
 ```c++
 time_t current_time = time(0);
@@ -462,22 +504,21 @@ auto str = value.to_string();
 sql_blob
 --------
 
+currently defined as a vector of bytes.
+
 ```c++
-size_t sz = 30;
-void *data = malloc(sz);
 /* set data here */
+unsigned char *data = new unsigned char[size];
 
 /*
  * create a blob value, this will create a copy of the data
  *
  * you can pass function pointers to control how the data is allocated, freed, copied and compared
  */
-sql_blob value(data, sz);
+sql_blob value(data, data + sz);
 
 query.bind(1, value);
 ```
-
-Additional custom types can be implemented by subclassing **variant::complex**. For example, the JSON postgres type.
 
 Benchmarking
 ============

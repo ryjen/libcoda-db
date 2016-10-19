@@ -87,24 +87,16 @@ namespace rj
             std::string table() const;
 
             /*!
+             * gets the where builder for the query
+             * @return a reference to the where builder
+             */
+            where_builder &where();
+
+            /*!
              * sets the where clause for the update query
              * @param value the where clause to set
              */
             where_builder &where(const where_clause &value);
-
-            /*!
-             * sets the where clause and binds a list of values
-             * @param value the where clause to set
-             * @param args a variadic list of indexed bind values
-             * @return a reference to this instance
-             */
-            template <typename... List>
-            update_query &where(const where_clause &value, const List &... args)
-            {
-                where(value);
-                bind_all(args...);
-                return *this;
-            }
 
             /*!
              * @param value the where sql/string to set
@@ -129,7 +121,7 @@ namespace rj
              * gets the where clause
              * @return the where clause
              */
-            where_builder &where();
+            where_builder &where(const sql_operator &value);
 
             /*!
              * a rename of the bind_all method so it makes sense to the query language

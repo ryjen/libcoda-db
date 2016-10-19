@@ -111,7 +111,7 @@ namespace rj
 
             if (columns_.size() > 0) {
                 buf += " SET ";
-                buf += session_->impl()->join_params(columns_, op::EQ);
+                buf += session_->impl()->join_params(columns_, op::type_values[op::EQ]);
             }
 
             if (!where_.empty()) {
@@ -137,20 +137,25 @@ namespace rj
             return columns_;
         }
 
+        where_builder &update_query::where()
+        {
+            return where_;
+        }
         where_builder &update_query::where(const where_clause &value)
         {
-            where_.reset(value);
+            where_.where_clause::reset(value);
             return where_;
         }
 
         where_builder &update_query::where(const string &value)
         {
-            where_.reset(value);
+            where_.where_clause::reset(value);
             return where_;
         }
 
-        where_builder &update_query::where()
+        where_builder &update_query::where(const sql_operator &value)
         {
+            where_.reset(value);
             return where_;
         }
 

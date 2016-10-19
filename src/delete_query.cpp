@@ -61,15 +61,21 @@ namespace rj
             return where_;
         }
 
-        delete_query &delete_query::where(const where_clause &value)
+        where_builder &delete_query::where(const sql_operator &value)
         {
             where_.reset(value);
+            return where_;
+        }
+
+        delete_query &delete_query::where(const where_clause &value)
+        {
+            where_.where_clause::reset(value);
             return *this;
         }
 
         where_clause &delete_query::where(const string &value)
         {
-            where_.reset(value);
+            where_.where_clause::reset(value);
             return where_;
         }
 
