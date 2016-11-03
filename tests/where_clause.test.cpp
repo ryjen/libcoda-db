@@ -33,7 +33,7 @@ go_bandit([]() {
 
             AssertThat(value, Equals("this OR that"));
 
-            w3&& w4;
+            w3 &&w4;
 
             AssertThat(w3.to_string(), Equals("blah AND bleh"));
         });
@@ -55,7 +55,7 @@ go_bandit([]() {
 
             where_clause w3;
 
-            w3&& w1;
+            w3 &&w1;
 
             AssertThat(w3.to_string(), Equals(w1.to_string()));
 
@@ -89,10 +89,24 @@ go_bandit([]() {
 
     describe("sql operator", []() {
         describe("builder", []() {
+            struct visitor {
+                void operator()(const sql_value &rvalue) const
+                {
+                    AssertThat(rvalue, Equals(1234));
+                }
+                void operator()(const std::vector<sql_value> &rvalue) const
+                {
+                    AssertThat(false, IsTrue());
+                }
+                void operator()(const std::pair<sql_value, sql_value> &rvalue) const
+                {
+                    AssertThat(false, IsTrue());
+                }
+            };
             auto builder = ("test"_op = 1234);
-            AssertThat(builder.lvalue, Equals("test"));
-            AssertThat(builder.rvalue, Equals(1234));
-            AssertThat(builder.type, Equals(op::EQ));
+            AssertThat(builder.lvalue(), Equals("test"));
+            builder.rvalue(visitor());
+            AssertThat(builder.type(), Equals(op::EQ));
         });
     });
 

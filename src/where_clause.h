@@ -21,40 +21,73 @@ namespace rj
             typedef enum { EQ, LIKE, IN, BETWEEN, IS } type;
 
             constexpr static const char *const type_values[] = {"=", "LIKE", "IN", "BETWEEN", "IS"};
-
             constexpr static const char *const not_type_values[] = {"!=", "NOT LIKE", "NOT IN", "NOT BETWEEN", "IS NOT"};
+
+            sql_operator equals(const sql_value &lvalue, const sql_value &rvalue);
+            sql_operator like(const sql_value &lvalue, const std::string &rvalue);
+            sql_operator startswith(const sql_value &lvalue, const std::string &rvalue);
+            sql_operator endswith(const sql_value &lvalue, const std::string &rvalue);
+            sql_operator contains(const sql_value &lvalue, const std::string &rvalue);
+            sql_operator in(const sql_value &lvalue, const std::vector<sql_value> &rvalue);
+            sql_operator between(const sql_value &lvalue, const sql_value rvalue1, const sql_value rvalue2);
+            sql_operator is(const sql_value &lvalue, const sql_null_type &value);
         }
 
         class sql_operator
         {
+            friend class where_builder;
+            friend sql_operator op::equals(const sql_value &lvalue, const sql_value &rvalue);
+            friend sql_operator op::like(const sql_value &lvalue, const std::string &rvalue);
+            friend sql_operator op::startswith(const sql_value &lvalue, const std::string &rvalue);
+            friend sql_operator op::endswith(const sql_value &lvalue, const std::string &rvalue);
+            friend sql_operator op::contains(const sql_value &lvalue, const std::string &rvalue);
+            friend sql_operator op::in(const sql_value &lvalue, const std::vector<sql_value> &rvalue);
+            friend sql_operator op::between(const sql_value &lvalue, const sql_value rvalue1, const sql_value rvalue2);
+            friend sql_operator op::is(const sql_value &lvalue, const sql_null_type &value);
+
            protected:
             bool not_;
-
-            friend class where_builder;
-
-           public:
-            sql_value lvalue;
+            sql_value lvalue_;
             union {
-                sql_value rvalue;
-                std::vector<sql_value> rvalues;
-                std::pair<sql_value, sql_value> rrange;
+                sql_value rvalue_;
+                std::vector<sql_value> rvalues_;
+                std::pair<sql_value, sql_value> rrange_;
             };
-            op::type type;
+            op::type type_;
 
            public:
             sql_operator();
 
+            /* rule-of-5 */
             sql_operator(const sql_operator &other);
-
             sql_operator(sql_operator &&other);
-
             sql_operator &operator=(const sql_operator &other);
-
             sql_operator &operator=(sql_operator &&other);
-
             virtual ~sql_operator();
 
             sql_operator &operator!();
+
+            sql_value lvalue() const;
+
+            op::type type() const;
+
+            template <typename T>
+            void rvalue(const T &visitor)
+            {
+                switch (type_) {
+                    case op::EQ:
+                    case op::LIKE:
+                    case op::IS:
+                        visitor(rvalue_);
+                        break;
+                    case op::IN:
+                        visitor(rvalues_);
+                        break;
+                    case op::BETWEEN:
+                        visitor(rrange_);
+                        break;
+                }
+            }
 
            private:
             void copy(const sql_operator &other);
@@ -64,13 +97,16 @@ namespace rj
         class sql_operator_builder : public sql_operator
         {
            public:
-            sql_operator value;
-
             sql_operator_builder(const sql_value &lvalue);
 
             using sql_operator::sql_operator;
-
             using sql_operator::operator=;
+
+            sql_operator_builder(const sql_operator_builder &other);
+            sql_operator_builder(sql_operator_builder &&other);
+            sql_operator_builder &operator=(const sql_operator_builder &other);
+            sql_operator_builder &operator=(sql_operator_builder &&other);
+            virtual ~sql_operator_builder();
 
             // equals
             sql_operator_builder &operator=(const sql_value &rvalue);
@@ -95,18 +131,6 @@ namespace rj
         };
 
         sql_operator_builder operator"" _op(const char *lvalue, size_t len);
-
-        namespace op
-        {
-            sql_operator equals(const sql_value &lvalue, const sql_value &rvalue);
-            sql_operator like(const sql_value &lvalue, const std::string &rvalue);
-            sql_operator startswith(const sql_value &lvalue, const std::string &rvalue);
-            sql_operator endswith(const sql_value &lvalue, const std::string &rvalue);
-            sql_operator contains(const sql_value &lvalue, const std::string &rvalue);
-            sql_operator in(const sql_value &lvalue, const std::vector<sql_value> &rvalue);
-            sql_operator between(const sql_value &lvalue, const sql_value rvalue1, const sql_value rvalue2);
-            sql_operator is(const sql_value &lvalue, const sql_null_type &value);
-        }
 
         /*!
          * a utility class aimed at making logic where statements

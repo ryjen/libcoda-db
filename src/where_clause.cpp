@@ -8,7 +8,7 @@ namespace rj
 {
     namespace db
     {
-        sql_operator::sql_operator() : not_(false), rvalue()
+        sql_operator::sql_operator() : not_(false), rvalue_()
         {
         }
 
@@ -36,17 +36,17 @@ namespace rj
 
         sql_operator::~sql_operator()
         {
-            switch (type) {
+            switch (type_) {
                 case op::EQ:
                 case op::LIKE:
                 case op::IS:
-                    rvalue.~sql_value();
+                    rvalue_.~sql_value();
                     break;
                 case op::IN:
-                    rvalues.~vector<sql_value>();
+                    rvalues_.~vector<sql_value>();
                     break;
                 case op::BETWEEN:
-                    rrange.~pair<sql_value, sql_value>();
+                    rrange_.~pair<sql_value, sql_value>();
                     break;
             }
         }
@@ -54,19 +54,19 @@ namespace rj
         void sql_operator::copy(const sql_operator &other)
         {
             not_ = other.not_;
-            lvalue = other.lvalue;
-            type = other.type;
-            switch (type) {
+            lvalue_ = other.lvalue_;
+            type_ = other.type_;
+            switch (type_) {
                 case op::EQ:
                 case op::LIKE:
                 case op::IS:
-                    new (&rvalue) sql_value(other.rvalue);
+                    new (&rvalue_) sql_value(other.rvalue_);
                     break;
                 case op::IN:
-                    new (&rvalues) std::vector<sql_value>(other.rvalues);
+                    new (&rvalues_) std::vector<sql_value>(other.rvalues_);
                     break;
                 case op::BETWEEN:
-                    new (&rrange) std::pair<sql_value, sql_value>(other.rrange);
+                    new (&rrange_) std::pair<sql_value, sql_value>(other.rrange_);
                     break;
             }
         }
@@ -74,19 +74,19 @@ namespace rj
         void sql_operator::move(sql_operator &&other)
         {
             not_ = std::move(other.not_);
-            lvalue = std::move(other.lvalue);
-            type = std::move(other.type);
-            switch (type) {
+            lvalue_ = std::move(other.lvalue_);
+            type_ = std::move(other.type_);
+            switch (type_) {
                 case op::EQ:
                 case op::LIKE:
                 case op::IS:
-                    new (&rvalue) sql_value(std::move(other.rvalue));
+                    new (&rvalue_) sql_value(std::move(other.rvalue_));
                     break;
                 case op::IN:
-                    new (&rvalues) std::vector<sql_value>(std::move(other.rvalues));
+                    new (&rvalues_) std::vector<sql_value>(std::move(other.rvalues_));
                     break;
                 case op::BETWEEN:
-                    new (&rrange) std::pair<sql_value, sql_value>(std::move(other.rrange));
+                    new (&rrange_) std::pair<sql_value, sql_value>(std::move(other.rrange_));
                     break;
             }
         }
@@ -97,150 +97,181 @@ namespace rj
             return *this;
         }
 
+        op::type sql_operator::type() const
+        {
+            return type_;
+        }
+
+        sql_value sql_operator::lvalue() const
+        {
+            return lvalue_;
+        }
+
         namespace op
         {
             sql_operator equals(const sql_value &lvalue, const sql_value &rvalue)
             {
                 sql_operator op;
-                op.lvalue = lvalue;
-                op.rvalue = rvalue;
-                op.type = op::EQ;
+                op.lvalue_ = lvalue;
+                op.rvalue_ = rvalue;
+                op.type_ = op::EQ;
                 return op;
             }
             sql_operator like(const sql_value &lvalue, const std::string &rvalue)
             {
                 sql_operator op;
-                op.lvalue = lvalue;
-                op.rvalue = rvalue;
-                op.type = op::LIKE;
+                op.lvalue_ = lvalue;
+                op.rvalue_ = rvalue;
+                op.type_ = op::LIKE;
                 return op;
             }
             sql_operator startswith(const sql_value &lvalue, const std::string &rvalue)
             {
                 sql_operator op;
-                op.lvalue = lvalue;
-                op.rvalue = rvalue + "%";
-                op.type = op::LIKE;
+                op.lvalue_ = lvalue;
+                op.rvalue_ = rvalue + "%";
+                op.type_ = op::LIKE;
                 return op;
             }
             sql_operator endswith(const sql_value &lvalue, const std::string &rvalue)
             {
                 sql_operator op;
-                op.lvalue = lvalue;
-                op.rvalue = "%" + rvalue;
-                op.type = op::LIKE;
+                op.lvalue_ = lvalue;
+                op.rvalue_ = "%" + rvalue;
+                op.type_ = op::LIKE;
                 return op;
             }
             sql_operator contains(const sql_value &lvalue, const std::string &rvalue)
             {
                 sql_operator op;
-                op.lvalue = lvalue;
-                op.rvalue = "%" + rvalue + "%";
-                op.type = op::LIKE;
+                op.lvalue_ = lvalue;
+                op.rvalue_ = "%" + rvalue + "%";
+                op.type_ = op::LIKE;
                 return op;
             }
             sql_operator in(const sql_value &lvalue, const std::vector<sql_value> &rvalue)
             {
                 sql_operator op;
-                op.lvalue = lvalue;
-                op.rvalues = rvalue;
-                op.type = op::IN;
+                op.lvalue_ = lvalue;
+                op.rvalues_ = rvalue;
+                op.type_ = op::IN;
                 return op;
             }
             sql_operator between(const sql_value &lvalue, const sql_value rvalue1, const sql_value rvalue2)
             {
                 sql_operator op;
-                op.lvalue = lvalue;
-                op.rrange = {rvalue1, rvalue2};
-                op.type = op::BETWEEN;
+                op.lvalue_ = lvalue;
+                op.rrange_ = {rvalue1, rvalue2};
+                op.type_ = op::BETWEEN;
                 return op;
             }
-            sql_operator is(const sql_value &lvalue, const sql_null_type rvalue)
+            sql_operator is(const sql_value &lvalue, const sql_null_type &rvalue)
             {
                 sql_operator op;
-                op.lvalue = lvalue;
-                op.type = op::IS;
+                op.lvalue_ = lvalue;
+                op.type_ = op::IS;
                 return op;
             }
         }
-
-
         sql_operator_builder::sql_operator_builder(const sql_value &lvalue)
         {
-            this->lvalue = lvalue;
+            this->lvalue_ = lvalue;
+        }
+        sql_operator_builder::sql_operator_builder(const sql_operator_builder &other) : sql_operator(other)
+        {
+        }
+
+        sql_operator_builder::sql_operator_builder(sql_operator_builder &&other) : sql_operator(std::move(other))
+        {
+        }
+
+        sql_operator_builder &sql_operator_builder::operator=(const sql_operator_builder &other)
+        {
+            sql_operator::operator=(other);
+            return *this;
+        }
+
+        sql_operator_builder &sql_operator_builder::operator=(sql_operator_builder &&other)
+        {
+            sql_operator::operator=(std::move(other));
+            return *this;
+        }
+
+        sql_operator_builder::~sql_operator_builder()
+        {
         }
 
         // equals
         sql_operator_builder &sql_operator_builder::operator=(const sql_value &rvalue)
         {
-            this->type = op::EQ;
-            this->rvalue = rvalue;
+            this->type_ = op::EQ;
+            this->rvalue_ = rvalue;
             return *this;
         }
 
         // nequals
         sql_operator_builder &sql_operator_builder::operator!=(const sql_value &rvalue)
         {
-            this->type = op::EQ;
+            this->type_ = op::EQ;
             this->not_ = true;
-            this->rvalue = rvalue;
+            this->rvalue_ = rvalue;
             return *this;
         }
         // like
         sql_operator_builder &sql_operator_builder::operator^=(const std::string &rvalue)
         {
-            this->type = op::LIKE;
-            this->rvalue = rvalue;
+            this->type_ = op::LIKE;
+            this->rvalue_ = rvalue;
             return *this;
         }
         // starts with
         sql_operator_builder &sql_operator_builder::operator<=(const std::string &rvalue)
         {
-            this->type = op::LIKE;
-            this->rvalue = rvalue + "%";
+            this->type_ = op::LIKE;
+            this->rvalue_ = rvalue + "%";
             return *this;
         }
         // ends with
         sql_operator_builder &sql_operator_builder::operator>=(const std::string &rvalue)
         {
-            this->type = op::LIKE;
-            this->rvalue = "%" + rvalue;
+            this->type_ = op::LIKE;
+            this->rvalue_ = "%" + rvalue;
             return *this;
         }
         // contains
         sql_operator_builder &sql_operator_builder::operator[](const std::string &rvalue)
         {
-            this->type = op::LIKE;
-            this->rvalue = "%" + rvalue + "%";
+            this->type_ = op::LIKE;
+            this->rvalue_ = "%" + rvalue + "%";
             return *this;
         }
         // in
         sql_operator_builder &sql_operator_builder::operator[](const std::vector<sql_value> &values)
         {
-            this->type = op::IN;
-            this->rvalues = rvalues;
+            this->type_ = op::IN;
+            this->rvalues_ = values;
             return *this;
         }
         // between
         sql_operator_builder &sql_operator_builder::operator[](const std::pair<sql_value, sql_value> &values)
         {
-            this->type = op::BETWEEN;
-            this->rrange = values;
+            this->type_ = op::BETWEEN;
+            this->rrange_ = values;
             return *this;
         }
         // is
         sql_operator_builder &sql_operator_builder::operator=(const sql_null_type &rvalue)
         {
-            this->type = op::IS;
-            this->rvalue = rvalue;
+            this->type_ = op::IS;
+            this->rvalue_ = rvalue;
             return *this;
         }
         // isnot
         sql_operator_builder &sql_operator_builder::operator!=(const sql_null_type &rvalue)
         {
-            this->type = op::IS;
+            this->type_ = op::IS;
             this->not_ = true;
-            this->rvalue = rvalue;
+            this->rvalue_ = rvalue;
             return *this;
         }
 
@@ -441,20 +472,20 @@ namespace rj
 
         where_builder &where_builder::bind(size_t index, const sql_operator &value)
         {
-            switch (value.type) {
+            switch (value.type_) {
                 case op::EQ:
                 case op::LIKE:
                 case op::IS:
-                    binder_->bind(index, value.rvalue);
+                    binder_->bind(index, value.rvalue_);
                     break;
                 case op::IN:
-                    for (size_t i = 0; i < value.rvalues.size(); i++) {
-                        binder_->bind(index + i, value.rvalues[i]);
+                    for (size_t i = 0; i < value.rvalues_.size(); i++) {
+                        binder_->bind(index + i, value.rvalues_[i]);
                     }
                     break;
                 case op::BETWEEN:
-                    binder_->bind(index, value.rrange.first);
-                    binder_->bind(index, value.rrange.second);
+                    binder_->bind(index, value.rrange_.first);
+                    binder_->bind(index, value.rrange_.second);
                     break;
             }
             return *this;
@@ -462,12 +493,12 @@ namespace rj
 
         std::string where_builder::to_sql(size_t index, const sql_operator &value)
         {
-            std::string result = value.lvalue.to_string() + std::string(" ");
+            std::string result = value.lvalue_.to_string() + std::string(" ");
 
             if (value.not_) {
-                result += op::not_type_values[value.type];
+                result += op::not_type_values[value.type_];
             } else {
-                result += op::type_values[value.type];
+                result += op::type_values[value.type_];
             }
 
             result += std::string(" ");
@@ -508,6 +539,7 @@ namespace rj
             where_clause::operator&&(to_sql(index, value));
             return bind(index, value);
         }
+
         /*!
          * Appends and OR part to this where clause
          * @param value   the sql to append
