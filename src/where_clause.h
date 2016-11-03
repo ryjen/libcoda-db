@@ -14,22 +14,24 @@ namespace rj
 {
     namespace db
     {
-        typedef struct sql_op sql_operator;
+        class sql_operator;
 
         namespace op
         {
-            typedef enum { EQ, NEQ, LIKE, IN, BETWEEN } type;
+            typedef enum { EQ, LIKE, IN, BETWEEN, IS } type;
 
-            constexpr static const char *const type_values[] = {"=", "!=", "LIKE", "IN", "BETWEEN"};
+            constexpr static const char *const type_values[] = {"=", "LIKE", "IN", "BETWEEN", "IS"};
 
-            sql_operator equals(const sql_value &lvalue, const sql_value &rvalue);
-            sql_operator nequals(const sql_value &lvalue, const sql_value &rvalue);
-            sql_operator like(const sql_value &lvalue, const std::string &rvalue);
-            sql_operator in(const sql_value &lvalue, const std::vector<sql_value> &rvalue);
-            sql_operator between(const sql_value &lvalue, const sql_value rvalue1, const sql_value rvalue2);
+            constexpr static const char *const not_type_values[] = {"!=", "NOT LIKE", "NOT IN", "NOT BETWEEN", "IS NOT"};
         }
 
-        struct sql_op {
+        class sql_operator
+        {
+           protected:
+            bool not_;
+
+            friend class where_builder;
+
            public:
             sql_value lvalue;
             union {
@@ -39,22 +41,72 @@ namespace rj
             };
             op::type type;
 
-            sql_op();
+           public:
+            sql_operator();
 
-            sql_op(const sql_operator &other);
+            sql_operator(const sql_operator &other);
 
-            sql_op(sql_operator &&other);
+            sql_operator(sql_operator &&other);
 
             sql_operator &operator=(const sql_operator &other);
 
             sql_operator &operator=(sql_operator &&other);
 
-            virtual ~sql_op();
+            virtual ~sql_operator();
+
+            sql_operator &operator!();
 
            private:
             void copy(const sql_operator &other);
             void move(sql_operator &&other);
         };
+
+        class sql_operator_builder : public sql_operator
+        {
+           public:
+            sql_operator value;
+
+            sql_operator_builder(const sql_value &lvalue);
+
+            using sql_operator::sql_operator;
+
+            using sql_operator::operator=;
+
+            // equals
+            sql_operator_builder &operator=(const sql_value &rvalue);
+            // nequals
+            sql_operator_builder &operator!=(const sql_value &rvalue);
+            // like
+            sql_operator_builder &operator^=(const std::string &rvalue);
+            // starts with
+            sql_operator_builder &operator<=(const std::string &rvalue);
+            // ends with
+            sql_operator_builder &operator>=(const std::string &rvalue);
+            // contains
+            sql_operator_builder &operator[](const std::string &rvalue);
+            // in
+            sql_operator_builder &operator[](const std::vector<sql_value> &values);
+            // between
+            sql_operator_builder &operator[](const std::pair<sql_value, sql_value> &values);
+            // is
+            sql_operator_builder &operator=(const sql_null_type &rvalue);
+            // is not
+            sql_operator_builder &operator!=(const sql_null_type &rvalue);
+        };
+
+        sql_operator_builder operator"" _op(const char *lvalue, size_t len);
+
+        namespace op
+        {
+            sql_operator equals(const sql_value &lvalue, const sql_value &rvalue);
+            sql_operator like(const sql_value &lvalue, const std::string &rvalue);
+            sql_operator startswith(const sql_value &lvalue, const std::string &rvalue);
+            sql_operator endswith(const sql_value &lvalue, const std::string &rvalue);
+            sql_operator contains(const sql_value &lvalue, const std::string &rvalue);
+            sql_operator in(const sql_value &lvalue, const std::vector<sql_value> &rvalue);
+            sql_operator between(const sql_value &lvalue, const sql_value rvalue1, const sql_value rvalue2);
+            sql_operator is(const sql_value &lvalue, const sql_null_type &value);
+        }
 
         /*!
          * a utility class aimed at making logic where statements

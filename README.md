@@ -10,14 +10,12 @@ rj_db
 
 a sqlite, mysql and postgres wrapper + active record (ish) implementation.   
 
-Disclaimers:
-- use in production at your own risk, no support or warranty
-- my code style does not use camel case for c++
-
 Why another library?
 --------------------
 
-Why not? It was good fun and I like it better than the other libraries.
+Why not? It was good fun and I like it.  
+
+Other libraries are kinda nice, but sometimes you don't want to deal with DDL generation or unintuitive syntax.
 
 Building
 --------
@@ -211,7 +209,7 @@ Prepared Statements
 
 By default and for performance, the library will use the prepared statement syntax of the database being used.
 
-If you turn on ENHANCED_PARAMENTER_MAPPING at compile time, then the syntaxes are universal - including named parameters and mixing parameter syntaxes.
+If you turn on ENHANCED_PARAMENTER_MAPPING (experiemental feature) at compile time, then the syntaxes are universal - including named parameters and mixing parameter syntaxes.
 The cost is performance.
 
 Enhanced parameter mapping example:
@@ -223,40 +221,7 @@ Enhanced parameter mapping example:
 ```
 
 When mixing indexed parameters, the first '?' is equivalent to parameter 1 or '$1' and so on.
-Mixing parameter types is an area that has been tested, but nearly enough (03/13/16).
 
-Binding
--------
-
-The binding interface looks like this:
-
-```c++
-
-// using a where clause builder
-query.where(equals("param1", value1)) and equals("param2", value2) or nequals("param3", value3);
-```
-
-```c++
-// using a where clause
-query.where("abc = ?", value1);
-
-// Bind all by order (index starting at 1)
-query.bind_all(value1, value2, value3);
-
-// Bind by index
-query.bind(2, value2);
-
-// Bind by name
-query.bind("@param", "value");
-
-// Bind by vector of values
-vector<sql_value> values = { 1234, "bob", "smith" };
-query.bind(values);
-
-// Bind by a map of named values
-unordered_map<string,sql_value> values = { {"@name", "harry"}, {"@id", 1234} };
-query.bind(values);
-```
 
 Operator Helpers
 ================
@@ -265,13 +230,35 @@ There exists operator functions for building queries (see above example) includi
 
 ```c++
 op::equals
-op::nequals
 op::like
+op::startswith
+op::endswith
+op::contains
 op::in
 op::between
+op::is
 ```
 
-They handle binding using the correct placeholder for the database implementation.
+They can all be negated using the operator! (ex. !like ) 
+
+
+Where Clauses / Binding
+-----------------------
+
+Where clauses in select/delete/join queries have a dedicated class.
+
+```c++
+// using a where clause builder
+query.where(equals("param1", value1)) and !in("param2", {24, 54}) or startswith("param3", "abc");
+```
+
+The 'and' and 'or' keywords are the same as calling the && || operators.
+
+The library will also put the appropriate combined AND/OR into brackets (experiemental). In the above example in postgres would result in:
+
+```
+(param1 = $1 AND param2 NOT IN ($2,$3)) OR (param3 like $4)
+```
 
 Basic Queries
 =============
@@ -378,22 +365,6 @@ select.columns("u.id", "s.setting").from("users u")
 select.execute();
 ```
 
-Where Clauses
--------------
-
-Where clauses in select/delete/joins have a dedicated class. (the 'and' and 'or' keywords are the same as calling the && || operators).
-
-```c++
-query.where(equals("this", 1)) and equals("that", 2) or nequals("test", 3);
-```
-
-The library will try to put the appropriate combined AND/OR into brackets itself. In the above example it would result in:
-
-```
-(this = $1 AND that = $2) OR (test != $3)
-```
-
-Grouping where clauses is also an area that could be tested more (03/13/16).
 
 Batch Queries
 -------------
@@ -428,7 +399,6 @@ Perform raw queries on a session object:
 		cerr << session->last_error() << endl;
 	}
 ```
-
 Transactions
 ============
 
@@ -517,7 +487,7 @@ unsigned char *data = new unsigned char[size];
  */
 sql_blob value(data, data + sz);
 
-query.bind(1, value);
+insert.into("table").columns("blob").values(value);
 ```
 
 Benchmarking
@@ -539,6 +509,7 @@ Here are some preliminary benchmarks on sqlite (see [tests/benchmarks](tests/ben
 
 Alternatives
 ============
+- [sqlpp11](https://github.com/rbock/sqlpp11)
 - [sqlite3pp](https://github.com/iwongu/sqlite3pp)
 - [Poco Data](http://pocoproject.org/docs/00200-DataUserManual.html)
 - [SQLAPI++](http://www.sqlapi.com)
@@ -548,7 +519,7 @@ TODO / ROADMAP
 ==============
 
 * More and better quality tests, especially around binding and data types
-* better benchmarking and perf improvements (pre-allocing?)
+* better benchmarking and perf improvements
 * NoSQL support? other databases?
 
 

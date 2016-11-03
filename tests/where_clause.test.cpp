@@ -87,4 +87,13 @@ go_bandit([]() {
 
     });
 
+    describe("sql operator", []() {
+        describe("builder", []() {
+            auto builder = ("test"_op = 1234);
+            AssertThat(builder.lvalue, Equals("test"));
+            AssertThat(builder.rvalue, Equals(1234));
+            AssertThat(builder.type, Equals(op::EQ));
+        });
+    });
+
 });

@@ -173,7 +173,7 @@ namespace rj
         sql_value::sql_value(const long double &value) : value_(sql_number(value))
         {
         }
-        sql_value::sql_value(const char *value) : value_(sql_string(value))
+        sql_value::sql_value(const char *value, std::string::size_type len) : value_(sql_string(value, len))
         {
         }
         sql_value::sql_value(const wchar_t *value) : value_(sql_wstring(value))

@@ -48,7 +48,7 @@ namespace rj
             sql_value(const double &value);
             sql_value(const long double &value);
 
-            sql_value(const char *value);
+            sql_value(const char *value, std::string::size_type len = std::string::npos);
             sql_value(const wchar_t *value);
 
             template <typename T, typename = std::enable_if<is_sql_value<T>::value || is_sql_number<T>::value>>
