@@ -497,17 +497,19 @@ Benchmarking
 
 Here are some preliminary benchmarks on sqlite (see [tests/benchmarks](tests/benchmarks)).  Tested on mac osx pro (2.5ghz), clang, release build.
 
-	sqlite insert                              5000      406684 ns/op
-	sqlite select                              2000     1841120 ns/op
-	tests/benchmarks/rj_db/rj_db_benchmark 10.182s
-
-	sqlite insert                              5000      409861 ns/op
-	sqlite select                              2000     1560117 ns/op
-	tests/benchmarks/poco/rj_db_benchmark_poco 9.407s
-
-	sqlite insert                              5000      403932 ns/op
-	sqlite select                              2000     1430914 ns/op
-	tests/benchmarks/soci/rj_db_benchmark_soci 9.082s
+	%> make benchmark
+	Scanning dependencies of target benchmark
+	Executing benchmarks...
+	sqlite insert                              5000      437175 ns/op
+	sqlite select                              2000      587871 ns/op
+	rj_db/rj_db_benchmark 7.204s
+	sqlite insert                              5000      417281 ns/op
+	sqlite select                              2000     1245470 ns/op
+	poco/rj_db_benchmark_poco 8.651s
+	sqlite insert                              5000      437498 ns/op
+	sqlite select                              2000     1274096 ns/op
+	soci/rj_db_benchmark_soci 9.018s
+	Built target benchmark
 
 Alternatives
 ============
