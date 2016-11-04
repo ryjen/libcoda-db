@@ -72,12 +72,14 @@ namespace rj
             where_.where_clause::reset(value);
             return *this;
         }
-
-        where_clause &delete_query::where(const string &value)
+#ifdef ENHANCED_PARAMETER_MAPPING
+        where_builder &delete_query::where(const std::string &value)
         {
             where_.where_clause::reset(value);
             return where_;
         }
+#endif
+
 
         delete_query &delete_query::from(const std::string &value)
         {

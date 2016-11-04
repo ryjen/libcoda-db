@@ -119,13 +119,13 @@ namespace rj
             return *this;
         }
 
-        query &query::bind(size_t index, const sql_value &value)
+        bindable &query::bind(size_t index, const sql_value &value)
         {
             params_[assert_binding_index(index)] = value;
             return set_modified();
         }
 
-        query &query::bind(const string &name, const sql_value &value)
+        bindable &query::bind(const string &name, const sql_value &value)
         {
             named_params_[name] = value;
 

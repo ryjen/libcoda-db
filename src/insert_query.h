@@ -104,6 +104,10 @@ namespace rj
 
             insert_query &values(const std::unordered_map<std::string, sql_value> &value);
 
+            insert_query &value(const std::string &name, const sql_value &value);
+
+            insert_query &value(const sql_value &value);
+
             /*!
              * executes the insert query
              * @return the number of records inserted

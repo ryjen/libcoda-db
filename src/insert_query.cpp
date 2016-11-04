@@ -128,7 +128,7 @@ namespace rj
             }
 
             // if (flags_ & Batch) {
-            stmt_->reset();
+            reset();
             //} else {
             //    stmt_->finish();
             //    stmt_ = nullptr;
@@ -157,6 +157,18 @@ namespace rj
         insert_query &insert_query::values(const std::unordered_map<std::string, sql_value> &value)
         {
             bindable::bind(value);
+            return *this;
+        }
+
+        insert_query &insert_query::value(const std::string &name, const sql_value &value)
+        {
+            bind(name, value);
+            return *this;
+        }
+
+        insert_query &insert_query::value(const sql_value &value)
+        {
+            bind(num_of_bindings() + 1, value);
             return *this;
         }
     }

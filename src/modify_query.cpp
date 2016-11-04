@@ -69,7 +69,7 @@ namespace rj
                 numChanges_ = 0;
             }
 
-            stmt_->reset();
+            reset();
 
             return numChanges_;
         }

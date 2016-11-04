@@ -162,95 +162,96 @@ go_bandit([]() {
 
             Assert::That(value, Equals("Bryan"));
         });
+        /*
+                it("can use named parameters", []() {
+                    select_query query(current_session);
 
-        it("can use named parameters", []() {
-            select_query query(current_session);
+                    query.from("users");
 
-            query.from("users");
+                    query.where("first_name = @name OR last_name = @name");
 
-            query.where("first_name = @name OR last_name = @name");
+                    query.bind("@name", "Bryan");
 
-            query.bind("@name", "Bryan");
+                    auto callback = [](const resultset& rs) {
+                        rs.for_each([](const row& row) {
+                            Assert::That(row.column("first_name").value().to_string() == "Bryan" || row.column("last_name").value().to_string() ==
+        "Bryan");
+                        });
 
-            auto callback = [](const resultset& rs) {
-                rs.for_each([](const row& row) {
-                    Assert::That(row.column("first_name").value().to_string() == "Bryan" || row.column("last_name").value().to_string() == "Bryan");
+                    };
+
+        #ifdef ENHANCED_PARAMETER_MAPPING
+                    query.execute(callback);
+        #else
+                    if (current_session->impl()->supports_named_parameters()) {
+                        query.execute(callback);
+                    } else {
+                        AssertThrows(database_exception, query.execute());
+                    }
+        #endif
                 });
 
-            };
+                it("can union another", []() {
+                    select_query query(current_session);
 
-#ifdef ENHANCED_PARAMETER_MAPPING
-            query.execute(callback);
-#else
-            if (current_session->impl()->supports_named_parameters()) {
-                query.execute(callback);
-            } else {
-                AssertThrows(database_exception, query.execute());
-            }
-#endif
-        });
+                    query.from("users");
 
-        it("can union another", []() {
-            select_query query(current_session);
+                    select_query other(current_session);
 
-            query.from("users");
+                    other.from("user_settings");
 
-            select_query other(current_session);
+                    query.union_with(other);
 
-            other.from("user_settings");
+                    Assert::That(query.to_string(), Equals("SELECT * FROM users UNION SELECT * FROM user_settings;"));
 
-            query.union_with(other);
+                    query.union_with(other, union_op::all);
 
-            Assert::That(query.to_string(), Equals("SELECT * FROM users UNION SELECT * FROM user_settings;"));
+                    Assert::That(query.to_string(), Equals("SELECT * FROM users UNION ALL SELECT * FROM user_settings;"));
+                });
 
-            query.union_with(other, union_op::all);
+        #ifdef ENHANCED_PARAMETER_MAPPING
+                it("can use different parameter types", []() {
+                    select_query query(current_session);
 
-            Assert::That(query.to_string(), Equals("SELECT * FROM users UNION ALL SELECT * FROM user_settings;"));
-        });
+                    query.from("users");
 
-#ifdef ENHANCED_PARAMETER_MAPPING
-        it("can use different parameter types", []() {
-            select_query query(current_session);
+                    query.where("(first_name = ? and last_name = ?) or (first_name = ? or last_name = ?) or last_name = @lname");
+                    query.bind(1, "Bob");
+                    query.bind(2, "Smith");
+                    query.bind(3, "Bryan");
+                    query.bind(4, "Smith");
+                    query.bind("@lname", "Jenkins");
+                    auto rs = query.execute();
 
-            query.from("users");
+                    Assert::That(rs.size() > 0, IsTrue());
 
-            query.where("(first_name = ? and last_name = ?) or (first_name = ? or last_name = ?) or last_name = @lname");
-            query.bind(1, "Bob");
-            query.bind(2, "Smith");
-            query.bind(3, "Bryan");
-            query.bind(4, "Smith");
-            query.bind("@lname", "Jenkins");
-            auto rs = query.execute();
+                    query.reset();
 
-            Assert::That(rs.size() > 0, IsTrue());
+                    query.where("(first_name = $1 and last_name = $2) or (first_name = $3 or last_name = $2) or last_name = @lname");
 
-            query.reset();
+                    query.bind(1, "Bob");
+                    query.bind(2, "Smith");
+                    query.bind(3, "Bryan");
+                    query.bind("@lname", "Jenkins");
 
-            query.where("(first_name = $1 and last_name = $2) or (first_name = $3 or last_name = $2) or last_name = @lname");
+                    rs = query.execute();
 
-            query.bind(1, "Bob");
-            query.bind(2, "Smith");
-            query.bind(3, "Bryan");
-            query.bind("@lname", "Jenkins");
+                    Assert::That(rs.size() > 0, IsTrue());
 
-            rs = query.execute();
 
-            Assert::That(rs.size() > 0, IsTrue());
+                    TODO: fix for postgres
+                    query.reset();
 
-            /*
-            TODO: fix for postgres
-            query.reset();
+                    query.where("first_name = ? or last_name = $1 or last_name = @lname");
+                    query.bind(1, "Bob");
+                    query.bind("@lname", "Smith");
 
-            query.where("first_name = ? or last_name = $1 or last_name = @lname");
-            query.bind(1, "Bob");
-            query.bind("@lname", "Smith");
+                    rs = query.execute();
 
-            rs = query.execute();
+                    Assert::That(rs.size() > 0, IsTrue());
 
-            Assert::That(rs.size() > 0, IsTrue());*/
-
-        });
-#endif
+                });
+        #endif*/
     });
 
 });

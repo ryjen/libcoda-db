@@ -11,7 +11,7 @@ namespace rj
         /*!
          * a query to update a table
          */
-        class update_query : public modify_query
+        class update_query : public modify_query, public whereable<update_query>
         {
            public:
             /*!
@@ -96,19 +96,23 @@ namespace rj
              * sets the where clause for the update query
              * @param value the where clause to set
              */
-            where_builder &where(const where_clause &value);
+            update_query &where(const where_clause &value);
 
             /*!
-             * @param value the where sql/string to set
+             * gets the where clause
+             * @return the where clause
              */
+            where_builder &where(const sql_operator &value);
+
+#ifdef ENHANCED_PARAMETER_MAPPING
             where_builder &where(const std::string &value);
 
             /*!
-             * sets the where clause and binds a list of values
-             * @param value the sql where clause string
-             * @param args the variadic list of indexed bind values
-             * @return a reference to this instance
-             */
+            * adds a where clause to this query and binds parameters to it
+            * @param value the sql where string
+            * @param args the variadic list of bind values
+            * @return a reference to this instance
+            */
             template <typename... List>
             update_query &where(const std::string &value, const List &... args)
             {
@@ -118,10 +122,19 @@ namespace rj
             }
 
             /*!
-             * gets the where clause
-             * @return the where clause
+             * adds a where clause and binds parameters to it
+             * @param value the where clause
+             * @param args a variadic list of bind values
+             * @return a reference to this instance
              */
-            where_builder &where(const sql_operator &value);
+            template <typename... List>
+            update_query &where(const where_clause &value, const List &... args)
+            {
+                where(value);
+                bind_all(args...);
+                return *this;
+            }
+#endif
 
             /*!
              * a rename of the bind_all method so it makes sense to the query language
@@ -138,6 +151,10 @@ namespace rj
             update_query &values(const std::vector<sql_value> &value);
 
             update_query &values(const std::unordered_map<std::string, sql_value> &value);
+
+            update_query &value(const std::string &name, const sql_value &value);
+
+            update_query &value(const sql_value &value);
 
             /*!
              * @return the string/sql representation of this query

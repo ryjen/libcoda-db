@@ -26,7 +26,7 @@ namespace rj
          * abstract class
          * override to implement a query
          */
-        class query : public bindable
+        class query : protected bindable
         {
            public:
             typedef session session_type;
@@ -55,6 +55,10 @@ namespace rj
             void prepare(const std::string &sql);
 
             friend class where_builder;
+
+            /* bindable overrides */
+            bindable &bind(size_t index, const sql_value &value);
+            bindable &bind(const std::string &name, const sql_value &value);
 
            public:
             /*!
@@ -99,10 +103,6 @@ namespace rj
              */
             query &operator=(query &&other);
 
-            /* bindable overrides */
-
-            query &bind(size_t index, const sql_value &value);
-            query &bind(const std::string &name, const sql_value &value);
             size_t num_of_bindings() const;
 
             using bindable::bind;

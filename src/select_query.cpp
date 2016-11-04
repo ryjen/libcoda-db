@@ -125,17 +125,19 @@ namespace rj
             return where_;
         }
 
-        where_builder &select_query::where(const string &value)
-        {
-            where_.where_clause::reset(value);
-            return where_;
-        }
-
         select_query &select_query::where(const where_clause &value)
         {
             where_.where_clause::reset(value);
             return *this;
         }
+
+#ifdef ENHANCED_PARAMETER_MAPPING
+        where_builder &select_query::where(const std::string &sql)
+        {
+            where_.where_clause::reset(sql);
+            return where_;
+        }
+#endif
 
         select_query &select_query::limit(const string &value)
         {

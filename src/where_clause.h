@@ -148,6 +148,7 @@ namespace rj
              * Default constructor
              */
             where_clause();
+
             /*!
              * construct a where clause with sql
              * @param  value the sql string
@@ -219,6 +220,10 @@ namespace rj
             where_builder &bind(size_t index, const sql_operator &value);
             std::string to_sql(size_t index, const sql_operator &value);
 
+           protected:
+            where_builder &bind(size_t index, const sql_value &value);
+            where_builder &bind(const std::string &name, const sql_value &value);
+
            public:
             where_builder(const std::shared_ptr<session_impl> &session, bindable *bindable);
             where_builder(const where_builder &other);
@@ -226,9 +231,6 @@ namespace rj
             where_builder &operator=(const where_builder &other);
             where_builder &operator=(where_builder &&other);
             virtual ~where_builder();
-
-            where_builder &bind(size_t index, const sql_value &value);
-            where_builder &bind(const std::string &name, const sql_value &value);
 
             size_t num_of_bindings() const;
 
@@ -245,6 +247,18 @@ namespace rj
              * @param value   the sql to append
              */
             where_builder &operator||(const sql_operator &value);
+        };
+
+        template <typename T>
+        class whereable
+        {
+           public:
+            virtual where_builder &where() = 0;
+            virtual where_builder &where(const sql_operator &value) = 0;
+            virtual T &where(const where_clause &value) = 0;
+#ifdef ENHANCED_PARAMTER_MAPPING
+            virtual where_builder &where(const std::string &sql) = 0;
+#endif
         };
 
         /*!

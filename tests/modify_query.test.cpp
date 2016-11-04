@@ -87,11 +87,11 @@ go_bandit([]() {
 
                 snprintf(buf, sizeof(buf) - 1, "firstName%d", i + 1);
 
-                query.bind(1, string(buf));
+                query.value(string(buf));
 
                 snprintf(buf, sizeof(buf) - 1, "lastName%d", i + 1);
 
-                query.bind(2, string(buf));
+                query.value(string(buf));
 
                 Assert::That(query.execute(), Equals(1));
             }

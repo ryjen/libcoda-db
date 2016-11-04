@@ -141,16 +141,10 @@ namespace rj
         {
             return where_;
         }
-        where_builder &update_query::where(const where_clause &value)
+        update_query &update_query::where(const where_clause &value)
         {
             where_.where_clause::reset(value);
-            return where_;
-        }
-
-        where_builder &update_query::where(const string &value)
-        {
-            where_.where_clause::reset(value);
-            return where_;
+            return *this;
         }
 
         where_builder &update_query::where(const sql_operator &value)
@@ -168,6 +162,18 @@ namespace rj
         update_query &update_query::values(const std::unordered_map<std::string, sql_value> &value)
         {
             bindable::bind(value);
+            return *this;
+        }
+
+        update_query &update_query::value(const std::string &name, const sql_value &value)
+        {
+            bind(name, value);
+            return *this;
+        }
+
+        update_query &update_query::value(const sql_value &value)
+        {
+            bind(num_of_bindings() + 1, value);
             return *this;
         }
     }

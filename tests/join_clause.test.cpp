@@ -35,7 +35,7 @@ go_bandit([]() {
 
             sql_time curr_time(curr_time_val, sql_time::DATETIME);
 
-            query.bind_all(u1.id(), 1, curr_time);
+            query.values(u1.id(), 1, curr_time);
 
             query.execute();
         });

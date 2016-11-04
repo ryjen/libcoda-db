@@ -11,7 +11,7 @@ namespace rj
         /*!
          * a query to delete from a table
          */
-        class delete_query : public modify_query
+        class delete_query : public modify_query, public whereable<delete_query>
         {
            public:
             delete_query(const std::shared_ptr<rj::db::session> &session);
@@ -65,10 +65,27 @@ namespace rj
              */
             delete_query &where(const where_clause &value);
 
+#ifdef ENHANCED_PARAMETER_MAPPING
+            where_builder &where(const std::string &sql);
+
             /*!
-             * sets the where clause and binds a list of values
-             * @param value the where clause to set
-             * @param args a variadic list of indexed bind values
+            * adds a where clause to this query and binds parameters to it
+            * @param value the sql where string
+            * @param args the variadic list of bind values
+            * @return a reference to this instance
+            */
+            template <typename... List>
+            delete_query &where(const std::string &value, const List &... args)
+            {
+                where(value);
+                bind_all(args...);
+                return *this;
+            }
+
+            /*!
+             * adds a where clause and binds parameters to it
+             * @param value the where clause
+             * @param args a variadic list of bind values
              * @return a reference to this instance
              */
             template <typename... List>
@@ -78,25 +95,7 @@ namespace rj
                 bind_all(args...);
                 return *this;
             }
-
-            /*!
-             * @param value the where sql/string to set
-             */
-            where_clause &where(const std::string &value);
-
-            /*!
-             * sets the where clause and binds a list of values
-             * @param value the sql where clause string
-             * @param args the variadic list of indexed bind values
-             * @return a reference to this instance
-             */
-            template <typename... List>
-            delete_query &where(const std::string &value, const List &... args)
-            {
-                where(value);
-                bind_all(args...);
-                return *this;
-            }
+#endif
 
             /*!
              * tests if this query is valid

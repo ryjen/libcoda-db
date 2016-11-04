@@ -104,18 +104,6 @@ go_bandit([]() {
             Assert::That(c.to_value(0), Equals(24));
 
         });
-
-        it("can handle a bad bind", []() {
-            select_query query(current_session);
-
-            query.from("users").where("id != ''");
-
-            query.bind(3, "someId");
-
-            // TODO: why this test fails?
-            // AssertThrows(binding_error, query.execute().next());
-        });
-
     });
 
 });

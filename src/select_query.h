@@ -24,7 +24,7 @@ namespace rj
         /*!
          * a query to select values from a table
          */
-        class select_query : public query
+        class select_query : public query, public whereable<select_query>
         {
            private:
             where_builder where_;
@@ -140,17 +140,20 @@ namespace rj
 
             /*!
              * adds a where clause to this query
-             * @param  value the sql string
+             * @param  value the where clause
              * @return       a reference to this
              */
-            where_builder &where(const std::string &value);
+            select_query &where(const where_clause &value);
+
+#ifdef ENHANCED_PARAMETER_MAPPING
+            where_builder &where(const std::string &sql);
 
             /*!
-             * adds a where clause to this query and binds parameters to it
-             * @param value the sql where string
-             * @param args the variadic list of bind values
-             * @return a reference to this instance
-             */
+            * adds a where clause to this query and binds parameters to it
+            * @param value the sql where string
+            * @param args the variadic list of bind values
+            * @return a reference to this instance
+            */
             template <typename... List>
             select_query &where(const std::string &value, const List &... args)
             {
@@ -158,13 +161,6 @@ namespace rj
                 bind_all(args...);
                 return *this;
             }
-
-            /*!
-             * adds a where clause to this query
-             * @param  value the where clause
-             * @return       a reference to this
-             */
-            select_query &where(const where_clause &value);
 
             /*!
              * adds a where clause and binds parameters to it
@@ -179,6 +175,8 @@ namespace rj
                 bind_all(args...);
                 return *this;
             }
+
+#endif
 
             /*!
              * sets the limit by clause for this query

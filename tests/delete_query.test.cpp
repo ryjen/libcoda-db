@@ -113,7 +113,7 @@ go_bandit([]() {
 
             AssertThat(query.execute(), Equals(1));
 
-            query.bind(1, "Mark");
+            query.where(op::equals("first_name", "Mark"));
 
             AssertThat(query.execute(), Equals(1));
         });

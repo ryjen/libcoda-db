@@ -126,19 +126,6 @@ go_bandit([]() {
 
         });
 
-        it("can handle a bad bind", []() {
-            select_query query(current_session);
-
-            query.from("users");
-
-            query.where("id = ? and first_name = ?");
-
-            query.bind(3, "someId");
-
-            // TODO: why this test fails?
-            // AssertThrows(binding_error, query.execute().next());
-        });
-
         it("can bind a time value", []() {
             time_t tval = time(0);
 
