@@ -13,9 +13,9 @@ a sqlite, mysql and postgres wrapper + active record (ish) implementation.
 Why another library?
 --------------------
 
-Why not? It was good fun and I like it.  
+Why not? It was good fun and I'll use it.  
 
-Other libraries are kinda nice, but sometimes you don't want to deal with DDL generation or unintuitive syntax.
+Other libraries are kinda nice, but sometimes you don't want to deal with code generators or unintuitive syntax.
 
 Building
 --------
@@ -70,8 +70,6 @@ Records
 An user object example
 ----------------------
 
-Record objects should be implemented using the [curiously re-occuring template pattern (CRTP)](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
-
 First I have a global session variable:
 
 ```c++
@@ -92,7 +90,7 @@ current_session = sqldb::create_session("postgres://localhost/test");
 */
 ```
 
-Implement a record:
+Record objects should be implemented using the [curiously re-occuring template pattern (CRTP)](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
 
 ```c++
 
@@ -129,53 +127,6 @@ public:
 };
 ```
 
-Querying records
-----------------
-
-The library includes the following "schema functions" for querying with a schema object:
-
-- **find_by_id()**
-- **find_all()**
-- **find_by()**
-- **find_one()**
-
-example using a callback for a user type:
-```c++
-	auto schema = current_session->get_schema(user::TABLE_NAME);
-
-	find_by_id<user>(schema, 1234, [](const shared_ptr<user> &record) {
-			cout << "User: " << record->to_string() << endl;
-	});
-```
-
-example using a return value for a generic record type:
-
-```c++
-	auto schema = current_session->get_schema(user::TABLE_NAME);
-
-	auto results = find_all(schema);
-
-	for (auto record : results) {
-			cout << "User: " << record->to_string() << endl;
-	}
-```
-
-Equivalent methods using the example user class:
-
-```c++
-	/* find users with a callback */
-	user().find_by_id(1234, [](const shared_ptr<user> &record) {
-			cout << "User: " << record->to_string() << endl;
-	});
-
-	/* find users returning the results */
-	auto results = user().find_all();
-
-	for (auto &user : results) {
-			cout << "User: " << record->to_string() << endl;
-	}
-```
-
 Save a record
 -------------
 
@@ -204,60 +155,57 @@ Delete a record
 		}
 ```
 
-Prepared Statements
-===================
 
-By default and for performance, the library will use the prepared statement syntax of the database being used.
-
-If you turn on ENHANCED_PARAMENTER_MAPPING (experiemental feature) at compile time, then the syntaxes are universal - including named parameters and mixing parameter syntaxes.
-The cost is performance.
-
-Enhanced parameter mapping example:
+Query a record
+--------------
 
 ```c++
-	"?, $2, @name, $3"
-	// or
-	"?, ?, @name, ?"
+	/* find users with a callback */
+	user().find_by_id(1234, [](const shared_ptr<user> &record) {
+			cout << "User: " << record->to_string() << endl;
+	});
+
+	/* find users returning the results */
+	auto results = user().find_all();
+
+	for (auto &user : results) {
+			cout << "User: " << record->to_string() << endl;
+	}
 ```
 
-When mixing indexed parameters, the first '?' is equivalent to parameter 1 or '$1' and so on.
 
+Querying Schemas
+----------------
 
-Operator Helpers
-================
+The library includes the following "schema functions" for querying with a schema object:
 
-There exists operator functions for building queries (see above example) including:
+- **find_by_id()**
+- **find_all()**
+- **find_by()**
+- **find_one()**
+
+These functions can:
+
+- be generic column/values or specify a record type
+- return results or call a callback for each result
+
+example using a callback for a user record type:
+```c++
+	auto schema = current_session->get_schema(user::TABLE_NAME);
+
+	find_by_id<user>(schema, 1234, [](const shared_ptr<user> &record) {
+			cout << "User: " << record->to_string() << endl;
+	});
+```
+
+example using a return value for a generic record type:
 
 ```c++
-op::equals
-op::like
-op::startswith
-op::endswith
-op::contains
-op::in
-op::between
-op::is
-```
+	auto results = find_all(user.schema());
 
-They can all be negated using the operator! (ex. !like ) 
-
-
-Where Clauses / Binding
------------------------
-
-Where clauses in select/delete/join queries have a dedicated class.
-
-```c++
-// using a where clause builder
-query.where(equals("param1", value1)) and !in("param2", {24, 54}) or startswith("param3", "abc");
-```
-
-The 'and' and 'or' keywords are the same as calling the && || operators.
-
-The library will also put the appropriate combined AND/OR into brackets (experiemental). In the above example in postgres would result in:
-
-```
-(param1 = $1 AND param2 NOT IN ($2,$3)) OR (param3 like $4)
+	for (auto record : results) {
+			cout << "User: " << record->to_string() << endl;
+	}
 ```
 
 Basic Queries
@@ -365,7 +313,6 @@ select.columns("u.id", "s.setting").from("users u")
 select.execute();
 ```
 
-
 Batch Queries
 -------------
 
@@ -423,12 +370,70 @@ Transactions can be performed on a session object.
 // tx will be commited here
 ```
 
+Prepared Statements
+===================
+
+By default the library will use the prepared statement syntax of the database being used.
+
+If you turn on **ENHANCED_PARAMENTER_MAPPING (experiemental feature)** then the syntaxes are database independent and can be mixed and matched.
+
+Enhanced parameter mapping example:
+
+```c++
+	"?, $2, @name, $3"
+	// or
+	"?, ?, @name, ?"
+```
+
+When mixing indexed parameters, the first '?' is equivalent to parameter 1 or '$1' and so on.
+
+
+Where Clauses / Binding
+-----------------------
+
+Where clauses in select/delete/join queries have a dedicated class.
+
+```c++
+// using a where clause builder
+query.where(equals("param1", value1)) and !in("param2", {24, 54}) or startswith("param3", "abc");
+```
+
+The 'and' and 'or' keywords are the same as calling the && || operators.
+
+The library will also put the appropriate combined AND/OR into brackets (experiemental). In the above example in postgres would result in:
+
+```
+(param1 = $1 AND param2 NOT IN ($2,$3)) OR (param3 like $4)
+```
+
+Operator Helpers
+================
+
+Operator functions are used for where clauses:
+
+```c++
+  query.where(equals("column", value)) and !between("column2", valueA, valueB);
+```
+
+```c++
+op::equals
+op::like
+op::startswith
+op::endswith
+op::contains
+op::in
+op::between
+op::is
+```
+
+They can all be negated using the operator! (ex. !like ) 
+
 Types
 =====
 
 sql_value is implemented using a variant (currently boost::variant, untill c++17).
 
-sql_value is capable of converting between the basic SQL values if supported.
+sql_value is capable of converting between the basic SQL values (when possible).
 
 Subtypes include:
 
@@ -463,9 +468,6 @@ time_t current_time = time(0);
  * can be DATE, TIME, DATETIME, TIMESTAMP
  */
 sql_time value(current_time, sql_time::DATE);
-
-/* binds the date to a query */
-query.bind(1, value);
 
 /* YYYY-MM-DD format */
 auto str = value.to_string();
