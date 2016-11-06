@@ -44,7 +44,8 @@ namespace rj
             void set_level(const char *arg);
         }
 
-        struct sqldb {
+        class sqldb
+        {
            public:
             /*!
              * parses a uri and creates a session

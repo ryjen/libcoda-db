@@ -173,7 +173,9 @@ namespace rj
                 return rval;
             }
 
-
+            /*!
+             * @return the id of the record
+             */
             sql_value record::id() const
             {
                 return get(schema()->primary_key());
@@ -193,7 +195,10 @@ namespace rj
                 return values_.at(name);
             }
 
-
+            /*!
+             * @param columns a vector of columns
+             * @return a vector of values
+             */
             std::vector<sql_value> record::get(const std::vector<std::string> &columns) const
             {
                 std::vector<sql_value> values;
@@ -218,7 +223,9 @@ namespace rj
                 return !name.empty() && values_.size() > 0 && values_.count(name) > 0;
             }
 
-
+            /*!
+             * @param value the id value to set
+             */
             void record::set_id(const sql_value &value)
             {
                 set(schema()->primary_key(), value);
@@ -235,7 +242,6 @@ namespace rj
                 values_[name] = value;
             }
 
-
             /*!
              * unsets / removes a column
              * @param name the name of the column to unset
@@ -244,7 +250,6 @@ namespace rj
             {
                 values_.erase(name);
             }
-
 
             /*!
              * clears values set on this object
@@ -292,7 +297,6 @@ namespace rj
                 return true;
             }
 
-
             /*!
              * deletes this record from the database for the value in the id column
              */
@@ -310,6 +314,11 @@ namespace rj
                 return query.execute();
             }
 
+            /*!
+             * @param exists true if the record exists
+             * @param pk the primary key column name
+             * @return a vector columns that are set on this record
+             */
             std::vector<std::string> record::available_columns(bool exists, const std::string &pk) const
             {
                 std::vector<std::string> values;
@@ -321,31 +330,60 @@ namespace rj
                 return values;
             }
         }
+
+        /*!
+         * a generic record that doesn't have a type
+         */
         namespace generic
         {
+            /*!
+             * @param value the id to find
+             * @return the record
+             */
             std::shared_ptr<record> record::find_by_id(const sql_value &value) const
             {
                 return rj::db::find_by_id(schema(), value);
             }
 
+            /*!
+             * @param value the id to find
+             * @param funk the callback function
+             */
             void record::find_by_id(const sql_value &value, const callback &funk) const
             {
                 rj::db::find_by_id(schema(), value, funk);
             }
 
+            /*!
+             * @return a vector of records
+             */
             std::vector<std::shared_ptr<record>> record::find_all() const
             {
                 return rj::db::find_all(schema());
             }
 
+            /*!
+             * @param funk the callback function
+             */
             void record::find_all(const callback &funk) const
             {
                 rj::db::find_all(schema(), funk);
             }
+
+            /*!
+             * @param values the map of columns ad values to find
+             * @return a vector of found records
+             */
             std::vector<std::shared_ptr<record>> record::find_by(const std::map<std::string, sql_value> &values) const
             {
                 return rj::db::find_by(schema(), values);
             }
+
+            /*!
+             * @param name the column name to find
+             * @param value the column value to find
+             * @return a vector of records found
+             */
             std::vector<std::shared_ptr<record>> record::find_by(const std::string &name, const sql_value &value) const
             {
                 return rj::db::find_by(schema(), {{name, value}});

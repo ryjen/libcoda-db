@@ -64,25 +64,15 @@ namespace rj
            public:
             using bindable::bindable;
 
-            bind_mapping &bind(const std::string &name, const sql_value &value)
-            {
-                throw database_exception("not implemented");
-            }
-            std::string prepare(const std::string &sql, size_t max_index)
-            {
-                return sql;
-            }
+            bind_mapping &bind(const std::string &name, const sql_value &value);
+
+            std::string prepare(const std::string &sql, size_t max_index);
 
             virtual bindable &bind(size_t index, const sql_value &value) = 0;
 
-            bool is_named() const
-            {
-                return false;
-            }
+            bool is_named() const;
 
-            virtual void reset()
-            {
-            }
+            virtual void reset();
         };
 #endif
     }

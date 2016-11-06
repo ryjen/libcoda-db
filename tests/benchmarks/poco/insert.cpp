@@ -9,8 +9,7 @@
 #include <iostream>
 #include <vector>
 #include "benchmark.h"
-#include "testicle.h"
-#include "testicle.h"
+#include "util.h"
 
 using namespace Poco::Data::Keywords;
 using Poco::Data::Session;

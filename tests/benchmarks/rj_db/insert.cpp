@@ -1,27 +1,19 @@
-#ifndef HAVE_CONFIG_H
-#include "config.h"
-#endif
+
 #define BENCHPRESS_CONFIG_MAIN
 #include <benchpress/benchpress.hpp>
 #include "benchmark.h"
 #include "log.h"
-#include "testicle.h"
+#include "sqlite/session.h"
+#include "util.h"
 
 using namespace rj::db;
-
-void benchmark_insert(insert_query &insert, const std::shared_ptr<rj::db::session> &session)
-{
-    insert.values(random_name(), random_name(), random_num<int>(-123012, 1231232));
-
-    if (!insert.execute()) {
-        rj::db::log::error("unable to prepare test: %s", session->last_error().c_str());
-    }
-}
 
 BENCHMARK("sqlite insert", [](benchpress::context *context) {
     uri uri_s("file://test.db");
 
     benchmark_setup(uri_s);
+
+    sqlite_setup();
 
     rj::db::insert_query query(current_session);
 
@@ -35,50 +27,58 @@ BENCHMARK("sqlite insert", [](benchpress::context *context) {
 
     context->stop_timer();
 
-    teardown_current_session();
+    sqlite_teardown();
+
+    benchmark_teardown();
 });
 
 
-// BENCHMARK("mysql insert", [](benchpress::context* context)
-// {
+BENCHMARK("mysql insert", [](benchpress::context *context) {
 
-//    auto uri_s = get_env_uri("MYSQL_URI", "mysql://localhost/test");
+    auto uri_s = get_env_uri("MYSQL_URI", "mysql://localhost/test");
 
-//    benchmark_setup(uri_s);
+    benchmark_setup(uri_s);
 
-//    rj::db::insert_query query(current_session);
+    mysql_setup();
 
-//    query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
+    rj::db::insert_query query(current_session);
 
-//    context->reset_timer();
+    query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
 
-//    for(size_t i = 0; i < context->num_iterations(); i++) {
-//        benchmark_insert(query, current_session);
-//    }
+    context->reset_timer();
 
-//    context->stop_timer();
+    for (size_t i = 0; i < context->num_iterations(); i++) {
+        benchmark_insert(query, current_session);
+    }
 
-//    teardown_current_session();
-// });
+    context->stop_timer();
 
-// BENCHMARK("postgres insert", [](benchpress::context* context)
-// {
+    mysql_teardown();
 
-//    auto uri_s = get_env_uri("POSTGRES_URI", "postgres://localhost/test");
+    benchmark_teardown();
+});
 
-//    benchmark_setup(uri_s);
+BENCHMARK("postgres insert", [](benchpress::context *context) {
 
-//    rj::db::insert_query query(current_session);
+    auto uri_s = get_env_uri("POSTGRES_URI", "postgres://localhost/test");
 
-//    query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
+    benchmark_setup(uri_s);
 
-//    context->reset_timer();
+    postgres_setup();
 
-//    for(size_t i = 0; i < context->num_iterations(); i++) {
-//        benchmark_insert(query, current_session);
-//    }
+    rj::db::insert_query query(current_session);
 
-//    context->stop_timer();
+    query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
 
-//    teardown_current_session();
-// });
+    context->reset_timer();
+
+    for (size_t i = 0; i < context->num_iterations(); i++) {
+        benchmark_insert(query, current_session);
+    }
+
+    context->stop_timer();
+
+    postgres_teardown();
+
+    benchmark_teardown();
+});

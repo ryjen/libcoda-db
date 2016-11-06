@@ -25,22 +25,17 @@ namespace rj
                         }
                     }
                 };
+            }
 
-                struct session_initializer {
-                   public:
-                    session_initializer()
-                    {
-                        auto factory = std::make_shared<sqlite::factory>();
-                        sqldb::register_session("sqlite", factory);
-                        sqldb::register_session("file", factory);
-                    }
-                };
+            __attribute__((constructor)) void initialize(void)
+            {
+                auto factory = std::make_shared<sqlite::factory>();
+                sqldb::register_session("sqlite", factory);
+                sqldb::register_session("file", factory);
             }
 
             std::shared_ptr<rj::db::session_impl> factory::create(const uri &uri)
             {
-                static helper::session_initializer initializer;
-
                 return std::make_shared<session>(uri);
             }
 

@@ -2,7 +2,7 @@
 #define BENCHPRESS_CONFIG_MAIN
 #include <unistd.h>
 #include <benchpress/benchpress.hpp>
-#include "testicle.h"
+#include "util.h"
 
 using namespace soci;
 
@@ -14,7 +14,7 @@ struct User {
 
 void benchmark_insert(soci::session &session)
 {
-    User user = {random_name(), random_name(), random_num<double>(-123012, 1231232)};
+    User user = {random_name(), random_name(), random_num<double>(-123012, 123123)};
 
     session << "insert into users(first_name, last_name, dval) values(:first_name, :last_name, :dval)", use(user.first_name), use(user.last_name),
         use(user.dval);
@@ -32,6 +32,17 @@ void create_mysql_table(soci::session &session)
     session
         << "create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45), dval real, data "
            "blob, tval timestamp)";
+}
+
+void create_postgres_table(soci::session &session)
+{
+    session << "create table if not exists users(id serial primary key unique, first_name varchar(45), last_name varchar(45), dval real, "
+               "data bytea default null, tval timestamp)";
+}
+
+void cleanup_table(soci::session &session)
+{
+    session << "drop table users";
 }
 
 BENCHMARK("sqlite insert", [](benchpress::context *context) {
@@ -53,42 +64,40 @@ BENCHMARK("sqlite insert", [](benchpress::context *context) {
     unlink("test.db");
 });
 
+BENCHMARK("mysql insert", [](benchpress::context *context) {
 
-// BENCHMARK("mysql insert", [](benchpress::context *context){
+    soci::session session("mysql", "dbname=test");
 
-//      soci::session session("mysql://localhost/test");
+    create_mysql_table(session);
 
-//      create_table(session);
+    context->reset_timer();
 
-//      context->reset_timer();
+    for (size_t i = 0; i < context->num_iterations(); i++) {
+        benchmark_insert(session);
+    }
 
-//      for (size_t i = 0; i < context->num_iterations(); i++) {
-//              benchmark_insert(session);
-//      }
+    context->stop_timer();
 
-//      context->stop_timer();
+    cleanup_table(session);
 
-//      session.close();
+    session.close();
+});
 
-//      unlink("test.db");
-// });
+BENCHMARK("postgres insert", [](benchpress::context *context) {
 
+    soci::session session("postgresql", "dbname=test");
 
-// BENCHMARK("postgres insert", [](benchpress::context *context){
+    create_postgres_table(session);
 
-//      soci::session session("postgres://localhost/test");
+    context->reset_timer();
 
-//      create_table(session);
+    for (size_t i = 0; i < context->num_iterations(); i++) {
+        benchmark_insert(session);
+    }
 
-//      context->reset_timer();
+    context->stop_timer();
 
-//      for (size_t i = 0; i < context->num_iterations(); i++) {
-//              benchmark_insert(session);
-//      }
+    cleanup_table(session);
 
-//      context->stop_timer();
-
-//      session.close();
-
-//      unlink("test.db");
-// });
+    session.close();
+});

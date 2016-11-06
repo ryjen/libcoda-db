@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <benchpress/benchpress.hpp>
 #include "benchmark.h"
-#include "testicle.h"
 
 using namespace soci;
 
@@ -41,7 +40,7 @@ BENCHMARK("sqlite select", [](benchpress::context *context) {
 
 BENCHMARK("mysql select", [](benchpress::context *context) {
 
-    soci::session session("mysql", "db=test");
+    soci::session session("mysql", "dbname=test");
 
     create_mysql_table(session);
 
@@ -57,15 +56,17 @@ BENCHMARK("mysql select", [](benchpress::context *context) {
 
     context->stop_timer();
 
+    cleanup_table(session);
+
     session.close();
 });
 
 
 BENCHMARK("postgres select", [](benchpress::context *context) {
 
-    soci::session session("postgres", "db=test");
+    soci::session session("postgresql", "dbname=test");
 
-    create_table(session);
+    create_postgres_table(session);
 
     for (size_t i = 0; i < context->num_iterations(); i++) {
         benchmark_insert(session);
@@ -78,6 +79,8 @@ BENCHMARK("postgres select", [](benchpress::context *context) {
     }
 
     context->stop_timer();
+
+    cleanup_table(session);
 
     session.close();
 });

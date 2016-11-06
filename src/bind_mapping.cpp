@@ -98,6 +98,25 @@ namespace rj
         {
             mappings_.clear();
         }
+#else
+
+        bind_mapping &bind_mapping::bind(const std::string &name, const sql_value &value)
+        {
+            throw database_exception("not implemented");
+        }
+        std::string bind_mapping::prepare(const std::string &sql, size_t max_index)
+        {
+            return sql;
+        }
+        bool bind_mapping::is_named() const
+        {
+            return false;
+        }
+
+        void bind_mapping::reset()
+        {
+        }
+
 #endif
     }
 }

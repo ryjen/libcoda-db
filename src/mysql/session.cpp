@@ -40,20 +40,16 @@ namespace rj
 
                     return buf.str();
                 }
-                struct session_initializer {
-                   public:
-                    session_initializer()
-                    {
-                        auto mysql_factory = std::make_shared<mysql::factory>();
-                        sqldb::register_session("mysql", mysql_factory);
-                    }
-                };
+            }
+
+            __attribute__((constructor)) void initialize(void)
+            {
+                auto mysql_factory = std::make_shared<mysql::factory>();
+                sqldb::register_session("mysql", mysql_factory);
             }
 
             std::shared_ptr<rj::db::session_impl> factory::create(const uri &uri)
             {
-                static helper::session_initializer initializer;
-
                 return std::make_shared<session>(uri);
             }
 

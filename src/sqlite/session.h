@@ -15,6 +15,8 @@ namespace rj
     {
         namespace sqlite
         {
+            __attribute__((constructor)) void initialize(void);
+
             class factory : public session_factory
             {
                public:

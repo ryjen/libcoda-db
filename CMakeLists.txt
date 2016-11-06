@@ -58,11 +58,6 @@ enable_testing()
 
 include(ValgrindTest)
 
-get_cmake_property(_variableNames VARIABLES)
-foreach (_variableName ${_variableNames})
-    message(STATUS "${_variableName}=${${_variableName}}")
-endforeach()
-
 add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test)
 
 if (MYSQL_VERSION)

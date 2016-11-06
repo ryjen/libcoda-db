@@ -3,7 +3,6 @@
 #include <benchpress/benchpress.hpp>
 #include <cassert>
 #include "benchmark.h"
-#include "testicle.h"
 
 using namespace Poco::Data::Keywords;
 using Poco::Data::Session;

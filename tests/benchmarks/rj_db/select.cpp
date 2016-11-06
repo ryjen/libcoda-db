@@ -1,48 +1,17 @@
-#ifndef HAVE_CONFIG_H
-#include "config.h"
-#endif
+
 #include <benchpress/benchpress.hpp>
 #include "benchmark.h"
 #include "log.h"
-#include "testicle.h"
+#include "util.h"
 
 using namespace rj::db;
-
-void benchmark_select(const std::string &tableName)
-{
-    select_query query(current_session);
-
-    query.from(tableName);
-
-    for (auto &row : query.execute()) {
-        assert(row.column("first_name").is_valid());
-    }
-}
-
-void benchmark_setup(const rj::db::uri &uri_s)
-{
-    register_test_sessions();
-
-    current_session = sqldb::create_session(uri_s);
-
-    setup_current_session();
-}
-
-void benchmark_populate(benchpress::context *context)
-{
-    rj::db::insert_query query(current_session);
-
-    query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
-
-    for (size_t i = 0; i < context->num_iterations(); i++) {
-        benchmark_insert(query, current_session);
-    }
-}
 
 BENCHMARK("sqlite select", [](benchpress::context *context) {
     uri uri_s("file://test.db");
 
     benchmark_setup(uri_s);
+
+    sqlite_setup();
 
     benchmark_populate(context);
 
@@ -54,7 +23,9 @@ BENCHMARK("sqlite select", [](benchpress::context *context) {
 
     context->stop_timer();
 
-    teardown_current_session();
+    sqlite_teardown();
+
+    benchmark_teardown();
 });
 
 
@@ -63,6 +34,8 @@ BENCHMARK("mysql select", [](benchpress::context *context) {
 
     benchmark_setup(uri_s);
 
+    mysql_setup();
+
     benchmark_populate(context);
 
     context->reset_timer();
@@ -73,7 +46,9 @@ BENCHMARK("mysql select", [](benchpress::context *context) {
 
     context->stop_timer();
 
-    teardown_current_session();
+    mysql_teardown();
+
+    benchmark_teardown();
 });
 
 
@@ -82,6 +57,8 @@ BENCHMARK("postgres select", [](benchpress::context *context) {
 
     benchmark_setup(uri_s);
 
+    postgres_setup();
+
     benchmark_populate(context);
 
     context->reset_timer();
@@ -92,5 +69,7 @@ BENCHMARK("postgres select", [](benchpress::context *context) {
 
     context->stop_timer();
 
-    teardown_current_session();
+    postgres_teardown();
+
+    benchmark_teardown();
 });

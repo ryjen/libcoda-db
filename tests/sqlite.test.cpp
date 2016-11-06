@@ -1,9 +1,6 @@
 /*!
  * @copyright ryan jennings (ryan-jennings.net), 2013 under LGPL
  */
-#ifndef HAVE_CONFIG_H
-#include "config.h"
-#endif
 #include <bandit/bandit.h>
 #include "db.test.h"
 #include "record.h"
@@ -21,7 +18,6 @@ void register_current_session()
     auto sqlite_factory = std::make_shared<test_factory>();
     sqldb::register_session("file", sqlite_factory);
     sqldb::register_session("sqlite", sqlite_factory);
-
 
     current_session = rj::db::sqldb::create_session("file://testdb.db");
 }

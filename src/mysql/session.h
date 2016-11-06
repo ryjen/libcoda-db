@@ -13,10 +13,10 @@ namespace rj
 {
     namespace db
     {
-        struct sqldb;
-
         namespace mysql
         {
+            __attribute__((constructor)) void initialize(void);
+
             class factory : public session_factory
             {
                public:
@@ -28,7 +28,6 @@ namespace rj
              */
             class session : public rj::db::session_impl, public std::enable_shared_from_this<session>
             {
-                friend sqldb;
                 friend class resultset;
                 friend class statement;
                 friend class factory;
