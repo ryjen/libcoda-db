@@ -1,8 +1,6 @@
 #ifndef RJ_DB_MYSQL_TRANSACTION_H
 #define RJ_DB_MYSQL_TRANSACTION_H
 
-#ifdef HAVE_LIBMYSQLCLIENT
-
 #include <mysql/mysql.h>
 #include "../transaction.h"
 
@@ -40,7 +38,5 @@ namespace rj
         }
     }
 }
-
-#endif
 
 #endif

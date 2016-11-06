@@ -5,12 +5,6 @@
 #ifndef RJ_DB_MYSQL_RESULTSET_H
 #define RJ_DB_MYSQL_RESULTSET_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBMYSQLCLIENT
-
 #include <mysql/mysql.h>
 #include <vector>
 #include "../resultset.h"
@@ -109,7 +103,5 @@ namespace rj
         }
     }
 }
-
-#endif
 
 #endif

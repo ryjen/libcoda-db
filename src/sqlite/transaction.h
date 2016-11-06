@@ -1,8 +1,6 @@
 #ifndef RJ_DB_SQLITE_TRANSACTION_H
 #define RJ_DB_SQLITE_TRANSACTION_H
 
-#ifdef HAVE_LIBSQLITE3
-
 #include <sqlite3.h>
 #include "../transaction.h"
 
@@ -28,6 +26,5 @@ namespace rj
         }
     }
 }
-#endif
 
 #endif

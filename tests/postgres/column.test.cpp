@@ -1,8 +1,3 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBPQ
 
 #include <bandit/bandit.h>
 #include <memory>
@@ -84,5 +79,3 @@ go_bandit([]() {
         });
     });
 });
-
-#endif

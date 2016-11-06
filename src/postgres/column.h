@@ -5,12 +5,6 @@
 #ifndef RJ_DB_POSTGRES_COLUMN_H
 #define RJ_DB_POSTGRES_COLUMN_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBPQ
-
 #include <libpq-fe.h>
 #include "../column.h"
 
@@ -54,7 +48,5 @@ namespace rj
         }
     }
 }
-
-#endif
 
 #endif

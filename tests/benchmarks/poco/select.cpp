@@ -48,3 +48,27 @@ BENCHMARK("sqlite select", [](benchpress::context* context) {
 
     unlink("test.db");
 });
+
+
+// BENCHMARK("mysql select", [](benchpress::context* context) {
+//     Poco::Data::MySQL::Connector::registerConnector();
+
+//     // create a session
+//     Session session("MySQL", "localhost/test");
+
+//     create_table(session);
+
+//     for (size_t i = 0; i < context->num_iterations(); i++) {
+//         benchmark_insert(session);
+//     }
+
+//     context->reset_timer();
+
+//     for (size_t i = 0; i < context->num_iterations(); i++) {
+//         benchmark_query(session);
+//     }
+
+//     context->stop_timer();
+
+//     session.close();
+// });

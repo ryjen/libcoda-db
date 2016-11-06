@@ -5,12 +5,6 @@
 #ifndef RJ_DB_MYSQL_BINDING_H
 #define RJ_DB_MYSQL_BINDING_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBMYSQLCLIENT
-
 #include <mysql/mysql.h>
 #include <set>
 #include <string>
@@ -140,8 +134,5 @@ namespace rj
         }
     }
 }
-
-#endif
-
 
 #endif

@@ -5,12 +5,6 @@
 #ifndef RJ_DB_POSTGRES_SESSION_H
 #define RJ_DB_POSTGRES_SESSION_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBPQ
-
 #include <libpq-fe.h>
 #include "../session.h"
 #include "../session_factory.h"
@@ -78,7 +72,5 @@ namespace rj
         }
     }
 }
-
-#endif
 
 #endif

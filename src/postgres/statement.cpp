@@ -5,8 +5,6 @@
 #include "resultset.h"
 #include "session.h"
 
-#ifdef HAVE_LIBPQ
-
 using namespace std;
 
 namespace rj
@@ -202,5 +200,3 @@ namespace rj
         }
     }
 }
-
-#endif

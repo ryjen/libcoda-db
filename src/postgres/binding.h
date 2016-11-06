@@ -5,12 +5,6 @@
 #ifndef RJ_DB_POSTGRES_BINDING_H
 #define RJ_DB_POSTGRES_BINDING_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBPQ
-
 #include <libpq-fe.h>
 #include <string>
 #include "../bind_mapping.h"
@@ -105,8 +99,5 @@ namespace rj
         }
     }
 }
-
-#endif
-
 
 #endif

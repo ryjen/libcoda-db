@@ -1,11 +1,6 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
-#ifdef HAVE_LIBPQ
-
-#include "binding.h"
 #include "column.h"
+#include "binding.h"
 
 using namespace std;
 
@@ -70,5 +65,3 @@ namespace rj
         }
     }
 }
-
-#endif

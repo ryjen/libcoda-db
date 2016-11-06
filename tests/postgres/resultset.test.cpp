@@ -2,7 +2,6 @@
 #include "../db.test.h"
 #include "postgres/resultset.h"
 
-#ifdef HAVE_LIBPQ
 
 using namespace bandit;
 
@@ -64,5 +63,3 @@ go_bandit([]() {
         });
     });
 });
-
-#endif

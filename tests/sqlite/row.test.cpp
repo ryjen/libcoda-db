@@ -3,8 +3,6 @@
 #include "../db.test.h"
 #include "sqlite/row.h"
 
-#ifdef HAVE_LIBSQLITE3
-
 using namespace bandit;
 
 using namespace std;
@@ -99,4 +97,3 @@ go_bandit([]() {
         });
     });
 });
-#endif

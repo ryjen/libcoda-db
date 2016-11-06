@@ -39,49 +39,45 @@ BENCHMARK("sqlite select", [](benchpress::context *context) {
 });
 
 
-// BENCHMARK("mysql select", [](benchpress::context *context){
+BENCHMARK("mysql select", [](benchpress::context *context) {
 
-// 		soci::session session("mysql://localhost/test/");
+    soci::session session("mysql", "db=test");
 
-// 		create_table(session);
+    create_mysql_table(session);
 
-// 		for (size_t i = 0; i < context->num_iterations(); i++) {
-// 				benchmark_insert(session);
-// 		}
+    for (size_t i = 0; i < context->num_iterations(); i++) {
+        benchmark_insert(session);
+    }
 
-// 		context->reset_timer();
+    context->reset_timer();
 
-// 		for(size_t i = 0; i < context->num_iterations(); i++) {
-// 			benchmark_query(session);
-// 		}
+    for (size_t i = 0; i < context->num_iterations(); i++) {
+        benchmark_query(session);
+    }
 
-// 		context->stop_timer();
+    context->stop_timer();
 
-// 		session.close();
-
-// 		unlink("test.db");
-// });
+    session.close();
+});
 
 
-// BENCHMARK("postgres select", [](benchpress::context *context){
+BENCHMARK("postgres select", [](benchpress::context *context) {
 
-// 		soci::session session("postgres://localhost/test");
+    soci::session session("postgres", "db=test");
 
-// 		create_table(session);
+    create_table(session);
 
-// 		for (size_t i = 0; i < context->num_iterations(); i++) {
-// 				benchmark_insert(session);
-// 		}
+    for (size_t i = 0; i < context->num_iterations(); i++) {
+        benchmark_insert(session);
+    }
 
-// 		context->reset_timer();
+    context->reset_timer();
 
-// 		for(size_t i = 0; i < context->num_iterations(); i++) {
-// 			benchmark_query(session);
-// 		}
+    for (size_t i = 0; i < context->num_iterations(); i++) {
+        benchmark_query(session);
+    }
 
-// 		context->stop_timer();
+    context->stop_timer();
 
-// 		session.close();
-
-// 		unlink("test.db");
-// });
+    session.close();
+});

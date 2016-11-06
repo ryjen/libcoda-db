@@ -1,12 +1,7 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
-#ifdef HAVE_LIBMYSQLCLIENT
-
+#include "row.h"
 #include "binding.h"
 #include "column.h"
-#include "row.h"
 #include "session.h"
 
 using namespace std;
@@ -231,5 +226,3 @@ namespace rj
         }
     }
 }
-
-#endif

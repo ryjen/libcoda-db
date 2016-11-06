@@ -1,8 +1,6 @@
 #ifndef RJ_DB_POSTGRES_TRANSACTION_H
 #define RJ_DB_POSTGRES_TRANSACTION_H
 
-#ifdef HAVE_LIBPQ
-
 #include <libpq-fe.h>
 #include "../transaction.h"
 
@@ -33,7 +31,5 @@ namespace rj
         }
     }
 }
-
-#endif
 
 #endif

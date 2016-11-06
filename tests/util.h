@@ -1,5 +1,5 @@
-#ifndef RJ_DB_RANDOM_TEST_H_
-#define RJ_DB_RANDOM_TEST_H_
+#ifndef RJ_DB_UTIL_H_
+#define RJ_DB_UTIL_H_
 
 #include <random>
 #include <string>

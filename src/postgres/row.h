@@ -5,12 +5,6 @@
 #ifndef RJ_DB_POSTGRES_ROW_H
 #define RJ_DB_POSTGRES_ROW_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBPQ
-
 #include <vector>
 #include "../row.h"
 #include "column.h"
@@ -59,7 +53,5 @@ namespace rj
         }
     }
 }
-
-#endif
 
 #endif

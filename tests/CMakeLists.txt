@@ -17,12 +17,17 @@ set(TEST_SOURCES
 	update_query.test.cpp
 )
 
-add_library(testicle
-	testicle.cpp
+add_library(${PROJECT_NAME}-test
+	${TEST_SOURCES}
+	util.cpp
 )
 
+include_directories(SYSTEM vendor/bandit SYSTEM vendor/benchpress/src ${PROJECT_SOURCE_DIR}/src)
+
+if (MYSQL_VERSION)
+
 add_executable (${PROJECT_NAME}_test_mysql
-	${TEST_SOURCES}
+	mysql.test.cpp
 	mysql/binding.test.cpp
 	mysql/column.test.cpp
 	mysql/resultset.test.cpp
@@ -33,8 +38,16 @@ add_executable (${PROJECT_NAME}_test_mysql
 
 set_target_properties(${PROJECT_NAME}_test_mysql PROPERTIES COMPILE_FLAGS "-DTEST_MYSQL")
 
+target_link_libraries (${PROJECT_NAME}_test_mysql ${PROJECT_NAME}-mysql ${PROJECT_NAME}-test)
+
+include_directories(${MYSQL_INCLUDE_DIR})
+
+endif()
+
+if (SQLITE_FOUND)
+
 add_executable (${PROJECT_NAME}_test_sqlite
-	${TEST_SOURCES}
+	sqlite.test.cpp
 	sqlite/column.test.cpp
 	sqlite/resultset.test.cpp
 	sqlite/row.test.cpp
@@ -44,8 +57,16 @@ add_executable (${PROJECT_NAME}_test_sqlite
 
 set_target_properties(${PROJECT_NAME}_test_sqlite PROPERTIES COMPILE_FLAGS "-DTEST_SQLITE")
 
+target_link_libraries (${PROJECT_NAME}_test_sqlite ${PROJECT_NAME}-sqlite ${PROJECT_NAME}-test)
+
+include_directories(${SQLITE3_INCLUDE_DIR})
+
+endif()
+
+if (PostgreSQL_FOUND)
+
 add_executable (${PROJECT_NAME}_test_postgres
-	${TEST_SOURCES}
+	postgres.test.cpp
 	postgres/binding.test.cpp
 	postgres/column.test.cpp
 	postgres/resultset.test.cpp
@@ -57,22 +78,21 @@ add_executable (${PROJECT_NAME}_test_postgres
 
 set_target_properties(${PROJECT_NAME}_test_postgres PROPERTIES COMPILE_FLAGS "-DTEST_POSTGRES")
 
+target_link_libraries (${PROJECT_NAME}_test_postgres ${PROJECT_NAME}-postgres ${PROJECT_NAME}-test)
+
+include_directories(${PostgreSQL_INCLUDE_DIRS})
+
+endif()
+
 add_executable (${PROJECT_NAME}_test
 	log.test.cpp
 	main.test.cpp
 	sql_value.test.cpp
 	where_clause.test.cpp
+	util.cpp
 )
 
-include_directories(SYSTEM vendor/bandit SYSTEM vendor/benchpress/src ${PROJECT_SOURCE_DIR}/src ${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
-
-target_link_libraries (${PROJECT_NAME}_test_mysql ${PROJECT_NAME} testicle)
-
-target_link_libraries (${PROJECT_NAME}_test_sqlite ${PROJECT_NAME} testicle)
-
-target_link_libraries (${PROJECT_NAME}_test_postgres ${PROJECT_NAME} testicle)
-
-target_link_libraries (${PROJECT_NAME}_test ${PROJECT_NAME} testicle)
+target_link_libraries (${PROJECT_NAME}_test ${PROJECT_NAME})
 
 add_executable (${PROJECT_NAME}_test_all run_all.test.cpp)
 

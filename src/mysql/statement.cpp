@@ -1,14 +1,9 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
-#ifdef HAVE_LIBMYSQLCLIENT
-
+#include "statement.h"
 #include <string>
 #include "../log.h"
 #include "resultset.h"
 #include "session.h"
-#include "statement.h"
 
 using namespace std;
 
@@ -187,5 +182,3 @@ namespace rj
         }
     }
 }
-
-#endif

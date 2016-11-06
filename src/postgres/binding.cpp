@@ -1,11 +1,4 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
-#ifdef HAVE_LIBPQ
-
-#undef PACKAGE_NAME
-#undef PACKAGE_VERSION
 #include <libpq-fe.h>
 #include <postgres.h>
 #include <time.h>
@@ -562,5 +555,3 @@ namespace rj
         }
     }
 }
-
-#endif

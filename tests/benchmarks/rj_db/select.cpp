@@ -58,41 +58,39 @@ BENCHMARK("sqlite select", [](benchpress::context *context) {
 });
 
 
-// BENCHMARK("mysql select", [](benchpress::context* context)
-// {
-//      auto uri_s = get_env_uri("MYSQL_URI", "mysql://localhost/test");
+BENCHMARK("mysql select", [](benchpress::context *context) {
+    auto uri_s = get_env_uri("MYSQL_URI", "mysql://localhost/test");
 
-//      benchmark_setup(uri_s);
+    benchmark_setup(uri_s);
 
-//      benchmark_populate(context);
+    benchmark_populate(context);
 
-//      context->reset_timer();
+    context->reset_timer();
 
-//      for(size_t i = 0; i < context->num_iterations(); i++) {
-//          benchmark_select(user::TABLE_NAME);
-//      }
+    for (size_t i = 0; i < context->num_iterations(); i++) {
+        benchmark_select(user::TABLE_NAME);
+    }
 
-//      context->stop_timer();
+    context->stop_timer();
 
-//      teardown_current_session();
-// });
+    teardown_current_session();
+});
 
 
-// BENCHMARK("postgres select", [](benchpress::context* context)
-// {
-//      auto uri_s = get_env_uri("POSTGRES_URI", "postgres://localhost/test");
+BENCHMARK("postgres select", [](benchpress::context *context) {
+    auto uri_s = get_env_uri("POSTGRES_URI", "postgres://localhost/test");
 
-//      benchmark_setup(uri_s);
+    benchmark_setup(uri_s);
 
-//      benchmark_populate(context);
+    benchmark_populate(context);
 
-//      context->reset_timer();
+    context->reset_timer();
 
-//      for(size_t i = 0; i < context->num_iterations(); i++) {
-//          benchmark_select(user::TABLE_NAME);
-//      }
+    for (size_t i = 0; i < context->num_iterations(); i++) {
+        benchmark_select(user::TABLE_NAME);
+    }
 
-//      context->stop_timer();
+    context->stop_timer();
 
-//      teardown_current_session();
-// });
+    teardown_current_session();
+});

@@ -1,4 +1,4 @@
-add_library (${PROJECT_NAME}
+set(LIBRARY_SOURCES
 	alloc.cpp
   	bind_mapping.cpp
 	bindable.cpp
@@ -25,20 +25,15 @@ add_library (${PROJECT_NAME}
 	update_query.cpp
   	uri.cpp
 	where_clause.cpp
-	mysql/binding.cpp
-	mysql/column.cpp
-	mysql/resultset.cpp
-	mysql/row.cpp
-  	mysql/session.cpp
-	mysql/statement.cpp
-  	mysql/transaction.cpp
-	postgres/binding.cpp
-	postgres/column.cpp
-	postgres/resultset.cpp
-	postgres/row.cpp
-  	postgres/session.cpp
-	postgres/statement.cpp
-  	postgres/transaction.cpp
+)
+
+add_library (${PROJECT_NAME}
+	${LIBRARY_SOURCES}
+)
+
+if (SQLITE3_FOUND)
+
+add_library (${PROJECT_NAME}-sqlite
 	sqlite/column.cpp
 	sqlite/resultset.cpp
 	sqlite/row.cpp
@@ -46,10 +41,77 @@ add_library (${PROJECT_NAME}
 	sqlite/statement.cpp
  	sqlite/transaction.cpp
 )
+include_directories(${SQLITE3_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME}-sqlite ${PROJECT_NAME} ${SQLITE3_LIBRARIES})
 
-include_directories(${MYSQL_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS})
+set(${PROJECT_NAME}_SQLITE_HEADERS
+	sqlite/column.h
+	sqlite/resultset.h
+	sqlite/row.h
+  	sqlite/session.h
+	sqlite/statement.h
+  	sqlite/transaction.h
+)
 
-target_link_libraries(${PROJECT_NAME} ${MYSQL_LIBRARIES} ${SQLITE3_LIBRARIES} ${PostgreSQL_LIBRARIES})
+install(FILES ${${PROJECT_NAME}_SQLITE_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/sqlite")
+
+endif()
+
+if (MYSQL_VERSION)
+
+add_library (${PROJECT_NAME}-mysql
+	mysql/binding.cpp
+	mysql/column.cpp
+	mysql/resultset.cpp
+	mysql/row.cpp
+  	mysql/session.cpp
+	mysql/statement.cpp
+  	mysql/transaction.cpp
+ )
+include_directories(${MYSQL_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME}-mysql ${PROJECT_NAME} ${MYSQL_LIBRARIES})
+
+set(${PROJECT_NAME}_MYSQL_HEADERS
+	mysql/binding.h
+	mysql/column.h
+	mysql/resultset.h
+	mysql/row.h
+  	mysql/session.h
+	mysql/statement.h
+  	mysql/transaction.h
+)
+
+install(FILES ${${PROJECT_NAME}_MYSQL_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/mysql")
+
+endif()
+
+if (PostgreSQL_FOUND)
+
+add_library (${PROJECT_NAME}-postgres
+	postgres/binding.cpp
+	postgres/column.cpp
+	postgres/resultset.cpp
+	postgres/row.cpp
+  	postgres/session.cpp
+	postgres/statement.cpp
+  	postgres/transaction.cpp
+ )
+include_directories(${PostgreSQL_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME}-postgres ${PROJECT_NAME} ${PostgreSQL_LIBRARIES})
+
+set(${PROJECT_NAME}_POSTGRES_HEADERS
+  postgres/binding.h
+  postgres/column.h
+  postgres/resultset.h
+  postgres/row.h
+  postgres/session.h
+  postgres/statement.h
+  postgres/transaction.h
+)
+
+install(FILES ${${PROJECT_NAME}_POSTGRES_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/postgres")
+
+endif()
 
 set(${PROJECT_NAME}_HEADERS
   	bind_mapping.h
@@ -80,43 +142,8 @@ set(${PROJECT_NAME}_HEADERS
 	where_clause.h
 )
 
-set(${PROJECT_NAME}_MYSQL_HEADERS
-	mysql/binding.h
-	mysql/column.h
-	mysql/resultset.h
-	mysql/row.h
-  	mysql/session.h
-	mysql/statement.h
-  	mysql/transaction.h
-)
-
-set(${PROJECT_NAME}_POSTGRES_HEADERS
-  postgres/binding.h
-  postgres/column.h
-  postgres/resultset.h
-  postgres/row.h
-  postgres/session.h
-  postgres/statement.h
-  postgres/transaction.h
-)
-
-set(${PROJECT_NAME}_SQLITE_HEADERS
-	sqlite/column.h
-	sqlite/resultset.h
-	sqlite/row.h
-  	sqlite/session.h
-	sqlite/statement.h
-  	sqlite/transaction.h
-)
-
 string(REPLACE "_" "/" INSTALL_DIRECTORY ${PROJECT_NAME})
 
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}")
 
-install(FILES ${${PROJECT_NAME}_MYSQL_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/mysql")
-
-install(FILES ${${PROJECT_NAME}_POSTGRES_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/postgres")
-
-install(FILES ${${PROJECT_NAME}_SQLITE_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/sqlite")
-
-install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-sqlite ${PROJECT_NAME}-mysql ${PROJECT_NAME}-postgres LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)

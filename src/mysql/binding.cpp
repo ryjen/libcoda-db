@@ -1,8 +1,3 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBMYSQLCLIENT
 
 #include <time.h>
 #include <cassert>
@@ -852,5 +847,3 @@ namespace rj
         }
     }
 }
-
-#endif

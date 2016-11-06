@@ -5,14 +5,7 @@
 #ifndef RJ_DB_MYSQL_COLUMN_H
 #define RJ_DB_MYSQL_COLUMN_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBMYSQLCLIENT
-
 #include <mysql/mysql.h>
-
 #include "../column.h"
 
 namespace rj
@@ -90,7 +83,5 @@ namespace rj
         }
     }
 }
-
-#endif
 
 #endif

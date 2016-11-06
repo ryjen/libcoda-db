@@ -27,6 +27,13 @@ void create_table(soci::session &session)
            "blob, tval timestamp)";
 }
 
+void create_mysql_table(soci::session &session)
+{
+    session
+        << "create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45), dval real, data "
+           "blob, tval timestamp)";
+}
+
 BENCHMARK("sqlite insert", [](benchpress::context *context) {
 
     soci::session session("sqlite3", "test.db");
@@ -49,39 +56,39 @@ BENCHMARK("sqlite insert", [](benchpress::context *context) {
 
 // BENCHMARK("mysql insert", [](benchpress::context *context){
 
-// 		soci::session session("mysql://localhost/test");
+//      soci::session session("mysql://localhost/test");
 
-// 		create_table(session);
+//      create_table(session);
 
-// 		context->reset_timer();
+//      context->reset_timer();
 
-// 		for (size_t i = 0; i < context->num_iterations(); i++) {
-// 				benchmark_insert(session);
-// 		}
+//      for (size_t i = 0; i < context->num_iterations(); i++) {
+//              benchmark_insert(session);
+//      }
 
-// 		context->stop_timer();
+//      context->stop_timer();
 
-// 		session.close();
+//      session.close();
 
-// 		unlink("test.db");
+//      unlink("test.db");
 // });
 
 
 // BENCHMARK("postgres insert", [](benchpress::context *context){
 
-// 		soci::session session("postgres://localhost/test");
+//      soci::session session("postgres://localhost/test");
 
-// 		create_table(session);
+//      create_table(session);
 
-// 		context->reset_timer();
+//      context->reset_timer();
 
-// 		for (size_t i = 0; i < context->num_iterations(); i++) {
-// 				benchmark_insert(session);
-// 		}
+//      for (size_t i = 0; i < context->num_iterations(); i++) {
+//              benchmark_insert(session);
+//      }
 
-// 		context->stop_timer();
+//      context->stop_timer();
 
-// 		session.close();
+//      session.close();
 
-// 		unlink("test.db");
+//      unlink("test.db");
 // });

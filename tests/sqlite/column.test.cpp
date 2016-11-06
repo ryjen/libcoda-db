@@ -1,8 +1,3 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBSQLITE3
 
 #include <bandit/bandit.h>
 #include <memory>
@@ -80,5 +75,3 @@ go_bandit([]() {
         });
     });
 });
-
-#endif

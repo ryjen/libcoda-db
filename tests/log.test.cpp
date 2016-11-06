@@ -3,7 +3,7 @@
 #endif
 
 #include <bandit/bandit.h>
-#include "db.test.h"
+#include <sqldb.h>
 #include "log.h"
 #include "row.h"
 

@@ -1,13 +1,8 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
-#ifdef HAVE_LIBMYSQLCLIENT
-
+#include "column.h"
 #include <time.h>
 #include <string>
 #include "binding.h"
-#include "column.h"
 
 using namespace std;
 
@@ -165,5 +160,3 @@ namespace rj
         }
     }
 }
-
-#endif

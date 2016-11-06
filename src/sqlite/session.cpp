@@ -1,13 +1,9 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
-#ifdef HAVE_LIBSQLITE3
-
+#include "session.h"
 #include <sstream>
 #include "../schema.h"
+#include "../sqldb.h"
 #include "resultset.h"
-#include "session.h"
 #include "statement.h"
 #include "transaction.h"
 
@@ -29,10 +25,22 @@ namespace rj
                         }
                     }
                 };
+
+                struct session_initializer {
+                   public:
+                    session_initializer()
+                    {
+                        auto factory = std::make_shared<sqlite::factory>();
+                        sqldb::register_session("sqlite", factory);
+                        sqldb::register_session("file", factory);
+                    }
+                };
             }
 
             std::shared_ptr<rj::db::session_impl> factory::create(const uri &uri)
             {
+                static helper::session_initializer initializer;
+
                 return std::make_shared<session>(uri);
             }
 
@@ -218,5 +226,3 @@ namespace rj
         }
     }
 }
-
-#endif

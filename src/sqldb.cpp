@@ -3,10 +3,7 @@
 #endif
 
 #include "exception.h"
-#include "mysql/session.h"
-#include "postgres/session.h"
 #include "sqldb.h"
-#include "sqlite/session.h"
 
 namespace rj
 {
@@ -84,20 +81,6 @@ namespace rj
 
         sqldb::sqldb()
         {
-#ifdef HAVE_LIBSQLITE3
-            auto sqlite_factory = std::make_shared<sqlite::factory>();
-            factories_["sqlite"] = sqlite_factory;
-            factories_["file"] = sqlite_factory;
-#endif
-#ifdef HAVE_LIBMYSQLCLIENT
-            auto mysql_factory = std::make_shared<mysql::factory>();
-            factories_["mysql"] = mysql_factory;
-#endif
-#ifdef HAVE_LIBPQ
-            auto postgres_factory = std::make_shared<postgres::factory>();
-            factories_["postgres"] = postgres_factory;
-            factories_["postgresql"] = postgres_factory;
-#endif
         }
 
         sqldb::~sqldb()

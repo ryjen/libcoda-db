@@ -4,12 +4,6 @@
 #ifndef RJ_DB_SQLITE_RESULTSET_H
 #define RJ_DB_SQLITE_RESULTSET_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBSQLITE3
-
 #include <sqlite3.h>
 #include <vector>
 #include "../resultset.h"
@@ -58,7 +52,5 @@ namespace rj
         }
     }
 }
-
-#endif
 
 #endif

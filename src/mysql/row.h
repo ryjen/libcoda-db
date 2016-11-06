@@ -5,12 +5,6 @@
 #ifndef RJ_DB_MYSQL_ROW_H
 #define RJ_DB_MYSQL_ROW_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBMYSQLCLIENT
-
 #include <mysql/mysql.h>
 #include <vector>
 #include "../row.h"
@@ -98,7 +92,5 @@ namespace rj
         }
     }
 }
-
-#endif
 
 #endif

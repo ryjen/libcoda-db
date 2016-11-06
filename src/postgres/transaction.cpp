@@ -1,11 +1,6 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
-#ifdef HAVE_LIBPQ
-
-#include "../exception.h"
 #include "transaction.h"
+#include "../exception.h"
 
 namespace rj
 {
@@ -78,5 +73,3 @@ namespace rj
         }
     }
 }
-
-#endif

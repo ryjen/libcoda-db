@@ -1,13 +1,9 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
-#ifdef HAVE_LIBPQ
-
+#include "session.h"
 #include "../schema.h"
 #include "../select_query.h"
+#include "../sqldb.h"
 #include "resultset.h"
-#include "session.h"
 #include "statement.h"
 #include "transaction.h"
 
@@ -29,10 +25,23 @@ namespace rj
                         }
                     }
                 };
+
+                struct session_initializer {
+                   public:
+                    session_initializer()
+                    {
+                        auto factory = std::make_shared<postgres::factory>();
+                        sqldb::register_session("postgres", factory);
+                        sqldb::register_session("postgresql", factory);
+                    }
+                };
             }
+
 
             std::shared_ptr<rj::db::session_impl> factory::create(const uri &uri)
             {
+                static helper::session_initializer initalizer;
+
                 return std::make_shared<session>(uri);
             }
 
@@ -272,5 +281,3 @@ namespace rj
         }
     }
 }
-
-#endif

@@ -3,8 +3,6 @@
 #include "../db.test.h"
 #include "postgres/transaction.h"
 
-#ifdef HAVE_LIBPQ
-
 using namespace bandit;
 
 using namespace std;
@@ -151,5 +149,3 @@ go_bandit([]() {
     });
 
 });
-
-#endif

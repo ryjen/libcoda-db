@@ -1,14 +1,10 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
-#ifdef HAVE_LIBMYSQLCLIENT
-
+#include "session.h"
 #include <sstream>
 #include "../schema.h"
 #include "../select_query.h"
+#include "../sqldb.h"
 #include "resultset.h"
-#include "session.h"
 #include "statement.h"
 #include "transaction.h"
 
@@ -44,10 +40,20 @@ namespace rj
 
                     return buf.str();
                 }
+                struct session_initializer {
+                   public:
+                    session_initializer()
+                    {
+                        auto mysql_factory = std::make_shared<mysql::factory>();
+                        sqldb::register_session("mysql", mysql_factory);
+                    }
+                };
             }
 
             std::shared_ptr<rj::db::session_impl> factory::create(const uri &uri)
             {
+                static helper::session_initializer initializer;
+
                 return std::make_shared<session>(uri);
             }
 
@@ -258,5 +264,3 @@ namespace rj
         }
     }
 }
-
-#endif

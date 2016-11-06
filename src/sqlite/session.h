@@ -4,12 +4,6 @@
 #ifndef RJ_DB_SQLITE_SESSION_H
 #define RJ_DB_SQLITE_SESSION_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBSQLITE3
-
 #include <sqlite3.h>
 #include "../session.h"
 #include "../session_factory.h"
@@ -76,7 +70,5 @@ namespace rj
         }
     }
 }
-
-#endif
 
 #endif

@@ -2,8 +2,6 @@
 #include "column.h"
 #include "session.h"
 
-#ifdef HAVE_LIBSQLITE3
-
 using namespace std;
 
 namespace rj
@@ -93,5 +91,3 @@ namespace rj
         }
     }
 }
-
-#endif

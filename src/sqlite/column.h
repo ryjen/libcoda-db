@@ -4,12 +4,6 @@
 #ifndef RJ_DB_SQLITE_COLUMN_H
 #define RJ_DB_SQLITE_COLUMN_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBSQLITE3
-
 #include <sqlite3.h>
 #include "../column.h"
 
@@ -51,7 +45,5 @@ namespace rj
         }
     }
 }
-
-#endif
 
 #endif

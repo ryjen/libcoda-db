@@ -5,12 +5,6 @@
 #ifndef RJ_DB_MYSQL_STATEMENT_H
 #define RJ_DB_MYSQL_STATEMENT_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_LIBMYSQLCLIENT
-
 #include <mysql/mysql.h>
 #include "../statement.h"
 #include "binding.h"
@@ -65,7 +59,5 @@ namespace rj
         }
     }
 }
-
-#endif
 
 #endif
