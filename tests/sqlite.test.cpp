@@ -18,7 +18,7 @@ using namespace rj::db;
 
 void register_current_session()
 {
-    auto sqlite_factory = std::make_shared<test_sqlite3_factory>();
+    auto sqlite_factory = std::make_shared<test_factory>();
     sqldb::register_session("file", sqlite_factory);
     sqldb::register_session("sqlite", sqlite_factory);
 

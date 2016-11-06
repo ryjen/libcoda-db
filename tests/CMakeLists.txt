@@ -44,7 +44,7 @@ include_directories(${MYSQL_INCLUDE_DIR})
 
 endif()
 
-if (SQLITE_FOUND)
+if (SQLITE3_FOUND)
 
 add_executable (${PROJECT_NAME}_test_sqlite
 	sqlite.test.cpp
