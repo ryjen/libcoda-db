@@ -9,16 +9,16 @@ using namespace std;
 
 using namespace rj::db;
 
-go_bandit([]() {
-
+SPEC_BEGIN(postgres_statement)
+{
     describe("postgres statement", []() {
-        before_each([]() { setup_current_session(); });
+        before_each([]() { test::setup_current_session(); });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
 
         it("is movable", []() {
-            postgres::statement stmt(dynamic_pointer_cast<postgres::session>(current_session->impl()));
+            postgres::statement stmt(dynamic_pointer_cast<postgres::session>(test::current_session->impl()));
 
             stmt.prepare("select * from users");
 
@@ -30,7 +30,7 @@ go_bandit([]() {
 
             AssertThat(stmt.is_valid(), IsFalse());
 
-            postgres::statement s3(dynamic_pointer_cast<postgres::session>(current_session->impl()));
+            postgres::statement s3(dynamic_pointer_cast<postgres::session>(test::current_session->impl()));
 
             AssertThat(s3.is_valid(), IsFalse());
 
@@ -50,7 +50,7 @@ go_bandit([]() {
         });
 
         it("can reset", []() {
-            postgres::statement stmt(dynamic_pointer_cast<postgres::session>(current_session->impl()));
+            postgres::statement stmt(dynamic_pointer_cast<postgres::session>(test::current_session->impl()));
 
             stmt.prepare("select * from users");
 
@@ -64,5 +64,5 @@ go_bandit([]() {
         });
 
     });
-
-});
+}
+SPEC_END;

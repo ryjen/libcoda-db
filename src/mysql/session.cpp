@@ -257,6 +257,11 @@ namespace rj
             {
                 return "?";
             }
+
+            int session::features() const
+            {
+                return db::session::FEATURE_RIGHT_JOIN;
+            }
         }
     }
 }

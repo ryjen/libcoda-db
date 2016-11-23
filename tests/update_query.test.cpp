@@ -8,14 +8,14 @@ using namespace std;
 
 using namespace rj::db;
 
-go_bandit([]() {
-
+SPEC_BEGIN(update_query)
+{
     describe("update clause", []() {
 
         it("can be constructed", []() {
-            update_query query(current_session, "users", {"id"});
+            update_query query(test::current_session, test::user::TABLE_NAME, {"id"});
 
-            Assert::That(query.to_string(), Equals("UPDATE users SET id=" + current_session->impl()->bind_param(1) + ";"));
+            Assert::That(query.to_string(), Equals("UPDATE users SET id=" + test::current_session->impl()->bind_param(1) + ";"));
 
             update_query other(query);
 
@@ -29,15 +29,15 @@ go_bandit([]() {
 
         });
         it("can be assigned", []() {
-            update_query query(current_session, "users");
+            update_query query(test::current_session, test::user::TABLE_NAME);
 
-            update_query other(current_session, "other_users");
+            update_query other(test::current_session, "other_users");
 
             other = query;
 
             Assert::That(query.to_string(), Equals(other.to_string()));
 
-            update_query moved(current_session, "moved_users");
+            update_query moved(test::current_session, "moved_users");
 
             moved = std::move(query);
 
@@ -47,15 +47,15 @@ go_bandit([]() {
         });
 
         it("can set the table", []() {
-            update_query query(current_session);
+            update_query query(test::current_session);
 
-            query.table("users");
+            query.table(test::user::TABLE_NAME);
 
-            Assert::That(query.table(), Equals("users"));
+            Assert::That(query.table(), Equals(test::user::TABLE_NAME));
         });
 
         it("can set the columns", []() {
-            update_query query(current_session);
+            update_query query(test::current_session);
 
             query.columns("id", "first_name");
 
@@ -63,5 +63,5 @@ go_bandit([]() {
         });
 
     });
-
-});
+}
+SPEC_END;

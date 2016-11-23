@@ -165,7 +165,7 @@ namespace rj
                 sqlite3_stmt *stmt;
 
                 if (db_ == nullptr) {
-                    throw database_exception("session::execute database not open");
+                    throw database_exception("session::query database not open");
                 }
 
                 if (sqlite3_prepare_v2(db_.get(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -214,9 +214,9 @@ namespace rj
                 return "?" + std::to_string(index);
             }
 
-            bool session::supports_named_parameters() const
+            int session::features() const
             {
-                return true;
+                return db::session::FEATURE_NAMED_PARAMS;
             }
         }
     }

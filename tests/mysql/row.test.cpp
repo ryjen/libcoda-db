@@ -11,7 +11,7 @@ using namespace rj::db;
 
 shared_ptr<row_impl> get_mysql_results_row(size_t index)
 {
-    auto rs = current_session->query("select * from users");
+    auto rs = test::current_session->query("select * from users");
 
     if (index > 0 && index >= rs.size()) {
         throw database_exception("not enough rows");
@@ -32,7 +32,7 @@ shared_ptr<row_impl> get_mysql_results_row(size_t index)
 
 shared_ptr<row_impl> get_mysql_stmt_row(size_t index)
 {
-    select_query query(current_session, {}, "users");
+    select_query query(test::current_session, {}, "users");
 
     auto rs = query.execute();
 
@@ -93,20 +93,20 @@ void test_row_column(std::function<shared_ptr<row_impl>(size_t)> funk)
     AssertThrows(database_exception, r->column("absdfas"));
 }
 
-go_bandit([]() {
-
+SPEC_BEGIN(mysql_row)
+{
     describe("mysql row", []() {
         before_each([]() {
-            setup_current_session();
+            test::setup_current_session();
 
-            user user1;
+            test::user user1;
 
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
             user1.save();
 
-            user user2;
+            test::user user2;
 
             user2.set("first_name", "Bob");
             user2.set("last_name", "Smith");
@@ -116,7 +116,7 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         describe("is movable", []() {
 
@@ -129,7 +129,7 @@ go_bandit([]() {
         describe("can get a column name", []() {
 
             it("as statement results", []() {
-                select_query query(current_session, {}, "users");
+                select_query query(test::current_session, {}, "users");
                 auto rs = query.execute();
                 auto c = rs.begin();
 
@@ -155,5 +155,5 @@ go_bandit([]() {
 
         });
     });
-
-});
+}
+SPEC_END;

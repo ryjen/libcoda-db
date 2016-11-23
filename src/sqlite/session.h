@@ -67,7 +67,7 @@ namespace rj
                 std::vector<column_definition> get_columns_for_schema(const std::string &dbName, const std::string &tableName);
                 std::string bind_param(size_t index) const;
 
-                bool supports_named_parameters() const;
+                int features() const;
             };
         }
     }

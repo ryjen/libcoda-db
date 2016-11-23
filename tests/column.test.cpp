@@ -9,10 +9,9 @@ using namespace std;
 
 using namespace rj::db;
 
-
 column get_user_column(const string &name)
 {
-    select_query q(current_session);
+    select_query q(test::current_session);
 
     q.from("users");
 
@@ -31,14 +30,15 @@ column get_user_column(const string &name)
     return row->column(name);
 }
 
-go_bandit([]() {
+SPEC_BEGIN(column)
+{
     describe("column", []() {
-        before_each([]() { setup_current_session(); });
+        before_each([]() { test::setup_current_session(); });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         before_each([]() {
-            user u;
+            test::user u;
             u.set("first_name", "Bob");
             u.set("last_name", "Jenkins");
             u.set("dval", 123.321);
@@ -154,4 +154,5 @@ go_bandit([]() {
             AssertThat(val, Equals("Bob"));
         });
     });
-});
+}
+SPEC_END;

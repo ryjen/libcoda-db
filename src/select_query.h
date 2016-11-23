@@ -82,6 +82,8 @@ namespace rj
              */
             select_query &from(const std::string &tableName);
 
+            select_query &from(const std::string &tableName, const std::string &alias);
+
             /*!
              * gets the select from table name for this query
              * @return the table name
@@ -138,6 +140,7 @@ namespace rj
              */
             where_builder &where(const sql_operator &value);
 
+#ifdef ENHANCED_PARAMETER_MAPPING
             /*!
              * adds a where clause to this query
              * @param  value the where clause
@@ -145,7 +148,6 @@ namespace rj
              */
             select_query &where(const where_clause &value);
 
-#ifdef ENHANCED_PARAMETER_MAPPING
             where_builder &where(const std::string &sql);
 
             /*!
@@ -206,6 +208,7 @@ namespace rj
              * @return           a join clause to perform additional modification
              */
             join_clause &join(const std::string &tableName, join::type type = join::inner);
+            join_clause &join(const std::string &tableName, const std::string &alias, join::type type = join::inner);
 
             /*!
              * sets the join clause for this query

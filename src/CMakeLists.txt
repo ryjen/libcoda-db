@@ -27,13 +27,15 @@ set(LIBRARY_SOURCES
 	where_clause.cpp
 )
 
+string(REPLACE "_" "/" INSTALL_DIRECTORY ${PROJECT_NAME})
+
 add_library (${PROJECT_NAME}
 	${LIBRARY_SOURCES}
 )
 
 if (SQLITE3_FOUND)
 
-add_library (${PROJECT_NAME}-sqlite
+add_library (${SQLITE_PROJECT_NAME}
 	sqlite/column.cpp
 	sqlite/resultset.cpp
 	sqlite/row.cpp
@@ -41,8 +43,10 @@ add_library (${PROJECT_NAME}-sqlite
 	sqlite/statement.cpp
  	sqlite/transaction.cpp
 )
+
 include_directories(${SQLITE3_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME}-sqlite ${PROJECT_NAME} ${SQLITE3_LIBRARIES})
+
+target_link_libraries(${SQLITE_PROJECT_NAME} ${PROJECT_NAME} ${SQLITE3_LIBRARIES})
 
 set(${PROJECT_NAME}_SQLITE_HEADERS
 	sqlite/column.h
@@ -59,7 +63,7 @@ endif()
 
 if (MYSQL_VERSION)
 
-add_library (${PROJECT_NAME}-mysql
+add_library (${MYSQL_PROJECT_NAME}
 	mysql/binding.cpp
 	mysql/column.cpp
 	mysql/resultset.cpp
@@ -68,8 +72,10 @@ add_library (${PROJECT_NAME}-mysql
 	mysql/statement.cpp
   	mysql/transaction.cpp
  )
+
 include_directories(${MYSQL_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME}-mysql ${PROJECT_NAME} ${MYSQL_LIBRARIES})
+
+target_link_libraries(${MYSQL_PROJECT_NAME} ${PROJECT_NAME} ${MYSQL_LIBRARIES})
 
 set(${PROJECT_NAME}_MYSQL_HEADERS
 	mysql/binding.h
@@ -87,7 +93,7 @@ endif()
 
 if (PostgreSQL_FOUND)
 
-add_library (${PROJECT_NAME}-postgres
+add_library (${POSTGRES_PROJECT_NAME}
 	postgres/binding.cpp
 	postgres/column.cpp
 	postgres/resultset.cpp
@@ -96,8 +102,10 @@ add_library (${PROJECT_NAME}-postgres
 	postgres/statement.cpp
   	postgres/transaction.cpp
  )
+
 include_directories(${PostgreSQL_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}-postgres ${PROJECT_NAME} ${PostgreSQL_LIBRARIES})
+
+target_link_libraries(${POSTGRES_PROJECT_NAME} ${PROJECT_NAME} ${PostgreSQL_LIBRARIES})
 
 set(${PROJECT_NAME}_POSTGRES_HEADERS
   postgres/binding.h
@@ -142,8 +150,6 @@ set(${PROJECT_NAME}_HEADERS
 	where_clause.h
 )
 
-string(REPLACE "_" "/" INSTALL_DIRECTORY ${PROJECT_NAME})
-
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}")
 
-install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-sqlite ${PROJECT_NAME}-mysql ${PROJECT_NAME}-postgres LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+install(TARGETS ${PROJECT_NAME} ${SQLITE_PROJECT_NAME} ${MYSQL_PROJECT_NAME} ${POSTGRES_PROJECT_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)

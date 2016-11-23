@@ -10,14 +10,14 @@ using namespace std;
 
 using namespace rj::db;
 
-go_bandit([]() {
-
+SPEC_BEGIN(sqlite_statement)
+{
     describe("sqlite3 statement", []() {
-        auto sqlite_session = dynamic_pointer_cast<sqlite::session>(current_session->impl());
+        auto sqlite_session = dynamic_pointer_cast<sqlite::session>(test::current_session->impl());
 
-        before_each([]() { setup_current_session(); });
+        before_each([]() { test::setup_current_session(); });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("is movable", [&sqlite_session]() {
             sqlite::statement stmt(sqlite_session);
@@ -127,5 +127,5 @@ go_bandit([]() {
             AssertThat(stmt.is_valid(), IsTrue());
         });
     });
-
-});
+}
+SPEC_END;

@@ -16,15 +16,15 @@ bool AreSame(double a, double b)
     return std::fabs(a - b) < std::numeric_limits<double>::epsilon();
 }
 
-go_bandit([]() {
-
+SPEC_BEGIN(mysql_binding)
+{
     describe("mysql binding", []() {
 
         before_each([]() {
 
-            setup_current_session();
+            test::setup_current_session();
 
-            user user1;
+            test::user user1;
 
             user1.set_id(1);
             user1.set("first_name", "Bryan");
@@ -32,7 +32,7 @@ go_bandit([]() {
 
             user1.save();
 
-            user user2;
+            test::user user2;
 
             user2.set_id(3);
 
@@ -44,7 +44,7 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("has a size contructor", []() {
             mysql::binding b(3);
@@ -182,5 +182,5 @@ go_bandit([]() {
 #endif
 
     });
-
-});
+}
+SPEC_END;

@@ -63,6 +63,7 @@ namespace rj
                 std::vector<column_definition> get_columns_for_schema(const std::string &dbName, const std::string &tablename);
                 std::string get_insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
                 std::string bind_param(size_t index) const;
+                int features() const;
 
                private:
                 long long lastId_;

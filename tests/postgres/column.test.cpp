@@ -18,7 +18,7 @@ using namespace rj::db;
 
 shared_ptr<postgres::column> get_postgres_column(const string &name)
 {
-    select_query q(current_session, {}, "users");
+    select_query q(test::current_session, {}, "users");
 
     auto rs = q.execute();
 
@@ -30,13 +30,13 @@ shared_ptr<postgres::column> get_postgres_column(const string &name)
 }
 
 
-go_bandit([]() {
-
+SPEC_BEGIN(postgres_column)
+{
     describe("postgres column", []() {
         before_each([]() {
-            setup_current_session();
+            test::setup_current_session();
 
-            user user1;
+            test::user user1;
 
             user1.set("first_name", "test");
             user1.set("last_name", "test");
@@ -46,7 +46,7 @@ go_bandit([]() {
         });
 
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("is movable", []() {
             auto col = get_postgres_column("first_name");
@@ -78,4 +78,5 @@ go_bandit([]() {
 
         });
     });
-});
+}
+SPEC_END;

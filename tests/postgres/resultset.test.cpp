@@ -12,26 +12,27 @@ using namespace rj::db;
 
 shared_ptr<postgres::resultset> get_postgres_resultset()
 {
-    auto rs = current_session->query("select * from users");
+    auto rs = test::current_session->query("select * from users");
 
     return static_pointer_cast<postgres::resultset>(rs.impl());
 }
 
 
-go_bandit([]() {
+SPEC_BEGIN(postgres_resultset)
+{
     describe("a postgres resultset", []() {
 
         before_each([]() {
-            setup_current_session();
+            test::setup_current_session();
 
-            user user1;
+            test::user user1;
 
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
             user1.save();
 
-            user user2;
+            test::user user2;
 
             user2.set("first_name", "Bob");
             user2.set("last_name", "Smith");
@@ -41,11 +42,11 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("requires valid initializer parameters", []() {
             AssertThrows(database_exception, postgres::resultset(nullptr, nullptr));
-            AssertThrows(database_exception, postgres::resultset(dynamic_pointer_cast<postgres::session>(current_session), nullptr));
+            AssertThrows(database_exception, postgres::resultset(dynamic_pointer_cast<postgres::session>(test::current_session), nullptr));
         });
 
         it("is movable", []() {
@@ -62,4 +63,5 @@ go_bandit([]() {
             Assert::That(other.is_valid(), IsTrue());
         });
     });
-});
+}
+SPEC_END;

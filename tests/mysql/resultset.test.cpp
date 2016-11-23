@@ -11,14 +11,14 @@ using namespace rj::db;
 
 shared_ptr<resultset_impl> get_mysql_resultset()
 {
-    auto rs = current_session->query("select * from users");
+    auto rs = test::current_session->query("select * from users");
 
     return rs.impl();
 }
 
 shared_ptr<resultset_impl> get_mysql_stmt_resultset()
 {
-    select_query query(current_session, {}, "users");
+    select_query query(test::current_session, {}, "users");
 
     auto rs = query.execute();
 
@@ -54,13 +54,13 @@ void test_resultset_row(std::function<shared_ptr<resultset_impl>()> funk)
     Assert::That(r->current_row().size() > 0, IsTrue());
 }
 
-go_bandit([]() {
-
+SPEC_BEGIN(mysql_resultset)
+{
     describe("mysql resultset", []() {
         before_each([]() {
-            setup_current_session();
+            test::setup_current_session();
 
-            user user1;
+            test::user user1;
 
             user1.set_id(1);
             user1.set("first_name", "Bryan");
@@ -68,7 +68,7 @@ go_bandit([]() {
 
             user1.save();
 
-            user user2;
+            test::user user2;
 
             user2.set_id(3);
 
@@ -80,7 +80,7 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         describe("is movable", []() {
 
@@ -104,12 +104,12 @@ go_bandit([]() {
         });
 
         it("can handle a bad query", []() {
-            AssertThat(current_session->execute("select * from asdfasdfasdf"), Equals(false));
+            AssertThat(test::current_session->execute("select * from asdfasdfasdf"), Equals(false));
 
-            select_query query(current_session, {}, "asdfasdfasdf");
+            select_query query(test::current_session, {}, "asdfasdfasdf");
 
             AssertThrows(database_exception, query.execute());
         });
     });
-
-});
+}
+SPEC_END;

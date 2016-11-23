@@ -122,7 +122,7 @@ namespace rj
              */
             std::string join_params(const std::vector<std::string> &columns, const std::string &op = "") const;
 
-            virtual bool supports_named_parameters() const;
+            virtual int features() const;
 
            private:
             uri connectionInfo_;
@@ -269,6 +269,16 @@ namespace rj
             std::vector<column_definition> get_columns_for_schema(const std::string &tablename);
 
             schema_factory schema_factory_;
+
+           public:
+            typedef enum {
+                FEATURE_RETURNING = (1 << 0),
+                FEATURE_FULL_OUTER_JOIN = (1 << 1),
+                FEATURE_RIGHT_JOIN = (1 << 2),
+                FEATURE_NAMED_PARAMS = (1 << 3)
+            } feature_type;
+
+            bool has_feature(feature_type feature) const;
         };
     }
 }

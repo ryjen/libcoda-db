@@ -13,9 +13,9 @@ using namespace rj::db;
 template <typename T>
 shared_ptr<T> get_sqlite_column(const string &name)
 {
-    select_query q(current_session);
+    select_query q(test::current_session);
 
-    auto rs = q.from("users").execute();
+    auto rs = q.from(test::user::TABLE_NAME).execute();
 
     auto row = rs.begin();
 
@@ -25,13 +25,13 @@ shared_ptr<T> get_sqlite_column(const string &name)
 }
 
 
-go_bandit([]() {
-
+SPEC_BEGIN(sqlite_column)
+{
     describe("sqlite column", []() {
         before_each([]() {
-            setup_current_session();
+            test::setup_current_session();
 
-            user user1;
+            test::user user1;
 
             user1.set("first_name", "test");
             user1.set("last_name", "test");
@@ -40,9 +40,9 @@ go_bandit([]() {
 
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
-        auto sqlite_session = dynamic_pointer_cast<sqlite::session>(current_session->impl());
+        auto sqlite_session = dynamic_pointer_cast<sqlite::session>(test::current_session->impl());
 
         it("is movable", [&sqlite_session]() {
             auto col = get_sqlite_column<sqlite::column>("first_name");
@@ -74,4 +74,5 @@ go_bandit([]() {
             Assert::That(col->name(), Equals("last_name"));
         });
     });
-});
+}
+SPEC_END;

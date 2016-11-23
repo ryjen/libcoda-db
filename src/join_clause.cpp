@@ -15,7 +15,9 @@ namespace rj
         join_clause::join_clause(const string &tableName, join::type type) : tableName_(tableName), type_(type)
         {
         }
-
+        join_clause::join_clause(const string &tableName, const string &alias, join::type type) : tableName_(tableName + " " + alias), type_(type)
+        {
+        }
         join_clause::~join_clause()
         {
         }
@@ -88,7 +90,11 @@ namespace rj
             tableName_ = value;
             return *this;
         }
-
+        join_clause &join_clause::table(const string &value, const string &alias)
+        {
+            tableName_ = value + " " + alias;
+            return *this;
+        }
         std::string join_clause::table() const
         {
             return tableName_;

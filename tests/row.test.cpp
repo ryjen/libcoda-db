@@ -10,7 +10,7 @@ using namespace rj::db;
 
 row get_first_user_row()
 {
-    select_query query(current_session);
+    select_query query(test::current_session);
 
     auto rs = query.from("users").execute();
 
@@ -21,15 +21,15 @@ row get_first_user_row()
     return *i;
 }
 
-go_bandit([]() {
-
+SPEC_BEGIN(row)
+{
     describe("a row", []() {
 
         before_each([&]() {
-            setup_current_session();
+            test::setup_current_session();
 
-            user user1;
-            user user2;
+            test::user user1;
+            test::user user2;
 
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
@@ -42,7 +42,7 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("can be movable", []() {
             auto r = get_first_user_row();
@@ -55,9 +55,9 @@ go_bandit([]() {
         });
 
         it("can be copied", []() {
-            select_query q(current_session);
+            select_query q(test::current_session);
 
-            auto rs = q.from("users").execute();
+            auto rs = q.from(test::user::TABLE_NAME).execute();
 
             auto i = rs.begin();
 
@@ -73,9 +73,9 @@ go_bandit([]() {
         });
 
         it("can use for each", []() {
-            select_query query(current_session);
+            select_query query(test::current_session);
 
-            auto rs = query.from("users").execute();
+            auto rs = query.from(test::user::TABLE_NAME).execute();
 
             auto r = rs.begin();
 
@@ -84,7 +84,7 @@ go_bandit([]() {
 
         it("has an iterator", []() {
 
-            auto schema = current_session->get_schema("users");
+            auto schema = test::current_session->get_schema(test::user::TABLE_NAME);
 
             if (!schema->is_valid()) {
                 schema->init();
@@ -94,9 +94,9 @@ go_bandit([]() {
 
             AssertThat(columns.size() > 0, IsTrue());
 
-            select_query query(current_session, columns);
+            select_query query(test::current_session, columns);
 
-            auto rs = query.from("users").execute();
+            auto rs = query.from(test::user::TABLE_NAME).execute();
 
             auto r = *rs.begin();
 
@@ -116,5 +116,5 @@ go_bandit([]() {
 
         });
     });
-
-});
+}
+SPEC_END;

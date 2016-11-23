@@ -8,15 +8,15 @@ using namespace std;
 
 using namespace rj::db;
 
-go_bandit([]() {
-
+SPEC_BEGIN(resultset)
+{
     describe("resultset", []() {
 
         before_each([&]() {
-            setup_current_session();
+            test::setup_current_session();
 
-            user user1;
-            user user2;
+            test::user user1;
+            test::user user2;
 
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
@@ -29,10 +29,10 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("is movable", []() {
-            auto rs = current_session->query("select * from users");
+            auto rs = test::current_session->query("select * from users");
 
             Assert::That(rs.is_valid(), Equals(true));
 
@@ -44,9 +44,9 @@ go_bandit([]() {
         });
 
         it("has a current row", []() {
-            select_query q(current_session);
+            select_query q(test::current_session);
 
-            auto rs = q.from("users").execute();
+            auto rs = q.from(test::user::TABLE_NAME).execute();
 
             auto i = rs.begin();
 
@@ -63,9 +63,9 @@ go_bandit([]() {
         });
 
         it("can use for each", []() {
-            select_query q(current_session);
+            select_query q(test::current_session);
 
-            auto rs = q.from("users").execute();
+            auto rs = q.from(test::user::TABLE_NAME).execute();
 
             rs.for_each([](const row& row) {
                 AssertThat(row.is_valid(), IsTrue());
@@ -75,9 +75,9 @@ go_bandit([]() {
         });
 
         it("can be reset", []() {
-            select_query q(current_session);
+            select_query q(test::current_session);
 
-            auto rs = q.from("users").execute();
+            auto rs = q.from(test::user::TABLE_NAME).execute();
 
             Assert::That(rs.size() == 2, IsTrue());
 
@@ -100,9 +100,9 @@ go_bandit([]() {
         });
 
         it("can construct iterators", []() {
-            select_query q(current_session);
+            select_query q(test::current_session);
 
-            auto rs = q.from("users").execute();
+            auto rs = q.from(test::user::TABLE_NAME).execute();
 
             auto i = rs.begin();
 
@@ -122,9 +122,9 @@ go_bandit([]() {
         });
 
         it("can operate on iterators", []() {
-            select_query q(current_session);
+            select_query q(test::current_session);
 
-            auto rs = q.from("users").execute();
+            auto rs = q.from(test::user::TABLE_NAME).execute();
 
             auto i = rs.end();
 
@@ -159,5 +159,5 @@ go_bandit([]() {
             Assert::That(j >= i, Equals(true));
         });
     });
-
-});
+}
+SPEC_END;

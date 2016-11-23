@@ -11,7 +11,7 @@ using namespace rj::db;
 
 shared_ptr<postgres::row> get_postgres_row(size_t index)
 {
-    auto rs = current_session->query("select * from users");
+    auto rs = test::current_session->query("select * from users");
 
     if (index > 0 && index >= rs.size()) {
         throw database_exception("not enough rows");
@@ -30,20 +30,21 @@ shared_ptr<postgres::row> get_postgres_row(size_t index)
     return dynamic_pointer_cast<postgres::row>(i->impl());
 }
 
-go_bandit([]() {
+SPEC_BEGIN(postgres_row)
+{
     describe("a postgres row", []() {
 
         before_each([]() {
-            setup_current_session();
+            test::setup_current_session();
 
-            user user1;
+            test::user user1;
 
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
             user1.save();
 
-            user user2;
+            test::user user2;
 
             user2.set("first_name", "Bob");
             user2.set("last_name", "Smith");
@@ -53,12 +54,12 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("requires initializer parameters", []() {
             AssertThrows(database_exception, postgres::row(nullptr, nullptr, 0));
 
-            AssertThrows(database_exception, postgres::row(dynamic_pointer_cast<postgres::session>(current_session->impl()), nullptr, 0));
+            AssertThrows(database_exception, postgres::row(dynamic_pointer_cast<postgres::session>(test::current_session->impl()), nullptr, 0));
         });
 
         it("is movable", []() {
@@ -85,4 +86,5 @@ go_bandit([]() {
             AssertThrows(no_such_column_exception, row->column_name(1234));
         });
     });
-});
+}
+SPEC_END;

@@ -1,11 +1,8 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
 #include <bandit/bandit.h>
-#include <sqldb.h>
 #include "log.h"
 #include "row.h"
+#include "sqldb.h"
 
 using namespace bandit;
 

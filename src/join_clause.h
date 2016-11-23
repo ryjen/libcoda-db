@@ -40,6 +40,7 @@ namespace rj
              * @param joinType the type of sql query (default inner)
              */
             explicit join_clause(const std::string &tableName, join::type type = join::none);
+            explicit join_clause(const std::string &tableName, const std::string &alias, join::type type = join::none);
 
             /*! boilerplate rule of 3 + move */
             join_clause(const join_clause &other);
@@ -81,6 +82,7 @@ namespace rj
              * @param value the table name to set
              */
             join_clause &table(const std::string &value);
+            join_clause &table(const std::string &value, const std::string &alias);
 
             /*!
              * gets the table for this join

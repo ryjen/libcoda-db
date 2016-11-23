@@ -1,6 +1,4 @@
-#ifndef HAVE_CONFIG_H
-#include "config.h"
-#endif
+
 #include "db.test.h"
 #include "insert_query.h"
 #include "log.h"

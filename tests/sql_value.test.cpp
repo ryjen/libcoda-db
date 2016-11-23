@@ -9,7 +9,6 @@ using namespace std;
 using namespace rj::db;
 
 go_bandit([]() {
-
     describe("sql time value", []() {
 
         struct tm tm;
@@ -227,5 +226,4 @@ go_bandit([]() {
         });
 
     });
-
 });

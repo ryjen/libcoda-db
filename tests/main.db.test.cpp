@@ -1,6 +1,3 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
 #include <bandit/bandit.h>
 #include "db.test.h"
@@ -21,13 +18,15 @@ int main(int argc, char *argv[])
         rj::db::log::set_level(rj::db::log::Error);
     }
 
-    register_current_session();
+    rj::db::test::register_specs();
+
+    rj::db::test::register_current_session();
 
     if (bandit::run(argc, argv)) {
         return EXIT_FAILURE;
     }
 
-    unregister_current_session();
+    rj::db::test::unregister_current_session();
 
     return EXIT_SUCCESS;
 }

@@ -1,6 +1,7 @@
 #include <bandit/bandit.h>
 #include "db.test.h"
 #include "modify_query.h"
+#include "util.h"
 
 using namespace bandit;
 
@@ -8,20 +9,20 @@ using namespace std;
 
 using namespace rj::db;
 
-go_bandit([]() {
-
+SPEC_BEGIN(modify)
+{
     describe("modify query", []() {
         before_each([]() {
-            setup_current_session();
+            test::setup_current_session();
 
-            user user1;
+            test::user user1;
 
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
             user1.save();
 
-            user user2;
+            test::user user2;
 
             user2.set("first_name", "Bob");
             user2.set("last_name", "Smith");
@@ -29,16 +30,16 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("can be constructed", []() {
-            insert_query query(current_session, "users");
+            insert_query query(test::current_session, "users");
 
-#if TEST_POSTGRES
-            Assert::That(query.to_string(), Equals("INSERT INTO users() VALUES() RETURNING id;"));
-#else
-            Assert::That(query.to_string(), Equals("INSERT INTO users() VALUES();"));
-#endif
+            if (test::current_session->has_feature(session::FEATURE_RETURNING)) {
+                Assert::That(query.to_string(), Equals("INSERT INTO users() VALUES() RETURNING id;"));
+            } else {
+                Assert::That(query.to_string(), Equals("INSERT INTO users() VALUES();"));
+            }
             insert_query other(query);
 
             Assert::That(query.to_string(), Equals(other.to_string()));
@@ -52,35 +53,35 @@ go_bandit([]() {
         });
 
         it("can modify", []() {
-            insert_query insert(current_session);
+            insert_query insert(test::current_session);
 
             vector<sql_value> values = {"blah", "bleh"};
 
-            insert.into("users").columns("first_name", "last_name").values(values);
+            insert.into(test::user::TABLE_NAME).columns("first_name", "last_name").values(values);
 
             Assert::That(insert.execute() > 0, Equals(true));
 
-            user u1(insert.last_insert_id());
+            test::user u1(insert.last_insert_id());
 
             Assert::That(u1.get("first_name"), Equals("blah"));
             Assert::That(u1.get("last_name"), Equals("bleh"));
         });
 
         it("can modify with a set of values", []() {
-            insert_query insert(current_session);
+            insert_query insert(test::current_session);
 
-            insert.into("users").columns({"first_name", "last_name"}).values(std::vector<sql_value>({"blah", "bleh"}));
+            insert.into(test::user::TABLE_NAME).columns({"first_name", "last_name"}).values(std::vector<sql_value>({"blah", "bleh"}));
 
             Assert::That(insert.execute() > 0, Equals(true));
 
-            user u1(insert.last_insert_id());
+            test::user u1(insert.last_insert_id());
 
             Assert::That(u1.get("first_name"), Equals("blah"));
             Assert::That(u1.get("last_name"), Equals("bleh"));
         });
 
         it("can be batch executed", []() {
-            insert_query query(current_session, "users", {"first_name", "last_name"});
+            insert_query query(test::current_session, "users", {"first_name", "last_name"});
 
             for (int i = 0; i < 3; i++) {
                 char buf[100] = {0};
@@ -96,13 +97,13 @@ go_bandit([]() {
                 Assert::That(query.execute(), Equals(1));
             }
 
-            select_query select(current_session);
+            select_query select(test::current_session);
 
-            int count = select.from("users").count();
+            int count = select.from(test::user::TABLE_NAME).count();
 
             Assert::That(count, Equals(5));
         });
 
     });
-
-});
+}
+SPEC_END;

@@ -9,14 +9,14 @@ using namespace std;
 
 using namespace rj::db;
 
-go_bandit([]() {
-
+SPEC_BEGIN(postgres_transaction)
+{
     describe("postgres transaction", []() {
-        before_each([]() { setup_current_session(); });
+        before_each([]() { test::setup_current_session(); });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
-        auto pg_session = dynamic_pointer_cast<postgres::session>(current_session->impl());
+        auto pg_session = dynamic_pointer_cast<postgres::session>(test::current_session->impl());
 
         describe("isolation level", [&pg_session]() {
 
@@ -25,13 +25,13 @@ go_bandit([]() {
 
                 auto pg_tx = pg_session->create_transaction(mode);
 
-                transaction tx(current_session, pg_tx);
+                transaction tx(test::current_session, pg_tx);
 
                 tx.start();
 
-                insert_query insert(current_session);
+                insert_query insert(test::current_session);
 
-                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
+                insert.into(test::user::TABLE_NAME).columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
@@ -43,13 +43,13 @@ go_bandit([]() {
 
                 auto pg_tx = pg_session->create_transaction(mode);
 
-                transaction tx(current_session, pg_tx);
+                transaction tx(test::current_session, pg_tx);
 
                 tx.start();
 
-                insert_query insert(current_session);
+                insert_query insert(test::current_session);
 
-                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
+                insert.into(test::user::TABLE_NAME).columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
@@ -61,13 +61,13 @@ go_bandit([]() {
 
                 auto pg_tx = pg_session->create_transaction(mode);
 
-                transaction tx(current_session, pg_tx);
+                transaction tx(test::current_session, pg_tx);
 
                 tx.start();
 
-                insert_query insert(current_session);
+                insert_query insert(test::current_session);
 
-                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
+                insert.into(test::user::TABLE_NAME).columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
@@ -79,13 +79,13 @@ go_bandit([]() {
 
                 auto pg_tx = pg_session->create_transaction(mode);
 
-                transaction tx(current_session, pg_tx);
+                transaction tx(test::current_session, pg_tx);
 
                 tx.start();
 
-                insert_query insert(current_session);
+                insert_query insert(test::current_session);
 
-                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
+                insert.into(test::user::TABLE_NAME).columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
@@ -99,13 +99,13 @@ go_bandit([]() {
 
                 auto pg_tx = pg_session->create_transaction(mode);
 
-                transaction tx(current_session, pg_tx);
+                transaction tx(test::current_session, pg_tx);
 
                 tx.start();
 
-                insert_query insert(current_session);
+                insert_query insert(test::current_session);
 
-                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
+                insert.into(test::user::TABLE_NAME).columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
@@ -116,13 +116,13 @@ go_bandit([]() {
 
                 auto pg_tx = pg_session->create_transaction(mode);
 
-                transaction tx(current_session, pg_tx);
+                transaction tx(test::current_session, pg_tx);
 
                 tx.start();
 
-                insert_query insert(current_session);
+                insert_query insert(test::current_session);
 
-                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
+                insert.into(test::user::TABLE_NAME).columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsFalse());
 
@@ -134,18 +134,18 @@ go_bandit([]() {
 
             auto pg_tx = pg_session->create_transaction(mode);
 
-            transaction tx(current_session, pg_tx);
+            transaction tx(test::current_session, pg_tx);
 
             tx.start();
 
-            insert_query insert(current_session);
+            insert_query insert(test::current_session);
 
-            insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
+            insert.into(test::user::TABLE_NAME).columns("first_name", "last_name").values("Sam", "Baggins");
 
             Assert::That(insert.execute(), IsTrue());
 
             tx.commit();
         });
     });
-
-});
+}
+SPEC_END;

@@ -6,4 +6,4 @@ add_executable(${PROJECT_NAME}_benchmark_poco
 	select.cpp
 )
 
-target_link_libraries (${PROJECT_NAME}_benchmark_poco PocoData PocoDataSqlite PocoFoundation ${PROJECT_NAME}-test-util)
+target_link_libraries (${PROJECT_NAME}_benchmark_poco PocoData PocoDataSqlite PocoFoundation ${UTIL_TEST_PROJECT_NAME})

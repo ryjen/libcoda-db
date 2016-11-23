@@ -8,16 +8,16 @@ using namespace std;
 
 using namespace rj::db;
 
-go_bandit([]() {
-
+SPEC_BEGIN(transaction)
+{
     describe("a transaction", []() {
 
         before_each([]() {
-            user user1;
-            user user2;
+            test::user user1;
+            test::user user2;
 
             try {
-                setup_current_session();
+                test::setup_current_session();
 
                 user1.set("first_name", "Bryan");
                 user1.set("last_name", "Jenkins");
@@ -35,10 +35,10 @@ go_bandit([]() {
             }
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("can copy", []() {
-            auto tx = current_session->create_transaction();
+            auto tx = test::current_session->create_transaction();
 
             tx.start();
 
@@ -48,7 +48,7 @@ go_bandit([]() {
 
             Assert::That(other.is_active(), IsTrue());
 
-            transaction assign(current_session, other.impl());
+            transaction assign(test::current_session, other.impl());
 
             assign = tx;
 
@@ -56,7 +56,7 @@ go_bandit([]() {
         });
 
         it("is can be moved", []() {
-            auto tx = current_session->create_transaction();
+            auto tx = test::current_session->create_transaction();
 
             tx.set_successful(true);
 
@@ -64,7 +64,7 @@ go_bandit([]() {
 
             Assert::That(other.is_successful(), Equals(true));
 
-            transaction assign(current_session, other.impl());
+            transaction assign(test::current_session, other.impl());
 
             assign = std::move(tx);
 
@@ -73,18 +73,18 @@ go_bandit([]() {
 
         it("will commit on scope loss", []() {
 
-            auto other_session = sqldb::open_session(current_session->connection_info());
+            auto other_session = sqldb::open_session(test::current_session->connection_info());
 
             select_query select(other_session);
 
-            select.from("users").where(op::equals("first_name", "Mike")) && op::equals("last_name", "Johnson");
+            select.from(test::user::TABLE_NAME).where(op::equals("first_name", "Mike")) && op::equals("last_name", "Johnson");
 
             {
-                auto tx = current_session->start_transaction();
+                auto tx = test::current_session->start_transaction();
 
                 insert_query insert(tx.get_session());
 
-                insert.into("users").columns("first_name", "last_name").values("Mike", "Johnson");
+                insert.into(test::user::TABLE_NAME).columns("first_name", "last_name").values("Mike", "Johnson");
 
                 Assert::That(insert.execute(), IsTrue());
 
@@ -102,10 +102,10 @@ go_bandit([]() {
 
         it("can commit a transaction", []() {
             // create the transaction in the current session
-            transaction trans = current_session->create_transaction();
+            transaction trans = test::current_session->create_transaction();
 
             // open a second session
-            auto other_session = sqldb::open_session(current_session->connection_info());
+            auto other_session = sqldb::open_session(test::current_session->connection_info());
 
             // do some transaction work
             trans.start();
@@ -114,14 +114,14 @@ go_bandit([]() {
 
             insert_query insert(trans.get_session());
 
-            insert.into("users").columns({"first_name", "last_name"}).values("Jerome", "Padington");
+            insert.into(test::user::TABLE_NAME).columns({"first_name", "last_name"}).values("Jerome", "Padington");
 
             Assert::That(insert.execute(), IsTrue());
 
             // now try to read the work before its committed
             select_query select(other_session);
 
-            select.from("users").where(op::equals("first_name", "Jerome")) && op::equals("last_name", "Padington");
+            select.from(test::user::TABLE_NAME).where(op::equals("first_name", "Jerome")) && op::equals("last_name", "Padington");
 
             auto results = select.execute();
 
@@ -138,10 +138,10 @@ go_bandit([]() {
         });
         it("can rollback a transaction", []() {
             // create the transaction in the current session
-            transaction trans = current_session->create_transaction();
+            transaction trans = test::current_session->create_transaction();
 
             // open a second session
-            auto other_session = sqldb::open_session(current_session->connection_info());
+            auto other_session = sqldb::open_session(test::current_session->connection_info());
 
             // do some transaction work
             trans.start();
@@ -150,14 +150,14 @@ go_bandit([]() {
 
             insert_query insert(trans.get_session());
 
-            insert.into("users").columns({"first_name", "last_name"}).values("Jerome", "Padington");
+            insert.into(test::user::TABLE_NAME).columns({"first_name", "last_name"}).values("Jerome", "Padington");
 
             Assert::That(insert.execute(), IsTrue());
 
             // now try to read the work before its committed
             select_query select(other_session);
 
-            select.from("users").where(op::equals("first_name", "Jerome")) && op::equals("last_name", "Padington");
+            select.from(test::user::TABLE_NAME).where(op::equals("first_name", "Jerome")) && op::equals("last_name", "Padington");
 
             auto results = select.execute();
 
@@ -173,15 +173,15 @@ go_bandit([]() {
             Assert::That(results.size(), Equals(0));
         });
         it("can set a savepoint", []() {
-            auto tx = current_session->create_transaction();
+            auto tx = test::current_session->create_transaction();
 
-            auto other_session = sqldb::open_session(current_session->connection_info());
+            auto other_session = sqldb::open_session(test::current_session->connection_info());
 
             tx.start();
 
             insert_query insert(tx.get_session());
 
-            insert.into("users").columns({"first_name", "last_name"}).values("Jerome", "Padington");
+            insert.into(test::user::TABLE_NAME).columns({"first_name", "last_name"}).values("Jerome", "Padington");
 
             Assert::That(insert.execute(), IsTrue());
 
@@ -193,9 +193,9 @@ go_bandit([]() {
 
             Assert::That(insert.execute(), IsTrue());
 
-            select_query select(current_session);
+            select_query select(test::current_session);
 
-            select.from("users").where(op::equals("last_name", "Padington"));
+            select.from(test::user::TABLE_NAME).where(op::equals("last_name", "Padington"));
 
             auto rs = select.execute();
 
@@ -203,13 +203,13 @@ go_bandit([]() {
         });
 
         it("can release a savepoint", []() {
-            auto tx = current_session->create_transaction();
+            auto tx = test::current_session->create_transaction();
 
             tx.start();
 
             insert_query insert(tx.get_session());
 
-            insert.into("users").columns({"first_name", "last_name"}).values("Jerome", "Padington");
+            insert.into(test::user::TABLE_NAME).columns({"first_name", "last_name"}).values("Jerome", "Padington");
 
             Assert::That(insert.execute(), IsTrue());
 

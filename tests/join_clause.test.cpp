@@ -1,6 +1,7 @@
 #include <bandit/bandit.h>
 #include "db.test.h"
 #include "row.h"
+#include "util.h"
 
 using namespace bandit;
 
@@ -8,28 +9,27 @@ using namespace std;
 
 using namespace rj::db;
 
-
-go_bandit([]() {
-
+SPEC_BEGIN(join)
+{
     describe("a join", []() {
         before_each([&]() {
-            setup_current_session();
+            test::setup_current_session();
 
-            user u1;
+            test::user u1;
 
             u1.set("first_name", "Mike");
             u1.set("last_name", "Jones");
 
             u1.save();
 
-            user u2;
+            test::user u2;
 
             u2.set("first_name", "Jason");
             u2.set("last_name", "Hendrick");
 
             u2.save();
 
-            insert_query query(current_session, "user_settings", {"user_id", "valid", "created_at"});
+            insert_query query(test::current_session, "user_settings", {"user_id", "valid", "created_at"});
 
             time_t curr_time_val = time(0);
 
@@ -40,7 +40,7 @@ go_bandit([]() {
             query.execute();
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("can be copied", []() {
             join_clause clause("tablename");
@@ -80,9 +80,9 @@ go_bandit([]() {
 
         it("can join", []() {
 
-            select_query query(current_session, {"u.id", "s.created_at"});
+            select_query query(test::current_session, {"u.id", "s.created_at"});
 
-            query.from("users u").join("user_settings s").on("u.id = s.user_id") and ("s.valid = 1");
+            query.from(test::user::TABLE_NAME, "u").join("user_settings", "s").on("u.id = s.user_id") and ("s.valid = 1");
 
             auto rs = query.execute();
 
@@ -90,42 +90,42 @@ go_bandit([]() {
         });
 
         it("can be a cross join", []() {
-            select_query query(current_session);
+            select_query query(test::current_session);
 
-            query.from("users u").join("user_settings s", join::cross).on("u.id = s.user_id") and ("s.valid = 1");
+            query.from(test::user::TABLE_NAME, "u").join("user_settings", "s", join::cross).on("u.id = s.user_id") and ("s.valid = 1");
 
             auto rs = query.execute();
 
             Assert::That(rs.size(), Equals(2));
         });
 
-#if !defined(TEST_MYSQL) && !defined(TEST_SQLITE)
         it("can be full outer", []() {
-            select_query query(current_session);
+            if (test::current_session->has_feature(session::FEATURE_FULL_OUTER_JOIN)) {
+                select_query query(test::current_session);
 
-            query.from("users u").join("user_settings s", join::full).on("u.id = s.user_id") and ("s.valid = 1");
+                query.from(test::user::TABLE_NAME, "u").join("user_settings", "s", join::full).on("u.id = s.user_id") and ("s.valid = 1");
 
-            auto rs = query.execute();
+                auto rs = query.execute();
 
-            Assert::That(rs.size(), Equals(2));
+                Assert::That(rs.size(), Equals(2));
+            }
         });
-#endif
-#if !defined(TEST_SQLITE)
         it("can be a right", []() {
-            select_query query(current_session);
+            if (test::current_session->has_feature(session::FEATURE_RIGHT_JOIN)) {
+                select_query query(test::current_session);
 
-            query.from("users u").join("user_settings s", join::right).on("u.id = s.user_id") and ("s.valid = 1");
+                query.from(test::user::TABLE_NAME, "u").join("user_settings", "s", join::right).on("u.id = s.user_id") and ("s.valid = 1");
 
-            auto rs = query.execute();
+                auto rs = query.execute();
 
-            Assert::That(rs.size(), Equals(1));
+                Assert::That(rs.size(), Equals(1));
+            }
         });
-#endif
 
         it("can be a left", []() {
-            select_query query(current_session);
+            select_query query(test::current_session);
 
-            query.from("users u").join("user_settings s", join::left).on("u.id = s.user_id") and ("s.valid = 1");
+            query.from(test::user::TABLE_NAME, "u").join("user_settings", "s", join::left).on("u.id = s.user_id") and ("s.valid = 1");
 
             auto rs = query.execute();
 
@@ -133,9 +133,9 @@ go_bandit([]() {
         });
 
         it("can be a inner", []() {
-            select_query query(current_session);
+            select_query query(test::current_session);
 
-            query.from("users u").join("user_settings s", join::inner).on("u.id = s.user_id") and ("s.valid = 1");
+            query.from(test::user::TABLE_NAME, "u").join("user_settings", "s", join::inner).on("u.id = s.user_id") and ("s.valid = 1");
 
             auto rs = query.execute();
 
@@ -143,9 +143,9 @@ go_bandit([]() {
         });
 
         it("can be a natural", []() {
-            select_query query(current_session);
+            select_query query(test::current_session);
 
-            query.from("users u").join("user_settings s", join::natural);
+            query.from(test::user::TABLE_NAME, "u").join("user_settings", "s", join::natural);
 
             auto rs = query.execute();
 
@@ -153,9 +153,9 @@ go_bandit([]() {
         });
 
         it("can be a default", []() {
-            select_query query(current_session);
+            select_query query(test::current_session);
 
-            query.from("users u").join("user_settings s", join::none).on("u.id = s.user_id") and ("s.valid = 1");
+            query.from(test::user::TABLE_NAME, "u").join("user_settings", "s", join::none).on("u.id = s.user_id") and ("s.valid = 1");
 
             auto rs = query.execute();
 
@@ -165,7 +165,7 @@ go_bandit([]() {
         it("can set the table name", []() {
             join_clause join;
 
-            join.table("user_settings s").on("u.id = s.user_id");
+            join.table("user_settings", "s").on("u.id = s.user_id");
 
             Assert::That(join.table(), Equals("user_settings s"));
         });
@@ -199,5 +199,5 @@ go_bandit([]() {
             Assert::That(join.empty(), IsTrue());
         });
     });
-
-});
+}
+SPEC_END;

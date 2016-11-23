@@ -12,7 +12,7 @@ using namespace rj::db;
 template <typename T>
 shared_ptr<T> get_sqlite_row(size_t index)
 {
-    auto rs = current_session->query("select * from users");
+    auto rs = test::current_session->query("select * from users");
 
     if (index > 0 && index >= rs.size()) {
         throw database_exception("not enough rows");
@@ -31,22 +31,23 @@ shared_ptr<T> get_sqlite_row(size_t index)
     return dynamic_pointer_cast<T>(i->impl());
 }
 
-go_bandit([]() {
+SPEC_BEGIN(sqlite_row)
+{
     describe("a sqlite row", []() {
 
-        auto sqlite_session = dynamic_pointer_cast<sqlite::session>(current_session->impl());
+        auto sqlite_session = dynamic_pointer_cast<sqlite::session>(test::current_session->impl());
 
         before_each([]() {
-            setup_current_session();
+            test::setup_current_session();
 
-            user user1;
+            test::user user1;
 
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
             user1.save();
 
-            user user2;
+            test::user user2;
 
             user2.set("first_name", "Bob");
             user2.set("last_name", "Smith");
@@ -56,7 +57,7 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("requires initializer parameters", [&sqlite_session]() {
             AssertThrows(database_exception, sqlite::row(nullptr, nullptr));
@@ -96,4 +97,5 @@ go_bandit([]() {
             AssertThrows(no_such_column_exception, row->column_name(1234));
         });
     });
-});
+}
+SPEC_END;

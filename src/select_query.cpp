@@ -86,6 +86,12 @@ namespace rj
             return *this;
         }
 
+        select_query &select_query::from(const string &value, const string &alias)
+        {
+            tableName_ = value + " " + alias;
+            return *this;
+        }
+
         string select_query::from() const
         {
             return tableName_;
@@ -125,13 +131,13 @@ namespace rj
             return where_;
         }
 
+#ifdef ENHANCED_PARAMETER_MAPPING
         select_query &select_query::where(const where_clause &value)
         {
             where_.where_clause::reset(value);
             return *this;
         }
 
-#ifdef ENHANCED_PARAMETER_MAPPING
         where_builder &select_query::where(const std::string &sql)
         {
             where_.where_clause::reset(sql);
@@ -163,7 +169,11 @@ namespace rj
             join_.emplace_back(tableName, type);
             return join_.back();
         }
-
+        join_clause &select_query::join(const string &tableName, const string &alias, join::type type)
+        {
+            join_.emplace_back(tableName, alias, type);
+            return join_.back();
+        }
         select_query &select_query::join(const join_clause &value)
         {
             join_.push_back(value);

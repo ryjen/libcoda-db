@@ -8,7 +8,6 @@ using namespace std;
 using namespace rj::db;
 
 go_bandit([]() {
-
     describe("where clause", []() {
 
         it("can and and or", []() {
@@ -109,5 +108,4 @@ go_bandit([]() {
             AssertThat(builder.type(), Equals(op::EQ));
         });
     });
-
 });

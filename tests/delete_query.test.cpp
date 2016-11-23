@@ -8,16 +8,16 @@ using namespace std;
 
 using namespace rj::db;
 
-go_bandit([]() {
-
+SPEC_BEGIN(delete_query)
+{
     describe("a delete query", []() {
 
         before_each([]() {
-            user user1;
-            user user2;
+            test::user user1;
+            test::user user2;
 
             try {
-                setup_current_session();
+                test::setup_current_session();
 
                 user1.set("first_name", "Bryan");
                 user1.set("last_name", "Jenkins");
@@ -35,12 +35,12 @@ go_bandit([]() {
             }
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("can delete", []() {
-            delete_query query(current_session);
+            delete_query query(test::current_session);
 
-            query.from("users").where(op::equals("first_name", "Mark"));
+            query.from(test::user::TABLE_NAME).where(op::equals("first_name", "Mark"));
 
             AssertThat(query.execute(), Equals(1));
 
@@ -48,9 +48,9 @@ go_bandit([]() {
         });
 
         it("is copyable by constructor", []() {
-            delete_query query(current_session);
+            delete_query query(test::current_session);
 
-            query.from("users").where(op::equals("first_name", "Mark"));
+            query.from(test::user::TABLE_NAME).where(op::equals("first_name", "Mark"));
 
             delete_query other(query);
 
@@ -58,9 +58,9 @@ go_bandit([]() {
         });
 
         it("is movable by constructor", []() {
-            delete_query query(current_session);
+            delete_query query(test::current_session);
 
-            query.from("users").where(op::equals("first_name", "Bryan"));
+            query.from(test::user::TABLE_NAME).where(op::equals("first_name", "Bryan"));
 
             delete_query other(std::move(query));
 
@@ -69,11 +69,11 @@ go_bandit([]() {
         });
 
         it("is copyable from assignment", []() {
-            delete_query query(current_session);
+            delete_query query(test::current_session);
 
-            query.from("users").where(op::equals("first_name", "Bryan"));
+            query.from(test::user::TABLE_NAME).where(op::equals("first_name", "Bryan"));
 
-            delete_query other(current_session, "other_users");
+            delete_query other(test::current_session, "other_users");
 
             other = query;
 
@@ -83,11 +83,11 @@ go_bandit([]() {
         });
 
         it("is movable from assignment", []() {
-            delete_query query(current_session);
+            delete_query query(test::current_session);
 
-            query.from("users").where(op::equals("first_name", "Bryan"));
+            query.from(test::user::TABLE_NAME).where(op::equals("first_name", "Bryan"));
 
-            delete_query other(current_session, "other_users");
+            delete_query other(test::current_session, "other_users");
 
             other = std::move(query);
 
@@ -97,7 +97,7 @@ go_bandit([]() {
         });
 
         it("can delete from where clause", []() {
-            delete_query query(current_session, "users");
+            delete_query query(test::current_session, "users");
 
             where_clause where("first_name = 'Mark'");
 
@@ -107,7 +107,7 @@ go_bandit([]() {
         });
 
         it("can be batch executed", []() {
-            delete_query query(current_session, "users");
+            delete_query query(test::current_session, "users");
 
             query.where(op::equals("first_name", "Bryan"));
 
@@ -120,7 +120,7 @@ go_bandit([]() {
 
         it("can be deleted from a record", []() {
 
-            auto u = user().find_one("first_name", "Bryan");
+            auto u = test::user().find_one("first_name", "Bryan");
 
             AssertThat(u != nullptr, Equals(true));
             AssertThat(u->de1ete(), IsTrue());
@@ -128,5 +128,5 @@ go_bandit([]() {
         });
 
     });
-
-});
+}
+SPEC_END;

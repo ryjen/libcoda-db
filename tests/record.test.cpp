@@ -7,16 +7,16 @@ using namespace std;
 
 using namespace rj::db;
 
-go_bandit([]() {
-
+SPEC_BEGIN(record)
+{
     describe("a user record", []() {
-        before_each([]() { setup_current_session(); });
+        before_each([]() { test::setup_current_session(); });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("should save", []() {
             try {
-                user user1;
+                test::user user1;
                 user1.set("first_name", "Ryan");
                 user1.set("last_name", "Jennings");
 
@@ -36,21 +36,21 @@ go_bandit([]() {
 
                 Assert::That(user1.get("first_name"), Equals("Bryan"));
             } catch (const database_exception& e) {
-                cerr << "Error1: " << current_session->last_error() << endl;
+                cerr << "Error1: " << test::current_session->last_error() << endl;
                 throw e;
             }
         });
 
         it("should find by id", []() {
 
-            user u1;
+            test::user u1;
 
             u1.set("first_name", "test");
             u1.set("last_name", "testing");
 
             Assert::That(u1.save(), IsTrue());
 
-            auto u2 = user().find_by_id(u1.id());
+            auto u2 = test::user().find_by_id(u1.id());
 
             Assert::That(u2 != nullptr, IsTrue());
 
@@ -61,26 +61,26 @@ go_bandit([]() {
         });
 
         it("can find all", []() {
-            user u1;
+            test::user u1;
             u1.set("first_name", "Barry");
             u1.set("last_name", "White");
 
             Assert::That(u1.save(), IsTrue());
 
-            user u2;
+            test::user u2;
 
             u2.set("first_name", "Bono");
             u2.set("last_name", "Bono");
 
             Assert::That(u2.save(), IsTrue());
 
-            auto results = user().find_all();
+            auto results = test::user().find_all();
 
             Assert::That(results.size(), Equals(2));
         });
 
         it("can find by a column", []() {
-            user u1;
+            test::user u1;
 
             u1.set("first_name", "John");
             u1.set("last_name", "Jenkins");
@@ -95,14 +95,14 @@ go_bandit([]() {
         });
 
         it("can refresh by a column", []() {
-            user u1;
+            test::user u1;
 
             u1.set("first_name", "Bender");
             u1.set("last_name", "Robot");
 
             Assert::That(u1.save(), IsTrue());
 
-            user u2;
+            test::user u2;
 
             u2.set("first_name", "Bender");
 
@@ -112,7 +112,7 @@ go_bandit([]() {
         });
 
         it("can have no column", []() {
-            user user1;
+            test::user user1;
 
             auto val = user1.get("missing");
 
@@ -120,7 +120,7 @@ go_bandit([]() {
         });
 
         it("cannnot refresh invalid", []() {
-            user user1;
+            test::user user1;
 
             user1.set_id(14323432);
 
@@ -128,4 +128,5 @@ go_bandit([]() {
 
         });
     });
-});
+}
+SPEC_END;

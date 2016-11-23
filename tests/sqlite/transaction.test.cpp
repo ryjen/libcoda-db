@@ -9,14 +9,14 @@ using namespace std;
 
 using namespace rj::db;
 
-go_bandit([]() {
-
+SPEC_BEGIN(sqlite_transaction)
+{
     describe("sqlite transaction", []() {
-        before_each([]() { setup_current_session(); });
+        before_each([]() { test::setup_current_session(); });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
-        auto sqlite_session = dynamic_pointer_cast<sqlite::session>(current_session->impl());
+        auto sqlite_session = dynamic_pointer_cast<sqlite::session>(test::current_session->impl());
 
         describe("type", [&sqlite_session]() {
 
@@ -25,13 +25,13 @@ go_bandit([]() {
 
                 auto sqlite_tx = sqlite_session->create_transaction(mode);
 
-                transaction tx(current_session, sqlite_tx);
+                transaction tx(test::current_session, sqlite_tx);
 
                 tx.start();
 
-                insert_query insert(current_session);
+                insert_query insert(test::current_session);
 
-                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
+                insert.into(test::user::TABLE_NAME).columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
@@ -43,13 +43,13 @@ go_bandit([]() {
 
                 auto sqlite_tx = sqlite_session->create_transaction(mode);
 
-                transaction tx(current_session, sqlite_tx);
+                transaction tx(test::current_session, sqlite_tx);
 
                 tx.start();
 
-                insert_query insert(current_session);
+                insert_query insert(test::current_session);
 
-                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
+                insert.into(test::user::TABLE_NAME).columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
@@ -61,13 +61,13 @@ go_bandit([]() {
 
                 auto sqlite_tx = sqlite_session->create_transaction(mode);
 
-                transaction tx(current_session, sqlite_tx);
+                transaction tx(test::current_session, sqlite_tx);
 
                 tx.start();
 
-                insert_query insert(current_session);
+                insert_query insert(test::current_session);
 
-                insert.into("users").columns("first_name", "last_name").values("Sam", "Baggins");
+                insert.into(test::user::TABLE_NAME).columns("first_name", "last_name").values("Sam", "Baggins");
 
                 Assert::That(insert.execute(), IsTrue());
 
@@ -79,7 +79,7 @@ go_bandit([]() {
 
                 auto sqlite_tx = sqlite_session->create_transaction(mode);
 
-                transaction tx(current_session, sqlite_tx);
+                transaction tx(test::current_session, sqlite_tx);
 
                 tx.start();
 
@@ -92,5 +92,5 @@ go_bandit([]() {
         });
 
     });
-
-});
+}
+SPEC_END;

@@ -255,8 +255,8 @@ namespace rj
            public:
             virtual where_builder &where() = 0;
             virtual where_builder &where(const sql_operator &value) = 0;
-            virtual T &where(const where_clause &value) = 0;
 #ifdef ENHANCED_PARAMTER_MAPPING
+            virtual T &where(const where_clause &value) = 0;
             virtual where_builder &where(const std::string &sql) = 0;
 #endif
         };

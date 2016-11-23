@@ -9,25 +9,25 @@ using namespace rj::db;
 
 resultset get_results()
 {
-    select_query query(current_session);
+    select_query query(test::current_session);
 
-    return query.from("users").execute();
+    return query.from(test::user::TABLE_NAME).execute();
 }
 
-go_bandit([]() {
-
+SPEC_BEGIN(select_query)
+{
     describe("select query", []() {
         before_each([]() {
-            setup_current_session();
+            test::setup_current_session();
 
-            user user1;
+            test::user user1;
 
             user1.set("first_name", "Bryan");
             user1.set("last_name", "Jenkins");
 
             user1.save();
 
-            user user2;
+            test::user user2;
 
             user2.set("first_name", "Bob");
             user2.set("last_name", "Smith");
@@ -35,30 +35,30 @@ go_bandit([]() {
             user2.save();
         });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
         it("has database info", []() {
-            select_query query(current_session);
+            select_query query(test::current_session);
 
-            query.from("users");
+            query.from(test::user::TABLE_NAME);
 
-            Assert::That(query.get_session(), Equals(current_session));
+            Assert::That(query.get_session(), Equals(test::current_session));
 
-            Assert::That(query.from(), Equals("users"));
+            Assert::That(query.from(), Equals(test::user::TABLE_NAME));
         });
 
         it("can be constructed with a schema", []() {
             schema_factory factory;
 
-            select_query query(factory.get(current_session, "users"));
+            select_query query(factory.get(test::current_session, test::user::TABLE_NAME));
 
-            Assert::That(query.from(), Equals("users"));
+            Assert::That(query.from(), Equals(test::user::TABLE_NAME));
         });
 
         it("can be copied and moved", []() {
-            select_query query(current_session, {"id"});
+            select_query query(test::current_session, {"id"});
 
-            query.from("users");
+            query.from(test::user::TABLE_NAME);
 
             select_query other(query);
 
@@ -70,7 +70,7 @@ go_bandit([]() {
 
             Assert::That(moved.to_string(), Equals(other.to_string()));
 
-            select_query other2(current_session);
+            select_query other2(test::current_session);
 
             other2.from("other_users");
 
@@ -78,7 +78,7 @@ go_bandit([]() {
 
             Assert::That(other.to_string(), Equals(other2.to_string()));
 
-            select_query moved2(current_session);
+            select_query moved2(test::current_session);
 
             moved2.from("moved_users");
 
@@ -99,9 +99,9 @@ go_bandit([]() {
         });
 
         it("can use callbacks", []() {
-            select_query query(current_session);
+            select_query query(test::current_session);
 
-            query.from("users");
+            query.from(test::user::TABLE_NAME);
 
             query.execute([](const resultset& rs) {
                 AssertThat(rs.is_valid(), IsTrue());
@@ -115,9 +115,9 @@ go_bandit([]() {
         });
 
         it("can be used with a where clause", []() {
-            auto query = select_query(current_session);
+            auto query = select_query(test::current_session);
 
-            query.columns("first_name", "last_name").from("users");
+            query.columns("first_name", "last_name").from(test::user::TABLE_NAME);
 
             try {
                 query.where(op::equals("first_name", "Bryan")) || op::equals("last_name", "Jenkins");
@@ -152,9 +152,9 @@ go_bandit([]() {
         });
 
         it("can execute scalar", []() {
-            auto query = select_query(current_session);
+            auto query = select_query(test::current_session);
 
-            query.columns("first_name").from("users");
+            query.columns("first_name").from(test::user::TABLE_NAME);
 
             query.where(op::equals("first_name", "Bryan"));
 
@@ -162,96 +162,91 @@ go_bandit([]() {
 
             Assert::That(value, Equals("Bryan"));
         });
-        /*
-                it("can use named parameters", []() {
-                    select_query query(current_session);
 
-                    query.from("users");
+        it("can union another", []() {
+            select_query query(test::current_session);
 
-                    query.where("first_name = @name OR last_name = @name");
+            query.from(test::user::TABLE_NAME);
 
-                    query.bind("@name", "Bryan");
+            select_query other(test::current_session);
 
-                    auto callback = [](const resultset& rs) {
-                        rs.for_each([](const row& row) {
-                            Assert::That(row.column("first_name").value().to_string() == "Bryan" || row.column("last_name").value().to_string() ==
-        "Bryan");
-                        });
+            other.from("user_settings");
 
-                    };
+            query.union_with(other);
 
-        #ifdef ENHANCED_PARAMETER_MAPPING
-                    query.execute(callback);
-        #else
-                    if (current_session->impl()->supports_named_parameters()) {
-                        query.execute(callback);
-                    } else {
-                        AssertThrows(database_exception, query.execute());
-                    }
-        #endif
+            Assert::That(query.to_string(), Equals("SELECT * FROM users UNION SELECT * FROM user_settings;"));
+
+            query.union_with(other, union_op::all);
+
+            Assert::That(query.to_string(), Equals("SELECT * FROM users UNION ALL SELECT * FROM user_settings;"));
+        });
+
+#ifdef ENHANCED_PARAMETER_MAPPING
+
+        it("can use named parameters", []() {
+
+            select_query query(test::current_session);
+
+            query.from(test::user::TABLE_NAME);
+
+            query.where("first_name = @name OR last_name = @name");
+
+            query.bind("@name", "Bryan");
+
+            auto callback = [](const resultset& rs) {
+                rs.for_each([](const row& row) {
+                    Assert::That(row.column("first_name").value().to_string() == "Bryan" || row.column("last_name").value().to_string() == "Bryan");
                 });
 
-                it("can union another", []() {
-                    select_query query(current_session);
+            };
 
-                    query.from("users");
+            if (current_session->has_feature(session::FEATURE_NAMED_PARAMS)) {
+                query.execute(callback);
+            } else {
+                AssertThrows(database_exception, query.execute());
+            }
+        });
 
-                    select_query other(current_session);
+        it("can use different parameter types", []() {
+            select_query query(test::current_session);
 
-                    other.from("user_settings");
+            query.from(test::user::TABLE_NAME);
 
-                    query.union_with(other);
+            query.where("(first_name = ? and last_name = ?) or (first_name = ? or last_name = ?) or last_name = @lname");
+            query.bind(1, "Bob");
+            query.bind(2, "Smith");
+            query.bind(3, "Bryan");
+            query.bind(4, "Smith");
+            query.bind("@lname", "Jenkins");
+            auto rs = query.execute();
 
-                    Assert::That(query.to_string(), Equals("SELECT * FROM users UNION SELECT * FROM user_settings;"));
+            Assert::That(rs.size() > 0, IsTrue());
 
-                    query.union_with(other, union_op::all);
+            query.reset();
 
-                    Assert::That(query.to_string(), Equals("SELECT * FROM users UNION ALL SELECT * FROM user_settings;"));
-                });
+            query.where("(first_name = $1 and last_name = $2) or (first_name = $3 or last_name = $2) or last_name = @lname");
 
-        #ifdef ENHANCED_PARAMETER_MAPPING
-                it("can use different parameter types", []() {
-                    select_query query(current_session);
+            query.bind(1, "Bob");
+            query.bind(2, "Smith");
+            query.bind(3, "Bryan");
+            query.bind("@lname", "Jenkins");
 
-                    query.from("users");
+            rs = query.execute();
 
-                    query.where("(first_name = ? and last_name = ?) or (first_name = ? or last_name = ?) or last_name = @lname");
-                    query.bind(1, "Bob");
-                    query.bind(2, "Smith");
-                    query.bind(3, "Bryan");
-                    query.bind(4, "Smith");
-                    query.bind("@lname", "Jenkins");
-                    auto rs = query.execute();
+            Assert::That(rs.size() > 0, IsTrue());
 
-                    Assert::That(rs.size() > 0, IsTrue());
+            query.reset();
 
-                    query.reset();
+            query.where("first_name = ? or last_name = $1 or last_name = @lname");
+            query.bind(1, "Bob");
+            query.bind("@lname", "Smith");
 
-                    query.where("(first_name = $1 and last_name = $2) or (first_name = $3 or last_name = $2) or last_name = @lname");
+            rs = query.execute();
 
-                    query.bind(1, "Bob");
-                    query.bind(2, "Smith");
-                    query.bind(3, "Bryan");
-                    query.bind("@lname", "Jenkins");
+            Assert::That(rs.size() > 0, IsTrue());
 
-                    rs = query.execute();
-
-                    Assert::That(rs.size() > 0, IsTrue());
-
-
-                    TODO: fix for postgres
-                    query.reset();
-
-                    query.where("first_name = ? or last_name = $1 or last_name = @lname");
-                    query.bind(1, "Bob");
-                    query.bind("@lname", "Smith");
-
-                    rs = query.execute();
-
-                    Assert::That(rs.size() > 0, IsTrue());
-
-                });
-        #endif*/
+        });
+#endif
     });
-
-});
+}
+SPEC_END;

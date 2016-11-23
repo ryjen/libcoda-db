@@ -8,16 +8,16 @@ using namespace std;
 
 using namespace rj::db;
 
-go_bandit([]() {
-
+SPEC_BEGIN(schema)
+{
     describe("schema", []() {
-        before_each([]() { setup_current_session(); });
+        before_each([]() { test::setup_current_session(); });
 
-        after_each([]() { teardown_current_session(); });
+        after_each([]() { test::teardown_current_session(); });
 
 
         it("has primary keys", []() {
-            user u;
+            test::user u;
 
             auto keys = u.schema()->primary_keys();
 
@@ -27,7 +27,7 @@ go_bandit([]() {
         });
 
         it("has operators", []() {
-            schema s(current_session, "users");
+            schema s(test::current_session, "users");
 
             s.init();
 
@@ -37,13 +37,13 @@ go_bandit([]() {
 
             Assert::That(other.is_valid(), Equals(true));
 
-            schema copy(current_session, "other_users");
+            schema copy(test::current_session, "other_users");
 
             copy = other;
 
             Assert::That(copy.table_name(), Equals(other.table_name()));
 
-            schema moved(current_session, "moved_users");
+            schema moved(test::current_session, "moved_users");
 
             moved = std::move(other);
 
@@ -53,7 +53,7 @@ go_bandit([]() {
         });
 
         it("has columns", []() {
-            schema s(current_session, "users");
+            schema s(test::current_session, "users");
 
             s.init();
 
@@ -67,6 +67,5 @@ go_bandit([]() {
         });
 
     });
-
-
-});
+}
+SPEC_END;

@@ -30,7 +30,7 @@ find_program(DOXYGEN doxygen)
 if(CODE_COVERAGE)
 	include(CodeCoverage)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_COVERAGE}")
-	setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_BINARY_DIR}/gen/coverage)
+	setup_target_for_coverage(TARGET ${PROJECT_NAME}_coverage OUTPUT ${PROJECT_BINARY_DIR}/gen/coverage)
 endif()
 
 if (ENABLE_LOGGING)
@@ -49,6 +49,24 @@ create_config_header()
 include(CreatePackage)
 create_package("A c++11 database interface.")
 
+if (SQLITE3_FOUND)
+	set(SQLITE_PROJECT_NAME "${PROJECT_NAME}_sqlite")
+	set(SQLITE_TEST_PROJECT_NAME "${PROJECT_NAME}_sqlite_test")
+endif()
+
+if (MYSQL_VERSION)
+	set(MYSQL_PROJECT_NAME "${PROJECT_NAME}_mysql")
+	set(MYSQL_TEST_PROJECT_NAME "${PROJECT_NAME}_mysql_test")
+endif()
+
+if (PostgreSQL_FOUND)
+	set(POSTGRES_PROJECT_NAME "${PROJECT_NAME}_postgres")
+	set(POSTGRES_TEST_PROJECT_NAME "${PROJECT_NAME}_postgres_test")
+endif()
+
+set(TEST_PROJECT_NAME "${PROJECT_NAME}_test")
+set(UTIL_TEST_PROJECT_NAME "${PROJECT_NAME}_test_util")
+
 # add directories
 add_subdirectory(src)
 add_subdirectory(tests)
@@ -58,18 +76,18 @@ enable_testing()
 
 include(ValgrindTest)
 
-add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test)
+add_valgrind_test(MEMORY_CHECK TARGET ${TEST_PROJECT_NAME})
 
 if (MYSQL_VERSION)
-	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_mysql ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_mysql "--suppressions=${PROJECT_SOURCE_DIR}/suppression.map")
+	add_valgrind_test(MEMORY_CHECK TARGET ${MYSQL_TEST_PROJECT_NAME} VALGRIND_ARGS "--suppressions=${PROJECT_SOURCE_DIR}/suppression.map")
 endif()
 
 if (PostgreSQL_FOUND)
-	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_postgres ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_postgres "--suppressions=${PROJECT_SOURCE_DIR}/suppression.map")
+	add_valgrind_test(MEMORY_CHECK TARGET ${POSTGRES_TEST_PROJECT_NAME} VALGRIND_ARGS "--suppressions=${PROJECT_SOURCE_DIR}/suppression.map")
 endif()
 
 if (SQLITE3_FOUND)
-	add_opt_valgrind_test(MEMORY_CHECK ${PROJECT_NAME}_test_sqlite ${PROJECT_BINARY_DIR}/tests/${PROJECT_NAME}_test_sqlite)
+	add_valgrind_test(MEMORY_CHECK TARGET ${SQLITE_TEST_PROJECT_NAME})
 endif()
 
 if (DOXYGEN)

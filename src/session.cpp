@@ -160,6 +160,10 @@ namespace rj
             return buf;
         }
 
+        int session_impl::features() const
+        {
+            return 0;
+        }
 
         /*!
          * utility method used in creating sql
@@ -183,11 +187,6 @@ namespace rj
             return buf.str();
         }
 
-        bool session_impl::supports_named_parameters() const
-        {
-            return false;
-        }
-
         string session::get_insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
         {
             return impl_->get_insert_sql(schema, columns);
@@ -196,6 +195,11 @@ namespace rj
         shared_ptr<session_impl> session::impl() const
         {
             return impl_;
+        }
+
+        bool session::has_feature(feature_type feature) const
+        {
+            return (impl_->features() & feature);
         }
     }
 }

@@ -7,4 +7,4 @@ add_executable(${PROJECT_NAME}_benchmark
 	select.cpp
 )
 
-target_link_libraries (${PROJECT_NAME}_benchmark ${PROJECT_NAME}-sqlite ${PROJECT_NAME}-mysql ${PROJECT_NAME}-postgres ${PROJECT_NAME}-test-util)
+target_link_libraries (${PROJECT_NAME}_benchmark ${SQLITE_PROJECT_NAME} ${MYSQL_PROJECT_NAME} ${POSTGRES_PROJECT_NAME} ${UTIL_TEST_PROJECT_NAME})

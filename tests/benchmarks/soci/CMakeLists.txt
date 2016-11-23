@@ -6,4 +6,4 @@ add_executable(${PROJECT_NAME}_benchmark_soci
 	select.cpp
 )
 
-target_link_libraries (${PROJECT_NAME}_benchmark_soci soci_core soci_sqlite3 soci_mysql soci_postgresql ${PROJECT_NAME}-test-util)
+target_link_libraries (${PROJECT_NAME}_benchmark_soci soci_core soci_sqlite3 soci_mysql soci_postgresql ${UTIL_TEST_PROJECT_NAME})
