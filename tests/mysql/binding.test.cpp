@@ -169,7 +169,7 @@ SPEC_BEGIN(mysql_binding)
             Assert::That(b.to_value(1), Equals("test"));
         });
 
-#ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENABLE_PARAMETER_MAPPING
         it("can reorder and reuse indexes", []() {
             select_query select(current_session);
 

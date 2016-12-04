@@ -70,8 +70,7 @@ namespace rj
 }
 
 
-SPEC_BEGIN(mysql)
-{
+go_bandit([]() {
     describe("mysql database", []() {
         before_each([]() { test::setup_current_session(); });
         after_each([]() { test::teardown_current_session(); });
@@ -94,5 +93,4 @@ SPEC_BEGIN(mysql)
         AssertThat(mysql->connection_info().port, Equals("4000"));
         AssertThat(mysql->connection_info().path, Equals("test"));
     });
-}
-SPEC_END;
+});

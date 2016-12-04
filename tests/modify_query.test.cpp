@@ -9,8 +9,7 @@ using namespace std;
 
 using namespace rj::db;
 
-SPEC_BEGIN(modify)
-{
+specification(modifying, []() {
     describe("modify query", []() {
         before_each([]() {
             test::setup_current_session();
@@ -105,5 +104,4 @@ SPEC_BEGIN(modify)
         });
 
     });
-}
-SPEC_END;
+});

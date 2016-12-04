@@ -30,8 +30,7 @@ column get_user_column(const string &name)
     return row->column(name);
 }
 
-SPEC_BEGIN(column)
-{
+specification(columns, []() {
     describe("column", []() {
         before_each([]() { test::setup_current_session(); });
 
@@ -154,5 +153,4 @@ SPEC_BEGIN(column)
             AssertThat(val, Equals("Bob"));
         });
     });
-}
-SPEC_END;
+});

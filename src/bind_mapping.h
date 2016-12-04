@@ -3,10 +3,6 @@
 
 #include "bindable.h"
 
-#ifndef ENHANCED_PARAMETER_MAPPING
-#include "exception.h"
-#endif
-
 #define DEFAULT_BINDING_SIZE 10
 #define DEFAULT_BINDING_INCREMENT 5
 
@@ -14,7 +10,7 @@ namespace rj
 {
     namespace db
     {
-#ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENABLE_PARAMETER_MAPPING
         /*!
          * a binding that supports mapping named parameters to indexed parameters
          */

@@ -104,7 +104,7 @@ namespace rj
              */
             where_builder &where(const sql_operator &value);
 
-#ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENABLE_PARAMETER_MAPPING
             where_builder &where(const std::string &value);
 
             /*!

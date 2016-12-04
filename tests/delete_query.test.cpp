@@ -8,8 +8,7 @@ using namespace std;
 
 using namespace rj::db;
 
-SPEC_BEGIN(delete_query)
-{
+specification(deletes, []() {
     describe("a delete query", []() {
 
         before_each([]() {
@@ -128,5 +127,4 @@ SPEC_BEGIN(delete_query)
         });
 
     });
-}
-SPEC_END;
+});

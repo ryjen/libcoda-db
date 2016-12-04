@@ -69,8 +69,7 @@ namespace rj
         }
     }
 }
-SPEC_BEGIN(postgres)
-{
+go_bandit([]() {
     it("can_parse_uri", []() {
         auto postgres = sqldb::create_session("postgres://localhost:4000/test");
         AssertThat(postgres.get() != NULL, IsTrue());
@@ -90,5 +89,4 @@ SPEC_BEGIN(postgres)
         });
 
     });
-}
-SPEC_END;
+});

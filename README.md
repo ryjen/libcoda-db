@@ -42,11 +42,11 @@ open rj_db.xcodeproj
 
 options supported are:
 
-		-DCODE_COVERAGE=OFF              : enable code coverage using lcov
-		-DMEMORY_CHECK=OFF               : enable valgrind memory checking on tests
+		-DENABLE_COVERAGE=OFF            : enable code coverage using lcov
+		-DENABLE_MEMCHECK=OFF            : enable valgrind memory checking on tests
 		-DENABLE_LOGGING=OFF             : enable internal library logging
 		-DENABLE_PROFILING=OFF           : enable valgrind profiling on tests
-		-DENHANCED_PARAMETER_MAPPING=OFF : use regex to map different parameter syntaxes
+		-DENABLE_PARAMETER_MAPPING=OFF   : use regex to map different parameter syntaxes
 		-DENABLE_BENCHMARKING=OFF        : benchmark with other database libraries
 
 

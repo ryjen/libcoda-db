@@ -7,8 +7,7 @@ using namespace std;
 
 using namespace rj::db;
 
-SPEC_BEGIN(record)
-{
+specification(records, []() {
     describe("a user record", []() {
         before_each([]() { test::setup_current_session(); });
 
@@ -128,5 +127,4 @@ SPEC_BEGIN(record)
 
         });
     });
-}
-SPEC_END;
+});

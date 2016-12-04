@@ -8,8 +8,7 @@ using namespace std;
 
 using namespace rj::db;
 
-SPEC_BEGIN(resultset)
-{
+specification(resultsets, []() {
     describe("resultset", []() {
 
         before_each([&]() {
@@ -159,5 +158,4 @@ SPEC_BEGIN(resultset)
             Assert::That(j >= i, Equals(true));
         });
     });
-}
-SPEC_END;
+});

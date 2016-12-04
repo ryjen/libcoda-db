@@ -131,7 +131,7 @@ namespace rj
             return where_;
         }
 
-#ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENABLE_PARAMETER_MAPPING
         select_query &select_query::where(const where_clause &value)
         {
             where_.where_clause::reset(value);

@@ -7,7 +7,7 @@ namespace rj
 {
     namespace db
     {
-#ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENABLE_PARAMETER_MAPPING
         // these ugly beasts will find parameters not in quotes
         std::regex bindable::param_regex("([@:]\\w+|\\$([0-9]+)|\\?)(?=(?:[^\"']|[\"'][^\"']*[\"'])*$)");
         std::regex bindable::index_regex("(\\$([0-9]+)|\\?)(?=(?:[^\"']|[\"'][^\"']*[\"'])*$)");

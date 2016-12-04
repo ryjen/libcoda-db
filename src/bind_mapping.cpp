@@ -1,11 +1,14 @@
 
 #include "bind_mapping.h"
+#ifndef ENABLE_PARAMETER_MAPPING
+#include "exception.h"
+#endif
 
 namespace rj
 {
     namespace db
     {
-#ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENABLE_PARAMETER_MAPPING
 
         bind_mapping::bind_mapping()
         {

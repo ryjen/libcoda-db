@@ -66,13 +66,11 @@ namespace rj
 }
 
 
-SPEC_BEGIN(sqlite)
-{
+go_bandit([]() {
     describe("sqlite database", []() {
         it("can_parse_uri", []() {
             auto file = sqldb::create_session("file://test.db");
             AssertThat(file.get() != NULL, IsTrue());
         });
     });
-}
-SPEC_END;
+});

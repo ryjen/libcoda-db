@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
         rj::db::log::set_level(rj::db::log::Error);
     }
 
-    rj::db::test::register_specs();
+    rj::db::test::spec::load();
 
     rj::db::test::register_current_session();
 

@@ -140,7 +140,7 @@ namespace rj
              */
             where_builder &where(const sql_operator &value);
 
-#ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENABLE_PARAMETER_MAPPING
             /*!
              * adds a where clause to this query
              * @param  value the where clause

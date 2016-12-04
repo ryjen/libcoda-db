@@ -14,8 +14,7 @@ resultset get_results()
     return query.from(test::user::TABLE_NAME).execute();
 }
 
-SPEC_BEGIN(select_query)
-{
+specification(selects, []() {
     describe("select query", []() {
         before_each([]() {
             test::setup_current_session();
@@ -181,7 +180,7 @@ SPEC_BEGIN(select_query)
             Assert::That(query.to_string(), Equals("SELECT * FROM users UNION ALL SELECT * FROM user_settings;"));
         });
 
-#ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENABLE_PARAMETER_MAPPING
 
         it("can use named parameters", []() {
 
@@ -248,5 +247,4 @@ SPEC_BEGIN(select_query)
         });
 #endif
     });
-}
-SPEC_END;
+});

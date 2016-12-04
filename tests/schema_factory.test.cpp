@@ -8,8 +8,7 @@ using namespace std;
 
 using namespace rj::db;
 
-SPEC_BEGIN(schema_factory)
-{
+specification(schema_factories, []() {
     describe("schema factory", []() {
         before_each([]() { test::setup_current_session(); });
 
@@ -45,5 +44,4 @@ SPEC_BEGIN(schema_factory)
         });
 
     });
-}
-SPEC_END;
+});

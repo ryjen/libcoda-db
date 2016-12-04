@@ -8,8 +8,7 @@ using namespace std;
 
 using namespace rj::db;
 
-SPEC_BEGIN(transaction)
-{
+specification(transactions, []() {
     describe("a transaction", []() {
 
         before_each([]() {

@@ -5,7 +5,7 @@
 #ifndef RJ_DB_BINDABLE_H
 #define RJ_DB_BINDABLE_H
 
-#ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENABLE_PARAMETER_MAPPING
 #include <regex>
 #endif
 
@@ -39,7 +39,7 @@ namespace rj
             }
 
            public:
-#ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENABLE_PARAMETER_MAPPING
             static std::regex param_regex;
             static std::regex index_regex;
             static std::regex named_regex;

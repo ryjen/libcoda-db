@@ -9,8 +9,7 @@ using namespace std;
 
 using namespace rj::db;
 
-SPEC_BEGIN(join)
-{
+specification(joins, []() {
     describe("a join", []() {
         before_each([&]() {
             test::setup_current_session();
@@ -199,5 +198,4 @@ SPEC_BEGIN(join)
             Assert::That(join.empty(), IsTrue());
         });
     });
-}
-SPEC_END;
+});

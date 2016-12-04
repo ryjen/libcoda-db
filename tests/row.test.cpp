@@ -21,8 +21,7 @@ row get_first_user_row()
     return *i;
 }
 
-SPEC_BEGIN(row)
-{
+specification(rows, []() {
     describe("a row", []() {
 
         before_each([&]() {
@@ -116,5 +115,4 @@ SPEC_BEGIN(row)
 
         });
     });
-}
-SPEC_END;
+});

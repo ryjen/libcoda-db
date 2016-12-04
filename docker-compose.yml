@@ -5,7 +5,7 @@ services:
     build:
       context: .
       args:
-          CMAKE_DEFINES: -DCMAKE_BUILD_TYPE=Release -DMEMORY_CHECK=ON
+          CMAKE_DEFINES: -DCMAKE_BUILD_TYPE=Release -DENABLE_MEMCHECK=ON
     links:
       - mysql
       - postgres
@@ -22,7 +22,7 @@ services:
     build:
       context: .
       args:
-          CMAKE_DEFINES: -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON
+          CMAKE_DEFINES: -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
     environment:
       - TRAVIS_JOB_ID
     links:

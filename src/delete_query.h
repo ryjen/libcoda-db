@@ -65,7 +65,7 @@ namespace rj
              */
             delete_query &where(const where_clause &value);
 
-#ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENABLE_PARAMETER_MAPPING
             where_builder &where(const std::string &sql);
 
             /*!

@@ -8,8 +8,7 @@ using namespace std;
 
 using namespace rj::db;
 
-SPEC_BEGIN(schema)
-{
+specification(schemas, []() {
     describe("schema", []() {
         before_each([]() { test::setup_current_session(); });
 
@@ -67,5 +66,4 @@ SPEC_BEGIN(schema)
         });
 
     });
-}
-SPEC_END;
+});

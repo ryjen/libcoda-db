@@ -2,6 +2,7 @@
 #define RJ_TEST_DB_H
 
 #include <unistd.h>
+#include <list>
 #include "mysql/session.h"
 #include "postgres/session.h"
 #include "record.h"
@@ -15,9 +16,12 @@ namespace rj
     {
         namespace test
         {
-            typedef std::function<void()> spec_type;
+            namespace spec
+            {
+                typedef std::function<void()> type;
 
-            void register_specs();
+                void load();
+            };
 
             class session
             {
@@ -79,11 +83,6 @@ namespace rj
     }
 }
 
-#undef SPEC_BEGIN
-#define SPEC_BEGIN(name) rj::db::test::spec_type name##_test_specs([]()
-
-#undef SPEC_END
-#define SPEC_END )
-
+#define specification(name, fn) rj::db::test::spec::type spec_file_##name(fn)
 
 #endif

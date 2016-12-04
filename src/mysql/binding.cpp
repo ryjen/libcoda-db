@@ -808,7 +808,7 @@ namespace rj
 
             std::string binding::prepare(const std::string &sql)
             {
-#ifdef ENHANCED_PARAMETER_MAPPING
+#ifdef ENABLE_PARAMETER_MAPPING
                 // now build the list of indexes
                 auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), bindable::index_regex);
                 auto match_end = std::sregex_iterator();

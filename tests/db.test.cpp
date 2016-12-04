@@ -5,6 +5,7 @@
 #include <bandit/bandit.h>
 #include "record.h"
 #include "select_query.h"
+#include "spec_lib.h"
 #include "sqldb.h"
 
 using namespace bandit;
@@ -12,10 +13,6 @@ using namespace bandit;
 using namespace std;
 
 using namespace rj::db;
-
-#define SPEC_EXTERN
-#include "spec_lib.h"
-#undef SPEC_EXTERN
 
 namespace rj
 {
@@ -25,9 +22,12 @@ namespace rj
         {
             std::shared_ptr<rj::db::session> current_session;
 
-            void register_specs()
+            namespace spec
             {
+                void load()
+                {
 #include "spec_lib.h"
+                }
             }
 
             void setup_current_session()

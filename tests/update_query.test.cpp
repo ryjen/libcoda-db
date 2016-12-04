@@ -8,8 +8,7 @@ using namespace std;
 
 using namespace rj::db;
 
-SPEC_BEGIN(update_query)
-{
+specification(updates, []() {
     describe("update clause", []() {
 
         it("can be constructed", []() {
@@ -63,5 +62,4 @@ SPEC_BEGIN(update_query)
         });
 
     });
-}
-SPEC_END;
+});
