@@ -21,7 +21,8 @@ namespace rj
             typedef enum { EQ, LIKE, IN, BETWEEN, IS } type;
 
             constexpr static const char *const type_values[] = {"=", "LIKE", "IN", "BETWEEN", "IS"};
-            constexpr static const char *const not_type_values[] = {"!=", "NOT LIKE", "NOT IN", "NOT BETWEEN", "IS NOT"};
+            constexpr static const char *const not_type_values[] = {"!=", "NOT LIKE", "NOT IN", "NOT BETWEEN",
+                                                                    "IS NOT"};
 
             sql_operator equals(const sql_value &lvalue, const sql_value &rvalue);
             sql_operator like(const sql_value &lvalue, const std::string &rvalue);
@@ -142,6 +143,9 @@ namespace rj
             std::string value_;
             std::vector<where_clause> and_;
             std::vector<where_clause> or_;
+            std::string output_;
+
+            std::string generate_sql() const;
 
            public:
             /*!
@@ -168,10 +172,13 @@ namespace rj
              */
             virtual std::string to_string() const;
 
+            virtual std::string to_string();
+
             /*!
              * explicit cast operator to sql string
              * @return the sql string
              */
+            explicit operator std::string() const;
             explicit operator std::string();
 
             /*!
