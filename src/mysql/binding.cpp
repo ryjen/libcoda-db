@@ -152,7 +152,7 @@ namespace rj
                     memset(&sys, 0, sizeof(sys));
 
                     sys.tm_year = db_tm->year - 1900;
-                    sys.tm_mon = db_tm->month;
+                    sys.tm_mon = db_tm->month - 1;
                     sys.tm_mday = db_tm->day;
                     sys.tm_hour = db_tm->hour;
                     sys.tm_min = db_tm->minute;
@@ -373,7 +373,7 @@ namespace rj
                     tm = c_alloc<MYSQL_TIME>();
                     auto gmt = value.to_gmtime();
                     tm->year = gmt->tm_year + 1900;
-                    tm->month = gmt->tm_mon;
+                    tm->month = gmt->tm_mon + 1;
                     tm->day = gmt->tm_mday;
                     tm->hour = gmt->tm_hour;
                     tm->minute = gmt->tm_min;

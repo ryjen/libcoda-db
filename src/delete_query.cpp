@@ -26,6 +26,7 @@ namespace rj
         delete_query::delete_query(const delete_query &other) : modify_query(other), where_(other.where_), tableName_(other.tableName_)
         {
         }
+        
         delete_query::delete_query(delete_query &&other)
             : modify_query(std::move(other)), where_(std::move(other.where_)), tableName_(std::move(other.tableName_))
         {
@@ -79,7 +80,6 @@ namespace rj
             return where_;
         }
 #endif
-
 
         delete_query &delete_query::from(const std::string &value)
         {

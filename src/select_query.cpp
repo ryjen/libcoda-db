@@ -16,11 +16,11 @@ namespace rj
         {
         }
         select_query::select_query(const std::shared_ptr<rj::db::session> &session, const vector<string> &columns)
-            : query(session), columns_(columns), where_(session->impl(), this)
+            : query(session), where_(session->impl(), this), columns_(columns)
         {
         }
         select_query::select_query(const std::shared_ptr<rj::db::session> &session, const vector<string> &columns, const string &tableName)
-            : query(session), columns_(columns), tableName_(tableName), where_(session->impl(), this)
+            : query(session), where_(session->impl(), this), columns_(columns), tableName_(tableName)
         {
         }
 
@@ -169,6 +169,7 @@ namespace rj
             join_.emplace_back(tableName, type);
             return join_.back();
         }
+        
         join_clause &select_query::join(const string &tableName, const string &alias, join::type type)
         {
             join_.emplace_back(tableName, alias, type);

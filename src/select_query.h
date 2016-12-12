@@ -35,7 +35,12 @@ namespace rj
             std::vector<std::string> columns_;
             std::string tableName_;
             std::shared_ptr<union_operator> union_;
-
+            
+            /*!
+             * selects a column
+             * @param value the name of the column to find
+             * @return a reference to this
+             */
             select_query &column(const std::string &value)
             {
                 columns_.push_back(value);
@@ -81,7 +86,13 @@ namespace rj
              * @return           a reference to this instance
              */
             select_query &from(const std::string &tableName);
-
+            
+            /*!
+             * sets the table to select from
+             * @param tableName the table name to select from
+             * @param alias the alias for the table name
+             * @return a reference to this
+             */
             select_query &from(const std::string &tableName, const std::string &alias);
 
             /*!
@@ -96,7 +107,13 @@ namespace rj
              * @return a reference to this
              */
             select_query &columns(const std::vector<std::string> &other);
-
+            
+            /*!
+             * sets the columns to select
+             * @param value the initial column name
+             * @param args the remaining column names
+             * @return a reference to this
+             */
             template <typename... List>
             select_query &columns(const std::string &value, const List &... args)
             {
@@ -147,7 +164,11 @@ namespace rj
              * @return       a reference to this
              */
             select_query &where(const where_clause &value);
-
+            
+            /*!
+             * builds a where clause from a SQL string
+             * @return a reference to this
+             */
             where_builder &where(const std::string &sql);
 
             /*!
@@ -177,7 +198,6 @@ namespace rj
                 bind_all(args...);
                 return *this;
             }
-
 #endif
 
             /*!
@@ -208,6 +228,14 @@ namespace rj
              * @return           a join clause to perform additional modification
              */
             join_clause &join(const std::string &tableName, join::type type = join::inner);
+            
+            /*!
+             * sets the join clause for this query
+             * @param  tableName    the table name to join
+             * @param  alias        the alias of the table name
+             * @param  type         the type of join
+             * @return a reference to this
+             */
             join_clause &join(const std::string &tableName, const std::string &alias, join::type type = join::inner);
 
             /*!
@@ -288,6 +316,11 @@ namespace rj
         struct union_operator {
             select_query query;
             union_op::type type;
+            
+            /*!
+             * @param query the query to find
+             * @param type the type of union
+             */
             union_operator(const select_query &query, union_op::type type = union_op::none) : query(query), type(type)
             {
             }

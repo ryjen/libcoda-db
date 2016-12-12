@@ -93,6 +93,8 @@ namespace rj
                     bool operator()(const sql_time &value) const
                     {
                         auto tstr = value.to_string();
+                        
+                        printf("time string %s\n", tstr.c_str());
 
                         return sqlite3_bind_text(stmt_.get(), index_, tstr.c_str(), tstr.size(), SQLITE_TRANSIENT) == SQLITE_OK;
                     }
