@@ -45,17 +45,17 @@ create_documentation()
 
 if (SQLITE3_FOUND)
 	set(SQLITE_PROJECT_NAME "${PROJECT_NAME}_sqlite")
-	set(SQLITE_TEST_PROJECT_NAME "${PROJECT_NAME}_sqlite_test")
+	set(SQLITE_TEST_PROJECT_NAME "${PROJECT_NAME}_test_sqlite")
 endif()
 
 if (MYSQL_VERSION)
 	set(MYSQL_PROJECT_NAME "${PROJECT_NAME}_mysql")
-	set(MYSQL_TEST_PROJECT_NAME "${PROJECT_NAME}_mysql_test")
+	set(MYSQL_TEST_PROJECT_NAME "${PROJECT_NAME}_test_mysql")
 endif()
 
 if (PostgreSQL_FOUND)
 	set(POSTGRES_PROJECT_NAME "${PROJECT_NAME}_postgres")
-	set(POSTGRES_TEST_PROJECT_NAME "${PROJECT_NAME}_postgres_test")
+	set(POSTGRES_TEST_PROJECT_NAME "${PROJECT_NAME}_test_postgres")
 endif()
 
 set(TEST_PROJECT_NAME "${PROJECT_NAME}_test")
