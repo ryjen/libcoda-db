@@ -61,13 +61,13 @@ specification(selects, []() {
 
             select_query other(query);
 
-            Assert::That(query.to_string(), Equals(other.to_string()));
+            Assert::That(query.to_sql(), Equals(other.to_sql()));
 
             select_query moved(std::move(query));
 
             Assert::That(query.is_valid(), Equals(false));
 
-            Assert::That(moved.to_string(), Equals(other.to_string()));
+            Assert::That(moved.to_sql(), Equals(other.to_sql()));
 
             select_query other2(test::current_session);
 
@@ -75,7 +75,7 @@ specification(selects, []() {
 
             other2 = other;
 
-            Assert::That(other.to_string(), Equals(other2.to_string()));
+            Assert::That(other.to_sql(), Equals(other2.to_sql()));
 
             select_query moved2(test::current_session);
 
@@ -85,7 +85,7 @@ specification(selects, []() {
 
             Assert::That(other2.is_valid(), Equals(false));
 
-            Assert::That(moved2.to_string(), Equals(other.to_string()));
+            Assert::That(moved2.to_sql(), Equals(other.to_sql()));
         });
 
         it("has validity", []() {
@@ -173,11 +173,11 @@ specification(selects, []() {
 
             query.union_with(other);
 
-            Assert::That(query.to_string(), Equals("SELECT * FROM users UNION SELECT * FROM user_settings;"));
+            Assert::That(query.to_sql(), Equals("SELECT * FROM users UNION SELECT * FROM user_settings;"));
 
             query.union_with(other, union_op::all);
 
-            Assert::That(query.to_string(), Equals("SELECT * FROM users UNION ALL SELECT * FROM user_settings;"));
+            Assert::That(query.to_sql(), Equals("SELECT * FROM users UNION ALL SELECT * FROM user_settings;"));
         });
 
 #ifdef ENABLE_PARAMETER_MAPPING
@@ -194,7 +194,8 @@ specification(selects, []() {
 
             auto callback = [](const resultset& rs) {
                 rs.for_each([](const row& row) {
-                    Assert::That(row.column("first_name").value().to_string() == "Bryan" || row.column("last_name").value().to_string() == "Bryan");
+                    Assert::That(row.column("first_name").value().to_sql() == "Bryan" ||
+                                 row.column("last_name").value().to_sql() == "Bryan");
                 });
 
             };
@@ -211,7 +212,8 @@ specification(selects, []() {
 
             query.from(test::user::TABLE_NAME);
 
-            query.where("(first_name = ? and last_name = ?) or (first_name = ? or last_name = ?) or last_name = @lname");
+            query.where(
+                "(first_name = ? and last_name = ?) or (first_name = ? or last_name = ?) or last_name = @lname");
             query.bind(1, "Bob");
             query.bind(2, "Smith");
             query.bind(3, "Bryan");
@@ -223,7 +225,8 @@ specification(selects, []() {
 
             query.reset();
 
-            query.where("(first_name = $1 and last_name = $2) or (first_name = $3 or last_name = $2) or last_name = @lname");
+            query.where(
+                "(first_name = $1 and last_name = $2) or (first_name = $3 or last_name = $2) or last_name = @lname");
 
             query.bind(1, "Bob");
             query.bind(2, "Smith");

@@ -26,7 +26,8 @@ namespace rj
              * @param db the database to modify
              * @param columns the columns to modify
              */
-            insert_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName, const std::vector<std::string> &columns);
+            insert_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName,
+                         const std::vector<std::string> &columns);
 
             /*!
              * @param schema the schema to modify
@@ -45,11 +46,6 @@ namespace rj
              * @return the id column of the last insert
              */
             long long last_insert_id() const;
-
-            /*!
-             * @return the sql/string representation of this query
-             */
-            std::string to_string() const;
 
             /*!
              * get the columns being modified
@@ -123,9 +119,13 @@ namespace rj
            private:
             insert_query &column(const std::string &value)
             {
-                columns_.push_back(value);
+                if (!value.empty()) {
+                    columns_.push_back(value);
+                    set_modified();
+                }
                 return *this;
             }
+            std::string generate_sql() const;
 
             long long lastId_;
             std::vector<std::string> columns_;

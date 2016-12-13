@@ -14,7 +14,7 @@ go_bandit([]() {
 
             auto w = (where("this") and "that") or (where("blah") and "bleh");
 
-            AssertThat(w.to_string(), Equals("(this AND that) OR (blah AND bleh)"));
+            AssertThat(w.to_sql(), Equals("(this AND that) OR (blah AND bleh)"));
         });
 
         it("can operate with other clauses", []() {
@@ -34,7 +34,7 @@ go_bandit([]() {
 
             w3 &&w4;
 
-            AssertThat(w3.to_string(), Equals("blah AND bleh"));
+            AssertThat(w3.to_sql(), Equals("blah AND bleh"));
         });
 
         it("can operate on empty", []() {
@@ -50,19 +50,19 @@ go_bandit([]() {
 
             w2 or "bleh";
 
-            AssertThat(w2.to_string(), Equals("bleh"));
+            AssertThat(w2.to_sql(), Equals("bleh"));
 
             where_clause w3;
 
             w3 &&w1;
 
-            AssertThat(w3.to_string(), Equals(w1.to_string()));
+            AssertThat(w3.to_sql(), Equals(w1.to_sql()));
 
             where_clause w4;
 
             w4 or w1;
 
-            AssertThat(w4.to_string(), Equals(w1.to_string()));
+            AssertThat(w4.to_sql(), Equals(w1.to_sql()));
         });
 
         it("can reset", []() {
@@ -72,7 +72,7 @@ go_bandit([]() {
 
             w.reset();
 
-            AssertThat(w.to_string(), Equals(""));
+            AssertThat(w.to_sql(), Equals(""));
 
         });
 
@@ -81,7 +81,7 @@ go_bandit([]() {
 
             w or (where("abc = def") and "xyz = tuv");
 
-            AssertThat(w.to_string(), Equals("(this = $1 AND that = $2) OR (abc = def AND xyz = tuv)"));
+            AssertThat(w.to_sql(), Equals("(this = $1 AND that = $2) OR (abc = def AND xyz = tuv)"));
         });
 
     });

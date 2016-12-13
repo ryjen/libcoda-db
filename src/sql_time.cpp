@@ -161,7 +161,6 @@ namespace rj
             return value_;
         }
 
-
         std::ostream &operator<<(std::ostream &out, const sql_time &value)
         {
             out << value.to_string();

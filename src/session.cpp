@@ -40,7 +40,8 @@ namespace rj
         {
         }
 
-        session::session(session &&other) : impl_(std::move(other.impl_)), schema_factory_(std::move(other.schema_factory_))
+        session::session(session &&other)
+            : impl_(std::move(other.impl_)), schema_factory_(std::move(other.schema_factory_))
         {
             other.impl_ = nullptr;
         }
@@ -140,56 +141,9 @@ namespace rj
             return impl_->get_columns_for_schema(connection_info().path, tablename);
         }
 
-        string session_impl::get_insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
-        {
-            string buf;
-
-            buf += "INSERT INTO ";
-            buf += schema->table_name();
-
-            buf += "(";
-
-            buf += helper::join_csv(columns);
-
-            buf += ") VALUES(";
-
-            buf += join_params(columns);
-
-            buf += ");";
-
-            return buf;
-        }
-
         int session_impl::features() const
         {
             return 0;
-        }
-
-        /*!
-         * utility method used in creating sql
-         */
-        string session_impl::join_params(const vector<string> &columns, const std::string &op) const
-        {
-            ostringstream buf;
-
-            for (string::size_type i = 0; i < columns.size(); i++) {
-                if (op.size() > 0) {
-                    buf << columns[i];
-                    buf << op;
-                }
-
-                buf << bind_param(i + 1);
-
-                if (i + 1 < columns.size()) {
-                    buf.put(',');
-                }
-            }
-            return buf.str();
-        }
-
-        string session::get_insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
-        {
-            return impl_->get_insert_sql(schema, columns);
         }
 
         shared_ptr<session_impl> session::impl() const
@@ -200,6 +154,29 @@ namespace rj
         bool session::has_feature(feature_type feature) const
         {
             return (impl_->features() & feature);
+        }
+
+
+        /*!
+         * utility method used in creating sql
+         */
+        string session::join_params(const vector<string> &columns, const std::string &op) const
+        {
+            ostringstream buf;
+
+            for (string::size_type i = 0; i < columns.size(); i++) {
+                if (!op.empty()) {
+                    buf << columns[i];
+                    buf << op;
+                }
+
+                buf << impl_->bind_param(i + 1);
+
+                if (i + 1 < columns.size()) {
+                    buf.put(',');
+                }
+            }
+            return buf.str();
         }
     }
 }

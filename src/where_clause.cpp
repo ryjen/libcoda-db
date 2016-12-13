@@ -288,16 +288,12 @@ namespace rj
         {
         }
 
-        where_clause::where_clause(const where_clause &other)
-            : value_(other.value_), and_(other.and_), or_(other.or_), output_(other.output_)
+        where_clause::where_clause(const where_clause &other) : value_(other.value_), and_(other.and_), or_(other.or_)
         {
         }
 
         where_clause::where_clause(where_clause &&other)
-            : value_(std::move(other.value_)),
-              and_(std::move(other.and_)),
-              or_(std::move(other.or_)),
-              output_(std::move(other.output_))
+            : value_(std::move(other.value_)), and_(std::move(other.and_)), or_(std::move(other.or_))
         {
         }
 
@@ -310,7 +306,6 @@ namespace rj
             value_ = other.value_;
             and_ = other.and_;
             or_ = other.or_;
-            output_ = other.output_;
 
             return *this;
         }
@@ -320,26 +315,8 @@ namespace rj
             value_ = std::move(other.value_);
             and_ = std::move(other.and_);
             or_ = std::move(other.or_);
-            output_ = std::move(other.output_);
 
             return *this;
-        }
-
-        string where_clause::to_string() const
-        {
-            if (!output_.empty()) {
-                return output_;
-            }
-
-            return generate_sql();
-        }
-
-        string where_clause::to_string()
-        {
-            if (output_.empty()) {
-                output_ = generate_sql();
-            }
-            return output_;
         }
 
         std::string where_clause::generate_sql() const
@@ -356,11 +333,11 @@ namespace rj
                 std::vector<where_clause>::const_iterator it;
                 output += " AND ";
                 for (it = and_.begin(); it < and_.end() - 1; ++it) {
-                    output += it->to_string();
+                    output += it->to_sql();
                     output += " AND ";
                 }
                 if (it != and_.end()) {
-                    output += it->to_string();
+                    output += it->to_sql();
                 }
                 if (!or_.empty()) {
                     output += ")";
@@ -375,11 +352,11 @@ namespace rj
                     output += " OR ";
                 }
                 for (it = or_.begin(); it < or_.end() - 1; ++it) {
-                    output += it->to_string();
+                    output += it->to_sql();
                     output += " OR ";
                 }
                 if (it != or_.end()) {
-                    output += it->to_string();
+                    output += it->to_sql();
                 }
                 if (!and_.empty()) {
                     output += ")";
@@ -395,50 +372,67 @@ namespace rj
 
         where_clause::operator string() const
         {
-            return to_string();
+            return to_sql();
         }
         where_clause::operator string()
         {
-            return to_string();
+            return to_sql();
         }
+
+        void where_clause::set_modified()
+        {
+            sql_generator::reset();
+        }
+
         where_clause &where_clause::operator&&(const where_clause &value)
         {
             if (value_.empty()) {
-                value_ = value.to_string();
+                value_ = value.to_sql();
             } else {
                 and_.push_back(value);
             }
-            output_.clear();
+            set_modified();
             return *this;
         }
         where_clause &where_clause::operator&&(const string &value)
         {
+            if (value.empty()) {
+                return *this;
+            }
+
             if (value_.empty()) {
                 value_ = value;
             } else {
                 and_.push_back(where_clause(value));
             }
-            output_.clear();
+            set_modified();
+
             return *this;
         }
         where_clause &where_clause::operator||(const where_clause &value)
         {
+            if (value.empty()) {
+                return *this;
+            }
             if (value_.empty()) {
-                value_ = value.to_string();
+                value_ = value.to_sql();
             } else {
                 or_.push_back(value);
             }
-            output_.clear();
+            set_modified();
             return *this;
         }
         where_clause &where_clause::operator||(const string &value)
         {
+            if (value.empty()) {
+                return *this;
+            }
             if (value_.empty()) {
                 value_ = value;
             } else {
                 or_.push_back(where_clause(value));
             }
-            output_.clear();
+            set_modified();
             return *this;
         }
 
@@ -447,7 +441,7 @@ namespace rj
             value_.clear();
             and_.clear();
             or_.clear();
-            output_.clear();
+            sql_generator::reset();
         }
 
         void where_clause::reset(const std::string &value)
@@ -457,21 +451,18 @@ namespace rj
         }
         void where_clause::reset(const where_clause &other)
         {
-            value_ = other.value_;
-            and_ = other.and_;
-            or_ = other.or_;
-            output_ = other.output_;
+            operator=(other);
         }
 
         ostream &operator<<(ostream &out, const where_clause &where)
         {
-            out << where.to_string();
+            out << where.to_sql();
             return out;
         }
 
 
         where_builder::where_builder(const std::shared_ptr<session_impl> &session, bindable *binder)
-            :  session_(session), binder_(binder)
+            : session_(session), binder_(binder)
         {
             assert(binder != nullptr);
         }

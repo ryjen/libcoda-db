@@ -8,14 +8,16 @@ namespace rj
 {
     namespace db
     {
-        update_query::update_query(const std::shared_ptr<rj::db::session> &session) : modify_query(session), where_(session->impl(), this)
+        update_query::update_query(const std::shared_ptr<rj::db::session> &session)
+            : modify_query(session), where_(session->impl(), this)
         {
         }
 
         /*!
          * @param schema the schema to modify
          */
-        update_query::update_query(const std::shared_ptr<schema> &schema) : modify_query(schema), where_(schema->get_session()->impl(), this)
+        update_query::update_query(const std::shared_ptr<schema> &schema)
+            : modify_query(schema), where_(schema->get_session()->impl(), this)
         {
         }
 
@@ -99,10 +101,11 @@ namespace rj
         update_query &update_query::table(const string &value)
         {
             tableName_ = value;
+            set_modified();
             return *this;
         }
 
-        string update_query::to_string() const
+        string update_query::generate_sql() const
         {
             string buf;
 
@@ -111,12 +114,12 @@ namespace rj
 
             if (columns_.size() > 0) {
                 buf += " SET ";
-                buf += session_->impl()->join_params(columns_, op::type_values[op::EQ]);
+                buf += session_->join_params(columns_, op::type_values[op::EQ]);
             }
 
             if (!where_.empty()) {
                 buf += " WHERE ";
-                buf += where_.to_string();
+                buf += where_.to_sql();
             } else {
                 log::warn("empty where clause for update query");
             }
@@ -129,6 +132,7 @@ namespace rj
         update_query &update_query::columns(const vector<string> &columns)
         {
             columns_ = columns;
+            set_modified();
             return *this;
         }
 
@@ -144,36 +148,42 @@ namespace rj
         update_query &update_query::where(const where_clause &value)
         {
             where_.where_clause::reset(value);
+            set_modified();
             return *this;
         }
 
         where_builder &update_query::where(const sql_operator &value)
         {
             where_.reset(value);
+            set_modified();
             return where_;
         }
 
         update_query &update_query::values(const std::vector<sql_value> &value)
         {
             bindable::bind(value);
+            set_modified();
             return *this;
         }
 
         update_query &update_query::values(const std::unordered_map<std::string, sql_value> &value)
         {
             bindable::bind(value);
+            set_modified();
             return *this;
         }
 
         update_query &update_query::value(const std::string &name, const sql_value &value)
         {
             bind(name, value);
+            set_modified();
             return *this;
         }
 
         update_query &update_query::value(const sql_value &value)
         {
             bind(num_of_bindings() + 1, value);
+            set_modified();
             return *this;
         }
     }

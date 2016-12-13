@@ -12,14 +12,16 @@ namespace rj
 {
     namespace db
     {
-        select_query::select_query(const std::shared_ptr<rj::db::session> &session) : query(session), where_(session->impl(), this)
+        select_query::select_query(const std::shared_ptr<rj::db::session> &session)
+            : query(session), where_(session->impl(), this)
         {
         }
         select_query::select_query(const std::shared_ptr<rj::db::session> &session, const vector<string> &columns)
             : query(session), where_(session->impl(), this), columns_(columns)
         {
         }
-        select_query::select_query(const std::shared_ptr<rj::db::session> &session, const vector<string> &columns, const string &tableName)
+        select_query::select_query(const std::shared_ptr<rj::db::session> &session, const vector<string> &columns,
+                                   const string &tableName)
             : query(session), where_(session->impl(), this), columns_(columns), tableName_(tableName)
         {
         }
@@ -35,7 +37,8 @@ namespace rj
         {
         }
 
-        select_query::select_query(const shared_ptr<schema> &schema) : select_query(schema->get_session(), schema->column_names())
+        select_query::select_query(const shared_ptr<schema> &schema)
+            : select_query(schema->get_session(), schema->column_names())
         {
             tableName_ = schema->table_name();
         }
@@ -83,12 +86,14 @@ namespace rj
         select_query &select_query::from(const string &value)
         {
             tableName_ = value;
+            set_modified();
             return *this;
         }
 
         select_query &select_query::from(const string &value, const string &alias)
         {
             tableName_ = value + " " + alias;
+            set_modified();
             return *this;
         }
 
@@ -105,6 +110,7 @@ namespace rj
         select_query &select_query::columns(const vector<string> &value)
         {
             columns_ = value;
+            set_modified();
             return *this;
         }
 
@@ -128,6 +134,7 @@ namespace rj
         where_builder &select_query::where(const sql_operator &value)
         {
             where_.reset(value);
+            set_modified();
             return where_;
         }
 
@@ -135,12 +142,14 @@ namespace rj
         select_query &select_query::where(const where_clause &value)
         {
             where_.where_clause::reset(value);
+            set_modified();
             return *this;
         }
 
         where_builder &select_query::where(const std::string &sql)
         {
             where_.where_clause::reset(sql);
+            set_modified();
             return where_;
         }
 #endif
@@ -148,46 +157,52 @@ namespace rj
         select_query &select_query::limit(const string &value)
         {
             limit_ = value;
-
+            set_modified();
             return *this;
         }
 
         select_query &select_query::order_by(const string &value)
         {
             orderBy_ = value;
+            set_modified();
             return *this;
         }
 
         select_query &select_query::group_by(const string &value)
         {
             groupBy_ = value;
+            set_modified();
             return *this;
         }
 
         join_clause &select_query::join(const string &tableName, join::type type)
         {
             join_.emplace_back(tableName, type);
+            set_modified();
             return join_.back();
         }
-        
+
         join_clause &select_query::join(const string &tableName, const string &alias, join::type type)
         {
             join_.emplace_back(tableName, alias, type);
+            set_modified();
             return join_.back();
         }
         select_query &select_query::join(const join_clause &value)
         {
             join_.push_back(value);
+            set_modified();
             return *this;
         }
 
         select_query &select_query::union_with(const select_query &query, union_op::type type)
         {
             union_ = make_shared<union_operator>(query, type);
+            set_modified();
             return *this;
         }
 
-        string select_query::to_string() const
+        string select_query::generate_sql() const
         {
             string buf;
 
@@ -201,13 +216,13 @@ namespace rj
 
             if (!join_.empty()) {
                 for (auto &join : join_) {
-                    buf += join.to_string();
+                    buf += join.to_sql();
                 }
             }
 
             if (!where_.empty()) {
                 buf += " WHERE ";
-                buf += where_.to_string();
+                buf += where_.to_sql();
             }
 
             if (!orderBy_.empty()) {
@@ -230,7 +245,7 @@ namespace rj
                 if (union_->type == union_op::all) {
                     buf += "ALL ";
                 }
-                buf += union_->query.to_string();
+                buf += union_->query.to_sql();
             } else {
                 buf += ";";
             }
@@ -239,15 +254,15 @@ namespace rj
 
         long long select_query::count()
         {
-            auto cols(columns_);
-
             // sucks to backup the columns just for this
             // query, but I don't see an easy way right now
             // TODO: improve
+            auto cols(columns_);
+
             try {
                 columns_ = {"COUNT(*)"};
 
-                prepare(to_string());
+                prepare(to_sql());
 
                 sql_number value = execute_scalar<sql_number>();
 
@@ -264,14 +279,14 @@ namespace rj
 
         resultset select_query::execute()
         {
-            prepare(to_string());
+            prepare(to_sql());
 
             return stmt_->results();
         }
 
         void select_query::execute(const std::function<void(const resultset &rs)> &funk)
         {
-            prepare(to_string());
+            prepare(to_sql());
 
             auto rs = stmt_->results();
 
@@ -286,7 +301,7 @@ namespace rj
 
         std::ostream &operator<<(std::ostream &out, const select_query &other)
         {
-            out << other.to_string();
+            out << other.to_sql();
             return out;
         }
     }

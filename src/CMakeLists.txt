@@ -18,6 +18,7 @@ set(LIBRARY_SOURCES
   	session.cpp
 	sqldb.cpp
 	sql_common.cpp
+	sql_generator.cpp
 	sql_number.cpp
 	sql_time.cpp
 	sql_value.cpp
@@ -140,6 +141,7 @@ set(${PROJECT_NAME}_HEADERS
   	session.h
   	sql_types.h
   	sql_common.h
+	sql_generator.h
   	sql_number.h
 	sql_value.h
 	sqldb.h

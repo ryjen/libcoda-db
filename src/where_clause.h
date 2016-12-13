@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "bindable.h"
+#include "sql_generator.h"
 #include "sqldb.h"
 
 namespace rj
@@ -137,15 +138,15 @@ namespace rj
          * a utility class aimed at making logic where statements
          * ex. where("a = b") || "c == d" && "e == f";
          */
-        class where_clause
+        class where_clause : public sql_generator
         {
            private:
             std::string value_;
             std::vector<where_clause> and_;
             std::vector<where_clause> or_;
-            std::string output_;
 
             std::string generate_sql() const;
+            void set_modified();
 
            public:
             /*!
@@ -165,14 +166,6 @@ namespace rj
             where_clause &operator=(const where_clause &other);
             where_clause &operator=(where_clause &&other);
             virtual ~where_clause();
-
-            /*!
-             * the sql for this where clause
-             * @return a sql string
-             */
-            virtual std::string to_string() const;
-
-            virtual std::string to_string();
 
             /*!
              * explicit cast operator to sql string
@@ -240,6 +233,8 @@ namespace rj
             virtual ~where_builder();
 
             size_t num_of_bindings() const;
+
+            using sql_generator::to_sql;
 
             void reset(const sql_operator &value);
 

@@ -44,7 +44,10 @@ namespace rj
             }
 
             session::session(session &&other)
-                : session_impl(std::move(other)), db_(std::move(other.db_)), lastId_(other.lastId_), lastNumChanges_(other.lastNumChanges_)
+                : session_impl(std::move(other)),
+                  db_(std::move(other.db_)),
+                  lastId_(other.lastId_),
+                  lastNumChanges_(other.lastNumChanges_)
             {
                 other.db_ = nullptr;
             }
@@ -173,47 +176,8 @@ namespace rj
                 return make_shared<postgres::transaction>(db_, mode);
             }
 
-            string session::get_insert_sql(const std::shared_ptr<schema> &schema, const vector<string> &columns) const
-            {
-                string buf;
-
-                if (schema == nullptr) {
-                    return string();
-                }
-
-                buf += "INSERT INTO ";
-                buf += schema->table_name();
-
-                buf += "(";
-
-                buf += rj::db::helper::join_csv(columns);
-
-                buf += ") VALUES(";
-
-                buf += join_params(columns);
-
-                buf += ")";
-
-                auto keys = schema->primary_keys();
-
-                auto it = keys.begin();
-
-                if (it != keys.end()) {
-                    buf += " RETURNING ";
-
-                    while (it < keys.end() - 1) {
-                        buf += *it;
-                        buf += ",";
-                    }
-
-                    buf += *it;
-                }
-
-                buf += ";";
-
-                return buf;
-            }
-            std::vector<column_definition> session::get_columns_for_schema(const string &dbName, const string &tableName)
+            std::vector<column_definition> session::get_columns_for_schema(const string &dbName,
+                                                                           const string &tableName)
             {
                 std::vector<column_definition> columns;
 
@@ -221,15 +185,17 @@ namespace rj
                     return columns;
                 }
 
-                string pk_sql =
-                    string("SELECT tc.table_schema, tc.table_name, kc.column_name FROM information_schema.table_constraints tc ") +
-                    "JOIN information_schema.key_column_usage kc ON kc.table_name = tc.table_name AND kc.table_schema = tc.table_schema " +
-                    "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '" + tableName +
-                    "' ORDER BY tc.table_schema, tc.table_name, kc.position_in_unique_constraint";
+                string pk_sql = string(
+                                    "SELECT tc.table_schema, tc.table_name, kc.column_name FROM "
+                                    "information_schema.table_constraints tc ") +
+                                "JOIN information_schema.key_column_usage kc ON kc.table_name = tc.table_name AND "
+                                "kc.table_schema = tc.table_schema " +
+                                "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '" + tableName +
+                                "' ORDER BY tc.table_schema, tc.table_name, kc.position_in_unique_constraint";
 
-                string col_sql =
-                    string("SELECT column_name, data_type, pg_get_serial_sequence('" + tableName + "', column_name) as serial, column_default ") +
-                    "FROM information_schema.columns WHERE table_name = '" + tableName + "'";
+                string col_sql = string("SELECT column_name, data_type, pg_get_serial_sequence('" + tableName +
+                                        "', column_name) as serial, column_default ") +
+                                 "FROM information_schema.columns WHERE table_name = '" + tableName + "'";
 
                 auto primary_keys = query(pk_sql);
 
@@ -275,7 +241,8 @@ namespace rj
 
             int session::features() const
             {
-                return db::session::FEATURE_FULL_OUTER_JOIN | db::session::FEATURE_RETURNING | db::session::FEATURE_RIGHT_JOIN;
+                return db::session::FEATURE_FULL_OUTER_JOIN | db::session::FEATURE_RETURNING |
+                       db::session::FEATURE_RIGHT_JOIN;
             }
         }
     }

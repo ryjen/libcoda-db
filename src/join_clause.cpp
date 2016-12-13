@@ -15,18 +15,21 @@ namespace rj
         join_clause::join_clause(const string &tableName, join::type type) : tableName_(tableName), type_(type)
         {
         }
-        join_clause::join_clause(const string &tableName, const string &alias, join::type type) : tableName_(tableName + " " + alias), type_(type)
+        join_clause::join_clause(const string &tableName, const string &alias, join::type type)
+            : tableName_(tableName + " " + alias), type_(type)
         {
         }
         join_clause::~join_clause()
         {
         }
 
-        join_clause::join_clause(const join_clause &other) : tableName_(other.tableName_), type_(other.type_), on_(other.on_)
+        join_clause::join_clause(const join_clause &other)
+            : tableName_(other.tableName_), type_(other.type_), on_(other.on_)
         {
         }
 
-        join_clause::join_clause(join_clause &&other) : tableName_(std::move(other.tableName_)), type_(other.type_), on_(std::move(other.on_))
+        join_clause::join_clause(join_clause &&other)
+            : tableName_(std::move(other.tableName_)), type_(other.type_), on_(std::move(other.on_))
         {
         }
 
@@ -46,7 +49,7 @@ namespace rj
             return *this;
         }
 
-        string join_clause::to_string() const
+        string join_clause::generate_sql() const
         {
             string buf;
 
@@ -79,20 +82,27 @@ namespace rj
 
             if (type_ != join::cross && type_ != join::natural) {
                 buf += " ON ";
-                buf += on_.to_string();
+                buf += on_.to_sql();
             }
 
             return buf;
         }
 
+        void join_clause::set_modified()
+        {
+            sql_generator::reset();
+        }
+
         join_clause &join_clause::table(const string &value)
         {
             tableName_ = value;
+            set_modified();
             return *this;
         }
         join_clause &join_clause::table(const string &value, const string &alias)
         {
             tableName_ = value + " " + alias;
+            set_modified();
             return *this;
         }
         std::string join_clause::table() const
@@ -103,6 +113,7 @@ namespace rj
         join_clause &join_clause::type(join::type value)
         {
             type_ = value;
+            set_modified();
             return *this;
         }
 
@@ -114,12 +125,14 @@ namespace rj
         where_clause &join_clause::on(const string &value)
         {
             on_ = where_clause(value);
+            set_modified();
             return on_;
         }
 
         join_clause &join_clause::on(const where_clause &value)
         {
             on_ = value;
+            set_modified();
             return *this;
         }
 
@@ -135,18 +148,24 @@ namespace rj
 
         join_clause::operator string()
         {
-            return to_string();
+            return to_sql();
+        }
+
+        join_clause::operator string() const
+        {
+            return to_sql();
         }
 
         void join_clause::reset()
         {
             tableName_.clear();
             on_.reset();
+            sql_generator::reset();
         }
 
         ostream &operator<<(ostream &out, const join_clause &join)
         {
-            out << join.to_string();
+            out << join.to_sql();
             return out;
         }
     }

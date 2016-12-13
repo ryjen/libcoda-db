@@ -35,7 +35,8 @@ namespace rj
              * @param db the database to modify
              * @param columns the columns to modify
              */
-            update_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName, const std::vector<std::string> &columns);
+            update_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName,
+                         const std::vector<std::string> &columns);
 
             /*!
              * @param schema the schema to modify
@@ -145,6 +146,7 @@ namespace rj
             update_query &values(const T &value, const List &... argv)
             {
                 bind_list(1, value, argv...);
+                set_modified();
                 return *this;
             }
 
@@ -157,11 +159,6 @@ namespace rj
             update_query &value(const sql_value &value);
 
             /*!
-             * @return the string/sql representation of this query
-             */
-            std::string to_string() const;
-
-            /*!
              * tests if this query is valid
              * @return true if valid
              */
@@ -170,9 +167,14 @@ namespace rj
            private:
             update_query &column(const std::string &value)
             {
-                columns_.push_back(value);
+                if (!value.empty()) {
+                    columns_.push_back(value);
+                    set_modified();
+                }
                 return *this;
             }
+
+            std::string generate_sql() const;
 
             where_builder where_;
             std::vector<std::string> columns_;

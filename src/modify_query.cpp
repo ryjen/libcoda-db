@@ -13,7 +13,8 @@ namespace rj
 {
     namespace db
     {
-        modify_query::modify_query(const std::shared_ptr<rj::db::session> &session) : query(session), flags_(0), numChanges_(0)
+        modify_query::modify_query(const std::shared_ptr<rj::db::session> &session)
+            : query(session), flags_(0), numChanges_(0)
         {
         }
 
@@ -21,10 +22,12 @@ namespace rj
         {
         }
 
-        modify_query::modify_query(const modify_query &other) : query(other), flags_(other.flags_), numChanges_(other.numChanges_)
+        modify_query::modify_query(const modify_query &other)
+            : query(other), flags_(other.flags_), numChanges_(other.numChanges_)
         {
         }
-        modify_query::modify_query(modify_query &&other) : query(std::move(other)), flags_(other.flags_), numChanges_(other.numChanges_)
+        modify_query::modify_query(modify_query &&other)
+            : query(std::move(other)), flags_(other.flags_), numChanges_(other.numChanges_)
         {
         }
 
@@ -58,7 +61,7 @@ namespace rj
                 throw database_exception("Invalid modify query");
             }
 
-            prepare(to_string());
+            prepare(to_sql());
 
             bool success = stmt_->result();
 
