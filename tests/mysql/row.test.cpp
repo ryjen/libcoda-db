@@ -11,7 +11,9 @@ using namespace rj::db;
 
 shared_ptr<row_impl> get_mysql_results_row(size_t index)
 {
-    auto rs = test::current_session->query("select * from users");
+    auto rsi = test::current_session->impl()->query("select * from users");
+
+    resultset rs(rsi);
 
     if (index > 0 && index >= rs.size()) {
         throw database_exception("not enough rows");

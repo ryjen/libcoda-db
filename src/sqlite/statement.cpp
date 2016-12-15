@@ -1,5 +1,7 @@
 #include "statement.h"
+#include "../exception.h"
 #include "../log.h"
+#include "../sql_value.h"
 #include "resultset.h"
 #include "session.h"
 
@@ -93,8 +95,9 @@ namespace rj
                     bool operator()(const sql_time &value) const
                     {
                         auto tstr = value.to_string();
-                        
-                        return sqlite3_bind_text(stmt_.get(), index_, tstr.c_str(), tstr.size(), SQLITE_TRANSIENT) == SQLITE_OK;
+
+                        return sqlite3_bind_text(stmt_.get(), index_, tstr.c_str(), tstr.size(), SQLITE_TRANSIENT) ==
+                               SQLITE_OK;
                     }
 
                     bool operator()(const sql_null_type &value) const
@@ -104,12 +107,14 @@ namespace rj
 
                     bool operator()(const sql_blob &value) const
                     {
-                        return sqlite3_bind_blob(stmt_.get(), index_, value.data(), value.size(), SQLITE_TRANSIENT) == SQLITE_OK;
+                        return sqlite3_bind_blob(stmt_.get(), index_, value.data(), value.size(), SQLITE_TRANSIENT) ==
+                               SQLITE_OK;
                     }
 
                     bool operator()(const std::wstring &value) const
                     {
-                        return sqlite3_bind_text16(stmt_.get(), index_, value.c_str(), -1, SQLITE_TRANSIENT) == SQLITE_OK;
+                        return sqlite3_bind_text16(stmt_.get(), index_, value.c_str(), -1, SQLITE_TRANSIENT) ==
+                               SQLITE_OK;
                     }
 
                     bool operator()(const std::string &value) const
@@ -135,7 +140,8 @@ namespace rj
                 }
             }
 
-            statement::statement(statement &&other) : sess_(std::move(other.sess_)), stmt_(std::move(other.stmt_)), bound_(other.bound_)
+            statement::statement(statement &&other)
+                : sess_(std::move(other.sess_)), stmt_(std::move(other.stmt_)), bound_(other.bound_)
             {
                 other.stmt_ = nullptr;
                 other.sess_ = NULL;

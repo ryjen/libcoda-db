@@ -2,16 +2,20 @@
 #include "bindable.h"
 #include "exception.h"
 #include "log.h"
+#include "sql_value.h"
 
 namespace rj
 {
     namespace db
     {
+        const int bindable::prealloc_size = 10;
+        const int bindable::prealloc_increment = 5;
+
 #ifdef ENABLE_PARAMETER_MAPPING
         // these ugly beasts will find parameters not in quotes
-        std::regex bindable::param_regex("([@:]\\w+|\\$([0-9]+)|\\?)(?=(?:[^\"']|[\"'][^\"']*[\"'])*$)");
-        std::regex bindable::index_regex("(\\$([0-9]+)|\\?)(?=(?:[^\"']|[\"'][^\"']*[\"'])*$)");
-        std::regex bindable::named_regex("([@:]\\w+)(?=(?:[^\"']|[\"'][^\"']*[\"'])*$)");
+        const std::regex bindable::param_regex("([@:]\\w+|\\$([0-9]+)|\\?)(?=(?:[^\"']|[\"'][^\"']*[\"'])*$)");
+        const std::regex bindable::index_regex("(\\$([0-9]+)|\\?)(?=(?:[^\"']|[\"'][^\"']*[\"'])*$)");
+        const std::regex bindable::named_regex("([@:]\\w+)(?=(?:[^\"']|[\"'][^\"']*[\"'])*$)");
 #endif
 
         bindable &bindable::bind(const std::vector<sql_value> &values, size_t start_index)

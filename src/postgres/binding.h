@@ -8,12 +8,13 @@
 #include <libpq-fe.h>
 #include <string>
 #include "../bind_mapping.h"
-#include "../sql_value.h"
 
 namespace rj
 {
     namespace db
     {
+        class sql_value;
+
         namespace postgres
         {
             namespace data_mapper

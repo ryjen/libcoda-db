@@ -10,12 +10,13 @@
 #include <string>
 #include <unordered_map>
 #include "../bind_mapping.h"
-#include "../sql_value.h"
 
 namespace rj
 {
     namespace db
     {
+        class sql_value;
+
         namespace mysql
         {
             namespace data_mapper

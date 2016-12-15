@@ -1,9 +1,7 @@
 
 #include <bandit/bandit.h>
 #include "db.test.h"
-#include "log.h"
 #include "sqldb.h"
-#include "sqlite/session.h"
 
 using namespace bandit;
 using namespace std;

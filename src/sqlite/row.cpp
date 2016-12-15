@@ -1,4 +1,5 @@
 #include "row.h"
+#include "../exception.h"
 #include "column.h"
 #include "session.h"
 
@@ -10,7 +11,8 @@ namespace rj
     {
         namespace sqlite
         {
-            row::row(const std::shared_ptr<sqlite::session> &sess, const shared_ptr<sqlite3_stmt> &stmt) : row_impl(), stmt_(stmt), sess_(sess)
+            row::row(const std::shared_ptr<sqlite::session> &sess, const shared_ptr<sqlite3_stmt> &stmt)
+                : row_impl(), stmt_(stmt), sess_(sess)
             {
                 if (sess_ == NULL) {
                     throw database_exception("no database provided to sqlite3 row");
@@ -23,7 +25,11 @@ namespace rj
                 size_ = sqlite3_column_count(stmt_.get());
             }
 
-            row::row(row &&other) : row_impl(std::move(other)), stmt_(std::move(other.stmt_)), sess_(std::move(other.sess_)), size_(other.size_)
+            row::row(row &&other)
+                : row_impl(std::move(other)),
+                  stmt_(std::move(other.stmt_)),
+                  sess_(std::move(other.sess_)),
+                  size_(other.size_)
             {
                 other.stmt_ = nullptr;
                 other.sess_ = nullptr;

@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "bindable.h"
+#include "session.h"
 #include "sql_generator.h"
 #include "sql_value.h"
 
@@ -20,8 +21,6 @@ namespace rj
     namespace db
     {
         class statement;
-        class schema;
-        class session;
 
         /*!
          * abstract class

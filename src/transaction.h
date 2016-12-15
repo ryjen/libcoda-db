@@ -13,6 +13,13 @@ namespace rj
         class transaction_impl
         {
            public:
+            transaction_impl() = default;
+            transaction_impl(const transaction_impl &other) = default;
+            transaction_impl(transaction_impl &&other) = default;
+            virtual ~transaction_impl() = default;
+            transaction_impl &operator=(const transaction_impl &other) = default;
+            transaction_impl &operator=(transaction_impl &&other) = default;
+
             virtual void start() = 0;
             virtual bool is_active() const = 0;
         };

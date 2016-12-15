@@ -8,13 +8,13 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "sql_value.h"
 
 namespace rj
 {
     namespace db
     {
         class session;
+        class sql_value;
 
         /*!
          * Definition of a column in a schema

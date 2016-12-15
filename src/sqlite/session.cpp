@@ -1,11 +1,12 @@
 
 #include "session.h"
 #include <sstream>
+#include "../exception.h"
 #include "../schema.h"
+#include "../sql_value.h"
 #include "../sqldb.h"
 #include "resultset.h"
 #include "statement.h"
-#include "transaction.h"
 
 using namespace std;
 
@@ -65,7 +66,8 @@ namespace rj
                 }
             }
 
-            std::vector<column_definition> session::get_columns_for_schema(const string &dbName, const string &tableName)
+            std::vector<column_definition> session::get_columns_for_schema(const string &dbName,
+                                                                           const string &tableName)
             {
                 std::vector<column_definition> columns;
 
@@ -172,7 +174,8 @@ namespace rj
                     throw database_exception(last_error());
                 }
 
-                return make_shared<resultset>(shared_from_this(), shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
+                return make_shared<resultset>(shared_from_this(),
+                                              shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
             }
 
             bool session::execute(const string &sql)

@@ -129,9 +129,8 @@ namespace rj
             constexpr static const int BASE10 = 10;
 
             template <typename T>
-            typename std::enable_if<std::is_integral<T>::value, bool>::type parse_integral(const std::string &value,
-                                                                                           T (*funk)(const std::string &, size_t *, int),
-                                                                                           int base = BASE10)
+            typename std::enable_if<std::is_integral<T>::value, bool>::type parse_integral(
+                const std::string &value, T (*funk)(const std::string &, size_t *, int), int base = BASE10)
             {
                 try {
                     value_ = funk(value, nullptr, base);
@@ -142,9 +141,8 @@ namespace rj
             }
 
             template <typename T>
-            typename std::enable_if<std::is_integral<T>::value, bool>::type parse_integral(const std::wstring &value,
-                                                                                           T (*funk)(const std::wstring &, size_t *, int),
-                                                                                           int base = BASE10)
+            typename std::enable_if<std::is_integral<T>::value, bool>::type parse_integral(
+                const std::wstring &value, T (*funk)(const std::wstring &, size_t *, int), int base = BASE10)
             {
                 try {
                     value_ = funk(value, nullptr, base);
@@ -155,8 +153,8 @@ namespace rj
             }
 
             template <typename T>
-            typename std::enable_if<std::is_floating_point<T>::value, bool>::type parse_floating(const std::string &value,
-                                                                                                 T (*funk)(const std::string &, size_t *))
+            typename std::enable_if<std::is_floating_point<T>::value, bool>::type parse_floating(
+                const std::string &value, T (*funk)(const std::string &, size_t *))
             {
                 try {
                     value_ = funk(value, nullptr);
@@ -166,8 +164,8 @@ namespace rj
                 }
             }
             template <typename T>
-            typename std::enable_if<std::is_floating_point<T>::value, bool>::type parse_floating(const std::wstring &value,
-                                                                                                 T (*funk)(const std::wstring &, size_t *))
+            typename std::enable_if<std::is_floating_point<T>::value, bool>::type parse_floating(
+                const std::wstring &value, T (*funk)(const std::wstring &, size_t *))
             {
                 try {
                     value_ = funk(value, nullptr);
@@ -179,8 +177,8 @@ namespace rj
             bool parse_bool(const sql_string &value);
             bool parse_bool(const sql_wstring &value);
 
-            boost::variant<sql_null_type, bool, char, unsigned char, wchar_t, short, unsigned short, int, unsigned int, long, unsigned long,
-                           long long, unsigned long long, float, double, long double>
+            boost::variant<sql_null_type, bool, char, unsigned char, wchar_t, short, unsigned short, int, unsigned int,
+                           long, unsigned long, long long, unsigned long long, float, double, long double>
                 value_;
         };
 

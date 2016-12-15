@@ -1,6 +1,7 @@
 
 #include "where_clause.h"
 #include <sstream>
+#include "session.h"
 
 using namespace std;
 

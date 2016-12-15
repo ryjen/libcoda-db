@@ -2,8 +2,8 @@
 #include <codecvt>
 #include <locale>
 #include <string>
+#include "exception.h"
 #include "sql_number.h"
-#include "sql_time.h"
 
 namespace rj
 {
@@ -55,13 +55,15 @@ namespace rj
         {
             bool equals(const std::string &s1, const std::string &s2)
             {
-                return ((s1.size() == s2.size()) &&
-                        std::equal(s1.begin(), s1.end(), s2.begin(), [](char a, char b) { return toupper(a) == toupper(b); }));
+                return ((s1.size() == s2.size()) && std::equal(s1.begin(), s1.end(), s2.begin(), [](char a, char b) {
+                            return toupper(a) == toupper(b);
+                        }));
             }
             bool equals(const std::wstring &s1, const std::wstring &s2)
             {
                 return ((s1.size() == s2.size()) &&
-                        std::equal(s1.begin(), s1.end(), s2.begin(), [](wchar_t a, wchar_t b) { return towupper(a) == towupper(b); }));
+                        std::equal(s1.begin(), s1.end(), s2.begin(),
+                                   [](wchar_t a, wchar_t b) { return towupper(a) == towupper(b); }));
             }
 
             bool is_positive_bool(const sql_string &value)

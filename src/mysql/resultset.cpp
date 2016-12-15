@@ -1,6 +1,7 @@
 
 #include "resultset.h"
 #include <string>
+#include "../exception.h"
 #include "../log.h"
 #include "binding.h"
 #include "row.h"
@@ -35,7 +36,8 @@ namespace rj
                 }
             }
 
-            resultset::resultset(resultset &&other) : res_(std::move(other.res_)), row_(other.row_), sess_(std::move(other.sess_))
+            resultset::resultset(resultset &&other)
+                : res_(std::move(other.res_)), row_(other.row_), sess_(std::move(other.sess_))
             {
                 other.sess_ = nullptr;
                 other.res_ = nullptr;
@@ -92,7 +94,8 @@ namespace rj
             }
             /* Statement version */
 
-            stmt_resultset::stmt_resultset(const std::shared_ptr<mysql::session> &sess, const shared_ptr<MYSQL_STMT> &stmt)
+            stmt_resultset::stmt_resultset(const std::shared_ptr<mysql::session> &sess,
+                                           const shared_ptr<MYSQL_STMT> &stmt)
                 : stmt_(stmt), metadata_(nullptr), sess_(sess), bindings_(nullptr), status_(-1)
             {
                 if (stmt_ == nullptr) {

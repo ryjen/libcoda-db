@@ -3,11 +3,9 @@
 
 #include <unistd.h>
 #include <list>
-#include "mysql/session.h"
-#include "postgres/session.h"
 #include "record.h"
+#include "session_factory.h"
 #include "sqldb.h"
-#include "sqlite/session.h"
 #include "uri.h"
 
 namespace rj
@@ -53,11 +51,13 @@ namespace rj
 
                 using rj::db::record<user>::record;
 
-                user(const std::shared_ptr<rj::db::session> &sess = current_session) : record(sess->get_schema(TABLE_NAME))
+                user(const std::shared_ptr<rj::db::session> &sess = current_session)
+                    : record(sess->get_schema(TABLE_NAME))
                 {
                 }
 
-                user(long long id, const std::shared_ptr<rj::db::session> &sess = current_session) : user(sess->get_schema(TABLE_NAME))
+                user(long long id, const std::shared_ptr<rj::db::session> &sess = current_session)
+                    : user(sess->get_schema(TABLE_NAME))
                 {
                     set_id(id);
                     refresh();

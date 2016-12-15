@@ -1,5 +1,6 @@
 
 #include "column.h"
+#include "../sql_value.h"
 #include "binding.h"
 
 using namespace std;
@@ -10,7 +11,8 @@ namespace rj
     {
         namespace postgres
         {
-            column::column(const shared_ptr<PGresult> &stmt, int row, int column) : stmt_(stmt), column_(column), row_(row)
+            column::column(const shared_ptr<PGresult> &stmt, int row, int column)
+                : stmt_(stmt), column_(column), row_(row)
             {
             }
 

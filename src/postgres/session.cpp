@@ -5,7 +5,6 @@
 #include "../sqldb.h"
 #include "resultset.h"
 #include "statement.h"
-#include "transaction.h"
 
 using namespace std;
 

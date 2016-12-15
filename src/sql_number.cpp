@@ -1,7 +1,5 @@
 #include "sql_number.h"
 #include <algorithm>
-#include "exception.h"
-#include "sql_common.h"
 
 namespace rj
 {

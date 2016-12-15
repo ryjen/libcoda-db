@@ -1,19 +1,13 @@
 /*!
  * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
+#include "session.h"
 #include <algorithm>
 #include "exception.h"
-#include "mysql/session.h"
-#include "postgres/session.h"
 #include "query.h"
 #include "resultset.h"
 #include "schema.h"
 #include "select_query.h"
-#include "session.h"
 #include "sqlite/session.h"
 #include "transaction.h"
 
@@ -111,16 +105,6 @@ namespace rj
             return impl_->last_number_of_changes();
         }
 
-        session::resultset_type session::query(const std::string &sql) const
-        {
-            return resultset_type(impl_->query(sql));
-        }
-
-        bool session::execute(const std::string &sql)
-        {
-            return impl_->execute(sql);
-        }
-
         std::shared_ptr<session::statement_type> session::create_statement()
         {
             return impl_->create_statement();
@@ -155,7 +139,6 @@ namespace rj
         {
             return (impl_->features() & feature);
         }
-
 
         /*!
          * utility method used in creating sql

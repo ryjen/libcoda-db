@@ -13,19 +13,21 @@
 #include <unordered_map>
 #include <vector>
 
-#include "exception.h"
-#include "sql_value.h"
-
 namespace rj
 {
     namespace db
     {
+        class sql_value;
+
         /*!
          * represents something that can have a sql value binded to it
          */
         class bindable
         {
            protected:
+            static const int prealloc_size;
+            static const int prealloc_increment;
+
             /*!
              * bind_all override for one sql_value parameter
              * @param index the index of the binding
@@ -40,10 +42,18 @@ namespace rj
 
            public:
 #ifdef ENABLE_PARAMETER_MAPPING
-            static std::regex param_regex;
-            static std::regex index_regex;
-            static std::regex named_regex;
+            static const std::regex param_regex;
+            static const std::regex index_regex;
+            static const std::regex named_regex;
 #endif
+
+            bindable() = default;
+            bindable(const bindable &other) = default;
+            bindable(bindable &&other) = default;
+            virtual ~bindable() = default;
+            bindable &operator=(const bindable &other) = default;
+            bindable &operator=(bindable &&other) = default;
+
             template <typename T, typename... List>
             bindable &bind_all(const T &value, const List &... argv)
             {

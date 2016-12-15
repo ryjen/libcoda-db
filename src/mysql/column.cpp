@@ -2,6 +2,7 @@
 #include "column.h"
 #include <time.h>
 #include <string>
+#include "../sql_value.h"
 #include "binding.h"
 
 using namespace std;
@@ -12,7 +13,8 @@ namespace rj
     {
         namespace mysql
         {
-            column::column(const shared_ptr<MYSQL_RES> &res, MYSQL_ROW pValue, size_t index) : value_(pValue), res_(res), index_(index)
+            column::column(const shared_ptr<MYSQL_RES> &res, MYSQL_ROW pValue, size_t index)
+                : value_(pValue), res_(res), index_(index)
             {
                 if (value_ == nullptr) {
                     throw database_exception("no mysql value provided for column");
@@ -112,7 +114,8 @@ namespace rj
             }
 
 
-            stmt_column::stmt_column(stmt_column &&other) : name_(std::move(other.name_)), value_(std::move(other.value_)), position_(other.position_)
+            stmt_column::stmt_column(stmt_column &&other)
+                : name_(std::move(other.name_)), value_(std::move(other.value_)), position_(other.position_)
             {
                 other.value_ = nullptr;
             }

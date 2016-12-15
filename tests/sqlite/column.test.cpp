@@ -3,6 +3,7 @@
 #include <memory>
 #include "../db.test.h"
 #include "sqlite/column.h"
+#include "sqlite/session.h"
 
 using namespace bandit;
 

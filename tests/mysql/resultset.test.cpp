@@ -11,9 +11,9 @@ using namespace rj::db;
 
 shared_ptr<resultset_impl> get_mysql_resultset()
 {
-    auto rs = test::current_session->query("select * from users");
+    auto rs = test::current_session->impl()->query("select * from users");
 
-    return rs.impl();
+    return rs;
 }
 
 shared_ptr<resultset_impl> get_mysql_stmt_resultset()
@@ -104,7 +104,7 @@ SPEC_BEGIN(mysql_resultset)
         });
 
         it("can handle a bad query", []() {
-            AssertThat(test::current_session->execute("select * from asdfasdfasdf"), Equals(false));
+            AssertThat(test::current_session->impl()->execute("select * from asdfasdfasdf"), Equals(false));
 
             select_query query(test::current_session, {}, "asdfasdfasdf");
 

@@ -1,6 +1,7 @@
 
 #include "statement.h"
 #include <algorithm>
+#include "../exception.h"
 #include "../log.h"
 #include "resultset.h"
 #include "session.h"
@@ -30,7 +31,10 @@ namespace rj
             }
 
             statement::statement(statement &&other)
-                : sess_(std::move(other.sess_)), stmt_(std::move(other.stmt_)), bindings_(std::move(other.bindings_)), sql_(std::move(other.sql_))
+                : sess_(std::move(other.sess_)),
+                  stmt_(std::move(other.stmt_)),
+                  bindings_(std::move(other.bindings_)),
+                  sql_(std::move(other.sql_))
             {
                 other.stmt_ = nullptr;
                 other.sess_ = nullptr;
@@ -117,8 +121,9 @@ namespace rj
                     throw database_exception("statement::results invalid database");
                 }
 
-                PGresult *res = PQexecParams(sess_->db_.get(), sql_.c_str(), bindings_.num_of_bindings(), bindings_.types_, bindings_.values_,
-                                             bindings_.lengths_, bindings_.formats_, 0);
+                PGresult *res =
+                    PQexecParams(sess_->db_.get(), sql_.c_str(), bindings_.num_of_bindings(), bindings_.types_,
+                                 bindings_.values_, bindings_.lengths_, bindings_.formats_, 0);
 
                 if (PQresultStatus(res) != PGRES_TUPLES_OK) {
                     throw database_exception(last_error());
@@ -135,8 +140,9 @@ namespace rj
                     throw database_exception("statement::results invalid database");
                 }
 
-                PGresult *res = PQexecParams(sess_->db_.get(), sql_.c_str(), bindings_.num_of_bindings(), bindings_.types_, bindings_.values_,
-                                             bindings_.lengths_, bindings_.formats_, 0);
+                PGresult *res =
+                    PQexecParams(sess_->db_.get(), sql_.c_str(), bindings_.num_of_bindings(), bindings_.types_,
+                                 bindings_.values_, bindings_.lengths_, bindings_.formats_, 0);
 
                 if (PQresultStatus(res) != PGRES_COMMAND_OK && PQresultStatus(res) != PGRES_TUPLES_OK) {
                     PQclear(res);

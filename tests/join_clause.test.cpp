@@ -1,5 +1,6 @@
 #include <bandit/bandit.h>
 #include "db.test.h"
+#include "insert_query.h"
 #include "row.h"
 #include "util.h"
 

@@ -8,14 +8,15 @@
 #include <string>
 #include <type_traits>
 #include <vector>
-#include "exception.h"
-#include "sql_time.h"
 #include "sql_types.h"
 
 namespace rj
 {
     namespace db
     {
+        class sql_time;
+        class sql_value;
+
         // stream operators for different types
         std::ostream &operator<<(std::ostream &out, const sql_blob &value);
         std::wostream &operator<<(std::wostream &out, const sql_blob &value);

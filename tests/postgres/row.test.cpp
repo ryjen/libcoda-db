@@ -2,6 +2,7 @@
 #include <bandit/bandit.h>
 #include "../db.test.h"
 #include "postgres/row.h"
+#include "postgres/session.h"
 
 using namespace bandit;
 
@@ -11,7 +12,9 @@ using namespace rj::db;
 
 shared_ptr<postgres::row> get_postgres_row(size_t index)
 {
-    auto rs = test::current_session->query("select * from users");
+    select_query query(test::current_session, {}, test::user::TABLE_NAME);
+
+    auto rs = query.execute();
 
     if (index > 0 && index >= rs.size()) {
         throw database_exception("not enough rows");
@@ -59,7 +62,9 @@ SPEC_BEGIN(postgres_row)
         it("requires initializer parameters", []() {
             AssertThrows(database_exception, postgres::row(nullptr, nullptr, 0));
 
-            AssertThrows(database_exception, postgres::row(dynamic_pointer_cast<postgres::session>(test::current_session->impl()), nullptr, 0));
+            AssertThrows(
+                database_exception,
+                postgres::row(dynamic_pointer_cast<postgres::session>(test::current_session->impl()), nullptr, 0));
         });
 
         it("is movable", []() {

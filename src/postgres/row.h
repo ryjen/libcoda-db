@@ -5,9 +5,9 @@
 #ifndef RJ_DB_POSTGRES_ROW_H
 #define RJ_DB_POSTGRES_ROW_H
 
+#include <libpq-fe.h>
 #include <vector>
 #include "../row.h"
-#include "column.h"
 
 namespace rj
 {

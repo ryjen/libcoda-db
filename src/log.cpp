@@ -1,13 +1,10 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
+#include "log.h"
 #include <sys/time.h>
 #include <time.h>
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
-#include "log.h"
 #include "sqldb.h"
 
 namespace rj
@@ -19,17 +16,23 @@ namespace rj
 #ifdef ENABLE_LOGGING
             const char *LevelNames[] = {"UNKNOWN", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"};
 
-            FILE *file = stdout;
-
             namespace current
             {
                 level level;
+                FILE *file = stdout;
             }
 #endif
             void set_level(log::level level)
             {
 #ifdef ENABLE_LOGGING
                 current::level = level;
+#endif
+            }
+
+            void set_file(FILE *fp)
+            {
+#ifdef ENABLE_LOGGING
+                current::file = fp;
 #endif
             }
 

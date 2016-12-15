@@ -29,7 +29,6 @@ namespace rj
 
         class sql_number;
         class sql_time;
-        class sql_value;
 
         /**
          * template helper to see if a type is appropriate for a sql number
@@ -56,6 +55,13 @@ namespace rj
         class sql_number_convertible
         {
            public:
+            sql_number_convertible() = default;
+            sql_number_convertible(const sql_number_convertible &other) = default;
+            sql_number_convertible(sql_number_convertible &&other) = default;
+            virtual ~sql_number_convertible() = default;
+            sql_number_convertible &operator=(const sql_number_convertible &other) = default;
+            sql_number_convertible &operator=(sql_number_convertible &&other) = default;
+
             /* convertibles */
             virtual operator sql_string() const = 0;
             virtual operator sql_wstring() const = 0;

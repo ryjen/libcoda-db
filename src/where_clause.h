@@ -4,18 +4,19 @@
 #ifndef RJ_DB_WHERE_CLAUSE_H
 #define RJ_DB_WHERE_CLAUSE_H
 
+#include <memory>
 #include <string>
 #include <vector>
-
 #include "bindable.h"
 #include "sql_generator.h"
-#include "sqldb.h"
+#include "sql_value.h"
 
 namespace rj
 {
     namespace db
     {
         class sql_operator;
+        class session_impl;
 
         namespace op
         {
@@ -255,6 +256,13 @@ namespace rj
         class whereable
         {
            public:
+            whereable() = default;
+            whereable(const whereable &other) = default;
+            whereable(whereable &&other) = default;
+            virtual ~whereable() = default;
+            whereable &operator=(const whereable &other) = default;
+            whereable &operator=(whereable &&other) = default;
+
             virtual where_builder &where() = 0;
             virtual where_builder &where(const sql_operator &value) = 0;
 #ifdef ENHANCED_PARAMTER_MAPPING

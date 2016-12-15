@@ -9,7 +9,6 @@
 #include <memory>
 #include <vector>
 #include "schema_factory.h"
-#include "sql_value.h"
 #include "uri.h"
 
 namespace rj
@@ -167,20 +166,6 @@ namespace rj
              * @return the last number of changes or zero
              */
             int last_number_of_changes() const;
-
-            /*!
-             * executes a sql statement that returns results
-             * @param  sql   the sql string to execute
-             * @return       the results of the query
-             */
-            resultset_type query(const std::string &sql) const;
-
-            /*!
-             * executes a sql statement that does not return results
-             * @param  sql the sql string to execute
-             * @return     true if successful
-             */
-            bool execute(const std::string &sql);
 
             /*!
              * @return a statement for this database

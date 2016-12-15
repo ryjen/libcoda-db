@@ -1,4 +1,5 @@
 #include "resultset.h"
+#include "../exception.h"
 #include "../log.h"
 #include "row.h"
 #include "session.h"
@@ -23,7 +24,8 @@ namespace rj
                 }
             }
 
-            resultset::resultset(resultset &&other) : stmt_(std::move(other.stmt_)), sess_(std::move(other.sess_)), status_(other.status_)
+            resultset::resultset(resultset &&other)
+                : stmt_(std::move(other.stmt_)), sess_(std::move(other.sess_)), status_(other.status_)
             {
                 other.sess_ = nullptr;
                 other.stmt_ = nullptr;

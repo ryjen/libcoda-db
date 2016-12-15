@@ -2,11 +2,12 @@
  * @copyright ryan jennings (ryan-jennings.net), 2013 under LGPL
  */
 #include <bandit/bandit.h>
-#include "db.test.h"
+#include "../db.test.h"
+#include "../util.h"
+#include "mysql/session.h"
 #include "record.h"
 #include "select_query.h"
 #include "sqldb.h"
-#include "util.h"
 
 using namespace bandit;
 
@@ -44,11 +45,13 @@ namespace rj
                 {
                     open();
                     execute(
-                        "create table if not exists users(id integer primary key auto_increment, first_name varchar(45), last_name varchar(45), dval "
+                        "create table if not exists users(id integer primary key auto_increment, first_name "
+                        "varchar(45), last_name varchar(45), dval "
                         "real, data "
                         "blob, tval timestamp)");
                     execute(
-                        "create table if not exists user_settings(id integer primary key auto_increment, user_id integer not null, valid int(1), "
+                        "create table if not exists user_settings(id integer primary key auto_increment, user_id "
+                        "integer not null, valid int(1), "
                         "created_at "
                         "timestamp)");
                 }

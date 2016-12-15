@@ -3,8 +3,6 @@
 
 #include <memory>
 #include <unordered_map>
-#include "session.h"
-#include "session_factory.h"
 #include "uri.h"
 
 namespace rj
@@ -12,6 +10,7 @@ namespace rj
     namespace db
     {
         class session;
+        class session_factory;
 
         namespace log
         {
@@ -36,6 +35,8 @@ namespace rj
              * @param level the level to set
              */
             void set_level(level level);
+
+            void set_file(FILE *fp);
 
             /*!
              * sets the log level from a name

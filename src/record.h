@@ -8,12 +8,8 @@
 
 #include <algorithm>
 #include <memory>
-#include "delete_query.h"
-#include "insert_query.h"
 #include "schema.h"
 #include "select_query.h"
-#include "session.h"
-#include "update_query.h"
 
 namespace rj
 {
@@ -180,6 +176,13 @@ namespace rj
         {
            public:
             typedef std::function<void(const std::shared_ptr<T> &)> callback;
+
+            record_finder() = default;
+            record_finder(const record_finder &other) = default;
+            record_finder(record_finder &&other) = default;
+            virtual ~record_finder() = default;
+            record_finder &operator=(const record_finder &other) = default;
+            record_finder &operator=(record_finder &&other) = default;
 
             virtual std::shared_ptr<T> find_by_id(const sql_value &value) const = 0;
 

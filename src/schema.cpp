@@ -1,8 +1,10 @@
 
 #include "schema.h"
 #include <cassert>
+#include "exception.h"
 #include "resultset.h"
 #include "session.h"
+#include "sql_value.h"
 #include "sqldb.h"
 
 using namespace std;
@@ -17,7 +19,8 @@ namespace rj
             return os;
         }
 
-        schema::schema(const std::shared_ptr<rj::db::session> &session, const string &tablename) : session_(session), tableName_(tablename)
+        schema::schema(const std::shared_ptr<rj::db::session> &session, const string &tablename)
+            : session_(session), tableName_(tablename)
         {
             if (session_ == nullptr) {
                 throw database_exception("no database provided for schema");
@@ -32,12 +35,15 @@ namespace rj
         {
         }
 
-        schema::schema(const schema &other) : session_(other.session_), tableName_(other.tableName_), columns_(other.columns_)
+        schema::schema(const schema &other)
+            : session_(other.session_), tableName_(other.tableName_), columns_(other.columns_)
         {
         }
 
         schema::schema(schema &&other)
-            : session_(std::move(other.session_)), tableName_(std::move(other.tableName_)), columns_(std::move(other.columns_))
+            : session_(std::move(other.session_)),
+              tableName_(std::move(other.tableName_)),
+              columns_(std::move(other.columns_))
         {
             other.session_ = nullptr;
             other.columns_.clear();

@@ -6,7 +6,6 @@
 #include <cassert>
 #include "exception.h"
 #include "log.h"
-#include "session.h"
 #include "statement.h"
 #include "where_clause.h"
 

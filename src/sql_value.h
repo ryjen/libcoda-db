@@ -6,7 +6,6 @@
 #define RJ_DB_SQL_VALUE_H
 
 #include <type_traits>
-#include "exception.h"
 #include "sql_number.h"
 #include "sql_time.h"
 
@@ -181,18 +180,5 @@ namespace rj
         bool operator==(const long double &value, const sql_value &other);
     }
 }
-// namespace std
-// {
-//     /*!
-//      * get a string representation of a sql null
-//      * @param  null the null type
-//      * @return      a NULL sql string
-//      */
-//     std::string to_string(const rj::db::sql_null_type &null);
-//     std::wstring to_wstring(const rj::db::sql_null_type &null);
-
-//     std::string to_string(const rj::db::sql_blob &value);
-//     std::wstring to_wstring(const rj::db::sql_blob &value);
-// }
 
 #endif

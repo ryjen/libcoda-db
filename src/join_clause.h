@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include "sql_generator.h"
+#include "sql_types.h"
 #include "where_clause.h"
 
 namespace rj
