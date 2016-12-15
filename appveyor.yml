@@ -13,12 +13,17 @@ matrix:
 services:
   - mysql
 
+environment:
+  LIBMYSQL_INCLUDE_DIR: C:\Program Files\MySql\MySQL Server 5.6\include
+  LIBMYSQL_LIBRARY: C:\Program Files\MySql\MySQL Server 5.6\lib
+
 build_script:
   - git submodule update --init --recursive
-  - echo %configuration%
+  - SET PATH=%PATH%;"C:\Program Files\MySql\MySQL Server 5.7\bin"
+  - mysql -e "create database test;" --user=root
   - mkdir build
   - cd build
   - cmake --version
   - cmake ..
   - cmake --build . --config %configuration%
-  - ctest . --build-config %configuration%
+  - ctest . --build-config %configuration% --output-on-failure
