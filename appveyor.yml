@@ -10,6 +10,9 @@ configuration:
 matrix:
   fast_finish: true
 
+services:
+  - mysql
+
 build_script:
   - git submodule update --init --recursive
   - echo %configuration%
@@ -19,3 +22,5 @@ build_script:
   - cmake ..
   - cmake --build . --config %configuration%
   - ctest . --build-config %configuration%
+
+  deploy: OFF
