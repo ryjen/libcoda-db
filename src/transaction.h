@@ -24,18 +24,17 @@ namespace rj
             virtual bool is_active() const = 0;
         };
 
-        namespace isolation
-        {
-            typedef enum { none, serializable, repeatable_read, read_commited, read_uncommited } level;
-        }
-
         class transaction
         {
             friend class session;
 
            public:
-            typedef session session_type;
+            struct isolation {
+                typedef enum { none, serializable, repeatable_read, read_commited, read_uncommited } level;
+            };
             typedef enum { none, read_write, read_only } type;
+
+            typedef session session_type;
             transaction(const std::shared_ptr<session_type> &session, const std::shared_ptr<transaction_impl> &impl);
             transaction(const transaction &other);
             transaction(transaction &&other);

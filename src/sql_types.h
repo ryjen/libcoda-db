@@ -38,6 +38,11 @@ namespace rj
             : std::integral_constant<bool, std::is_arithmetic<T>::value || std::is_same<T, sql_null_type>::value> {
         };
 
+        template <typename T>
+        struct is_sql_string
+            : std::integral_constant<bool, std::is_same<T, sql_string>::value || std::is_same<T, sql_wstring>::value> {
+        };
+
         /*!
          * defines a constant if a type is a valid sql value
          */

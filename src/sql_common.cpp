@@ -84,27 +84,6 @@ namespace rj
                 return equals(value, L"false") || equals(value, L"no") || value == L"0";
             }
 
-            int is_bool(const sql_string &value)
-            {
-                if (is_positive_bool(value)) {
-                    return 1;
-                }
-                if (is_negative_bool(value)) {
-                    return -1;
-                }
-                return 0;
-            }
-            int is_bool(const sql_wstring &value)
-            {
-                if (is_positive_bool(value)) {
-                    return 1;
-                }
-                if (is_negative_bool(value)) {
-                    return -1;
-                }
-                return 0;
-            }
-
             std::string convert_string(const std::wstring &buf)
             {
                 typedef std::codecvt_utf8<wchar_t> convert_type;

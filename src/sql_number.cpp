@@ -94,52 +94,6 @@ namespace rj
         {
         }
 
-        bool sql_number::parse_bool(const sql_string &value)
-        {
-            int test = helper::is_bool(value);
-            if (test) {
-                value_ = test > 0;
-                return true;
-            }
-            return false;
-        }
-        bool sql_number::parse_bool(const sql_wstring &value)
-        {
-            int test = helper::is_bool(value);
-            if (test) {
-                value_ = test > 0;
-                return true;
-            }
-            return false;
-        }
-        bool sql_number::parse(const std::string &value)
-        {
-            if (!std::any_of(value.begin(), value.end(), ::isdigit)) {
-                return parse_bool(value);
-            }
-            if (value.find('.') != std::string::npos) {
-                return parse_floating<float>(value, std::stof) || parse_floating<double>(value, std::stod) ||
-                       parse_floating<long double>(value, std::stold);
-            }
-            return parse_integral<int>(value, std::stoi) || parse_integral<long>(value, std::stol) ||
-                   parse_integral<unsigned long>(value, std::stoul) || parse_integral<long long>(value, std::stoll) ||
-                   parse_integral<unsigned long long>(value, std::stoull);
-        }
-
-        bool sql_number::parse(const std::wstring &value)
-        {
-            if (!std::any_of(value.begin(), value.end(), ::isdigit)) {
-                return parse_bool(value);
-            }
-            if (value.find('.') != std::string::npos) {
-                return parse_floating<float>(value, std::stof) || parse_floating<double>(value, std::stod) ||
-                       parse_floating<long double>(value, std::stold);
-            }
-            return parse_integral<int>(value, std::stoi) || parse_integral<long>(value, std::stol) ||
-                   parse_integral<unsigned long>(value, std::stoul) || parse_integral<long long>(value, std::stoll) ||
-                   parse_integral<unsigned long long>(value, std::stoull);
-        }
-
         template <>
         sql_string sql_number::as() const
         {

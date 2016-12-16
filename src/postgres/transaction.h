@@ -14,7 +14,7 @@ namespace rj
             {
                public:
                 typedef struct {
-                    isolation::level isolation;
+                    rj::db::transaction::isolation::level isolation;
                     rj::db::transaction::type type;
                     int deferrable;
                 } mode;

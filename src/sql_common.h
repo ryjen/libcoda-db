@@ -66,8 +66,17 @@ namespace rj
              * test if a string value is a positive or negative bool value
              * @returns 0 if not a boolean, -1 if false, 1 if true
              */
-            int is_bool(const sql_string &value);
-            int is_bool(const sql_wstring &value);
+            template <typename S, typename = std::enable_if<is_sql_string<S>::value>>
+            int is_bool(const S &value)
+            {
+                if (is_positive_bool(value)) {
+                    return 1;
+                }
+                if (is_negative_bool(value)) {
+                    return -1;
+                }
+                return 0;
+            }
 
             template <typename T, typename = std::enable_if<is_sql_number<T>::value>>
             class as_number;
