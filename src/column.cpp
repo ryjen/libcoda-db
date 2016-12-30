@@ -1,5 +1,6 @@
 #include "column.h"
 #include "log.h"
+#include "sql_value.h"
 
 namespace rj
 {

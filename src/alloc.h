@@ -6,6 +6,9 @@
 #ifndef RJ_DB_ALLOC_H
 #define RJ_DB_ALLOC_H
 
+#include <cstdlib>
+#include <new>
+
 namespace rj
 {
     namespace db

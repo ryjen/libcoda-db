@@ -5,9 +5,10 @@ set(CMAKE_CXX_STANDARD 14)
 option(ENABLE_COVERAGE "Enable code coverage testing." OFF)
 option(ENABLE_MEMCHECK "Enable testing for memory leaks." OFF)
 option(ENABLE_LOGGING "Enable internal library logging." OFF)
-option(ENABLE_PROFILING "Enable valgrind profiling." OFF)
+option(ENABLE_PROFILING "Enable profiling code usage." OFF)
 option(ENABLE_PARAMETER_MAPPING "Use regex to map different parameter syntaxes." OFF)
 option(ENABLE_BENCHMARKING "Benchmark with other database libraries." OFF)
+option(ENABLE_RAW_SQL "Enable executing queries with raw sql" OFF)
 
 # define project name
 project (rj_db VERSION 0.5.0)
@@ -20,6 +21,7 @@ find_package(MySQL)
 find_package(SQLite3)
 find_package(PostgreSQL)
 find_package(Boost)
+find_program(CPPCLEAN_FOUND cppclean)
 
 # add target for code coverage
 if(ENABLE_COVERAGE)
@@ -34,6 +36,10 @@ endif()
 
 if (ENABLE_PARAMETER_MAPPING)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_PARAMETER_MAPPING")
+endif()
+
+if (ENABLE_RAW_SQL)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_RAW_SQL")
 endif()
 
 # add packge config file
@@ -72,14 +78,17 @@ include(ValgrindTest)
 add_valgrind_profile_test(ENABLE_PROFILING ENABLE_MEMCHECK TARGET ${TEST_PROJECT_NAME})
 
 if (MYSQL_VERSION)
-	add_valgrind_profile_test(ENABLE_PROFILING ENABLE_MEMCHECK TARGET ${MYSQL_TEST_PROJECT_NAME} VALGRIND_ARGS "--suppressions=${PROJECT_SOURCE_DIR}/suppression.map")
+	add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${MYSQL_TEST_PROJECT_NAME} VALGRIND_ARGS "--suppressions=${PROJECT_SOURCE_DIR}/suppression.map")
 endif()
 
 if (PostgreSQL_FOUND)
-	add_valgrind_profile_test(ENABLE_PROFILING ENABLE_MEMCHECK TARGET ${POSTGRES_TEST_PROJECT_NAME} VALGRIND_ARGS "--suppressions=${PROJECT_SOURCE_DIR}/suppression.map")
+	add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${POSTGRES_TEST_PROJECT_NAME} VALGRIND_ARGS "--suppressions=${PROJECT_SOURCE_DIR}/suppression.map")
 endif()
 
 if (SQLITE3_FOUND)
-	add_valgrind_profile_test(ENABLE_PROFILING ENABLE_MEMCHECK TARGET ${SQLITE_TEST_PROJECT_NAME})
+	add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${SQLITE_TEST_PROJECT_NAME})
 endif()
 
+if (CPPCLEAN_FOUND)
+	add_custom_target(cppclean COMMAND ${CPPCLEAN_FOUND} ${PROJECT_SOURCE_DIR}/src)
+endif()

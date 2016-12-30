@@ -1,4 +1,5 @@
 #include "row.h"
+#include "../exception.h"
 #include "column.h"
 #include "session.h"
 
@@ -25,7 +26,11 @@ namespace rj
             }
 
             row::row(row &&other)
-                : row_impl(std::move(other)), stmt_(std::move(other.stmt_)), sess_(std::move(other.sess_)), size_(other.size_), row_(other.row_)
+                : row_impl(std::move(other)),
+                  stmt_(std::move(other.stmt_)),
+                  sess_(std::move(other.sess_)),
+                  size_(other.size_),
+                  row_(other.row_)
             {
                 other.stmt_ = nullptr;
                 other.sess_ = NULL;

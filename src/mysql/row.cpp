@@ -1,5 +1,6 @@
 
 #include "row.h"
+#include "../exception.h"
 #include "binding.h"
 #include "column.h"
 #include "session.h"
@@ -31,7 +32,11 @@ namespace rj
             }
 
             row::row(row &&other)
-                : row_impl(std::move(other)), row_(other.row_), res_(std::move(other.res_)), sess_(std::move(other.sess_)), size_(other.size_)
+                : row_impl(std::move(other)),
+                  row_(other.row_),
+                  res_(std::move(other.res_)),
+                  sess_(std::move(other.sess_)),
+                  size_(other.size_)
             {
                 other.row_ = nullptr;
                 other.sess_ = nullptr;
@@ -119,8 +124,8 @@ namespace rj
             /* statement version */
 
 
-            stmt_row::stmt_row(const std::shared_ptr<mysql::session> &sess, const shared_ptr<MYSQL_STMT> &stmt, const shared_ptr<MYSQL_RES> &metadata,
-                               const shared_ptr<mysql::binding> &fields)
+            stmt_row::stmt_row(const std::shared_ptr<mysql::session> &sess, const shared_ptr<MYSQL_STMT> &stmt,
+                               const shared_ptr<MYSQL_RES> &metadata, const shared_ptr<mysql::binding> &fields)
                 : row_impl(), fields_(fields), metadata_(metadata), stmt_(stmt), sess_(sess), size_(0)
             {
                 if (sess_ == nullptr) {

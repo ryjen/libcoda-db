@@ -3,7 +3,7 @@
 	url = http://github.com/joakimkarlsson/bandit.git
 [submodule "tests/vendor/benchpress"]
 	path = tests/vendor/benchpress
-	url = http://github.com/blockchaindev/benchpress.git
+	url = https://github.com/sbs-ableton/benchpress.git
 [submodule "cmake"]
 	path = cmake
 	url = http://github.com/ryjen/cmake.git

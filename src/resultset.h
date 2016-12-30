@@ -6,7 +6,6 @@
 #define RJ_DB_RESULTSET_H
 
 #include <memory>
-#include "exception.h"
 #include "row.h"
 
 namespace rj
@@ -84,7 +83,8 @@ namespace rj
             }
 
 
-            resultset_iterator(resultset_iterator &&other) : rs_(std::move(other.rs_)), pos_(other.pos_), value_(std::move(other.value_))
+            resultset_iterator(resultset_iterator &&other)
+                : rs_(std::move(other.rs_)), pos_(other.pos_), value_(std::move(other.value_))
             {
                 other.rs_ = nullptr;
                 other.pos_ = -1;

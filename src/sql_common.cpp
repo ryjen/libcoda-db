@@ -2,8 +2,8 @@
 #include <codecvt>
 #include <locale>
 #include <string>
+#include "exception.h"
 #include "sql_number.h"
-#include "sql_time.h"
 
 namespace rj
 {
@@ -55,13 +55,15 @@ namespace rj
         {
             bool equals(const std::string &s1, const std::string &s2)
             {
-                return ((s1.size() == s2.size()) &&
-                        std::equal(s1.begin(), s1.end(), s2.begin(), [](char a, char b) { return toupper(a) == toupper(b); }));
+                return ((s1.size() == s2.size()) && std::equal(s1.begin(), s1.end(), s2.begin(), [](char a, char b) {
+                            return toupper(a) == toupper(b);
+                        }));
             }
             bool equals(const std::wstring &s1, const std::wstring &s2)
             {
                 return ((s1.size() == s2.size()) &&
-                        std::equal(s1.begin(), s1.end(), s2.begin(), [](wchar_t a, wchar_t b) { return towupper(a) == towupper(b); }));
+                        std::equal(s1.begin(), s1.end(), s2.begin(),
+                                   [](wchar_t a, wchar_t b) { return towupper(a) == towupper(b); }));
             }
 
             bool is_positive_bool(const sql_string &value)
@@ -80,27 +82,6 @@ namespace rj
             bool is_negative_bool(const sql_wstring &value)
             {
                 return equals(value, L"false") || equals(value, L"no") || value == L"0";
-            }
-
-            int is_bool(const sql_string &value)
-            {
-                if (is_positive_bool(value)) {
-                    return 1;
-                }
-                if (is_negative_bool(value)) {
-                    return -1;
-                }
-                return 0;
-            }
-            int is_bool(const sql_wstring &value)
-            {
-                if (is_positive_bool(value)) {
-                    return 1;
-                }
-                if (is_negative_bool(value)) {
-                    return -1;
-                }
-                return 0;
             }
 
             std::string convert_string(const std::wstring &buf)

@@ -1,9 +1,8 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
-#include "exception.h"
 #include "sqldb.h"
+#include "exception.h"
+#include "session.h"
+#include "session_factory.h"
 
 namespace rj
 {

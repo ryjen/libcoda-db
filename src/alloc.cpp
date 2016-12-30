@@ -1,11 +1,10 @@
-#include <stdlib.h>
-#include <new>
+#include "alloc.h"
 
 namespace rj
 {
     namespace db
     {
-        void *c_alloc(size_t size, size_t num = 1)
+        void *c_alloc(size_t size, size_t num)
         {
             void *mem = nullptr;
 

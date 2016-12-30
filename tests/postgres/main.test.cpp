@@ -2,11 +2,12 @@
  * @copyright ryan jennings (ryan-jennings.net), 2013 under LGPL
  */
 #include <bandit/bandit.h>
-#include "db.test.h"
+#include "../db.test.h"
+#include "../util.h"
+#include "postgres/session.h"
 #include "record.h"
 #include "select_query.h"
 #include "sqldb.h"
-#include "util.h"
 
 using namespace bandit;
 
@@ -44,13 +45,15 @@ namespace rj
                 {
                     open();
                     execute(
-                        "create table if not exists users(id serial primary key unique, first_name varchar(45), last_name varchar(45), dval real, "
+                        "create table if not exists users(id serial primary key unique, first_name varchar(45), "
+                        "last_name varchar(45), dval real, "
                         "data bytea, "
                         "tval "
                         "timestamp)");
 
                     execute(
-                        "create table if not exists user_settings(id serial primary key unique, user_id integer not null, valid smallint, created_at "
+                        "create table if not exists user_settings(id serial primary key unique, user_id integer not "
+                        "null, valid smallint, created_at "
                         "timestamp)");
                 }
 

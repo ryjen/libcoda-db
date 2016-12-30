@@ -15,7 +15,8 @@ namespace rj
          * @param tableName the table to modify
          * @param columns the columns to modify
          */
-        insert_query::insert_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName) : modify_query(session)
+        insert_query::insert_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName)
+            : modify_query(session)
         {
             tableName_ = tableName;
         }
@@ -49,7 +50,10 @@ namespace rj
         {
         }
         insert_query::insert_query(insert_query &&other)
-            : modify_query(std::move(other)), lastId_(other.lastId_), columns_(std::move(other.columns_)), tableName_(std::move(other.tableName_))
+            : modify_query(std::move(other)),
+              lastId_(other.lastId_),
+              columns_(std::move(other.columns_)),
+              tableName_(std::move(other.tableName_))
         {
         }
 
@@ -84,23 +88,51 @@ namespace rj
             return lastId_;
         }
 
-        string insert_query::to_string() const
+        string insert_query::generate_sql() const
         {
-            if (session_ == nullptr) {
-                throw database_exception("invalid query, no database");
-            }
-            auto schema = session_->get_schema(tableName_);
+            string buf = "INSERT INTO ";
 
-            if (schema == nullptr) {
-                throw database_exception("invalid query, schema not found or initialized yet");
+            buf += tableName_;
+
+            buf += "(";
+
+            buf += rj::db::helper::join_csv(columns_);
+
+            buf += ") VALUES(";
+
+            buf += session_->join_params(columns_);
+
+            buf += ")";
+
+            if (session_->has_feature(session::FEATURE_RETURNING)) {
+                auto schema = session_->get_schema(tableName_);
+
+                if (schema != nullptr) {
+                    auto keys = schema->primary_keys();
+
+                    auto it = keys.begin();
+
+                    if (it != keys.end()) {
+                        buf += " RETURNING ";
+
+                        while (it < keys.end() - 1) {
+                            buf += *it;
+                            buf += ",";
+                        }
+
+                        buf += *it;
+                    }
+                }
             }
 
-            return session_->get_insert_sql(schema, columns_);
+            buf += ";";
+            return buf;
         }
 
         insert_query &insert_query::columns(const vector<string> &columns)
         {
             columns_ = columns;
+            set_modified();
             return *this;
         }
 
@@ -115,7 +147,7 @@ namespace rj
                 throw database_exception("invalid insert query");
             }
 
-            prepare(to_string());
+            prepare(to_sql());
 
             bool success = stmt_->result();
 
@@ -127,12 +159,7 @@ namespace rj
                 numChanges_ = 0;
             }
 
-            // if (flags_ & Batch) {
             reset();
-            //} else {
-            //    stmt_->finish();
-            //    stmt_ = nullptr;
-            //}
 
             return numChanges_;
         }
@@ -140,6 +167,7 @@ namespace rj
         insert_query &insert_query::into(const std::string &value)
         {
             tableName_ = value;
+            set_modified();
             return *this;
         }
 
@@ -151,24 +179,28 @@ namespace rj
         insert_query &insert_query::values(const std::vector<sql_value> &value)
         {
             bindable::bind(value);
+            set_modified();
             return *this;
         }
 
         insert_query &insert_query::values(const std::unordered_map<std::string, sql_value> &value)
         {
             bindable::bind(value);
+            set_modified();
             return *this;
         }
 
         insert_query &insert_query::value(const std::string &name, const sql_value &value)
         {
             bind(name, value);
+            set_modified();
             return *this;
         }
 
         insert_query &insert_query::value(const sql_value &value)
         {
             bind(num_of_bindings() + 1, value);
+            set_modified();
             return *this;
         }
     }

@@ -14,17 +14,18 @@ specification(updates, []() {
         it("can be constructed", []() {
             update_query query(test::current_session, test::user::TABLE_NAME, {"id"});
 
-            Assert::That(query.to_string(), Equals("UPDATE users SET id=" + test::current_session->impl()->bind_param(1) + ";"));
+            Assert::That(query.to_sql(),
+                         Equals("UPDATE users SET id=" + test::current_session->impl()->bind_param(1) + ";"));
 
             update_query other(query);
 
-            Assert::That(query.to_string(), Equals(other.to_string()));
+            Assert::That(query.to_sql(), Equals(other.to_sql()));
 
             update_query moved(std::move(query));
 
             Assert::That(query.is_valid(), Equals(false));
 
-            Assert::That(moved.to_string(), Equals(other.to_string()));
+            Assert::That(moved.to_sql(), Equals(other.to_sql()));
 
         });
         it("can be assigned", []() {
@@ -34,7 +35,7 @@ specification(updates, []() {
 
             other = query;
 
-            Assert::That(query.to_string(), Equals(other.to_string()));
+            Assert::That(query.to_sql(), Equals(other.to_sql()));
 
             update_query moved(test::current_session, "moved_users");
 
@@ -42,7 +43,7 @@ specification(updates, []() {
 
             Assert::That(query.is_valid(), Equals(false));
 
-            Assert::That(moved.to_string(), Equals(other.to_string()));
+            Assert::That(moved.to_sql(), Equals(other.to_sql()));
         });
 
         it("can set the table", []() {

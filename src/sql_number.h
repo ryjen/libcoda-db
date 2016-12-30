@@ -84,9 +84,21 @@ namespace rj
             std::string to_string() const;
             std::wstring to_wstring() const;
 
-            bool parse(const std::string &value);
-            bool parse(const std::wstring &value);
-
+            template <typename S, typename = std::enable_if<is_sql_string<S>::value>>
+            bool parse(const S &value)
+            {
+                if (!std::any_of(value.begin(), value.end(), ::isdigit)) {
+                    return parse_bool(value);
+                }
+                if (value.find('.') != std::string::npos) {
+                    return parse_floating<float>(value, std::stof) || parse_floating<double>(value, std::stod) ||
+                           parse_floating<long double>(value, std::stold);
+                }
+                return parse_integral<int>(value, std::stoi) || parse_integral<long>(value, std::stol) ||
+                       parse_integral<unsigned long>(value, std::stoul) ||
+                       parse_integral<long long>(value, std::stoll) ||
+                       parse_integral<unsigned long long>(value, std::stoull);
+            }
 
             template <typename V, typename T>
             T apply_visitor(const V &visitor) const
@@ -128,10 +140,9 @@ namespace rj
            private:
             constexpr static const int BASE10 = 10;
 
-            template <typename T>
-            typename std::enable_if<std::is_integral<T>::value, bool>::type parse_integral(const std::string &value,
-                                                                                           T (*funk)(const std::string &, size_t *, int),
-                                                                                           int base = BASE10)
+            template <typename T, typename S>
+            typename std::enable_if<std::is_integral<T>::value && is_sql_string<S>::value, bool>::type parse_integral(
+                const S &value, T (*funk)(const S &, size_t *, int), int base = BASE10)
             {
                 try {
                     value_ = funk(value, nullptr, base);
@@ -141,22 +152,9 @@ namespace rj
                 }
             }
 
-            template <typename T>
-            typename std::enable_if<std::is_integral<T>::value, bool>::type parse_integral(const std::wstring &value,
-                                                                                           T (*funk)(const std::wstring &, size_t *, int),
-                                                                                           int base = BASE10)
-            {
-                try {
-                    value_ = funk(value, nullptr, base);
-                    return true;
-                } catch (const std::exception &e) {
-                    return false;
-                }
-            }
-
-            template <typename T>
-            typename std::enable_if<std::is_floating_point<T>::value, bool>::type parse_floating(const std::string &value,
-                                                                                                 T (*funk)(const std::string &, size_t *))
+            template <typename T, typename S>
+            typename std::enable_if<std::is_floating_point<T>::value && is_sql_string<S>::value, bool>::type
+            parse_floating(const S &value, T (*funk)(const S &, size_t *))
             {
                 try {
                     value_ = funk(value, nullptr);
@@ -165,22 +163,20 @@ namespace rj
                     return false;
                 }
             }
-            template <typename T>
-            typename std::enable_if<std::is_floating_point<T>::value, bool>::type parse_floating(const std::wstring &value,
-                                                                                                 T (*funk)(const std::wstring &, size_t *))
-            {
-                try {
-                    value_ = funk(value, nullptr);
-                    return true;
-                } catch (const std::exception &e) {
-                    return false;
-                }
-            }
-            bool parse_bool(const sql_string &value);
-            bool parse_bool(const sql_wstring &value);
 
-            boost::variant<sql_null_type, bool, char, unsigned char, wchar_t, short, unsigned short, int, unsigned int, long, unsigned long,
-                           long long, unsigned long long, float, double, long double>
+            template <typename S, typename = std::enable_if<is_sql_string<S>::value>>
+            bool parse_bool(const S &value)
+            {
+                int test = helper::is_bool(value);
+                if (test) {
+                    value_ = test > 0;
+                    return true;
+                }
+                return false;
+            }
+
+            boost::variant<sql_null_type, bool, char, unsigned char, wchar_t, short, unsigned short, int, unsigned int,
+                           long, unsigned long, long long, unsigned long long, float, double, long double>
                 value_;
         };
 

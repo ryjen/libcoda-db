@@ -8,7 +8,8 @@ namespace rj
     {
         namespace postgres
         {
-            transaction::transaction(const std::shared_ptr<PGconn> &db, const transaction::mode &mode) : db_(db), mode_(mode)
+            transaction::transaction(const std::shared_ptr<PGconn> &db, const transaction::mode &mode)
+                : db_(db), mode_(mode)
             {
             }
 
@@ -24,18 +25,18 @@ namespace rj
 
                 switch (mode_.isolation) {
                     default:
-                    case isolation::none:
+                    case db::transaction::isolation::none:
                         break;
-                    case isolation::serializable:
+                    case db::transaction::isolation::serializable:
                         buf += " ISOLATION LEVEL SERIALIZABLE";
                         break;
-                    case isolation::repeatable_read:
+                    case db::transaction::isolation::repeatable_read:
                         buf += " ISOLATION LEVEL REPEATABLE READ";
                         break;
-                    case isolation::read_commited:
+                    case db::transaction::isolation::read_commited:
                         buf += " ISOLATION LEVEL READ COMMITTED";
                         break;
-                    case isolation::read_uncommited:
+                    case db::transaction::isolation::read_uncommited:
                         buf += " ISOLATION LEVEL READ UNCOMMITTED";
                         break;
                 }
@@ -50,7 +51,8 @@ namespace rj
                         buf += " READ ONLY";
                         break;
                 }
-                if (mode_.deferrable && mode_.isolation == isolation::serializable && mode_.type == db::transaction::read_only) {
+                if (mode_.deferrable && mode_.isolation == db::transaction::isolation::serializable &&
+                    mode_.type == db::transaction::read_only) {
                     if (mode_.deferrable == 1) {
                         buf += " DEFERABLE";
                     } else {
@@ -67,7 +69,8 @@ namespace rj
                 PQclear(res);
 
                 if (error) {
-                    throw transaction_exception(std::string("unable to start transaction: ") + PQerrorMessage(db_.get()));
+                    throw transaction_exception(std::string("unable to start transaction: ") +
+                                                PQerrorMessage(db_.get()));
                 }
             }
         }

@@ -1,6 +1,6 @@
 #include <bandit/bandit.h>
 #include "db.test.h"
-#include "modify_query.h"
+#include "delete_query.h"
 
 using namespace bandit;
 
@@ -53,7 +53,7 @@ specification(deletes, []() {
 
             delete_query other(query);
 
-            AssertThat(other.to_string(), Equals(query.to_string()));
+            AssertThat(other.to_sql(), Equals(query.to_sql()));
         });
 
         it("is movable by constructor", []() {

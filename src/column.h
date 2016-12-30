@@ -9,13 +9,14 @@
 #include <cassert>
 #include <memory>
 #include <string>
-#include "exception.h"
-#include "sql_value.h"
+#include "sql_types.h"
 
 namespace rj
 {
     namespace db
     {
+        class sql_value;
+
         /*!
          * an interface for a database specific implementation of a column
          */

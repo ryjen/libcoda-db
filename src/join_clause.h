@@ -7,6 +7,8 @@
 
 #include <string>
 #include <unordered_map>
+#include "sql_generator.h"
+#include "sql_types.h"
 #include "where_clause.h"
 
 namespace rj
@@ -23,13 +25,17 @@ namespace rj
          * a utility class aimed at making join statements
          * ex. join("tablename").on("a", "b");
          */
-        class join_clause
+        class join_clause : public sql_generator
         {
            public:
            private:
             std::string tableName_;
             join::type type_;
             where_clause on_;
+
+            std::string generate_sql() const;
+
+            void set_modified();
 
            public:
             /*! default no-arg constructor */
@@ -48,11 +54,6 @@ namespace rj
             join_clause &operator=(const join_clause &other);
             join_clause &operator=(join_clause &&other);
             virtual ~join_clause();
-
-            /*!
-             * @return a sql string representation of this join clause
-             */
-            std::string to_string() const;
 
             /*!
              * tests if the join is empty
@@ -113,6 +114,8 @@ namespace rj
              * the explicit cast operator to sql string representation
              */
             explicit operator std::string();
+
+            explicit operator std::string() const;
         };
 
         /*!

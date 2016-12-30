@@ -31,7 +31,11 @@ specification(resultsets, []() {
         after_each([]() { test::teardown_current_session(); });
 
         it("is movable", []() {
-            auto rs = test::current_session->query("select * from users");
+            select_query select(test::current_session);
+
+            select.from(test::user::TABLE_NAME);
+
+            auto rs = select.execute();
 
             Assert::That(rs.is_valid(), Equals(true));
 

@@ -2,6 +2,7 @@
  * @copyright ryan jennings (ryan-jennings.net), 2013
  */
 #include "row.h"
+#include "exception.h"
 #include "resultset.h"
 
 using namespace std;

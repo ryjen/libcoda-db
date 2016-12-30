@@ -6,7 +6,6 @@
 #include <cassert>
 #include "exception.h"
 #include "log.h"
-#include "session.h"
 #include "statement.h"
 #include "where_clause.h"
 
@@ -17,7 +16,7 @@ namespace rj
     namespace db
     {
         query::query(const std::shared_ptr<rj::db::session> &session)
-            : is_dirty_(false), session_(session), stmt_(nullptr), params_(), named_params_()
+            : dirty_(false), session_(session), stmt_(nullptr), params_(), named_params_()
         {
             if (session_ == nullptr) {
                 throw database_exception("No database provided for query");
@@ -25,12 +24,16 @@ namespace rj
         }
 
         query::query(const query &other) noexcept
-            : is_dirty_(false), session_(other.session_), stmt_(other.stmt_), params_(other.params_), named_params_(other.named_params_)
+            : dirty_(false),
+              session_(other.session_),
+              stmt_(other.stmt_),
+              params_(other.params_),
+              named_params_(other.named_params_)
         {
         }
 
         query::query(query &&other) noexcept
-            : is_dirty_(false),
+            : dirty_(false),
               session_(std::move(other.session_)),
               stmt_(std::move(other.stmt_)),
               params_(std::move(other.params_)),
@@ -46,7 +49,7 @@ namespace rj
 
         query &query::operator=(const query &other)
         {
-            is_dirty_ = other.is_dirty_;
+            dirty_ = other.dirty_;
             session_ = other.session_;
             stmt_ = other.stmt_;
             params_ = other.params_;
@@ -56,7 +59,7 @@ namespace rj
 
         query &query::operator=(query &&other)
         {
-            is_dirty_ = other.is_dirty_;
+            dirty_ = other.dirty_;
             session_ = std::move(other.session_);
             stmt_ = std::move(other.stmt_);
             params_ = std::move(other.params_);
@@ -76,13 +79,13 @@ namespace rj
         {
             log::trace("Query: %s", sql.c_str());
 
-            if (stmt_ == nullptr || is_dirty_) {
+            if (stmt_ == nullptr || dirty_) {
                 stmt_ = session_->create_statement();
 
                 stmt_->prepare(sql);
             }
 
-            else if (!is_dirty_) {
+            else if (!dirty_) {
                 return;
             }
 
@@ -96,7 +99,7 @@ namespace rj
                 stmt_->bind(it.first, it.second);
             }
 
-            is_dirty_ = false;
+            dirty_ = false;
         }
 
         size_t query::assert_binding_index(size_t index)
@@ -107,29 +110,30 @@ namespace rj
 
             if (index > params_.size()) {
                 params_.resize(index);
-                is_dirty_ = true;
+                dirty_ = true;
             }
 
             return index - 1;
         }
 
-        query &query::set_modified()
+        void query::set_modified()
         {
-            is_dirty_ = true;
-            return *this;
+            dirty_ = true;
+            sql_generator::reset();
         }
 
         bindable &query::bind(size_t index, const sql_value &value)
         {
             params_[assert_binding_index(index)] = value;
-            return set_modified();
+            set_modified();
+            return *this;
         }
 
         bindable &query::bind(const string &name, const sql_value &value)
         {
             named_params_[name] = value;
-
-            return set_modified();
+            set_modified();
+            return *this;
         }
 
         string query::last_error()
@@ -154,7 +158,7 @@ namespace rj
         {
             params_.clear();
             named_params_.clear();
-            is_dirty_ = false;
+            dirty_ = false;
             stmt_->reset();
         }
     }

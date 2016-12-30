@@ -2,6 +2,7 @@
 #include <bandit/bandit.h>
 #include "../db.test.h"
 #include "sqlite/row.h"
+#include "sqlite/session.h"
 
 using namespace bandit;
 
@@ -12,7 +13,9 @@ using namespace rj::db;
 template <typename T>
 shared_ptr<T> get_sqlite_row(size_t index)
 {
-    auto rs = test::current_session->query("select * from users");
+    select_query query(test::current_session, {}, test::user::TABLE_NAME);
+
+    auto rs = query.execute();
 
     if (index > 0 && index >= rs.size()) {
         throw database_exception("not enough rows");

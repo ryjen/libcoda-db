@@ -1,6 +1,7 @@
 
 #include <bandit/bandit.h>
 #include "../db.test.h"
+#include "postgres/session.h"
 #include "postgres/statement.h"
 
 using namespace bandit;

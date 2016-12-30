@@ -1,5 +1,6 @@
 
 #include "column.h"
+#include "../sql_value.h"
 
 using namespace std;
 
@@ -31,7 +32,8 @@ namespace rj
                         case SQLITE_FLOAT:
                             return sql_number(sqlite3_column_double(stmt.get(), column));
                         case SQLITE_BLOB: {
-                            const unsigned char *blob = reinterpret_cast<const unsigned char *>(sqlite3_column_blob(stmt.get(), column));
+                            const unsigned char *blob =
+                                reinterpret_cast<const unsigned char *>(sqlite3_column_blob(stmt.get(), column));
                             return sql_blob(blob, blob + sqlite3_column_bytes(stmt.get(), column));
                         }
                     }

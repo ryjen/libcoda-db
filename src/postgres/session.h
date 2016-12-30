@@ -60,8 +60,8 @@ namespace rj
                 std::shared_ptr<rj::db::session::statement_type> create_statement();
                 std::shared_ptr<transaction_impl> create_transaction() const;
                 std::shared_ptr<transaction_impl> create_transaction(const transaction::mode &mode) const;
-                std::vector<column_definition> get_columns_for_schema(const std::string &dbName, const std::string &tablename);
-                std::string get_insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
+                std::vector<column_definition> get_columns_for_schema(const std::string &dbName,
+                                                                      const std::string &tablename);
                 std::string bind_param(size_t index) const;
                 int features() const;
 

@@ -1,6 +1,7 @@
 
 #include <bandit/bandit.h>
 #include "../db.test.h"
+#include "mysql/session.h"
 #include "mysql/statement.h"
 
 using namespace bandit;

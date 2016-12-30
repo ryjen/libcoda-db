@@ -1,6 +1,8 @@
 
 #include <bandit/bandit.h>
 #include "../db.test.h"
+#include "insert_query.h"
+#include "postgres/session.h"
 #include "postgres/transaction.h"
 
 using namespace bandit;
@@ -21,7 +23,7 @@ SPEC_BEGIN(postgres_transaction)
         describe("isolation level", [&pg_session]() {
 
             it("can be serializable", [&pg_session]() {
-                postgres::transaction::mode mode{isolation::serializable};
+                postgres::transaction::mode mode{transaction::isolation::serializable};
 
                 auto pg_tx = pg_session->create_transaction(mode);
 
@@ -39,7 +41,7 @@ SPEC_BEGIN(postgres_transaction)
             });
 
             it("can be repeatable read", [&pg_session]() {
-                postgres::transaction::mode mode{isolation::repeatable_read};
+                postgres::transaction::mode mode{transaction::isolation::repeatable_read};
 
                 auto pg_tx = pg_session->create_transaction(mode);
 
@@ -57,7 +59,7 @@ SPEC_BEGIN(postgres_transaction)
             });
 
             it("can be read commited", [&pg_session]() {
-                postgres::transaction::mode mode{isolation::read_commited};
+                postgres::transaction::mode mode{transaction::isolation::read_commited};
 
                 auto pg_tx = pg_session->create_transaction(mode);
 
@@ -75,7 +77,7 @@ SPEC_BEGIN(postgres_transaction)
             });
 
             it("can be read uncommited", [&pg_session]() {
-                postgres::transaction::mode mode{isolation::read_uncommited};
+                postgres::transaction::mode mode{transaction::isolation::read_uncommited};
 
                 auto pg_tx = pg_session->create_transaction(mode);
 
@@ -95,7 +97,7 @@ SPEC_BEGIN(postgres_transaction)
 
         describe("transaction type", [&pg_session]() {
             it("can be read write", [&pg_session]() {
-                postgres::transaction::mode mode{isolation::serializable, transaction::read_write};
+                postgres::transaction::mode mode{transaction::isolation::serializable, transaction::read_write};
 
                 auto pg_tx = pg_session->create_transaction(mode);
 
@@ -112,7 +114,7 @@ SPEC_BEGIN(postgres_transaction)
                 tx.commit();
             });
             it("can be read only", [&pg_session]() {
-                postgres::transaction::mode mode{isolation::serializable, transaction::read_only};
+                postgres::transaction::mode mode{transaction::isolation::serializable, transaction::read_only};
 
                 auto pg_tx = pg_session->create_transaction(mode);
 
@@ -130,7 +132,7 @@ SPEC_BEGIN(postgres_transaction)
             });
         });
         it("can be deferrable", [&pg_session]() {
-            postgres::transaction::mode mode{isolation::serializable, transaction::read_write, true};
+            postgres::transaction::mode mode{transaction::isolation::serializable, transaction::read_write, true};
 
             auto pg_tx = pg_session->create_transaction(mode);
 

@@ -2,6 +2,7 @@
 #include <bandit/bandit.h>
 #include "../db.test.h"
 #include "sqlite/resultset.h"
+#include "sqlite/session.h"
 
 using namespace bandit;
 
@@ -11,20 +12,12 @@ using namespace rj::db;
 
 shared_ptr<resultset_impl> get_sqlite_resultset()
 {
-    auto rs = test::current_session->query("select * from users");
-
-    return rs.impl();
-}
-
-shared_ptr<resultset_impl> get_sqlite_cached_resultset()
-{
     select_query query(test::current_session, {}, "users");
 
     auto rs = query.execute();
 
     return rs.impl();
 }
-
 
 template <typename T>
 void test_move_resultset(const std::function<shared_ptr<resultset_impl>()> &funk)
@@ -89,7 +82,7 @@ SPEC_BEGIN(sqlite_resultset)
         it("can get a row", [&sqlite_session]() { test_resultset_row<sqlite::resultset>(get_sqlite_resultset); });
 
         it("can handle a bad query", []() {
-            AssertThat(test::current_session->execute("select * from asdfasdfasdf"), Equals(false));
+            AssertThat(test::current_session->impl()->execute("select * from asdfasdfasdf"), Equals(false));
 
             select_query query(test::current_session, {}, "asdfasdfasdf");
 

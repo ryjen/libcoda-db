@@ -2,6 +2,7 @@
  * @copyright ryan jennings (ryan-jennings.net), 2013
  */
 #include "resultset.h"
+#include "exception.h"
 #include "sqldb.h"
 
 using namespace std;

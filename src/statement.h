@@ -7,6 +7,7 @@
 
 #include "bindable.h"
 #include "resultset.h"
+#include "sql_generator.h"
 
 namespace rj
 {
@@ -22,11 +23,23 @@ namespace rj
 
            private:
            public:
+            statement() = default;
+            statement(const statement &other) = default;
+            statement(statement &&other) = default;
+            virtual ~statement() = default;
+            statement &operator=(const statement &other) = default;
+            statement &operator=(statement &&other) = default;
+
             /*!
              * prepares this statement for execution
              * @param sql the sql to prepare
              */
             virtual void prepare(const std::string &sql) = 0;
+
+            void prepare(const sql_generator &obj)
+            {
+                prepare(obj.to_sql());
+            }
 
             /*!
              * releases resources for this statement

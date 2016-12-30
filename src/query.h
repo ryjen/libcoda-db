@@ -12,6 +12,8 @@
 #include <vector>
 
 #include "bindable.h"
+#include "session.h"
+#include "sql_generator.h"
 #include "sql_value.h"
 
 namespace rj
@@ -19,14 +21,12 @@ namespace rj
     namespace db
     {
         class statement;
-        class schema;
-        class session;
 
         /*!
          * abstract class
          * override to implement a query
          */
-        class query : protected bindable
+        class query : protected bindable, public sql_generator
         {
            public:
             typedef session session_type;
@@ -39,8 +39,7 @@ namespace rj
             * @throws invalid_argument if there is no specifier for the argument
             */
             size_t assert_binding_index(size_t index);
-            query &set_modified();
-            bool is_dirty_;
+            bool dirty_;
 
            protected:
             std::shared_ptr<session_type> session_;
@@ -59,6 +58,8 @@ namespace rj
             /* bindable overrides */
             bindable &bind(size_t index, const sql_value &value);
             bindable &bind(const std::string &name, const sql_value &value);
+
+            virtual void set_modified();
 
            public:
             /*!
@@ -117,8 +118,6 @@ namespace rj
              * @return true if the internals are open and valid
              */
             virtual bool is_valid() const;
-
-            virtual std::string to_string() const = 0;
         };
     }
 }

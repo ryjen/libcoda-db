@@ -18,6 +18,7 @@ set(LIBRARY_SOURCES
   	session.cpp
 	sqldb.cpp
 	sql_common.cpp
+    sql_generator.cpp
 	sql_number.cpp
 	sql_time.cpp
 	sql_value.cpp
@@ -44,7 +45,7 @@ add_library (${SQLITE_PROJECT_NAME}
  	sqlite/transaction.cpp
 )
 
-include_directories(${SQLITE3_INCLUDE_DIR})
+target_include_directories(${SQLITE_PROJECT_NAME} SYSTEM PUBLIC ${SQLITE3_INCLUDE_DIR})
 
 target_link_libraries(${SQLITE_PROJECT_NAME} ${PROJECT_NAME} ${SQLITE3_LIBRARIES})
 
@@ -73,7 +74,7 @@ add_library (${MYSQL_PROJECT_NAME}
   	mysql/transaction.cpp
  )
 
-include_directories(${MYSQL_INCLUDE_DIR})
+target_include_directories(${MYSQL_PROJECT_NAME} SYSTEM PUBLIC ${MYSQL_INCLUDE_DIR})
 
 target_link_libraries(${MYSQL_PROJECT_NAME} ${PROJECT_NAME} ${MYSQL_LIBRARIES})
 
@@ -103,7 +104,7 @@ add_library (${POSTGRES_PROJECT_NAME}
   	postgres/transaction.cpp
  )
 
-include_directories(${PostgreSQL_INCLUDE_DIRS})
+target_include_directories(${POSTGRES_PROJECT_NAME} SYSTEM PUBLIC ${PostgreSQL_INCLUDE_DIRS})
 
 target_link_libraries(${POSTGRES_PROJECT_NAME} ${PROJECT_NAME} ${PostgreSQL_LIBRARIES})
 
@@ -140,6 +141,7 @@ set(${PROJECT_NAME}_HEADERS
   	session.h
   	sql_types.h
   	sql_common.h
+    sql_generator.h
   	sql_number.h
 	sql_value.h
 	sqldb.h

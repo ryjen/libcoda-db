@@ -56,7 +56,7 @@ Debugging
 Debugging on docker can be done with docker compose:
 
 ```
-docker-compose run test gdb /usr/src/build/tests/rj_db_test_xxx
+docker-compose run test gdb /user/src/build/tests/rj_db_test_xxx
 ```
 
 Model

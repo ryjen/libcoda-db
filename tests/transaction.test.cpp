@@ -1,5 +1,6 @@
 #include <bandit/bandit.h>
 #include "db.test.h"
+#include "insert_query.h"
 #include "transaction.h"
 
 using namespace bandit;
@@ -76,7 +77,8 @@ specification(transactions, []() {
 
             select_query select(other_session);
 
-            select.from(test::user::TABLE_NAME).where(op::equals("first_name", "Mike")) && op::equals("last_name", "Johnson");
+            select.from(test::user::TABLE_NAME).where(op::equals("first_name", "Mike")) &&
+                op::equals("last_name", "Johnson");
 
             {
                 auto tx = test::current_session->start_transaction();
@@ -120,7 +122,8 @@ specification(transactions, []() {
             // now try to read the work before its committed
             select_query select(other_session);
 
-            select.from(test::user::TABLE_NAME).where(op::equals("first_name", "Jerome")) && op::equals("last_name", "Padington");
+            select.from(test::user::TABLE_NAME).where(op::equals("first_name", "Jerome")) &&
+                op::equals("last_name", "Padington");
 
             auto results = select.execute();
 
@@ -156,7 +159,8 @@ specification(transactions, []() {
             // now try to read the work before its committed
             select_query select(other_session);
 
-            select.from(test::user::TABLE_NAME).where(op::equals("first_name", "Jerome")) && op::equals("last_name", "Padington");
+            select.from(test::user::TABLE_NAME).where(op::equals("first_name", "Jerome")) &&
+                op::equals("last_name", "Padington");
 
             auto results = select.execute();
 

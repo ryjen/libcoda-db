@@ -1,4 +1,7 @@
 #include "record.h"
+#include "delete_query.h"
+#include "insert_query.h"
+#include "update_query.h"
 
 namespace rj
 {

@@ -4,8 +4,8 @@ set(TEST_SOURCES
 	db.test.cpp
 	column.test.cpp
 	delete_query.test.cpp
+	insert_query.test.cpp
 	join_clause.test.cpp
-	modify_query.test.cpp
 	record.test.cpp
 	resultset.test.cpp
 	row.test.cpp
@@ -18,21 +18,22 @@ set(TEST_SOURCES
 
 set(COMMON_TEST_PROJECT_NAME "${TEST_PROJECT_NAME}_common")
 
-include_directories(SYSTEM vendor/bandit SYSTEM vendor/benchpress/src ${PROJECT_SOURCE_DIR}/src)
-
 add_library(${COMMON_TEST_PROJECT_NAME}
 	${TEST_SOURCES}
 )
-set_target_properties(${COMMON_TEST_PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Dgo_bandit=define_spec")
+
+target_include_directories(${COMMON_TEST_PROJECT_NAME} SYSTEM PUBLIC vendor/bandit PRIVATE ${PROJECT_SOURCE_DIR}/src)
 
 add_library(${UTIL_TEST_PROJECT_NAME}
 	util.cpp
 )
 
+target_include_directories(${UTIL_TEST_PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/src)
+
 if (MYSQL_VERSION)
 
 add_executable (${MYSQL_TEST_PROJECT_NAME}
-	mysql.test.cpp
+	mysql/main.test.cpp
 	mysql/binding.test.cpp
 	mysql/column.test.cpp
 	mysql/resultset.test.cpp
@@ -43,14 +44,14 @@ add_executable (${MYSQL_TEST_PROJECT_NAME}
 
 target_link_libraries (${MYSQL_TEST_PROJECT_NAME} ${MYSQL_PROJECT_NAME} ${UTIL_TEST_PROJECT_NAME} ${COMMON_TEST_PROJECT_NAME})
 
-include_directories(${MYSQL_INCLUDE_DIR})
+target_include_directories(${MYSQL_TEST_PROJECT_NAME} SYSTEM PUBLIC ${MYSQL_INCLUDE_DIR} SYSTEM PUBLIC vendor/bandit INTERFACE ${PROJECT_SOURCE_DIR}/src)
 
 endif()
 
 if (SQLITE3_FOUND)
 
 add_executable (${SQLITE_TEST_PROJECT_NAME}
-	sqlite.test.cpp
+	sqlite/main.test.cpp
 	sqlite/column.test.cpp
 	sqlite/resultset.test.cpp
 	sqlite/row.test.cpp
@@ -60,14 +61,14 @@ add_executable (${SQLITE_TEST_PROJECT_NAME}
 
 target_link_libraries (${SQLITE_TEST_PROJECT_NAME} ${SQLITE_PROJECT_NAME} ${UTIL_TEST_PROJECT_NAME} ${COMMON_TEST_PROJECT_NAME})
 
-include_directories(${SQLITE3_INCLUDE_DIR})
+target_include_directories(${SQLITE_TEST_PROJECT_NAME} SYSTEM PUBLIC ${SQLITE3_INCLUDE_DIR} SYSTEM PUBLIC vendor/bandit INTERFACE ${PROJECT_SOURCE_DIR}/src)
 
 endif()
 
 if (PostgreSQL_FOUND)
 
 add_executable (${POSTGRES_TEST_PROJECT_NAME}
-	postgres.test.cpp
+	postgres/main.test.cpp
 	postgres/binding.test.cpp
 	postgres/column.test.cpp
 	postgres/resultset.test.cpp
@@ -79,7 +80,7 @@ add_executable (${POSTGRES_TEST_PROJECT_NAME}
 
 target_link_libraries (${POSTGRES_TEST_PROJECT_NAME} ${POSTGRES_PROJECT_NAME} ${UTIL_TEST_PROJECT_NAME} ${COMMON_TEST_PROJECT_NAME})
 
-include_directories(${PostgreSQL_INCLUDE_DIRS})
+target_include_directories(${POSTGRES_TEST_PROJECT_NAME} SYSTEM PUBLIC ${PostgreSQL_INCLUDE_DIRS} SYSTEM PUBLIC vendor/bandit INTERFACE ${PROJECT_SOURCE_DIR}/src)
 
 endif()
 
@@ -92,6 +93,8 @@ add_executable (${TEST_PROJECT_NAME}
 )
 
 target_link_libraries (${TEST_PROJECT_NAME} ${PROJECT_NAME} ${UTIL_TEST_PROJECT_NAME})
+
+target_include_directories(${TEST_PROJECT_NAME} SYSTEM PUBLIC vendor/bandit INTERFACE ${PROJECT_SOURCE_DIR}/src)
 
 add_executable (${PROJECT_NAME}_test_all run_all.test.cpp)
 

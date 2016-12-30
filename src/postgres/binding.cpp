@@ -11,7 +11,7 @@
 #include "../alloc.h"
 #include "../exception.h"
 #include "../log.h"
-
+#include "../sql_value.h"
 #include "binding.h"
 
 using namespace std;
@@ -283,11 +283,12 @@ namespace rj
                 };
             }
 
-            binding::binding() : binding(DEFAULT_BINDING_SIZE)
+            binding::binding() : binding(prealloc_size)
             {
             }
 
-            binding::binding(size_t size) : values_(nullptr), types_(nullptr), lengths_(nullptr), formats_(nullptr), size_(size)
+            binding::binding(size_t size)
+                : values_(nullptr), types_(nullptr), lengths_(nullptr), formats_(nullptr), size_(size)
             {
                 values_ = c_alloc<char *>(size);
                 types_ = c_alloc<Oid>(size);
@@ -431,7 +432,7 @@ namespace rj
                     return true;
                 }
 
-                index += DEFAULT_BINDING_INCREMENT;
+                index += prealloc_increment;
 
                 if (index < size_) {
                     throw std::bad_alloc();

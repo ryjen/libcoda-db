@@ -2,6 +2,7 @@
 #include <bandit/bandit.h>
 #include <climits>
 #include "../db.test.h"
+#include "sqlite/session.h"
 #include "sqlite/statement.h"
 
 using namespace bandit;

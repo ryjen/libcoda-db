@@ -38,11 +38,6 @@ namespace rj
             modify_query &operator=(modify_query &&other);
 
             /*!
-             * @return a string/sql representation of this query
-             */
-            virtual std::string to_string() const = 0;
-
-            /*!
              * executes this query using a replace statement
              * @return the last number of changes made by this query
              */

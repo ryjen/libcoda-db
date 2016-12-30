@@ -35,7 +35,7 @@ namespace rj
             std::vector<std::string> columns_;
             std::string tableName_;
             std::shared_ptr<union_operator> union_;
-            
+
             /*!
              * selects a column
              * @param value the name of the column to find
@@ -43,9 +43,17 @@ namespace rj
              */
             select_query &column(const std::string &value)
             {
-                columns_.push_back(value);
+                if (!value.empty()) {
+                    columns_.push_back(value);
+                    set_modified();
+                }
                 return *this;
             }
+
+            /*!
+             * generates the sql for this query
+             */
+            std::string generate_sql() const;
 
            public:
             /*!
@@ -71,7 +79,8 @@ namespace rj
              * @param columns the columns to query
              * @param tableName the table to query from
              */
-            select_query(const std::shared_ptr<rj::db::session> &session, const std::vector<std::string> &columns, const std::string &tableName);
+            select_query(const std::shared_ptr<rj::db::session> &session, const std::vector<std::string> &columns,
+                         const std::string &tableName);
 
             /* boilerplate */
             select_query(const select_query &other);
@@ -86,7 +95,7 @@ namespace rj
              * @return           a reference to this instance
              */
             select_query &from(const std::string &tableName);
-            
+
             /*!
              * sets the table to select from
              * @param tableName the table name to select from
@@ -107,7 +116,7 @@ namespace rj
              * @return a reference to this
              */
             select_query &columns(const std::vector<std::string> &other);
-            
+
             /*!
              * sets the columns to select
              * @param value the initial column name
@@ -164,7 +173,7 @@ namespace rj
              * @return       a reference to this
              */
             select_query &where(const where_clause &value);
-            
+
             /*!
              * builds a where clause from a SQL string
              * @return a reference to this
@@ -228,7 +237,7 @@ namespace rj
              * @return           a join clause to perform additional modification
              */
             join_clause &join(const std::string &tableName, join::type type = join::inner);
-            
+
             /*!
              * sets the join clause for this query
              * @param  tableName    the table name to join
@@ -252,12 +261,6 @@ namespace rj
              * @return       a reference to this instance
              */
             select_query &union_with(const select_query &query, union_op::type type = union_op::none);
-
-            /*!
-             * converts this query into a sql string
-             * @return the sql string
-             */
-            std::string to_string() const;
 
             /*!
              * executes this query
@@ -316,7 +319,7 @@ namespace rj
         struct union_operator {
             select_query query;
             union_op::type type;
-            
+
             /*!
              * @param query the query to find
              * @param type the type of union

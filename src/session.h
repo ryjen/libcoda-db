@@ -9,7 +9,6 @@
 #include <memory>
 #include <vector>
 #include "schema_factory.h"
-#include "sql_value.h"
 #include "uri.h"
 
 namespace rj
@@ -105,22 +104,13 @@ namespace rj
              * @param tablename the table to query
              * @param columns   an array to put columns found
              */
-            virtual std::vector<column_definition> get_columns_for_schema(const std::string &dbName, const std::string &tablename) = 0;
+            virtual std::vector<column_definition> get_columns_for_schema(const std::string &dbName,
+                                                                          const std::string &tablename) = 0;
 
             /*!
-             * generates database specific insert sql
-             * @param  schema  the schema to insert to
-             * @param  columns the columns to insert
-             * @return         the sql string
+             * binds a null value
              */
-            virtual std::string get_insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
-
             virtual std::string bind_param(size_t index) const = 0;
-
-            /*!
-             * utility method used in creating sql
-             */
-            std::string join_params(const std::vector<std::string> &columns, const std::string &op = "") const;
 
             virtual int features() const;
 
@@ -178,20 +168,6 @@ namespace rj
             int last_number_of_changes() const;
 
             /*!
-             * executes a sql statement that returns results
-             * @param  sql   the sql string to execute
-             * @return       the results of the query
-             */
-            resultset_type query(const std::string &sql) const;
-
-            /*!
-             * executes a sql statement that does not return results
-             * @param  sql the sql string to execute
-             * @return     true if successful
-             */
-            bool execute(const std::string &sql);
-
-            /*!
              * @return a statement for this database
              */
             std::shared_ptr<statement_type> create_statement();
@@ -246,20 +222,17 @@ namespace rj
                 return std::dynamic_pointer_cast<T>(impl());
             }
 
+            /*!
+             * utility method used in creating sql
+             */
+            std::string join_params(const std::vector<std::string> &columns, const std::string &op = "") const;
+
            private:
             std::shared_ptr<session_impl> impl_;
 
            protected:
             friend class insert_query;
             friend class schema;
-
-            /*!
-             * generates database specific insert sql
-             * @param  schema  the schema to insert to
-             * @param  columns the columns to insert
-             * @return         the sql string
-             */
-            std::string get_insert_sql(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns) const;
 
             /*!
              * queries the database for a tables column definitions

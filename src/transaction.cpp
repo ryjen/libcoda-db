@@ -8,12 +8,14 @@ namespace rj
 {
     namespace db
     {
-        transaction::transaction(const std::shared_ptr<session_type> &session, const std::shared_ptr<transaction_impl> &impl)
+        transaction::transaction(const std::shared_ptr<session_type> &session,
+                                 const std::shared_ptr<transaction_impl> &impl)
             : successful_(false), session_(session), impl_(impl)
         {
         }
 
-        transaction::transaction(const transaction &other) : successful_(other.successful_), session_(other.session_), impl_(other.impl_)
+        transaction::transaction(const transaction &other)
+            : successful_(other.successful_), session_(other.session_), impl_(other.impl_)
         {
         }
 
@@ -62,7 +64,7 @@ namespace rj
         void transaction::commit()
         {
             log::trace("COMMIT TRANSACTION");
-            if (!session_->execute("COMMIT;")) {
+            if (!session_->impl()->execute("COMMIT;")) {
                 throw transaction_exception("unable to commit transaction: " + session_->last_error());
             }
         }
@@ -70,7 +72,7 @@ namespace rj
         void transaction::rollback()
         {
             log::trace("ROLLBACK TRANSACTION");
-            if (!session_->execute("ROLLBACK;")) {
+            if (!session_->impl()->execute("ROLLBACK;")) {
                 throw transaction_exception("unable to rollback transaction: " + session_->last_error());
             }
         }
@@ -82,7 +84,7 @@ namespace rj
             }
             log::trace("SAVEPOINT");
 
-            if (!session_->execute("SAVEPOINT " + name + ";")) {
+            if (!session_->impl()->execute("SAVEPOINT " + name + ";")) {
                 throw transaction_exception("unable to save point " + name + ": " + session_->last_error());
             }
         }
@@ -94,7 +96,7 @@ namespace rj
             }
             log::trace("RELEASE SAVEPOINT");
 
-            if (!session_->execute("RELEASE SAVEPOINT " + name + ";")) {
+            if (!session_->impl()->execute("RELEASE SAVEPOINT " + name + ";")) {
                 throw transaction_exception("unable to release save point " + name + ": " + session_->last_error());
             }
         }
@@ -106,7 +108,7 @@ namespace rj
             }
             log::trace("ROLLBACK SAVEPOINT");
 
-            if (!session_->execute("ROLLBACK TO SAVEPOINT " + name + ";")) {
+            if (!session_->impl()->execute("ROLLBACK TO SAVEPOINT " + name + ";")) {
                 throw transaction_exception("unable to rollback save point " + name + ": " + session_->last_error());
             }
         }

@@ -4,17 +4,19 @@
 #ifndef RJ_DB_WHERE_CLAUSE_H
 #define RJ_DB_WHERE_CLAUSE_H
 
+#include <memory>
 #include <string>
 #include <vector>
-
 #include "bindable.h"
-#include "sqldb.h"
+#include "sql_generator.h"
+#include "sql_value.h"
 
 namespace rj
 {
     namespace db
     {
         class sql_operator;
+        class session_impl;
 
         namespace op
         {
@@ -137,15 +139,15 @@ namespace rj
          * a utility class aimed at making logic where statements
          * ex. where("a = b") || "c == d" && "e == f";
          */
-        class where_clause
+        class where_clause : public sql_generator
         {
            private:
             std::string value_;
             std::vector<where_clause> and_;
             std::vector<where_clause> or_;
-            std::string output_;
 
             std::string generate_sql() const;
+            void set_modified();
 
            public:
             /*!
@@ -165,14 +167,6 @@ namespace rj
             where_clause &operator=(const where_clause &other);
             where_clause &operator=(where_clause &&other);
             virtual ~where_clause();
-
-            /*!
-             * the sql for this where clause
-             * @return a sql string
-             */
-            virtual std::string to_string() const;
-
-            virtual std::string to_string();
 
             /*!
              * explicit cast operator to sql string
@@ -241,6 +235,8 @@ namespace rj
 
             size_t num_of_bindings() const;
 
+            using sql_generator::to_sql;
+
             void reset(const sql_operator &value);
 
             /*!
@@ -260,6 +256,13 @@ namespace rj
         class whereable
         {
            public:
+            whereable() = default;
+            whereable(const whereable &other) = default;
+            whereable(whereable &&other) = default;
+            virtual ~whereable() = default;
+            whereable &operator=(const whereable &other) = default;
+            whereable &operator=(whereable &&other) = default;
+
             virtual where_builder &where() = 0;
             virtual where_builder &where(const sql_operator &value) = 0;
 #ifdef ENHANCED_PARAMTER_MAPPING

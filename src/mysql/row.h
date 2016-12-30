@@ -8,7 +8,6 @@
 #include <mysql/mysql.h>
 #include <vector>
 #include "../row.h"
-#include "column.h"
 
 namespace rj
 {

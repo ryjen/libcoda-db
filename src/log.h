@@ -14,8 +14,6 @@ namespace rj
     {
         namespace log
         {
-            extern FILE *file;
-
             extern const char *LevelNames[];
 
             /* standard printf style functions */

@@ -19,6 +19,9 @@ namespace rj
          */
         extern const sql_null_type sql_null;
 
+        /*!
+         * blobs are simple vectors of unsigned chars
+         */
         typedef std::vector<unsigned char> sql_blob;
 
         typedef std::string sql_string;
@@ -26,24 +29,44 @@ namespace rj
 
         class sql_number;
         class sql_time;
-        class sql_value;
 
         /**
          * template helper to see if a type is appropriate for a sql number
          */
         template <typename T>
-        struct is_sql_number : std::integral_constant<bool, std::is_arithmetic<T>::value || std::is_same<T, sql_null_type>::value> {
+        struct is_sql_number
+            : std::integral_constant<bool, std::is_arithmetic<T>::value || std::is_same<T, sql_null_type>::value> {
         };
 
         template <typename T>
-        struct is_sql_value : std::integral_constant<bool, std::is_same<T, sql_null_type>::value || std::is_same<T, sql_number>::value ||
-                                                               std::is_same<T, sql_string>::value || std::is_same<T, sql_wstring>::value ||
-                                                               std::is_same<T, sql_time>::value || std::is_same<T, sql_blob>::value> {
+        struct is_sql_string
+            : std::integral_constant<bool, std::is_same<T, sql_string>::value || std::is_same<T, sql_wstring>::value> {
         };
 
+        /*!
+         * defines a constant if a type is a valid sql value
+         */
+        template <typename T>
+        struct is_sql_value
+            : std::integral_constant<bool,
+                                     std::is_same<T, sql_null_type>::value || std::is_same<T, sql_number>::value ||
+                                         std::is_same<T, sql_string>::value || std::is_same<T, sql_wstring>::value ||
+                                         std::is_same<T, sql_time>::value || std::is_same<T, sql_blob>::value> {
+        };
+
+        /*!
+         * an interface for converting and testing equality of numeric values
+         */
         class sql_number_convertible
         {
            public:
+            sql_number_convertible() = default;
+            sql_number_convertible(const sql_number_convertible &other) = default;
+            sql_number_convertible(sql_number_convertible &&other) = default;
+            virtual ~sql_number_convertible() = default;
+            sql_number_convertible &operator=(const sql_number_convertible &other) = default;
+            sql_number_convertible &operator=(sql_number_convertible &&other) = default;
+
             /* convertibles */
             virtual operator sql_string() const = 0;
             virtual operator sql_wstring() const = 0;
@@ -90,7 +113,9 @@ namespace rj
             virtual bool operator==(const long double &value) const = 0;
         };
 
-
+        /*!
+         * interface for converting and testing equality of sql values
+         */
         class sql_value_convertible : public sql_number_convertible
         {
            public:

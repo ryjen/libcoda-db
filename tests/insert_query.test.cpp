@@ -1,6 +1,6 @@
 #include <bandit/bandit.h>
 #include "db.test.h"
-#include "modify_query.h"
+#include "insert_query.h"
 #include "util.h"
 
 using namespace bandit;
@@ -35,19 +35,19 @@ specification(modifying, []() {
             insert_query query(test::current_session, "users");
 
             if (test::current_session->has_feature(session::FEATURE_RETURNING)) {
-                Assert::That(query.to_string(), Equals("INSERT INTO users() VALUES() RETURNING id;"));
+                Assert::That(query.to_sql(), Equals("INSERT INTO users() VALUES() RETURNING id;"));
             } else {
-                Assert::That(query.to_string(), Equals("INSERT INTO users() VALUES();"));
+                Assert::That(query.to_sql(), Equals("INSERT INTO users() VALUES();"));
             }
             insert_query other(query);
 
-            Assert::That(query.to_string(), Equals(other.to_string()));
+            Assert::That(query.to_sql(), Equals(other.to_sql()));
 
             insert_query moved(std::move(query));
 
             Assert::That(query.is_valid(), Equals(false));
 
-            Assert::That(moved.to_string(), Equals(other.to_string()));
+            Assert::That(moved.to_sql(), Equals(other.to_sql()));
 
         });
 
@@ -69,7 +69,9 @@ specification(modifying, []() {
         it("can modify with a set of values", []() {
             insert_query insert(test::current_session);
 
-            insert.into(test::user::TABLE_NAME).columns({"first_name", "last_name"}).values(std::vector<sql_value>({"blah", "bleh"}));
+            insert.into(test::user::TABLE_NAME)
+                .columns({"first_name", "last_name"})
+                .values(std::vector<sql_value>({"blah", "bleh"}));
 
             Assert::That(insert.execute() > 0, Equals(true));
 

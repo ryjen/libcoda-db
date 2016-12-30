@@ -1,6 +1,7 @@
 
 #include "statement.h"
 #include <string>
+#include "../exception.h"
 #include "../log.h"
 #include "resultset.h"
 #include "session.h"

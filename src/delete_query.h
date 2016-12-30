@@ -41,11 +41,6 @@ namespace rj
              * @return the table name
              */
             std::string from() const;
-
-            /*!
-             * @return the string/sql representation of this query
-             */
-            std::string to_string() const;
             /*!
              * gets the where builder for the query
              * @return a reference to the where builder
@@ -104,6 +99,8 @@ namespace rj
             bool is_valid() const;
 
            private:
+            std::string generate_sql() const;
+
             where_builder where_;
             std::string tableName_;
         };

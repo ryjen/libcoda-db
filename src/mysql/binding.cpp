@@ -10,6 +10,7 @@
 #include "../alloc.h"
 #include "../exception.h"
 #include "../log.h"
+#include "../sql_value.h"
 #include "binding.h"
 
 namespace rj
@@ -557,7 +558,7 @@ namespace rj
                 };
             }
 
-            binding::binding() : binding(DEFAULT_BINDING_SIZE)
+            binding::binding() : binding(prealloc_size)
             {
             }
 
@@ -719,7 +720,7 @@ namespace rj
                     return true;
                 }
 
-                index += DEFAULT_BINDING_INCREMENT;
+                index += prealloc_increment;
 
                 if (index < size_) {
                     throw std::bad_alloc();
