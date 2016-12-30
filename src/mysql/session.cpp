@@ -104,8 +104,8 @@ namespace rj
                     throw database_exception("unable to parse port " + info.port);
                 }
 
-                if (mysql_real_connect(conn, info.host.c_str(), info.user.c_str(), info.password.c_str(), info.path.c_str(), port, nullptr, 0) ==
-                    nullptr) {
+                if (mysql_real_connect(conn, info.host.c_str(), info.user.c_str(), info.password.c_str(),
+                                       info.path.c_str(), port, nullptr, 0) == nullptr) {
                     mysql_close(conn);
                     throw database_exception("No connection could be made to the database");
                 }
@@ -196,7 +196,8 @@ namespace rj
             {
                 return make_shared<mysql::transaction>(db_);
             }
-            std::vector<column_definition> session::get_columns_for_schema(const string &dbName, const string &tableName)
+            std::vector<column_definition> session::get_columns_for_schema(const string &dbName,
+                                                                           const string &tableName)
             {
                 std::vector<column_definition> columns;
 
@@ -205,15 +206,20 @@ namespace rj
                 }
 
                 // TODO: use binding for table parameter
-                string pk_sql =
-                    string("SELECT tc.table_schema, tc.table_name, kc.column_name FROM information_schema.table_constraints tc ") +
-                    "JOIN information_schema.key_column_usage kc ON kc.table_name = tc.table_name AND kc.table_schema = tc.table_schema  " +
-                    "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '" + tableName + "' AND tc.table_schema = '" + dbName +
-                    "' ORDER BY tc.table_schema, tc.table_name, "
-                    "kc.position_in_unique_constraint;";
+                string pk_sql = string(
+                                    "SELECT tc.table_schema, tc.table_name, kc.column_name FROM "
+                                    "information_schema.table_constraints tc ") +
+                                "JOIN information_schema.key_column_usage kc ON kc.table_name = tc.table_name AND "
+                                "kc.table_schema = tc.table_schema  " +
+                                "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '" + tableName +
+                                "' AND tc.table_schema = '" + dbName +
+                                "' ORDER BY tc.table_schema, tc.table_name, "
+                                "kc.position_in_unique_constraint;";
 
-                string col_sql = "SELECT column_name, data_type, extra, column_default FROM information_schema.columns WHERE table_name = '" +
-                                 tableName + "' AND table_schema = '" + dbName + "';";
+                string col_sql =
+                    "SELECT column_name, data_type, extra, column_default FROM information_schema.columns WHERE "
+                    "table_name = '" +
+                    tableName + "' AND table_schema = '" + dbName + "';";
 
                 auto rs = query(col_sql);
 

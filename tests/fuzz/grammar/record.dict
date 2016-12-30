@@ -1,0 +1,7 @@
+key_set="set"
+key_save="save"
+key_refresh="refresh"
+key_findById="find_by_id"
+key_findAll="find_all"
+key_findBy="find_by"
+key_remove="rem"

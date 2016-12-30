@@ -16,8 +16,8 @@ namespace rj
 
                public:
                 typedef struct {
-                    rj::db::transaction::type type;
-                    isolation::level isolation;
+                    db::transaction::type type;
+                    db::transaction::isolation::level isolation;
                 } mode;
 
                 transaction(const std::shared_ptr<MYSQL> &db, const transaction::mode &mode = {});

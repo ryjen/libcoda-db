@@ -1,0 +1,10 @@
+set first_name "Ryan"
+set last_name "Jennings"
+set dval 123.4567
+save
+refresh
+rem dval
+save
+find_by_id 1
+find_all
+find_by first_name "Ryan"

@@ -62,7 +62,7 @@ install(FILES ${${PROJECT_NAME}_SQLITE_HEADERS} DESTINATION "${CMAKE_INSTALL_PRE
 
 endif()
 
-if (MYSQL_VERSION)
+if (MYSQL_FOUND)
 
 add_library (${MYSQL_PROJECT_NAME}
 	mysql/binding.cpp

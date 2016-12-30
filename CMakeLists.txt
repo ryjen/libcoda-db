@@ -21,6 +21,7 @@ find_package(MySQL)
 find_package(SQLite3)
 find_package(PostgreSQL)
 find_package(Boost)
+
 find_program(CPPCLEAN_FOUND cppclean)
 
 # add target for code coverage
@@ -54,7 +55,7 @@ if (SQLITE3_FOUND)
 	set(SQLITE_TEST_PROJECT_NAME "${PROJECT_NAME}_test_sqlite")
 endif()
 
-if (MYSQL_VERSION)
+if (MYSQL_FOUND)
 	set(MYSQL_PROJECT_NAME "${PROJECT_NAME}_mysql")
 	set(MYSQL_TEST_PROJECT_NAME "${PROJECT_NAME}_test_mysql")
 endif()
@@ -77,7 +78,7 @@ enable_testing()
 include(ValgrindTest)
 add_valgrind_profile_test(ENABLE_PROFILING ENABLE_MEMCHECK TARGET ${TEST_PROJECT_NAME})
 
-if (MYSQL_VERSION)
+if (MYSQL_FOUND)
 	add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${MYSQL_TEST_PROJECT_NAME} VALGRIND_ARGS "--suppressions=${PROJECT_SOURCE_DIR}/suppression.map")
 endif()
 

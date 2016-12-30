@@ -60,7 +60,8 @@ namespace rj
                 bool execute(const std::string &sql);
                 std::shared_ptr<statement_type> create_statement();
                 std::shared_ptr<transaction_impl> create_transaction() const;
-                std::vector<column_definition> get_columns_for_schema(const std::string &dbName, const std::string &tablename);
+                std::vector<column_definition> get_columns_for_schema(const std::string &dbName,
+                                                                      const std::string &tablename);
                 std::string bind_param(size_t index) const;
                 int features() const;
             };

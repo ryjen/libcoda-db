@@ -18,11 +18,13 @@ set(TEST_SOURCES
 
 set(COMMON_TEST_PROJECT_NAME "${TEST_PROJECT_NAME}_common")
 
+find_program(AFL_COMPILER NAMES "afl-clang++" "afl-clang" "afl-gcc"	)
+
 add_library(${COMMON_TEST_PROJECT_NAME}
 	${TEST_SOURCES}
 )
 
-target_include_directories(${COMMON_TEST_PROJECT_NAME} SYSTEM PUBLIC vendor/bandit PRIVATE ${PROJECT_SOURCE_DIR}/src)
+target_include_directories(${COMMON_TEST_PROJECT_NAME} SYSTEM PUBLIC vendor/bandit PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
 add_library(${UTIL_TEST_PROJECT_NAME}
 	util.cpp
@@ -30,7 +32,7 @@ add_library(${UTIL_TEST_PROJECT_NAME}
 
 target_include_directories(${UTIL_TEST_PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/src)
 
-if (MYSQL_VERSION)
+if (MYSQL_FOUND)
 
 add_executable (${MYSQL_TEST_PROJECT_NAME}
 	mysql/main.test.cpp
@@ -100,4 +102,8 @@ add_executable (${PROJECT_NAME}_test_all run_all.test.cpp)
 
 if(ENABLE_BENCHMARKING)
 add_subdirectory(benchmarks)
+endif()
+
+if (AFL_COMPILER)
+add_subdirectory(fuzz)
 endif()

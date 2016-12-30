@@ -234,7 +234,6 @@ namespace rj
                 set(schema()->primary_key(), value);
             }
 
-
             /*!
              * sets a string for a column name
              * @param name the name of the column to set
