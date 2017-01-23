@@ -9,6 +9,14 @@ namespace rj
 {
     namespace db
     {
+        namespace helper
+        {
+            bool is_named(const sql_value &value)
+            {
+                auto val = value.to_string();
+                return val[0] == '@' || val[0] == ':';
+            }
+        }
         sql_operator::sql_operator() : not_(false), rvalue_()
         {
         }
@@ -40,7 +48,11 @@ namespace rj
             switch (type_) {
                 case op::EQ:
                 case op::LIKE:
-                case op::IS:
+                case op::ISNULL:
+                case op::GREATER:
+                case op::LESSER:
+                case op::EQ_GREATER:
+                case op::EQ_LESSER:
                     rvalue_.~sql_value();
                     break;
                 case op::IN:
@@ -60,7 +72,11 @@ namespace rj
             switch (type_) {
                 case op::EQ:
                 case op::LIKE:
-                case op::IS:
+                case op::ISNULL:
+                case op::GREATER:
+                case op::LESSER:
+                case op::EQ_GREATER:
+                case op::EQ_LESSER:
                     new (&rvalue_) sql_value(other.rvalue_);
                     break;
                 case op::IN:
@@ -80,7 +96,11 @@ namespace rj
             switch (type_) {
                 case op::EQ:
                 case op::LIKE:
-                case op::IS:
+                case op::ISNULL:
+                case op::GREATER:
+                case op::LESSER:
+                case op::EQ_GREATER:
+                case op::EQ_LESSER:
                     new (&rvalue_) sql_value(std::move(other.rvalue_));
                     break;
                 case op::IN:
@@ -108,6 +128,24 @@ namespace rj
             return lvalue_;
         }
 
+        bool sql_operator::is_named() const
+        {
+            switch (type_) {
+                case op::EQ:
+                case op::LIKE:
+                case op::ISNULL:
+                case op::GREATER:
+                case op::LESSER:
+                case op::EQ_GREATER:
+                case op::EQ_LESSER: {
+                    return helper::is_named(value_);
+                }
+                case op::IN:
+                case op::BETWEEN:
+                    return false;
+            }
+        }
+
         namespace op
         {
             sql_operator equals(const sql_value &lvalue, const sql_value &rvalue)
@@ -116,6 +154,38 @@ namespace rj
                 op.lvalue_ = lvalue;
                 op.rvalue_ = rvalue;
                 op.type_ = op::EQ;
+                return op;
+            }
+            sql_operator greater(const sql_value &lvalue, const sql_value &rvalue)
+            {
+                sql_operator op;
+                op.lvalue_ = lvalue;
+                op.rvalue_ = rvalue;
+                op.type_ = op::GREATER;
+                return op;
+            }
+            sql_operator lesser(const sql_value &lvalue, const sql_value &rvalue)
+            {
+                sql_operator op;
+                op.lvalue_ = lvalue;
+                op.rvalue_ = rvalue;
+                op.type_ = op::LESSER;
+                return op;
+            }
+            sql_operator equals_greater(const sql_value &lvalue, const sql_value &rvalue)
+            {
+                sql_operator op;
+                op.lvalue_ = lvalue;
+                op.rvalue_ = rvalue;
+                op.type_ = op::EQ_GREATER;
+                return op;
+            }
+            sql_operator equals_lesser(const sql_value &lvalue, const sql_value &rvalue)
+            {
+                sql_operator op;
+                op.lvalue_ = lvalue;
+                op.rvalue_ = rvalue;
+                op.type_ = op::EQ_LESSER;
                 return op;
             }
             sql_operator like(const sql_value &lvalue, const std::string &rvalue)
@@ -158,7 +228,7 @@ namespace rj
                 op.type_ = op::IN;
                 return op;
             }
-            sql_operator between(const sql_value &lvalue, const sql_value rvalue1, const sql_value rvalue2)
+            sql_operator between(const sql_value &lvalue, const sql_value &rvalue1, const sql_value &rvalue2)
             {
                 sql_operator op;
                 op.lvalue_ = lvalue;
@@ -166,11 +236,12 @@ namespace rj
                 op.type_ = op::BETWEEN;
                 return op;
             }
-            sql_operator is(const sql_value &lvalue, const sql_null_type &rvalue)
+            sql_operator is_null(const sql_value &lvalue)
             {
                 sql_operator op;
                 op.lvalue_ = lvalue;
-                op.type_ = op::IS;
+                op.type_ = op::ISNULL;
+                op.rvalue_ = sql_null;
                 return op;
             }
         }
@@ -225,18 +296,29 @@ namespace rj
             this->rvalue_ = rvalue;
             return *this;
         }
-        // starts with
-        sql_operator_builder &sql_operator_builder::operator<=(const std::string &rvalue)
+        sql_operator_builder &sql_operator_builder::operator<=(const sql_value &rvalue)
         {
-            this->type_ = op::LIKE;
-            this->rvalue_ = rvalue + "%";
+            this->type_ = op::EQ_LESSER;
+            this->rvalue_ = rvalue;
+            return *this;
+        }
+        sql_operator_builder &sql_operator_builder::operator>=(const sql_value &rvalue)
+        {
+            this->type_ = op::EQ_GREATER;
+            this->rvalue_ = rvalue;
+            return *this;
+        }
+        sql_operator_builder &sql_operator_builder::operator<(const sql_value &rvalue)
+        {
+            this->type_ = op::LESSER;
+            this->rvalue_ = rvalue;
             return *this;
         }
         // ends with
-        sql_operator_builder &sql_operator_builder::operator>=(const std::string &rvalue)
+        sql_operator_builder &sql_operator_builder::operator>(const sql_value &rvalue)
         {
-            this->type_ = op::LIKE;
-            this->rvalue_ = "%" + rvalue;
+            this->type_ = op::GREATER;
+            this->rvalue_ = rvalue;
             return *this;
         }
         // contains
@@ -263,14 +345,14 @@ namespace rj
         // is
         sql_operator_builder &sql_operator_builder::operator=(const sql_null_type &rvalue)
         {
-            this->type_ = op::IS;
+            this->type_ = op::ISNULL;
             this->rvalue_ = rvalue;
             return *this;
         }
         // isnot
         sql_operator_builder &sql_operator_builder::operator!=(const sql_null_type &rvalue)
         {
-            this->type_ = op::IS;
+            this->type_ = op::ISNULL;
             this->not_ = true;
             this->rvalue_ = rvalue;
             return *this;
@@ -503,8 +585,14 @@ namespace rj
             switch (value.type_) {
                 case op::EQ:
                 case op::LIKE:
-                case op::IS:
-                    binder_->bind(index, value.rvalue_);
+                case op::ISNULL:
+                case op::GREATER:
+                case op::LESSER:
+                case op::EQ_GREATER:
+                case op::EQ_LESSER:
+                    if(!helper::is_named(value.rvalue_) {
+                        binder_->bind(index, value.rvalue_);
+                    }
                     break;
                 case op::IN:
                     for (size_t i = 0; i < value.rvalues_.size(); i++) {

@@ -15,40 +15,61 @@ namespace rj
 {
     namespace db
     {
-        class sql_operator;
         class session_impl;
+        class sql_operator;
+
+        typedef struct {
+            std::string name;
+            sql_value value;
+        } named_param;
+
+        named_param bind(const std::string &name, const sql_value &value);
 
         namespace op
         {
-            typedef enum { EQ, LIKE, IN, BETWEEN, IS } type;
+            typedef enum { EQ, LIKE, IN, BETWEEN, ISNULL, GREATER, LESSER, EQ_GREATER, EQ_LESSER } type;
 
-            constexpr static const char *const type_values[] = {"=", "LIKE", "IN", "BETWEEN", "IS"};
-            constexpr static const char *const not_type_values[] = {"!=", "NOT LIKE", "NOT IN", "NOT BETWEEN",
-                                                                    "IS NOT"};
+            constexpr static const char *const type_values[] = {"=", "LIKE", "IN", "BETWEEN", "IS NULL",
+                                                                ">", "<",    ">=", "<="};
+
+            constexpr static const char *const not_type_values[] = {
+                "!=", "NOT LIKE", "NOT IN", "NOT BETWEEN", "IS NOT NULL", "!>", "!<", "<", ">"};
 
             sql_operator equals(const sql_value &lvalue, const sql_value &rvalue);
+            sql_operator greater(const sql_value &lvalue, const sql_value &rvalue);
+            sql_operator lesser(const sql_value &lvalue, const sql_value &rvalue);
+            sql_operator equals_greater(const sql_value &lvalue, const sql_value &rvalue);
+            sql_operator equals_lesser(const sql_value &lvalue, const sql_value &rvalue);
             sql_operator like(const sql_value &lvalue, const std::string &rvalue);
             sql_operator startswith(const sql_value &lvalue, const std::string &rvalue);
             sql_operator endswith(const sql_value &lvalue, const std::string &rvalue);
             sql_operator contains(const sql_value &lvalue, const std::string &rvalue);
             sql_operator in(const sql_value &lvalue, const std::vector<sql_value> &rvalue);
-            sql_operator between(const sql_value &lvalue, const sql_value rvalue1, const sql_value rvalue2);
-            sql_operator is(const sql_value &lvalue, const sql_null_type &value);
+            sql_operator between(const sql_value &lvalue, const sql_value &rvalue1, const sql_value &rvalue2);
+            sql_operator is_null(const sql_value &lvalue);
         }
+
 
         class sql_operator
         {
             friend class where_builder;
             friend sql_operator op::equals(const sql_value &lvalue, const sql_value &rvalue);
+            friend sql_operator op::greater(const sql_value &lvalue, const sql_value &rvalue);
+            friend sql_operator op::lesser(const sql_value &lvalue, const sql_value &rvalue);
+            friend sql_operator op::equals_greater(const sql_value &lvalue, const sql_value &rvalue);
+            friend sql_operator op::equals_lesser(const sql_value &lvalue, const sql_value &rvalue);
             friend sql_operator op::like(const sql_value &lvalue, const std::string &rvalue);
             friend sql_operator op::startswith(const sql_value &lvalue, const std::string &rvalue);
             friend sql_operator op::endswith(const sql_value &lvalue, const std::string &rvalue);
             friend sql_operator op::contains(const sql_value &lvalue, const std::string &rvalue);
             friend sql_operator op::in(const sql_value &lvalue, const std::vector<sql_value> &rvalue);
-            friend sql_operator op::between(const sql_value &lvalue, const sql_value rvalue1, const sql_value rvalue2);
-            friend sql_operator op::is(const sql_value &lvalue, const sql_null_type &value);
+            friend sql_operator op::between(const sql_value &lvalue, const sql_value &rvalue1,
+                                            const sql_value &rvalue2);
+            friend sql_operator op::is_null(const sql_value &lvalue);
 
            protected:
+            void copy(const sql_operator &other);
+            void move(sql_operator &&other);
             bool not_;
             sql_value lvalue_;
             union {
@@ -57,10 +78,9 @@ namespace rj
                 std::pair<sql_value, sql_value> rrange_;
             };
             op::type type_;
-
-           public:
             sql_operator();
 
+           public:
             /* rule-of-5 */
             sql_operator(const sql_operator &other);
             sql_operator(sql_operator &&other);
@@ -69,10 +89,11 @@ namespace rj
             virtual ~sql_operator();
 
             sql_operator &operator!();
+            op::type type() const;
 
             sql_value lvalue() const;
 
-            op::type type() const;
+            bool is_named() const;
 
             template <typename T>
             void rvalue(const T &visitor)
@@ -80,7 +101,11 @@ namespace rj
                 switch (type_) {
                     case op::EQ:
                     case op::LIKE:
-                    case op::IS:
+                    case op::ISNULL:
+                    case op::GREATER:
+                    case op::LESSER:
+                    case op::EQ_GREATER:
+                    case op::EQ_LESSER:
                         visitor(rvalue_);
                         break;
                     case op::IN:
@@ -91,10 +116,6 @@ namespace rj
                         break;
                 }
             }
-
-           private:
-            void copy(const sql_operator &other);
-            void move(sql_operator &&other);
         };
 
         class sql_operator_builder : public sql_operator
@@ -117,10 +138,14 @@ namespace rj
             sql_operator_builder &operator!=(const sql_value &rvalue);
             // like
             sql_operator_builder &operator^=(const std::string &rvalue);
-            // starts with
-            sql_operator_builder &operator<=(const std::string &rvalue);
-            // ends with
-            sql_operator_builder &operator>=(const std::string &rvalue);
+            // equals lesser
+            sql_operator_builder &operator<=(const sql_value &rvalue);
+            // equals greater
+            sql_operator_builder &operator>=(const sql_value &rvalue);
+            // lesser
+            sql_operator_builder &operator<(const sql_value &rvalue);
+            // greater
+            sql_operator_builder &operator>(const sql_value &rvalue);
             // contains
             sql_operator_builder &operator[](const std::string &rvalue);
             // in
