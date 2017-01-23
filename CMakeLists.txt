@@ -4,11 +4,11 @@ set(CMAKE_CXX_STANDARD 14)
 # add options for testing
 option(ENABLE_COVERAGE "Enable code coverage testing." OFF)
 option(ENABLE_MEMCHECK "Enable testing for memory leaks." OFF)
-option(ENABLE_LOGGING "Enable internal library logging." OFF)
 option(ENABLE_PROFILING "Enable profiling code usage." OFF)
 option(ENABLE_PARAMETER_MAPPING "Use regex to map different parameter syntaxes." OFF)
 option(ENABLE_BENCHMARKING "Benchmark with other database libraries." OFF)
 option(ENABLE_RAW_SQL "Enable executing queries with raw sql" OFF)
+option(ENABLE_LOGGING "Enable internal library logging." OFF)
 
 # define project name
 project (rj_db VERSION 0.5.0)

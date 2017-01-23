@@ -2,6 +2,7 @@
 #ifndef RJ_DB_SQL_NUMBER_H
 #define RJ_DB_SQL_NUMBER_H
 
+#include <algorithm>
 #include <boost/variant.hpp>
 #include <string>
 #include <vector>

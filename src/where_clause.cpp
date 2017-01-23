@@ -138,7 +138,7 @@ namespace rj
                 case op::LESSER:
                 case op::EQ_GREATER:
                 case op::EQ_LESSER: {
-                    return helper::is_named(value_);
+                    return helper::is_named(rvalue_);
                 }
                 case op::IN:
                 case op::BETWEEN:
@@ -590,7 +590,7 @@ namespace rj
                 case op::LESSER:
                 case op::EQ_GREATER:
                 case op::EQ_LESSER:
-                    if(!helper::is_named(value.rvalue_) {
+                    if (!helper::is_named(value.rvalue_)) {
                         binder_->bind(index, value.rvalue_);
                     }
                     break;
