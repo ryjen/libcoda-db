@@ -45,9 +45,8 @@ endif()
 
 # add packge config file
 include(CreatePackage)
-create_package("A c++11 database interface.")
-
 include(CreateDocumentation)
+
 create_documentation()
 
 if (SQLITE3_FOUND)
