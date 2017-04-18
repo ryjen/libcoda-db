@@ -14,6 +14,8 @@ using namespace std;
 
 using namespace rj::db;
 
+using namespace snowhouse;
+
 namespace rj
 {
     namespace db

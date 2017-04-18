@@ -1,3 +1,5 @@
+#include <string>
+
 #include <bandit/bandit.h>
 #include "exception.h"
 #include "sql_value.h"
@@ -7,6 +9,8 @@ using namespace bandit;
 using namespace std;
 
 using namespace rj::db;
+
+using namespace snowhouse;
 
 go_bandit([]() {
     describe("sql time value", []() {

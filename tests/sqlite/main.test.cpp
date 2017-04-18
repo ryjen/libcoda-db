@@ -1,6 +1,8 @@
 /*!
  * @copyright ryan jennings (ryan-jennings.net), 2013 under LGPL
  */
+#include <string>
+
 #include <bandit/bandit.h>
 #include "../db.test.h"
 #include "record.h"
@@ -13,6 +15,8 @@ using namespace bandit;
 using namespace std;
 
 using namespace rj::db;
+
+using namespace snowhouse;
 
 namespace rj
 {

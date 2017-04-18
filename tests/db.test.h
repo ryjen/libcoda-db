@@ -3,6 +3,7 @@
 
 #include <unistd.h>
 #include <list>
+#include <string>
 #include "record.h"
 #include "session_factory.h"
 #include "sqldb.h"
