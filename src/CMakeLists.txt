@@ -34,6 +34,8 @@ add_library (${PROJECT_NAME}
 	${LIBRARY_SOURCES}
 )
 
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${Boost_INCLUDE_DIRS})
+
 create_package(TARGET ${PROJECT_NAME} DESCRIPTION "A c++ database interface.")
 
 if (SQLITE3_FOUND)
