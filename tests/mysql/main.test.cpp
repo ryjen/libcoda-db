@@ -30,7 +30,7 @@ namespace rj
                 auto mysql_factory = std::make_shared<test::factory>();
                 sqldb::register_session("mysql", mysql_factory);
 
-                auto uri_s = get_env_uri("MYSQL_URI", "mysql://localhost/test");
+                auto uri_s = get_env_uri("MYSQL_URI", "mysql://root@localhost/test");
                 current_session = rj::db::sqldb::create_session(uri_s);
                 cout << "connecting to " << uri_s << endl;
             }
