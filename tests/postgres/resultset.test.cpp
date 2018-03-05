@@ -1,3 +1,5 @@
+#include <string>
+
 #include <bandit/bandit.h>
 #include "../db.test.h"
 #include "postgres/resultset.h"
@@ -8,6 +10,8 @@ using namespace bandit;
 using namespace std;
 
 using namespace rj::db;
+
+using namespace snowhouse;
 
 shared_ptr<postgres::resultset> get_postgres_resultset()
 {

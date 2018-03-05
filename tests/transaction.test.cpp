@@ -1,3 +1,5 @@
+#include <string>
+
 #include <bandit/bandit.h>
 #include "db.test.h"
 #include "insert_query.h"
@@ -8,6 +10,8 @@ using namespace bandit;
 using namespace std;
 
 using namespace rj::db;
+
+using namespace snowhouse;
 
 specification(transactions, []() {
     describe("a transaction", []() {

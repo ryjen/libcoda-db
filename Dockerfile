@@ -5,6 +5,8 @@ ARG CMAKE_DEFINES
 
 ENV POSTGRES_VERS 9.3
 
+RUN apt-get update
+
 RUN apt-get -y install libmysqlclient-dev libsqlite3-dev libpq-dev postgresql-server-dev-${POSTGRES_VERS} libboost-dev
 
 ENV BUILD_SRC /usr/src

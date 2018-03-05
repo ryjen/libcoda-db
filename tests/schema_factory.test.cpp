@@ -1,3 +1,5 @@
+#include <string>
+
 #include <bandit/bandit.h>
 #include "db.test.h"
 #include "schema_factory.h"
@@ -7,6 +9,8 @@ using namespace bandit;
 using namespace std;
 
 using namespace rj::db;
+
+using namespace snowhouse;
 
 specification(schema_factories, []() {
     describe("schema factory", []() {

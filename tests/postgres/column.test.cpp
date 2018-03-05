@@ -1,11 +1,9 @@
+#include <string>
 
 #include <bandit/bandit.h>
-#include <memory>
-#undef PACKAGE_NAME
-#undef PACKAGE_VERSION
-#include <libpq-fe.h>
 #include <libpq-fe.h>
 #include <postgres.h>
+#include <memory>
 #include "../db.test.h"
 #include "catalog/pg_type.h"
 #include "postgres/column.h"
@@ -15,6 +13,8 @@ using namespace bandit;
 using namespace std;
 
 using namespace rj::db;
+
+using namespace snowhouse;
 
 shared_ptr<postgres::column> get_postgres_column(const string &name)
 {

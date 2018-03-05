@@ -1,3 +1,4 @@
+#include <string>
 
 #include <bandit/bandit.h>
 #include "log.h"
@@ -9,6 +10,8 @@ using namespace bandit;
 using namespace std;
 
 using namespace rj::db;
+
+using namespace snowhouse;
 
 #ifdef ENABLE_LOGGING
 extern FILE *log::file;

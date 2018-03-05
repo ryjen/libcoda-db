@@ -1,3 +1,4 @@
+#include <string>
 
 #include <bandit/bandit.h>
 #include "../db.test.h"
@@ -8,6 +9,8 @@ using namespace bandit;
 using namespace std;
 
 using namespace rj::db;
+
+using namespace snowhouse;
 
 shared_ptr<column_impl> get_results_column(size_t index, size_t iterations)
 {

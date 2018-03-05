@@ -24,7 +24,8 @@ add_library(${COMMON_TEST_PROJECT_NAME}
 	${TEST_SOURCES}
 )
 
-target_include_directories(${COMMON_TEST_PROJECT_NAME} SYSTEM PUBLIC vendor/bandit PUBLIC ${PROJECT_SOURCE_DIR}/src ${Boost_INCLUDE_DIRS})
+target_include_directories(${COMMON_TEST_PROJECT_NAME} SYSTEM PUBLIC vendor/bandit
+		PUBLIC ${PROJECT_SOURCE_DIR}/src SYSTEM PUBLIC ${Boost_INCLUDE_DIRS})
 
 add_library(${UTIL_TEST_PROJECT_NAME}
 	util.cpp
