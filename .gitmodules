@@ -1,10 +1,10 @@
 [submodule "tests/vendor/bandit"]
 	path = tests/vendor/bandit
-	url = http://github.com/joakimkarlsson/bandit.git
+	url = https://github.com/joakimkarlsson/bandit.git
 [submodule "tests/vendor/benchpress"]
 	path = tests/vendor/benchpress
-	url = https://github.com/sbs-ableton/benchpress.git
+	url = https://github.com/philipp-classen/benchpress.git
 [submodule "cmake"]
 	path = cmake
-	url = http://github.com/ryjen/cmake.git
+	url = https://github.com/ryjen/cmake.git
 
