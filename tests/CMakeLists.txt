@@ -1,20 +1,22 @@
 
+
 if (NOT DEFINED BANDIT_DIR)
 
 	include(ExternalProject)
 
-	externalproject_add(${PROJECT_NAME}-bandit
+	set(BANDIT_TARGET ${PROJECT_NAME}-bandit)
+
+	externalproject_add(${BANDIT_TARGET}
 			GIT_REPOSITORY https://github.com/banditcpp/bandit.git
 			GIT_TAG v2.0.0
 			INSTALL_COMMAND ""
 			BUILD_COMMAND ""
 			PREFIX ${CMAKE_CURRENT_BINARY_DIR}/bandit)
 
-	ExternalProject_Get_property(${PROJECT_NAME}-bandit SOURCE_DIR)
+	ExternalProject_Get_property(${BANDIT_TARGET} SOURCE_DIR)
 
 	set(BANDIT_DIR ${SOURCE_DIR})
 
-	message(STATUS "Using ${BANDIT_DIR}")
 endif()
 
 set(TEST_SOURCES
@@ -125,4 +127,14 @@ endif()
 
 if (AFL_COMPILER)
 add_subdirectory(fuzz)
+endif()
+
+if (DEFINED BANDIT_TARGET)
+	add_dependencies(${MYSQL_TEST_PROJECT_NAME} ${BANDIT_TARGET})
+
+	add_dependencies(${SQLITE_TEST_PROJECT_NAME} ${BANDIT_TARGET})
+
+	add_dependencies(${POSTGRES_TEST_PROJECT_NAME} ${BANDIT_TARGET})
+
+	add_dependencies(${TEST_PROJECT_NAME} ${BANDIT_TARGET})
 endif()
