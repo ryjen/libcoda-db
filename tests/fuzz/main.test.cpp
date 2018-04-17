@@ -3,7 +3,7 @@
 #include "../util.h"
 #include "mysql/session.h"
 
-using namespace rj::db;
+using namespace coda::db;
 
 typedef std::vector<std::string> arguments;
 
@@ -87,9 +87,9 @@ namespace grammar
 
 int main(int argc, char *argv[])
 {
-    rj::db::mysql::initialize();
+    coda::db::mysql::initialize();
     auto uri_s = get_env_uri("MYSQL_URI", "mysql://localhost:3306/test");
-    auto fuzz_session = rj::db::sqldb::create_session(uri_s);
+    auto fuzz_session = coda::db::sqldb::create_session(uri_s);
     test::user u(fuzz_session);
 
     if (argc <= 1) {

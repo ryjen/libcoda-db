@@ -1,7 +1,7 @@
 version: '2'
 services:
   test:
-    image: rj_db_test
+    image: coda_db_test
     build:
       context: .
       args:
@@ -18,7 +18,7 @@ services:
       - postgres
     command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s make test ARGS=-V
   coverage:
-    image: rj_db_coverage
+    image: coda_db_coverage
     build:
       context: .
       args:
@@ -35,7 +35,7 @@ services:
     depends_on:
       - mysql
       - postgres
-    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s make rj_db_coverage_coveralls TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
+    command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s make coda_db_coverage_coveralls TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
   mysql:
     image: mysql
     hostname: mysql

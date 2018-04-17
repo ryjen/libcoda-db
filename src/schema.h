@@ -2,18 +2,17 @@
  * @file schema.h
  * table definition in a database
  */
-#ifndef RJ_DB_SCHEMA_H
-#define RJ_DB_SCHEMA_H
+#ifndef CODA_DB_SCHEMA_H
+#define CODA_DB_SCHEMA_H
 
 #include <memory>
 #include <string>
 #include <vector>
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         class session;
+
         class sql_value;
 
         /*!
@@ -36,17 +35,16 @@ namespace rj
          * Schema is a definition of a table in a database
          * Allows for quick access to column names and other information
          */
-        class schema
-        {
-           public:
+        class schema {
+        public:
             typedef session session_type;
 
-           private:
+        private:
             std::shared_ptr<session_type> session_;
             std::string tableName_;
             std::vector<column_definition> columns_;
 
-           public:
+        public:
             /*!
              * @param db the database in use
              * @param tablename the tablename to query
@@ -55,9 +53,13 @@ namespace rj
 
             /* boilerplate */
             virtual ~schema();
+
             schema(const schema &other);
+
             schema(schema &&other);
+
             schema &operator=(const schema &other);
+
             schema &operator=(schema &&other);
 
             /*!

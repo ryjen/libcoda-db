@@ -10,7 +10,7 @@
 
 using namespace std;
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -48,7 +48,7 @@ namespace rj
                 sqldb::register_session("mysql", mysql_factory);
             }
 
-            std::shared_ptr<rj::db::session_impl> factory::create(const uri &uri)
+            std::shared_ptr<coda::db::session_impl> factory::create(const uri &uri)
             {
                 return std::make_shared<session>(uri);
             }
@@ -187,7 +187,7 @@ namespace rj
                 return !mysql_real_query(db_.get(), sql.c_str(), sql.length());
             }
 
-            shared_ptr<rj::db::session::statement_type> session::create_statement()
+            shared_ptr<coda::db::session::statement_type> session::create_statement()
             {
                 return make_shared<statement>(static_pointer_cast<mysql::session>(shared_from_this()));
             }

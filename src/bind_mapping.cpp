@@ -4,7 +4,7 @@
 #include "exception.h"
 #endif
 
-namespace rj
+namespace coda
 {
     namespace db
     {

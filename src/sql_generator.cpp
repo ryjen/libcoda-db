@@ -1,6 +1,6 @@
 #include "sql_generator.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

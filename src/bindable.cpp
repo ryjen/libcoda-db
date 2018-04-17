@@ -1,12 +1,9 @@
 #include "bindable.h"
 #include "exception.h"
-#include "log.h"
 #include "sql_value.h"
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         const int bindable::prealloc_size = 10;
         const int bindable::prealloc_increment = 5;
 
@@ -17,8 +14,7 @@ namespace rj
         const std::regex bindable::named_regex("([@:]\\w+)(?=(?:[^\"']|[\"'][^\"']*[\"'])*$)");
 #endif
 
-        bindable &bindable::bind(const std::vector<sql_value> &values, size_t start_index)
-        {
+        bindable &bindable::bind(const std::vector<sql_value> &values, size_t start_index) {
             size_t index = start_index;
             for (auto &value : values) {
                 bind(index++, value);
@@ -26,8 +22,7 @@ namespace rj
             return *this;
         }
 
-        bindable &bindable::bind(const std::unordered_map<std::string, sql_value> &values)
-        {
+        bindable &bindable::bind(const std::unordered_map<std::string, sql_value> &values) {
             for (auto &pair : values) {
                 bind(pair.first, pair.second);
             }

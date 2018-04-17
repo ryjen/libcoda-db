@@ -9,11 +9,11 @@
 
 using namespace std;
 
-namespace rj
+namespace coda
 {
     namespace db
     {
-        modify_query::modify_query(const std::shared_ptr<rj::db::session> &session)
+        modify_query::modify_query(const std::shared_ptr<coda::db::session> &session)
             : query(session), flags_(0), numChanges_(0)
         {
         }

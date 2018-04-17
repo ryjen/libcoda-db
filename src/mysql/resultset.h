@@ -2,14 +2,14 @@
  * @file resultset.h
  * representation of results from a mysql query
  */
-#ifndef RJ_DB_MYSQL_RESULTSET_H
-#define RJ_DB_MYSQL_RESULTSET_H
+#ifndef CODA_DB_MYSQL_RESULTSET_H
+#define CODA_DB_MYSQL_RESULTSET_H
 
 #include <mysql/mysql.h>
 #include <vector>
 #include "../resultset.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

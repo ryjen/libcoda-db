@@ -3,29 +3,32 @@
  * a sql database
  * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifndef RJ_DB_SESSION_H
-#define RJ_DB_SESSION_H
+#ifndef CODA_DB_SESSION_H
+#define CODA_DB_SESSION_H
 
 #include <memory>
 #include <vector>
 #include "schema_factory.h"
 #include "uri.h"
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         struct column_definition;
+
         class schema;
+
         class transaction;
+
         class transaction_impl;
+
         class statement;
+
         class resultset;
+
         class resultset_impl;
 
-        class session_impl
-        {
-           public:
+        class session_impl {
+        public:
             typedef statement statement_type;
             typedef transaction_impl transaction_type;
             typedef resultset_impl resultset_type;
@@ -114,18 +117,17 @@ namespace rj
 
             virtual int features() const;
 
-           private:
+        private:
             uri connectionInfo_;
         };
 
         /*!
          *  abstract class for a specific implementation of a database
          */
-        class session : public std::enable_shared_from_this<session>
-        {
+        class session : public std::enable_shared_from_this<session> {
             friend struct sqldb;
 
-           public:
+        public:
             typedef resultset resultset_type;
             typedef statement statement_type;
             typedef transaction transaction_type;
@@ -134,9 +136,13 @@ namespace rj
 
             /* default boilerplate */
             session(const session &other);
+
             session(session &&other);
+
             session &operator=(const session &other);
+
             session &operator=(session &&other);
+
             virtual ~session();
 
             /*!
@@ -216,9 +222,8 @@ namespace rj
             /*!
              * gets the implementation casted to a subtype
              */
-            template <typename T>
-            std::shared_ptr<T> impl() const
-            {
+            template<typename T>
+            std::shared_ptr<T> impl() const {
                 return std::dynamic_pointer_cast<T>(impl());
             }
 
@@ -227,11 +232,12 @@ namespace rj
              */
             std::string join_params(const std::vector<std::string> &columns, const std::string &op = "") const;
 
-           private:
+        private:
             std::shared_ptr<session_impl> impl_;
 
-           protected:
+        protected:
             friend class insert_query;
+
             friend class schema;
 
             /*!
@@ -243,7 +249,7 @@ namespace rj
 
             schema_factory schema_factory_;
 
-           public:
+        public:
             typedef enum {
                 FEATURE_RETURNING = (1 << 0),
                 FEATURE_FULL_OUTER_JOIN = (1 << 1),

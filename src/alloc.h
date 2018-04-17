@@ -3,23 +3,20 @@
  * @abstract Functions for dealing with C-style memory allocation
  * @discussion These functions exist because we need to be able to use realloc in some cases
  */
-#ifndef RJ_DB_ALLOC_H
-#define RJ_DB_ALLOC_H
+#ifndef CODA_DB_ALLOC_H
+#define CODA_DB_ALLOC_H
 
 #include <cstdlib>
 #include <new>
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         /*!
          * allocates a number instances of type T
          * @param num the number of instances to allocate (default 1)
          */
-        template <typename T>
-        T *c_alloc(size_t num = 1)
-        {
+        template<typename T>
+        T *c_alloc(size_t num = 1) {
             void *mem = nullptr;
 
             if (num == 0) {
@@ -44,9 +41,8 @@ namespace rj
          * @param value the existing memory block
          * @param size the number of type T items to allocate
          */
-        template <typename T>
-        T *c_alloc(T *value, size_t num, size_t oldSize)
-        {
+        template<typename T>
+        T *c_alloc(T *value, size_t num, size_t oldSize) {
             void *mem = nullptr;
             T *val = nullptr;
 

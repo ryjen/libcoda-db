@@ -2,14 +2,14 @@
  * @file statement.h
  * Mysql specific implementation of a query statement
  */
-#ifndef RJ_DB_MYSQL_STATEMENT_H
-#define RJ_DB_MYSQL_STATEMENT_H
+#ifndef CODA_DB_MYSQL_STATEMENT_H
+#define CODA_DB_MYSQL_STATEMENT_H
 
 #include <mysql/mysql.h>
 #include "../statement.h"
 #include "binding.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -20,7 +20,7 @@ namespace rj
             /*!
              * a mysql specific implementation of a statement
              */
-            class statement : public rj::db::statement
+            class statement : public coda::db::statement
             {
                private:
                 std::shared_ptr<session> sess_;

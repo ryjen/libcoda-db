@@ -1,11 +1,8 @@
 #include "alloc.h"
 
-namespace rj
-{
-    namespace db
-    {
-        void *c_alloc(size_t size, size_t num)
-        {
+namespace coda {
+    namespace db {
+        void *c_alloc(size_t size, size_t num) {
             void *mem = nullptr;
 
             if (size == 0 || num == 0) {

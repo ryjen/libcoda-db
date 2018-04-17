@@ -3,8 +3,8 @@
  * implementation of a query
  * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifndef RJ_DB_QUERY_H
-#define RJ_DB_QUERY_H
+#ifndef CODA_DB_QUERY_H
+#define CODA_DB_QUERY_H
 
 #include <map>
 #include <memory>
@@ -16,22 +16,19 @@
 #include "sql_generator.h"
 #include "sql_value.h"
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         class statement;
 
         /*!
          * abstract class
          * override to implement a query
          */
-        class query : protected bindable, public sql_generator
-        {
-           public:
+        class query : protected bindable, public sql_generator {
+        public:
             typedef session session_type;
 
-           private:
+        private:
             /*!
             * ensures that the binding storage array is large enough
             * @param index the parameter index for binding
@@ -39,9 +36,10 @@ namespace rj
             * @throws invalid_argument if there is no specifier for the argument
             */
             size_t assert_binding_index(size_t index);
+
             bool dirty_;
 
-           protected:
+        protected:
             std::shared_ptr<session_type> session_;
             std::shared_ptr<statement> stmt_;
             std::vector<sql_value> params_;
@@ -57,11 +55,12 @@ namespace rj
 
             /* bindable overrides */
             bindable &bind(size_t index, const sql_value &value);
+
             bindable &bind(const std::string &name, const sql_value &value);
 
             virtual void set_modified();
 
-           public:
+        public:
             /*!
              * @param db the database to perform the query on
              * @param tableName the table to perform the query on

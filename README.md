@@ -1,11 +1,11 @@
 
-rj_db
+coda_db
 =====
 
 [![Build Status](http://img.shields.io/travis/ryjen/db.svg)](https://travis-ci.org/ryjen/db)
 [![Coverage Status](https://coveralls.io/repos/ryjen/db/badge.svg?branch=master&service=github)](https://coveralls.io/github/ryjen/db?branch=master)
 [![License](http://img.shields.io/:license-gpl.v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![Code Grade](https://img.shields.io/codacy/grade/e98c311926b94b068ef6705245d77739.svg)](https://www.codacy.com/app/ryjen/rj_db/dashboard)
+[![Code Grade](https://img.shields.io/codacy/grade/e98c311926b94b068ef6705245d77739.svg)](https://www.codacy.com/app/ryjen/coda_db/dashboard)
 [![Beer Pay](https://img.shields.io/beerpay/ryjen/db.svg)](https://beerpay.io/ryjen/db)
 
 a sqlite, mysql and postgres wrapper + active record (ish) implementation.   
@@ -37,7 +37,7 @@ otherwise use [cmake](https://cmake.org) to generate for the build system of you
 
 ```bash
 cmake -G Xcode .
-open rj_db.xcodeproj
+open coda_db.xcodeproj
 ```
 
 options supported are:
@@ -56,7 +56,7 @@ Debugging
 Debugging on docker can be done with docker compose:
 
 ```
-docker-compose run test gdb /user/src/build/tests/rj_db_test_xxx
+docker-compose run test gdb /user/src/build/tests/coda_db_test_xxx
 ```
 
 Model
@@ -74,7 +74,7 @@ First I have a global session variable:
 
 ```c++
 
-extern std::shared_ptr<rj::db::session> current_session;
+extern std::shared_ptr<coda::db::session> current_session;
 ```
 
 That gets initialized:
@@ -94,7 +94,7 @@ Record objects should be implemented using the [curiously re-occuring template p
 
 ```c++
 
-class user : public rj::db::record<user>
+class user : public coda::db::record<user>
 {
 public:
 		constexpr static const char *const TABLE_NAME = "users";
@@ -116,13 +116,13 @@ public:
 		}
 
 		// optional overridden method to do custom initialization
-		void on_record_init(const rj::db::row &row) {
+		void on_record_init(const coda::db::row &row) {
 				set("customValue", row.column("customName").to_value());
 		}
 
 		// custom find method using the schema functions
 		vector<shared_ptr<user>> find_by_first_name(const string &value) {
-				return rj::db::find_by<user>(this->schema(), "first_name", value);
+				return coda::db::find_by<user>(this->schema(), "first_name", value);
 		}
 };
 ```
@@ -502,13 +502,13 @@ Here are some preliminary benchmarks on sqlite (see [tests/benchmarks](tests/ben
 	Executing benchmarks...
 	sqlite insert                              5000      437175 ns/op
 	sqlite select                              2000      587871 ns/op
-	rj_db/rj_db_benchmark 7.204s
+	coda_db/coda_db_benchmark 7.204s
 	sqlite insert                              5000      417281 ns/op
 	sqlite select                              2000     1245470 ns/op
-	poco/rj_db_benchmark_poco 8.651s
+	poco/coda_db_benchmark_poco 8.651s
 	sqlite insert                              5000      437498 ns/op
 	sqlite select                              2000     1274096 ns/op
-	soci/rj_db_benchmark_soci 9.018s
+	soci/coda_db_benchmark_soci 9.018s
 	Built target benchmark
 
 Alternatives

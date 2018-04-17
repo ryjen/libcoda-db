@@ -8,7 +8,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace rj::db;
+using namespace coda::db;
 
 using namespace snowhouse;
 
@@ -82,7 +82,7 @@ specification(rows, []() {
 
             auto r = rs.begin();
 
-            r->for_each([](const rj::db::column& c) { Assert::That(c.is_valid(), IsTrue()); });
+            r->for_each([](const coda::db::column& c) { Assert::That(c.is_valid(), IsTrue()); });
         });
 
         it("has an iterator", []() {

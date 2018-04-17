@@ -1,10 +1,10 @@
-#ifndef RJ_DB_POSTGRES_TRANSACTION_H
-#define RJ_DB_POSTGRES_TRANSACTION_H
+#ifndef CODA_DB_POSTGRES_TRANSACTION_H
+#define CODA_DB_POSTGRES_TRANSACTION_H
 
 #include <libpq-fe.h>
 #include "../transaction.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -14,8 +14,8 @@ namespace rj
             {
                public:
                 typedef struct {
-                    rj::db::transaction::isolation::level isolation;
-                    rj::db::transaction::type type;
+                    coda::db::transaction::isolation::level isolation;
+                    coda::db::transaction::type type;
                     int deferrable;
                 } mode;
 

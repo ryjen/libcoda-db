@@ -2,14 +2,14 @@
  * Mysql specific implementations of a row
  * @file row.h
  */
-#ifndef RJ_DB_MYSQL_ROW_H
-#define RJ_DB_MYSQL_ROW_H
+#ifndef CODA_DB_MYSQL_ROW_H
+#define CODA_DB_MYSQL_ROW_H
 
 #include <mysql/mysql.h>
 #include <vector>
 #include "../row.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

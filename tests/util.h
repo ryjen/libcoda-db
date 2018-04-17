@@ -1,5 +1,5 @@
-#ifndef RJ_DB_UTIL_H_
-#define RJ_DB_UTIL_H_
+#ifndef CODA_DB_UTIL_H_
+#define CODA_DB_UTIL_H_
 
 #include <random>
 #include <string>

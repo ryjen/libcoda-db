@@ -2,14 +2,14 @@
  * @file statement.h
  * A postgres statement
  */
-#ifndef RJ_DB_POSTGRES_STATEMENT_H
-#define RJ_DB_POSTGRES_STATEMENT_H
+#ifndef CODA_DB_POSTGRES_STATEMENT_H
+#define CODA_DB_POSTGRES_STATEMENT_H
 
 #include <libpq-fe.h>
 #include "../statement.h"
 #include "binding.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -20,7 +20,7 @@ namespace rj
             /*!
              * a sqlite specific implementation of a statement
              */
-            class statement : public rj::db::statement
+            class statement : public coda::db::statement
             {
                private:
                 std::shared_ptr<postgres::session> sess_;

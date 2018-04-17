@@ -1,33 +1,31 @@
-#ifndef RJ_DB_SQLDB_H
-#define RJ_DB_SQLDB_H
+#ifndef CODA_DB_SQLDB_H
+#define CODA_DB_SQLDB_H
 
 #include <memory>
 #include <unordered_map>
 #include "uri.h"
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         class session;
+
         class session_factory;
 
-        namespace log
-        {
+        namespace log {
             /*! levels of logging */
             typedef enum {
                 /*! logging is disabled */
-                None = 0,
+                        None = 0,
                 /*! only error messages will be logged */
-                Error = 1,
+                        Error = 1,
                 /*! warnings and errors will be logged */
-                Warn = 2,
+                        Warn = 2,
                 /*! info, warning, and error messages will be logged */
-                Info = 3,
+                        Info = 3,
                 /*! debug, info, warning and error messages will be logged */
-                Debug = 4,
+                        Debug = 4,
                 /*! trace, debug, info, warning and error messages will be logged */
-                Trace = 5
+                        Trace = 5
             } level;
 
             /*!
@@ -45,36 +43,35 @@ namespace rj
             void set_level(const char *arg);
         }
 
-        class sqldb
-        {
-           public:
+        class sqldb {
+        public:
             /*!
              * parses a uri and creates a session
              * @param value   the uri string to parse
              * @return the database session based on the uri
              */
-            static std::shared_ptr<rj::db::session> create_session(const std::string &value);
+            static std::shared_ptr<coda::db::session> create_session(const std::string &value);
 
             /*!
              * creates a database session
              * @param value the uri for the session
              * @return the created database session
              */
-            static std::shared_ptr<rj::db::session> create_session(const uri &value);
+            static std::shared_ptr<coda::db::session> create_session(const uri &value);
 
             /*!
              * parses a uri, creates a session, and opens it
              * @param value the uri for the session
              * @return the created and opened session
              */
-            static std::shared_ptr<rj::db::session> open_session(const std::string &value);
+            static std::shared_ptr<coda::db::session> open_session(const std::string &value);
 
             /*!
              * creates a session and opens it
              * @param value the uri for the session
              * @return the created and opened session
              */
-            static std::shared_ptr<rj::db::session> open_session(const uri &value);
+            static std::shared_ptr<coda::db::session> open_session(const uri &value);
 
             /*!
              * registers a handler for a session protocol
@@ -84,14 +81,21 @@ namespace rj
              */
             static void register_session(const std::string &protocol, const std::shared_ptr<session_factory> &factory);
 
-           private:
+        private:
             static sqldb *instance();
+
             sqldb();
+
             sqldb(sqldb &&move) = delete;
+
             sqldb(const sqldb &other) = delete;
+
             sqldb &operator=(const sqldb &other) = delete;
+
             sqldb &operator=(sqldb &&other) = delete;
+
             virtual ~sqldb();
+
             std::unordered_map<std::string, std::shared_ptr<session_factory>> factories_;
         };
     }

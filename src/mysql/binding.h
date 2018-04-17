@@ -2,8 +2,8 @@
  * @file binding.h
  * utilities for binding data to a mysql query
  */
-#ifndef RJ_DB_MYSQL_BINDING_H
-#define RJ_DB_MYSQL_BINDING_H
+#ifndef CODA_DB_MYSQL_BINDING_H
+#define CODA_DB_MYSQL_BINDING_H
 
 #include <mysql/mysql.h>
 #include <set>
@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include "../bind_mapping.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -28,7 +28,7 @@ namespace rj
             /*!
              * makes binding mysql queries simpler
              */
-            class binding : public rj::db::bind_mapping
+            class binding : public coda::db::bind_mapping
             {
                 friend class mysql_column;
 

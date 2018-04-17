@@ -1,30 +1,31 @@
-#ifndef RJ_DB_DELETE_QUERY_H
-#define RJ_DB_DELETE_QUERY_H
+#ifndef CODA_DB_DELETE_QUERY_H
+#define CODA_DB_DELETE_QUERY_H
 
 #include "modify_query.h"
 #include "where_clause.h"
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         /*!
          * a query to delete from a table
          */
-        class delete_query : public modify_query, public whereable<delete_query>
-        {
-           public:
-            delete_query(const std::shared_ptr<rj::db::session> &session);
+        class delete_query : public modify_query, public whereable<delete_query> {
+        public:
+            delete_query(const std::shared_ptr<coda::db::session> &session);
 
-            delete_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName);
+            delete_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName);
 
             delete_query(const std::shared_ptr<schema> &schema);
 
             /* boilerplate */
             delete_query(const delete_query &other);
+
             delete_query(delete_query &&other);
+
             virtual ~delete_query();
+
             delete_query &operator=(const delete_query &other);
+
             delete_query &operator=(delete_query &&other);
 
             /*!
@@ -41,6 +42,7 @@ namespace rj
              * @return the table name
              */
             std::string from() const;
+
             /*!
              * gets the where builder for the query
              * @return a reference to the where builder
@@ -98,7 +100,7 @@ namespace rj
              */
             bool is_valid() const;
 
-           private:
+        private:
             std::string generate_sql() const;
 
             where_builder where_;

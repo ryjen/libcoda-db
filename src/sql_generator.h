@@ -1,9 +1,9 @@
-#ifndef RJ_DB_SQL_GENERATOR_H
-#define RJ_DB_SQL_GENERATOR_H
+#ifndef CODA_DB_SQL_GENERATOR_H
+#define CODA_DB_SQL_GENERATOR_H
 
 #include <string>
 
-namespace rj
+namespace coda
 {
     namespace db
     {

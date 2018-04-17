@@ -1,5 +1,5 @@
-#ifndef RJ_TEST_DB_H
-#define RJ_TEST_DB_H
+#ifndef CODA_TEST_DB_H
+#define CODA_TEST_DB_H
 
 #include <unistd.h>
 #include <list>
@@ -9,7 +9,7 @@
 #include "sqldb.h"
 #include "uri.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -29,13 +29,13 @@ namespace rj
                 virtual void teardown() = 0;
             };
 
-            class factory : public rj::db::session_factory
+            class factory : public coda::db::session_factory
             {
                public:
-                std::shared_ptr<rj::db::session_impl> create(const rj::db::uri &value);
+                std::shared_ptr<coda::db::session_impl> create(const coda::db::uri &value);
             };
 
-            extern std::shared_ptr<rj::db::session> current_session;
+            extern std::shared_ptr<coda::db::session> current_session;
 
             extern void register_current_session();
 
@@ -45,19 +45,19 @@ namespace rj
 
             extern void unregister_current_session();
 
-            class user : public rj::db::record<user>
+            class user : public coda::db::record<user>
             {
                public:
                 constexpr static const char *const TABLE_NAME = "users";
 
-                using rj::db::record<user>::record;
+                using coda::db::record<user>::record;
 
-                user(const std::shared_ptr<rj::db::session> &sess = current_session)
+                user(const std::shared_ptr<coda::db::session> &sess = current_session)
                     : record(sess->get_schema(TABLE_NAME))
                 {
                 }
 
-                user(long long id, const std::shared_ptr<rj::db::session> &sess = current_session)
+                user(long long id, const std::shared_ptr<coda::db::session> &sess = current_session)
                     : user(sess->get_schema(TABLE_NAME))
                 {
                     set_id(id);
@@ -67,7 +67,7 @@ namespace rj
                 /*!
                  * required constructor
                  */
-                user(const std::shared_ptr<rj::db::schema> &schema) : record(schema)
+                user(const std::shared_ptr<coda::db::schema> &schema) : record(schema)
                 {
                 }
 
@@ -84,6 +84,6 @@ namespace rj
     }
 }
 
-#define specification(name, fn) rj::db::test::spec::type spec_file_##name(fn)
+#define specification(name, fn) coda::db::test::spec::type spec_file_##name(fn)
 
 #endif

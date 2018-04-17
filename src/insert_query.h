@@ -1,18 +1,15 @@
-#ifndef RJ_DB_INSERT_QUERY_H
-#define RJ_DB_INSERT_QUERY_H
+#ifndef CODA_DB_INSERT_QUERY_H
+#define CODA_DB_INSERT_QUERY_H
 
 #include "modify_query.h"
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         /*!
          * a query to insert to a table
          */
-        class insert_query : public modify_query
-        {
-           public:
+        class insert_query : public modify_query {
+        public:
             using modify_query::modify_query;
 
             /*!
@@ -20,13 +17,13 @@ namespace rj
              * @param tableName the table to modify
              * @param columns the columns to modify
              */
-            insert_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName);
+            insert_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName);
 
             /*!
              * @param db the database to modify
              * @param columns the columns to modify
              */
-            insert_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName,
+            insert_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName,
                          const std::vector<std::string> &columns);
 
             /*!
@@ -37,9 +34,13 @@ namespace rj
 
             /* boilerplate */
             insert_query(const insert_query &other);
+
             insert_query(insert_query &&other);
+
             virtual ~insert_query();
+
             insert_query &operator=(const insert_query &other);
+
             insert_query &operator=(insert_query &&other);
 
             /*!
@@ -60,9 +61,8 @@ namespace rj
              */
             insert_query &columns(const std::vector<std::string> &value);
 
-            template <typename... List>
-            insert_query &columns(const std::string &value, const List &... args)
-            {
+            template<typename... List>
+            insert_query &columns(const std::string &value, const List &... args) {
                 column(value);
                 columns(args...);
                 return *this;
@@ -89,9 +89,8 @@ namespace rj
              * @param argv a variadic list of values to bind
              * @return a reference to this instance
              */
-            template <typename T, typename... List>
-            insert_query &values(const T &value, const List &... argv)
-            {
+            template<typename T, typename... List>
+            insert_query &values(const T &value, const List &... argv) {
                 bind_list(1, value, argv...);
                 return *this;
             }
@@ -116,15 +115,15 @@ namespace rj
              */
             bool is_valid() const;
 
-           private:
-            insert_query &column(const std::string &value)
-            {
+        private:
+            insert_query &column(const std::string &value) {
                 if (!value.empty()) {
                     columns_.push_back(value);
                     set_modified();
                 }
                 return *this;
             }
+
             std::string generate_sql() const;
 
             long long lastId_;

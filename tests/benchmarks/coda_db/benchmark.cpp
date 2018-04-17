@@ -5,15 +5,15 @@
 #include "sqlite/session.h"
 #include "util.h"
 
-using namespace rj::db;
+using namespace coda::db;
 
-std::shared_ptr<rj::db::session> current_session;
+std::shared_ptr<coda::db::session> current_session;
 
 __attribute__((constructor)) void initialize(void)
 {
-    rj::db::sqlite::initialize();
-    rj::db::mysql::initialize();
-    rj::db::postgres::initialize();
+    coda::db::sqlite::initialize();
+    coda::db::mysql::initialize();
+    coda::db::postgres::initialize();
 }
 
 void sqlite_setup()
@@ -81,7 +81,7 @@ void benchmark_select(const std::string &tableName)
     }
 }
 
-void benchmark_setup(const rj::db::uri &uri_s)
+void benchmark_setup(const coda::db::uri &uri_s)
 {
     current_session = sqldb::create_session(uri_s);
 
@@ -93,18 +93,18 @@ void benchmark_teardown()
     current_session->close();
 }
 
-void benchmark_insert(insert_query &insert, const std::shared_ptr<rj::db::session> &session)
+void benchmark_insert(insert_query &insert, const std::shared_ptr<coda::db::session> &session)
 {
     insert.values(random_name(), random_name(), random_num<int>(-123012, 1231232));
 
     if (!insert.execute()) {
-        rj::db::log::error("unable to prepare test: %s", session->last_error().c_str());
+        coda::db::log::error("unable to prepare test: %s", session->last_error().c_str());
     }
 }
 
 void benchmark_populate(benchpress::context *context)
 {
-    rj::db::insert_query query(current_session);
+    coda::db::insert_query query(current_session);
 
     query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
 

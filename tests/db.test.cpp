@@ -12,17 +12,17 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace rj::db;
+using namespace coda::db;
 
 using namespace snowhouse;
 
-namespace rj
+namespace coda
 {
     namespace db
     {
         namespace test
         {
-            std::shared_ptr<rj::db::session> current_session;
+            std::shared_ptr<coda::db::session> current_session;
 
             namespace spec
             {

@@ -1,10 +1,10 @@
-#ifndef RJ_DB_MYSQL_TRANSACTION_H
-#define RJ_DB_MYSQL_TRANSACTION_H
+#ifndef CODA_DB_MYSQL_TRANSACTION_H
+#define CODA_DB_MYSQL_TRANSACTION_H
 
 #include <mysql/mysql.h>
 #include "../transaction.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

@@ -1,6 +1,6 @@
 
 #ifndef SPEC_REG
-#define SPEC_REG(name) extern rj::db::test::spec::type spec_file_##name
+#define SPEC_REG(name) extern coda::db::test::spec::type spec_file_##name
 #else
 #undef SPEC_REG
 #define SPEC_REG(name) bandit::detail::specs().push_back(spec_file_##name)

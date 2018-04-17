@@ -13,7 +13,7 @@
 #include "../sql_value.h"
 #include "binding.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

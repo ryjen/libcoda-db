@@ -1,18 +1,10 @@
 
 #include "log.h"
-#include <sys/time.h>
-#include <time.h>
-#include <cstdarg>
-#include <cstdio>
-#include <cstdlib>
 #include "sqldb.h"
 
-namespace rj
-{
-    namespace db
-    {
-        namespace log
-        {
+namespace coda {
+    namespace db {
+        namespace log {
 #ifdef ENABLE_LOGGING
             const char *LevelNames[] = {"UNKNOWN", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"};
 
@@ -22,22 +14,20 @@ namespace rj
                 FILE *file = stdout;
             }
 #endif
-            void set_level(log::level level)
-            {
+
+            void set_level(log::level level) {
 #ifdef ENABLE_LOGGING
                 current::level = level;
 #endif
             }
 
-            void set_file(FILE *fp)
-            {
+            void set_file(FILE *fp) {
 #ifdef ENABLE_LOGGING
                 current::file = fp;
 #endif
             }
 
-            void set_level(const char *arg)
-            {
+            void set_level(const char *arg) {
 #ifdef ENABLE_LOGGING
                 if (arg == NULL || *arg == 0) {
                     return;
@@ -78,8 +68,8 @@ namespace rj
                 fflush(log::file);
             }
 #endif
-            void error(const char *const format, ...)
-            {
+
+            void error(const char *const format, ...) {
 #ifdef ENABLE_LOGGING
                 va_list args;
 
@@ -93,8 +83,7 @@ namespace rj
 #endif
             }
 
-            void warn(const char *const format, ...)
-            {
+            void warn(const char *const format, ...) {
 #ifdef ENABLE_LOGGING
                 va_list args;
 
@@ -108,8 +97,7 @@ namespace rj
 #endif
             }
 
-            void info(const char *const format, ...)
-            {
+            void info(const char *const format, ...) {
 #ifdef ENABLE_LOGGING
                 va_list args;
 
@@ -123,8 +111,7 @@ namespace rj
 #endif
             }
 
-            void debug(const char *const format, ...)
-            {
+            void debug(const char *const format, ...) {
 #ifdef ENABLE_LOGGING
                 va_list args;
 
@@ -138,8 +125,7 @@ namespace rj
 #endif
             }
 
-            void trace(const char *const format, ...)
-            {
+            void trace(const char *const format, ...) {
 #ifdef ENABLE_LOGGING
                 va_list args;
 
@@ -153,8 +139,7 @@ namespace rj
 #endif
             }
 
-            void error(int errnum)
-            {
+            void error(int errnum) {
 #ifdef ENABLE_LOGGING
                 error("%s (%d)", strerror(errnum), errnum);
 #endif

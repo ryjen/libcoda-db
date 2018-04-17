@@ -1,14 +1,14 @@
 /*!
  * @file row.h
  */
-#ifndef RJ_DB_SQLITE_ROW_H
-#define RJ_DB_SQLITE_ROW_H
+#ifndef CODA_DB_SQLITE_ROW_H
+#define CODA_DB_SQLITE_ROW_H
 
 #include <sqlite3.h>
 #include <vector>
 #include "../row.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

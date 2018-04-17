@@ -2,15 +2,15 @@
  * @file schema_factory.h
  * a factory for caching schemas
  */
-#ifndef RJ_DB_SCHEMA_FACTORY_H
-#define RJ_DB_SCHEMA_FACTORY_H
+#ifndef CODA_DB_SCHEMA_FACTORY_H
+#define CODA_DB_SCHEMA_FACTORY_H
 
 #include <functional>
 #include <memory>
 #include <string>
 #include <unordered_map>
 
-namespace rj
+namespace coda
 {
     namespace db
     {

@@ -2,8 +2,8 @@
  * @file bindable.h
  * An interface for data binding
  */
-#ifndef RJ_DB_BINDABLE_H
-#define RJ_DB_BINDABLE_H
+#ifndef CODA_DB_BINDABLE_H
+#define CODA_DB_BINDABLE_H
 
 #ifdef ENABLE_PARAMETER_MAPPING
 #include <regex>
@@ -13,18 +13,15 @@
 #include <unordered_map>
 #include <vector>
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         class sql_value;
 
         /*!
          * represents something that can have a sql value binded to it
          */
-        class bindable
-        {
-           protected:
+        class bindable {
+        protected:
             static const int prealloc_size;
             static const int prealloc_increment;
 
@@ -34,13 +31,12 @@ namespace rj
              * @param value the value to bind
              * @return a reference to this instance
              */
-            template <typename T>
-            bindable &bind_list(size_t index, const T &value)
-            {
+            template<typename T>
+            bindable &bind_list(size_t index, const T &value) {
                 return bind(index, value);
             }
 
-           public:
+        public:
 #ifdef ENABLE_PARAMETER_MAPPING
             static const std::regex param_regex;
             static const std::regex index_regex;
@@ -48,15 +44,19 @@ namespace rj
 #endif
 
             bindable() = default;
+
             bindable(const bindable &other) = default;
+
             bindable(bindable &&other) = default;
+
             virtual ~bindable() = default;
+
             bindable &operator=(const bindable &other) = default;
+
             bindable &operator=(bindable &&other) = default;
 
-            template <typename T, typename... List>
-            bindable &bind_all(const T &value, const List &... argv)
-            {
+            template<typename T, typename... List>
+            bindable &bind_all(const T &value, const List &... argv) {
                 return bind_list(1, value, argv...);
             }
 
@@ -67,9 +67,8 @@ namespace rj
              * @param argv the remaining values
              * @return a reference to this instance
              */
-            template <typename T, typename... List>
-            bindable &bind_list(size_t index, const T &value, const List &... argv)
-            {
+            template<typename T, typename... List>
+            bindable &bind_list(size_t index, const T &value, const List &... argv) {
                 bind(index, value);
                 bind_list(index + 1, argv...);
                 return *this;

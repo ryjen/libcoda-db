@@ -6,7 +6,7 @@
 #include "sqlite/session.h"
 #include "util.h"
 
-using namespace rj::db;
+using namespace coda::db;
 
 BENCHMARK("sqlite insert", [](benchpress::context *context) {
     uri uri_s("file://test.db");
@@ -15,7 +15,7 @@ BENCHMARK("sqlite insert", [](benchpress::context *context) {
 
     sqlite_setup();
 
-    rj::db::insert_query query(current_session);
+    coda::db::insert_query query(current_session);
 
     query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
 
@@ -41,7 +41,7 @@ BENCHMARK("mysql insert", [](benchpress::context *context) {
 
     mysql_setup();
 
-    rj::db::insert_query query(current_session);
+    coda::db::insert_query query(current_session);
 
     query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
 
@@ -66,7 +66,7 @@ BENCHMARK("postgres insert", [](benchpress::context *context) {
 
     postgres_setup();
 
-    rj::db::insert_query query(current_session);
+    coda::db::insert_query query(current_session);
 
     query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
 

@@ -8,9 +8,9 @@
 
 using namespace std;
 
-using namespace rj::db;
+using namespace coda::db;
 
-void run_tests(const std::shared_ptr<rj::db::session>& session, const char* name);
+void run_tests(const std::shared_ptr<coda::db::session>& session, const char* name);
 
 #define TEST_SIZE 100000
 
@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-void run_tests(const std::shared_ptr<rj::db::session>& session, const char* name)
+void run_tests(const std::shared_ptr<coda::db::session>& session, const char* name)
 {
     log::info("starting %s performance test...", name);
 

@@ -1,12 +1,10 @@
-#ifndef RJ_DB_BIND_MAPPING_H
-#define RJ_DB_BIND_MAPPING_H
+#ifndef CODA_DB_BIND_MAPPING_H
+#define CODA_DB_BIND_MAPPING_H
 
 #include "bindable.h"
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
 #ifdef ENABLE_PARAMETER_MAPPING
         /*!
          * a binding that supports mapping named parameters to indexed parameters
@@ -52,9 +50,9 @@ namespace rj
             type mappings_;
         };
 #else
-        class bind_mapping : public bindable
-        {
-           public:
+
+        class bind_mapping : public bindable {
+        public:
             using bindable::bindable;
 
             bind_mapping &bind(const std::string &name, const sql_value &value);
@@ -67,6 +65,7 @@ namespace rj
 
             virtual void reset();
         };
+
 #endif
     }
 }

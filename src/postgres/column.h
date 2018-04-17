@@ -2,13 +2,13 @@
  * @file column.h
  * column in a postgres database
  */
-#ifndef RJ_DB_POSTGRES_COLUMN_H
-#define RJ_DB_POSTGRES_COLUMN_H
+#ifndef CODA_DB_POSTGRES_COLUMN_H
+#define CODA_DB_POSTGRES_COLUMN_H
 
 #include <libpq-fe.h>
 #include "../column.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

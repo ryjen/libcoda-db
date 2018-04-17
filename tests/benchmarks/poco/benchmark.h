@@ -1,5 +1,5 @@
-#ifndef RJ_DB_BENCHMARK_H
-#define RJ_DB_BENCHMARK_H
+#ifndef CODA_DB_BENCHMARK_H
+#define CODA_DB_BENCHMARK_H
 
 #include <Poco/Data/Session.h>
 

@@ -2,15 +2,15 @@
  * @file db.h
  * a postgres database
  */
-#ifndef RJ_DB_POSTGRES_SESSION_H
-#define RJ_DB_POSTGRES_SESSION_H
+#ifndef CODA_DB_POSTGRES_SESSION_H
+#define CODA_DB_POSTGRES_SESSION_H
 
 #include <libpq-fe.h>
 #include "../session.h"
 #include "../session_factory.h"
 #include "transaction.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -21,13 +21,13 @@ namespace rj
             class factory : public session_factory
             {
                public:
-                std::shared_ptr<rj::db::session_impl> create(const uri &uri);
+                std::shared_ptr<coda::db::session_impl> create(const uri &uri);
             };
 
             /*!
              * a mysql specific implementation of a database
              */
-            class session : public rj::db::session_impl, public std::enable_shared_from_this<session>
+            class session : public coda::db::session_impl, public std::enable_shared_from_this<session>
             {
                 friend class statement;
                 friend class factory;
@@ -57,7 +57,7 @@ namespace rj
                 std::string last_error() const;
                 std::shared_ptr<resultset_impl> query(const std::string &sql);
                 bool execute(const std::string &sql);
-                std::shared_ptr<rj::db::session::statement_type> create_statement();
+                std::shared_ptr<coda::db::session::statement_type> create_statement();
                 std::shared_ptr<transaction_impl> create_transaction() const;
                 std::shared_ptr<transaction_impl> create_transaction(const transaction::mode &mode) const;
                 std::vector<column_definition> get_columns_for_schema(const std::string &dbName,

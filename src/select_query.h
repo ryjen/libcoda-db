@@ -2,31 +2,29 @@
  * @file select_query.h
  * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifndef RJ_DB_SELECT_QUERY_H
-#define RJ_DB_SELECT_QUERY_H
+#ifndef CODA_DB_SELECT_QUERY_H
+#define CODA_DB_SELECT_QUERY_H
 
 #include "join_clause.h"
 #include "query.h"
 #include "resultset.h"
 #include "where_clause.h"
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         struct union_operator;
 
-        namespace union_op
-        {
-            typedef enum { none, all } type;
+        namespace union_op {
+            typedef enum {
+                none, all
+            } type;
         }
 
         /*!
          * a query to select values from a table
          */
-        class select_query : public query, public whereable<select_query>
-        {
-           private:
+        class select_query : public query, public whereable<select_query> {
+        private:
             where_builder where_;
             std::vector<join_clause> join_;
             std::string limit_;
@@ -41,8 +39,7 @@ namespace rj
              * @param value the name of the column to find
              * @return a reference to this
              */
-            select_query &column(const std::string &value)
-            {
+            select_query &column(const std::string &value) {
                 if (!value.empty()) {
                     columns_.push_back(value);
                     set_modified();
@@ -55,19 +52,19 @@ namespace rj
              */
             std::string generate_sql() const;
 
-           public:
+        public:
             /*!
              * defaults to 'select *'
              * @param db the database in use
              */
-            select_query(const std::shared_ptr<rj::db::session> &session);
+            select_query(const std::shared_ptr<coda::db::session> &session);
 
             /*!
              * @param db        the database in use
              * @param tableName the table name to query
              * @param columns   the columns to query
              */
-            select_query(const std::shared_ptr<rj::db::session> &session, const std::vector<std::string> &columns);
+            select_query(const std::shared_ptr<coda::db::session> &session, const std::vector<std::string> &columns);
 
             /*!
              * @param schema    the schema to query
@@ -79,14 +76,18 @@ namespace rj
              * @param columns the columns to query
              * @param tableName the table to query from
              */
-            select_query(const std::shared_ptr<rj::db::session> &session, const std::vector<std::string> &columns,
+            select_query(const std::shared_ptr<coda::db::session> &session, const std::vector<std::string> &columns,
                          const std::string &tableName);
 
             /* boilerplate */
             select_query(const select_query &other);
+
             select_query(select_query &&other);
+
             virtual ~select_query();
+
             select_query &operator=(const select_query &other);
+
             select_query &operator=(select_query &&other);
 
             /*!
@@ -123,9 +124,8 @@ namespace rj
              * @param args the remaining column names
              * @return a reference to this
              */
-            template <typename... List>
-            select_query &columns(const std::string &value, const List &... args)
-            {
+            template<typename... List>
+            select_query &columns(const std::string &value, const List &... args) {
                 column(value);
                 columns(args...);
                 return *this;
@@ -288,9 +288,8 @@ namespace rj
             /*!
              * return the first column in the first row of the result set
              */
-            template <typename T, typename = std::enable_if<is_sql_value<T>::value || is_sql_number<T>::value>>
-            T execute_scalar()
-            {
+            template<typename T, typename = std::enable_if<is_sql_value<T>::value || is_sql_number<T>::value>>
+            T execute_scalar() {
                 auto rs = execute();
 
                 if (!rs.is_valid()) {
@@ -324,8 +323,7 @@ namespace rj
              * @param query the query to find
              * @param type the type of union
              */
-            union_operator(const select_query &query, union_op::type type = union_op::none) : query(query), type(type)
-            {
+            union_operator(const select_query &query, union_op::type type = union_op::none) : query(query), type(type) {
             }
         };
 

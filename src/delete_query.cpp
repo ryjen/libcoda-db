@@ -4,16 +4,16 @@
 
 using namespace std;
 
-namespace rj
+namespace coda
 {
     namespace db
     {
-        delete_query::delete_query(const std::shared_ptr<rj::db::session> &session)
+        delete_query::delete_query(const std::shared_ptr<coda::db::session> &session)
             : modify_query(session), where_(session->impl(), this)
         {
         }
 
-        delete_query::delete_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName)
+        delete_query::delete_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName)
             : modify_query(session), where_(session->impl(), this)
         {
             tableName_ = tableName;

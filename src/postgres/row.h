@@ -2,14 +2,14 @@
  * @file row.h
  * A postgres row
  */
-#ifndef RJ_DB_POSTGRES_ROW_H
-#define RJ_DB_POSTGRES_ROW_H
+#ifndef CODA_DB_POSTGRES_ROW_H
+#define CODA_DB_POSTGRES_ROW_H
 
 #include <libpq-fe.h>
 #include <vector>
 #include "../row.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

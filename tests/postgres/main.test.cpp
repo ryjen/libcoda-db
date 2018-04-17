@@ -15,11 +15,11 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace rj::db;
+using namespace coda::db;
 
 using namespace snowhouse;
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -32,7 +32,7 @@ namespace rj
                 sqldb::register_session("postgresql", pq_factory);
 
                 auto uri_s = get_env_uri("POSTGRES_URI", "postgres://localhost/test");
-                current_session = rj::db::sqldb::create_session(uri_s);
+                current_session = coda::db::sqldb::create_session(uri_s);
                 cout << "connecting to " << uri_s << endl;
             }
 
@@ -40,7 +40,7 @@ namespace rj
             {
             }
 
-            class postgres_session : public rj::db::postgres::session, public test::session
+            class postgres_session : public coda::db::postgres::session, public test::session
             {
                public:
                 using postgres::session::session;
@@ -69,7 +69,7 @@ namespace rj
                 }
             };
 
-            std::shared_ptr<rj::db::session_impl> factory::create(const rj::db::uri &value)
+            std::shared_ptr<coda::db::session_impl> factory::create(const coda::db::uri &value)
             {
                 return std::make_shared<postgres_session>(value);
             }

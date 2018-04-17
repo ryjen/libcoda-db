@@ -1,4 +1,22 @@
 
+if (NOT DEFINED BANDIT_DIR)
+
+	include(ExternalProject)
+
+	externalproject_add(${PROJECT_NAME}-bandit
+			GIT_REPOSITORY https://github.com/banditcpp/bandit.git
+			GIT_TAG v2.0.0
+			INSTALL_COMMAND ""
+			BUILD_COMMAND ""
+			PREFIX ${CMAKE_CURRENT_BINARY_DIR}/bandit)
+
+	ExternalProject_Get_property(${PROJECT_NAME}-bandit SOURCE_DIR)
+
+	set(BANDIT_DIR ${SOURCE_DIR})
+
+	message(STATUS "Using ${BANDIT_DIR}")
+endif()
+
 set(TEST_SOURCES
 	main.db.test.cpp
 	db.test.cpp
@@ -24,14 +42,14 @@ add_library(${COMMON_TEST_PROJECT_NAME}
 	${TEST_SOURCES}
 )
 
-target_include_directories(${COMMON_TEST_PROJECT_NAME} SYSTEM PUBLIC vendor/bandit
+target_include_directories(${COMMON_TEST_PROJECT_NAME} SYSTEM PUBLIC ${BANDIT_DIR}
 		PUBLIC ${PROJECT_SOURCE_DIR}/src SYSTEM PUBLIC ${Boost_INCLUDE_DIRS})
 
 add_library(${UTIL_TEST_PROJECT_NAME}
 	util.cpp
 )
 
-target_include_directories(${UTIL_TEST_PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/src)
+target_include_directories(${UTIL_TEST_PROJECT_NAME} SYSTEM PUBLIC ${BANDIT_DIR} INTERFACE ${PROJECT_SOURCE_DIR}/src)
 
 if (MYSQL_FOUND)
 
@@ -47,7 +65,7 @@ add_executable (${MYSQL_TEST_PROJECT_NAME}
 
 target_link_libraries (${MYSQL_TEST_PROJECT_NAME} ${MYSQL_PROJECT_NAME} ${UTIL_TEST_PROJECT_NAME} ${COMMON_TEST_PROJECT_NAME})
 
-target_include_directories(${MYSQL_TEST_PROJECT_NAME} SYSTEM PUBLIC ${MYSQL_INCLUDE_DIR} SYSTEM PUBLIC vendor/bandit INTERFACE ${PROJECT_SOURCE_DIR}/src)
+target_include_directories(${MYSQL_TEST_PROJECT_NAME} SYSTEM PUBLIC ${MYSQL_INCLUDE_DIR} SYSTEM PUBLIC ${BANDIT_DIR} INTERFACE ${PROJECT_SOURCE_DIR}/src)
 
 endif()
 
@@ -64,7 +82,7 @@ add_executable (${SQLITE_TEST_PROJECT_NAME}
 
 target_link_libraries (${SQLITE_TEST_PROJECT_NAME} ${SQLITE_PROJECT_NAME} ${UTIL_TEST_PROJECT_NAME} ${COMMON_TEST_PROJECT_NAME})
 
-target_include_directories(${SQLITE_TEST_PROJECT_NAME} SYSTEM PUBLIC ${SQLITE3_INCLUDE_DIR} SYSTEM PUBLIC vendor/bandit INTERFACE ${PROJECT_SOURCE_DIR}/src)
+target_include_directories(${SQLITE_TEST_PROJECT_NAME} SYSTEM PUBLIC ${SQLITE3_INCLUDE_DIR} SYSTEM PUBLIC ${BANDIT_DIR} INTERFACE ${PROJECT_SOURCE_DIR}/src)
 
 endif()
 
@@ -83,7 +101,7 @@ add_executable (${POSTGRES_TEST_PROJECT_NAME}
 
 target_link_libraries (${POSTGRES_TEST_PROJECT_NAME} ${POSTGRES_PROJECT_NAME} ${UTIL_TEST_PROJECT_NAME} ${COMMON_TEST_PROJECT_NAME})
 
-target_include_directories(${POSTGRES_TEST_PROJECT_NAME} SYSTEM PUBLIC ${PostgreSQL_INCLUDE_DIRS} SYSTEM PUBLIC vendor/bandit INTERFACE ${PROJECT_SOURCE_DIR}/src)
+target_include_directories(${POSTGRES_TEST_PROJECT_NAME} SYSTEM PUBLIC ${PostgreSQL_INCLUDE_DIRS} SYSTEM PUBLIC ${BANDIT_DIR} INTERFACE ${PROJECT_SOURCE_DIR}/src)
 
 endif()
 
@@ -97,7 +115,7 @@ add_executable (${TEST_PROJECT_NAME}
 
 target_link_libraries (${TEST_PROJECT_NAME} ${PROJECT_NAME} ${UTIL_TEST_PROJECT_NAME})
 
-target_include_directories(${TEST_PROJECT_NAME} SYSTEM PUBLIC vendor/bandit INTERFACE ${PROJECT_SOURCE_DIR}/src)
+target_include_directories(${TEST_PROJECT_NAME} SYSTEM PUBLIC ${BANDIT_DIR} INTERFACE ${PROJECT_SOURCE_DIR}/src)
 
 add_executable (${PROJECT_NAME}_test_all run_all.test.cpp)
 

@@ -12,7 +12,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace rj::db;
+using namespace coda::db;
 
 using namespace snowhouse;
 

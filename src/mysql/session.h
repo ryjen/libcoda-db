@@ -2,14 +2,14 @@
  * @file db.h
  * a mysql specific database
  */
-#ifndef RJ_DB_MYSQL_SESSION_H
-#define RJ_DB_MYSQL_SESSION_H
+#ifndef CODA_DB_MYSQL_SESSION_H
+#define CODA_DB_MYSQL_SESSION_H
 
 #include <mysql/mysql.h>
 #include "../session.h"
 #include "../session_factory.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -20,13 +20,13 @@ namespace rj
             class factory : public session_factory
             {
                public:
-                std::shared_ptr<rj::db::session_impl> create(const uri &uri);
+                std::shared_ptr<coda::db::session_impl> create(const uri &uri);
             };
 
             /*!
              * a mysql specific implementation of a database
              */
-            class session : public rj::db::session_impl, public std::enable_shared_from_this<session>
+            class session : public coda::db::session_impl, public std::enable_shared_from_this<session>
             {
                 friend class resultset;
                 friend class statement;

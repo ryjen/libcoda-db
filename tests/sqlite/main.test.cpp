@@ -14,11 +14,11 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace rj::db;
+using namespace coda::db;
 
 using namespace snowhouse;
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -30,14 +30,14 @@ namespace rj
                 sqldb::register_session("file", sqlite_factory);
                 sqldb::register_session("sqlite", sqlite_factory);
 
-                current_session = rj::db::sqldb::create_session("file://testdb.db");
+                current_session = coda::db::sqldb::create_session("file://testdb.db");
             }
 
             void unregister_current_session()
             {
             }
 
-            class sqlite_session : public rj::db::sqlite::session, public test::session
+            class sqlite_session : public coda::db::sqlite::session, public test::session
             {
                public:
                 using sqlite::session::session;
@@ -64,7 +64,7 @@ namespace rj
                 }
             };
 
-            std::shared_ptr<rj::db::session_impl> factory::create(const rj::db::uri &value)
+            std::shared_ptr<coda::db::session_impl> factory::create(const coda::db::uri &value)
             {
                 return std::make_shared<sqlite_session>(value);
             }

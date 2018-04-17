@@ -1,14 +1,10 @@
 #include "sql_time.h"
-#include <cstring>
 #include "exception.h"
 #include "sql_number.h"
 
-namespace rj
-{
-    namespace db
-    {
-        bool sql_time::parse(const std::string &value)
-        {
+namespace coda {
+    namespace db {
+        bool sql_time::parse(const std::string &value) {
             struct tm tp;
 
             if (value.length() == 0) {
@@ -48,75 +44,61 @@ namespace rj
             }
         }
 
-        sql_time::sql_time(time_t value, formats format) : value_(value), format_(format)
-        {
+        sql_time::sql_time(time_t value, formats format) : value_(value), format_(format) {
         }
 
-        sql_time::sql_time(const std::string &value) : value_(0), format_(TIMESTAMP)
-        {
+        sql_time::sql_time(const std::string &value) : value_(0), format_(TIMESTAMP) {
             if (!parse(value)) {
                 throw value_conversion_error("unable to convert string to time");
             }
         }
 
-        sql_time::sql_time(const sql_time &other) : value_(other.value_), format_(other.format_)
-        {
+        sql_time::sql_time(const sql_time &other) : value_(other.value_), format_(other.format_) {
         }
 
-        sql_time::sql_time(sql_time &&other) : value_(other.value_), format_(other.format_)
-        {
+        sql_time::sql_time(sql_time &&other) : value_(other.value_), format_(other.format_) {
         }
 
-        sql_time::~sql_time()
-        {
+        sql_time::~sql_time() {
         }
 
-        sql_time &sql_time::operator=(const sql_time &other)
-        {
+        sql_time &sql_time::operator=(const sql_time &other) {
             value_ = other.value_;
             format_ = other.format_;
             return *this;
         }
 
-        sql_time &sql_time::operator=(sql_time &&other)
-        {
+        sql_time &sql_time::operator=(sql_time &&other) {
             value_ = other.value_;
             format_ = other.format_;
             return *this;
         }
 
-        sql_time::formats sql_time::format() const
-        {
+        sql_time::formats sql_time::format() const {
             return format_;
         }
 
-        time_t sql_time::value() const
-        {
+        time_t sql_time::value() const {
             return value_;
         }
 
-        struct tm *sql_time::to_gmtime() const
-        {
+        struct tm *sql_time::to_gmtime() const {
             return gmtime(&value_);
         }
 
-        struct tm *sql_time::to_localtime() const
-        {
+        struct tm *sql_time::to_localtime() const {
             return localtime(&value_);
         }
 
-        sql_time::operator std::string() const
-        {
+        sql_time::operator std::string() const {
             return to_string();
         }
 
-        sql_time::operator std::wstring() const
-        {
+        sql_time::operator std::wstring() const {
             return to_wstring();
         }
 
-        std::string sql_time::to_string() const
-        {
+        std::string sql_time::to_string() const {
             char buf[500] = {0};
 
             switch (format_) {
@@ -133,8 +115,7 @@ namespace rj
             }
         }
 
-        std::wstring sql_time::to_wstring() const
-        {
+        std::wstring sql_time::to_wstring() const {
             wchar_t buf[500] = {0};
 
             switch (format_) {
@@ -151,18 +132,15 @@ namespace rj
             }
         }
 
-        bool sql_time::operator==(const sql_time &other) const
-        {
+        bool sql_time::operator==(const sql_time &other) const {
             return value_ == other.value_ && format_ == other.format_;
         }
 
-        sql_time::operator time_t() const
-        {
+        sql_time::operator time_t() const {
             return value_;
         }
 
-        std::ostream &operator<<(std::ostream &out, const sql_time &value)
-        {
+        std::ostream &operator<<(std::ostream &out, const sql_time &value) {
             out << value.to_string();
             return out;
         }

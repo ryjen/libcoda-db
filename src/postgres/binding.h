@@ -2,14 +2,14 @@
  * @file binding.h
  * utility for binding data to a postgres query
  */
-#ifndef RJ_DB_POSTGRES_BINDING_H
-#define RJ_DB_POSTGRES_BINDING_H
+#ifndef CODA_DB_POSTGRES_BINDING_H
+#define CODA_DB_POSTGRES_BINDING_H
 
 #include <libpq-fe.h>
 #include <string>
 #include "../bind_mapping.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -26,7 +26,7 @@ namespace rj
             /*
              * utility class to simplify binding query parameters
              */
-            class binding : public rj::db::bind_mapping
+            class binding : public coda::db::bind_mapping
             {
                 friend class column;
                 friend class statement;

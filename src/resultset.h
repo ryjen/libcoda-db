@@ -2,35 +2,36 @@
  * @file resultset.h
  * a query result set in a database
  */
-#ifndef RJ_DB_RESULTSET_H
-#define RJ_DB_RESULTSET_H
+#ifndef CODA_DB_RESULTSET_H
+#define CODA_DB_RESULTSET_H
 
 #include <memory>
 #include "row.h"
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         class resultset;
 
         /*!
          * an interface for a database specific set of results for a query
          */
-        class resultset_impl
-        {
-           public:
-            typedef rj::db::row row_type;
+        class resultset_impl {
+        public:
+            typedef coda::db::row row_type;
 
-           protected:
+        protected:
             resultset_impl() = default;
 
-           public:
+        public:
             /* non-copyable */
             resultset_impl(const resultset_impl &other) = delete;
+
             resultset_impl(resultset_impl &&other) = default;
+
             virtual ~resultset_impl() = default;
+
             resultset_impl &operator=(const resultset_impl &other) = delete;
+
             resultset_impl &operator=(resultset_impl &&other) = default;
 
             /*!
@@ -60,17 +61,15 @@ namespace rj
         /*!
          * an iterator for a rows in a set of results
          */
-        template <typename ValueType, typename NonConst>
-        class resultset_iterator : public std::iterator<std::input_iterator_tag, ValueType>
-        {
-           private:
+        template<typename ValueType, typename NonConst>
+        class resultset_iterator : public std::iterator<std::input_iterator_tag, ValueType> {
+        private:
             std::shared_ptr<resultset_impl> rs_;
             int pos_;
             NonConst value_;
 
-           public:
-            resultset_iterator(const std::shared_ptr<resultset_impl> &rset, int position) : rs_(rset), pos_(position)
-            {
+        public:
+            resultset_iterator(const std::shared_ptr<resultset_impl> &rset, int position) : rs_(rset), pos_(position) {
                 if (position >= 0) {
                     value_ = rset->current_row();
                 } else {
@@ -78,24 +77,21 @@ namespace rj
                 }
             }
 
-            resultset_iterator(const resultset_iterator &other) : rs_(other.rs_), pos_(other.pos_), value_(other.value_)
-            {
+            resultset_iterator(const resultset_iterator &other) : rs_(other.rs_), pos_(other.pos_),
+                                                                  value_(other.value_) {
             }
 
 
             resultset_iterator(resultset_iterator &&other)
-                : rs_(std::move(other.rs_)), pos_(other.pos_), value_(std::move(other.value_))
-            {
+                    : rs_(std::move(other.rs_)), pos_(other.pos_), value_(std::move(other.value_)) {
                 other.rs_ = nullptr;
                 other.pos_ = -1;
             }
 
-            ~resultset_iterator()
-            {
+            ~resultset_iterator() {
             }
 
-            resultset_iterator &operator=(resultset_iterator &&other)
-            {
+            resultset_iterator &operator=(resultset_iterator &&other) {
                 rs_ = std::move(other.rs_);
                 pos_ = other.pos_;
                 value_ = std::move(other.value_);
@@ -105,13 +101,11 @@ namespace rj
                 return *this;
             }
 
-            ValueType &operator*()
-            {
+            ValueType &operator*() {
                 return value_;
             }
 
-            resultset_iterator &operator++()
-            {
+            resultset_iterator &operator++() {
                 if (pos_ == -1 || rs_ == nullptr) {
                     return *this;
                 }
@@ -130,20 +124,17 @@ namespace rj
             }
 
 
-            ValueType *operator->()
-            {
+            ValueType *operator->() {
                 return &(operator*());
             }
 
-            resultset_iterator operator++(int)
-            {
+            resultset_iterator operator++(int) {
                 resultset_iterator tmp(*this);
                 ++(*this);
                 return tmp;
             }
 
-            resultset_iterator operator+(int n)
-            {
+            resultset_iterator operator+(int n) {
                 resultset_iterator tmp(*this);
 
                 tmp += n;
@@ -151,26 +142,22 @@ namespace rj
                 return tmp;
             }
 
-            resultset_iterator &operator+=(int n)
-            {
+            resultset_iterator &operator+=(int n) {
                 for (int i = 0; i < n; i++) {
                     operator++();
                 }
                 return *this;
             }
 
-            bool operator==(const resultset_iterator &other) const
-            {
+            bool operator==(const resultset_iterator &other) const {
                 return pos_ == other.pos_;
             }
 
-            bool operator!=(const resultset_iterator &other) const
-            {
+            bool operator!=(const resultset_iterator &other) const {
                 return !operator==(other);
             }
 
-            bool operator<(const resultset_iterator &other) const
-            {
+            bool operator<(const resultset_iterator &other) const {
                 if (pos_ == -1 && other.pos_ == -1)
                     return false;
                 else if (pos_ == -1)
@@ -181,18 +168,15 @@ namespace rj
                     return pos_ < other.pos_;
             }
 
-            bool operator<=(const resultset_iterator &other) const
-            {
+            bool operator<=(const resultset_iterator &other) const {
                 return operator<(other) || operator==(other);
             }
 
-            bool operator>(const resultset_iterator &other) const
-            {
+            bool operator>(const resultset_iterator &other) const {
                 return !operator<(other);
             }
 
-            bool operator>=(const resultset_iterator &other) const
-            {
+            bool operator>=(const resultset_iterator &other) const {
                 return operator>(other) || operator==(other);
             }
         };
@@ -200,15 +184,14 @@ namespace rj
         /*!
          * the results (a set of rows) for a query
          */
-        class resultset
-        {
-           public:
-            typedef rj::db::row row_type;
+        class resultset {
+        public:
+            typedef coda::db::row row_type;
 
-           private:
+        private:
             std::shared_ptr<resultset_impl> impl_;
 
-           public:
+        public:
             typedef resultset_iterator<row_type, row_type> iterator;
             typedef resultset_iterator<const row_type, row_type> const_iterator;
 
@@ -219,9 +202,13 @@ namespace rj
 
             /* non-copyable */
             resultset(const resultset &other) = delete;
+
             resultset(resultset &&other);
+
             virtual ~resultset();
+
             resultset &operator=(const resultset &other) = delete;
+
             resultset &operator=(resultset &&other);
 
             /*!

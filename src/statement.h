@@ -2,32 +2,34 @@
  * @file statement.h
  * an interface for a query statement
  */
-#ifndef RJ_DB_STATEMENT_H
-#define RJ_DB_STATEMENT_H
+#ifndef CODA_DB_STATEMENT_H
+#define CODA_DB_STATEMENT_H
 
 #include "bindable.h"
 #include "resultset.h"
 #include "sql_generator.h"
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         /*!
          * base class for a database specific implementation of a prepared statement
          */
-        class statement : public bindable
-        {
-           public:
-            typedef rj::db::resultset resultset_type;
+        class statement : public bindable {
+        public:
+            typedef coda::db::resultset resultset_type;
 
-           private:
-           public:
+        private:
+        public:
             statement() = default;
+
             statement(const statement &other) = default;
+
             statement(statement &&other) = default;
+
             virtual ~statement() = default;
+
             statement &operator=(const statement &other) = default;
+
             statement &operator=(statement &&other) = default;
 
             /*!
@@ -36,8 +38,7 @@ namespace rj
              */
             virtual void prepare(const std::string &sql) = 0;
 
-            void prepare(const sql_generator &obj)
-            {
+            void prepare(const sql_generator &obj) {
                 prepare(obj.to_sql());
             }
 

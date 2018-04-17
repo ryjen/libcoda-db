@@ -2,13 +2,13 @@
  * a sqlite3 sql statement
  * @file statement.h
  */
-#ifndef RJ_DB_SQLITE_STATEMENT_H
-#define RJ_DB_SQLITE_STATEMENT_H
+#ifndef CODA_DB_SQLITE_STATEMENT_H
+#define CODA_DB_SQLITE_STATEMENT_H
 
 #include <sqlite3.h>
 #include "../statement.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -19,7 +19,7 @@ namespace rj
             /*!
              * a sqlite specific implementation of a statement
              */
-            class statement : public rj::db::statement
+            class statement : public coda::db::statement
             {
                private:
                 std::shared_ptr<sqlite::session> sess_;

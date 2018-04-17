@@ -1,6 +1,5 @@
 
 #include "schema.h"
-#include <cassert>
 #include "exception.h"
 #include "resultset.h"
 #include "session.h"
@@ -9,19 +8,15 @@
 
 using namespace std;
 
-namespace rj
-{
-    namespace db
-    {
-        ostream &operator<<(ostream &os, const column_definition &def)
-        {
+namespace coda {
+    namespace db {
+        ostream &operator<<(ostream &os, const column_definition &def) {
             os << def.name;
             return os;
         }
 
-        schema::schema(const std::shared_ptr<rj::db::session> &session, const string &tablename)
-            : session_(session), tableName_(tablename)
-        {
+        schema::schema(const std::shared_ptr<coda::db::session> &session, const string &tablename)
+                : session_(session), tableName_(tablename) {
             if (session_ == nullptr) {
                 throw database_exception("no database provided for schema");
             }
@@ -31,26 +26,22 @@ namespace rj
             }
         }
 
-        schema::~schema()
-        {
+        schema::~schema() {
         }
 
         schema::schema(const schema &other)
-            : session_(other.session_), tableName_(other.tableName_), columns_(other.columns_)
-        {
+                : session_(other.session_), tableName_(other.tableName_), columns_(other.columns_) {
         }
 
         schema::schema(schema &&other)
-            : session_(std::move(other.session_)),
-              tableName_(std::move(other.tableName_)),
-              columns_(std::move(other.columns_))
-        {
+                : session_(std::move(other.session_)),
+                  tableName_(std::move(other.tableName_)),
+                  columns_(std::move(other.columns_)) {
             other.session_ = nullptr;
             other.columns_.clear();
         }
 
-        schema &schema::operator=(const schema &other)
-        {
+        schema &schema::operator=(const schema &other) {
             columns_ = other.columns_;
             session_ = other.session_;
             tableName_ = other.tableName_;
@@ -58,8 +49,7 @@ namespace rj
             return *this;
         }
 
-        schema &schema::operator=(schema &&other)
-        {
+        schema &schema::operator=(schema &&other) {
             columns_ = std::move(other.columns_);
             session_ = std::move(other.session_);
             tableName_ = std::move(other.tableName_);
@@ -70,13 +60,11 @@ namespace rj
             return *this;
         }
 
-        bool schema::is_valid() const
-        {
+        bool schema::is_valid() const {
             return columns_.size() > 0;
         }
 
-        void schema::init()
-        {
+        void schema::init() {
             if (!session_->is_open()) {
                 throw database_exception("database is not open");
             }
@@ -84,13 +72,11 @@ namespace rj
             columns_ = session_->get_columns_for_schema(tableName_);
         }
 
-        vector<column_definition> schema::columns() const
-        {
+        vector<column_definition> schema::columns() const {
             return columns_;
         }
 
-        vector<string> schema::column_names() const
-        {
+        vector<string> schema::column_names() const {
             vector<string> names;
 
             for (auto &c : columns_) {
@@ -99,8 +85,7 @@ namespace rj
             return names;
         }
 
-        vector<string> schema::primary_keys() const
-        {
+        vector<string> schema::primary_keys() const {
             vector<string> names;
 
             for (auto &c : columns_) {
@@ -112,8 +97,7 @@ namespace rj
             return names;
         }
 
-        std::string schema::primary_key() const
-        {
+        std::string schema::primary_key() const {
             for (auto &c : columns_) {
                 if (c.pk && c.autoincrement) {
                     return c.name;
@@ -123,8 +107,7 @@ namespace rj
             throw no_primary_key_exception("no primary key found for schema");
         }
 
-        sql_value schema::default_value(const std::string &name) const
-        {
+        sql_value schema::default_value(const std::string &name) const {
             for (auto &c : columns_) {
                 if (c.name == name) {
                     return c.default_value;
@@ -134,23 +117,19 @@ namespace rj
             return sql_value();
         }
 
-        string schema::table_name() const
-        {
+        string schema::table_name() const {
             return tableName_;
         }
 
-        std::shared_ptr<session> schema::get_session() const
-        {
+        std::shared_ptr<session> schema::get_session() const {
             return session_;
         }
 
-        column_definition schema::operator[](size_t index) const
-        {
+        column_definition schema::operator[](size_t index) const {
             return columns_[index];
         }
 
-        size_t schema::size() const
-        {
+        size_t schema::size() const {
             return columns_.size();
         }
     };

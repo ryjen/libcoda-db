@@ -8,7 +8,7 @@
 
 using namespace std;
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -33,7 +33,7 @@ namespace rj
                 sqldb::register_session("postgresql", factory);
             }
 
-            std::shared_ptr<rj::db::session_impl> factory::create(const uri &uri)
+            std::shared_ptr<coda::db::session_impl> factory::create(const uri &uri)
             {
                 return std::make_shared<session>(uri);
             }
@@ -160,7 +160,7 @@ namespace rj
                 return rval;
             }
 
-            shared_ptr<rj::db::session::statement_type> session::create_statement()
+            shared_ptr<coda::db::session::statement_type> session::create_statement()
             {
                 return make_shared<statement>(static_pointer_cast<postgres::session>(shared_from_this()));
             }

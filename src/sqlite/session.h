@@ -1,15 +1,15 @@
 /*!
  * @file session.h
  */
-#ifndef RJ_DB_SQLITE_SESSION_H
-#define RJ_DB_SQLITE_SESSION_H
+#ifndef CODA_DB_SQLITE_SESSION_H
+#define CODA_DB_SQLITE_SESSION_H
 
 #include <sqlite3.h>
 #include "../session.h"
 #include "../session_factory.h"
 #include "transaction.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -20,13 +20,13 @@ namespace rj
             class factory : public session_factory
             {
                public:
-                std::shared_ptr<rj::db::session_impl> create(const uri &uri);
+                std::shared_ptr<coda::db::session_impl> create(const uri &uri);
             };
 
             /*!
              * a sqlite specific implementation of a database
              */
-            class session : public rj::db::session_impl, public std::enable_shared_from_this<session>
+            class session : public coda::db::session_impl, public std::enable_shared_from_this<session>
             {
                 friend class factory;
                 friend class statement;

@@ -4,11 +4,11 @@
 
 using namespace std;
 
-namespace rj
+namespace coda
 {
     namespace db
     {
-        update_query::update_query(const std::shared_ptr<rj::db::session> &session)
+        update_query::update_query(const std::shared_ptr<coda::db::session> &session)
             : modify_query(session), where_(session->impl(), this)
         {
         }
@@ -26,7 +26,7 @@ namespace rj
          * @param tableName the table to modify
          * @param columns the columns to modify
          */
-        update_query::update_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName)
+        update_query::update_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName)
             : modify_query(session), where_(session->impl(), this)
         {
             tableName_ = tableName;
@@ -36,7 +36,7 @@ namespace rj
          * @param db the database to modify
          * @param columns the columns to modify
          */
-        update_query::update_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName,
+        update_query::update_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName,
                                    const std::vector<std::string> &columns)
             : modify_query(session), where_(session->impl(), this)
         {

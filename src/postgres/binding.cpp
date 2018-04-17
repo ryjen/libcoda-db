@@ -16,7 +16,7 @@
 
 using namespace std;
 
-namespace rj
+namespace coda
 {
     namespace db
     {

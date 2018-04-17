@@ -8,19 +8,19 @@
 
 using namespace std;
 
-namespace rj
+namespace coda
 {
     namespace db
     {
-        select_query::select_query(const std::shared_ptr<rj::db::session> &session)
+        select_query::select_query(const std::shared_ptr<coda::db::session> &session)
             : query(session), where_(session->impl(), this)
         {
         }
-        select_query::select_query(const std::shared_ptr<rj::db::session> &session, const vector<string> &columns)
+        select_query::select_query(const std::shared_ptr<coda::db::session> &session, const vector<string> &columns)
             : query(session), where_(session->impl(), this), columns_(columns)
         {
         }
-        select_query::select_query(const std::shared_ptr<rj::db::session> &session, const vector<string> &columns,
+        select_query::select_query(const std::shared_ptr<coda::db::session> &session, const vector<string> &columns,
                                    const string &tableName)
             : query(session), where_(session->impl(), this), columns_(columns), tableName_(tableName)
         {

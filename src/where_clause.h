@@ -1,8 +1,8 @@
 /*!
  * @file where_clause.h
  */
-#ifndef RJ_DB_WHERE_CLAUSE_H
-#define RJ_DB_WHERE_CLAUSE_H
+#ifndef CODA_DB_WHERE_CLAUSE_H
+#define CODA_DB_WHERE_CLAUSE_H
 
 #include <memory>
 #include <string>
@@ -11,7 +11,7 @@
 #include "sql_generator.h"
 #include "sql_value.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

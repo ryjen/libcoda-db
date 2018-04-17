@@ -2,7 +2,7 @@
 #include "transaction.h"
 #include "../exception.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

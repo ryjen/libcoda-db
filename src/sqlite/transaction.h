@@ -1,16 +1,16 @@
-#ifndef RJ_DB_SQLITE_TRANSACTION_H
-#define RJ_DB_SQLITE_TRANSACTION_H
+#ifndef CODA_DB_SQLITE_TRANSACTION_H
+#define CODA_DB_SQLITE_TRANSACTION_H
 
 #include <sqlite3.h>
 #include "../transaction.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {
         namespace sqlite
         {
-            class transaction : public rj::db::transaction_impl
+            class transaction : public coda::db::transaction_impl
             {
                public:
                 typedef enum { none, deferred, immediate, exclusive } type;

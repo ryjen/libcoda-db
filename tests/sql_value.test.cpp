@@ -8,7 +8,7 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace rj::db;
+using namespace coda::db;
 
 using namespace snowhouse;
 
@@ -142,7 +142,7 @@ go_bandit([]() {
                 it("as a conversion error", []() {
                     sql_value v = "asdfcv";
 
-                    AssertThrows(rj::db::value_conversion_error, v.as<int>());
+                    AssertThrows(coda::db::value_conversion_error, v.as<int>());
                 });
 
                 it("as a sql_time", []() {
@@ -176,7 +176,7 @@ go_bandit([]() {
             //     it("is not a sql time", []() {
             //         std::string abc = "abc123";
             //         sql_value v(sql_blob(abc.begin(), abc.end()));
-            //         AssertThrows(rj::db::value_conversion_error, v.as<sql_blob>());
+            //         AssertThrows(coda::db::value_conversion_error, v.as<sql_blob>());
             //     });
             // });
         });

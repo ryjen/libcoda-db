@@ -3,33 +3,29 @@
  * implementation of a database record (model)
  * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifndef RJ_DB_BASE_RECORD_H
-#define RJ_DB_BASE_RECORD_H
+#ifndef CODA_DB_BASE_RECORD_H
+#define CODA_DB_BASE_RECORD_H
 
 #include <algorithm>
 #include <memory>
 #include "schema.h"
 #include "select_query.h"
 
-namespace rj
-{
-    namespace db
-    {
-        namespace base
-        {
+namespace coda {
+    namespace db {
+        namespace base {
             /*!
              * base class for a record
              */
-            class record
-            {
-               public:
-                typedef rj::db::schema schema_type;
+            class record {
+            public:
+                typedef coda::db::schema schema_type;
 
-               private:
+            private:
                 std::shared_ptr<schema_type> schema_;
                 std::unordered_map<std::string, sql_value> values_;
 
-               public:
+            public:
                 /*!
                  * @param schema the schema to operate on
                  * @param columnName the name of the id column in the schema
@@ -166,22 +162,26 @@ namespace rj
                  */
                 bool de1ete() const;
 
-               private:
+            private:
                 std::vector<std::string> available_columns(bool exists, const std::string &pk) const;
             };
         }
 
-        template <typename T, typename = std::enable_if<std::is_class<T>::value>>
-        class record_finder
-        {
-           public:
+        template<typename T, typename = std::enable_if<std::is_class<T>::value>>
+        class record_finder {
+        public:
             typedef std::function<void(const std::shared_ptr<T> &)> callback;
 
             record_finder() = default;
+
             record_finder(const record_finder &other) = default;
+
             record_finder(record_finder &&other) = default;
+
             virtual ~record_finder() = default;
+
             record_finder &operator=(const record_finder &other) = default;
+
             record_finder &operator=(record_finder &&other) = default;
 
             virtual std::shared_ptr<T> find_by_id(const sql_value &value) const = 0;
@@ -270,14 +270,12 @@ namespace rj
             virtual void find_one(const std::string &name, const sql_value &value, const callback &funk) const = 0;
         };
 
-        namespace generic
-        {
+        namespace generic {
             /*!
              * a generic record with no type specification
              */
-            class record : public base::record, public record_finder<record>
-            {
-               public:
+            class record : public base::record, public record_finder<record> {
+            public:
                 typedef std::function<void(const std::shared_ptr<record> &)> callback;
 
                 using base::record::record;
@@ -370,7 +368,7 @@ namespace rj
             };
         }
 
-        template <typename T, typename = std::enable_if<std::is_class<T>::value>>
+        template<typename T, typename = std::enable_if<std::is_class<T>::value>>
         class record;
 
         /*!
@@ -380,10 +378,9 @@ namespace rj
          * @param value the value of the column being searched
          * @param funk the callback function for each record found
          */
-        template <typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
+        template<typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
         inline void find_by(const std::shared_ptr<schema> &schema, const std::map<std::string, sql_value> &values,
-                            const std::function<void(const std::shared_ptr<T> &)> &funk)
-        {
+                            const std::function<void(const std::shared_ptr<T> &)> &funk) {
             select_query query(schema);
 
             for (auto &it : values) {
@@ -408,10 +405,9 @@ namespace rj
          * @param value the value of the column
          * @param funk the callback
          */
-        template <typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
+        template<typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
         inline void find_by(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value,
-                            const std::function<void(const std::shared_ptr<T> &)> &funk)
-        {
+                            const std::function<void(const std::shared_ptr<T> &)> &funk) {
             return find_by<T>(schema, {{name, value}}, funk);
         }
 
@@ -422,10 +418,10 @@ namespace rj
          * @param funk the callback function
          */
         inline void find_by(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value,
-                            const std::function<void(const std::shared_ptr<generic::record> &)> &funk)
-        {
+                            const std::function<void(const std::shared_ptr<generic::record> &)> &funk) {
             find_by<generic::record>(schema, {{name, value}}, funk);
         }
+
         /*!
          * finds generic records by a column
          * @param schema the schema to find records for
@@ -433,8 +429,7 @@ namespace rj
          * @param funk the callback function
          */
         inline void find_by(const std::shared_ptr<schema> &schema, const std::map<std::string, sql_value> &values,
-                            const std::function<void(const std::shared_ptr<generic::record> &)> &funk)
-        {
+                            const std::function<void(const std::shared_ptr<generic::record> &)> &funk) {
             find_by<generic::record>(schema, values, funk);
         }
 
@@ -445,10 +440,9 @@ namespace rj
          * @param value the value of the column being searched
          * @return a vector of results found
          */
-        template <typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
+        template<typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
         inline std::vector<std::shared_ptr<T>> find_by(const std::shared_ptr<schema> &schema,
-                                                       const std::map<std::string, sql_value> &values)
-        {
+                                                       const std::map<std::string, sql_value> &values) {
             /* convert sql rows to objects */
             std::vector<std::shared_ptr<T>> items;
 
@@ -464,10 +458,9 @@ namespace rj
          * @param value the value of the column
          * @return a list of records
          */
-        template <typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
+        template<typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
         inline std::vector<std::shared_ptr<T>> find_by(const std::shared_ptr<schema> &schema, const std::string &name,
-                                                       const sql_value &value)
-        {
+                                                       const sql_value &value) {
             return find_by<T>(schema, {{name, value}});
         }
 
@@ -479,10 +472,10 @@ namespace rj
          * @return a vector of generic record objects
          */
         inline std::vector<std::shared_ptr<generic::record>> find_by(const std::shared_ptr<schema> &schema,
-                                                                     const std::string &name, const sql_value &value)
-        {
+                                                                     const std::string &name, const sql_value &value) {
             return find_by<generic::record>(schema, {{name, value}});
         }
+
         /*!
          * find generic records by a column value
          * @param schema the schema to find record for
@@ -491,8 +484,7 @@ namespace rj
          * @return a vector of generic record objects
          */
         inline std::vector<std::shared_ptr<generic::record>> find_by(const std::shared_ptr<schema> &schema,
-                                                                     const std::map<std::string, sql_value> &values)
-        {
+                                                                     const std::map<std::string, sql_value> &values) {
             return find_by<generic::record>(schema, values);
         }
 
@@ -501,10 +493,9 @@ namespace rj
          * @param schema the schema to find records for
          * @param funk the callback function for each found record
          */
-        template <typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
+        template<typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
         inline void find_all(const std::shared_ptr<schema> &schema,
-                             const std::function<void(const std::shared_ptr<T> &)> &funk)
-        {
+                             const std::function<void(const std::shared_ptr<T> &)> &funk) {
             find_by<T>(schema, {}, funk);
         }
 
@@ -514,8 +505,7 @@ namespace rj
          * @param funk the callback function
          */
         inline void find_all(const std::shared_ptr<schema> &schema,
-                             const std::function<void(const std::shared_ptr<generic::record> &)> &funk)
-        {
+                             const std::function<void(const std::shared_ptr<generic::record> &)> &funk) {
             find_by<generic::record>(schema, {}, funk);
         }
 
@@ -525,9 +515,8 @@ namespace rj
          * @param schema the schema to find records for
          * @return a vector of records found
          */
-        template <typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
-        inline std::vector<std::shared_ptr<T>> find_all(const std::shared_ptr<schema> &schema)
-        {
+        template<typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
+        inline std::vector<std::shared_ptr<T>> find_all(const std::shared_ptr<schema> &schema) {
             return find_by<T>(schema, {});
         }
 
@@ -536,8 +525,7 @@ namespace rj
          * @param schema the schema to find records for
          * @return a vector of record objects
          */
-        inline std::vector<std::shared_ptr<generic::record>> find_all(const std::shared_ptr<schema> &schema)
-        {
+        inline std::vector<std::shared_ptr<generic::record>> find_all(const std::shared_ptr<schema> &schema) {
             return find_by<generic::record>(schema, {});
         }
 
@@ -548,10 +536,9 @@ namespace rj
          * @param value the value of the column being searched
          * @param funk the callback function for each record found
          */
-        template <typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
+        template<typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
         inline void find_one(const std::shared_ptr<schema> &schema, const std::map<std::string, sql_value> &values,
-                             const std::function<void(const std::shared_ptr<T> &)> &funk)
-        {
+                             const std::function<void(const std::shared_ptr<T> &)> &funk) {
             if (!schema) {
                 return;
             }
@@ -587,10 +574,9 @@ namespace rj
          * @param value the value of the column to query
          * @param funk the callback
          */
-        template <typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
+        template<typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
         inline void find_one(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value,
-                             const std::function<void(const std::shared_ptr<T> &)> &funk)
-        {
+                             const std::function<void(const std::shared_ptr<T> &)> &funk) {
             find_one<T>(schema, {{name, value}}, funk);
         }
 
@@ -602,8 +588,7 @@ namespace rj
          * @param funk the callback function
          */
         inline void find_one(const std::shared_ptr<schema> &schema, const std::map<std::string, sql_value> &values,
-                             const std::function<void(const std::shared_ptr<generic::record> &)> &funk)
-        {
+                             const std::function<void(const std::shared_ptr<generic::record> &)> &funk) {
             find_one<generic::record>(schema, values, funk);
         }
 
@@ -615,8 +600,7 @@ namespace rj
          * @param funk the callback function
          */
         inline void find_one(const std::shared_ptr<schema> &schema, const std::string &name, const sql_value &value,
-                             const std::function<void(const std::shared_ptr<generic::record> &)> &funk)
-        {
+                             const std::function<void(const std::shared_ptr<generic::record> &)> &funk) {
             find_one<generic::record>(schema, {{name, value}}, funk);
         }
 
@@ -627,10 +611,9 @@ namespace rj
          * @param value the value of the column being searched
          * @return a vector of results found
          */
-        template <typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
+        template<typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
         inline std::shared_ptr<T> find_one(const std::shared_ptr<schema> &schema,
-                                           const std::map<std::string, sql_value> &values)
-        {
+                                           const std::map<std::string, sql_value> &values) {
             /* convert sql rows to objects */
             std::shared_ptr<T> item;
 
@@ -638,6 +621,7 @@ namespace rj
 
             return item;
         }
+
         /*!
          * finds one record for a column value
          * @param schema the schema find records for
@@ -645,10 +629,9 @@ namespace rj
          * @param value the value of the column being searched
          * @return a vector of results found
          */
-        template <typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
+        template<typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
         inline std::shared_ptr<T> find_one(const std::shared_ptr<schema> &schema, const std::string &name,
-                                           const sql_value &value)
-        {
+                                           const sql_value &value) {
             return find_one<T>(schema, {{name, value}});
         }
 
@@ -659,8 +642,7 @@ namespace rj
          * @return the first record found or nullptr
          */
         inline std::shared_ptr<generic::record> find_one(const std::shared_ptr<schema> &schema,
-                                                         const std::map<std::string, sql_value> &values)
-        {
+                                                         const std::map<std::string, sql_value> &values) {
             return find_one<generic::record>(schema, values);
         }
 
@@ -672,8 +654,7 @@ namespace rj
          * @return the found record or nullptr
          */
         inline std::shared_ptr<generic::record> find_one(const std::shared_ptr<schema> &schema, const std::string &name,
-                                                         const sql_value &value)
-        {
+                                                         const sql_value &value) {
             return find_one<generic::record>(schema, {{name, value}});
         }
 
@@ -683,10 +664,9 @@ namespace rj
          * @param value the value of the column to find
          * @param funk the callback
          */
-        template <typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
+        template<typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
         inline void find_by_id(const std::shared_ptr<schema> &schema, const sql_value &value,
-                               const std::function<void(const std::shared_ptr<T> &)> &funk)
-        {
+                               const std::function<void(const std::shared_ptr<T> &)> &funk) {
             find_one<T>(schema, {{schema->primary_key(), value}}, funk);
         }
 
@@ -697,8 +677,7 @@ namespace rj
          * @param funk the callback
          */
         inline void find_by_id(const std::shared_ptr<schema> &schema, const sql_value &value,
-                               const std::function<void(const std::shared_ptr<generic::record> &)> &funk)
-        {
+                               const std::function<void(const std::shared_ptr<generic::record> &)> &funk) {
             find_one<generic::record>(schema, {{schema->primary_key(), value}}, funk);
         }
 
@@ -708,9 +687,8 @@ namespace rj
          * @param value the value to query
          * @return the record or nullptr
          */
-        template <typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
-        inline std::shared_ptr<T> find_by_id(const std::shared_ptr<schema> &schema, const sql_value &value)
-        {
+        template<typename T, typename = std::enable_if<std::is_base_of<base::record, T>::value>>
+        inline std::shared_ptr<T> find_by_id(const std::shared_ptr<schema> &schema, const sql_value &value) {
             return find_one<T>(schema, {{schema->primary_key(), value}});
         }
 
@@ -720,26 +698,23 @@ namespace rj
          * @param value the value of the id to find
          */
         inline std::shared_ptr<generic::record> find_by_id(const std::shared_ptr<schema> &schema,
-                                                           const sql_value &value)
-        {
+                                                           const sql_value &value) {
             return find_one<generic::record>(schema, {{schema->primary_key(), value}});
         }
 
         /*!
          * an active-record (ish) pattern, should be used as a curiously reoccuring design pattern
          */
-        template <typename T, typename>
-        class record : public base::record, public record_finder<T>
-        {
-           public:
+        template<typename T, typename>
+        class record : public base::record, public record_finder<T> {
+        public:
             typedef std::function<void(const std::shared_ptr<T> &)> callback;
 
-           public:
+        public:
             using base::record::record;
 
-            std::shared_ptr<T> find_by_id(const sql_value &value) const
-            {
-                return rj::db::find_by_id<T>(schema(), value);
+            std::shared_ptr<T> find_by_id(const sql_value &value) const {
+                return coda::db::find_by_id<T>(schema(), value);
             }
 
             /*!
@@ -747,27 +722,24 @@ namespace rj
              * @param value the value of the id to find
              * @param funk the callback
              */
-            void find_by_id(const sql_value &value, const callback &funk) const
-            {
-                rj::db::find_by_id<T>(schema(), value, funk);
+            void find_by_id(const sql_value &value, const callback &funk) const {
+                coda::db::find_by_id<T>(schema(), value, funk);
             }
 
             /*!
              * looks up and returns all objects of a record type
              * @return a vector of record objects of type T
              */
-            std::vector<std::shared_ptr<T>> find_all() const
-            {
-                return rj::db::find_all<T>(schema());
+            std::vector<std::shared_ptr<T>> find_all() const {
+                return coda::db::find_all<T>(schema());
             }
 
             /*!
              * find all records
              * @param funk the callback function for each found record
              */
-            void find_all(const callback &funk) const
-            {
-                rj::db::find_all<T>(schema(), funk);
+            void find_all(const callback &funk) const {
+                coda::db::find_all<T>(schema(), funk);
             }
 
             /*!
@@ -776,9 +748,8 @@ namespace rj
              * @param value the value of the column to search by
              * @return a vector of found records of type T
              */
-            std::vector<std::shared_ptr<T>> find_by(const std::map<std::string, sql_value> &values) const
-            {
-                return rj::db::find_by<T>(schema(), values);
+            std::vector<std::shared_ptr<T>> find_by(const std::map<std::string, sql_value> &values) const {
+                return coda::db::find_by<T>(schema(), values);
             }
 
             /*!
@@ -787,9 +758,8 @@ namespace rj
              * @param value the value of the column to search by
              * @return a vector of found records of type T
              */
-            std::vector<std::shared_ptr<T>> find_by(const std::string &name, const sql_value &value) const
-            {
-                return rj::db::find_by<T>(schema(), {{name, value}});
+            std::vector<std::shared_ptr<T>> find_by(const std::string &name, const sql_value &value) const {
+                return coda::db::find_by<T>(schema(), {{name, value}});
             }
 
             /*!
@@ -798,9 +768,8 @@ namespace rj
              * @param value the value of the column to search by
              * @param funk the callback function for each record found
              */
-            void find_by(const std::map<std::string, sql_value> &values, const callback &funk) const
-            {
-                rj::db::find_by<T>(schema(), values, funk);
+            void find_by(const std::map<std::string, sql_value> &values, const callback &funk) const {
+                coda::db::find_by<T>(schema(), values, funk);
             }
 
             /*!
@@ -809,9 +778,8 @@ namespace rj
              * @param value the value of the column to search by
              * @param funk the callback function for each record found
              */
-            void find_by(const std::string &name, const sql_value &value, const callback &funk) const
-            {
-                rj::db::find_by<T>(schema(), {{name, value}}, funk);
+            void find_by(const std::string &name, const sql_value &value, const callback &funk) const {
+                coda::db::find_by<T>(schema(), {{name, value}}, funk);
             }
 
             /*!
@@ -820,9 +788,8 @@ namespace rj
              * @param value the value of the column to search by
              * @return a vector of found records of type T
              */
-            std::shared_ptr<T> find_one(const std::map<std::string, sql_value> &values) const
-            {
-                return rj::db::find_one<T>(schema(), values);
+            std::shared_ptr<T> find_one(const std::map<std::string, sql_value> &values) const {
+                return coda::db::find_one<T>(schema(), values);
             }
 
             /*!
@@ -831,9 +798,8 @@ namespace rj
              * @param value the value of the column to search by
              * @return a vector of found records of type T
              */
-            std::shared_ptr<T> find_one(const std::string &name, const sql_value &value) const
-            {
-                return rj::db::find_one<T>(schema(), {{name, value}});
+            std::shared_ptr<T> find_one(const std::string &name, const sql_value &value) const {
+                return coda::db::find_one<T>(schema(), {{name, value}});
             }
 
             /*!
@@ -842,9 +808,8 @@ namespace rj
              * @param value the value of the column to search by
              * @param funk the callback function for each record found
              */
-            void find_one(const std::map<std::string, sql_value> &values, const callback &funk) const
-            {
-                rj::db::find_one<T>(schema(), values, funk);
+            void find_one(const std::map<std::string, sql_value> &values, const callback &funk) const {
+                coda::db::find_one<T>(schema(), values, funk);
             }
 
             /*!
@@ -853,9 +818,8 @@ namespace rj
              * @param value the value of the column to search by
              * @param funk the callback function for each record found
              */
-            void find_one(const std::string &name, const sql_value &value, const callback &funk) const
-            {
-                rj::db::find_one<T>(schema(), {{name, value}}, funk);
+            void find_one(const std::string &name, const sql_value &value, const callback &funk) const {
+                coda::db::find_one<T>(schema(), {{name, value}}, funk);
             }
         };
     }

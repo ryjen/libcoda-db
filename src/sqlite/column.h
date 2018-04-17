@@ -1,13 +1,13 @@
 /*!
  * @file column.h
  */
-#ifndef RJ_DB_SQLITE_COLUMN_H
-#define RJ_DB_SQLITE_COLUMN_H
+#ifndef CODA_DB_SQLITE_COLUMN_H
+#define CODA_DB_SQLITE_COLUMN_H
 
 #include <sqlite3.h>
 #include "../column.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

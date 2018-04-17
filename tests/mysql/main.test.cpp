@@ -15,11 +15,11 @@ using namespace bandit;
 
 using namespace std;
 
-using namespace rj::db;
+using namespace coda::db;
 
 using namespace snowhouse;
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -31,7 +31,7 @@ namespace rj
                 sqldb::register_session("mysql", mysql_factory);
 
                 auto uri_s = get_env_uri("MYSQL_URI", "mysql://root@localhost/test");
-                current_session = rj::db::sqldb::create_session(uri_s);
+                current_session = coda::db::sqldb::create_session(uri_s);
                 cout << "connecting to " << uri_s << endl;
             }
 
@@ -40,7 +40,7 @@ namespace rj
                 mysql_library_end();
             }
 
-            class mysql_session : public rj::db::mysql::session, public test::session
+            class mysql_session : public coda::db::mysql::session, public test::session
             {
                public:
                 using mysql::session::session;
@@ -68,7 +68,7 @@ namespace rj
                 }
             };
 
-            std::shared_ptr<rj::db::session_impl> factory::create(const rj::db::uri &value)
+            std::shared_ptr<coda::db::session_impl> factory::create(const coda::db::uri &value)
             {
                 return std::make_shared<mysql_session>(value);
             }

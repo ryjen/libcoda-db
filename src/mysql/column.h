@@ -2,13 +2,13 @@
  * @file column.h
  * a mysql specific representation of a column
  */
-#ifndef RJ_DB_MYSQL_COLUMN_H
-#define RJ_DB_MYSQL_COLUMN_H
+#ifndef CODA_DB_MYSQL_COLUMN_H
+#define CODA_DB_MYSQL_COLUMN_H
 
 #include <mysql/mysql.h>
 #include "../column.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

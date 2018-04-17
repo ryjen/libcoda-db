@@ -1,12 +1,10 @@
-#ifndef RJ_DB_URI_H
-#define RJ_DB_URI_H
+#ifndef CODA_DB_URI_H
+#define CODA_DB_URI_H
 
 #include <string>
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         typedef struct uri_type uri;
 
         /*! small utility to parse a uri */

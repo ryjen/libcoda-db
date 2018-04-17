@@ -1,5 +1,5 @@
 
-add_subdirectory(rj_db)
+add_subdirectory(coda_db)
 add_subdirectory(poco)
 add_subdirectory(soci)
 

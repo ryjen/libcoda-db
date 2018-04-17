@@ -3,18 +3,14 @@
 #include "insert_query.h"
 #include "update_query.h"
 
-namespace rj
-{
-    namespace db
-    {
-        namespace base
-        {
+namespace coda {
+    namespace db {
+        namespace base {
             /*!
              * @param schema the schema to operate on
              * @param columnName the name of the id column in the schema
              */
-            record::record(const std::shared_ptr<schema_type> &schema) : schema_(schema)
-            {
+            record::record(const std::shared_ptr<schema_type> &schema) : schema_(schema) {
                 if (schema_ == nullptr) {
                     throw database_exception("no schema for record");
                 }
@@ -24,8 +20,7 @@ namespace rj
             /*!
              * construct with values from a database row
              */
-            record::record(const std::shared_ptr<schema_type> &schema, const row &values) : record(schema)
-            {
+            record::record(const std::shared_ptr<schema_type> &schema, const row &values) : record(schema) {
                 init(values);
             }
 
@@ -33,28 +28,24 @@ namespace rj
             /*!
              * copy constructor
              */
-            record::record(const record &other) : schema_(other.schema_), values_(other.values_)
-            {
+            record::record(const record &other) : schema_(other.schema_), values_(other.values_) {
             }
 
 
             /*!
              * move constructor
              */
-            record::record(record &&other) : schema_(std::move(other.schema_)), values_(std::move(other.values_))
-            {
+            record::record(record &&other) : schema_(std::move(other.schema_)), values_(std::move(other.values_)) {
             }
 
 
-            record::~record()
-            {
+            record::~record() {
             }
 
             /*!
              * assignment operator
              */
-            record &record::operator=(const record &other)
-            {
+            record &record::operator=(const record &other) {
                 values_ = other.values_;
                 schema_ = other.schema_;
                 return *this;
@@ -64,8 +55,7 @@ namespace rj
             /*!
              * move assignment operator
              */
-            record &record::operator=(record &&other)
-            {
+            record &record::operator=(record &&other) {
                 values_ = std::move(other.values_);
                 schema_ = std::move(other.schema_);
                 return *this;
@@ -75,8 +65,7 @@ namespace rj
             /*!
              * initializes with values from a database row
              */
-            void record::init(const row &values)
-            {
+            void record::init(const row &values) {
                 if (!values.is_valid()) {
                     return;
                 }
@@ -94,16 +83,14 @@ namespace rj
              * Overide in subclasses for custom loading actions
              * @param row the values read from the database
              */
-            void record::on_record_init(const row &values)
-            {
+            void record::on_record_init(const row &values) {
             }
 
             /*!
              * check if the record internals are valid
              * @return true if the schema is valid
              */
-            bool record::is_valid() const
-            {
+            bool record::is_valid() const {
                 return schema()->is_valid();
             }
 
@@ -111,8 +98,7 @@ namespace rj
             /*!
              * @return the schema for this record
              */
-            std::shared_ptr<record::schema_type> record::schema() const
-            {
+            std::shared_ptr<record::schema_type> record::schema() const {
                 if (schema_ != nullptr && !schema_->is_valid()) {
                     schema_->init();
                 }
@@ -124,8 +110,7 @@ namespace rj
             /*!
              *  @return true if a record with the id column value exists
              */
-            bool record::exists() const
-            {
+            bool record::exists() const {
                 auto pk = schema()->primary_key();
 
                 if (!has(pk)) {
@@ -145,8 +130,7 @@ namespace rj
              * @param insert_only set to true to never perform an update if the record exists
              * @return true if the save was successful
              */
-            bool record::save()
-            {
+            bool record::save() {
                 bool rval = false;
                 bool exists = record::exists();
                 auto pk = schema()->primary_key();
@@ -179,8 +163,7 @@ namespace rj
             /*!
              * @return the id of the record
              */
-            sql_value record::id() const
-            {
+            sql_value record::id() const {
                 return get(schema()->primary_key());
             }
 
@@ -189,8 +172,7 @@ namespace rj
              * @param name the name of the column to get
              * @return a value specified by column name
              */
-            sql_value record::get(const std::string &name) const
-            {
+            sql_value record::get(const std::string &name) const {
                 if (!has(name)) {
                     return sql_null;
                 }
@@ -202,8 +184,7 @@ namespace rj
              * @param columns a vector of columns
              * @return a vector of values
              */
-            std::vector<sql_value> record::get(const std::vector<std::string> &columns) const
-            {
+            std::vector<sql_value> record::get(const std::vector<std::string> &columns) const {
                 std::vector<sql_value> values;
 
                 for (auto &column : columns) {
@@ -221,16 +202,14 @@ namespace rj
              * @return true if the column exists in the current record
              * NOTE: you may need to 'refresh' from the db to get all columns
              */
-            bool record::has(const std::string &name) const
-            {
+            bool record::has(const std::string &name) const {
                 return !name.empty() && values_.size() > 0 && values_.count(name) > 0;
             }
 
             /*!
              * @param value the id value to set
              */
-            void record::set_id(const sql_value &value)
-            {
+            void record::set_id(const sql_value &value) {
                 set(schema()->primary_key(), value);
             }
 
@@ -239,8 +218,7 @@ namespace rj
              * @param name the name of the column to set
              * @param value the value to set for the column
              */
-            void record::set(const std::string &name, const sql_value &value)
-            {
+            void record::set(const std::string &name, const sql_value &value) {
                 values_[name] = value;
             }
 
@@ -248,16 +226,14 @@ namespace rj
              * unsets / removes a column
              * @param name the name of the column to unset
              */
-            void record::unset(const std::string &name)
-            {
+            void record::unset(const std::string &name) {
                 values_.erase(name);
             }
 
             /*!
              * clears values set on this object
              */
-            void record::reset()
-            {
+            void record::reset() {
                 values_.clear();
             }
 
@@ -265,8 +241,7 @@ namespace rj
              * refreshes from the database for the value in the id column
              * @return true if successful
              */
-            bool record::refresh()
-            {
+            bool record::refresh() {
                 return refresh_by(schema()->primary_key());
             }
 
@@ -275,8 +250,7 @@ namespace rj
              * @param name the name of the column to refresh by
              * @return true if successful
              */
-            bool record::refresh_by(const std::string &name)
-            {
+            bool record::refresh_by(const std::string &name) {
                 if (!has(name)) {
                     return false;
                 }
@@ -302,8 +276,7 @@ namespace rj
             /*!
              * deletes this record from the database for the value in the id column
              */
-            bool record::de1ete() const
-            {
+            bool record::de1ete() const {
                 auto pk = schema()->primary_key();
 
                 if (!has(pk)) {
@@ -321,8 +294,7 @@ namespace rj
              * @param pk the primary key column name
              * @return a vector columns that are set on this record
              */
-            std::vector<std::string> record::available_columns(bool exists, const std::string &pk) const
-            {
+            std::vector<std::string> record::available_columns(bool exists, const std::string &pk) const {
                 std::vector<std::string> values;
                 auto columns = schema()->column_names();
                 values.resize(columns.size());
@@ -336,49 +308,43 @@ namespace rj
         /*!
          * a generic record that doesn't have a type
          */
-        namespace generic
-        {
+        namespace generic {
             /*!
              * @param value the id to find
              * @return the record
              */
-            std::shared_ptr<record> record::find_by_id(const sql_value &value) const
-            {
-                return rj::db::find_by_id(schema(), value);
+            std::shared_ptr<record> record::find_by_id(const sql_value &value) const {
+                return coda::db::find_by_id(schema(), value);
             }
 
             /*!
              * @param value the id to find
              * @param funk the callback function
              */
-            void record::find_by_id(const sql_value &value, const callback &funk) const
-            {
-                rj::db::find_by_id(schema(), value, funk);
+            void record::find_by_id(const sql_value &value, const callback &funk) const {
+                coda::db::find_by_id(schema(), value, funk);
             }
 
             /*!
              * @return a vector of records
              */
-            std::vector<std::shared_ptr<record>> record::find_all() const
-            {
-                return rj::db::find_all(schema());
+            std::vector<std::shared_ptr<record>> record::find_all() const {
+                return coda::db::find_all(schema());
             }
 
             /*!
              * @param funk the callback function
              */
-            void record::find_all(const callback &funk) const
-            {
-                rj::db::find_all(schema(), funk);
+            void record::find_all(const callback &funk) const {
+                coda::db::find_all(schema(), funk);
             }
 
             /*!
              * @param values the map of columns ad values to find
              * @return a vector of found records
              */
-            std::vector<std::shared_ptr<record>> record::find_by(const std::map<std::string, sql_value> &values) const
-            {
-                return rj::db::find_by(schema(), values);
+            std::vector<std::shared_ptr<record>> record::find_by(const std::map<std::string, sql_value> &values) const {
+                return coda::db::find_by(schema(), values);
             }
 
             /*!
@@ -386,37 +352,33 @@ namespace rj
              * @param value the column value to find
              * @return a vector of records found
              */
-            std::vector<std::shared_ptr<record>> record::find_by(const std::string &name, const sql_value &value) const
-            {
-                return rj::db::find_by(schema(), {{name, value}});
-            }
-            void record::find_by(const std::map<std::string, sql_value> &values, const callback &funk) const
-            {
-                rj::db::find_by(schema(), values, funk);
-            }
-            void record::find_by(const std::string &name, const sql_value &value, const callback &funk) const
-            {
-                rj::db::find_by(schema(), {{name, value}}, funk);
+            std::vector<std::shared_ptr<record>>
+            record::find_by(const std::string &name, const sql_value &value) const {
+                return coda::db::find_by(schema(), {{name, value}});
             }
 
-            std::shared_ptr<record> record::find_one(const std::map<std::string, sql_value> &values) const
-            {
-                return rj::db::find_one(schema(), values);
+            void record::find_by(const std::map<std::string, sql_value> &values, const callback &funk) const {
+                coda::db::find_by(schema(), values, funk);
             }
 
-            std::shared_ptr<record> record::find_one(const std::string &name, const sql_value &value) const
-            {
-                return rj::db::find_one(schema(), {{name, value}});
+            void record::find_by(const std::string &name, const sql_value &value, const callback &funk) const {
+                coda::db::find_by(schema(), {{name, value}}, funk);
             }
 
-            void record::find_one(const std::map<std::string, sql_value> &values, const callback &funk) const
-            {
-                rj::db::find_one(schema(), values, funk);
+            std::shared_ptr<record> record::find_one(const std::map<std::string, sql_value> &values) const {
+                return coda::db::find_one(schema(), values);
             }
 
-            void record::find_one(const std::string &name, const sql_value &value, const callback &funk) const
-            {
-                rj::db::find_one(schema(), {{name, value}}, funk);
+            std::shared_ptr<record> record::find_one(const std::string &name, const sql_value &value) const {
+                return coda::db::find_one(schema(), {{name, value}});
+            }
+
+            void record::find_one(const std::map<std::string, sql_value> &values, const callback &funk) const {
+                coda::db::find_one(schema(), values, funk);
+            }
+
+            void record::find_one(const std::string &name, const sql_value &value, const callback &funk) const {
+                coda::db::find_one(schema(), {{name, value}}, funk);
             }
         }
     }

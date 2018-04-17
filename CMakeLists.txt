@@ -11,7 +11,7 @@ option(ENABLE_RAW_SQL "Enable executing queries with raw sql" OFF)
 option(ENABLE_LOGGING "Enable internal library logging." OFF)
 
 # define project name
-project (rj_db VERSION 0.5.0)
+project (coda_db VERSION 0.5.0)
 
 # set path to custom modules
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
@@ -68,8 +68,8 @@ set(TEST_PROJECT_NAME "${PROJECT_NAME}_test")
 set(UTIL_TEST_PROJECT_NAME "${PROJECT_NAME}_test_util")
 
 # add directories
-add_subdirectory(src)
 add_subdirectory(tests)
+add_subdirectory(src)
 
 # Setup testing
 enable_testing()

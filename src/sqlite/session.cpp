@@ -10,7 +10,7 @@
 
 using namespace std;
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -35,7 +35,7 @@ namespace rj
                 sqldb::register_session("file", factory);
             }
 
-            std::shared_ptr<rj::db::session_impl> factory::create(const uri &uri)
+            std::shared_ptr<coda::db::session_impl> factory::create(const uri &uri)
             {
                 return std::make_shared<session>(uri);
             }

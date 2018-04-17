@@ -2,31 +2,33 @@
  * @file row.h
  * A row in a result set
  */
-#ifndef RJ_DB_ROW_H
-#define RJ_DB_ROW_H
+#ifndef CODA_DB_ROW_H
+#define CODA_DB_ROW_H
 
 #include <functional>
 #include <iterator>
 #include <memory>
 #include "column.h"
 
-namespace rj
-{
-    namespace db
-    {
+namespace coda {
+    namespace db {
         /*!
          * Implementation spefic interface for a row
          */
-        class row_impl
-        {
-           public:
-            typedef rj::db::column column_type;
+        class row_impl {
+        public:
+            typedef coda::db::column column_type;
 
             row_impl() = default;
+
             row_impl(const row_impl &other) = default;
+
             row_impl(row_impl &&other) = default;
+
             row_impl &operator=(const row_impl &other) = default;
+
             row_impl &operator=(row_impl &&other) = default;
+
             virtual ~row_impl() = default;
 
             /*!
@@ -66,15 +68,14 @@ namespace rj
         /*!
          * iterator for columns in a row
          */
-        template <class ValueType, class NonConst, class RowType>
-        class row_iterator : public std::iterator<std::random_access_iterator_tag, ValueType>
-        {
-           protected:
+        template<class ValueType, class NonConst, class RowType>
+        class row_iterator : public std::iterator<std::random_access_iterator_tag, ValueType> {
+        protected:
             std::shared_ptr<RowType> row_;
             int position_;
             NonConst currentValue_;
-            void set_current_value(size_t index)
-            {
+
+            void set_current_value(size_t index) {
                 if (row_ == nullptr) {
                     return;
                 }
@@ -86,38 +87,31 @@ namespace rj
                 }
             }
 
-           public:
-            row_iterator() : row_(nullptr), position_(-1)
-            {
+        public:
+            row_iterator() : row_(nullptr), position_(-1) {
             }
 
-            row_iterator(const std::shared_ptr<RowType> &pRow, int position) : row_(pRow), position_(position)
-            {
+            row_iterator(const std::shared_ptr<RowType> &pRow, int position) : row_(pRow), position_(position) {
             }
 
-            row_iterator(const row_iterator &other) : row_(other.row_), position_(other.position_)
-            {
+            row_iterator(const row_iterator &other) : row_(other.row_), position_(other.position_) {
             }
 
-            row_iterator(row_iterator &&other) : row_(std::move(other.row_)), position_(other.position_)
-            {
+            row_iterator(row_iterator &&other) : row_(std::move(other.row_)), position_(other.position_) {
                 other.row_ = nullptr;
             }
 
-            virtual ~row_iterator()
-            {
+            virtual ~row_iterator() {
             }
 
-            row_iterator &operator=(const row_iterator &other)
-            {
+            row_iterator &operator=(const row_iterator &other) {
                 row_ = other.row_;
                 position_ = other.position_;
 
                 return *this;
             }
 
-            row_iterator &operator=(row_iterator &&other)
-            {
+            row_iterator &operator=(row_iterator &&other) {
                 row_ = std::move(other.row_);
                 position_ = other.position_;
                 other.row_ = nullptr;
@@ -125,120 +119,101 @@ namespace rj
                 return *this;
             }
 
-            ValueType &operator*()
-            {
+            ValueType &operator*() {
                 set_current_value(position_);
                 return currentValue_;
             }
 
-            ValueType *operator->()
-            {
+            ValueType *operator->() {
                 set_current_value(position_);
                 return &currentValue_;
             }
 
-            ValueType operator[](size_t nPosition)
-            {
+            ValueType operator[](size_t nPosition) {
                 set_current_value(nPosition);
                 return currentValue_;
             }
 
-            row_iterator &operator++()
-            {
+            row_iterator &operator++() {
                 if (position_ < row_->size()) {
                     ++position_;
                 }
                 return *this;
             }
 
-            row_iterator operator++(int)
-            {
+            row_iterator operator++(int) {
                 row_iterator tmp(*this);
                 ++(*this);
                 return tmp;
             }
 
-            row_iterator &operator--()
-            {
+            row_iterator &operator--() {
                 if (position_ > 0) {
                     --position_;
                 }
                 return *this;
             }
 
-            row_iterator operator--(int)
-            {
+            row_iterator operator--(int) {
                 row_iterator tmp(*this);
                 --(*this);
                 return tmp;
             }
 
-            row_iterator operator+(int n)
-            {
+            row_iterator operator+(int n) {
                 row_iterator tmp(*this);
                 tmp += n;
                 return tmp;
             }
 
-            row_iterator &operator+=(int n)
-            {
+            row_iterator &operator+=(int n) {
                 position_ = std::min(position_ + n, row_->size());
                 return *this;
             }
 
-            row_iterator operator-(int n)
-            {
+            row_iterator operator-(int n) {
                 row_iterator tmp(*this);
                 tmp -= n;
                 return tmp;
             }
 
-            row_iterator &operator-=(int n)
-            {
+            row_iterator &operator-=(int n) {
                 position_ = std::max(position_ - n, 0);
                 return *this;
             }
 
-            bool operator==(const row_iterator &other) const
-            {
+            bool operator==(const row_iterator &other) const {
                 return position_ == other.position_;
             }
 
-            bool operator!=(const row_iterator &other) const
-            {
+            bool operator!=(const row_iterator &other) const {
                 return !operator==(other);
             }
 
-            bool operator<(const row_iterator &other) const
-            {
+            bool operator<(const row_iterator &other) const {
                 return position_ < other.position_;
             }
 
-            bool operator<=(const row_iterator &other) const
-            {
+            bool operator<=(const row_iterator &other) const {
                 return operator<(other) || operator==(other);
             }
 
-            bool operator>(const row_iterator &other) const
-            {
+            bool operator>(const row_iterator &other) const {
                 return !operator<(other);
             }
 
-            bool operator>=(const row_iterator &other) const
-            {
+            bool operator>=(const row_iterator &other) const {
                 return operator>(other) || operator==(other);
             }
 
-            int operator-(const row_iterator &other)
-            {
+            int operator-(const row_iterator &other) {
                 if (position_ >= other.position_)
                     return position_ - other.position_;
                 else
                     return 0;
             }
 
-            std::string name() const
-            {
+            std::string name() const {
                 if (row_ == nullptr) {
                     return nullptr;
                 }
@@ -251,13 +226,12 @@ namespace rj
          * represent a row in a table
          * implementation is specific to a type of database
          */
-        class row
-        {
-           private:
+        class row {
+        private:
             std::shared_ptr<row_impl> impl_;
 
-           public:
-            typedef rj::db::column column_type;
+        public:
+            typedef coda::db::column column_type;
             typedef row_iterator<column_type, column_type, row_impl> iterator;
             typedef row_iterator<const column_type, column_type, const row_impl> const_iterator;
 
@@ -273,9 +247,13 @@ namespace rj
 
             /* rule of 3 + move */
             row(const row &other);
+
             row(row &&other);
+
             virtual ~row();
+
             row &operator=(const row &other);
+
             row &operator=(row &&other);
 
             /*!

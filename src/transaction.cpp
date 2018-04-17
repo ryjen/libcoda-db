@@ -4,7 +4,7 @@
 #include "session.h"
 #include "sqldb.h"
 
-namespace rj
+namespace coda
 {
     namespace db
     {

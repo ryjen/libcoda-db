@@ -3,12 +3,12 @@
  * declaration of exceptions used in the library
  * @copyright ryan jennings (ryan-jennings.net), 2013
  */
-#ifndef RJ_DB_EXCEPTION_H
-#define RJ_DB_EXCEPTION_H
+#ifndef CODA_DB_EXCEPTION_H
+#define CODA_DB_EXCEPTION_H
 
 #include <string>
 
-#define RJ_DECLARE_EXCEPTION(CLASS, BASE)                           \
+#define CODA_DECLARE_EXCEPTION(CLASS, BASE)                           \
     class CLASS : public BASE                                       \
     {                                                               \
        private:                                                     \
@@ -23,7 +23,7 @@
         virtual const char *context() const throw();               \
     }
 
-#define RJ_IMPLEMENT_EXCEPTION(CLASS, BASE)                                                                    \
+#define CODA_IMPLEMENT_EXCEPTION(CLASS, BASE)                                                                    \
     CLASS::CLASS(const std::string &what) : BASE(), what_(what)                                                \
     {                                                                                                          \
     }                                                                                                          \
@@ -43,23 +43,21 @@
     }
 
 
-namespace rj
-{
-    namespace db
-    {
-        RJ_DECLARE_EXCEPTION(database_exception, std::exception);
+namespace coda {
+    namespace db {
+        CODA_DECLARE_EXCEPTION(database_exception, std::exception);
 
-        RJ_DECLARE_EXCEPTION(no_such_column_exception, database_exception);
+        CODA_DECLARE_EXCEPTION(no_such_column_exception, database_exception);
 
-        RJ_DECLARE_EXCEPTION(record_not_found_exception, database_exception);
+        CODA_DECLARE_EXCEPTION(record_not_found_exception, database_exception);
 
-        RJ_DECLARE_EXCEPTION(binding_error, database_exception);
+        CODA_DECLARE_EXCEPTION(binding_error, database_exception);
 
-        RJ_DECLARE_EXCEPTION(transaction_exception, database_exception);
+        CODA_DECLARE_EXCEPTION(transaction_exception, database_exception);
 
-        RJ_DECLARE_EXCEPTION(no_primary_key_exception, database_exception);
+        CODA_DECLARE_EXCEPTION(no_primary_key_exception, database_exception);
 
-        RJ_DECLARE_EXCEPTION(value_conversion_error, database_exception);
+        CODA_DECLARE_EXCEPTION(value_conversion_error, database_exception);
     }
 }
 

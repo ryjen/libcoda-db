@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace rj
+namespace coda
 {
     namespace db
     {
@@ -15,7 +15,7 @@ namespace rj
          * @param tableName the table to modify
          * @param columns the columns to modify
          */
-        insert_query::insert_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName)
+        insert_query::insert_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName)
             : modify_query(session)
         {
             tableName_ = tableName;
@@ -25,7 +25,7 @@ namespace rj
          * @param db the database to modify
          * @param columns the columns to modify
          */
-        insert_query::insert_query(const std::shared_ptr<rj::db::session> &session, const std::string &tableName,
+        insert_query::insert_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName,
                                    const std::vector<std::string> &columns)
             : modify_query(session)
         {
@@ -96,7 +96,7 @@ namespace rj
 
             buf += "(";
 
-            buf += rj::db::helper::join_csv(columns_);
+            buf += coda::db::helper::join_csv(columns_);
 
             buf += ") VALUES(";
 

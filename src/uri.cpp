@@ -1,36 +1,30 @@
 
 #include "uri.h"
-#include <algorithm>
 #include <sstream>
-#include <string>
-#include <type_traits>
 
 using namespace std;
 
-namespace rj
-{
-    namespace db
-    {
-        uri_type::uri_type()
-        {
+namespace coda {
+    namespace db {
+        uri_type::uri_type() {
         }
-        uri_type::uri_type(const std::string &url)
-        {
+
+        uri_type::uri_type(const std::string &url) {
             parse(url);
         }
-        uri_type::operator std::string() const
-        {
+
+        uri_type::operator std::string() const {
             return value;
         }
-        void uri_type::parse(const string &url_s)
-        {
+
+        void uri_type::parse(const string &url_s) {
             value = url_s;
             // do the manual implementation from stack overflow
             // with some mods for the port
             const string prot_end("://");
             string::const_iterator pos_i = search(url_s.begin(), url_s.end(), prot_end.begin(), prot_end.end());
             protocol.reserve(distance(url_s.begin(), pos_i));
-            transform(url_s.begin(), pos_i, back_inserter(protocol), ptr_fun<int, int>(tolower));  // protocol is icase
+            transform(url_s.begin(), pos_i, back_inserter(protocol), [](int c) { return std::tolower(c); });  // protocol is icase
             if (pos_i == url_s.end()) {
                 return;
             }
@@ -67,7 +61,7 @@ namespace rj
                 host_end = path_i;
             }
             host.reserve(distance(pos_i, host_end));
-            transform(pos_i, host_end, back_inserter(host), ptr_fun<int, int>(tolower));  // host is icase
+            transform(pos_i, host_end, back_inserter(host),[](int c){ return std::tolower(c); });  // host is icase
             string::const_iterator query_i = find(path_i, url_s.end(), '?');
             path.assign(*path_i == '/' ? (path_i + 1) : path_i, query_i);
             if (query_i != url_s.end()) ++query_i;

@@ -2,8 +2,8 @@
  * @file join_clause.h
  * representation of a join clause in a sql query
  */
-#ifndef RJ_DB_JOIN_CLAUSE_H
-#define RJ_DB_JOIN_CLAUSE_H
+#ifndef CODA_DB_JOIN_CLAUSE_H
+#define CODA_DB_JOIN_CLAUSE_H
 
 #include <string>
 #include <unordered_map>
@@ -11,24 +11,22 @@
 #include "sql_types.h"
 #include "where_clause.h"
 
-namespace rj
-{
-    namespace db
-    {
-        namespace join
-        {
+namespace coda {
+    namespace db {
+        namespace join {
             /*! types of sql joins */
-            typedef enum { none, inner, left, right, natural, full, cross } type;
+            typedef enum {
+                none, inner, left, right, natural, full, cross
+            } type;
         }
 
         /*!
          * a utility class aimed at making join statements
          * ex. join("tablename").on("a", "b");
          */
-        class join_clause : public sql_generator
-        {
-           public:
-           private:
+        class join_clause : public sql_generator {
+        public:
+        private:
             std::string tableName_;
             join::type type_;
             where_clause on_;
@@ -37,7 +35,7 @@ namespace rj
 
             void set_modified();
 
-           public:
+        public:
             /*! default no-arg constructor */
             join_clause();
 
@@ -46,13 +44,18 @@ namespace rj
              * @param joinType the type of sql query (default inner)
              */
             explicit join_clause(const std::string &tableName, join::type type = join::none);
+
             explicit join_clause(const std::string &tableName, const std::string &alias, join::type type = join::none);
 
             /*! boilerplate rule of 3 + move */
             join_clause(const join_clause &other);
+
             join_clause(join_clause &&other);
+
             join_clause &operator=(const join_clause &other);
+
             join_clause &operator=(join_clause &&other);
+
             virtual ~join_clause();
 
             /*!
@@ -83,6 +86,7 @@ namespace rj
              * @param value the table name to set
              */
             join_clause &table(const std::string &value);
+
             join_clause &table(const std::string &value, const std::string &alias);
 
             /*!

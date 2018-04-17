@@ -4,7 +4,7 @@
 #include "log.h"
 #include "util.h"
 
-using namespace rj::db;
+using namespace coda::db;
 
 BENCHMARK("sqlite select", [](benchpress::context *context) {
     uri uri_s("file://test.db");
