@@ -53,6 +53,25 @@ add_library(${UTIL_TEST_PROJECT_NAME}
 
 target_include_directories(${UTIL_TEST_PROJECT_NAME} SYSTEM PUBLIC ${BANDIT_DIR} INTERFACE ${PROJECT_SOURCE_DIR}/src)
 
+if (PostgreSQL_FOUND)
+
+	add_executable (${POSTGRES_TEST_PROJECT_NAME}
+			postgres/main.test.cpp
+			postgres/binding.test.cpp
+			postgres/column.test.cpp
+			postgres/resultset.test.cpp
+			postgres/row.test.cpp
+			postgres/session.test.cpp
+			postgres/statement.test.cpp
+			postgres/transaction.test.cpp
+			)
+
+	target_link_libraries (${POSTGRES_TEST_PROJECT_NAME} ${POSTGRES_PROJECT_NAME} ${UTIL_TEST_PROJECT_NAME} ${COMMON_TEST_PROJECT_NAME})
+
+	target_include_directories(${POSTGRES_TEST_PROJECT_NAME} SYSTEM PUBLIC ${PostgreSQL_INCLUDE_DIRS} SYSTEM PUBLIC ${BANDIT_DIR} INTERFACE ${PROJECT_SOURCE_DIR}/src)
+
+endif()
+
 if (MYSQL_FOUND)
 
 add_executable (${MYSQL_TEST_PROJECT_NAME}
@@ -85,25 +104,6 @@ add_executable (${SQLITE_TEST_PROJECT_NAME}
 target_link_libraries (${SQLITE_TEST_PROJECT_NAME} ${SQLITE_PROJECT_NAME} ${UTIL_TEST_PROJECT_NAME} ${COMMON_TEST_PROJECT_NAME})
 
 target_include_directories(${SQLITE_TEST_PROJECT_NAME} SYSTEM PUBLIC ${SQLITE3_INCLUDE_DIR} SYSTEM PUBLIC ${BANDIT_DIR} INTERFACE ${PROJECT_SOURCE_DIR}/src)
-
-endif()
-
-if (PostgreSQL_FOUND)
-
-add_executable (${POSTGRES_TEST_PROJECT_NAME}
-	postgres/main.test.cpp
-	postgres/binding.test.cpp
-	postgres/column.test.cpp
-	postgres/resultset.test.cpp
-	postgres/row.test.cpp
-	postgres/session.test.cpp
-	postgres/statement.test.cpp
-	postgres/transaction.test.cpp
-)
-
-target_link_libraries (${POSTGRES_TEST_PROJECT_NAME} ${POSTGRES_PROJECT_NAME} ${UTIL_TEST_PROJECT_NAME} ${COMMON_TEST_PROJECT_NAME})
-
-target_include_directories(${POSTGRES_TEST_PROJECT_NAME} SYSTEM PUBLIC ${PostgreSQL_INCLUDE_DIRS} SYSTEM PUBLIC ${BANDIT_DIR} INTERFACE ${PROJECT_SOURCE_DIR}/src)
 
 endif()
 

@@ -1,5 +1,6 @@
 #include "sql_common.h"
 #include <codecvt>
+#include <locale>
 #include "sql_number.h"
 
 namespace coda {

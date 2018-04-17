@@ -68,8 +68,8 @@ set(TEST_PROJECT_NAME "${PROJECT_NAME}_test")
 set(UTIL_TEST_PROJECT_NAME "${PROJECT_NAME}_test_util")
 
 # add directories
-add_subdirectory(tests)
 add_subdirectory(src)
+add_subdirectory(tests)
 
 # Setup testing
 enable_testing()
