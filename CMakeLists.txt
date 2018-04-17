@@ -11,7 +11,7 @@ option(ENABLE_RAW_SQL "Enable executing queries with raw sql" OFF)
 option(ENABLE_LOGGING "Enable internal library logging." OFF)
 
 # define project name
-project (coda_db VERSION 0.5.0)
+project (coda_db VERSION 0.5.1)
 
 # set path to custom modules
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)

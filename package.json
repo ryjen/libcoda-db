@@ -1,0 +1,33 @@
+{
+  "author": {
+    "email": "ryan@coda.life",
+    "web": "https://coda.life",
+    "name": "Ryan Jennings"
+  },
+  "build_system": [
+    "cmake",
+    "make"
+  ],
+  "dependencies": [
+
+    {
+      "name": "sqlite",
+      "version": "3.23.0"
+    },
+    {
+      "name": "mysql",
+      "version": "5.7.21"
+    },
+    {
+      "name": "postgresql",
+      "version": "10.3"
+    },
+    {
+      "name": "boost",
+      "version": "1.66.0"
+    }
+  ],
+  "name": "coda_db",
+  "version": "0.5.1"
+}
+
