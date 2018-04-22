@@ -110,12 +110,12 @@ namespace coda
                 return field->name;
             }
 
-            size_t row::size() const
+            size_t row::size() const noexcept
             {
                 return size_;
             }
 
-            bool row::is_valid() const
+            bool row::is_valid() const noexcept
             {
                 return res_ != nullptr && res_ && row_ != nullptr;
             }
@@ -219,12 +219,12 @@ namespace coda
                 return field->name;
             }
 
-            size_t stmt_row::size() const
+            size_t stmt_row::size() const noexcept
             {
                 return size_;
             }
 
-            bool stmt_row::is_valid() const
+            bool stmt_row::is_valid() const noexcept
             {
                 return fields_ != nullptr && metadata_ != nullptr;
             }

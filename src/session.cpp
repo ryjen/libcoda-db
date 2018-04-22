@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (ryan-jennings.net), 2013
+ * @copyright ryan jennings (coda.life), 2013
  */
 #include "session.h"
 #include "query.h"
@@ -65,7 +65,7 @@ namespace coda {
             schema_factory_.clear(tableName);
         }
 
-        bool session::is_open() const {
+        bool session::is_open() const noexcept {
             return impl_->is_open();
         }
 

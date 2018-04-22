@@ -28,7 +28,7 @@ namespace coda
                 transaction &operator=(transaction &&other);
 
                 void start();
-                bool is_active() const;
+                bool is_active() const noexcept;
 
                private:
                 std::shared_ptr<MYSQL> db_;

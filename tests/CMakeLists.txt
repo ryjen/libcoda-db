@@ -108,7 +108,6 @@ target_include_directories(${SQLITE_TEST_PROJECT_NAME} SYSTEM PUBLIC ${SQLITE3_I
 endif()
 
 add_executable (${TEST_PROJECT_NAME}
-	log.test.cpp
 	main.test.cpp
 	sql_value.test.cpp
 	where_clause.test.cpp

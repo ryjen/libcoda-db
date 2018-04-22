@@ -13,9 +13,9 @@ a sqlite, mysql and postgres wrapper + active record (ish) implementation.
 Why another library?
 --------------------
 
-Why not? It was good fun and I'll use it.  
+Why not? It was good fun, tested and usable.  
 
-Other libraries are kinda nice, but sometimes you don't want to deal with code generators or unintuitive syntax.
+Other libraries are kinda nice or even better at some things.  Sometimes you don't want to deal with code generators or unintuitive syntax though.
 
 Building
 --------
@@ -62,7 +62,7 @@ docker-compose run test gdb /user/src/build/tests/coda_db_test_xxx
 Model
 -----
 
-View some [diagrams here](https://github.com/ryjen/db/wiki/Model).
+View some [diagrams here](https://github.com/ryjen/db/wiki/Model).  These need to be improved.
 
 Records
 =======
@@ -70,17 +70,10 @@ Records
 An user object example
 ----------------------
 
-First I have a global session variable:
+For the purposes of this readme there is a global session variable:
 
 ```c++
-
-extern std::shared_ptr<coda::db::session> current_session;
-```
-
-That gets initialized:
-
-```c++
-current_session = sqldb::create_session("file://test.db");
+std::shared_ptr<coda::db::session> current_session = sqldb::create_session("file://test.db");
 
 /* Other databases:
 
@@ -103,26 +96,27 @@ public:
 		user(const std::shared_ptr<schema> &schema) : record(schema)
 		{}
 
-		/* default constructor */
-		user(const std::shared_ptr<session> &session = current_session) : record(session->get_schema(TABLE_NAME))
+		/* default constructor that gets the schema from the session */
+		user(const std::shared_ptr<session> &session = current_session) 
+		      : record(session->get_schema(TABLE_NAME))
 		{}
 
 		/* utility method showing how to get columns */
 		string to_string() const
 		{
-				ostringstream buf;
-				buf << id() << ": " << get("first_name") << " " << get("last_name");
-				return buf.str();
+			ostringstream buf;
+			buf << id() << ": " << get("first_name") << " " << get("last_name");
+			return buf.str();
 		}
 
 		// optional overridden method to do custom initialization
 		void on_record_init(const coda::db::row &row) {
-				set("customValue", row.column("customName").to_value());
+			set("customValue", row.column("customName").to_value());
 		}
 
 		// custom find method using the schema functions
 		vector<shared_ptr<user>> find_by_first_name(const string &value) {
-				return coda::db::find_by<user>(this->schema(), "first_name", value);
+			return coda::db::find_by<user>(this->schema(), "first_name", value);
 		}
 };
 ```
@@ -131,28 +125,28 @@ Save a record
 -------------
 
 ```c++
-		/* save a user */
-		user obj;
+/* save a user */
+user obj;
 
-		obj.set("first_name", "John");
-		obj.set("last_name", "Doe");
+obj.set("first_name", "John");
+obj.set("last_name", "Doe");
 
-		if(!obj.save()) {
-			cerr << testdb.last_error() << endl;
-		}
+if(!obj.save()) {
+    cerr << testdb.last_error() << endl;
+}
 ```
 
 Delete a record
 ---------------
 
 ```c++
-		user obj;
+user obj;
 
-		obj.set_id(1);
+obj.set_id(1);
 
-		if(!obj.de1ete()) {
-				cerr << testdb.last_error() << endl;
-		}
+if(!obj.de1ete()) {
+        cerr << testdb.last_error() << endl;
+}
 ```
 
 
@@ -160,24 +154,24 @@ Query a record
 --------------
 
 ```c++
-	/* find users with a callback */
-	user().find_by_id(1234, [](const shared_ptr<user> &record) {
-			cout << "User: " << record->to_string() << endl;
-	});
+/* find users with a callback */
+user().find_by_id(1234, [](const shared_ptr<user> &record) {
+        cout << "User: " << record->to_string() << endl;
+});
 
-	/* find users returning the results */
-	auto results = user().find_all();
+/* find users returning the results */
+auto results = user().find_all();
 
-	for (auto &user : results) {
-			cout << "User: " << record->to_string() << endl;
-	}
+for (auto &user : results) {
+        cout << "User: " << record->to_string() << endl;
+}
 ```
 
 
 Querying Schemas
 ----------------
 
-The library includes the following "schema functions" for querying with a schema object:
+The library includes the following "schema functions" for querying with a schema objects:
 
 - **find_by_id()**
 - **find_all()**
@@ -186,26 +180,26 @@ The library includes the following "schema functions" for querying with a schema
 
 These functions can:
 
-- be generic column/values or specify a record type
-- return results or call a callback for each result
+- be generic column/values or specify type
+- return results in a collection or use callback
 
-example using a callback for a user record type:
+example using a callback for a specific user type:
 ```c++
-	auto schema = current_session->get_schema(user::TABLE_NAME);
+auto schema = current_session->get_schema(user::TABLE_NAME);
 
-	find_by_id<user>(schema, 1234, [](const shared_ptr<user> &record) {
-			cout << "User: " << record->to_string() << endl;
-	});
+find_by_id<user>(schema, 1234, [](const shared_ptr<user> &record) {
+        cout << "User: " << record->to_string() << endl;
+});
 ```
 
-example using a return value for a generic record type:
+example using a return value for a generic record:
 
 ```c++
-	auto results = find_all(user.schema());
+auto results = find_all(user.schema());
 
-	for (auto record : results) {
-			cout << "User: " << record->to_string() << endl;
-	}
+for (auto record : results) {
+        cout << "User: " << record->to_string() << endl;
+}
 ```
 
 Basic Queries
@@ -277,23 +271,23 @@ select_query query(current_session);
 
 query.from("users").execute([](const resultset & rs)
 {
-		// do something with a resultset
+    // do something with a resultset
 
-		rs.for_each([](const row & r)
-		{
-				// do something with a row
+    rs.for_each([](const row & r)
+    {
+        // do something with a row
 
-				r.for_each([](const column & c)
-				{
-						// do something with a column
-				});
-		});
+        r.for_each([](const column & c)
+        {
+                // do something with a column
+        });
+    });
 });
 
 // use a function for a callback
 std::function<void (const resultset &)> handler = [](const resultset &results)
 {
-		printf("found %d results", results.size());
+    printf("found %d results", results.size());
 }
 
 query.execute(handler);
@@ -325,26 +319,26 @@ insert_query insert(current_session);
 insert.into("users").columns("counter");
 
 for(int i = 1000; i < 3000; i++) {
-		// set new values for the insert
-		insert.bind(1, i);
+    // set new values for the insert
+    insert.bind(1, i);
 
-		if (!insert.execute()) {
-				cerr << testdb.last_error() << endl;
-		}
+    if (!insert.execute()) {
+            cerr << testdb.last_error() << endl;
+    }
 }
 ```
 
 Raw Queries
 -----------
 
-Perform raw queries on a session object:
+Perform raw queries on a session object if you have to:
 
 ```c++
-	auto results = session->query("select * from users");
+auto results = session->query("select * from users");
 
-	if (!session->execute("insert into users values(...)")) {
-		cerr << session->last_error() << endl;
-	}
+if (!session->execute("insert into users values(...)")) {
+    cerr << session->last_error() << endl;
+}
 ```
 Transactions
 ============
@@ -373,19 +367,23 @@ Transactions can be performed on a session object.
 Prepared Statements
 ===================
 
-By default the library will use the prepared statement syntax of the database being used.
+By default **the library will use the prepared statement syntax of the database being used**.  This is the most efficient use.
 
-If you turn on **ENHANCED_PARAMENTER_MAPPING (experiemental feature)** then the syntaxes are database independent and can be mixed and matched.
+If you turn on **ENHANCED_PARAMENTER_MAPPING (experiemental feature)** then the syntaxes are database independent.
 
-Enhanced parameter mapping example:
+Enhanced parameter mapping supports different syntaxes.  You can use different syntaxes in the same query if you really wanted.
+
+Example:
 
 ```c++
-	"?, $2, @name, $3"
-	// or
-	"?, ?, @name, ?"
+"?, $2, @name, $3"
+// or
+"?, ?, @name, ?"
 ```
 
-When mixing indexed parameters, the first '?' is equivalent to parameter 1 or '$1' and so on.
+When mixing indexed parameters, the unidentified '?' is equivalent to parameter 1 or '$1' and so on.
+
+Named parameters operate outside indexed parameters.
 
 
 Where Clauses / Binding
@@ -412,7 +410,7 @@ Operator Helpers
 Operator functions are used for where clauses:
 
 ```c++
-  query.where(equals("column", value)) and !between("column2", valueA, valueB);
+query.where(equals("column", value)) and !between("column2", valueA, valueB);
 ```
 
 ```c++
@@ -431,7 +429,7 @@ They can all be negated using the operator! (ex. !like )
 Types
 =====
 
-sql_value is implemented using a variant (currently boost::variant, untill c++17).
+sql_value is implemented using a variant (currently boost::variant, untill c++17 variant becomes available).
 
 sql_value is capable of converting between the basic SQL values (when possible).
 
@@ -524,6 +522,5 @@ TODO / ROADMAP
 
 * More and better quality tests, especially around binding and data types
 * better benchmarking and perf improvements
-* NoSQL support? other databases?
 
 

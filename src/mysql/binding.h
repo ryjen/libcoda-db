@@ -80,7 +80,7 @@ namespace coda
                 /*!
                  * @return the size (number of bindings) of this instance
                  */
-                size_t num_of_bindings() const;
+                size_t num_of_bindings() const noexcept;
 
                 /*!
                  * @return the capcity of the storage of this instance

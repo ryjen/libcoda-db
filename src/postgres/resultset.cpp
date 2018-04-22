@@ -45,7 +45,7 @@ namespace coda
                 return *this;
             }
 
-            bool resultset::is_valid() const
+            bool resultset::is_valid() const noexcept
             {
                 return stmt_ != nullptr && stmt_;
             }

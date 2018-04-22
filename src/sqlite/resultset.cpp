@@ -1,6 +1,5 @@
 #include "resultset.h"
 #include "../exception.h"
-#include "../log.h"
 #include "row.h"
 #include "session.h"
 
@@ -46,7 +45,7 @@ namespace coda
                 return *this;
             }
 
-            bool resultset::is_valid() const
+            bool resultset::is_valid() const noexcept
             {
                 return stmt_ != nullptr && stmt_;
             }
@@ -69,7 +68,7 @@ namespace coda
             void resultset::reset()
             {
                 if (!is_valid()) {
-                    log::warn("resultset::reset database not open");
+                    //resultset::reset database not open
                     return;
                 }
 

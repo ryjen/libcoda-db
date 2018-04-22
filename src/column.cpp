@@ -32,12 +32,8 @@ namespace coda {
             return *this;
         }
 
-        bool column::is_valid() const {
-            if (impl_ == nullptr) {
-                return false;
-            }
-
-            return impl_->is_valid();
+        bool column::is_valid() const noexcept {
+            return impl_ != nullptr && impl_->is_valid();
         }
 
         sql_value column::value() const {

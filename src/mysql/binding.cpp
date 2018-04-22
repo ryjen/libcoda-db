@@ -9,7 +9,6 @@
 
 #include "../alloc.h"
 #include "../exception.h"
-#include "../log.h"
 #include "../sql_value.h"
 #include "binding.h"
 
@@ -287,16 +286,14 @@ namespace coda
                             try {
                                 return sql_number(std::stoi(std::string(value, 0, length)));
                             } catch (const std::exception &e) {
-                                log::error("unable to get integer from %s", value);
-                                return sql_value();
+                                throw value_conversion_error("unable to get integer from value");
                             }
                         }
                         case MYSQL_TYPE_LONGLONG: {
                             try {
                                 return sql_number(std::stoll(std::string(value, 0, length)));
                             } catch (const std::exception &e) {
-                                log::error("unable to get long from %s", value);
-                                return sql_value();
+                                throw value_conversion_error("unable to get longlong from value");
                             }
                         }
                         case MYSQL_TYPE_DECIMAL:
@@ -317,23 +314,21 @@ namespace coda
                             try {
                                 return sql_time(std::string(value, 0, length));
                             } catch (const value_conversion_error &e) {
-                                return sql_time();
+                                throw value_conversion_error("unable to get time format from value");
                             }
                         }
                         case MYSQL_TYPE_FLOAT: {
                             try {
                                 return sql_number(std::stof(std::string(value, 0, length)));
                             } catch (const std::exception &e) {
-                                log::error("unable to get float of %s", value);
-                                return sql_value();
+                                throw value_conversion_error("unable to get float from value");
                             }
                         }
                         case MYSQL_TYPE_DOUBLE: {
                             try {
                                 return sql_number(std::stod(std::string(value, 0, length)));
                             } catch (const std::exception &e) {
-                                log::error("unable to get double of %s", value);
-                                return sql_value();
+                                throw value_conversion_error("unable to get double from value");
                             }
                         }
                         case MYSQL_TYPE_TINY_BLOB:
@@ -760,7 +755,7 @@ namespace coda
                     if (reallocate_value(i)) {
                         value.apply_visitor(data_mapper::from_value(&value_[i - 1]));
                     } else {
-                        log::warn("unable to reallocate bindings for index %ld", index);
+                        //unable to reallocate bindings for index
                         break;
                     }
                 }
@@ -785,7 +780,7 @@ namespace coda
                 }
             }
 
-            size_t binding::num_of_bindings() const
+            size_t binding::num_of_bindings() const noexcept
             {
                 size_t count = 0;
                 for (size_t i = 0; i < size_; i++) {

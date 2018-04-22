@@ -1,7 +1,7 @@
 /*!
  * @file query.h
  * implementation of a query
- * @copyright ryan jennings (ryan-jennings.net), 2013
+ * @copyright ryan jennings (coda.life), 2013
  */
 #ifndef CODA_DB_QUERY_H
 #define CODA_DB_QUERY_H
@@ -103,7 +103,7 @@ namespace coda {
              */
             query &operator=(query &&other);
 
-            size_t num_of_bindings() const;
+            size_t num_of_bindings() const noexcept;
 
             using bindable::bind;
 
@@ -116,7 +116,7 @@ namespace coda {
              * tests if this query is valid
              * @return true if the internals are open and valid
              */
-            virtual bool is_valid() const;
+            virtual bool is_valid() const noexcept;
         };
     }
 }

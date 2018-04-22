@@ -50,7 +50,7 @@ namespace coda
                 virtual ~session();
 
                 /* sqldb overrides */
-                bool is_open() const;
+                bool is_open() const noexcept;
                 void open();
                 void close();
                 long long last_insert_id() const;

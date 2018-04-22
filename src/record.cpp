@@ -276,7 +276,7 @@ namespace coda {
             /*!
              * deletes this record from the database for the value in the id column
              */
-            bool record::de1ete() const {
+            bool record::remove() const {
                 auto pk = schema()->primary_key();
 
                 if (!has(pk)) {

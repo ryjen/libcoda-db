@@ -1,9 +1,8 @@
 /*!
- * @copyright ryan jennings (ryan-jennings.net), 2013
+ * @copyright ryan jennings (coda.life), 2013
  */
 #include "modify_query.h"
 #include "exception.h"
-#include "log.h"
 #include "schema.h"
 #include "statement.h"
 
@@ -68,7 +67,6 @@ namespace coda
             if (success) {
                 numChanges_ = stmt_->last_number_of_changes();
             } else {
-                log::error("%s", stmt_->last_error().c_str());
                 numChanges_ = 0;
             }
 

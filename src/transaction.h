@@ -24,7 +24,7 @@ namespace coda {
 
             virtual void start() = 0;
 
-            virtual bool is_active() const = 0;
+            virtual bool is_active() const noexcept = 0;
         };
 
         class transaction {
@@ -66,11 +66,11 @@ namespace coda {
 
             void rollback();
 
-            bool is_active() const;
+            bool is_active() const noexcept;
 
             void set_successful(bool value);
 
-            bool is_successful() const;
+            bool is_successful() const noexcept;
 
             std::shared_ptr<transaction_impl> impl() const;
 

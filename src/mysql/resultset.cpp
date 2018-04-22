@@ -2,7 +2,6 @@
 #include "resultset.h"
 #include <string>
 #include "../exception.h"
-#include "../log.h"
 #include "binding.h"
 #include "row.h"
 #include "session.h"
@@ -60,7 +59,7 @@ namespace coda
                 return *this;
             }
 
-            bool resultset::is_valid() const
+            bool resultset::is_valid() const noexcept
             {
                 return res_ != nullptr;
             }
@@ -68,7 +67,7 @@ namespace coda
             bool resultset::next()
             {
                 if (sess_ == nullptr) {
-                    log::warn("mysql resultset next: database not open");
+                    //mysql resultset next: database not open
                     return false;
                 }
 
@@ -165,7 +164,7 @@ namespace coda
                 bindings_->bind_result(stmt_.get());
             }
 
-            bool stmt_resultset::is_valid() const
+            bool stmt_resultset::is_valid() const noexcept
             {
                 return stmt_ != nullptr && stmt_;
             }
@@ -173,7 +172,7 @@ namespace coda
             bool stmt_resultset::next()
             {
                 if (!is_valid()) {
-                    log::warn("mysql resultset next invalid");
+                    //mysql resultset next invalid
                     return false;
                 }
 
@@ -203,7 +202,7 @@ namespace coda
                 bindings_.reset();
 
                 if (!is_valid()) {
-                    log::warn("mysql stmt resultset reset invalid");
+                    //mysql stmt resultset reset invalid
                     return;
                 }
 

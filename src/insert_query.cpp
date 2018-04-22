@@ -1,5 +1,4 @@
 #include "insert_query.h"
-#include "log.h"
 #include "schema.h"
 #include "session.h"
 #include "statement.h"
@@ -78,7 +77,7 @@ namespace coda
             return *this;
         }
 
-        bool insert_query::is_valid() const
+        bool insert_query::is_valid() const noexcept
         {
             return query::is_valid() && !tableName_.empty();
         }

@@ -38,7 +38,6 @@ set(LIBRARY_SOURCES ${${PROJECT_NAME}_HEADERS}
         delete_query.cpp
         insert_query.cpp
         join_clause.cpp
-        log.cpp
         modify_query.cpp
         query.cpp
         record.cpp

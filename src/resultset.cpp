@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (ryan-jennings.net), 2013
+ * @copyright ryan jennings (coda.life), 2013
  */
 #include "resultset.h"
 #include "exception.h"
@@ -32,7 +32,7 @@ namespace coda {
             return impl_->current_row();
         }
 
-        bool resultset::is_valid() const {
+        bool resultset::is_valid() const noexcept {
             return impl_ != nullptr && impl_->is_valid();
         }
 

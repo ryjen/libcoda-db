@@ -11,38 +11,6 @@ namespace coda {
 
         class session_factory;
 
-        namespace log {
-            /*! levels of logging */
-            typedef enum {
-                /*! logging is disabled */
-                        None = 0,
-                /*! only error messages will be logged */
-                        Error = 1,
-                /*! warnings and errors will be logged */
-                        Warn = 2,
-                /*! info, warning, and error messages will be logged */
-                        Info = 3,
-                /*! debug, info, warning and error messages will be logged */
-                        Debug = 4,
-                /*! trace, debug, info, warning and error messages will be logged */
-                        Trace = 5
-            } level;
-
-            /*!
-             * sets the logging level
-             * @param level the level to set
-             */
-            void set_level(level level);
-
-            void set_file(FILE *fp);
-
-            /*!
-             * sets the log level from a name
-             * @param arg a string representation of one of the log levels
-             */
-            void set_level(const char *arg);
-        }
-
         class sqldb {
         public:
             /*!

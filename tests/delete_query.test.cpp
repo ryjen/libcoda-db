@@ -126,7 +126,7 @@ specification(deletes, []() {
             auto u = test::user().find_one("first_name", "Bryan");
 
             AssertThat(u != nullptr, Equals(true));
-            AssertThat(u->de1ete(), IsTrue());
+            AssertThat(u->remove(), IsTrue());
 
         });
 

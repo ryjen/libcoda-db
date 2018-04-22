@@ -1,7 +1,7 @@
 /*!
  * @file alloc.h
  * @abstract Functions for dealing with C-style memory allocation
- * @discussion These functions exist because we need to be able to use realloc in some cases
+ * @discussion These functions exist because we need to be able to use realloc
  */
 #ifndef CODA_DB_ALLOC_H
 #define CODA_DB_ALLOC_H

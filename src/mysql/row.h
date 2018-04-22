@@ -48,8 +48,8 @@ namespace coda
                 std::string column_name(size_t position) const;
                 column_type column(size_t position) const;
                 column_type column(const std::string &name) const;
-                size_t size() const;
-                bool is_valid() const;
+                size_t size() const noexcept;
+                bool is_valid() const noexcept;
             };
 
             /*!
@@ -85,8 +85,8 @@ namespace coda
                 std::string column_name(size_t position) const;
                 column_type column(size_t position) const;
                 column_type column(const std::string &name) const;
-                size_t size() const;
-                bool is_valid() const;
+                size_t size() const noexcept;
+                bool is_valid() const noexcept;
             };
         }
     }

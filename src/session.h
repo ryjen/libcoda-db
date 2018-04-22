@@ -1,7 +1,7 @@
 /*!
  * @file session.h
  * a sql database
- * @copyright ryan jennings (ryan-jennings.net), 2013
+ * @copyright ryan jennings (coda.life), 2013
  */
 #ifndef CODA_DB_SESSION_H
 #define CODA_DB_SESSION_H
@@ -48,7 +48,7 @@ namespace coda {
              * tests if a connection to the database is open
              * @return true if the connection is open
              */
-            virtual bool is_open() const = 0;
+            virtual bool is_open() const noexcept = 0;
 
             /*!
              * opens a connection to the database
@@ -149,7 +149,7 @@ namespace coda {
              * tests if a connection to the database is open
              * @return true if the connection is open
              */
-            bool is_open() const;
+            bool is_open() const noexcept;
 
             /*!
              * opens a connection to the database

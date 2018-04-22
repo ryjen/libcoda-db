@@ -2,7 +2,6 @@
 #include "statement.h"
 #include <string>
 #include "../exception.h"
-#include "../log.h"
 #include "resultset.h"
 #include "session.h"
 
@@ -78,7 +77,7 @@ namespace coda
                 }
             }
 
-            bool statement::is_valid() const
+            bool statement::is_valid() const noexcept
             {
                 return stmt_ != nullptr && stmt_;
             }
@@ -112,7 +111,7 @@ namespace coda
             bool statement::result()
             {
                 if (!is_valid()) {
-                    log::warn("mysql statement result invalid");
+                    //mysql statement result invalid
                     return false;
                 }
 
@@ -127,7 +126,7 @@ namespace coda
             int statement::last_number_of_changes()
             {
                 if (!is_valid()) {
-                    log::warn("mysql statement result invalid");
+                    //mysql statement result invalid
                     return 0;
                 }
 
@@ -155,10 +154,8 @@ namespace coda
 
             void statement::reset()
             {
-                // bindings_.reset();
-
                 if (!is_valid()) {
-                    log::warn("mysql statement reset invalid");
+                    //mysql statement reset invalid
                     return;
                 }
 
@@ -176,7 +173,7 @@ namespace coda
                 return mysql_stmt_insert_id(stmt_.get());
             }
 
-            size_t statement::num_of_bindings() const
+            size_t statement::num_of_bindings() const noexcept
             {
                 return bindings_.num_of_bindings();
             }

@@ -1,5 +1,4 @@
 #include "delete_query.h"
-#include "log.h"
 #include "schema.h"
 
 using namespace std;
@@ -55,7 +54,7 @@ namespace coda
             return *this;
         }
 
-        bool delete_query::is_valid() const
+        bool delete_query::is_valid() const noexcept
         {
             return query::is_valid() && !tableName_.empty();
         }
@@ -109,8 +108,6 @@ namespace coda
             if (!where_.empty()) {
                 buf += " WHERE ";
                 buf += where_.to_sql();
-            } else {
-                log::warn("empty where clause for delete query");
             }
 
             buf += ";";

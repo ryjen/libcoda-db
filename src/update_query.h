@@ -162,7 +162,7 @@ namespace coda
              * tests if this query is valid
              * @return true if valid
              */
-            bool is_valid() const;
+            bool is_valid() const noexcept;
 
            private:
             update_query &column(const std::string &value)

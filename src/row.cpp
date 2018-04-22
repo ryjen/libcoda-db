@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (ryan-jennings.net), 2013
+ * @copyright ryan jennings (coda.life), 2013
  */
 #include "row.h"
 #include "exception.h"
@@ -87,31 +87,27 @@ namespace coda {
             return impl_->column(name);
         }
 
-        size_t row::size() const {
+        size_t row::size() const noexcept {
             return impl_ == nullptr ? 0 : impl_->size();
         }
 
-        bool row::empty() const {
+        bool row::empty() const noexcept {
             return size() == 0;
         }
 
-        bool row::is_valid() const {
+        bool row::is_valid() const noexcept {
             return impl_ != nullptr && impl_->is_valid();
         }
 
-        void row::for_each(const std::function<void( const db::column &)
+        void row::for_each(const std::function<void( const db::column &)> &funk) const {
+            for ( auto &c : *this) {
+                funk(c);
+            }
+        }
 
-        > &funk) const {
-        for (
-        auto &c :
-        *this) {
-        funk(c);
+        shared_ptr<row_impl> row::impl() const {
+            return impl_;
+        }
+
     }
-}
-
-shared_ptr<row_impl> row::impl() const {
-    return impl_;
-}
-
-}
 }

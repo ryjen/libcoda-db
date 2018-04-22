@@ -41,7 +41,7 @@ namespace coda
 
                 /* statement overrides */
                 void prepare(const std::string &sql);
-                bool is_valid() const;
+                bool is_valid() const noexcept;
                 resultset_type results();
                 bool result();
                 void finish();
@@ -53,7 +53,7 @@ namespace coda
                 /* bindable overrides */
                 statement &bind(size_t index, const sql_value &value);
                 statement &bind(const std::string &name, const sql_value &value);
-                size_t num_of_bindings() const;
+                size_t num_of_bindings() const noexcept;
             };
 
             namespace helper

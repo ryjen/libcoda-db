@@ -1,7 +1,7 @@
 /*!
  * @file modify_query.h
  * representation of sql queries that modify data
- * @copyright ryan jennings (ryan-jennings.net), 2013
+ * @copyright ryan jennings (coda.life), 2013
  */
 #ifndef CODA_DB_MODIFY_QUERY_H
 #define CODA_DB_MODIFY_QUERY_H

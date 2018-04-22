@@ -8,6 +8,7 @@ namespace coda {
 #ifdef ENABLE_PARAMETER_MAPPING
         /*!
          * a binding that supports mapping named parameters to indexed parameters
+         * for databases that don't support it.
          */
         class bind_mapping : public bindable
         {

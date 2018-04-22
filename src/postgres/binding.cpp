@@ -10,7 +10,6 @@
 
 #include "../alloc.h"
 #include "../exception.h"
-#include "../log.h"
 #include "../sql_value.h"
 #include "binding.h"
 
@@ -465,7 +464,7 @@ namespace coda
                 return *this;
             }
 
-            size_t binding::num_of_bindings() const
+            size_t binding::num_of_bindings() const noexcept
             {
                 size_t count = 0;
                 for (size_t i = 0; i < size_; i++) {

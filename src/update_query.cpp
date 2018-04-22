@@ -1,5 +1,4 @@
 #include "update_query.h"
-#include "log.h"
 #include "schema.h"
 
 using namespace std;
@@ -88,7 +87,7 @@ namespace coda
             return *this;
         }
 
-        bool update_query::is_valid() const
+        bool update_query::is_valid() const noexcept
         {
             return query::is_valid() && !tableName_.empty();
         }
@@ -120,8 +119,6 @@ namespace coda
             if (!where_.empty()) {
                 buf += " WHERE ";
                 buf += where_.to_sql();
-            } else {
-                log::warn("empty where clause for update query");
             }
 
             buf += ";";

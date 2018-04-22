@@ -39,7 +39,7 @@ namespace coda
                 return *this;
             }
 
-            bool transaction::is_active() const
+            bool transaction::is_active() const noexcept
             {
                 return active_;
             }

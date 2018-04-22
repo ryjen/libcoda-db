@@ -11,7 +11,7 @@ namespace coda
             transaction::transaction(const std::shared_ptr<sqlite3> &db, transaction::type type) : db_(db), type_(type)
             {
             }
-            bool transaction::is_active() const
+            bool transaction::is_active() const noexcept
             {
                 return !sqlite3_get_autocommit(db_.get());
             }

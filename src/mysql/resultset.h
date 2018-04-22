@@ -46,7 +46,7 @@ namespace coda
                 virtual ~resultset();
 
                 /* resultset_impl overrides */
-                bool is_valid() const;
+                bool is_valid() const noexcept;
                 resultset::row_type current_row();
                 void reset();
                 bool next();
@@ -87,7 +87,7 @@ namespace coda
                 virtual ~stmt_resultset();
 
                 /* resultset_impl overrides */
-                bool is_valid() const;
+                bool is_valid() const noexcept;
                 stmt_resultset::row_type current_row();
                 void reset();
                 bool next();

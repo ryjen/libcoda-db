@@ -120,7 +120,7 @@ namespace coda
                 db_ = shared_ptr<sqlite3>(conn, helper::close_db());
             }
 
-            bool session::is_open() const
+            bool session::is_open() const noexcept
             {
                 return db_ != nullptr && db_;
             }

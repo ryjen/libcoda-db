@@ -13,7 +13,7 @@ namespace coda
             {
             }
 
-            bool transaction::is_active() const
+            bool transaction::is_active() const noexcept
             {
                 PGTransactionStatusType type = PQtransactionStatus(db_.get());
 

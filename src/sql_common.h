@@ -95,7 +95,6 @@ namespace coda {
                 }
             };
 
-
             struct number_equality : public boost::static_visitor<bool> {
             public:
                 number_equality(const sql_number &num) : num_(num) {

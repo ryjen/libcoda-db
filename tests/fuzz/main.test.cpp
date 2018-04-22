@@ -19,7 +19,7 @@ int perform_set(test::user &u, const arguments &args)
 
 int perform_delete(test::user &u, const arguments &args)
 {
-    u.de1ete();
+    u.remove();
     return 0;
 }
 

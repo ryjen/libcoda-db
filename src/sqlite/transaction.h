@@ -17,7 +17,7 @@ namespace coda
 
                 transaction(const std::shared_ptr<sqlite3> &db, transaction::type type = none);
                 void start();
-                bool is_active() const;
+                bool is_active() const noexcept;
 
                private:
                 std::shared_ptr<sqlite3> db_;

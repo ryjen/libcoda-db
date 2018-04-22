@@ -1,6 +1,5 @@
 #include "transaction.h"
 #include "exception.h"
-#include "log.h"
 #include "session.h"
 #include "sqldb.h"
 
@@ -57,13 +56,11 @@ namespace coda
 
         void transaction::start()
         {
-            log::trace("START TRANSACTION");
             impl_->start();
         }
 
         void transaction::commit()
         {
-            log::trace("COMMIT TRANSACTION");
             if (!session_->impl()->execute("COMMIT;")) {
                 throw transaction_exception("unable to commit transaction: " + session_->last_error());
             }
@@ -71,7 +68,6 @@ namespace coda
 
         void transaction::rollback()
         {
-            log::trace("ROLLBACK TRANSACTION");
             if (!session_->impl()->execute("ROLLBACK;")) {
                 throw transaction_exception("unable to rollback transaction: " + session_->last_error());
             }
@@ -82,7 +78,6 @@ namespace coda
             if (name.empty()) {
                 return;
             }
-            log::trace("SAVEPOINT");
 
             if (!session_->impl()->execute("SAVEPOINT " + name + ";")) {
                 throw transaction_exception("unable to save point " + name + ": " + session_->last_error());
@@ -94,7 +89,6 @@ namespace coda
             if (name.empty()) {
                 return;
             }
-            log::trace("RELEASE SAVEPOINT");
 
             if (!session_->impl()->execute("RELEASE SAVEPOINT " + name + ";")) {
                 throw transaction_exception("unable to release save point " + name + ": " + session_->last_error());
@@ -106,14 +100,13 @@ namespace coda
             if (name.empty()) {
                 return;
             }
-            log::trace("ROLLBACK SAVEPOINT");
 
             if (!session_->impl()->execute("ROLLBACK TO SAVEPOINT " + name + ";")) {
                 throw transaction_exception("unable to rollback save point " + name + ": " + session_->last_error());
             }
         }
 
-        bool transaction::is_active() const
+        bool transaction::is_active() const noexcept
         {
             return impl_ != nullptr && impl_->is_active();
         }
@@ -128,7 +121,7 @@ namespace coda
             successful_ = value;
         }
 
-        bool transaction::is_successful() const
+        bool transaction::is_successful() const noexcept
         {
             return successful_;
         }

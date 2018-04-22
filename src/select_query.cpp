@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (ryan-jennings.net), 2013
+ * @copyright ryan jennings (coda.life), 2013
  */
 
 #include "select_query.h"

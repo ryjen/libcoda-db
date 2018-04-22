@@ -56,13 +56,13 @@ namespace coda {
              * gets the number of columns in the row
              * @return the number of columns;
              */
-            virtual size_t size() const = 0;
+            virtual size_t size() const noexcept = 0;
 
             /*!
              * tests if the row internals are valid
              * @return true if the row is valid
              */
-            virtual bool is_valid() const = 0;
+            virtual bool is_valid() const noexcept = 0;
         };
 
         /*!
@@ -325,19 +325,19 @@ namespace coda {
              * gets the number of columns in the row
              * @return the number of columns
              */
-            size_t size() const;
+            size_t size() const noexcept;
 
             /*!
              * tests if this row has no data
              * @return true if the row has no data
              */
-            bool empty() const;
+            bool empty() const noexcept;
 
             /*!
              * tests if the implementation is valid
              * @return true if valid
              */
-            bool is_valid() const;
+            bool is_valid() const noexcept;
 
             /*!
              * performs a callback for each column

@@ -64,7 +64,7 @@ namespace coda
                 /*!
                  * @return the number of bindings
                  */
-                size_t num_of_bindings() const;
+                size_t num_of_bindings() const noexcept;
 
                 /*!
                  * @return the current capcity of the storage

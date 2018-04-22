@@ -1,7 +1,7 @@
 /*!
  * @file record.h
  * implementation of a database record (model)
- * @copyright ryan jennings (ryan-jennings.net), 2013
+ * @copyright ryan jennings (coda.life), 2013
  */
 #ifndef CODA_DB_BASE_RECORD_H
 #define CODA_DB_BASE_RECORD_H
@@ -19,7 +19,7 @@ namespace coda {
              */
             class record {
             public:
-                typedef coda::db::schema schema_type;
+                using schema_type = coda::db::schema;
 
             private:
                 std::shared_ptr<schema_type> schema_;
@@ -160,7 +160,7 @@ namespace coda {
                 /*!
                  * deletes this record from the database for the value in the id column
                  */
-                bool de1ete() const;
+                bool remove() const;
 
             private:
                 std::vector<std::string> available_columns(bool exists, const std::string &pk) const;

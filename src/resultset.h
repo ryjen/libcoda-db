@@ -38,7 +38,7 @@ namespace coda {
              * tests if this implementation is valid
              * @return true if operations can be performed safely
              */
-            virtual bool is_valid() const = 0;
+            virtual bool is_valid() const noexcept = 0;
 
             /*!
              * moves to the next row in the results
@@ -215,7 +215,7 @@ namespace coda {
              * tests if the result set is valid
              * @return true if the implementation is valid
              */
-            bool is_valid() const;
+            bool is_valid() const noexcept;
 
             /*!
              * @return an iterator to the first row

@@ -48,7 +48,7 @@ namespace coda
                 virtual ~session();
 
                 /* sqlsession overrides */
-                bool is_open() const;
+                bool is_open() const noexcept;
                 void open(int flags);
                 void open();
                 void close();

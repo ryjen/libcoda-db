@@ -22,7 +22,7 @@ namespace coda
                 transaction(const std::shared_ptr<PGconn> &db, const transaction::mode &mode = {});
 
                 void start();
-                bool is_active() const;
+                bool is_active() const noexcept;
 
                private:
                 std::shared_ptr<PGconn> db_;

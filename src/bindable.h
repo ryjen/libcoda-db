@@ -105,7 +105,7 @@ namespace coda {
              */
             virtual bindable &bind(const std::string &name, const sql_value &value) = 0;
 
-            virtual size_t num_of_bindings() const = 0;
+            virtual size_t num_of_bindings() const noexcept = 0;
         };
     }
 }

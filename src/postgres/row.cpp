@@ -87,12 +87,12 @@ namespace coda
                 return PQfname(stmt_.get(), nPosition);
             }
 
-            size_t row::size() const
+            size_t row::size() const noexcept
             {
                 return size_;
             }
 
-            bool row::is_valid() const
+            bool row::is_valid() const noexcept
             {
                 return stmt_ != nullptr && row_ >= 0;
             }

@@ -448,7 +448,7 @@ namespace coda
             return output;
         }
 
-        bool where_clause::empty() const
+        bool where_clause::empty() const noexcept
         {
             return value_.empty() && and_.empty() && or_.empty();
         }
@@ -640,7 +640,7 @@ namespace coda
             bind(index, value);
         }
 
-        size_t where_builder::num_of_bindings() const
+        size_t where_builder::num_of_bindings() const noexcept
         {
             return binder_->num_of_bindings();
         }

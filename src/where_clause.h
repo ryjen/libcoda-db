@@ -227,7 +227,7 @@ namespace coda
              * Tests this where clause has sql
              * @return true if there is no sql in this clause
              */
-            bool empty() const;
+            bool empty() const noexcept;
 
             /*!
              * resets this where clause
@@ -258,7 +258,7 @@ namespace coda
             where_builder &operator=(where_builder &&other);
             virtual ~where_builder();
 
-            size_t num_of_bindings() const;
+            size_t num_of_bindings() const noexcept;
 
             using sql_generator::to_sql;
 

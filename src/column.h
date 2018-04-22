@@ -1,7 +1,7 @@
 /*!
  * @file column.h
  * represents a column in a row in a database
- * @copyright ryan jennings (ryan-jennings.net), 2013
+ * @copyright ryan jennings (coda.life), 2013
  */
 #ifndef CODA_DB_COLUMN_VALUE_H
 #define CODA_DB_COLUMN_VALUE_H
@@ -88,7 +88,7 @@ namespace coda {
              * tests if this column has valid data
              * @return true if this columns data is valid
              */
-            bool is_valid() const;
+            bool is_valid() const noexcept;
 
             /*!
              * converts this column to a value

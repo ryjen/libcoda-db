@@ -1,6 +1,5 @@
 #include "statement.h"
 #include "../exception.h"
-#include "../log.h"
 #include "../sql_value.h"
 #include "resultset.h"
 #include "session.h"
@@ -170,7 +169,7 @@ namespace coda
                 }
 
                 if (is_valid()) {
-                    log::warn("sql statement prepare not valid");
+                    //sql statement prepare not valid
                     return;
                 }
 
@@ -183,7 +182,7 @@ namespace coda
                 stmt_ = shared_ptr<sqlite3_stmt>(temp, helper::stmt_delete());
             }
 
-            bool statement::is_valid() const
+            bool statement::is_valid() const noexcept
             {
                 return stmt_ != nullptr && stmt_;
             }
@@ -242,7 +241,7 @@ namespace coda
             bool statement::result()
             {
                 if (!is_valid()) {
-                    log::warn("sqlite statement result invalid");
+                    //sqlite statement result invalid
                     return false;
                 }
                 return sqlite3_step(stmt_.get()) == SQLITE_DONE;
@@ -256,7 +255,7 @@ namespace coda
             void statement::reset()
             {
                 if (!is_valid()) {
-                    log::warn("sqlite statement reset invalid");
+                    //sqlite statement reset invalid
                     return;
                 }
                 if (sqlite3_reset(stmt_.get()) != SQLITE_OK) {
@@ -272,7 +271,7 @@ namespace coda
                 return sess_->last_insert_id();
             }
 
-            size_t statement::num_of_bindings() const
+            size_t statement::num_of_bindings() const noexcept
             {
                 return bound_;
             }

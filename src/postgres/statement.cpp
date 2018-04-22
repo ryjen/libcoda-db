@@ -2,7 +2,6 @@
 #include "statement.h"
 #include <algorithm>
 #include "../exception.h"
-#include "../log.h"
 #include "resultset.h"
 #include "session.h"
 
@@ -67,7 +66,7 @@ namespace coda
                 sql_ = bindings_.prepare(sql);
             }
 
-            bool statement::is_valid() const
+            bool statement::is_valid() const noexcept
             {
                 return !sql_.empty();
             }
@@ -146,7 +145,6 @@ namespace coda
 
                 if (PQresultStatus(res) != PGRES_COMMAND_OK && PQresultStatus(res) != PGRES_TUPLES_OK) {
                     PQclear(res);
-                    log::error("%s", last_error().c_str());
                     return false;
                 }
 
@@ -199,7 +197,7 @@ namespace coda
                 return value;
             }
 
-            size_t statement::num_of_bindings() const
+            size_t statement::num_of_bindings() const noexcept
             {
                 return bindings_.num_of_bindings();
             }

@@ -60,7 +60,7 @@ namespace coda {
             return *this;
         }
 
-        bool schema::is_valid() const {
+        bool schema::is_valid() const noexcept {
             return columns_.size() > 0;
         }
 
@@ -72,7 +72,7 @@ namespace coda {
             columns_ = session_->get_columns_for_schema(tableName_);
         }
 
-        vector<column_definition> schema::columns() const {
+        vector<column_definition> schema::columns() const noexcept {
             return columns_;
         }
 
@@ -129,7 +129,7 @@ namespace coda {
             return columns_[index];
         }
 
-        size_t schema::size() const {
+        size_t schema::size() const noexcept {
             return columns_.size();
         }
     };

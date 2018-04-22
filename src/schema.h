@@ -70,7 +70,7 @@ namespace coda {
             /*!
              * @return the column definitions for this schema
              */
-            std::vector<column_definition> columns() const;
+            std::vector<column_definition> columns() const noexcept;
 
             /*!
              * @return the column names for this schema
@@ -111,13 +111,13 @@ namespace coda {
              * gets the number of columns in this schema
              * @return the number of columns
              */
-            size_t size() const;
+            size_t size() const noexcept;
 
             /*!
              * tests if this schema is valid
              * @return true if valid
              */
-            bool is_valid() const;
+            bool is_valid() const noexcept;
 
             /*!
              * gets the database for this schema

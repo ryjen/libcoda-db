@@ -1,9 +1,8 @@
 /*!
  * implementation of a query
- * @copyright ryan jennings (ryan-jennings.net), 2013
+ * @copyright ryan jennings (coda.life), 2013
  */
 #include "query.h"
-#include "log.h"
 #include "statement.h"
 #include "where_clause.h"
 
@@ -65,7 +64,6 @@ namespace coda {
         }
 
         void query::prepare(const string &sql) {
-            log::trace("Query: %s", sql.c_str());
 
             if (stmt_ == nullptr || dirty_) {
                 stmt_ = session_->create_statement();
@@ -126,11 +124,11 @@ namespace coda {
             return stmt_->last_error();
         }
 
-        size_t query::num_of_bindings() const {
+        size_t query::num_of_bindings() const noexcept {
             return params_.size();
         }
 
-        bool query::is_valid() const {
+        bool query::is_valid() const noexcept {
             return session_ != nullptr;
         }
 

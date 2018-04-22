@@ -1,5 +1,5 @@
 /*!
- * @copyright ryan jennings (ryan-jennings.net), 2013 under LGPL
+ * @copyright ryan jennings (coda.life), 2013 under LGPL
  */
 #include "db.test.h"
 #include <bandit/bandit.h>

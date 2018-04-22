@@ -56,7 +56,7 @@ namespace coda {
              * tests if this statement is valid
              * @return true if the internals are valid
              */
-            virtual bool is_valid() const = 0;
+            virtual bool is_valid() const noexcept = 0;
 
             /*!
              * executes this statement

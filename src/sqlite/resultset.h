@@ -44,8 +44,11 @@ namespace coda
                 resultset &operator=(resultset &&other);
 
                 /* resultset_impl overrides */
-                bool is_valid() const;
+                bool is_valid() const noexcept;
                 row_type current_row();
+                /**
+                 * @throws database_exception if unable to reset statement
+                 */
                 void reset();
                 bool next();
             };

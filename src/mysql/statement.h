@@ -42,19 +42,27 @@ namespace coda
 
                 /* statement overrides */
                 void prepare(const std::string &sql);
-                bool is_valid() const;
+                bool is_valid() const noexcept;
                 resultset_type results();
                 bool result();
                 void finish();
+                /**
+                 * @throws database_exception if unable to reset statement
+                 */
                 void reset();
                 int last_number_of_changes();
                 long long last_insert_id();
+
+                /**
+                 * @throws database_exeption if statement is invalid
+                 * @return the last error as a string
+                 */
                 std::string last_error();
 
                 /* bindable overrides */
                 statement &bind(size_t index, const sql_value &value);
                 statement &bind(const std::string &name, const sql_value &value);
-                size_t num_of_bindings() const;
+                size_t num_of_bindings() const noexcept;
             };
         }
     }

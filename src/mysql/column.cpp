@@ -53,6 +53,8 @@ namespace coda
 
             /*
              * Key function here.  Handles conversion from MYSQL_ROW to sql value
+             * @throws no_such_column_exception when invalid
+             * @throws value_conversion_error when a data conver
              * TODO: test more
              */
             sql_value column::to_value() const
