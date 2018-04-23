@@ -22,6 +22,7 @@ endif()
 set(TEST_SOURCES
 	main.db.test.cpp
 	db.test.cpp
+	db.test.h
 	column.test.cpp
 	delete_query.test.cpp
 	insert_query.test.cpp

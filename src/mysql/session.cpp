@@ -107,7 +107,7 @@ namespace coda
                 if (mysql_real_connect(conn, info.host.c_str(), info.user.c_str(), info.password.c_str(),
                                        info.path.c_str(), port, nullptr, 0) == nullptr) {
                     mysql_close(conn);
-                    throw database_exception("No connection could be made to the database");
+                    throw database_exception("No connection could be made to the database: " + std::string(mysql_error(conn)));
                 }
 
                 db_ = shared_ptr<MYSQL>(conn, helper::close_db());
