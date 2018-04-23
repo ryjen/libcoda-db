@@ -129,6 +129,8 @@ add_subdirectory(fuzz)
 endif()
 
 if (DEFINED BANDIT_TARGET)
+	add_dependencies(${COMMON_TEST_PROJECT_NAME} ${BANDIT_TARGET})
+
 	add_dependencies(${MYSQL_TEST_PROJECT_NAME} ${BANDIT_TARGET})
 
 	add_dependencies(${SQLITE_TEST_PROJECT_NAME} ${BANDIT_TARGET})
