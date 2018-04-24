@@ -43,12 +43,12 @@ open coda_db.xcodeproj
 
 options supported are:
 
-		-DENABLE_COVERAGE=OFF            : enable code coverage using lcov
-		-DENABLE_MEMCHECK=OFF            : enable valgrind memory checking on tests
-		-DENABLE_LOGGING=OFF             : enable internal library logging
-		-DENABLE_PROFILING=OFF           : enable valgrind profiling on tests
-		-DENABLE_PARAMETER_MAPPING=OFF   : use regex to map different parameter syntaxes
-		-DENABLE_BENCHMARKING=OFF        : benchmark with other database libraries
+    -DENABLE_COVERAGE=OFF            : enable code coverage using lcov
+    -DENABLE_MEMCHECK=OFF            : enable valgrind memory checking on tests
+    -DENABLE_LOGGING=OFF             : enable internal library logging
+    -DENABLE_PROFILING=OFF           : enable valgrind profiling on tests
+    -DENABLE_PARAMETER_MAPPING=OFF   : use regex to map different parameter syntaxes
+    -DENABLE_BENCHMARKING=OFF        : benchmark with other database libraries
 
 
 Debugging
@@ -78,12 +78,12 @@ An user object example
 For the purposes of this readme there is a global session variable:
 
 ```c++
-std::shared_ptr<coda::db::session> current_session = sqldb::create_session("file://test.db");
+std::shared_ptr<coda::db::session> current_session = coda::db::create_session("file://test.db");
 
 /* Other databases:
 
-current_session = sqldb::create_session("mysql://user@pass:localhost:3306/database");
-current_session = sqldb::create_session("postgres://localhost/test");
+current_session = coda::db::create_session("mysql://user@pass:localhost:3306/database");
+current_session = coda::db::create_session("postgres://localhost/test");
 
 */
 ```

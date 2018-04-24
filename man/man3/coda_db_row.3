@@ -28,7 +28,7 @@ coda::db::row
 .RI "\fBrow\fP ()"
 .br
 .ti -1c
-.RI "\fBrow\fP (const std::shared_ptr< \fBrow_impl\fP > &\fBimpl\fP)"
+.RI "\fBrow\fP (const std::shared_ptr< \fBrow_impl\fP > &impl)"
 .br
 .ti -1c
 .RI "\fBrow\fP (const \fBrow\fP &other)"
@@ -86,9 +86,6 @@ coda::db::row
 .br
 .ti -1c
 .RI "void \fBfor_each\fP (const std::function< void(const \fBdb::column\fP &)> &funk) const"
-.br
-.ti -1c
-.RI "std::shared_ptr< \fBrow_impl\fP > \fBimpl\fP () const"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -223,8 +220,6 @@ performs a callback for each column
 .RE
 .PP
 
-.SS "std::shared_ptr<\fBrow_impl\fP> coda::db::row::impl () const"
-gets the implementation for this row 
 .SS "bool coda::db::row::is_valid () const\fC [noexcept]\fP"
 tests if the implementation is valid 
 .PP

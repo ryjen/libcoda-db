@@ -58,7 +58,7 @@ SPEC_BEGIN(mysql_statement)
         });
 
         it("can handle an error", []() {
-            auto db = sqldb::create_session("mysql://xxxxxx/yyyyyy");
+            auto db = create_session("mysql://xxxxxx/yyyyyy");
 
             mysql::statement stmt(dynamic_pointer_cast<mysql::session>(db->impl()));
 

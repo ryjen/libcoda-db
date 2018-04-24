@@ -46,7 +46,7 @@ SPEC_BEGIN(postgres_statement)
         });
 
         it("throws exceptions", []() {
-            auto session = sqldb::create_session("postgres://ssssss/tttttt");
+            auto session = create_session("postgres://ssssss/tttttt");
 
             postgres::statement stmt(dynamic_pointer_cast<postgres::session>(session->impl()));
 

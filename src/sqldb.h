@@ -11,35 +11,33 @@ namespace coda {
 
         class session_factory;
 
-        class sqldb {
-        public:
             /*!
              * parses a uri and creates a session
              * @param value   the uri string to parse
              * @return the database session based on the uri
              */
-            static std::shared_ptr<coda::db::session> create_session(const std::string &value);
+            std::shared_ptr<coda::db::session> create_session(const std::string &value);
 
             /*!
              * creates a database session
              * @param value the uri for the session
              * @return the created database session
              */
-            static std::shared_ptr<coda::db::session> create_session(const uri &value);
+            std::shared_ptr<coda::db::session> create_session(const uri &value);
 
             /*!
              * parses a uri, creates a session, and opens it
              * @param value the uri for the session
              * @return the created and opened session
              */
-            static std::shared_ptr<coda::db::session> open_session(const std::string &value);
+            std::shared_ptr<coda::db::session> open_session(const std::string &value);
 
             /*!
              * creates a session and opens it
              * @param value the uri for the session
              * @return the created and opened session
              */
-            static std::shared_ptr<coda::db::session> open_session(const uri &value);
+            std::shared_ptr<coda::db::session> open_session(const uri &value);
 
             /*!
              * registers a handler for a session protocol
@@ -47,25 +45,7 @@ namespace coda {
              * @param protocol the protocol, or the 'scheme' of a uri
              * @param factory  a factory instance
              */
-            static void register_session(const std::string &protocol, const std::shared_ptr<session_factory> &factory);
-
-        private:
-            static sqldb *instance();
-
-            sqldb();
-
-            sqldb(sqldb &&move) = delete;
-
-            sqldb(const sqldb &other) = delete;
-
-            sqldb &operator=(const sqldb &other) = delete;
-
-            sqldb &operator=(sqldb &&other) = delete;
-
-            virtual ~sqldb();
-
-            std::unordered_map<std::string, std::shared_ptr<session_factory>> factories_;
-        };
+            void register_session(const std::string &protocol, const std::shared_ptr<session_factory> &factory);
     }
 }
 

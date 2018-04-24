@@ -30,7 +30,7 @@ Inherits enable_shared_from_this< session >\&.
 
 .in +1c
 .ti -1c
-.RI "\fBsession\fP (const std::shared_ptr< \fBsession_impl\fP > &\fBimpl\fP)"
+.RI "\fBsession\fP (const std::shared_ptr< \fBsession_impl\fP > &impl)"
 .br
 .ti -1c
 .RI "\fBsession\fP (const \fBsession\fP &other)"
@@ -79,12 +79,6 @@ Inherits enable_shared_from_this< session >\&.
 .br
 .ti -1c
 .RI "\fBuri\fP \fBconnection_info\fP () const"
-.br
-.ti -1c
-.RI "std::shared_ptr< \fBsession_impl\fP > \fBimpl\fP () const"
-.br
-.ti -1c
-.RI "template<typename T > std::shared_ptr< T > \fBimpl\fP () const"
 .br
 .ti -1c
 .RI "std::string \fBjoin_params\fP (const std::vector< std::string > &columns, const std::string &op='') const"
@@ -183,10 +177,6 @@ a schema factory object
 .RE
 .PP
 
-.SS "std::shared_ptr<\fBsession_impl\fP> coda::db::session::impl () const"
-gets the implementation 
-.SS "template<typename T > std::shared_ptr<T> coda::db::session::impl () const\fC [inline]\fP"
-gets the implementation casted to a subtype 
 .SS "bool coda::db::session::is_open () const\fC [noexcept]\fP"
 tests if a connection to the database is open 
 .PP

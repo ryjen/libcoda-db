@@ -28,11 +28,11 @@ namespace coda
             void register_current_session()
             {
                 auto pq_factory = std::make_shared<test::factory>();
-                sqldb::register_session("postgres", pq_factory);
-                sqldb::register_session("postgresql", pq_factory);
+                register_session("postgres", pq_factory);
+                register_session("postgresql", pq_factory);
 
                 auto uri_s = get_env_uri("POSTGRES_URI", "postgres://localhost/test");
-                current_session = coda::db::sqldb::create_session(uri_s);
+                current_session = coda::db::create_session(uri_s);
                 cout << "connecting to " << uri_s << endl;
             }
 
@@ -83,12 +83,12 @@ go_bandit([]() {
         after_each([]() { test::teardown_current_session(); });
 
         it("can handle bad parameters", []() {
-            auto db = sqldb::create_session("postgres://zzzzz:zzzzz@zzzz/zzzzz:0");
+            auto db = create_session("postgres://zzzzz:zzzzz@zzzz/zzzzz:0");
 
             AssertThrows(database_exception, db->open());
         });
         it("can_parse_uri", []() {
-            auto postgres = sqldb::create_session("postgres://localhost:4000/test");
+            auto postgres = create_session("postgres://localhost:4000/test");
             AssertThat(postgres.get() != NULL, IsTrue());
             AssertThat(postgres->connection_info().host, Equals("localhost"));
             AssertThat(postgres->connection_info().port, Equals("4000"));

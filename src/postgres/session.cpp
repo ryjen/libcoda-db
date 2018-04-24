@@ -29,8 +29,8 @@ namespace coda
             __attribute__((constructor)) void initialize(void)
             {
                 auto factory = std::make_shared<postgres::factory>();
-                sqldb::register_session("postgres", factory);
-                sqldb::register_session("postgresql", factory);
+                register_session("postgres", factory);
+                register_session("postgresql", factory);
             }
 
             std::shared_ptr<coda::db::session_impl> factory::create(const uri &uri)

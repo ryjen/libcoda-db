@@ -25,7 +25,7 @@ coda::db::resultset
 
 .in +1c
 .ti -1c
-.RI "\fBresultset\fP (const std::shared_ptr< \fBresultset_impl\fP > &\fBimpl\fP)"
+.RI "\fBresultset\fP (const std::shared_ptr< \fBresultset_impl\fP > &impl)"
 .br
 .ti -1c
 .RI "\fBresultset\fP (const \fBresultset\fP &other)=delete"
@@ -74,9 +74,6 @@ coda::db::resultset
 .br
 .ti -1c
 .RI "void \fBfor_each\fP (const std::function< void(const \fBrow_type\fP &)> &funk) const"
-.br
-.ti -1c
-.RI "std::shared_ptr< \fBresultset_impl\fP > \fBimpl\fP () const"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -155,15 +152,6 @@ a immutable iterator the after the last row
 \fBParameters:\fP
 .RS 4
 \fIfunk\fP the callback to perform for each row 
-.RE
-.PP
-
-.SS "std::shared_ptr<\fBresultset_impl\fP> coda::db::resultset::impl () const"
-
-.PP
-\fBReturns:\fP
-.RS 4
-a pointer to the implementation 
 .RE
 .PP
 

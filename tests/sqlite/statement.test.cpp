@@ -48,7 +48,7 @@ SPEC_BEGIN(sqlite_statement)
         });
 
         it("throws exceptions", [&sqlite_session]() {
-            auto session = sqldb::create_session("file");
+            auto session = create_session("file");
 
             sqlite::statement stmt(dynamic_pointer_cast<sqlite::session>(session->impl()));
 

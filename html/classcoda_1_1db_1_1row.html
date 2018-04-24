@@ -91,7 +91,7 @@ typedef <a class="el" href="classcoda_1_1db_1_1row__iterator.html">row_iterator<
 Public Member Functions</h2></td></tr>
 <tr class="memitem:adf1fc227524ae1c5c8d5456ace542ff0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcoda_1_1db_1_1row.html#adf1fc227524ae1c5c8d5456ace542ff0">row</a> ()</td></tr>
 <tr class="separator:adf1fc227524ae1c5c8d5456ace542ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab03d08383936c50c9468faec83bc6ea8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcoda_1_1db_1_1row.html#ab03d08383936c50c9468faec83bc6ea8">row</a> (const std::shared_ptr&lt; <a class="el" href="classcoda_1_1db_1_1row__impl.html">row_impl</a> &gt; &amp;<a class="el" href="classcoda_1_1db_1_1row.html#a263ebb6aedf87c736e8b43083c6018bd">impl</a>)</td></tr>
+<tr class="memitem:ab03d08383936c50c9468faec83bc6ea8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcoda_1_1db_1_1row.html#ab03d08383936c50c9468faec83bc6ea8">row</a> (const std::shared_ptr&lt; <a class="el" href="classcoda_1_1db_1_1row__impl.html">row_impl</a> &gt; &amp;impl)</td></tr>
 <tr class="separator:ab03d08383936c50c9468faec83bc6ea8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a88d205ac1419f959250dfbf00f4cad"><td class="memItemLeft" align="right" valign="top"><a id="a1a88d205ac1419f959250dfbf00f4cad"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>row</b> (const <a class="el" href="classcoda_1_1db_1_1row.html">row</a> &amp;other)</td></tr>
@@ -135,8 +135,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab435e0f6dc84f22a07d51aa90aced072"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48651cbfa929d1782503d61a2cfc44b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcoda_1_1db_1_1row.html#a48651cbfa929d1782503d61a2cfc44b1">for_each</a> (const std::function&lt; void(const <a class="el" href="classcoda_1_1db_1_1column.html">db::column</a> &amp;)&gt; &amp;funk) const</td></tr>
 <tr class="separator:a48651cbfa929d1782503d61a2cfc44b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a263ebb6aedf87c736e8b43083c6018bd"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classcoda_1_1db_1_1row__impl.html">row_impl</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcoda_1_1db_1_1row.html#a263ebb6aedf87c736e8b43083c6018bd">impl</a> () const</td></tr>
-<tr class="separator:a263ebb6aedf87c736e8b43083c6018bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>represent a row in a table implementation is specific to a type of database </p>
@@ -414,24 +412,6 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="a263ebb6aedf87c736e8b43083c6018bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a263ebb6aedf87c736e8b43083c6018bd">&#9670;&nbsp;</a></span>impl()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::shared_ptr&lt;<a class="el" href="classcoda_1_1db_1_1row__impl.html">row_impl</a>&gt; coda::db::row::impl </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>gets the implementation for this row </p>
 
 </div>
 </div>

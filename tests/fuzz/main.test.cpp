@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 {
     coda::db::mysql::initialize();
     auto uri_s = get_env_uri("MYSQL_URI", "mysql://localhost:3306/test");
-    auto fuzz_session = coda::db::sqldb::create_session(uri_s);
+    auto fuzz_session = coda::db::create_session(uri_s);
     test::user u(fuzz_session);
 
     if (argc <= 1) {

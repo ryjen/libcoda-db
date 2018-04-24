@@ -28,10 +28,10 @@ namespace coda
             void register_current_session()
             {
                 auto mysql_factory = std::make_shared<test::factory>();
-                sqldb::register_session("mysql", mysql_factory);
+                register_session("mysql", mysql_factory);
 
                 auto uri_s = get_env_uri("MYSQL_URI", "mysql://root@localhost/test");
-                current_session = coda::db::sqldb::create_session(uri_s);
+                current_session = coda::db::create_session(uri_s);
                 cout << "connecting to " << uri_s << endl;
             }
 
@@ -82,7 +82,7 @@ go_bandit([]() {
 
 
         it("can handle bad parameters", []() {
-            auto db = sqldb::create_session("mysql://zzzzz:zzzzz@zzzz/zzzzz:0");
+            auto db = create_session("mysql://zzzzz:zzzzz@zzzz/zzzzz:0");
 
             AssertThrows(database_exception, db->open());
 
@@ -90,7 +90,7 @@ go_bandit([]() {
         });
         it("can_parse_uri", []() {
 
-            auto mysql = sqldb::create_session("mysql://localhost:4000/test");
+            auto mysql = create_session("mysql://localhost:4000/test");
             AssertThat(mysql.get() != NULL, IsTrue());
             AssertThat(mysql->connection_info().host, Equals("localhost"));
             AssertThat(mysql->connection_info().port, Equals("4000"));

@@ -27,10 +27,10 @@ namespace coda
             void register_current_session()
             {
                 auto sqlite_factory = std::make_shared<factory>();
-                sqldb::register_session("file", sqlite_factory);
-                sqldb::register_session("sqlite", sqlite_factory);
+                register_session("file", sqlite_factory);
+                register_session("sqlite", sqlite_factory);
 
-                current_session = coda::db::sqldb::create_session("file://testdb.db");
+                current_session = coda::db::create_session("file://testdb.db");
             }
 
             void unregister_current_session()
@@ -76,7 +76,7 @@ namespace coda
 go_bandit([]() {
     describe("sqlite database", []() {
         it("can_parse_uri", []() {
-            auto file = sqldb::create_session("file://test.db");
+            auto file = create_session("file://test.db");
             AssertThat(file.get() != NULL, IsTrue());
         });
     });

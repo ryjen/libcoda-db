@@ -31,8 +31,8 @@ namespace coda
             __attribute__((constructor)) void initialize(void)
             {
                 auto factory = std::make_shared<sqlite::factory>();
-                sqldb::register_session("sqlite", factory);
-                sqldb::register_session("file", factory);
+                register_session("sqlite", factory);
+                register_session("file", factory);
             }
 
             std::shared_ptr<coda::db::session_impl> factory::create(const uri &uri)

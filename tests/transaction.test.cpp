@@ -77,7 +77,7 @@ specification(transactions, []() {
 
         it("will commit on scope loss", []() {
 
-            auto other_session = sqldb::open_session(test::current_session->connection_info());
+            auto other_session = open_session(test::current_session->connection_info());
 
             select_query select(other_session);
 
@@ -110,7 +110,7 @@ specification(transactions, []() {
             transaction trans = test::current_session->create_transaction();
 
             // open a second session
-            auto other_session = sqldb::open_session(test::current_session->connection_info());
+            auto other_session = open_session(test::current_session->connection_info());
 
             // do some transaction work
             trans.start();
@@ -147,7 +147,7 @@ specification(transactions, []() {
             transaction trans = test::current_session->create_transaction();
 
             // open a second session
-            auto other_session = sqldb::open_session(test::current_session->connection_info());
+            auto other_session = open_session(test::current_session->connection_info());
 
             // do some transaction work
             trans.start();
@@ -182,7 +182,7 @@ specification(transactions, []() {
         it("can set a savepoint", []() {
             auto tx = test::current_session->create_transaction();
 
-            auto other_session = sqldb::open_session(test::current_session->connection_info());
+            auto other_session = open_session(test::current_session->connection_info());
 
             tx.start();
 

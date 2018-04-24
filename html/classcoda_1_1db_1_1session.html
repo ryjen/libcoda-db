@@ -107,7 +107,7 @@ typedef <a class="el" href="classcoda_1_1db_1_1transaction.html">transaction</a>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad58ad95edc924db922f9ed556b8c93c0"><td class="memItemLeft" align="right" valign="top"><a id="ad58ad95edc924db922f9ed556b8c93c0"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>session</b> (const std::shared_ptr&lt; <a class="el" href="classcoda_1_1db_1_1session__impl.html">session_impl</a> &gt; &amp;<a class="el" href="classcoda_1_1db_1_1session.html#a062456dbc110de308ac5625037a5d49f">impl</a>)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>session</b> (const std::shared_ptr&lt; <a class="el" href="classcoda_1_1db_1_1session__impl.html">session_impl</a> &gt; &amp;impl)</td></tr>
 <tr class="separator:ad58ad95edc924db922f9ed556b8c93c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3aa4731a8d8f8fc4d00d5f2ee254a41"><td class="memItemLeft" align="right" valign="top"><a id="ab3aa4731a8d8f8fc4d00d5f2ee254a41"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>session</b> (const <a class="el" href="classcoda_1_1db_1_1session.html">session</a> &amp;other)</td></tr>
@@ -145,11 +145,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:afc575b6b9533aa902b574ad0d1bd53d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfab7a217c4475caa4be6471898d1ce5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcoda_1_1db_1_1uri__type.html">uri</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcoda_1_1db_1_1session.html#adfab7a217c4475caa4be6471898d1ce5">connection_info</a> () const</td></tr>
 <tr class="separator:adfab7a217c4475caa4be6471898d1ce5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a062456dbc110de308ac5625037a5d49f"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classcoda_1_1db_1_1session__impl.html">session_impl</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcoda_1_1db_1_1session.html#a062456dbc110de308ac5625037a5d49f">impl</a> () const</td></tr>
-<tr class="separator:a062456dbc110de308ac5625037a5d49f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4bbada5940aa00d4f8ceb8e568d84c2"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aa4bbada5940aa00d4f8ceb8e568d84c2"><td class="memTemplItemLeft" align="right" valign="top">std::shared_ptr&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcoda_1_1db_1_1session.html#aa4bbada5940aa00d4f8ceb8e568d84c2">impl</a> () const</td></tr>
-<tr class="separator:aa4bbada5940aa00d4f8ceb8e568d84c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae602db4bd314b2dd823b54af26dea3f9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcoda_1_1db_1_1session.html#ae602db4bd314b2dd823b54af26dea3f9">join_params</a> (const std::vector&lt; std::string &gt; &amp;columns, const std::string &amp;op=&quot;&quot;) const</td></tr>
 <tr class="separator:ae602db4bd314b2dd823b54af26dea3f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc5927149a13dd754691d93253932d46"><td class="memItemLeft" align="right" valign="top"><a id="abc5927149a13dd754691d93253932d46"></a>
@@ -327,52 +322,6 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>schema</b></td></tr>
       </table>
 </div><div class="memdoc">
 <p>get the schemas for this database </p><dl class="section return"><dt>Returns</dt><dd>a schema factory object </dd></dl>
-
-</div>
-</div>
-<a id="a062456dbc110de308ac5625037a5d49f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a062456dbc110de308ac5625037a5d49f">&#9670;&nbsp;</a></span>impl() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::shared_ptr&lt;<a class="el" href="classcoda_1_1db_1_1session__impl.html">session_impl</a>&gt; coda::db::session::impl </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>gets the implementation </p>
-
-</div>
-</div>
-<a id="aa4bbada5940aa00d4f8ceb8e568d84c2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa4bbada5940aa00d4f8ceb8e568d84c2">&#9670;&nbsp;</a></span>impl() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::shared_ptr&lt;T&gt; coda::db::session::impl </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>gets the implementation casted to a subtype </p>
 
 </div>
 </div>

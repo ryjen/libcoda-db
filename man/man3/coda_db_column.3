@@ -14,7 +14,7 @@ Inherits \fBcoda::db::sql_value_convertible\fP\&.
 
 .in +1c
 .ti -1c
-.RI "\fBcolumn\fP (const std::shared_ptr< \fBcolumn_impl\fP > &\fBimpl\fP)"
+.RI "\fBcolumn\fP (const std::shared_ptr< \fBcolumn_impl\fP > &impl)"
 .br
 .ti -1c
 .RI "\fBcolumn\fP (const \fBcolumn\fP &other)"
@@ -36,9 +36,6 @@ Inherits \fBcoda::db::sql_value_convertible\fP\&.
 .br
 .ti -1c
 .RI "std::string \fBname\fP () const"
-.br
-.ti -1c
-.RI "std::shared_ptr< \fBcolumn_impl\fP > \fBimpl\fP () const"
 .br
 .ti -1c
 .RI "\fBoperator sql_string\fP () const"
@@ -194,15 +191,6 @@ copy constructor
 move constructor 
 .SH "Member Function Documentation"
 .PP 
-.SS "std::shared_ptr<\fBcolumn_impl\fP> coda::db::column::impl () const"
-
-.PP
-\fBReturns:\fP
-.RS 4
-the instance of the implementation 
-.RE
-.PP
-
 .SS "bool coda::db::column::is_valid () const\fC [noexcept]\fP"
 tests if this column has valid data 
 .PP

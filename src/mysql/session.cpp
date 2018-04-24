@@ -45,7 +45,7 @@ namespace coda
             __attribute__((constructor)) void initialize(void)
             {
                 auto mysql_factory = std::make_shared<mysql::factory>();
-                sqldb::register_session("mysql", mysql_factory);
+                register_session("mysql", mysql_factory);
             }
 
             std::shared_ptr<coda::db::session_impl> factory::create(const uri &uri)
