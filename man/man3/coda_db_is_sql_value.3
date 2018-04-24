@@ -1,0 +1,23 @@
+.TH "coda::db::is_sql_value< T >" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::is_sql_value< T >
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <sql_types\&.h>\fP
+.PP
+Inherits integral_constant< bool, std::is_same< T, sql_null_type >::value||std::is_same< T, sql_number >::value||std::is_same< T, sql_string >::value||std::is_same< T, sql_wstring >::value||std::is_same< T, sql_time >::value||std::is_same< T, sql_blob >::value >\&.
+.SH "Detailed Description"
+.PP 
+
+.SS "template<typename T>
+.br
+struct coda::db::is_sql_value< T >"
+defines a constant if a type is a valid sql value 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

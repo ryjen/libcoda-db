@@ -1,0 +1,37 @@
+.TH "coda::db::sql_value_convertible" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::sql_value_convertible
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <sql_types\&.h>\fP
+.PP
+Inherits \fBcoda::db::sql_number_convertible\fP\&.
+.PP
+Inherited by \fBcoda::db::column\fP, and \fBcoda::db::sql_value\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual \fBoperator sql_number\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator sql_blob\fP () const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const \fBsql_number\fP &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const sql_blob &value) const =0"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+interface for converting and testing equality of sql values 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

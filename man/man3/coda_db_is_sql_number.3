@@ -1,0 +1,23 @@
+.TH "coda::db::is_sql_number< T >" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::is_sql_number< T >
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <sql_types\&.h>\fP
+.PP
+Inherits integral_constant< bool, std::is_arithmetic< T >::value||std::is_same< T, sql_null_type >::value >\&.
+.SH "Detailed Description"
+.PP 
+
+.SS "template<typename T>
+.br
+struct coda::db::is_sql_number< T >"
+template helper to see if a type is appropriate for a sql number 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

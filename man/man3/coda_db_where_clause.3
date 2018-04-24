@@ -1,0 +1,147 @@
+.TH "coda::db::where_clause" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::where_clause
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <where_clause\&.h>\fP
+.PP
+Inherits \fBcoda::db::sql_generator\fP\&.
+.PP
+Inherited by \fBcoda::db::where_builder\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBwhere_clause\fP ()"
+.br
+.ti -1c
+.RI "\fBwhere_clause\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "\fBwhere_clause\fP (const \fBwhere_clause\fP &other)"
+.br
+.ti -1c
+.RI "\fBwhere_clause\fP (\fBwhere_clause\fP &&other)"
+.br
+.ti -1c
+.RI "\fBwhere_clause\fP & \fBoperator=\fP (const \fBwhere_clause\fP &other)"
+.br
+.ti -1c
+.RI "\fBwhere_clause\fP & \fBoperator=\fP (\fBwhere_clause\fP &&other)"
+.br
+.ti -1c
+.RI "\fBoperator std::string\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator std::string\fP ()"
+.br
+.ti -1c
+.RI "\fBwhere_clause\fP & \fBoperator &&\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "\fBwhere_clause\fP & \fBoperator &&\fP (const \fBwhere_clause\fP &value)"
+.br
+.ti -1c
+.RI "\fBwhere_clause\fP & \fBoperator||\fP (const \fBwhere_clause\fP &value)"
+.br
+.ti -1c
+.RI "\fBwhere_clause\fP & \fBoperator||\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "bool \fBempty\fP () const noexcept"
+.br
+.ti -1c
+.RI "void \fBreset\fP ()"
+.br
+.ti -1c
+.RI "void \fBreset\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "void \fBreset\fP (const \fBwhere_clause\fP &value)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+a utility class aimed at making logic where statements ex\&. where('a = b') || 'c == d' && 'e == f'; 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::where_clause::where_clause ()"
+Default constructor 
+.SS "coda::db::where_clause::where_clause (const std::string & value)\fC [explicit]\fP"
+construct a where clause with sql 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the sql string 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool coda::db::where_clause::empty () const\fC [noexcept]\fP"
+Tests this where clause has sql 
+.PP
+\fBReturns:\fP
+.RS 4
+true if there is no sql in this clause 
+.RE
+.PP
+
+.SS "\fBwhere_clause\fP& coda::db::where_clause::operator&& (const std::string & value)"
+Appends and AND part to this where clause 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the sql to append 
+.RE
+.PP
+
+.SS "\fBwhere_clause\fP& coda::db::where_clause::operator&& (const \fBwhere_clause\fP & value)"
+Appends and AND part to this where clause 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the sql to append 
+.RE
+.PP
+
+.SS "coda::db::where_clause::operator std::string () const\fC [explicit]\fP"
+explicit cast operator to sql string 
+.PP
+\fBReturns:\fP
+.RS 4
+the sql string 
+.RE
+.PP
+
+.SS "\fBwhere_clause\fP& coda::db::where_clause::operator|| (const \fBwhere_clause\fP & value)"
+Appends and OR part to this where clause 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the sql to append 
+.RE
+.PP
+
+.SS "\fBwhere_clause\fP& coda::db::where_clause::operator|| (const std::string & value)"
+Appends and OR part to this where clause 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the sql to append 
+.RE
+.PP
+
+.SS "void coda::db::where_clause::reset ()\fC [virtual]\fP"
+resets this where clause 
+.PP
+Reimplemented from \fBcoda::db::sql_generator\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

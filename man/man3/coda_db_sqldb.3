@@ -1,0 +1,100 @@
+.TH "coda::db::sqldb" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::sqldb
+.SH SYNOPSIS
+.br
+.PP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBcoda::db::session\fP > \fBcreate_session\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "static std::shared_ptr< \fBcoda::db::session\fP > \fBcreate_session\fP (const \fBuri\fP &value)"
+.br
+.ti -1c
+.RI "static std::shared_ptr< \fBcoda::db::session\fP > \fBopen_session\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "static std::shared_ptr< \fBcoda::db::session\fP > \fBopen_session\fP (const \fBuri\fP &value)"
+.br
+.ti -1c
+.RI "static void \fBregister_session\fP (const std::string &protocol, const std::shared_ptr< \fBsession_factory\fP > &factory)"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "static std::shared_ptr<\fBcoda::db::session\fP> coda::db::sqldb::create_session (const std::string & value)\fC [static]\fP"
+parses a uri and creates a session 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the uri string to parse 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the database session based on the uri 
+.RE
+.PP
+
+.SS "static std::shared_ptr<\fBcoda::db::session\fP> coda::db::sqldb::create_session (const \fBuri\fP & value)\fC [static]\fP"
+creates a database session 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the uri for the session 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the created database session 
+.RE
+.PP
+
+.SS "static std::shared_ptr<\fBcoda::db::session\fP> coda::db::sqldb::open_session (const std::string & value)\fC [static]\fP"
+parses a uri, creates a session, and opens it 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the uri for the session 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the created and opened session 
+.RE
+.PP
+
+.SS "static std::shared_ptr<\fBcoda::db::session\fP> coda::db::sqldb::open_session (const \fBuri\fP & value)\fC [static]\fP"
+creates a session and opens it 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the uri for the session 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the created and opened session 
+.RE
+.PP
+
+.SS "static void coda::db::sqldb::register_session (const std::string & protocol, const std::shared_ptr< \fBsession_factory\fP > & factory)\fC [static]\fP"
+registers a handler for a session protocol ex\&. 'sqlite', my_sqlite_factory 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIprotocol\fP the protocol, or the 'scheme' of a uri 
+.br
+\fIfactory\fP a factory instance 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

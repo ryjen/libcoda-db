@@ -1,0 +1,243 @@
+.TH "coda::db::generic::record" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::generic::record
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <record\&.h>\fP
+.PP
+Inherits \fBcoda::db::base::record\fP, and \fBcoda::db::record_finder< record >\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef std::function< void(const std::shared_ptr< \fBrecord\fP > &)> \fBcallback\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "std::shared_ptr< \fBrecord\fP > \fBfind_by_id\fP (const \fBsql_value\fP &value) const"
+.br
+.ti -1c
+.RI "void \fBfind_by_id\fP (const \fBsql_value\fP &value, const record::callback &funk) const"
+.br
+.ti -1c
+.RI "std::vector< std::shared_ptr< \fBrecord\fP > > \fBfind_all\fP () const"
+.br
+.ti -1c
+.RI "void \fBfind_all\fP (const record::callback &funk) const"
+.br
+.ti -1c
+.RI "std::vector< std::shared_ptr< \fBrecord\fP > > \fBfind_by\fP (const std::map< std::string, \fBsql_value\fP > &values) const"
+.br
+.ti -1c
+.RI "std::vector< std::shared_ptr< \fBrecord\fP > > \fBfind_by\fP (const std::string &name, const \fBsql_value\fP &value) const"
+.br
+.ti -1c
+.RI "void \fBfind_by\fP (const std::map< std::string, \fBsql_value\fP > &values, const callback &funk) const"
+.br
+.ti -1c
+.RI "void \fBfind_by\fP (const std::string &name, const \fBsql_value\fP &value, const callback &funk) const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBrecord\fP > \fBfind_one\fP (const std::map< std::string, \fBsql_value\fP > &values) const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBrecord\fP > \fBfind_one\fP (const std::string &name, const \fBsql_value\fP &value) const"
+.br
+.ti -1c
+.RI "void \fBfind_one\fP (const std::map< std::string, \fBsql_value\fP > &values, const callback &funk) const"
+.br
+.ti -1c
+.RI "void \fBfind_one\fP (const std::string &name, const \fBsql_value\fP &value, const callback &funk) const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+a generic record with no type specification 
+.SH "Member Function Documentation"
+.PP 
+.SS "std::vector<std::shared_ptr<\fBrecord\fP> > coda::db::generic::record::find_all () const\fC [virtual]\fP"
+looks up and returns all objects of a record type 
+.PP
+\fBReturns:\fP
+.RS 4
+a vector of record objects of type T 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< record >\fP\&.
+.SS "void coda::db::generic::record::find_all (const record::callback & funk) const\fC [virtual]\fP"
+find all records 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfunk\fP the callback function for each found record 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< record >\fP\&.
+.SS "std::vector<std::shared_ptr<\fBrecord\fP> > coda::db::generic::record::find_by (const std::map< std::string, \fBsql_value\fP > & values) const\fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalues\fP a map of columns and values to find 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a vector of found records of type T 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< record >\fP\&.
+.SS "std::vector<std::shared_ptr<\fBrecord\fP> > coda::db::generic::record::find_by (const std::string & name, const \fBsql_value\fP & value) const\fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to search by 
+.br
+\fIvalue\fP the value of the column to search by 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a vector of found records of type T 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< record >\fP\&.
+.SS "void coda::db::generic::record::find_by (const std::map< std::string, \fBsql_value\fP > & values, const callback & funk) const\fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalues\fP a map of columns and values to find 
+.br
+\fIfunk\fP the callback function for each record found 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< record >\fP\&.
+.SS "void coda::db::generic::record::find_by (const std::string & name, const \fBsql_value\fP & value, const callback & funk) const\fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to search by 
+.br
+\fIvalue\fP the value of the column to search by 
+.br
+\fIfunk\fP the callback function for each record found 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< record >\fP\&.
+.SS "std::shared_ptr<\fBrecord\fP> coda::db::generic::record::find_by_id (const \fBsql_value\fP & value) const\fC [virtual]\fP"
+find a record by id using this objects schema 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the id value 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a found record or nullptr 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< record >\fP\&.
+.SS "void coda::db::generic::record::find_by_id (const \fBsql_value\fP & value, const record::callback & funk) const\fC [virtual]\fP"
+find a record by id using this objects schema 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the id value 
+.br
+\fIfunk\fP the callback function 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< record >\fP\&.
+.SS "std::shared_ptr<\fBrecord\fP> coda::db::generic::record::find_one (const std::map< std::string, \fBsql_value\fP > & values) const\fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalues\fP a map of columns and values to find 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a vector of found records of type T 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< record >\fP\&.
+.SS "std::shared_ptr<\fBrecord\fP> coda::db::generic::record::find_one (const std::string & name, const \fBsql_value\fP & value) const\fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to search by 
+.br
+\fIvalue\fP the value of the column to search by 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a vector of found records of type T 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< record >\fP\&.
+.SS "void coda::db::generic::record::find_one (const std::map< std::string, \fBsql_value\fP > & values, const callback & funk) const\fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalues\fP a map of columns and values to find 
+.br
+\fIfunk\fP the callback function for each record found 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< record >\fP\&.
+.SS "void coda::db::generic::record::find_one (const std::string & name, const \fBsql_value\fP & value, const callback & funk) const\fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to search by 
+.br
+\fIvalue\fP the value of the column to search by 
+.br
+\fIfunk\fP the callback function for each record found 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< record >\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

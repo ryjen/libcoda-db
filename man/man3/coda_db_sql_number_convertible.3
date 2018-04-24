@@ -1,0 +1,146 @@
+.TH "coda::db::sql_number_convertible" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::sql_number_convertible
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <sql_types\&.h>\fP
+.PP
+Inherited by \fBcoda::db::sql_number\fP, and \fBcoda::db::sql_value_convertible\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsql_number_convertible\fP (const \fBsql_number_convertible\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBsql_number_convertible\fP (\fBsql_number_convertible\fP &&other)=default"
+.br
+.ti -1c
+.RI "\fBsql_number_convertible\fP & \fBoperator=\fP (const \fBsql_number_convertible\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBsql_number_convertible\fP & \fBoperator=\fP (\fBsql_number_convertible\fP &&other)=default"
+.br
+.ti -1c
+.RI "virtual \fBoperator sql_string\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator sql_wstring\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator sql_time\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator bool\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator char\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator unsigned char\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator wchar_t\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator short\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator unsigned short\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator int\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator unsigned int\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator long\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator unsigned long\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator long long\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator unsigned long long\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator float\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator double\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBoperator long double\fP () const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const sql_null_type &other) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const sql_string &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const sql_wstring &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const \fBsql_time\fP &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const bool &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const char &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const unsigned char &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const wchar_t &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const short &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const unsigned short &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const int &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const unsigned int &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const long &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const unsigned long &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const long long &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const unsigned long long &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const float &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const double &value) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBoperator==\fP (const long double &value) const =0"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+an interface for converting and testing equality of numeric values 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

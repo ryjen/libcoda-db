@@ -1,0 +1,145 @@
+.TH "coda::db::delete_query" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::delete_query
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <delete_query\&.h>\fP
+.PP
+Inherits \fBcoda::db::modify_query\fP, and \fBcoda::db::whereable< delete_query >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBdelete_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP)"
+.br
+.ti -1c
+.RI "\fBdelete_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP, const std::string &tableName)"
+.br
+.ti -1c
+.RI "\fBdelete_query\fP (const std::shared_ptr< \fBschema\fP > &\fBschema\fP)"
+.br
+.ti -1c
+.RI "\fBdelete_query\fP (const \fBdelete_query\fP &other)"
+.br
+.ti -1c
+.RI "\fBdelete_query\fP (\fBdelete_query\fP &&other)"
+.br
+.ti -1c
+.RI "\fBdelete_query\fP & \fBoperator=\fP (const \fBdelete_query\fP &other)"
+.br
+.ti -1c
+.RI "\fBdelete_query\fP & \fBoperator=\fP (\fBdelete_query\fP &&other)"
+.br
+.ti -1c
+.RI "\fBdelete_query\fP & \fBfrom\fP (const std::string &tableName)"
+.br
+.ti -1c
+.RI "std::string \fBfrom\fP () const"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP & \fBwhere\fP ()"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP & \fBwhere\fP (const \fBsql_operator\fP &value)"
+.br
+.ti -1c
+.RI "\fBdelete_query\fP & \fBwhere\fP (const \fBwhere_clause\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const noexcept"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+a query to delete from a table 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBdelete_query\fP& coda::db::delete_query::from (const std::string & tableName)"
+set the table to insert into 
+.PP
+\fBSee also:\fP
+.RS 4
+modify_query::table_name 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fItableName\fP the table name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.SS "std::string coda::db::delete_query::from () const"
+get the table name being inserted into 
+.PP
+\fBSee also:\fP
+.RS 4
+modify_query::table_name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the table name 
+.RE
+.PP
+
+.SS "bool coda::db::delete_query::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+tests if this query is valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if valid 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBcoda::db::query\fP\&.
+.SS "\fBwhere_builder\fP& coda::db::delete_query::where ()\fC [virtual]\fP"
+gets the where builder for the query 
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to the where builder 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::whereable< delete_query >\fP\&.
+.SS "\fBwhere_builder\fP& coda::db::delete_query::where (const \fBsql_operator\fP & value)\fC [virtual]\fP"
+sets the where clause using an operator 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the sql operator 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to the where builder 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::whereable< delete_query >\fP\&.
+.SS "\fBdelete_query\fP& coda::db::delete_query::where (const \fBwhere_clause\fP & value)"
+sets the where clause for the update query 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the where clause to set 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

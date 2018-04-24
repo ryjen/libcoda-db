@@ -1,0 +1,102 @@
+.TH "coda::db::modify_query" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::modify_query
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <modify_query\&.h>\fP
+.PP
+Inherits \fBcoda::db::query\fP\&.
+.PP
+Inherited by \fBcoda::db::delete_query\fP, \fBcoda::db::insert_query\fP, and \fBcoda::db::update_query\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBmodify_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP)"
+.br
+.ti -1c
+.RI "\fBmodify_query\fP (const std::shared_ptr< \fBschema\fP > &\fBschema\fP)"
+.br
+.ti -1c
+.RI "\fBmodify_query\fP (const \fBmodify_query\fP &other)"
+.br
+.ti -1c
+.RI "\fBmodify_query\fP (\fBmodify_query\fP &&other)"
+.br
+.ti -1c
+.RI "\fBmodify_query\fP & \fBoperator=\fP (const \fBmodify_query\fP &other)"
+.br
+.ti -1c
+.RI "\fBmodify_query\fP & \fBoperator=\fP (\fBmodify_query\fP &&other)"
+.br
+.ti -1c
+.RI "virtual int \fBexecute\fP ()"
+.br
+.ti -1c
+.RI "int \fBlast_number_of_changes\fP () const"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBflags_\fP"
+.br
+.ti -1c
+.RI "int \fBnumChanges_\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+a query to modify a table 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::modify_query::modify_query (const std::shared_ptr< \fBcoda::db::session\fP > & session)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database in use 
+.RE
+.PP
+
+.SS "coda::db::modify_query::modify_query (const std::shared_ptr< \fBschema\fP > & schema)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIschema\fP the schema to modify 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual int coda::db::modify_query::execute ()\fC [virtual]\fP"
+executes this query using a replace statement 
+.PP
+\fBReturns:\fP
+.RS 4
+the last number of changes made by this query 
+.RE
+.PP
+
+.PP
+Reimplemented in \fBcoda::db::insert_query\fP\&.
+.SS "int coda::db::modify_query::last_number_of_changes () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the last number of changes made by this query 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

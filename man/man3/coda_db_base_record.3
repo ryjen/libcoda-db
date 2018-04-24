@@ -1,0 +1,276 @@
+.TH "coda::db::base::record" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::base::record
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <record\&.h>\fP
+.PP
+Inherited by \fBcoda::db::generic::record\fP, and \fBcoda::db::record< T, typename >\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "using \fBschema_type\fP = \fBcoda::db::schema\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBrecord\fP (const std::shared_ptr< \fBschema_type\fP > &\fBschema\fP)"
+.br
+.ti -1c
+.RI "\fBrecord\fP (const std::shared_ptr< \fBschema_type\fP > &\fBschema\fP, const \fBrow\fP &values)"
+.br
+.ti -1c
+.RI "\fBrecord\fP (const \fBrecord\fP &other)"
+.br
+.ti -1c
+.RI "\fBrecord\fP (\fBrecord\fP &&other)"
+.br
+.ti -1c
+.RI "\fBrecord\fP & \fBoperator=\fP (const \fBrecord\fP &other)"
+.br
+.ti -1c
+.RI "\fBrecord\fP & \fBoperator=\fP (\fBrecord\fP &&other)"
+.br
+.ti -1c
+.RI "void \fBinit\fP (const \fBrow\fP &values)"
+.br
+.ti -1c
+.RI "virtual void \fBon_record_init\fP (const \fBrow\fP &values)"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBschema_type\fP > \fBschema\fP () const"
+.br
+.ti -1c
+.RI "bool \fBexists\fP () const"
+.br
+.ti -1c
+.RI "bool \fBsave\fP ()"
+.br
+.ti -1c
+.RI "\fBsql_value\fP \fBid\fP () const"
+.br
+.ti -1c
+.RI "\fBsql_value\fP \fBget\fP (const std::string &name) const"
+.br
+.ti -1c
+.RI "std::vector< \fBsql_value\fP > \fBget\fP (const std::vector< std::string > &columns) const"
+.br
+.ti -1c
+.RI "bool \fBhas\fP (const std::string &name) const"
+.br
+.ti -1c
+.RI "void \fBset_id\fP (const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "void \fBset\fP (const std::string &name, const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "void \fBunset\fP (const std::string &name)"
+.br
+.ti -1c
+.RI "void \fBreset\fP ()"
+.br
+.ti -1c
+.RI "bool \fBrefresh\fP ()"
+.br
+.ti -1c
+.RI "bool \fBrefresh_by\fP (const std::string &name)"
+.br
+.ti -1c
+.RI "bool \fBremove\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+base class for a record 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::base::record::record (const std::shared_ptr< \fBschema_type\fP > & schema)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIschema\fP the schema to operate on 
+.br
+\fIcolumnName\fP the name of the id column in the schema 
+.RE
+.PP
+
+.SS "coda::db::base::record::record (const std::shared_ptr< \fBschema_type\fP > & schema, const \fBrow\fP & values)"
+construct with values from a database row 
+.SS "coda::db::base::record::record (const \fBrecord\fP & other)"
+copy constructor 
+.SS "coda::db::base::record::record (\fBrecord\fP && other)"
+move constructor 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool coda::db::base::record::exists () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+true if a record with the id column value exists 
+.RE
+.PP
+
+.SS "\fBsql_value\fP coda::db::base::record::get (const std::string & name) const"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to get 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a value specified by column name 
+.RE
+.PP
+
+.SS "std::vector<\fBsql_value\fP> coda::db::base::record::get (const std::vector< std::string > & columns) const"
+get a range of column values from the record 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIa\fP vector of column names 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a vector of values 
+.RE
+.PP
+
+.SS "bool coda::db::base::record::has (const std::string & name) const"
+check for the existance of a column by name 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to check 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+true if the column exists in the current record NOTE: you may need to 'refresh' from the db to get all columns 
+.RE
+.PP
+
+.SS "\fBsql_value\fP coda::db::base::record::id () const"
+the id of the record 
+.SS "void coda::db::base::record::init (const \fBrow\fP & values)"
+initializes with values from a database row 
+.SS "bool coda::db::base::record::is_valid () const"
+check if the record internals are valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if the schema is valid 
+.RE
+.PP
+
+.SS "virtual void coda::db::base::record::on_record_init (const \fBrow\fP & values)\fC [virtual]\fP"
+called when a record is read from the database Overide in subclasses for custom loading actions 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIrow\fP the values read from the database 
+.RE
+.PP
+
+.SS "\fBrecord\fP& coda::db::base::record::operator= (const \fBrecord\fP & other)"
+assignment operator 
+.SS "\fBrecord\fP& coda::db::base::record::operator= (\fBrecord\fP && other)"
+move assignment operator 
+.SS "bool coda::db::base::record::refresh ()"
+refreshes from the database for the value in the id column 
+.PP
+\fBReturns:\fP
+.RS 4
+true if successful 
+.RE
+.PP
+
+.SS "bool coda::db::base::record::refresh_by (const std::string & name)"
+refreshes by a column name 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to refresh by 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+true if successful 
+.RE
+.PP
+
+.SS "bool coda::db::base::record::remove () const"
+deletes this record from the database for the value in the id column 
+.SS "void coda::db::base::record::reset ()"
+clears values set on this object 
+.SS "bool coda::db::base::record::save ()"
+saves this instance 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinsert_only\fP set to true to never perform an update if the record exists 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+true if the save was successful 
+.RE
+.PP
+
+.SS "std::shared_ptr<\fBschema_type\fP> coda::db::base::record::schema () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the schema for this record 
+.RE
+.PP
+
+.SS "void coda::db::base::record::set (const std::string & name, const \fBsql_value\fP & value)"
+sets a string for a column name 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to set 
+.br
+\fIvalue\fP the value to set for the column 
+.RE
+.PP
+
+.SS "void coda::db::base::record::set_id (const \fBsql_value\fP & value)"
+sets the id for this record 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIthe\fP id value 
+.RE
+.PP
+
+.SS "void coda::db::base::record::unset (const std::string & name)"
+unsets / removes a column 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to unset 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

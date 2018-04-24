@@ -1,0 +1,119 @@
+.TH "coda::db::row_iterator< ValueType, NonConst, RowType >" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::row_iterator< ValueType, NonConst, RowType >
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <row\&.h>\fP
+.PP
+Inherits iterator< std::random_access_iterator_tag, ValueType >\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBrow_iterator\fP (const std::shared_ptr< RowType > &pRow, int position)"
+.br
+.ti -1c
+.RI "\fBrow_iterator\fP (const \fBrow_iterator\fP &other)"
+.br
+.ti -1c
+.RI "\fBrow_iterator\fP (\fBrow_iterator\fP &&other)"
+.br
+.ti -1c
+.RI "\fBrow_iterator\fP & \fBoperator=\fP (const \fBrow_iterator\fP &other)"
+.br
+.ti -1c
+.RI "\fBrow_iterator\fP & \fBoperator=\fP (\fBrow_iterator\fP &&other)"
+.br
+.ti -1c
+.RI "ValueType & \fBoperator*\fP ()"
+.br
+.ti -1c
+.RI "ValueType * \fBoperator\->\fP ()"
+.br
+.ti -1c
+.RI "ValueType \fBoperator[]\fP (size_t nPosition)"
+.br
+.ti -1c
+.RI "\fBrow_iterator\fP & \fBoperator++\fP ()"
+.br
+.ti -1c
+.RI "\fBrow_iterator\fP \fBoperator++\fP (int)"
+.br
+.ti -1c
+.RI "\fBrow_iterator\fP & \fBoperator\-\-\fP ()"
+.br
+.ti -1c
+.RI "\fBrow_iterator\fP \fBoperator\-\-\fP (int)"
+.br
+.ti -1c
+.RI "\fBrow_iterator\fP \fBoperator+\fP (int n)"
+.br
+.ti -1c
+.RI "\fBrow_iterator\fP & \fBoperator+=\fP (int n)"
+.br
+.ti -1c
+.RI "\fBrow_iterator\fP \fBoperator\-\fP (int n)"
+.br
+.ti -1c
+.RI "\fBrow_iterator\fP & \fBoperator\-=\fP (int n)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBrow_iterator\fP &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBrow_iterator\fP &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator<\fP (const \fBrow_iterator\fP &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator<=\fP (const \fBrow_iterator\fP &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator>\fP (const \fBrow_iterator\fP &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator>=\fP (const \fBrow_iterator\fP &other) const"
+.br
+.ti -1c
+.RI "int \fBoperator\-\fP (const \fBrow_iterator\fP &other)"
+.br
+.ti -1c
+.RI "std::string \fBname\fP () const"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBset_current_value\fP (size_t index)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::shared_ptr< RowType > \fBrow_\fP"
+.br
+.ti -1c
+.RI "int \fBposition_\fP"
+.br
+.ti -1c
+.RI "NonConst \fBcurrentValue_\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<class ValueType, class NonConst, class RowType>
+.br
+class coda::db::row_iterator< ValueType, NonConst, RowType >"
+iterator for columns in a row 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

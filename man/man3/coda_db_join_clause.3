@@ -1,0 +1,183 @@
+.TH "coda::db::join_clause" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::join_clause
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <join_clause\&.h>\fP
+.PP
+Inherits \fBcoda::db::sql_generator\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBjoin_clause\fP ()"
+.br
+.ti -1c
+.RI "\fBjoin_clause\fP (const std::string &tableName, join::type \fBtype\fP=join::none)"
+.br
+.ti -1c
+.RI "\fBjoin_clause\fP (const std::string &tableName, const std::string &alias, join::type \fBtype\fP=join::none)"
+.br
+.ti -1c
+.RI "\fBjoin_clause\fP (const \fBjoin_clause\fP &other)"
+.br
+.ti -1c
+.RI "\fBjoin_clause\fP (\fBjoin_clause\fP &&other)"
+.br
+.ti -1c
+.RI "\fBjoin_clause\fP & \fBoperator=\fP (const \fBjoin_clause\fP &other)"
+.br
+.ti -1c
+.RI "\fBjoin_clause\fP & \fBoperator=\fP (\fBjoin_clause\fP &&other)"
+.br
+.ti -1c
+.RI "bool \fBempty\fP () const"
+.br
+.ti -1c
+.RI "void \fBreset\fP ()"
+.br
+.ti -1c
+.RI "\fBjoin_clause\fP & \fBtype\fP (join::type value)"
+.br
+.ti -1c
+.RI "join::type \fBtype\fP () const"
+.br
+.ti -1c
+.RI "\fBjoin_clause\fP & \fBtable\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "\fBjoin_clause\fP & \fBtable\fP (const std::string &value, const std::string &alias)"
+.br
+.ti -1c
+.RI "std::string \fBtable\fP () const"
+.br
+.ti -1c
+.RI "\fBwhere_clause\fP & \fBon\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "\fBjoin_clause\fP & \fBon\fP (const \fBwhere_clause\fP &value)"
+.br
+.ti -1c
+.RI "const \fBwhere_clause\fP & \fBon\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator std::string\fP ()"
+.br
+.ti -1c
+.RI "\fBoperator std::string\fP () const"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+a utility class aimed at making join statements ex\&. join('tablename')\&.on('a', 'b'); 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::join_clause::join_clause ()"
+default no-arg constructor 
+.SS "coda::db::join_clause::join_clause (const std::string & tableName, join::type type = \fCjoin::none\fP)\fC [explicit]\fP"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fItableName\fP the required name of the table to join 
+.br
+\fIjoinType\fP the type of sql query (default inner) 
+.RE
+.PP
+
+.SS "coda::db::join_clause::join_clause (const \fBjoin_clause\fP & other)"
+boilerplate rule of 3 + move 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool coda::db::join_clause::empty () const"
+tests if the join is empty 
+.PP
+\fBReturns:\fP
+.RS 4
+true if the sql is not valid 
+.RE
+.PP
+
+.SS "\fBwhere_clause\fP& coda::db::join_clause::on (const std::string & value)"
+sets the sql to join on (example 'col1 = col2') 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the sql to join on 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a where clause 
+.RE
+.PP
+
+.SS "\fBjoin_clause\fP& coda::db::join_clause::on (const \fBwhere_clause\fP & value)"
+sets the where clause to join on 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the where clause 
+.RE
+.PP
+
+.SS "const \fBwhere_clause\fP& coda::db::join_clause::on () const"
+get the on portion of the join clause 
+.PP
+\fBReturns:\fP
+.RS 4
+the where clause 
+.RE
+.PP
+
+.SS "coda::db::join_clause::operator std::string ()\fC [explicit]\fP"
+the explicit cast operator to sql string representation 
+.SS "void coda::db::join_clause::reset ()\fC [virtual]\fP"
+resets the sql 
+.PP
+Reimplemented from \fBcoda::db::sql_generator\fP\&.
+.SS "\fBjoin_clause\fP& coda::db::join_clause::table (const std::string & value)"
+sets the table name 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the table name to set 
+.RE
+.PP
+
+.SS "std::string coda::db::join_clause::table () const"
+gets the table for this join 
+.PP
+\fBReturns:\fP
+.RS 4
+the table name 
+.RE
+.PP
+
+.SS "\fBjoin_clause\fP& coda::db::join_clause::type (join::type value)"
+sets the join type 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the join type 
+.RE
+.PP
+
+.SS "join::type coda::db::join_clause::type () const"
+gets the type of join 
+.PP
+\fBReturns:\fP
+.RS 4
+the join type 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

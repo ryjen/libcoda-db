@@ -18,6 +18,10 @@ namespace coda
             {
                 extern string last_stmt_error(MYSQL_STMT *stmt);
 
+                /**
+                 * @cond internal
+                 * @param p the result
+                 */
                 void res_delete::operator()(MYSQL_RES *p) const
                 {
                     if (p != nullptr) {

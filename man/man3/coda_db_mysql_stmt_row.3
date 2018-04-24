@@ -1,0 +1,143 @@
+.TH "coda::db::mysql::stmt_row" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::mysql::stmt_row
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <row\&.h>\fP
+.PP
+Inherits \fBcoda::db::row_impl\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBstmt_row\fP (const std::shared_ptr< \fBmysql::session\fP > &sess, const std::shared_ptr< MYSQL_STMT > &stmt, const std::shared_ptr< MYSQL_RES > &metadata, const std::shared_ptr< \fBmysql::binding\fP > &fields)"
+.br
+.ti -1c
+.RI "\fBstmt_row\fP (const \fBstmt_row\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBstmt_row\fP (\fBstmt_row\fP &&other)"
+.br
+.ti -1c
+.RI "\fBstmt_row\fP & \fBoperator=\fP (const \fBstmt_row\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBstmt_row\fP & \fBoperator=\fP (\fBstmt_row\fP &&other)"
+.br
+.ti -1c
+.RI "std::string \fBcolumn_name\fP (size_t position) const"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP \fBcolumn\fP (size_t position) const"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP \fBcolumn\fP (const std::string &name) const"
+.br
+.ti -1c
+.RI "size_t \fBsize\fP () const noexcept"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const noexcept"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+a mysql specific implementation of a row using prepared statements 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::mysql::stmt_row::stmt_row (const std::shared_ptr< \fBmysql::session\fP > & sess, const std::shared_ptr< MYSQL_STMT > & stmt, const std::shared_ptr< MYSQL_RES > & metadata, const std::shared_ptr< \fBmysql::binding\fP > & fields)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database in use 
+.br
+\fIstmt\fP the query statement 
+.br
+\fImetadata\fP the query meta data 
+.br
+\fIfields\fP the bindings for the statement 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBcolumn_type\fP coda::db::mysql::stmt_row::column (size_t position) const\fC [virtual]\fP"
+gets a column in the row 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIposition\fP the index of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the column object 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::row_impl\fP\&.
+.SS "\fBcolumn_type\fP coda::db::mysql::stmt_row::column (const std::string & name) const\fC [virtual]\fP"
+gets a column in the row 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the column object 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::row_impl\fP\&.
+.SS "std::string coda::db::mysql::stmt_row::column_name (size_t position) const\fC [virtual]\fP"
+gets the name of a column in the row 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIposition\fP the index of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the name of the column at the given position 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::row_impl\fP\&.
+.SS "bool coda::db::mysql::stmt_row::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+tests if the row internals are valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if the row is valid 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::row_impl\fP\&.
+.SS "size_t coda::db::mysql::stmt_row::size () const\fC [virtual]\fP, \fC [noexcept]\fP"
+gets the number of columns in the row 
+.PP
+\fBReturns:\fP
+.RS 4
+the number of columns; 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::row_impl\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

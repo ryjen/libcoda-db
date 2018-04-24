@@ -1,0 +1,118 @@
+.TH "coda::db::where_builder" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::where_builder
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBcoda::db::where_clause\fP, and \fBcoda::db::bindable\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBwhere_builder\fP (const std::shared_ptr< \fBsession_impl\fP > &\fBsession\fP, \fBbindable\fP *\fBbindable\fP)"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP (const \fBwhere_builder\fP &other)"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP (\fBwhere_builder\fP &&other)"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP & \fBoperator=\fP (const \fBwhere_builder\fP &other)"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP & \fBoperator=\fP (\fBwhere_builder\fP &&other)"
+.br
+.ti -1c
+.RI "size_t \fBnum_of_bindings\fP () const noexcept"
+.br
+.ti -1c
+.RI "void \fBreset\fP (const \fBsql_operator\fP &value)"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP & \fBoperator &&\fP (const \fBsql_operator\fP &value)"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP & \fBoperator||\fP (const \fBsql_operator\fP &value)"
+.br
+.ti -1c
+.RI "std::string \fBto_sql\fP () const"
+.br
+.ti -1c
+.RI "std::string \fBto_sql\fP ()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBwhere_builder\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBwhere_builder\fP& coda::db::where_builder::bind (size_t index, const \fBsql_value\fP & value)\fC [protected]\fP, \fC [virtual]\fP"
+Binds a \fBsql_value\fP using the other bind methods 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the index of the binding 
+.br
+\fIvalue\fP the value of the binding 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::bindable\fP\&.
+.SS "\fBwhere_builder\fP& coda::db::where_builder::bind (const std::string & name, const \fBsql_value\fP & value)\fC [protected]\fP, \fC [virtual]\fP"
+bind a named parameter 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the parameter 
+.br
+\fIvalue\fP the value to bind 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::bindable\fP\&.
+.SS "\fBwhere_builder\fP& coda::db::where_builder::operator&& (const \fBsql_operator\fP & value)"
+Appends and AND part to this where clause 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the sql to append 
+.RE
+.PP
+
+.SS "\fBwhere_builder\fP& coda::db::where_builder::operator|| (const \fBsql_operator\fP & value)"
+Appends and OR part to this where clause 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the sql to append 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

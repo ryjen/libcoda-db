@@ -1,0 +1,162 @@
+.TH "coda::db::statement" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::statement
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <statement\&.h>\fP
+.PP
+Inherits \fBcoda::db::bindable\fP\&.
+.PP
+Inherited by \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef \fBcoda::db::resultset\fP \fBresultset_type\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBstatement\fP (const \fBstatement\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBstatement\fP (\fBstatement\fP &&other)=default"
+.br
+.ti -1c
+.RI "\fBstatement\fP & \fBoperator=\fP (const \fBstatement\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBstatement\fP & \fBoperator=\fP (\fBstatement\fP &&other)=default"
+.br
+.ti -1c
+.RI "virtual void \fBprepare\fP (const std::string &sql)=0"
+.br
+.ti -1c
+.RI "void \fBprepare\fP (const \fBsql_generator\fP &obj)"
+.br
+.ti -1c
+.RI "virtual void \fBfinish\fP ()=0"
+.br
+.ti -1c
+.RI "virtual void \fBreset\fP ()=0"
+.br
+.ti -1c
+.RI "virtual bool \fBis_valid\fP () const noexcept=0"
+.br
+.ti -1c
+.RI "virtual \fBresultset_type\fP \fBresults\fP ()=0"
+.br
+.ti -1c
+.RI "virtual bool \fBresult\fP ()=0"
+.br
+.ti -1c
+.RI "virtual int \fBlast_number_of_changes\fP ()=0"
+.br
+.ti -1c
+.RI "virtual std::string \fBlast_error\fP ()=0"
+.br
+.ti -1c
+.RI "virtual long long \fBlast_insert_id\fP ()=0"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+base class for a database specific implementation of a prepared statement 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void coda::db::statement::finish ()\fC [pure virtual]\fP"
+releases resources for this statement 
+.PP
+Implemented in \fBcoda::db::postgres::statement\fP, \fBcoda::db::mysql::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+.SS "virtual bool coda::db::statement::is_valid () const\fC [pure virtual]\fP, \fC [noexcept]\fP"
+tests if this statement is valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if the internals are valid 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::postgres::statement\fP, \fBcoda::db::mysql::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+.SS "virtual std::string coda::db::statement::last_error ()\fC [pure virtual]\fP"
+gets the last error 
+.PP
+\fBReturns:\fP
+.RS 4
+the last error or an empty string 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+.SS "virtual long long coda::db::statement::last_insert_id ()\fC [pure virtual]\fP"
+gets the last insert id 
+.PP
+\fBReturns:\fP
+.RS 4
+the last insert id or zero 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+.SS "virtual int coda::db::statement::last_number_of_changes ()\fC [pure virtual]\fP"
+gets the last number of changes 
+.PP
+\fBReturns:\fP
+.RS 4
+the last number of changes or zero 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+.SS "virtual void coda::db::statement::prepare (const std::string & sql)\fC [pure virtual]\fP"
+prepares this statement for execution 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsql\fP the sql to prepare 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::postgres::statement\fP, \fBcoda::db::mysql::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+.SS "virtual void coda::db::statement::reset ()\fC [pure virtual]\fP"
+resets this statement for a new execution 
+.PP
+Implemented in \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+.SS "virtual bool coda::db::statement::result ()\fC [pure virtual]\fP"
+executes this statement 
+.PP
+\fBReturns:\fP
+.RS 4
+true if successful 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::postgres::statement\fP, \fBcoda::db::mysql::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+.SS "virtual \fBresultset_type\fP coda::db::statement::results ()\fC [pure virtual]\fP"
+executes this statement 
+.PP
+\fBReturns:\fP
+.RS 4
+a set of the results 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::postgres::statement\fP, \fBcoda::db::mysql::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

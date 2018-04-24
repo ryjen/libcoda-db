@@ -1,0 +1,431 @@
+.TH "coda::db::select_query" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::select_query
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <select_query\&.h>\fP
+.PP
+Inherits \fBcoda::db::query\fP, and \fBcoda::db::whereable< select_query >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBselect_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP, const std::vector< std::string > &\fBcolumns\fP)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP (const std::shared_ptr< \fBschema\fP > &\fBschema\fP)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP, const std::vector< std::string > &\fBcolumns\fP, const std::string &tableName)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP (const \fBselect_query\fP &other)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP (\fBselect_query\fP &&other)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP & \fBoperator=\fP (const \fBselect_query\fP &other)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP & \fBoperator=\fP (\fBselect_query\fP &&other)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP & \fBfrom\fP (const std::string &tableName)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP & \fBfrom\fP (const std::string &tableName, const std::string &alias)"
+.br
+.ti -1c
+.RI "std::string \fBfrom\fP () const"
+.br
+.ti -1c
+.RI "\fBselect_query\fP & \fBcolumns\fP (const std::vector< std::string > &other)"
+.br
+.ti -1c
+.RI "template<typename\&.\&.\&. List> \fBselect_query\fP & \fBcolumns\fP (const std::string &value, const List &\&.\&.\&. args)"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBcolumns\fP () const"
+.br
+.ti -1c
+.RI "std::string \fBlimit\fP () const"
+.br
+.ti -1c
+.RI "std::string \fBorder_by\fP () const"
+.br
+.ti -1c
+.RI "std::string \fBgroup_by\fP () const"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP & \fBwhere\fP ()"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP & \fBwhere\fP (const \fBsql_operator\fP &value)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP & \fBlimit\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP & \fBorder_by\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP & \fBgroup_by\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "\fBjoin_clause\fP & \fBjoin\fP (const std::string &tableName, join::type type=join::inner)"
+.br
+.ti -1c
+.RI "\fBjoin_clause\fP & \fBjoin\fP (const std::string &tableName, const std::string &alias, join::type type=join::inner)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP & \fBjoin\fP (const \fBjoin_clause\fP &value)"
+.br
+.ti -1c
+.RI "\fBselect_query\fP & \fBunion_with\fP (const \fBselect_query\fP &\fBquery\fP, union_op::type type=union_op::none)"
+.br
+.ti -1c
+.RI "\fBresultset\fP \fBexecute\fP ()"
+.br
+.ti -1c
+.RI "void \fBexecute\fP (const std::function< void(const \fBresultset\fP &)> &funk)"
+.br
+.ti -1c
+.RI "long long \fBcount\fP ()"
+.br
+.ti -1c
+.RI "void \fBreset\fP ()"
+.br
+.ti -1c
+.RI "template<typename T , typename  = std::enable_if<is_sql_value<T>::value || is_sql_number<T>::value>> T \fBexecute_scalar\fP ()"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+a query to select values from a table 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::select_query::select_query (const std::shared_ptr< \fBcoda::db::session\fP > & session)"
+defaults to 'select *' 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database in use 
+.RE
+.PP
+
+.SS "coda::db::select_query::select_query (const std::shared_ptr< \fBcoda::db::session\fP > & session, const std::vector< std::string > & columns)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database in use 
+.br
+\fItableName\fP the table name to query 
+.br
+\fIcolumns\fP the columns to query 
+.RE
+.PP
+
+.SS "coda::db::select_query::select_query (const std::shared_ptr< \fBschema\fP > & schema)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIschema\fP the schema to query 
+.RE
+.PP
+
+.SS "coda::db::select_query::select_query (const std::shared_ptr< \fBcoda::db::session\fP > & session, const std::vector< std::string > & columns, const std::string & tableName)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database in use 
+.br
+\fIcolumns\fP the columns to query 
+.br
+\fItableName\fP the table to query from 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBselect_query\fP& coda::db::select_query::columns (const std::vector< std::string > & other)"
+sets the columns to select 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIother\fP a vector of column names 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this 
+.RE
+.PP
+
+.SS "template<typename\&.\&.\&. List> \fBselect_query\fP& coda::db::select_query::columns (const std::string & value, const List &\&.\&.\&. args)\fC [inline]\fP"
+sets the columns to select 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the initial column name 
+.br
+\fIargs\fP the remaining column names 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this 
+.RE
+.PP
+
+.SS "std::vector<std::string> coda::db::select_query::columns () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the columns being queried 
+.RE
+.PP
+
+.SS "long long coda::db::select_query::count ()"
+executes this query 
+.PP
+\fBReturns:\fP
+.RS 4
+a count of the number of rows 
+.RE
+.PP
+
+.SS "\fBresultset\fP coda::db::select_query::execute ()"
+executes this query 
+.PP
+\fBReturns:\fP
+.RS 4
+a resultset object 
+.RE
+.PP
+
+.SS "void coda::db::select_query::execute (const std::function< void(const \fBresultset\fP &)> & funk)"
+executes this query 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfunk\fP a callback to perform on the resultset 
+.RE
+.PP
+
+.SS "template<typename T , typename  = std::enable_if<is_sql_value<T>::value || is_sql_number<T>::value>> T coda::db::select_query::execute_scalar ()\fC [inline]\fP"
+return the first column in the first row of the result set 
+.SS "\fBselect_query\fP& coda::db::select_query::from (const std::string & tableName)"
+sets which table to select from 
+.PP
+\fBParameters:\fP
+.RS 4
+\fItableName\fP the table name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.SS "\fBselect_query\fP& coda::db::select_query::from (const std::string & tableName, const std::string & alias)"
+sets the table to select from 
+.PP
+\fBParameters:\fP
+.RS 4
+\fItableName\fP the table name to select from 
+.br
+\fIalias\fP the alias for the table name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this 
+.RE
+.PP
+
+.SS "std::string coda::db::select_query::from () const"
+gets the select from table name for this query 
+.PP
+\fBReturns:\fP
+.RS 4
+the table name 
+.RE
+.PP
+
+.SS "std::string coda::db::select_query::group_by () const"
+gets the group by clause for the query 
+.PP
+\fBReturns:\fP
+.RS 4
+the group by sql string 
+.RE
+.PP
+
+.SS "\fBselect_query\fP& coda::db::select_query::group_by (const std::string & value)"
+sets the group by clause for this query 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the group by sql string 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this 
+.RE
+.PP
+
+.SS "\fBjoin_clause\fP& coda::db::select_query::join (const std::string & tableName, join::type type = \fCjoin::inner\fP)"
+sets the join clause for this query 
+.PP
+\fBParameters:\fP
+.RS 4
+\fItableName\fP the table name to join 
+.br
+\fItype\fP the type of join 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a join clause to perform additional modification 
+.RE
+.PP
+
+.SS "\fBjoin_clause\fP& coda::db::select_query::join (const std::string & tableName, const std::string & alias, join::type type = \fCjoin::inner\fP)"
+sets the join clause for this query 
+.PP
+\fBParameters:\fP
+.RS 4
+\fItableName\fP the table name to join 
+.br
+\fIalias\fP the alias of the table name 
+.br
+\fItype\fP the type of join 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this 
+.RE
+.PP
+
+.SS "\fBselect_query\fP& coda::db::select_query::join (const \fBjoin_clause\fP & value)"
+sets the join clause for this query 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the join clause to set 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this 
+.RE
+.PP
+
+.SS "std::string coda::db::select_query::limit () const"
+gets the limit clause for the query 
+.PP
+\fBReturns:\fP
+.RS 4
+the limit sql string 
+.RE
+.PP
+
+.SS "\fBselect_query\fP& coda::db::select_query::limit (const std::string & value)"
+sets the limit by clause for this query 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the limit sql string 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this 
+.RE
+.PP
+
+.SS "std::string coda::db::select_query::order_by () const"
+gets the order by clause for the query 
+.PP
+\fBReturns:\fP
+.RS 4
+the order by sql string 
+.RE
+.PP
+
+.SS "\fBselect_query\fP& coda::db::select_query::order_by (const std::string & value)"
+sets the order by clause for this query 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the order by sql string 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this 
+.RE
+.PP
+
+.SS "void coda::db::select_query::reset ()\fC [virtual]\fP"
+resets this query for re-execution 
+.PP
+Reimplemented from \fBcoda::db::query\fP\&.
+.SS "\fBselect_query\fP& coda::db::select_query::union_with (const \fBselect_query\fP & query, union_op::type type = \fCunion_op::none\fP)"
+sets a union query 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIquery\fP the query to union with 
+.br
+\fItype\fP the type of union 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.SS "\fBwhere_builder\fP& coda::db::select_query::where ()\fC [virtual]\fP"
+gets the where builder for the query 
+.PP
+\fBReturns:\fP
+.RS 4
+a writeable reference to the where builder 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::whereable< select_query >\fP\&.
+.SS "\fBwhere_builder\fP& coda::db::select_query::where (const \fBsql_operator\fP & value)\fC [virtual]\fP"
+gets the where clause for this query 
+.PP
+\fBReturns:\fP
+.RS 4
+the where clause 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::whereable< select_query >\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

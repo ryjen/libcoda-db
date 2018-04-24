@@ -1,0 +1,110 @@
+.TH "coda::db::postgres::resultset" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::postgres::resultset
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <resultset\&.h>\fP
+.PP
+Inherits \fBcoda::db::resultset_impl\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBresultset\fP (const std::shared_ptr< \fBpostgres::session\fP > &sess, const std::shared_ptr< PGresult > &stmt)"
+.br
+.ti -1c
+.RI "\fBresultset\fP (const \fBresultset\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBresultset\fP (\fBresultset\fP &&other)"
+.br
+.ti -1c
+.RI "\fBresultset\fP & \fBoperator=\fP (const \fBresultset\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBresultset\fP & \fBoperator=\fP (\fBresultset\fP &&other)"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const noexcept"
+.br
+.ti -1c
+.RI "\fBrow_type\fP \fBcurrent_row\fP ()"
+.br
+.ti -1c
+.RI "void \fBreset\fP ()"
+.br
+.ti -1c
+.RI "bool \fBnext\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "template<typename , typename > class \fBresultset_iterator\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+a postgres specific implmentation of a result set 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::postgres::resultset::resultset (const std::shared_ptr< \fBpostgres::session\fP > & sess, const std::shared_ptr< PGresult > & stmt)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database in use 
+.br
+\fIstmt\fP the query result in use 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBrow_type\fP coda::db::postgres::resultset::current_row ()\fC [virtual]\fP"
+gets the current row in the results 
+.PP
+\fBReturns:\fP
+.RS 4
+the current row object 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::resultset_impl\fP\&.
+.SS "bool coda::db::postgres::resultset::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+tests if this implementation is valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if operations can be performed safely 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::resultset_impl\fP\&.
+.SS "bool coda::db::postgres::resultset::next ()\fC [virtual]\fP"
+moves to the next row in the results 
+.PP
+\fBReturns:\fP
+.RS 4
+true if successful 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::resultset_impl\fP\&.
+.SS "void coda::db::postgres::resultset::reset ()\fC [virtual]\fP"
+resets this resultset back to the first row 
+.PP
+Implements \fBcoda::db::resultset_impl\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

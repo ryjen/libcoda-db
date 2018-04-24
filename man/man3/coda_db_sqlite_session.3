@@ -1,0 +1,223 @@
+.TH "coda::db::sqlite::session" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::sqlite::session
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <session\&.h>\fP
+.PP
+Inherits \fBcoda::db::session_impl\fP, and enable_shared_from_this< session >\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsession\fP (const \fBuri\fP &info)"
+.br
+.ti -1c
+.RI "\fBsession\fP (const \fBsession\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBsession\fP (\fBsession\fP &&other)"
+.br
+.ti -1c
+.RI "\fBsession\fP & \fBoperator=\fP (const \fBsession\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBsession\fP & \fBoperator=\fP (\fBsession\fP &&other)"
+.br
+.ti -1c
+.RI "bool \fBis_open\fP () const noexcept"
+.br
+.ti -1c
+.RI "void \fBopen\fP (int flags)"
+.br
+.ti -1c
+.RI "void \fBopen\fP ()"
+.br
+.ti -1c
+.RI "void \fBclose\fP ()"
+.br
+.ti -1c
+.RI "long long \fBlast_insert_id\fP () const"
+.br
+.ti -1c
+.RI "int \fBlast_number_of_changes\fP () const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBresultset_impl\fP > \fBquery\fP (const std::string &sql)"
+.br
+.ti -1c
+.RI "bool \fBexecute\fP (const std::string &sql)"
+.br
+.ti -1c
+.RI "std::string \fBlast_error\fP () const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBstatement_type\fP > \fBcreate_statement\fP ()"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBtransaction_impl\fP > \fBcreate_transaction\fP () const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBtransaction_impl\fP > \fBcreate_transaction\fP (transaction::type type) const"
+.br
+.ti -1c
+.RI "std::vector< \fBcolumn_definition\fP > \fBget_columns_for_schema\fP (const std::string &dbName, const std::string &tableName)"
+.br
+.ti -1c
+.RI "std::string \fBbind_param\fP (size_t index) const"
+.br
+.ti -1c
+.RI "int \fBfeatures\fP () const"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::shared_ptr< sqlite3 > \fBdb_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBfactory\fP"
+.br
+.ti -1c
+.RI "class \fBstatement\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+a sqlite specific implementation of a database 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::sqlite::session::session (const \fBuri\fP & info)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinfo\fP the connection info 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "std::string coda::db::sqlite::session::bind_param (size_t index) const\fC [virtual]\fP"
+binds a null value 
+.PP
+Implements \fBcoda::db::session_impl\fP\&.
+.SS "void coda::db::sqlite::session::close ()\fC [virtual]\fP"
+closes the connection to the database 
+.PP
+Implements \fBcoda::db::session_impl\fP\&.
+.SS "std::shared_ptr<\fBstatement_type\fP> coda::db::sqlite::session::create_statement ()\fC [virtual]\fP"
+
+.PP
+\fBReturns:\fP
+.RS 4
+a statement for this database 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::session_impl\fP\&.
+.SS "std::shared_ptr<\fBtransaction_impl\fP> coda::db::sqlite::session::create_transaction () const\fC [virtual]\fP"
+return the created transaction 
+.PP
+Implements \fBcoda::db::session_impl\fP\&.
+.SS "bool coda::db::sqlite::session::execute (const std::string & sql)\fC [virtual]\fP"
+executes a sql statement that does not return results 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsql\fP the sql string to execute 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+true if successful 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::session_impl\fP\&.
+.SS "std::vector<\fBcolumn_definition\fP> coda::db::sqlite::session::get_columns_for_schema (const std::string & dbName, const std::string & tableName)\fC [virtual]\fP"
+
+.PP
+overriden for sqlite3 specific pragma parsing 
+.PP
+Implements \fBcoda::db::session_impl\fP\&.
+.SS "bool coda::db::sqlite::session::is_open () const\fC [virtual]\fP, \fC [noexcept]\fP"
+tests if a connection to the database is open 
+.PP
+\fBReturns:\fP
+.RS 4
+true if the connection is open 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::session_impl\fP\&.
+.SS "std::string coda::db::sqlite::session::last_error () const\fC [virtual]\fP"
+gets the last error for any statement 
+.PP
+\fBReturns:\fP
+.RS 4
+the last error or an empty string 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::session_impl\fP\&.
+.SS "long long coda::db::sqlite::session::last_insert_id () const\fC [virtual]\fP"
+gets the last insert id from any statement 
+.PP
+\fBReturns:\fP
+.RS 4
+the last insert id or zero 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::session_impl\fP\&.
+.SS "int coda::db::sqlite::session::last_number_of_changes () const\fC [virtual]\fP"
+gets the last number of modified records for any statement 
+.PP
+\fBReturns:\fP
+.RS 4
+the last number of changes or zero 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::session_impl\fP\&.
+.SS "void coda::db::sqlite::session::open ()\fC [virtual]\fP"
+opens a connection to the database 
+.PP
+Implements \fBcoda::db::session_impl\fP\&.
+.SS "std::shared_ptr<\fBresultset_impl\fP> coda::db::sqlite::session::query (const std::string & sql)\fC [virtual]\fP"
+executes a sql statement that returns results 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsql\fP the sql string to execute 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the results of the query 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::session_impl\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

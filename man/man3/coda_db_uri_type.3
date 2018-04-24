@@ -1,0 +1,80 @@
+.TH "coda::db::uri_type" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::uri_type
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <uri\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBuri_type\fP (const std::string &url)"
+.br
+.ti -1c
+.RI "void \fBparse\fP (const std::string &url)"
+.br
+.ti -1c
+.RI "\fBoperator std::string\fP () const"
+.br
+.in -1c
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBprotocol\fP"
+.br
+.ti -1c
+.RI "std::string \fBuser\fP"
+.br
+.ti -1c
+.RI "std::string \fBpassword\fP"
+.br
+.ti -1c
+.RI "std::string \fBhost\fP"
+.br
+.ti -1c
+.RI "std::string \fBport\fP"
+.br
+.ti -1c
+.RI "std::string \fBpath\fP"
+.br
+.ti -1c
+.RI "std::string \fBquery\fP"
+.br
+.ti -1c
+.RI "std::string \fBvalue\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+small utility to parse a uri 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::uri_type::uri_type (const std::string & url)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIurl\fP the url to parse 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void coda::db::uri_type::parse (const std::string & url)"
+decomposes a uri into its parts 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIurl\fP the url to parse 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

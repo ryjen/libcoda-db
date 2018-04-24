@@ -1,0 +1,129 @@
+.TH "coda::db::sql_operator" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::sql_operator
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBcoda::db::sql_operator_builder\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsql_operator\fP (const \fBsql_operator\fP &other)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP (\fBsql_operator\fP &&other)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP & \fBoperator=\fP (const \fBsql_operator\fP &other)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP & \fBoperator=\fP (\fBsql_operator\fP &&other)"
+.br
+.ti -1c
+.RI "virtual \fB~sql_operator\fP ()"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP & \fBoperator!\fP ()"
+.br
+.ti -1c
+.RI "op::type \fBtype\fP () const"
+.br
+.ti -1c
+.RI "\fBsql_value\fP \fBlvalue\fP () const"
+.br
+.ti -1c
+.RI "bool \fBis_named\fP () const"
+.br
+.ti -1c
+.RI "template<typename T > void \fBrvalue\fP (const T &visitor)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBcopy\fP (const \fBsql_operator\fP &other)"
+.br
+.ti -1c
+.RI "void \fBmove\fP (\fBsql_operator\fP &&other)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBnot_\fP"
+.br
+.ti -1c
+.RI "\fBsql_value\fP \fBlvalue_\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "\fBsql_value\fP \fBrvalue_\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBsql_value\fP > \fBrvalues_\fP"
+.br
+.ti -1c
+.RI "std::pair< \fBsql_value\fP, \fBsql_value\fP > \fBrrange_\fP"
+.br
+.ti -1c
+.RI "}; "
+.br
+.ti -1c
+.RI "op::type \fBtype_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBwhere_builder\fP"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP \fBop::equals\fP (const \fBsql_value\fP &lvalue, const \fBsql_value\fP &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP \fBop::greater\fP (const \fBsql_value\fP &lvalue, const \fBsql_value\fP &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP \fBop::lesser\fP (const \fBsql_value\fP &lvalue, const \fBsql_value\fP &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP \fBop::equals_greater\fP (const \fBsql_value\fP &lvalue, const \fBsql_value\fP &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP \fBop::equals_lesser\fP (const \fBsql_value\fP &lvalue, const \fBsql_value\fP &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP \fBop::like\fP (const \fBsql_value\fP &lvalue, const std::string &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP \fBop::startswith\fP (const \fBsql_value\fP &lvalue, const std::string &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP \fBop::endswith\fP (const \fBsql_value\fP &lvalue, const std::string &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP \fBop::contains\fP (const \fBsql_value\fP &lvalue, const std::string &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP \fBop::in\fP (const \fBsql_value\fP &lvalue, const std::vector< \fBsql_value\fP > &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP \fBop::between\fP (const \fBsql_value\fP &lvalue, const \fBsql_value\fP &rvalue1, const \fBsql_value\fP &rvalue2)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP \fBop::is_null\fP (const \fBsql_value\fP &lvalue)"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

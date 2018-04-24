@@ -1,0 +1,36 @@
+.TH "coda::db::session_factory" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::session_factory
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBcoda::db::mysql::factory\fP, \fBcoda::db::postgres::factory\fP, and \fBcoda::db::sqlite::factory\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsession_factory\fP (const \fBsession_factory\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBsession_factory\fP (\fBsession_factory\fP &&other)=default"
+.br
+.ti -1c
+.RI "\fBsession_factory\fP & \fBoperator=\fP (const \fBsession_factory\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBsession_factory\fP & \fBoperator=\fP (\fBsession_factory\fP &&other)=default"
+.br
+.ti -1c
+.RI "virtual std::shared_ptr< \fBcoda::db::session_impl\fP > \fBcreate\fP (const \fBuri\fP &\fBuri\fP)=0"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBcoda::db::session_impl\fP > \fBcreate\fP (const std::string &uri_s)"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

@@ -1,0 +1,39 @@
+.TH "coda::db::helper::as_sql_string" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::helper::as_sql_string
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits static_visitor< sql_string >\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<typename V > sql_string \fBoperator()\fP (const V &value) const"
+.br
+.ti -1c
+.RI "sql_string \fBoperator()\fP (const \fBsql_time\fP &value) const"
+.br
+.ti -1c
+.RI "sql_string \fBoperator()\fP (const sql_string &value) const"
+.br
+.ti -1c
+.RI "sql_string \fBoperator()\fP (const sql_wstring &value) const"
+.br
+.ti -1c
+.RI "sql_string \fBoperator()\fP (const sql_blob &value) const"
+.br
+.ti -1c
+.RI "sql_string \fBoperator()\fP (const sql_null_type &null) const"
+.br
+.ti -1c
+.RI "sql_string \fBoperator()\fP (const \fBsql_number\fP &value) const"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

@@ -1,0 +1,34 @@
+.TH "coda::db::sqlite::transaction" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::sqlite::transaction
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBcoda::db::transaction_impl\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBtype\fP { \fBnone\fP, \fBdeferred\fP, \fBimmediate\fP, \fBexclusive\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBtransaction\fP (const std::shared_ptr< sqlite3 > &db, transaction::type type=none)"
+.br
+.ti -1c
+.RI "void \fBstart\fP ()"
+.br
+.ti -1c
+.RI "bool \fBis_active\fP () const noexcept"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

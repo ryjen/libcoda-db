@@ -1,0 +1,68 @@
+.TH "coda::db::mysql::transaction" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::mysql::transaction
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBcoda::db::transaction_impl\fP\&.
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBmode\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBtransaction\fP (const std::shared_ptr< MYSQL > &db, const \fBtransaction::mode\fP &\fBmode\fP={})"
+.br
+.ti -1c
+.RI "\fBtransaction\fP (const \fBtransaction\fP &other)"
+.br
+.ti -1c
+.RI "\fBtransaction\fP (\fBtransaction\fP &&other)"
+.br
+.ti -1c
+.RI "\fBtransaction\fP & \fBoperator=\fP (const \fBtransaction\fP &other)"
+.br
+.ti -1c
+.RI "\fBtransaction\fP & \fBoperator=\fP (\fBtransaction\fP &&other)"
+.br
+.ti -1c
+.RI "void \fBstart\fP ()"
+.br
+.ti -1c
+.RI "bool \fBis_active\fP () const noexcept"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBsession\fP"
+.br
+.in -1c
+.SH "Data Structure Documentation"
+.PP 
+.SH "struct coda::db::mysql::transaction::mode"
+.PP 
+\fBData Fields:\fP
+.RS 4
+level \fIisolation\fP 
+.br
+.PP
+type \fItype\fP 
+.br
+.PP
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

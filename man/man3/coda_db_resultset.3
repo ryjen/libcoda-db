@@ -1,0 +1,204 @@
+.TH "coda::db::resultset" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::resultset
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <resultset\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef \fBcoda::db::row\fP \fBrow_type\fP"
+.br
+.ti -1c
+.RI "typedef \fBresultset_iterator\fP< \fBrow_type\fP, \fBrow_type\fP > \fBiterator\fP"
+.br
+.ti -1c
+.RI "typedef \fBresultset_iterator\fP< const \fBrow_type\fP, \fBrow_type\fP > \fBconst_iterator\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBresultset\fP (const std::shared_ptr< \fBresultset_impl\fP > &\fBimpl\fP)"
+.br
+.ti -1c
+.RI "\fBresultset\fP (const \fBresultset\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBresultset\fP (\fBresultset\fP &&other)"
+.br
+.ti -1c
+.RI "\fBresultset\fP & \fBoperator=\fP (const \fBresultset\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBresultset\fP & \fBoperator=\fP (\fBresultset\fP &&other)"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const noexcept"
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBbegin\fP ()"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP \fBbegin\fP () const"
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBend\fP ()"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP \fBend\fP () const"
+.br
+.ti -1c
+.RI "\fBrow_type\fP \fBcurrent_row\fP ()"
+.br
+.ti -1c
+.RI "bool \fBnext\fP ()"
+.br
+.ti -1c
+.RI "\fBrow_type\fP \fBoperator*\fP ()"
+.br
+.ti -1c
+.RI "void \fBreset\fP ()"
+.br
+.ti -1c
+.RI "size_t \fBsize\fP () const"
+.br
+.ti -1c
+.RI "bool \fBempty\fP () const"
+.br
+.ti -1c
+.RI "void \fBfor_each\fP (const std::function< void(const \fBrow_type\fP &)> &funk) const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBresultset_impl\fP > \fBimpl\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+the results (a set of rows) for a query 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::resultset::resultset (const std::shared_ptr< \fBresultset_impl\fP > & impl)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIimpl\fP the implementation for this resultset 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBiterator\fP coda::db::resultset::begin ()"
+
+.PP
+\fBReturns:\fP
+.RS 4
+an iterator to the first row 
+.RE
+.PP
+
+.SS "\fBconst_iterator\fP coda::db::resultset::begin () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+an immutable iterator to the first row 
+.RE
+.PP
+
+.SS "\fBrow_type\fP coda::db::resultset::current_row ()"
+gets the current row 
+.PP
+\fBReturns:\fP
+.RS 4
+the current row 
+.RE
+.PP
+
+.SS "bool coda::db::resultset::empty () const"
+tests if the are no results 
+.PP
+\fBReturns:\fP
+.RS 4
+true if there are no results 
+.RE
+.PP
+
+.SS "\fBiterator\fP coda::db::resultset::end ()"
+
+.PP
+\fBReturns:\fP
+.RS 4
+an iterator to after the last row 
+.RE
+.PP
+
+.SS "\fBconst_iterator\fP coda::db::resultset::end () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+a immutable iterator the after the last row 
+.RE
+.PP
+
+.SS "void coda::db::resultset::for_each (const std::function< void(const \fBrow_type\fP &)> & funk) const"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfunk\fP the callback to perform for each row 
+.RE
+.PP
+
+.SS "std::shared_ptr<\fBresultset_impl\fP> coda::db::resultset::impl () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+a pointer to the implementation 
+.RE
+.PP
+
+.SS "bool coda::db::resultset::is_valid () const\fC [noexcept]\fP"
+tests if the result set is valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if the implementation is valid 
+.RE
+.PP
+
+.SS "bool coda::db::resultset::next ()"
+moves to the next row 
+.PP
+\fBReturns:\fP
+.RS 4
+true if successful 
+.RE
+.PP
+
+.SS "\fBrow_type\fP coda::db::resultset::operator* ()"
+dereference operator to the current row 
+.SS "void coda::db::resultset::reset ()"
+resets this result set back to the first row 
+.SS "size_t coda::db::resultset::size () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the number of rows in the result set 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

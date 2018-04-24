@@ -1,0 +1,50 @@
+.TH "coda::db::schema_factory" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::schema_factory
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <schema_factory\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBschema_factory\fP (\fBschema_factory\fP &&other)"
+.br
+.ti -1c
+.RI "\fBschema_factory\fP & \fBoperator=\fP (\fBschema_factory\fP &&other)"
+.br
+.ti -1c
+.RI "\fBschema_factory\fP (const \fBschema_factory\fP &other)"
+.br
+.ti -1c
+.RI "\fBschema_factory\fP & \fBoperator=\fP (const \fBschema_factory\fP &other)"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBschema\fP > \fBget\fP (const std::shared_ptr< \fBsession\fP > &\fBsession\fP, const std::string &tableName)"
+.br
+.ti -1c
+.RI "void \fBclear\fP (const std::string &tablename)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Schema factory handles caching of table schemas\&. Caching the schemas reduces the amount of db reads when working with records\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void coda::db::schema_factory::clear (const std::string & tablename)"
+clears a cached schema for the table name 
+.PP
+\fBParameters:\fP
+.RS 4
+\fItablename\fP the table name to clear the schema for 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

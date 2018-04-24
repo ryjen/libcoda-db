@@ -1,0 +1,98 @@
+.TH "coda::db::sqlite::column" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::sqlite::column
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <column\&.h>\fP
+.PP
+Inherits \fBcoda::db::column_impl\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBcolumn\fP (const std::shared_ptr< sqlite3_stmt > &stmt, int \fBcolumn\fP)"
+.br
+.ti -1c
+.RI "\fBcolumn\fP (const \fBcolumn\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBcolumn\fP (\fBcolumn\fP &&other)"
+.br
+.ti -1c
+.RI "\fBcolumn\fP & \fBoperator=\fP (const \fBcolumn\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBcolumn\fP & \fBoperator=\fP (\fBcolumn\fP &&other)"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const"
+.br
+.ti -1c
+.RI "\fBsql_value\fP \fBto_value\fP () const"
+.br
+.ti -1c
+.RI "int \fBsql_type\fP () const"
+.br
+.ti -1c
+.RI "std::string \fBname\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+a sqlite specific implementation of a column 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::sqlite::column::column (const std::shared_ptr< sqlite3_stmt > & stmt, int column)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstmt\fP the statement in use 
+.br
+\fIcolumn\fP the column index 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool coda::db::sqlite::column::is_valid () const\fC [virtual]\fP"
+tests if this colums data validity 
+.PP
+\fBReturns:\fP
+.RS 4
+true if this columns data is valid 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::column_impl\fP\&.
+.SS "std::string coda::db::sqlite::column::name () const\fC [virtual]\fP"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the name of this column; 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::column_impl\fP\&.
+.SS "\fBsql_value\fP coda::db::sqlite::column::to_value () const\fC [virtual]\fP"
+converts this column to a value 
+.PP
+\fBReturns:\fP
+.RS 4
+the value of this column 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::column_impl\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

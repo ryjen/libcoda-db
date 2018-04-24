@@ -1,0 +1,209 @@
+.TH "coda::db::sqlite::statement" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::sqlite::statement
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <statement\&.h>\fP
+.PP
+Inherits \fBcoda::db::statement\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBstatement\fP (const std::shared_ptr< \fBsqlite::session\fP > &sess)"
+.br
+.ti -1c
+.RI "\fBstatement\fP (const \fBstatement\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBstatement\fP (\fBstatement\fP &&other)"
+.br
+.ti -1c
+.RI "\fBstatement\fP & \fBoperator=\fP (const \fBstatement\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBstatement\fP & \fBoperator=\fP (\fBstatement\fP &&other)"
+.br
+.ti -1c
+.RI "void \fBprepare\fP (const std::string &sql)"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const noexcept"
+.br
+.ti -1c
+.RI "\fBresultset_type\fP \fBresults\fP ()"
+.br
+.ti -1c
+.RI "bool \fBresult\fP ()"
+.br
+.ti -1c
+.RI "void \fBfinish\fP ()"
+.br
+.ti -1c
+.RI "void \fBreset\fP ()"
+.br
+.ti -1c
+.RI "int \fBlast_number_of_changes\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBlast_error\fP ()"
+.br
+.ti -1c
+.RI "long long \fBlast_insert_id\fP ()"
+.br
+.ti -1c
+.RI "\fBstatement\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "\fBstatement\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "size_t \fBnum_of_bindings\fP () const noexcept"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+a sqlite specific implementation of a statement 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::sqlite::statement::statement (const std::shared_ptr< \fBsqlite::session\fP > & sess)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database in use 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBstatement\fP& coda::db::sqlite::statement::bind (size_t index, const \fBsql_value\fP & value)\fC [virtual]\fP"
+Binds a \fBsql_value\fP using the other bind methods 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the index of the binding 
+.br
+\fIvalue\fP the value of the binding 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::bindable\fP\&.
+.SS "\fBstatement\fP& coda::db::sqlite::statement::bind (const std::string & name, const \fBsql_value\fP & value)\fC [virtual]\fP"
+bind a named parameter 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the parameter 
+.br
+\fIvalue\fP the value to bind 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::bindable\fP\&.
+.SS "void coda::db::sqlite::statement::finish ()\fC [virtual]\fP"
+releases resources for this statement 
+.PP
+Implements \fBcoda::db::statement\fP\&.
+.SS "bool coda::db::sqlite::statement::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+tests if this statement is valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if the internals are valid 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::statement\fP\&.
+.SS "std::string coda::db::sqlite::statement::last_error ()\fC [virtual]\fP"
+gets the last error 
+.PP
+\fBReturns:\fP
+.RS 4
+the last error or an empty string 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::statement\fP\&.
+.SS "long long coda::db::sqlite::statement::last_insert_id ()\fC [virtual]\fP"
+gets the last insert id 
+.PP
+\fBReturns:\fP
+.RS 4
+the last insert id or zero 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::statement\fP\&.
+.SS "int coda::db::sqlite::statement::last_number_of_changes ()\fC [virtual]\fP"
+gets the last number of changes 
+.PP
+\fBReturns:\fP
+.RS 4
+the last number of changes or zero 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::statement\fP\&.
+.SS "void coda::db::sqlite::statement::prepare (const std::string & sql)\fC [virtual]\fP"
+prepares this statement for execution 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsql\fP the sql to prepare 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::statement\fP\&.
+.SS "void coda::db::sqlite::statement::reset ()\fC [virtual]\fP"
+resets this statement for a new execution 
+.PP
+Implements \fBcoda::db::statement\fP\&.
+.SS "bool coda::db::sqlite::statement::result ()\fC [virtual]\fP"
+executes this statement 
+.PP
+\fBReturns:\fP
+.RS 4
+true if successful 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::statement\fP\&.
+.SS "\fBresultset_type\fP coda::db::sqlite::statement::results ()\fC [virtual]\fP"
+executes this statement 
+.PP
+\fBReturns:\fP
+.RS 4
+a set of the results 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::statement\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

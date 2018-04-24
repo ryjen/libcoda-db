@@ -1,0 +1,207 @@
+.TH "coda::db::session_impl" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::session_impl
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, and \fBcoda::db::sqlite::session\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef \fBstatement\fP \fBstatement_type\fP"
+.br
+.ti -1c
+.RI "typedef \fBtransaction_impl\fP \fBtransaction_type\fP"
+.br
+.ti -1c
+.RI "typedef \fBresultset_impl\fP \fBresultset_type\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsession_impl\fP (const \fBuri\fP &connectionInfo)"
+.br
+.ti -1c
+.RI "\fBuri\fP \fBconnection_info\fP () const"
+.br
+.ti -1c
+.RI "virtual bool \fBis_open\fP () const noexcept=0"
+.br
+.ti -1c
+.RI "virtual void \fBopen\fP ()=0"
+.br
+.ti -1c
+.RI "virtual void \fBclose\fP ()=0"
+.br
+.ti -1c
+.RI "virtual long long \fBlast_insert_id\fP () const =0"
+.br
+.ti -1c
+.RI "virtual int \fBlast_number_of_changes\fP () const =0"
+.br
+.ti -1c
+.RI "virtual std::string \fBlast_error\fP () const =0"
+.br
+.ti -1c
+.RI "virtual std::shared_ptr< \fBresultset_type\fP > \fBquery\fP (const std::string &sql)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBexecute\fP (const std::string &sql)=0"
+.br
+.ti -1c
+.RI "virtual std::shared_ptr< \fBstatement_type\fP > \fBcreate_statement\fP ()=0"
+.br
+.ti -1c
+.RI "virtual std::shared_ptr< \fBtransaction_type\fP > \fBcreate_transaction\fP () const =0"
+.br
+.ti -1c
+.RI "virtual std::vector< \fBcolumn_definition\fP > \fBget_columns_for_schema\fP (const std::string &dbName, const std::string &tablename)=0"
+.br
+.ti -1c
+.RI "virtual std::string \fBbind_param\fP (size_t index) const =0"
+.br
+.ti -1c
+.RI "virtual int \fBfeatures\fP () const"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::session_impl::session_impl (const \fBuri\fP & connectionInfo)"
+default constructor expects a uri 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual std::string coda::db::session_impl::bind_param (size_t index) const\fC [pure virtual]\fP"
+binds a null value 
+.PP
+Implemented in \fBcoda::db::sqlite::session\fP, \fBcoda::db::mysql::session\fP, and \fBcoda::db::postgres::session\fP\&.
+.SS "virtual void coda::db::session_impl::close ()\fC [pure virtual]\fP"
+closes the connection to the database 
+.PP
+Implemented in \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, and \fBcoda::db::sqlite::session\fP\&.
+.SS "\fBuri\fP coda::db::session_impl::connection_info () const"
+gets the connection info 
+.PP
+\fBReturns:\fP
+.RS 4
+the uri 
+.RE
+.PP
+
+.SS "virtual std::shared_ptr<\fBstatement_type\fP> coda::db::session_impl::create_statement ()\fC [pure virtual]\fP"
+
+.PP
+\fBReturns:\fP
+.RS 4
+a statement for this database 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, and \fBcoda::db::sqlite::session\fP\&.
+.SS "virtual std::shared_ptr<\fBtransaction_type\fP> coda::db::session_impl::create_transaction () const\fC [pure virtual]\fP"
+return the created transaction 
+.PP
+Implemented in \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, and \fBcoda::db::sqlite::session\fP\&.
+.SS "virtual bool coda::db::session_impl::execute (const std::string & sql)\fC [pure virtual]\fP"
+executes a sql statement that does not return results 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsql\fP the sql string to execute 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+true if successful 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, and \fBcoda::db::sqlite::session\fP\&.
+.SS "virtual std::vector<\fBcolumn_definition\fP> coda::db::session_impl::get_columns_for_schema (const std::string & dbName, const std::string & tablename)\fC [pure virtual]\fP"
+query the schema for a table 
+.PP
+\fBParameters:\fP
+.RS 4
+\fItablename\fP the table to query 
+.br
+\fIcolumns\fP an array to put columns found 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::sqlite::session\fP, \fBcoda::db::mysql::session\fP, and \fBcoda::db::postgres::session\fP\&.
+.SS "virtual bool coda::db::session_impl::is_open () const\fC [pure virtual]\fP, \fC [noexcept]\fP"
+tests if a connection to the database is open 
+.PP
+\fBReturns:\fP
+.RS 4
+true if the connection is open 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, and \fBcoda::db::sqlite::session\fP\&.
+.SS "virtual std::string coda::db::session_impl::last_error () const\fC [pure virtual]\fP"
+gets the last error for any statement 
+.PP
+\fBReturns:\fP
+.RS 4
+the last error or an empty string 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::sqlite::session\fP, \fBcoda::db::mysql::session\fP, and \fBcoda::db::postgres::session\fP\&.
+.SS "virtual long long coda::db::session_impl::last_insert_id () const\fC [pure virtual]\fP"
+gets the last insert id from any statement 
+.PP
+\fBReturns:\fP
+.RS 4
+the last insert id or zero 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, and \fBcoda::db::sqlite::session\fP\&.
+.SS "virtual int coda::db::session_impl::last_number_of_changes () const\fC [pure virtual]\fP"
+gets the last number of modified records for any statement 
+.PP
+\fBReturns:\fP
+.RS 4
+the last number of changes or zero 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, and \fBcoda::db::sqlite::session\fP\&.
+.SS "virtual void coda::db::session_impl::open ()\fC [pure virtual]\fP"
+opens a connection to the database 
+.PP
+Implemented in \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, and \fBcoda::db::sqlite::session\fP\&.
+.SS "virtual std::shared_ptr<\fBresultset_type\fP> coda::db::session_impl::query (const std::string & sql)\fC [pure virtual]\fP"
+executes a sql statement that returns results 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsql\fP the sql string to execute 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the results of the query 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, and \fBcoda::db::sqlite::session\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

@@ -1,0 +1,173 @@
+.TH "coda::db::postgres::binding" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::postgres::binding
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBcoda::db::bind_mapping\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBbinding\fP ()"
+.br
+.ti -1c
+.RI "\fBbinding\fP (size_t size)"
+.br
+.ti -1c
+.RI "\fBbinding\fP (const \fBbinding\fP &other)"
+.br
+.ti -1c
+.RI "\fBbinding\fP (\fBbinding\fP &&other)"
+.br
+.ti -1c
+.RI "\fBbinding\fP & \fBoperator=\fP (const \fBbinding\fP &other)"
+.br
+.ti -1c
+.RI "\fBbinding\fP & \fBoperator=\fP (\fBbinding\fP &&other)"
+.br
+.ti -1c
+.RI "size_t \fBnum_of_bindings\fP () const noexcept"
+.br
+.ti -1c
+.RI "size_t \fBcapacity\fP () const"
+.br
+.ti -1c
+.RI "\fBsql_value\fP \fBto_value\fP (size_t index) const"
+.br
+.ti -1c
+.RI "int \fBsql_type\fP (size_t index) const"
+.br
+.ti -1c
+.RI "\fBbinding\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "\fBbinding\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "std::string \fBprepare\fP (const std::string &sql)"
+.br
+.ti -1c
+.RI "void \fBreset\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBcolumn\fP"
+.br
+.ti -1c
+.RI "class \fBstatement\fP"
+.br
+.ti -1c
+.RI "class \fBdata_mapper::from_number\fP"
+.br
+.ti -1c
+.RI "class \fBdata_mapper::from_value\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::postgres::binding::binding ()"
+default constructor 
+.SS "coda::db::postgres::binding::binding (size_t size)"
+zero out an array of size for binding 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBbinding\fP& coda::db::postgres::binding::bind (size_t index, const \fBsql_value\fP & value)\fC [virtual]\fP"
+Binds a \fBsql_value\fP using the other bind methods 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the index of the binding 
+.br
+\fIvalue\fP the value of the binding 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::bind_mapping\fP\&.
+.SS "\fBbinding\fP& coda::db::postgres::binding::bind (const std::string & name, const \fBsql_value\fP & value)\fC [virtual]\fP"
+bind a named parameter 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the parameter 
+.br
+\fIvalue\fP the value to bind 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBcoda::db::bind_mapping\fP\&.
+.SS "size_t coda::db::postgres::binding::capacity () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the current capcity of the storage 
+.RE
+.PP
+
+.SS "size_t coda::db::postgres::binding::num_of_bindings () const\fC [virtual]\fP, \fC [noexcept]\fP"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bindings 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::bindable\fP\&.
+.SS "void coda::db::postgres::binding::reset ()\fC [virtual]\fP"
+clear and remove all bindings 
+.PP
+Reimplemented from \fBcoda::db::bind_mapping\fP\&.
+.SS "int coda::db::postgres::binding::sql_type (size_t index) const"
+gets the sql type of a binding 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the index of the binding 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+an integer representing the sql type Note: the return value will be a postgres specific implementation 
+.RE
+.PP
+
+.SS "\fBsql_value\fP coda::db::postgres::binding::to_value (size_t index) const"
+gets the value of a binding 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the index of the binding parameter 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the value of the binding at the given index 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

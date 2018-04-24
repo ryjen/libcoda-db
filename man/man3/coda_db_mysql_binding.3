@@ -1,0 +1,266 @@
+.TH "coda::db::mysql::binding" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::mysql::binding
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <binding\&.h>\fP
+.PP
+Inherits \fBcoda::db::bind_mapping\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBbinding\fP ()"
+.br
+.ti -1c
+.RI "\fBbinding\fP (size_t size)"
+.br
+.ti -1c
+.RI "\fBbinding\fP (const MYSQL_BIND &value)"
+.br
+.ti -1c
+.RI "\fBbinding\fP (MYSQL_BIND *value, size_t size)"
+.br
+.ti -1c
+.RI "\fBbinding\fP (MYSQL_FIELD *fields, size_t size)"
+.br
+.ti -1c
+.RI "\fBbinding\fP (const \fBbinding\fP &other)"
+.br
+.ti -1c
+.RI "\fBbinding\fP (\fBbinding\fP &&other)"
+.br
+.ti -1c
+.RI "\fBbinding\fP & \fBoperator=\fP (const \fBbinding\fP &other)"
+.br
+.ti -1c
+.RI "\fBbinding\fP & \fBoperator=\fP (\fBbinding\fP &&other)"
+.br
+.ti -1c
+.RI "size_t \fBnum_of_bindings\fP () const noexcept"
+.br
+.ti -1c
+.RI "size_t \fBcapacity\fP () const"
+.br
+.ti -1c
+.RI "MYSQL_BIND * \fBget\fP (size_t index) const"
+.br
+.ti -1c
+.RI "\fBsql_value\fP \fBto_value\fP (size_t index) const"
+.br
+.ti -1c
+.RI "int \fBsql_type\fP (size_t index) const"
+.br
+.ti -1c
+.RI "\fBbinding\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "\fBbinding\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "void \fBbind_params\fP (MYSQL_STMT *stmt) const"
+.br
+.ti -1c
+.RI "void \fBbind_result\fP (MYSQL_STMT *stmt) const"
+.br
+.ti -1c
+.RI "std::string \fBprepare\fP (const std::string &sql)"
+.br
+.ti -1c
+.RI "void \fBreset\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBmysql_column\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+makes binding mysql queries simpler 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::mysql::binding::binding ()"
+default constructor 
+.SS "coda::db::mysql::binding::binding (size_t size)"
+constructor with an empty set of values 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsize\fP the size of the parameter set 
+.RE
+.PP
+
+.SS "coda::db::mysql::binding::binding (const MYSQL_BIND & value)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the single binding to init with 
+.RE
+.PP
+
+.SS "coda::db::mysql::binding::binding (MYSQL_BIND * value, size_t size)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the array of values to init with 
+.br
+\fIsize\fP the size of the value array 
+.RE
+.PP
+
+.SS "coda::db::mysql::binding::binding (MYSQL_FIELD * fields, size_t size)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfields\fP the array of fields to init with 
+.br
+\fIsize\fP the size of the fields array 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBbinding\fP& coda::db::mysql::binding::bind (size_t index, const \fBsql_value\fP & value)\fC [virtual]\fP"
+Binds a \fBsql_value\fP using the other bind methods 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the index of the binding 
+.br
+\fIvalue\fP the value of the binding 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::bind_mapping\fP\&.
+.SS "\fBbinding\fP& coda::db::mysql::binding::bind (const std::string & name, const \fBsql_value\fP & value)\fC [virtual]\fP"
+bind a named parameter 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the parameter 
+.br
+\fIvalue\fP the value to bind 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBcoda::db::bind_mapping\fP\&.
+.SS "void coda::db::mysql::binding::bind_params (MYSQL_STMT * stmt) const"
+puts values into a query before execution 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstmt\fP the statemnt to bind to 
+.RE
+.PP
+
+.SS "void coda::db::mysql::binding::bind_result (MYSQL_STMT * stmt) const"
+prepares the statement to receive results based on the bindings 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstmt\fP the raw mysql statement to bind to 
+.RE
+.PP
+
+.SS "size_t coda::db::mysql::binding::capacity () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the capcity of the storage of this instance 
+.RE
+.PP
+
+.SS "MYSQL_BIND* coda::db::mysql::binding::get (size_t index) const"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the index of the binding to get 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the raw binding value for the given index 
+.RE
+.PP
+
+.SS "size_t coda::db::mysql::binding::num_of_bindings () const\fC [virtual]\fP, \fC [noexcept]\fP"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the size (number of bindings) of this instance 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::bindable\fP\&.
+.SS "std::string coda::db::mysql::binding::prepare (const std::string & sql)"
+validates the sql and prepares the bindinds 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsql\fP the sql to prepare 
+.RE
+.PP
+
+.SS "void coda::db::mysql::binding::reset ()\fC [virtual]\fP"
+reset all the bindings 
+.PP
+Reimplemented from \fBcoda::db::bind_mapping\fP\&.
+.SS "int coda::db::mysql::binding::sql_type (size_t index) const"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the index of the binding 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the value type of the binding at the given index 
+.RE
+.PP
+
+.SS "\fBsql_value\fP coda::db::mysql::binding::to_value (size_t index) const"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the index of the binding value 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the value of the binding at the given index 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

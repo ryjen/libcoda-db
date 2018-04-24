@@ -1,0 +1,277 @@
+.TH "coda::db::row" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::row
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <row\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef \fBcoda::db::column\fP \fBcolumn_type\fP"
+.br
+.ti -1c
+.RI "typedef \fBrow_iterator\fP< \fBcolumn_type\fP, \fBcolumn_type\fP, \fBrow_impl\fP > \fBiterator\fP"
+.br
+.ti -1c
+.RI "typedef \fBrow_iterator\fP< const \fBcolumn_type\fP, \fBcolumn_type\fP, const \fBrow_impl\fP > \fBconst_iterator\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBrow\fP ()"
+.br
+.ti -1c
+.RI "\fBrow\fP (const std::shared_ptr< \fBrow_impl\fP > &\fBimpl\fP)"
+.br
+.ti -1c
+.RI "\fBrow\fP (const \fBrow\fP &other)"
+.br
+.ti -1c
+.RI "\fBrow\fP (\fBrow\fP &&other)"
+.br
+.ti -1c
+.RI "\fBrow\fP & \fBoperator=\fP (const \fBrow\fP &other)"
+.br
+.ti -1c
+.RI "\fBrow\fP & \fBoperator=\fP (\fBrow\fP &&other)"
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBbegin\fP ()"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP \fBbegin\fP () const"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP \fBcbegin\fP () const"
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBend\fP ()"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP \fBend\fP () const"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP \fBcend\fP () const"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP \fBoperator[]\fP (size_t position) const"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP \fBoperator[]\fP (const std::string &name) const"
+.br
+.ti -1c
+.RI "std::string \fBcolumn_name\fP (size_t nPosition) const"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP \fBcolumn\fP (size_t nPosition) const"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP \fBcolumn\fP (const std::string &name) const"
+.br
+.ti -1c
+.RI "size_t \fBsize\fP () const noexcept"
+.br
+.ti -1c
+.RI "bool \fBempty\fP () const noexcept"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const noexcept"
+.br
+.ti -1c
+.RI "void \fBfor_each\fP (const std::function< void(const \fBdb::column\fP &)> &funk) const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBrow_impl\fP > \fBimpl\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+represent a row in a table implementation is specific to a type of database 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::row::row ()"
+default constructor 
+.SS "coda::db::row::row (const std::shared_ptr< \fBrow_impl\fP > & impl)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIimpl\fP the row implementation 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBiterator\fP coda::db::row::begin ()"
+
+.PP
+\fBReturns:\fP
+.RS 4
+an iterator to the first column 
+.RE
+.PP
+
+.SS "\fBconst_iterator\fP coda::db::row::begin () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+an const iterator to the first column 
+.RE
+.PP
+
+.SS "\fBconst_iterator\fP coda::db::row::cbegin () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+an immutable iterator to the first column 
+.RE
+.PP
+
+.SS "\fBconst_iterator\fP coda::db::row::cend () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+an immutable iterator to after the last column 
+.RE
+.PP
+
+.SS "\fBcolumn_type\fP coda::db::row::column (size_t nPosition) const"
+get a column by index 
+.PP
+\fBParameters:\fP
+.RS 4
+\fInPosition\fP the index of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the column object 
+.RE
+.PP
+
+.SS "\fBcolumn_type\fP coda::db::row::column (const std::string & name) const"
+gets a column by name 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the column object 
+.RE
+.PP
+
+.SS "std::string coda::db::row::column_name (size_t nPosition) const"
+gets the column name 
+.PP
+\fBParameters:\fP
+.RS 4
+\fInPosition\fP the index of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the column name 
+.RE
+.PP
+
+.SS "bool coda::db::row::empty () const\fC [noexcept]\fP"
+tests if this row has no data 
+.PP
+\fBReturns:\fP
+.RS 4
+true if the row has no data 
+.RE
+.PP
+
+.SS "\fBiterator\fP coda::db::row::end ()"
+
+.PP
+\fBReturns:\fP
+.RS 4
+an iterator to after the last column 
+.RE
+.PP
+
+.SS "\fBconst_iterator\fP coda::db::row::end () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+a const iterator to after the last column 
+.RE
+.PP
+
+.SS "void coda::db::row::for_each (const std::function< void(const \fBdb::column\fP &)> & funk) const"
+performs a callback for each column 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfunk\fP the callback 
+.RE
+.PP
+
+.SS "std::shared_ptr<\fBrow_impl\fP> coda::db::row::impl () const"
+gets the implementation for this row 
+.SS "bool coda::db::row::is_valid () const\fC [noexcept]\fP"
+tests if the implementation is valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if valid 
+.RE
+.PP
+
+.SS "\fBcolumn_type\fP coda::db::row::operator[] (size_t position) const"
+gets a column at a position 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIposition\fP the index of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the column object 
+.RE
+.PP
+
+.SS "\fBcolumn_type\fP coda::db::row::operator[] (const std::string & name) const"
+gets a column by a name 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the column object 
+.RE
+.PP
+
+.SS "size_t coda::db::row::size () const\fC [noexcept]\fP"
+gets the number of columns in the row 
+.PP
+\fBReturns:\fP
+.RS 4
+the number of columns 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

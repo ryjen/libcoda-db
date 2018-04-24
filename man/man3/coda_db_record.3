@@ -1,0 +1,239 @@
+.TH "coda::db::record< T, typename >" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::record< T, typename >
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <record\&.h>\fP
+.PP
+Inherits \fBcoda::db::base::record\fP, and \fBcoda::db::record_finder< T >\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef std::function< void(const std::shared_ptr< T > &)> \fBcallback\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "std::shared_ptr< T > \fBfind_by_id\fP (const \fBsql_value\fP &value) const"
+.br
+.ti -1c
+.RI "void \fBfind_by_id\fP (const \fBsql_value\fP &value, const callback &funk) const"
+.br
+.ti -1c
+.RI "std::vector< std::shared_ptr< T > > \fBfind_all\fP () const"
+.br
+.ti -1c
+.RI "void \fBfind_all\fP (const callback &funk) const"
+.br
+.ti -1c
+.RI "std::vector< std::shared_ptr< T > > \fBfind_by\fP (const std::map< std::string, \fBsql_value\fP > &values) const"
+.br
+.ti -1c
+.RI "std::vector< std::shared_ptr< T > > \fBfind_by\fP (const std::string &name, const \fBsql_value\fP &value) const"
+.br
+.ti -1c
+.RI "void \fBfind_by\fP (const std::map< std::string, \fBsql_value\fP > &values, const callback &funk) const"
+.br
+.ti -1c
+.RI "void \fBfind_by\fP (const std::string &name, const \fBsql_value\fP &value, const callback &funk) const"
+.br
+.ti -1c
+.RI "std::shared_ptr< T > \fBfind_one\fP (const std::map< std::string, \fBsql_value\fP > &values) const"
+.br
+.ti -1c
+.RI "std::shared_ptr< T > \fBfind_one\fP (const std::string &name, const \fBsql_value\fP &value) const"
+.br
+.ti -1c
+.RI "void \fBfind_one\fP (const std::map< std::string, \fBsql_value\fP > &values, const callback &funk) const"
+.br
+.ti -1c
+.RI "void \fBfind_one\fP (const std::string &name, const \fBsql_value\fP &value, const callback &funk) const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<typename T, typename>
+.br
+class coda::db::record< T, typename >"
+an active-record (ish) pattern, should be used as a curiously reoccuring design pattern 
+.SH "Member Function Documentation"
+.PP 
+.SS "template<typename T , typename > std::vector<std::shared_ptr<T> > \fBcoda::db::record\fP< T, typename >::find_all () const\fC [inline]\fP, \fC [virtual]\fP"
+looks up and returns all objects of a record type 
+.PP
+\fBReturns:\fP
+.RS 4
+a vector of record objects of type T 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< T >\fP\&.
+.SS "template<typename T , typename > void \fBcoda::db::record\fP< T, typename >::find_all (const callback & funk) const\fC [inline]\fP, \fC [virtual]\fP"
+find all records 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfunk\fP the callback function for each found record 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< T >\fP\&.
+.SS "template<typename T , typename > std::vector<std::shared_ptr<T> > \fBcoda::db::record\fP< T, typename >::find_by (const std::map< std::string, \fBsql_value\fP > & values) const\fC [inline]\fP, \fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to search by 
+.br
+\fIvalue\fP the value of the column to search by 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a vector of found records of type T 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< T >\fP\&.
+.SS "template<typename T , typename > std::vector<std::shared_ptr<T> > \fBcoda::db::record\fP< T, typename >::find_by (const std::string & name, const \fBsql_value\fP & value) const\fC [inline]\fP, \fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to search by 
+.br
+\fIvalue\fP the value of the column to search by 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a vector of found records of type T 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< T >\fP\&.
+.SS "template<typename T , typename > void \fBcoda::db::record\fP< T, typename >::find_by (const std::map< std::string, \fBsql_value\fP > & values, const callback & funk) const\fC [inline]\fP, \fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to search by 
+.br
+\fIvalue\fP the value of the column to search by 
+.br
+\fIfunk\fP the callback function for each record found 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< T >\fP\&.
+.SS "template<typename T , typename > void \fBcoda::db::record\fP< T, typename >::find_by (const std::string & name, const \fBsql_value\fP & value, const callback & funk) const\fC [inline]\fP, \fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to search by 
+.br
+\fIvalue\fP the value of the column to search by 
+.br
+\fIfunk\fP the callback function for each record found 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< T >\fP\&.
+.SS "template<typename T , typename > void \fBcoda::db::record\fP< T, typename >::find_by_id (const \fBsql_value\fP & value, const callback & funk) const\fC [inline]\fP, \fC [virtual]\fP"
+finds a record by its id 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the value of the id to find 
+.br
+\fIfunk\fP the callback 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< T >\fP\&.
+.SS "template<typename T , typename > std::shared_ptr<T> \fBcoda::db::record\fP< T, typename >::find_one (const std::map< std::string, \fBsql_value\fP > & values) const\fC [inline]\fP, \fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to search by 
+.br
+\fIvalue\fP the value of the column to search by 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a vector of found records of type T 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< T >\fP\&.
+.SS "template<typename T , typename > std::shared_ptr<T> \fBcoda::db::record\fP< T, typename >::find_one (const std::string & name, const \fBsql_value\fP & value) const\fC [inline]\fP, \fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to search by 
+.br
+\fIvalue\fP the value of the column to search by 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a vector of found records of type T 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< T >\fP\&.
+.SS "template<typename T , typename > void \fBcoda::db::record\fP< T, typename >::find_one (const std::map< std::string, \fBsql_value\fP > & values, const callback & funk) const\fC [inline]\fP, \fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to search by 
+.br
+\fIvalue\fP the value of the column to search by 
+.br
+\fIfunk\fP the callback function for each record found 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< T >\fP\&.
+.SS "template<typename T , typename > void \fBcoda::db::record\fP< T, typename >::find_one (const std::string & name, const \fBsql_value\fP & value, const callback & funk) const\fC [inline]\fP, \fC [virtual]\fP"
+find records by a column and its value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column to search by 
+.br
+\fIvalue\fP the value of the column to search by 
+.br
+\fIfunk\fP the callback function for each record found 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::record_finder< T >\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

@@ -1,0 +1,175 @@
+.TH "coda::db::bindable" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::bindable
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <bindable\&.h>\fP
+.PP
+Inherited by \fBcoda::db::bind_mapping\fP, \fBcoda::db::query\fP\fC [protected]\fP, \fBcoda::db::statement\fP, and \fBcoda::db::where_builder\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBbindable\fP (const \fBbindable\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBbindable\fP (\fBbindable\fP &&other)=default"
+.br
+.ti -1c
+.RI "\fBbindable\fP & \fBoperator=\fP (const \fBbindable\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBbindable\fP & \fBoperator=\fP (\fBbindable\fP &&other)=default"
+.br
+.ti -1c
+.RI "template<typename T , typename\&.\&.\&. List> \fBbindable\fP & \fBbind_all\fP (const T &value, const List &\&.\&.\&. argv)"
+.br
+.ti -1c
+.RI "template<typename T , typename\&.\&.\&. List> \fBbindable\fP & \fBbind_list\fP (size_t index, const T &value, const List &\&.\&.\&. argv)"
+.br
+.ti -1c
+.RI "\fBbindable\fP & \fBbind\fP (const std::vector< \fBsql_value\fP > &values, size_t start_index=1)"
+.br
+.ti -1c
+.RI "\fBbindable\fP & \fBbind\fP (const std::unordered_map< std::string, \fBsql_value\fP > &values)"
+.br
+.ti -1c
+.RI "virtual \fBbindable\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value)=0"
+.br
+.ti -1c
+.RI "virtual \fBbindable\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value)=0"
+.br
+.ti -1c
+.RI "virtual size_t \fBnum_of_bindings\fP () const noexcept=0"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<typename T > \fBbindable\fP & \fBbind_list\fP (size_t index, const T &value)"
+.br
+.in -1c
+.SS "Static Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const int \fBprealloc_size\fP"
+.br
+.ti -1c
+.RI "static const int \fBprealloc_increment\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+represents something that can have a sql value binded to it 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBbindable\fP& coda::db::bindable::bind (const std::vector< \fBsql_value\fP > & values, size_t start_index = \fC1\fP)"
+Binds a vector of values by index 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalues\fP the vector of values 
+.br
+\fIstart_index\fP the starting index for the values 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.SS "\fBbindable\fP& coda::db::bindable::bind (const std::unordered_map< std::string, \fBsql_value\fP > & values)"
+Binds a map of named parameters 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalues\fP the map of values 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.SS "virtual \fBbindable\fP& coda::db::bindable::bind (size_t index, const \fBsql_value\fP & value)\fC [pure virtual]\fP"
+Binds a \fBsql_value\fP using the other bind methods 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the index of the binding 
+.br
+\fIvalue\fP the value of the binding 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::where_builder\fP, \fBcoda::db::mysql::binding\fP, \fBcoda::db::postgres::binding\fP, \fBcoda::db::bind_mapping\fP, \fBcoda::db::mysql::statement\fP, \fBcoda::db::query\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+.SS "virtual \fBbindable\fP& coda::db::bindable::bind (const std::string & name, const \fBsql_value\fP & value)\fC [pure virtual]\fP"
+bind a named parameter 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the parameter 
+.br
+\fIvalue\fP the value to bind 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::where_builder\fP, \fBcoda::db::mysql::binding\fP, \fBcoda::db::postgres::binding\fP, \fBcoda::db::mysql::statement\fP, \fBcoda::db::bind_mapping\fP, \fBcoda::db::query\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+.SS "template<typename T > \fBbindable\fP& coda::db::bindable::bind_list (size_t index, const T & value)\fC [inline]\fP, \fC [protected]\fP"
+bind_all override for one \fBsql_value\fP parameter 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the index of the binding 
+.br
+\fIvalue\fP the value to bind 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.SS "template<typename T , typename\&.\&.\&. List> \fBbindable\fP& coda::db::bindable::bind_list (size_t index, const T & value, const List &\&.\&.\&. argv)\fC [inline]\fP"
+bind a list of a values, using the order of values as the index 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the initial index for the list 
+.br
+\fIvalue\fP the first value in the list 
+.br
+\fIargv\fP the remaining values 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

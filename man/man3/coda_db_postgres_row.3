@@ -1,0 +1,129 @@
+.TH "coda::db::postgres::row" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::postgres::row
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <row\&.h>\fP
+.PP
+Inherits \fBcoda::db::row_impl\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBrow\fP (const std::shared_ptr< \fBpostgres::session\fP > &sess, const std::shared_ptr< PGresult > &stmt, int \fBrow\fP)"
+.br
+.ti -1c
+.RI "\fBrow\fP (const \fBrow\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBrow\fP (\fBrow\fP &&other)"
+.br
+.ti -1c
+.RI "\fBrow\fP & \fBoperator=\fP (const \fBrow\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBrow\fP & \fBoperator=\fP (\fBrow\fP &&other)"
+.br
+.ti -1c
+.RI "std::string \fBcolumn_name\fP (size_t nPosition) const"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP \fBcolumn\fP (size_t nPosition) const"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP \fBcolumn\fP (const std::string &name) const"
+.br
+.ti -1c
+.RI "size_t \fBsize\fP () const noexcept"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const noexcept"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+a sqlite specific implementation of a row 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::postgres::row::row (const std::shared_ptr< \fBpostgres::session\fP > & sess, const std::shared_ptr< PGresult > & stmt, int row)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database in use 
+.br
+\fIstmt\fP the query statement result in use 
+.br
+\fIrow\fP the row index 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBcolumn_type\fP coda::db::postgres::row::column (size_t position) const\fC [virtual]\fP"
+gets a column in the row 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIposition\fP the index of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the column object 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::row_impl\fP\&.
+.SS "\fBcolumn_type\fP coda::db::postgres::row::column (const std::string & name) const\fC [virtual]\fP"
+gets a column in the row 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the column object 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::row_impl\fP\&.
+.SS "std::string coda::db::postgres::row::column_name (size_t nPosition) const\fC [virtual]\fP"
+\fBrow_impl\fP overrides 
+.PP
+Implements \fBcoda::db::row_impl\fP\&.
+.SS "bool coda::db::postgres::row::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+tests if the row internals are valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if the row is valid 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::row_impl\fP\&.
+.SS "size_t coda::db::postgres::row::size () const\fC [virtual]\fP, \fC [noexcept]\fP"
+gets the number of columns in the row 
+.PP
+\fBReturns:\fP
+.RS 4
+the number of columns; 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::row_impl\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

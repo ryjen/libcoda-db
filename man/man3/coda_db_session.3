@@ -1,0 +1,242 @@
+.TH "coda::db::session" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::session
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <session\&.h>\fP
+.PP
+Inherits enable_shared_from_this< session >\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBfeature_type\fP { \fBFEATURE_RETURNING\fP = (1 << 0), \fBFEATURE_FULL_OUTER_JOIN\fP = (1 << 1), \fBFEATURE_RIGHT_JOIN\fP = (1 << 2), \fBFEATURE_NAMED_PARAMS\fP = (1 << 3) }"
+.br
+.ti -1c
+.RI "typedef \fBresultset\fP \fBresultset_type\fP"
+.br
+.ti -1c
+.RI "typedef \fBstatement\fP \fBstatement_type\fP"
+.br
+.ti -1c
+.RI "typedef \fBtransaction\fP \fBtransaction_type\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsession\fP (const std::shared_ptr< \fBsession_impl\fP > &\fBimpl\fP)"
+.br
+.ti -1c
+.RI "\fBsession\fP (const \fBsession\fP &other)"
+.br
+.ti -1c
+.RI "\fBsession\fP (\fBsession\fP &&other)"
+.br
+.ti -1c
+.RI "\fBsession\fP & \fBoperator=\fP (const \fBsession\fP &other)"
+.br
+.ti -1c
+.RI "\fBsession\fP & \fBoperator=\fP (\fBsession\fP &&other)"
+.br
+.ti -1c
+.RI "bool \fBis_open\fP () const noexcept"
+.br
+.ti -1c
+.RI "void \fBopen\fP ()"
+.br
+.ti -1c
+.RI "void \fBclose\fP ()"
+.br
+.ti -1c
+.RI "long long \fBlast_insert_id\fP () const"
+.br
+.ti -1c
+.RI "int \fBlast_number_of_changes\fP () const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBstatement_type\fP > \fBcreate_statement\fP ()"
+.br
+.ti -1c
+.RI "\fBtransaction_type\fP \fBcreate_transaction\fP ()"
+.br
+.ti -1c
+.RI "\fBtransaction_type\fP \fBstart_transaction\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBlast_error\fP () const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBschema\fP > \fBget_schema\fP (const std::string &tableName)"
+.br
+.ti -1c
+.RI "void \fBclear_schema\fP (const std::string &tableName)"
+.br
+.ti -1c
+.RI "\fBuri\fP \fBconnection_info\fP () const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBsession_impl\fP > \fBimpl\fP () const"
+.br
+.ti -1c
+.RI "template<typename T > std::shared_ptr< T > \fBimpl\fP () const"
+.br
+.ti -1c
+.RI "std::string \fBjoin_params\fP (const std::vector< std::string > &columns, const std::string &op='') const"
+.br
+.ti -1c
+.RI "bool \fBhas_feature\fP (feature_type feature) const"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "std::vector< \fBcolumn_definition\fP > \fBget_columns_for_schema\fP (const std::string &tablename)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBschema_factory\fP \fBschema_factory_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "struct \fBsqldb\fP"
+.br
+.ti -1c
+.RI "class \fBinsert_query\fP"
+.br
+.ti -1c
+.RI "class \fBschema\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+abstract class for a specific implementation of a database 
+.SH "Member Function Documentation"
+.PP 
+.SS "void coda::db::session::clear_schema (const std::string & tableName)"
+clears the cache for a schema 
+.PP
+\fBParameters:\fP
+.RS 4
+\fItableName\fP the table to clear 
+.RE
+.PP
+
+.SS "void coda::db::session::close ()"
+closes the connection to the database 
+.SS "\fBuri\fP coda::db::session::connection_info () const"
+gets the connection info for this database 
+.PP
+\fBReturns:\fP
+.RS 4
+the connection info uri 
+.RE
+.PP
+
+.SS "std::shared_ptr<\fBstatement_type\fP> coda::db::session::create_statement ()"
+
+.PP
+\fBReturns:\fP
+.RS 4
+a statement for this database 
+.RE
+.PP
+
+.SS "\fBtransaction_type\fP coda::db::session::create_transaction ()"
+creates a transaction, but won't start it yet 
+.PP
+\fBReturns:\fP
+.RS 4
+the created transaction object 
+.RE
+.PP
+
+.SS "std::vector<\fBcolumn_definition\fP> coda::db::session::get_columns_for_schema (const std::string & tablename)\fC [protected]\fP"
+queries the database for a tables column definitions 
+.PP
+\fBParameters:\fP
+.RS 4
+\fItablename\fP the tablename 
+.br
+\fIcolumns\fP the collection of columns to store the results 
+.RE
+.PP
+
+.SS "std::shared_ptr<\fBschema\fP> coda::db::session::get_schema (const std::string & tableName)"
+get the schemas for this database 
+.PP
+\fBReturns:\fP
+.RS 4
+a schema factory object 
+.RE
+.PP
+
+.SS "std::shared_ptr<\fBsession_impl\fP> coda::db::session::impl () const"
+gets the implementation 
+.SS "template<typename T > std::shared_ptr<T> coda::db::session::impl () const\fC [inline]\fP"
+gets the implementation casted to a subtype 
+.SS "bool coda::db::session::is_open () const\fC [noexcept]\fP"
+tests if a connection to the database is open 
+.PP
+\fBReturns:\fP
+.RS 4
+true if the connection is open 
+.RE
+.PP
+
+.SS "std::string coda::db::session::join_params (const std::vector< std::string > & columns, const std::string & op = \fC''\fP) const"
+utility method used in creating sql 
+.SS "std::string coda::db::session::last_error () const"
+gets the last error for any statement 
+.PP
+\fBReturns:\fP
+.RS 4
+the last error or an empty string 
+.RE
+.PP
+
+.SS "long long coda::db::session::last_insert_id () const"
+gets the last insert id from any statement 
+.PP
+\fBReturns:\fP
+.RS 4
+the last insert id or zero 
+.RE
+.PP
+
+.SS "int coda::db::session::last_number_of_changes () const"
+gets the last number of modified records for any statement 
+.PP
+\fBReturns:\fP
+.RS 4
+the last number of changes or zero 
+.RE
+.PP
+
+.SS "void coda::db::session::open ()"
+opens a connection to the database 
+.SS "\fBtransaction_type\fP coda::db::session::start_transaction ()"
+creates a transaction and starts it 
+.PP
+\fBReturns:\fP
+.RS 4
+the created transaction object 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

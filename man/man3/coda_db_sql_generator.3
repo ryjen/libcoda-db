@@ -1,0 +1,46 @@
+.TH "coda::db::sql_generator" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::sql_generator
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBcoda::db::join_clause\fP, \fBcoda::db::query\fP, and \fBcoda::db::where_clause\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsql_generator\fP (const \fBsql_generator\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBsql_generator\fP (\fBsql_generator\fP &&other)=default"
+.br
+.ti -1c
+.RI "\fBsql_generator\fP & \fBoperator=\fP (const \fBsql_generator\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBsql_generator\fP & \fBoperator=\fP (\fBsql_generator\fP &&other)=default"
+.br
+.ti -1c
+.RI "std::string \fBto_sql\fP () const"
+.br
+.ti -1c
+.RI "std::string \fBto_sql\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBreset\fP ()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual std::string \fBgenerate_sql\fP () const =0"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

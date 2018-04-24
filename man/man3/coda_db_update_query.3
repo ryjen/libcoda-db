@@ -1,0 +1,259 @@
+.TH "coda::db::update_query" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::update_query
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <update_query\&.h>\fP
+.PP
+Inherits \fBcoda::db::modify_query\fP, and \fBcoda::db::whereable< update_query >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBupdate_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP (const std::shared_ptr< \fBschema\fP > &\fBschema\fP)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP, const std::string &tableName)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP, const std::string &tableName, const std::vector< std::string > &\fBcolumns\fP)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP (const std::shared_ptr< \fBschema\fP > &\fBschema\fP, const std::vector< std::string > &\fBcolumns\fP)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP (const \fBupdate_query\fP &other)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP (\fBupdate_query\fP &&other)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP & \fBoperator=\fP (const \fBupdate_query\fP &other)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP & \fBoperator=\fP (\fBupdate_query\fP &&other)"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBcolumns\fP () const"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP & \fBcolumns\fP (const std::vector< std::string > &value)"
+.br
+.ti -1c
+.RI "template<typename\&.\&.\&. List> \fBupdate_query\fP & \fBcolumns\fP (const std::string &value, const List &\&.\&.\&. args)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP & \fBtable\fP (const std::string &tableName)"
+.br
+.ti -1c
+.RI "std::string \fBtable\fP () const"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP & \fBwhere\fP ()"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP & \fBwhere\fP (const \fBwhere_clause\fP &value)"
+.br
+.ti -1c
+.RI "\fBwhere_builder\fP & \fBwhere\fP (const \fBsql_operator\fP &value)"
+.br
+.ti -1c
+.RI "template<typename T , typename\&.\&.\&. List> \fBupdate_query\fP & \fBvalues\fP (const T &value, const List &\&.\&.\&. argv)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP & \fBvalues\fP (const std::vector< \fBsql_value\fP > &value)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP & \fBvalues\fP (const std::unordered_map< std::string, \fBsql_value\fP > &value)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP & \fBvalue\fP (const std::string &name, const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "\fBupdate_query\fP & \fBvalue\fP (const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const noexcept"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+a query to update a table 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::update_query::update_query (const std::shared_ptr< \fBcoda::db::session\fP > & session)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database in use 
+.RE
+.PP
+
+.SS "coda::db::update_query::update_query (const std::shared_ptr< \fBschema\fP > & schema)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIschema\fP the schema to modify 
+.RE
+.PP
+
+.SS "coda::db::update_query::update_query (const std::shared_ptr< \fBcoda::db::session\fP > & session, const std::string & tableName)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database to modify 
+.br
+\fItableName\fP the table to modify 
+.br
+\fIcolumns\fP the columns to modify 
+.RE
+.PP
+
+.SS "coda::db::update_query::update_query (const std::shared_ptr< \fBcoda::db::session\fP > & session, const std::string & tableName, const std::vector< std::string > & columns)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database to modify 
+.br
+\fIcolumns\fP the columns to modify 
+.RE
+.PP
+
+.SS "coda::db::update_query::update_query (const std::shared_ptr< \fBschema\fP > & schema, const std::vector< std::string > & columns)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIschema\fP the schema to modify 
+.br
+\fIcolumn\fP the specific columns to modify in the schema 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "std::vector<std::string> coda::db::update_query::columns () const"
+get the columns being modified 
+.PP
+\fBReturns:\fP
+.RS 4
+the list of columns 
+.RE
+.PP
+
+.SS "\fBupdate_query\fP& coda::db::update_query::columns (const std::vector< std::string > & value)"
+set the columns to modify 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the list of column names 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.SS "bool coda::db::update_query::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+tests if this query is valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if valid 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBcoda::db::query\fP\&.
+.SS "\fBupdate_query\fP& coda::db::update_query::table (const std::string & tableName)"
+set the table to insert into 
+.PP
+\fBSee also:\fP
+.RS 4
+modify_query::table_name 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fItableName\fP the table name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.SS "std::string coda::db::update_query::table () const"
+get the table name being inserted into 
+.PP
+\fBSee also:\fP
+.RS 4
+modify_query::table_name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the table name 
+.RE
+.PP
+
+.SS "template<typename T , typename\&.\&.\&. List> \fBupdate_query\fP& coda::db::update_query::values (const T & value, const List &\&.\&.\&. argv)\fC [inline]\fP"
+a rename of the bind_all method so it makes sense to the query language 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP a value to bind 
+.br
+\fIargv\fP the variadic list of values to bind 
+.RE
+.PP
+
+.SS "\fBwhere_builder\fP& coda::db::update_query::where ()\fC [virtual]\fP"
+gets the where builder for the query 
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to the where builder 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::whereable< update_query >\fP\&.
+.SS "\fBupdate_query\fP& coda::db::update_query::where (const \fBwhere_clause\fP & value)"
+sets the where clause for the update query 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the where clause to set 
+.RE
+.PP
+
+.SS "\fBwhere_builder\fP& coda::db::update_query::where (const \fBsql_operator\fP & value)\fC [virtual]\fP"
+gets the where clause 
+.PP
+\fBReturns:\fP
+.RS 4
+the where clause 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::whereable< update_query >\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

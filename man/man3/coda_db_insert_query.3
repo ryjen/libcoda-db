@@ -1,0 +1,256 @@
+.TH "coda::db::insert_query" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::insert_query
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <insert_query\&.h>\fP
+.PP
+Inherits \fBcoda::db::modify_query\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBinsert_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP, const std::string &tableName)"
+.br
+.ti -1c
+.RI "\fBinsert_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP, const std::string &tableName, const std::vector< std::string > &\fBcolumns\fP)"
+.br
+.ti -1c
+.RI "\fBinsert_query\fP (const std::shared_ptr< \fBschema\fP > &\fBschema\fP, const std::vector< std::string > &\fBcolumns\fP)"
+.br
+.ti -1c
+.RI "\fBinsert_query\fP (const \fBinsert_query\fP &other)"
+.br
+.ti -1c
+.RI "\fBinsert_query\fP (\fBinsert_query\fP &&other)"
+.br
+.ti -1c
+.RI "\fBinsert_query\fP & \fBoperator=\fP (const \fBinsert_query\fP &other)"
+.br
+.ti -1c
+.RI "\fBinsert_query\fP & \fBoperator=\fP (\fBinsert_query\fP &&other)"
+.br
+.ti -1c
+.RI "long long \fBlast_insert_id\fP () const"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBcolumns\fP () const"
+.br
+.ti -1c
+.RI "\fBinsert_query\fP & \fBcolumns\fP (const std::vector< std::string > &value)"
+.br
+.ti -1c
+.RI "template<typename\&.\&.\&. List> \fBinsert_query\fP & \fBcolumns\fP (const std::string &value, const List &\&.\&.\&. args)"
+.br
+.ti -1c
+.RI "\fBinsert_query\fP & \fBinto\fP (const std::string &tableName)"
+.br
+.ti -1c
+.RI "std::string \fBinto\fP () const"
+.br
+.ti -1c
+.RI "template<typename T , typename\&.\&.\&. List> \fBinsert_query\fP & \fBvalues\fP (const T &value, const List &\&.\&.\&. argv)"
+.br
+.ti -1c
+.RI "\fBinsert_query\fP & \fBvalues\fP (const std::vector< \fBsql_value\fP > &value)"
+.br
+.ti -1c
+.RI "\fBinsert_query\fP & \fBvalues\fP (const std::unordered_map< std::string, \fBsql_value\fP > &value)"
+.br
+.ti -1c
+.RI "\fBinsert_query\fP & \fBvalue\fP (const std::string &name, const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "\fBinsert_query\fP & \fBvalue\fP (const \fBsql_value\fP &value)"
+.br
+.ti -1c
+.RI "int \fBexecute\fP ()"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const noexcept"
+.br
+.ti -1c
+.RI "\fBmodify_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP)"
+.br
+.ti -1c
+.RI "\fBmodify_query\fP (const std::shared_ptr< \fBschema\fP > &\fBschema\fP)"
+.br
+.ti -1c
+.RI "\fBmodify_query\fP (const \fBmodify_query\fP &other)"
+.br
+.ti -1c
+.RI "\fBmodify_query\fP (\fBmodify_query\fP &&other)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+a query to insert to a table 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::insert_query::insert_query (const std::shared_ptr< \fBcoda::db::session\fP > & session, const std::string & tableName)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database to modify 
+.br
+\fItableName\fP the table to modify 
+.br
+\fIcolumns\fP the columns to modify 
+.RE
+.PP
+
+.SS "coda::db::insert_query::insert_query (const std::shared_ptr< \fBcoda::db::session\fP > & session, const std::string & tableName, const std::vector< std::string > & columns)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database to modify 
+.br
+\fIcolumns\fP the columns to modify 
+.RE
+.PP
+
+.SS "coda::db::insert_query::insert_query (const std::shared_ptr< \fBschema\fP > & schema, const std::vector< std::string > & columns)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIschema\fP the schema to modify 
+.br
+\fIcolumn\fP the specific columns to modify in the schema 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "std::vector<std::string> coda::db::insert_query::columns () const"
+get the columns being modified 
+.PP
+\fBReturns:\fP
+.RS 4
+the list of columns 
+.RE
+.PP
+
+.SS "\fBinsert_query\fP& coda::db::insert_query::columns (const std::vector< std::string > & value)"
+set the columns to modify 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the list of column names 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.SS "int coda::db::insert_query::execute ()\fC [virtual]\fP"
+executes the insert query 
+.PP
+\fBReturns:\fP
+.RS 4
+the number of records inserted 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBcoda::db::modify_query\fP\&.
+.SS "\fBinsert_query\fP& coda::db::insert_query::into (const std::string & tableName)"
+set the table to insert into 
+.PP
+\fBSee also:\fP
+.RS 4
+modify_query::table_name 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fItableName\fP the table name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+.SS "std::string coda::db::insert_query::into () const"
+get the table name being inserted into 
+.PP
+\fBSee also:\fP
+.RS 4
+modify_query::table_name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the table name 
+.RE
+.PP
+
+.SS "bool coda::db::insert_query::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+tests if this query is valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if valid 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBcoda::db::query\fP\&.
+.SS "long long coda::db::insert_query::last_insert_id () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the id column of the last insert 
+.RE
+.PP
+
+.SS "coda::db::modify_query::modify_query"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database in use 
+.RE
+.PP
+
+.SS "coda::db::modify_query::modify_query"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIschema\fP the schema to modify 
+.RE
+.PP
+
+.SS "template<typename T , typename\&.\&.\&. List> \fBinsert_query\fP& coda::db::insert_query::values (const T & value, const List &\&.\&.\&. argv)\fC [inline]\fP"
+binds values to the query\&. similar to bind_all but makes more sense in a query context 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP a value to bind 
+.br
+\fIargv\fP a variadic list of values to bind 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a reference to this instance 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

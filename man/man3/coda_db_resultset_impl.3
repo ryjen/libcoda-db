@@ -1,0 +1,93 @@
+.TH "coda::db::resultset_impl" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::resultset_impl
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <resultset\&.h>\fP
+.PP
+Inherited by \fBcoda::db::mysql::resultset\fP, \fBcoda::db::mysql::stmt_resultset\fP, \fBcoda::db::postgres::resultset\fP, and \fBcoda::db::sqlite::resultset\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef \fBcoda::db::row\fP \fBrow_type\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBresultset_impl\fP (const \fBresultset_impl\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBresultset_impl\fP (\fBresultset_impl\fP &&other)=default"
+.br
+.ti -1c
+.RI "\fBresultset_impl\fP & \fBoperator=\fP (const \fBresultset_impl\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBresultset_impl\fP & \fBoperator=\fP (\fBresultset_impl\fP &&other)=default"
+.br
+.ti -1c
+.RI "virtual bool \fBis_valid\fP () const noexcept=0"
+.br
+.ti -1c
+.RI "virtual bool \fBnext\fP ()=0"
+.br
+.ti -1c
+.RI "virtual \fBrow_type\fP \fBcurrent_row\fP ()=0"
+.br
+.ti -1c
+.RI "virtual void \fBreset\fP ()=0"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+an interface for a database specific set of results for a query 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual \fBrow_type\fP coda::db::resultset_impl::current_row ()\fC [pure virtual]\fP"
+gets the current row in the results 
+.PP
+\fBReturns:\fP
+.RS 4
+the current row object 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::stmt_resultset\fP, \fBcoda::db::mysql::resultset\fP, \fBcoda::db::postgres::resultset\fP, and \fBcoda::db::sqlite::resultset\fP\&.
+.SS "virtual bool coda::db::resultset_impl::is_valid () const\fC [pure virtual]\fP, \fC [noexcept]\fP"
+tests if this implementation is valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if operations can be performed safely 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::stmt_resultset\fP, \fBcoda::db::mysql::resultset\fP, \fBcoda::db::postgres::resultset\fP, and \fBcoda::db::sqlite::resultset\fP\&.
+.SS "virtual bool coda::db::resultset_impl::next ()\fC [pure virtual]\fP"
+moves to the next row in the results 
+.PP
+\fBReturns:\fP
+.RS 4
+true if successful 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::stmt_resultset\fP, \fBcoda::db::sqlite::resultset\fP, \fBcoda::db::mysql::resultset\fP, and \fBcoda::db::postgres::resultset\fP\&.
+.SS "virtual void coda::db::resultset_impl::reset ()\fC [pure virtual]\fP"
+resets this resultset back to the first row 
+.PP
+Implemented in \fBcoda::db::mysql::stmt_resultset\fP, \fBcoda::db::sqlite::resultset\fP, \fBcoda::db::mysql::resultset\fP, and \fBcoda::db::postgres::resultset\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

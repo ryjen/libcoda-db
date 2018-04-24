@@ -1,0 +1,75 @@
+.TH "coda::db::resultset_iterator< ValueType, NonConst >" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::resultset_iterator< ValueType, NonConst >
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <resultset\&.h>\fP
+.PP
+Inherits iterator< std::input_iterator_tag, ValueType >\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBresultset_iterator\fP (const std::shared_ptr< \fBresultset_impl\fP > &rset, int position)"
+.br
+.ti -1c
+.RI "\fBresultset_iterator\fP (const \fBresultset_iterator\fP &other)"
+.br
+.ti -1c
+.RI "\fBresultset_iterator\fP (\fBresultset_iterator\fP &&other)"
+.br
+.ti -1c
+.RI "\fBresultset_iterator\fP & \fBoperator=\fP (\fBresultset_iterator\fP &&other)"
+.br
+.ti -1c
+.RI "ValueType & \fBoperator*\fP ()"
+.br
+.ti -1c
+.RI "\fBresultset_iterator\fP & \fBoperator++\fP ()"
+.br
+.ti -1c
+.RI "ValueType * \fBoperator\->\fP ()"
+.br
+.ti -1c
+.RI "\fBresultset_iterator\fP \fBoperator++\fP (int)"
+.br
+.ti -1c
+.RI "\fBresultset_iterator\fP \fBoperator+\fP (int n)"
+.br
+.ti -1c
+.RI "\fBresultset_iterator\fP & \fBoperator+=\fP (int n)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBresultset_iterator\fP &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBresultset_iterator\fP &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator<\fP (const \fBresultset_iterator\fP &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator<=\fP (const \fBresultset_iterator\fP &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator>\fP (const \fBresultset_iterator\fP &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator>=\fP (const \fBresultset_iterator\fP &other) const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<typename ValueType, typename NonConst>
+.br
+class coda::db::resultset_iterator< ValueType, NonConst >"
+an iterator for a rows in a set of results 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

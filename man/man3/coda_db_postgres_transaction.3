@@ -1,0 +1,52 @@
+.TH "coda::db::postgres::transaction" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::postgres::transaction
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBcoda::db::transaction_impl\fP\&.
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBmode\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBtransaction\fP (const std::shared_ptr< PGconn > &db, const \fBtransaction::mode\fP &\fBmode\fP={})"
+.br
+.ti -1c
+.RI "void \fBstart\fP ()"
+.br
+.ti -1c
+.RI "bool \fBis_active\fP () const noexcept"
+.br
+.in -1c
+.SH "Data Structure Documentation"
+.PP 
+.SH "struct coda::db::postgres::transaction::mode"
+.PP 
+\fBData Fields:\fP
+.RS 4
+int \fIdeferrable\fP 
+.br
+.PP
+level \fIisolation\fP 
+.br
+.PP
+type \fItype\fP 
+.br
+.PP
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

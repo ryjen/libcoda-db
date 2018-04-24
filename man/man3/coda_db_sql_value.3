@@ -1,0 +1,255 @@
+.TH "coda::db::sql_value" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::sql_value
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <sql_value\&.h>\fP
+.PP
+Inherits \fBcoda::db::sql_value_convertible\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsql_value\fP (const sql_null_type &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const \fBsql_number\fP &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const sql_string &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const sql_wstring &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const \fBsql_time\fP &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const sql_blob &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const bool &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const char &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const unsigned char &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const wchar_t &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const short &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const unsigned short &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const int &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const unsigned int &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const long &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const unsigned long &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const long long &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const unsigned long long &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const float &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const double &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const long double &value)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const char *value, std::string::size_type len=std::string::npos)"
+.br
+.ti -1c
+.RI "\fBsql_value\fP (const wchar_t *value, std::wstring::size_type len=std::wstring::npos)"
+.br
+.ti -1c
+.RI "template<typename T , typename  = std::enable_if<is_sql_value<T>::value || is_sql_number<T>::value>> bool \fBis\fP () const"
+.br
+.ti -1c
+.RI "template<typename T , typename  = std::enable_if<is_sql_number<T>::value>> T \fBas\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator sql_number\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator sql_string\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator sql_wstring\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator sql_time\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator sql_blob\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator bool\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator char\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator unsigned char\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator wchar_t\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator short\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator unsigned short\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator int\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator unsigned int\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator long\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator unsigned long\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator long long\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator unsigned long long\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator float\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator double\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator long double\fP () const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBsql_value\fP &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const sql_null_type &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBsql_number\fP &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const sql_string &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const sql_wstring &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBsql_time\fP &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const sql_blob &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const bool &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const char &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const unsigned char &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const wchar_t &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const short &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const unsigned short &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const int &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const unsigned int &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const long &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const unsigned long &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const long long &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const unsigned long long &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const float &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const double &value) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const long double &value) const"
+.br
+.ti -1c
+.RI "std::string \fBto_string\fP () const"
+.br
+.ti -1c
+.RI "std::wstring \fBto_wstring\fP () const"
+.br
+.ti -1c
+.RI "template<typename V , typename T > T \fBapply_visitor\fP (const V &visitor) const"
+.br
+.ti -1c
+.RI "template<typename V > void \fBapply_visitor\fP (const V &visitor) const"
+.br
+.ti -1c
+.RI "template<> sql_string \fBas\fP () const"
+.br
+.ti -1c
+.RI "template<> sql_wstring \fBas\fP () const"
+.br
+.ti -1c
+.RI "template<> \fBsql_time\fP \fBas\fP () const"
+.br
+.ti -1c
+.RI "template<> sql_blob \fBas\fP () const"
+.br
+.ti -1c
+.RI "template<> \fBsql_number\fP \fBas\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+A sql value 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::sql_value::sql_value (const bool & value)\fC [explicit]\fP"
+numeric constructors would be nice to use a template here, but it can't deduce the type very well 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

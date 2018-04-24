@@ -1,0 +1,113 @@
+.TH "coda::db::sql_time" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::sql_time
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <sql_time\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBformats\fP { \fBDATE\fP, \fBTIME\fP, \fBTIMESTAMP\fP, \fBDATETIME\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsql_time\fP (time_t value=time(0), \fBformats\fP \fBformat\fP=TIMESTAMP)"
+.br
+.ti -1c
+.RI "\fBsql_time\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "\fBsql_time\fP (const \fBsql_time\fP &other)"
+.br
+.ti -1c
+.RI "\fBsql_time\fP (\fBsql_time\fP &&other)"
+.br
+.ti -1c
+.RI "\fBsql_time\fP & \fBoperator=\fP (const \fBsql_time\fP &other)"
+.br
+.ti -1c
+.RI "\fBsql_time\fP & \fBoperator=\fP (\fBsql_time\fP &&other)"
+.br
+.ti -1c
+.RI "\fBformats\fP \fBformat\fP () const"
+.br
+.ti -1c
+.RI "time_t \fBvalue\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator time_t\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator std::string\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator std::wstring\fP () const"
+.br
+.ti -1c
+.RI "struct tm * \fBto_gmtime\fP () const"
+.br
+.ti -1c
+.RI "struct tm * \fBto_localtime\fP () const"
+.br
+.ti -1c
+.RI "std::string \fBto_string\fP () const"
+.br
+.ti -1c
+.RI "std::wstring \fBto_wstring\fP () const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBsql_time\fP &other) const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+a date/time column format 
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBcoda::db::sql_time::formats\fP"
+types of date time values 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::sql_time::sql_time (time_t value = \fCtime(0)\fP, \fBformats\fP format = \fCTIMESTAMP\fP)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP the unix timestamp 
+.br
+\fIformat\fP the format to display 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBformats\fP coda::db::sql_time::format () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the format of the timestamp 
+.RE
+.PP
+
+.SS "struct tm* coda::db::sql_time::to_gmtime () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+a time structure based on the timestamp 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

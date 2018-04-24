@@ -1,0 +1,36 @@
+.TH "coda::db::transaction_impl" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::transaction_impl
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBcoda::db::mysql::transaction\fP, \fBcoda::db::postgres::transaction\fP, and \fBcoda::db::sqlite::transaction\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBtransaction_impl\fP (const \fBtransaction_impl\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBtransaction_impl\fP (\fBtransaction_impl\fP &&other)=default"
+.br
+.ti -1c
+.RI "\fBtransaction_impl\fP & \fBoperator=\fP (const \fBtransaction_impl\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBtransaction_impl\fP & \fBoperator=\fP (\fBtransaction_impl\fP &&other)=default"
+.br
+.ti -1c
+.RI "virtual void \fBstart\fP ()=0"
+.br
+.ti -1c
+.RI "virtual bool \fBis_active\fP () const noexcept=0"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

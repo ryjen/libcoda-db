@@ -1,0 +1,240 @@
+.TH "coda::db::column" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::column
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <column\&.h>\fP
+.PP
+Inherits \fBcoda::db::sql_value_convertible\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBcolumn\fP (const std::shared_ptr< \fBcolumn_impl\fP > &\fBimpl\fP)"
+.br
+.ti -1c
+.RI "\fBcolumn\fP (const \fBcolumn\fP &other)"
+.br
+.ti -1c
+.RI "\fBcolumn\fP (\fBcolumn\fP &&other)"
+.br
+.ti -1c
+.RI "\fBcolumn\fP & \fBoperator=\fP (const \fBcolumn\fP &other)"
+.br
+.ti -1c
+.RI "\fBcolumn\fP & \fBoperator=\fP (\fBcolumn\fP &&other)"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const noexcept"
+.br
+.ti -1c
+.RI "\fBsql_value\fP \fBvalue\fP () const"
+.br
+.ti -1c
+.RI "std::string \fBname\fP () const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBcolumn_impl\fP > \fBimpl\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator sql_string\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator sql_wstring\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator sql_number\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator sql_time\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator sql_blob\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator bool\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator char\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator unsigned char\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator wchar_t\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator short\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator unsigned short\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator int\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator unsigned int\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator long\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator unsigned long\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator long long\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator unsigned long long\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator float\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator double\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator long double\fP () const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const sql_null_type &other) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBsql_number\fP &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const sql_string &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const sql_wstring &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBsql_time\fP &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const sql_blob &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const bool &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const char &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const unsigned char &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const wchar_t &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const short &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const unsigned short &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const int &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const unsigned int &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const long &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const unsigned long &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const long long &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const unsigned long long &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const float &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const double &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const long double &\fBvalue\fP) const"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBsql_value\fP &other) const"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "template<class A , class B , class C > class \fBrow_iterator\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+a column holds a value 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::column::column (const std::shared_ptr< \fBcolumn_impl\fP > & impl)"
+default constructor requires an implementation 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIimpl\fP the database specific implementation 
+.RE
+.PP
+
+.SS "coda::db::column::column (const \fBcolumn\fP & other)"
+copy constructor 
+.SS "coda::db::column::column (\fBcolumn\fP && other)"
+move constructor 
+.SH "Member Function Documentation"
+.PP 
+.SS "std::shared_ptr<\fBcolumn_impl\fP> coda::db::column::impl () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the instance of the implementation 
+.RE
+.PP
+
+.SS "bool coda::db::column::is_valid () const\fC [noexcept]\fP"
+tests if this column has valid data 
+.PP
+\fBReturns:\fP
+.RS 4
+true if this columns data is valid 
+.RE
+.PP
+
+.SS "std::string coda::db::column::name () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the name of this column 
+.RE
+.PP
+
+.SS "\fBcolumn\fP& coda::db::column::operator= (const \fBcolumn\fP & other)"
+copy assignment 
+.SS "\fBcolumn\fP& coda::db::column::operator= (\fBcolumn\fP && other)"
+move assignment 
+.SS "\fBsql_value\fP coda::db::column::value () const"
+converts this column to a value 
+.PP
+\fBReturns:\fP
+.RS 4
+the value of this column 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

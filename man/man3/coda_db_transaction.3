@@ -1,0 +1,88 @@
+.TH "coda::db::transaction" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::transaction
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBisolation\fP"
+.br
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBtype\fP { \fBnone\fP, \fBread_write\fP, \fBread_only\fP }"
+.br
+.ti -1c
+.RI "typedef \fBsession\fP \fBsession_type\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBtransaction\fP (const std::shared_ptr< \fBsession_type\fP > &\fBsession\fP, const std::shared_ptr< \fBtransaction_impl\fP > &impl)"
+.br
+.ti -1c
+.RI "\fBtransaction\fP (const \fBtransaction\fP &other)"
+.br
+.ti -1c
+.RI "\fBtransaction\fP (\fBtransaction\fP &&other)"
+.br
+.ti -1c
+.RI "\fBtransaction\fP & \fBoperator=\fP (const \fBtransaction\fP &other)"
+.br
+.ti -1c
+.RI "\fBtransaction\fP & \fBoperator=\fP (\fBtransaction\fP &&other)"
+.br
+.ti -1c
+.RI "void \fBsave\fP (const std::string &name)"
+.br
+.ti -1c
+.RI "void \fBrelease\fP (const std::string &name)"
+.br
+.ti -1c
+.RI "void \fBrollback\fP (const std::string &name)"
+.br
+.ti -1c
+.RI "void \fBstart\fP ()"
+.br
+.ti -1c
+.RI "void \fBcommit\fP ()"
+.br
+.ti -1c
+.RI "void \fBrollback\fP ()"
+.br
+.ti -1c
+.RI "bool \fBis_active\fP () const noexcept"
+.br
+.ti -1c
+.RI "void \fBset_successful\fP (bool value)"
+.br
+.ti -1c
+.RI "bool \fBis_successful\fP () const noexcept"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBtransaction_impl\fP > \fBimpl\fP () const"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBsession_type\fP > \fBget_session\fP () const"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBsession\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

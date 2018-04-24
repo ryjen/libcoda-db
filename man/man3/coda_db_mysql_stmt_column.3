@@ -1,0 +1,100 @@
+.TH "coda::db::mysql::stmt_column" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::mysql::stmt_column
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <column\&.h>\fP
+.PP
+Inherits \fBcoda::db::column_impl\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBstmt_column\fP (const std::string &\fBname\fP, const std::shared_ptr< \fBbinding\fP > &bindings, size_t position)"
+.br
+.ti -1c
+.RI "\fBstmt_column\fP (const \fBstmt_column\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBstmt_column\fP (\fBstmt_column\fP &&other)"
+.br
+.ti -1c
+.RI "\fBstmt_column\fP & \fBoperator=\fP (const \fBstmt_column\fP &other)=delete"
+.br
+.ti -1c
+.RI "\fBstmt_column\fP & \fBoperator=\fP (\fBstmt_column\fP &&other)"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const"
+.br
+.ti -1c
+.RI "\fBsql_value\fP \fBto_value\fP () const"
+.br
+.ti -1c
+.RI "int \fBsql_type\fP () const"
+.br
+.ti -1c
+.RI "std::string \fBname\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+a mysql specific version of a column using prepared statements 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::mysql::stmt_column::stmt_column (const std::string & name, const std::shared_ptr< \fBbinding\fP > & bindings, size_t position)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column 
+.br
+\fIbindings\fP the bindings containing the column value 
+.br
+\fIposition\fP the index of the column in the bindings 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool coda::db::mysql::stmt_column::is_valid () const\fC [virtual]\fP"
+tests if this colums data validity 
+.PP
+\fBReturns:\fP
+.RS 4
+true if this columns data is valid 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::column_impl\fP\&.
+.SS "std::string coda::db::mysql::stmt_column::name () const\fC [virtual]\fP"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the name of this column; 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::column_impl\fP\&.
+.SS "\fBsql_value\fP coda::db::mysql::stmt_column::to_value () const\fC [virtual]\fP"
+converts this column to a value 
+.PP
+\fBReturns:\fP
+.RS 4
+the value of this column 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::column_impl\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

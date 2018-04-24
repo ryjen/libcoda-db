@@ -1,0 +1,188 @@
+.TH "coda::db::schema" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::schema
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <schema\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef \fBsession\fP \fBsession_type\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBschema\fP (const std::shared_ptr< \fBsession_type\fP > &sess, const std::string &tablename)"
+.br
+.ti -1c
+.RI "\fBschema\fP (const \fBschema\fP &other)"
+.br
+.ti -1c
+.RI "\fBschema\fP (\fBschema\fP &&other)"
+.br
+.ti -1c
+.RI "\fBschema\fP & \fBoperator=\fP (const \fBschema\fP &other)"
+.br
+.ti -1c
+.RI "\fBschema\fP & \fBoperator=\fP (\fBschema\fP &&other)"
+.br
+.ti -1c
+.RI "virtual void \fBinit\fP ()"
+.br
+.ti -1c
+.RI "std::vector< \fBcolumn_definition\fP > \fBcolumns\fP () const noexcept"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBcolumn_names\fP () const"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBprimary_keys\fP () const"
+.br
+.ti -1c
+.RI "std::string \fBprimary_key\fP () const"
+.br
+.ti -1c
+.RI "std::string \fBtable_name\fP () const"
+.br
+.ti -1c
+.RI "\fBsql_value\fP \fBdefault_value\fP (const std::string &name) const"
+.br
+.ti -1c
+.RI "\fBcolumn_definition\fP \fBoperator[]\fP (size_t index) const"
+.br
+.ti -1c
+.RI "size_t \fBsize\fP () const noexcept"
+.br
+.ti -1c
+.RI "bool \fBis_valid\fP () const noexcept"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBschema::session_type\fP > \fBget_session\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Schema is a definition of a table in a database Allows for quick access to column names and other information 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "coda::db::schema::schema (const std::shared_ptr< \fBsession_type\fP > & sess, const std::string & tablename)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdb\fP the database in use 
+.br
+\fItablename\fP the tablename to query 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "std::vector<std::string> coda::db::schema::column_names () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the column names for this schema 
+.RE
+.PP
+
+.SS "std::vector<\fBcolumn_definition\fP> coda::db::schema::columns () const\fC [noexcept]\fP"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the column definitions for this schema 
+.RE
+.PP
+
+.SS "\fBsql_value\fP coda::db::schema::default_value (const std::string & name) const"
+gets the default value for a column 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column 
+.RE
+.PP
+
+.SS "std::shared_ptr<\fBschema::session_type\fP> coda::db::schema::get_session () const"
+gets the database for this schema 
+.PP
+\fBReturns:\fP
+.RS 4
+the database object 
+.RE
+.PP
+
+.SS "virtual void coda::db::schema::init ()\fC [virtual]\fP"
+initializes this schema 
+.SS "bool coda::db::schema::is_valid () const\fC [noexcept]\fP"
+tests if this schema is valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if valid 
+.RE
+.PP
+
+.SS "\fBcolumn_definition\fP coda::db::schema::operator[] (size_t index) const"
+gets a column definition by index 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindex\fP the index of the column definition 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a column definition object 
+.RE
+.PP
+
+.SS "std::string coda::db::schema::primary_key () const"
+gets the only auto incrementing primary key in a table 
+.PP
+\fBReturns:\fP
+.RS 4
+the key name 
+.RE
+.PP
+
+.SS "std::vector<std::string> coda::db::schema::primary_keys () const"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the primary keys for this schema 
+.RE
+.PP
+
+.SS "size_t coda::db::schema::size () const\fC [noexcept]\fP"
+gets the number of columns in this schema 
+.PP
+\fBReturns:\fP
+.RS 4
+the number of columns 
+.RE
+.PP
+
+.SS "std::string coda::db::schema::table_name () const"
+gets the table name for this schema 
+.PP
+\fBReturns:\fP
+.RS 4
+the table name string 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

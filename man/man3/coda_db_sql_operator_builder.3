@@ -1,0 +1,89 @@
+.TH "coda::db::sql_operator_builder" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::sql_operator_builder
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBcoda::db::sql_operator\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsql_operator_builder\fP (const \fBsql_value\fP &lvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP (const \fBsql_operator_builder\fP &other)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP (\fBsql_operator_builder\fP &&other)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator=\fP (const \fBsql_operator_builder\fP &other)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator=\fP (\fBsql_operator_builder\fP &&other)"
+.br
+.ti -1c
+.RI "virtual \fB~sql_operator_builder\fP ()"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator=\fP (const \fBsql_value\fP &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator!=\fP (const \fBsql_value\fP &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator^=\fP (const std::string &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator<=\fP (const \fBsql_value\fP &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator>=\fP (const \fBsql_value\fP &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator<\fP (const \fBsql_value\fP &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator>\fP (const \fBsql_value\fP &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator[]\fP (const std::string &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator[]\fP (const std::vector< \fBsql_value\fP > &values)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator[]\fP (const std::pair< \fBsql_value\fP, \fBsql_value\fP > &values)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator=\fP (const sql_null_type &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator_builder\fP & \fBoperator!=\fP (const sql_null_type &rvalue)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP ()"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP (const \fBsql_operator\fP &other)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP (\fBsql_operator\fP &&other)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP & \fBoperator=\fP (const \fBsql_operator\fP &other)"
+.br
+.ti -1c
+.RI "\fBsql_operator\fP & \fBoperator=\fP (\fBsql_operator\fP &&other)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

@@ -1,0 +1,79 @@
+.TH "coda::db::column_impl" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::column_impl
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <column\&.h>\fP
+.PP
+Inherited by \fBcoda::db::mysql::column\fP, \fBcoda::db::mysql::stmt_column\fP, \fBcoda::db::postgres::column\fP, and \fBcoda::db::sqlite::column\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBcolumn_impl\fP (const \fBcolumn_impl\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBcolumn_impl\fP (\fBcolumn_impl\fP &&other)=default"
+.br
+.ti -1c
+.RI "\fBcolumn_impl\fP & \fBoperator=\fP (const \fBcolumn_impl\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBcolumn_impl\fP & \fBoperator=\fP (\fBcolumn_impl\fP &&other)=default"
+.br
+.ti -1c
+.RI "virtual bool \fBis_valid\fP () const =0"
+.br
+.ti -1c
+.RI "virtual \fBsql_value\fP \fBto_value\fP () const =0"
+.br
+.ti -1c
+.RI "virtual std::string \fBname\fP () const =0"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+an interface for a database specific implementation of a column 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual bool coda::db::column_impl::is_valid () const\fC [pure virtual]\fP"
+tests if this colums data validity 
+.PP
+\fBReturns:\fP
+.RS 4
+true if this columns data is valid 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::stmt_column\fP, \fBcoda::db::mysql::column\fP, \fBcoda::db::postgres::column\fP, and \fBcoda::db::sqlite::column\fP\&.
+.SS "virtual std::string coda::db::column_impl::name () const\fC [pure virtual]\fP"
+
+.PP
+\fBReturns:\fP
+.RS 4
+the name of this column; 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::stmt_column\fP, \fBcoda::db::mysql::column\fP, \fBcoda::db::postgres::column\fP, and \fBcoda::db::sqlite::column\fP\&.
+.SS "virtual \fBsql_value\fP coda::db::column_impl::to_value () const\fC [pure virtual]\fP"
+converts this column to a value 
+.PP
+\fBReturns:\fP
+.RS 4
+the value of this column 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::stmt_column\fP, \fBcoda::db::mysql::column\fP, \fBcoda::db::postgres::column\fP, and \fBcoda::db::sqlite::column\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.

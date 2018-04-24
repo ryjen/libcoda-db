@@ -1,0 +1,129 @@
+.TH "coda::db::row_impl" 3 "Mon Apr 23 2018" "coda_db" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coda::db::row_impl
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <row\&.h>\fP
+.PP
+Inherited by \fBcoda::db::mysql::row\fP, \fBcoda::db::mysql::stmt_row\fP, \fBcoda::db::postgres::row\fP, and \fBcoda::db::sqlite::row\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef \fBcoda::db::column\fP \fBcolumn_type\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBrow_impl\fP (const \fBrow_impl\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBrow_impl\fP (\fBrow_impl\fP &&other)=default"
+.br
+.ti -1c
+.RI "\fBrow_impl\fP & \fBoperator=\fP (const \fBrow_impl\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBrow_impl\fP & \fBoperator=\fP (\fBrow_impl\fP &&other)=default"
+.br
+.ti -1c
+.RI "virtual std::string \fBcolumn_name\fP (size_t position) const =0"
+.br
+.ti -1c
+.RI "virtual \fBcolumn_type\fP \fBcolumn\fP (size_t position) const =0"
+.br
+.ti -1c
+.RI "virtual \fBcolumn_type\fP \fBcolumn\fP (const std::string &name) const =0"
+.br
+.ti -1c
+.RI "virtual size_t \fBsize\fP () const noexcept=0"
+.br
+.ti -1c
+.RI "virtual bool \fBis_valid\fP () const noexcept=0"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Implementation spefic interface for a row 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual \fBcolumn_type\fP coda::db::row_impl::column (size_t position) const\fC [pure virtual]\fP"
+gets a column in the row 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIposition\fP the index of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the column object 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::stmt_row\fP, \fBcoda::db::mysql::row\fP, \fBcoda::db::postgres::row\fP, and \fBcoda::db::sqlite::row\fP\&.
+.SS "virtual \fBcolumn_type\fP coda::db::row_impl::column (const std::string & name) const\fC [pure virtual]\fP"
+gets a column in the row 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the name of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the column object 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::stmt_row\fP, \fBcoda::db::mysql::row\fP, \fBcoda::db::postgres::row\fP, and \fBcoda::db::sqlite::row\fP\&.
+.SS "virtual std::string coda::db::row_impl::column_name (size_t position) const\fC [pure virtual]\fP"
+gets the name of a column in the row 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIposition\fP the index of the column 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the name of the column at the given position 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::stmt_row\fP, \fBcoda::db::mysql::row\fP, \fBcoda::db::postgres::row\fP, and \fBcoda::db::sqlite::row\fP\&.
+.SS "virtual bool coda::db::row_impl::is_valid () const\fC [pure virtual]\fP, \fC [noexcept]\fP"
+tests if the row internals are valid 
+.PP
+\fBReturns:\fP
+.RS 4
+true if the row is valid 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::stmt_row\fP, \fBcoda::db::mysql::row\fP, \fBcoda::db::postgres::row\fP, and \fBcoda::db::sqlite::row\fP\&.
+.SS "virtual size_t coda::db::row_impl::size () const\fC [pure virtual]\fP, \fC [noexcept]\fP"
+gets the number of columns in the row 
+.PP
+\fBReturns:\fP
+.RS 4
+the number of columns; 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::mysql::stmt_row\fP, \fBcoda::db::mysql::row\fP, \fBcoda::db::postgres::row\fP, and \fBcoda::db::sqlite::row\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for coda_db from the source code\&.
