@@ -7,8 +7,6 @@ option(ENABLE_MEMCHECK "Enable testing for memory leaks." OFF)
 option(ENABLE_PROFILING "Enable profiling code usage." OFF)
 option(ENABLE_PARAMETER_MAPPING "Use regex to map different parameter syntaxes." OFF)
 option(ENABLE_BENCHMARKING "Benchmark with other database libraries." OFF)
-option(ENABLE_RAW_SQL "Enable executing queries with raw sql" OFF)
-option(ENABLE_LOGGING "Enable internal library logging." OFF)
 
 # define project name
 project (coda_db VERSION 0.5.1)
@@ -31,16 +29,8 @@ if(ENABLE_COVERAGE)
 	setup_target_for_coverage(TARGET ${PROJECT_NAME}_coverage OUTPUT ${PROJECT_BINARY_DIR}/gen/coverage)
 endif()
 
-if (ENABLE_LOGGING)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_LOGGING")
-endif()
-
 if (ENABLE_PARAMETER_MAPPING)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_PARAMETER_MAPPING")
-endif()
-
-if (ENABLE_RAW_SQL)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_RAW_SQL")
 endif()
 
 # add packge config file

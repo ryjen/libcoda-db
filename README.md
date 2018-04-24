@@ -8,14 +8,7 @@ coda_db
 [![Code Grade](https://img.shields.io/codacy/grade/e98c311926b94b068ef6705245d77739.svg)](https://www.codacy.com/app/ryjen/coda_db/dashboard)
 [![Beer Pay](https://img.shields.io/beerpay/ryjen/db.svg)](https://beerpay.io/ryjen/db)
 
-a sqlite, mysql and postgres wrapper + active record (ish) implementation.   
-
-Why another library?
---------------------
-
-Why not? It was good fun, tested and usable.  
-
-Other libraries are kinda nice or even better at some things.  Sometimes you don't want to deal with code generators or unintuitive syntax though.
+a sqlite, mysql and postgres api with active record (ish) implementation.   
 
 
 Building
@@ -43,13 +36,13 @@ open coda_db.xcodeproj
 
 options supported are:
 
-    -DENABLE_COVERAGE=OFF            : enable code coverage using lcov
-    -DENABLE_MEMCHECK=OFF            : enable valgrind memory checking on tests
-    -DENABLE_LOGGING=OFF             : enable internal library logging
-    -DENABLE_PROFILING=OFF           : enable valgrind profiling on tests
-    -DENABLE_PARAMETER_MAPPING=OFF   : use regex to map different parameter syntaxes
-    -DENABLE_BENCHMARKING=OFF        : benchmark with other database libraries
-
+```
+-DENABLE_COVERAGE=OFF            : enable code coverage using lcov
+-DENABLE_MEMCHECK=OFF            : enable valgrind memory checking on tests
+-DENABLE_PROFILING=OFF           : enable valgrind profiling on tests
+-DENABLE_PARAMETER_MAPPING=OFF   : use regex to map different parameter syntaxes
+-DENABLE_BENCHMARKING=OFF        : benchmark with other database libraries
+```
 
 Debugging
 ---------
@@ -65,7 +58,7 @@ docker-compose run test gdb /user/src/build/tests/coda_db_test_xxx
 Documentation
 --------------
 
-The Doxygen html pages are available at [https://ryjen.github.io/db](https://ryjen.github.io/db)
+The complete API documentation is available at [https://ryjen.github.io/db](https://ryjen.github.io/db)
 
 View some [diagrams here](https://github.com/ryjen/db/wiki/Model).  These need to be improved.
 
@@ -95,34 +88,34 @@ Record objects should be implemented using the [curiously re-occuring template p
 class user : public coda::db::record<user>
 {
 public:
-		constexpr static const char *const TABLE_NAME = "users";
+    constexpr static const char *const TABLE_NAME = "users";
 
-		/* only required constructor */
-		user(const std::shared_ptr<schema> &schema) : record(schema)
-		{}
+    /* only required constructor */
+    user(const std::shared_ptr<schema> &schema) : record(schema)
+    {}
 
-		/* default constructor that gets the schema from the session */
-		user(const std::shared_ptr<session> &session = current_session) 
-		      : record(session->get_schema(TABLE_NAME))
-		{}
+    /* default constructor that gets the schema from the session */
+    user(const std::shared_ptr<session> &session = current_session) 
+          : record(session->get_schema(TABLE_NAME))
+    {}
 
-		/* utility method showing how to get columns */
-		string to_string() const
-		{
-			ostringstream buf;
-			buf << id() << ": " << get("first_name") << " " << get("last_name");
-			return buf.str();
-		}
+    /* utility method showing how to get columns */
+    string to_string() const
+    {
+        ostringstream buf;
+        buf << id() << ": " << get("first_name") << " " << get("last_name");
+        return buf.str();
+    }
 
-		// optional overridden method to do custom initialization
-		void on_record_init(const coda::db::row &row) {
-			set("customValue", row.column("customName").to_value());
-		}
+    // optional overridden method to do custom initialization
+    void on_record_init(const coda::db::row &row) {
+        set("customValue", row.column("customName").to_value());
+    }
 
-		// custom find method using the schema functions
-		vector<shared_ptr<user>> find_by_first_name(const string &value) {
-			return coda::db::find_by<user>(this->schema(), "first_name", value);
-		}
+    // custom find method using the schema functions
+    vector<shared_ptr<user>> find_by_first_name(const string &value) {
+        return coda::db::find_by<user>(this->schema(), "first_name", value);
+    }
 };
 ```
 
@@ -149,8 +142,8 @@ user obj;
 
 obj.set_id(1);
 
-if(!obj.de1ete()) {
-        cerr << testdb.last_error() << endl;
+if(!obj.remove()) {
+    cerr << testdb.last_error() << endl;
 }
 ```
 
@@ -161,14 +154,14 @@ Query a record
 ```c++
 /* find users with a callback */
 user().find_by_id(1234, [](const shared_ptr<user> &record) {
-        cout << "User: " << record->to_string() << endl;
+    cout << "User: " << record->to_string() << endl;
 });
 
 /* find users returning the results */
 auto results = user().find_all();
 
 for (auto &user : results) {
-        cout << "User: " << record->to_string() << endl;
+    cout << "User: " << record->to_string() << endl;
 }
 ```
 
@@ -188,22 +181,22 @@ These functions can:
 - be generic column/values or specify type
 - return results in a collection or use callback
 
-example using a callback for a specific user type:
+example using a *callback* for a specific *user record*:
 ```c++
 auto schema = current_session->get_schema(user::TABLE_NAME);
 
 find_by_id<user>(schema, 1234, [](const shared_ptr<user> &record) {
-        cout << "User: " << record->to_string() << endl;
+    cout << "User: " << record->to_string() << endl;
 });
 ```
 
-example using a return value for a generic record:
+example using a *return value* for a *generic record*:
 
 ```c++
 auto results = find_all(user.schema());
 
 for (auto record : results) {
-        cout << "User: " << record->to_string() << endl;
+    cout << "User: " << record->to_string() << endl;
 }
 ```
 
@@ -222,9 +215,9 @@ insert.into("users").columns("id", "first_name", "last_name")
 			.values(4321, "dave", "patterson");
 
 if (!query.execute()) {
-		cerr << testdb.last_error() << endl;
+    cerr << testdb.last_error() << endl;
 } else {
-		cout << "last insert id " << query.last_insert_id() << endl;
+    cout << "last insert id " << query.last_insert_id() << endl;
 }
 ```
 
@@ -264,8 +257,8 @@ query.from("users").where(equals("last_name", "Jenkins")) or equals("first_name"
 auto results = query.execute();
 
 for ( auto &row : results) {
-		string lName = row["last_name"];
-		// do more stuff
+    string lName = row["last_name"];
+    // do more stuff
 }
 ```
 
@@ -513,6 +506,13 @@ Here are some preliminary benchmarks on sqlite (see [tests/benchmarks](tests/ben
 	sqlite select                              2000     1274096 ns/op
 	soci/coda_db_benchmark_soci 9.018s
 	Built target benchmark
+
+Why another library?
+--------------------
+
+Why not? It was good fun, tested and usable.  
+
+Other libraries are kinda nice or even better at some things.  Sometimes you don't want to deal with code generators or unintuitive syntax though.
 
 Alternatives
 ============
