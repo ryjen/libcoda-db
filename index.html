@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.14"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>coda_db: Main Page</title>
+<title>coda db: coda_db</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,9 +21,8 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">coda_db
+   <div id="projectname">coda db
    </div>
-   <div id="projectbrief">amulti-databasec++library</div>
   </td>
  </tr>
  </tbody>
@@ -63,10 +62,120 @@ $(function() {
 
 <div class="header">
   <div class="headertitle">
-<div class="title">coda_db Documentation</div>  </div>
+<div class="title">coda_db </div>  </div>
 </div><!--header-->
 <div class="contents">
-</div><!-- contents -->
+<div class="textblock"><p><a href="https://travis-ci.org/ryjen/db"></a> <a href="https://coveralls.io/github/ryjen/db?branch=master"></a> <a href="https://www.gnu.org/licenses/gpl-3.0.en.html"></a> <a href="https://www.codacy.com/app/ryjen/coda_db/dashboard"></a> <a href="https://beerpay.io/ryjen/db"></a></p>
+<p>a sqlite, mysql and postgres wrapper + active record (ish) implementation. <br />
+ </p><h2>Why another library? </h2>
+<p>Why not? It was good fun, tested and usable. <br />
+ Other libraries are kinda nice or even better at some things. Sometimes you don't want to deal with code generators or unintuitive syntax though.</p>
+<h2>Building </h2>
+<p>After cloning run the following command to initialize submodules:</p>
+<div class="fragment"><div class="line">git submodule update --init --recursive</div></div><!-- fragment --><p><a href="https://www.docker.com">Docker</a> builds are available, docker-compose will run the tests with mysql and postgres images:</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">docker-compose run test</div></div><!-- fragment --><p>otherwise use <a href="https://cmake.org">cmake</a> to generate for the build system of your choice, including Xcode.</p>
+<div class="fragment"><div class="line">cmake -G Xcode .</div><div class="line">open coda_db.xcodeproj</div></div><!-- fragment --><p>options supported are: </p><pre class="fragment">    -DENABLE_COVERAGE=OFF            : enable code coverage using lcov
+    -DENABLE_MEMCHECK=OFF            : enable valgrind memory checking on tests
+    -DENABLE_LOGGING=OFF             : enable internal library logging
+    -DENABLE_PROFILING=OFF           : enable valgrind profiling on tests
+    -DENABLE_PARAMETER_MAPPING=OFF   : use regex to map different parameter syntaxes
+    -DENABLE_BENCHMARKING=OFF        : benchmark with other database libraries
+</pre><h2>Debugging </h2>
+<p>Debugging on docker can be done with docker compose:</p>
+<div class="fragment"><div class="line">docker-compose run test gdb /user/src/build/tests/coda_db_test_xxx</div></div><!-- fragment --><h2>Documentation </h2>
+<p>The Doxygen html pages are available at <a href="https://ryjen.github.io/db">https://ryjen.github.io/db</a></p>
+<p>View some <a href="https://github.com/ryjen/db/wiki/Model">diagrams here</a>. These need to be improved.</p>
+<h1>Records </h1>
+<h2>An user object example </h2>
+<p>For the purposes of this readme there is a global session variable:</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">std::shared_ptr&lt;coda::db::session&gt; current_session = sqldb::create_session(&quot;file://test.db&quot;);</div><div class="line"></div><div class="line">/* Other databases:</div><div class="line"></div><div class="line">current_session = sqldb::create_session(&quot;mysql://user@pass:localhost:3306/database&quot;);</div><div class="line">current_session = sqldb::create_session(&quot;postgres://localhost/test&quot;);</div><div class="line"></div><div class="line">*/</div></div><!-- fragment --><p>Record objects should be implemented using the <a href="https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">curiously re-occuring template pattern (CRTP)</a>.</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line"></div><div class="line">class user : public coda::db::record&lt;user&gt;</div><div class="line">{</div><div class="line">public:</div><div class="line">        constexpr static const char *const TABLE_NAME = &quot;users&quot;;</div><div class="line"></div><div class="line">        /* only required constructor */</div><div class="line">        user(const std::shared_ptr&lt;schema&gt; &amp;schema) : record(schema)</div><div class="line">        {}</div><div class="line"></div><div class="line">        /* default constructor that gets the schema from the session */</div><div class="line">        user(const std::shared_ptr&lt;session&gt; &amp;session = current_session) </div><div class="line">              : record(session-&gt;get_schema(TABLE_NAME))</div><div class="line">        {}</div><div class="line"></div><div class="line">        /* utility method showing how to get columns */</div><div class="line">        string to_string() const</div><div class="line">        {</div><div class="line">            ostringstream buf;</div><div class="line">            buf &lt;&lt; id() &lt;&lt; &quot;: &quot; &lt;&lt; get(&quot;first_name&quot;) &lt;&lt; &quot; &quot; &lt;&lt; get(&quot;last_name&quot;);</div><div class="line">            return buf.str();</div><div class="line">        }</div><div class="line"></div><div class="line">        // optional overridden method to do custom initialization</div><div class="line">        void on_record_init(const coda::db::row &amp;row) {</div><div class="line">            set(&quot;customValue&quot;, row.column(&quot;customName&quot;).to_value());</div><div class="line">        }</div><div class="line"></div><div class="line">        // custom find method using the schema functions</div><div class="line">        vector&lt;shared_ptr&lt;user&gt;&gt; find_by_first_name(const string &amp;value) {</div><div class="line">            return coda::db::find_by&lt;user&gt;(this-&gt;schema(), &quot;first_name&quot;, value);</div><div class="line">        }</div><div class="line">};</div></div><!-- fragment --><h2>Save a record </h2>
+<div class="fragment"><div class="line">{c++}</div><div class="line">/* save a user */</div><div class="line">user obj;</div><div class="line"></div><div class="line">obj.set(&quot;first_name&quot;, &quot;John&quot;);</div><div class="line">obj.set(&quot;last_name&quot;, &quot;Doe&quot;);</div><div class="line"></div><div class="line">if(!obj.save()) {</div><div class="line">    cerr &lt;&lt; testdb.last_error() &lt;&lt; endl;</div><div class="line">}</div></div><!-- fragment --><h2>Delete a record </h2>
+<div class="fragment"><div class="line">{c++}</div><div class="line">user obj;</div><div class="line"></div><div class="line">obj.set_id(1);</div><div class="line"></div><div class="line">if(!obj.de1ete()) {</div><div class="line">        cerr &lt;&lt; testdb.last_error() &lt;&lt; endl;</div><div class="line">}</div></div><!-- fragment --><h2>Query a record </h2>
+<div class="fragment"><div class="line">{c++}</div><div class="line">/* find users with a callback */</div><div class="line">user().find_by_id(1234, [](const shared_ptr&lt;user&gt; &amp;record) {</div><div class="line">        cout &lt;&lt; &quot;User: &quot; &lt;&lt; record-&gt;to_string() &lt;&lt; endl;</div><div class="line">});</div><div class="line"></div><div class="line">/* find users returning the results */</div><div class="line">auto results = user().find_all();</div><div class="line"></div><div class="line">for (auto &amp;user : results) {</div><div class="line">        cout &lt;&lt; &quot;User: &quot; &lt;&lt; record-&gt;to_string() &lt;&lt; endl;</div><div class="line">}</div></div><!-- fragment --><h2>Querying Schemas </h2>
+<p>The library includes the following "schema functions" for querying with a schema objects:</p>
+<ul>
+<li><b>find_by_id()</b></li>
+<li><b>find_all()</b></li>
+<li><b>find_by()</b></li>
+<li><b>find_one()</b></li>
+</ul>
+<p>These functions can:</p>
+<ul>
+<li>be generic column/values or specify type</li>
+<li>return results in a collection or use callback</li>
+</ul>
+<p>example using a callback for a specific user type: </p><div class="fragment"><div class="line">{c++}</div><div class="line">auto schema = current_session-&gt;get_schema(user::TABLE_NAME);</div><div class="line"></div><div class="line">find_by_id&lt;user&gt;(schema, 1234, [](const shared_ptr&lt;user&gt; &amp;record) {</div><div class="line">        cout &lt;&lt; &quot;User: &quot; &lt;&lt; record-&gt;to_string() &lt;&lt; endl;</div><div class="line">});</div></div><!-- fragment --><p>example using a return value for a generic record:</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">auto results = find_all(user.schema());</div><div class="line"></div><div class="line">for (auto record : results) {</div><div class="line">        cout &lt;&lt; &quot;User: &quot; &lt;&lt; record-&gt;to_string() &lt;&lt; endl;</div><div class="line">}</div></div><!-- fragment --><h1>Basic Queries </h1>
+<h2>Modify Queries </h2>
+<div class="fragment"><div class="line">{c++}</div><div class="line">/* insert a  user (INSERT INTO ...) */</div><div class="line">insert_query insert(current_session);</div><div class="line"></div><div class="line">/* insert column values into a table */</div><div class="line">insert.into(&quot;users&quot;).columns(&quot;id&quot;, &quot;first_name&quot;, &quot;last_name&quot;)</div><div class="line">            .values(4321, &quot;dave&quot;, &quot;patterson&quot;);</div><div class="line"></div><div class="line">if (!query.execute()) {</div><div class="line">        cerr &lt;&lt; testdb.last_error() &lt;&lt; endl;</div><div class="line">} else {</div><div class="line">        cout &lt;&lt; &quot;last insert id &quot; &lt;&lt; query.last_insert_id() &lt;&lt; endl;</div><div class="line">}</div></div><!-- fragment --><div class="fragment"><div class="line">{c++}</div><div class="line">/* update a user (UPDATE ...) */</div><div class="line">update_query update(current_session);</div><div class="line"></div><div class="line">/* update columns in a table with values */</div><div class="line">update.table(&quot;users&quot;).columns(&quot;id&quot;, &quot;first_name&quot;, &quot;last_name&quot;)</div><div class="line">         .values(3432, &quot;mark&quot;, &quot;anthony&quot;);</div><div class="line"></div><div class="line">/* using where clause with named parameters */</div><div class="line">query.where(op::equals(&quot;id&quot;, 1234)) or op::equals(&quot;last_name&quot;, &quot;henry&quot;);</div><div class="line"></div><div class="line">query.execute();</div></div><!-- fragment --><div class="fragment"><div class="line">{c++}</div><div class="line">/* delete a user (DELETE FROM ...) */</div><div class="line">delete_query query(current_session);</div><div class="line"></div><div class="line">query.from(&quot;users&quot;).where(equals(&quot;id&quot;, 1234)) and equals(&quot;first_name&quot;, &quot;bob&quot;);</div><div class="line"></div><div class="line">query.execute();</div></div><!-- fragment --><h2>Select Query </h2>
+<div class="fragment"><div class="line">{c++}</div><div class="line">/* select some users */</div><div class="line">select_query query(current_session);</div><div class="line"></div><div class="line">query.from(&quot;users&quot;).where(equals(&quot;last_name&quot;, &quot;Jenkins&quot;)) or equals(&quot;first_name&quot;, &quot;Harry&quot;);</div><div class="line"></div><div class="line">auto results = query.execute();</div><div class="line"></div><div class="line">for ( auto &amp;row : results) {</div><div class="line">        string lName = row[&quot;last_name&quot;];</div><div class="line">        // do more stuff</div><div class="line">}</div></div><!-- fragment --><p>The select query also supports a call back interface:</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">select_query query(current_session);</div><div class="line"></div><div class="line">query.from(&quot;users&quot;).execute([](const resultset &amp; rs)</div><div class="line">{</div><div class="line">    // do something with a resultset</div><div class="line"></div><div class="line">    rs.for_each([](const row &amp; r)</div><div class="line">    {</div><div class="line">        // do something with a row</div><div class="line"></div><div class="line">        r.for_each([](const column &amp; c)</div><div class="line">        {</div><div class="line">                // do something with a column</div><div class="line">        });</div><div class="line">    });</div><div class="line">});</div><div class="line"></div><div class="line">// use a function for a callback</div><div class="line">std::function&lt;void (const resultset &amp;)&gt; handler = [](const resultset &amp;results)</div><div class="line">{</div><div class="line">    printf(&quot;found %d results&quot;, results.size());</div><div class="line">}</div><div class="line"></div><div class="line">query.execute(handler);</div></div><!-- fragment --><h2>Joins </h2>
+<p>The <b>join_clause</b> is used to build join statements.</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">select_query select(current_session);</div><div class="line"></div><div class="line">select.columns(&quot;u.id&quot;, &quot;s.setting&quot;).from(&quot;users u&quot;)</div><div class="line">    .join(&quot;user_settings s&quot;).on(&quot;u.id = s.user_id&quot;) and (&quot;s.valid = 1&quot;);</div><div class="line"></div><div class="line">select.execute();</div></div><!-- fragment --><h2>Batch Queries </h2>
+<p>The library supports batch mode by default. This means upon execution, its will reset the query to a pre-bind state.</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">/* execute some raw sql */</div><div class="line">insert_query insert(current_session);</div><div class="line"></div><div class="line">insert.into(&quot;users&quot;).columns(&quot;counter&quot;);</div><div class="line"></div><div class="line">for(int i = 1000; i &lt; 3000; i++) {</div><div class="line">    // set new values for the insert</div><div class="line">    insert.bind(1, i);</div><div class="line"></div><div class="line">    if (!insert.execute()) {</div><div class="line">            cerr &lt;&lt; testdb.last_error() &lt;&lt; endl;</div><div class="line">    }</div><div class="line">}</div></div><!-- fragment --><h2>Raw Queries </h2>
+<p>Perform raw queries on a session object if you have to:</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">auto results = session-&gt;query(&quot;select * from users&quot;);</div><div class="line"></div><div class="line">if (!session-&gt;execute(&quot;insert into users values(...)&quot;)) {</div><div class="line">    cerr &lt;&lt; session-&gt;last_error() &lt;&lt; endl;</div><div class="line">}</div></div><!-- fragment --> <h1>Transactions </h1>
+<p>Transactions can be performed on a session object.</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">{</div><div class="line">    auto tx = current_session-&gt;start_transaction();</div><div class="line"></div><div class="line">    /* perform operations here */</div><div class="line"></div><div class="line">    tx-&gt;save(&quot;savepoint&quot;);</div><div class="line"></div><div class="line">    /* more operations here */</div><div class="line"></div><div class="line">    tx-&gt;rollback(&quot;savepoint&quot;);</div><div class="line">    tx-&gt;release(&quot;savepoint&quot;);</div><div class="line"></div><div class="line">    // set successful to commit on destruct</div><div class="line">    tx-&gt;set_successful(true);</div><div class="line">}</div><div class="line">// tx will be commited here</div></div><!-- fragment --><h1>Prepared Statements </h1>
+<p>By default <b>the library will use the prepared statement syntax of the database being used</b>. This is the most efficient use.</p>
+<p>If you turn on <b>ENHANCED_PARAMENTER_MAPPING (experiemental feature)</b> then the syntaxes are database independent.</p>
+<p>Enhanced parameter mapping supports different syntaxes. You can use different syntaxes in the same query if you really wanted.</p>
+<p>Example:</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">&quot;?, $2, @name, $3&quot;</div><div class="line">// or</div><div class="line">&quot;?, ?, @name, ?&quot;</div></div><!-- fragment --><p>When mixing indexed parameters, the unidentified '?' is equivalent to parameter 1 or '$1' and so on.</p>
+<p>Named parameters operate outside indexed parameters.</p>
+<h2>Where Clauses / Binding </h2>
+<p>Where clauses in select/delete/join queries have a dedicated class.</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">// using a where clause builder</div><div class="line">query.where(equals(&quot;param1&quot;, value1)) and !in(&quot;param2&quot;, {24, 54}) or startswith(&quot;param3&quot;, &quot;abc&quot;);</div></div><!-- fragment --><p>The 'and' and 'or' keywords are the same as calling the &amp;&amp; || operators.</p>
+<p>The library will also put the appropriate combined AND/OR into brackets (experiemental). In the above example in postgres would result in:</p>
+<div class="fragment"><div class="line">(param1 = $1 AND param2 NOT IN ($2,$3)) OR (param3 like $4)</div></div><!-- fragment --><h1>Operator Helpers </h1>
+<p>Operator functions are used for where clauses:</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">query.where(equals(&quot;column&quot;, value)) and !between(&quot;column2&quot;, valueA, valueB);</div></div><!-- fragment --><div class="fragment"><div class="line">{c++}</div><div class="line">op::equals</div><div class="line">op::like</div><div class="line">op::startswith</div><div class="line">op::endswith</div><div class="line">op::contains</div><div class="line">op::in</div><div class="line">op::between</div><div class="line">op::is</div></div><!-- fragment --><p>They can all be negated using the operator! (ex. !like )</p>
+<h1>Types </h1>
+<p>sql_value is implemented using a variant (currently boost::variant, untill c++17 variant becomes available).</p>
+<p>sql_value is capable of converting between the basic SQL values (when possible).</p>
+<p>Subtypes include:</p>
+<h2>sql_string </h2>
+<p>defined as std::string</p>
+<h2>sql_wstring </h2>
+<p>defined as std::wstring</p>
+<h2>sql_null </h2>
+<p>defined as nullptr</p>
+<h2>sql_number </h2>
+<p>A custom type for storing and converting numeric values only.</p>
+<h2>sql_time </h2>
+<p>A type for storing and converting sql date/time formats.</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">time_t current_time = time(0);</div><div class="line"></div><div class="line">/*</div><div class="line"> * create a DATE sql value</div><div class="line"> *</div><div class="line"> * can be DATE, TIME, DATETIME, TIMESTAMP</div><div class="line"> */</div><div class="line">sql_time value(current_time, sql_time::DATE);</div><div class="line"></div><div class="line">/* YYYY-MM-DD format */</div><div class="line">auto str = value.to_string();</div></div><!-- fragment --><h2>sql_blob </h2>
+<p>currently defined as a vector of bytes.</p>
+<div class="fragment"><div class="line">{c++}</div><div class="line">/* set data here */</div><div class="line">unsigned char *data = new unsigned char[size];</div><div class="line"></div><div class="line">/*</div><div class="line"> * create a blob value, this will create a copy of the data</div><div class="line"> *</div><div class="line"> * you can pass function pointers to control how the data is allocated, freed, copied and compared</div><div class="line"> */</div><div class="line">sql_blob value(data, data + sz);</div><div class="line"></div><div class="line">insert.into(&quot;table&quot;).columns(&quot;blob&quot;).values(value);</div></div><!-- fragment --><h1>Benchmarking </h1>
+<p>Here are some preliminary benchmarks on sqlite (see <a href="tests/benchmarks">tests/benchmarks</a>). Tested on mac osx pro (2.5ghz), clang, release build. </p><pre class="fragment">%&gt; make benchmark
+Scanning dependencies of target benchmark
+Executing benchmarks...
+sqlite insert                              5000      437175 ns/op
+sqlite select                              2000      587871 ns/op
+coda_db/coda_db_benchmark 7.204s
+sqlite insert                              5000      417281 ns/op
+sqlite select                              2000     1245470 ns/op
+poco/coda_db_benchmark_poco 8.651s
+sqlite insert                              5000      437498 ns/op
+sqlite select                              2000     1274096 ns/op
+soci/coda_db_benchmark_soci 9.018s
+Built target benchmark
+</pre><h1>Alternatives </h1>
+<ul>
+<li><a href="https://github.com/rbock/sqlpp11">sqlpp11</a></li>
+<li><a href="https://github.com/iwongu/sqlite3pp">sqlite3pp</a></li>
+<li><a href="http://pocoproject.org/docs/00200-DataUserManual.html">Poco Data</a></li>
+<li><a href="http://www.sqlapi.com">SQLAPI++</a></li>
+<li><a href="http://soci.sourceforge.net">SOCI</a></li>
+</ul>
+<h1>TODO / ROADMAP </h1>
+<ul>
+<li>More and better quality tests, especially around binding and data types</li>
+<li>better benchmarking and perf improvements </li>
+</ul>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
