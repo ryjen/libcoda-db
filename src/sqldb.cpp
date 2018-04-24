@@ -8,7 +8,7 @@ namespace coda {
     namespace db {
 
         namespace impl {
-            std::unordered_map<std::string, std::shared_ptr<session_factory>> factories;
+            static std::unordered_map<std::string, std::shared_ptr<session_factory>> factories;
         }
 
         std::shared_ptr<session> create_session(const std::string &uristr) {
