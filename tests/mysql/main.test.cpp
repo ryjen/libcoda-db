@@ -88,14 +88,14 @@ go_bandit([]() {
 
             db->close();
         });
+        it("can_parse_uri", []() {
+
+            auto mysql = sqldb::create_session("mysql://localhost:4000/test");
+            AssertThat(mysql.get() != NULL, IsTrue());
+            AssertThat(mysql->connection_info().host, Equals("localhost"));
+            AssertThat(mysql->connection_info().port, Equals("4000"));
+            AssertThat(mysql->connection_info().path, Equals("test"));
+        });
     });
 
-    it("can_parse_uri", []() {
-
-        auto mysql = sqldb::create_session("mysql://localhost:4000/test");
-        AssertThat(mysql.get() != NULL, IsTrue());
-        AssertThat(mysql->connection_info().host, Equals("localhost"));
-        AssertThat(mysql->connection_info().port, Equals("4000"));
-        AssertThat(mysql->connection_info().path, Equals("test"));
-    });
 });

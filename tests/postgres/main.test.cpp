@@ -77,13 +77,6 @@ namespace coda
     }
 }
 go_bandit([]() {
-    it("can_parse_uri", []() {
-        auto postgres = sqldb::create_session("postgres://localhost:4000/test");
-        AssertThat(postgres.get() != NULL, IsTrue());
-        AssertThat(postgres->connection_info().host, Equals("localhost"));
-        AssertThat(postgres->connection_info().port, Equals("4000"));
-        AssertThat(postgres->connection_info().path, Equals("test"));
-    });
 
     describe("postgres database", []() {
         before_each([]() { test::setup_current_session(); });
@@ -93,6 +86,13 @@ go_bandit([]() {
             auto db = sqldb::create_session("postgres://zzzzz:zzzzz@zzzz/zzzzz:0");
 
             AssertThrows(database_exception, db->open());
+        });
+        it("can_parse_uri", []() {
+            auto postgres = sqldb::create_session("postgres://localhost:4000/test");
+            AssertThat(postgres.get() != NULL, IsTrue());
+            AssertThat(postgres->connection_info().host, Equals("localhost"));
+            AssertThat(postgres->connection_info().port, Equals("4000"));
+            AssertThat(postgres->connection_info().path, Equals("test"));
         });
 
     });

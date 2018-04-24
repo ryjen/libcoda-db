@@ -1,6 +1,0 @@
-{
-    getpwuid
-    Memcheck:Leak
-    fun:malloc
-    fun:nss_parse_service_list
-}

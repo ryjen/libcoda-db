@@ -11,7 +11,7 @@ services:
       - postgres
     working_dir: /usr/src/build
     environment:
-      MYSQL_URI: mysql://test:test@mysql:3306/test
+      MYSQL_URI: mysql://mysql:3306/test
       POSTGRES_URI: postgres://test:test@postgres:5432/test
     depends_on:
       - mysql
@@ -30,24 +30,27 @@ services:
       - postgres
     working_dir: /usr/src/build
     environment:
-      MYSQL_URI: mysql://test:test@mysql:3306/test
+      MYSQL_URI: mysql://mysql:3306/test
       POSTGRES_URI: postgres://test:test@postgres:5432/test
     depends_on:
       - mysql
       - postgres
     command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s make coda_db_coverage_coveralls TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
   mysql:
-    image: mysql:5.5
+    image: mysql:5.7
     hostname: mysql
+    ports:
+      - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: test
       MYSQL_DATABASE: test
-      MYSQL_USER: test
-      MYSQL_PASSWORD: test
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
   postgres:
-    image: postgres:10
+    image: postgres
     hostname: postgres
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_DB: test
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test
+

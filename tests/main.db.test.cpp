@@ -13,11 +13,13 @@ int main(int argc, char *argv[])
 
     coda::db::test::register_current_session();
 
+    int rval = EXIT_SUCCESS;
+
     if (bandit::run(argc, argv)) {
-        return EXIT_FAILURE;
+        rval = EXIT_FAILURE;
     }
 
     coda::db::test::unregister_current_session();
 
-    return EXIT_SUCCESS;
+    return rval;
 }
