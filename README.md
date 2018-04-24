@@ -17,6 +17,7 @@ Why not? It was good fun, tested and usable.
 
 Other libraries are kinda nice or even better at some things.  Sometimes you don't want to deal with code generators or unintuitive syntax though.
 
+
 Building
 --------
 
@@ -59,8 +60,12 @@ Debugging on docker can be done with docker compose:
 docker-compose run test gdb /user/src/build/tests/coda_db_test_xxx
 ```
 
-Model
------
+
+
+Documentation
+--------------
+
+The Doxygen html pages are available at [https://ryjen.github.io/db](https://ryjen.github.io/db)
 
 View some [diagrams here](https://github.com/ryjen/db/wiki/Model).  These need to be improved.
 
