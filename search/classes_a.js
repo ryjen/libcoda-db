@@ -14,8 +14,7 @@ var searchData=
   ['sql_5ftime',['sql_time',['../classcoda_1_1db_1_1sql__time.html',1,'coda::db']]],
   ['sql_5fvalue',['sql_value',['../classcoda_1_1db_1_1sql__value.html',1,'coda::db']]],
   ['sql_5fvalue_5fconvertible',['sql_value_convertible',['../classcoda_1_1db_1_1sql__value__convertible.html',1,'coda::db']]],
-  ['sqldb',['sqldb',['../classcoda_1_1db_1_1sqldb.html',1,'coda::db']]],
-  ['statement',['statement',['../classcoda_1_1db_1_1statement.html',1,'coda::db::statement'],['../classcoda_1_1db_1_1mysql_1_1statement.html',1,'coda::db::mysql::statement'],['../classcoda_1_1db_1_1sqlite_1_1statement.html',1,'coda::db::sqlite::statement'],['../classcoda_1_1db_1_1postgres_1_1statement.html',1,'coda::db::postgres::statement']]],
+  ['statement',['statement',['../classcoda_1_1db_1_1postgres_1_1statement.html',1,'coda::db::postgres::statement'],['../classcoda_1_1db_1_1statement.html',1,'coda::db::statement'],['../classcoda_1_1db_1_1sqlite_1_1statement.html',1,'coda::db::sqlite::statement'],['../classcoda_1_1db_1_1mysql_1_1statement.html',1,'coda::db::mysql::statement']]],
   ['stmt_5fcolumn',['stmt_column',['../classcoda_1_1db_1_1mysql_1_1stmt__column.html',1,'coda::db::mysql']]],
   ['stmt_5fresultset',['stmt_resultset',['../classcoda_1_1db_1_1mysql_1_1stmt__resultset.html',1,'coda::db::mysql']]],
   ['stmt_5frow',['stmt_row',['../classcoda_1_1db_1_1mysql_1_1stmt__row.html',1,'coda::db::mysql']]]
