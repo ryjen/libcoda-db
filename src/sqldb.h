@@ -1,9 +1,8 @@
 #ifndef CODA_DB_SQLDB_H
 #define CODA_DB_SQLDB_H
 
-#include <memory>
-#include <unordered_map>
 #include "uri.h"
+#include <memory>
 
 namespace coda {
     namespace db {

@@ -1,6 +1,7 @@
 
 #include "sql_value.h"
 #include "query.h"
+#include "alloc.h"
 
 using namespace std;
 
@@ -52,11 +53,11 @@ namespace coda {
                 }
 
                 sql_blob operator()(const sql_string &value) const {
-                    return sql_blob(value.begin(), value.end());
+                    return sql_blob(value.data(), value.size());
                 }
 
                 sql_blob operator()(const sql_wstring &value) const {
-                    return sql_blob(value.begin(), value.end());
+                    return sql_blob(value.data(), value.size());
                 }
 
                 sql_blob operator()(const sql_null_type &value) const {
@@ -75,7 +76,7 @@ namespace coda {
                 }
 
                 sql_number operator()(const sql_blob &value) const {
-                    return value.size();
+                    throw value_conversion_error();
                 }
 
                 sql_number operator()(const sql_string &value) const {
@@ -527,6 +528,23 @@ namespace coda {
             } catch (const value_conversion_error &e) {
                 return std::string();
             }
+        }
+
+        sql_blob::sql_blob() : value_(nullptr), size_(0) {}
+
+        sql_blob::sql_blob(const void *data, size_t sz) : value_(nullptr), size_(sz)
+        {
+            if (data != nullptr && sz > 0) {
+                value_ = std::shared_ptr<void>(c_copy(data, sz), [](void *p){ free(p); });
+            }
+        }
+
+        void *sql_blob::get() const {
+            return value_.get();
+        }
+
+        size_t sql_blob::size() const {
+            return size_;
         }
 
         ostream &operator<<(ostream &out, const sql_value &value) {

@@ -1,17 +1,26 @@
 #include "sql_common.h"
 #include <codecvt>
 #include <locale>
+#include <cstdlib>
 #include "sql_number.h"
 
 namespace coda {
     namespace db {
         std::ostream &operator<<(std::ostream &out, const sql_blob &value) {
-            out << std::string(value.begin(), value.end());
+            if (value.size() == 0) {
+                out << "NULL";
+            } else {
+                out << std::hex << (intptr_t) value.get();
+            }
             return out;
         }
 
         std::wostream &operator<<(std::wostream &out, const sql_blob &value) {
-            out << std::wstring(value.begin(), value.end());
+            if (value.size() == 0) {
+                out << "NULL";
+            } else {
+                out << std::hex << (intptr_t) value.get();
+            }
             return out;
         }
 

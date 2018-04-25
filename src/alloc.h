@@ -36,6 +36,8 @@ namespace coda {
          */
         void *c_alloc(size_t size, size_t num = 1);
 
+        void *c_copy(const void *data, size_t sz);
+
         /*!
          * reallocate a value to a new size
          * @param value the existing memory block

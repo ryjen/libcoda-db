@@ -74,10 +74,10 @@ specification(resultsets, []() {
 
             auto rs = q.from(test::user::TABLE_NAME).execute();
 
-            rs.for_each([](const row& row) {
+            rs.each([](const row& row) {
                 AssertThat(row.is_valid(), IsTrue());
 
-                row.for_each([](const column& c) { AssertThat(c.is_valid(), IsTrue()); });
+                row.each([](const column& c) { AssertThat(c.is_valid(), IsTrue()); });
             });
         });
 

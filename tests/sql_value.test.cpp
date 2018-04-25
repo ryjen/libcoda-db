@@ -216,17 +216,25 @@ go_bandit([]() {
         it("can be a string", []() {
             sql_blob blob;
 
-            AssertThat(to_string(blob), Equals(""));
+            AssertThat(to_string(blob), Equals("NULL"));
 
-            AssertThat(to_wstring(blob), Equals(std::wstring(L"")));
+            AssertThat(to_wstring(blob), Equals(std::wstring(L"NULL")));
 
-            unsigned char data[] = {"123456"};
+            std::string data("123456");
 
-            sql_blob other(data, data + sizeof(data) / sizeof(data[0]) - 1);
+            sql_blob other(data.data(), data.size());
 
-            AssertThat(to_string(other), Equals("123456"));
+            std::ostringstream buf;
 
-            AssertThat(to_wstring(other), Equals(std::wstring(L"123456")));
+            buf << std::hex << (intptr_t) other.get();
+
+            AssertThat(to_string(other), Equals(buf.str()));
+
+            std::wostringstream wbuf;
+
+            wbuf << std::hex << (intptr_t) other.get();
+
+            AssertThat(to_wstring(other), Equals(wbuf.str()));
         });
 
     });

@@ -253,8 +253,7 @@ namespace coda
                         case MYSQL_TYPE_LONG_BLOB:
                         case MYSQL_TYPE_BLOB: {
                             if (binding->length) {
-                                unsigned char *blob = reinterpret_cast<unsigned char *>(binding->buffer);
-                                return sql_blob(blob, blob + *binding->length);
+                                return sql_blob(binding->buffer, *binding->length);
                             }
 
                             return sql_blob();
@@ -335,7 +334,7 @@ namespace coda
                         case MYSQL_TYPE_MEDIUM_BLOB:
                         case MYSQL_TYPE_LONG_BLOB:
                         case MYSQL_TYPE_BLOB: {
-                            return sql_blob(value, value + length);
+                            return sql_blob(value, length);
                         }
                         case MYSQL_TYPE_NULL:
                             return sql_null;
@@ -511,9 +510,7 @@ namespace coda
                     void operator()(const sql_blob &value) const
                     {
                         bind_->buffer_type = MYSQL_TYPE_BLOB;
-                        void *ptr = c_alloc(value.size());
-                        memcpy(ptr, value.data(), value.size());
-                        bind_->buffer = ptr;
+                        bind_->buffer = c_copy(value.get(), value.size());
                         bind_->buffer_length = value.size();
                         if (!bind_->length) {
                             bind_->length = c_alloc<unsigned long>();

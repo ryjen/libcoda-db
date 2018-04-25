@@ -273,7 +273,7 @@ namespace coda {
             /*!
              * @param funk the callback to perform for each row
              */
-            void for_each(const std::function<void(const row_type &)> &funk) const;
+            void each(const std::function<void(const row_type &)> &funk) const;
 
             /*!
              * @return a pointer to the implementation

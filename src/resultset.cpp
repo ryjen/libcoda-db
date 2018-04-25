@@ -57,7 +57,7 @@ namespace coda {
             return begin() == end();
         }
 
-        void resultset::for_each(const std::function<void(const row &row)> &funk) const {
+        void resultset::each(const std::function<void(const row &row)> &funk) const {
             for (auto &row : *this) {
                 funk(row);
             }

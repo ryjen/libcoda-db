@@ -46,9 +46,13 @@ specification(columns, []() {
             u.set("last_name", "Jenkins");
             u.set("dval", 123.321);
 
-            sql_blob data;
+            int *value = new int;
 
-            data.push_back(4);
+            *value = 4;
+
+            sql_blob data(value, sizeof(int));
+
+            delete value;
 
             u.set("data", data);
 
@@ -92,9 +96,13 @@ specification(columns, []() {
 
             AssertThat(col.value().is<sql_blob>(), IsTrue());
 
-            AssertThat(col.value().as<sql_blob>().size(), Equals(1));
+            auto blob = col.value().as<sql_blob>();
 
-            AssertThat(col.value().as<sql_blob>()[0], Equals(4));
+            AssertThat(blob.size(), Equals(sizeof(int)));
+
+            int* p = static_cast<int*>(blob.get());
+
+            AssertThat(*p, Equals(4));
         });
 
         it("can be a time", []() {

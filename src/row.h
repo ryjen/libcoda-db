@@ -343,7 +343,7 @@ namespace coda {
              * performs a callback for each column
              * @param funk the callback
              */
-            void for_each(const std::function<void(const db::column &)> &funk) const;
+            void each(const std::function<void(const db::column &)> &funk) const;
 
             /*!
              * gets the implementation for this row

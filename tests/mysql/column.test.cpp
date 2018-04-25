@@ -98,7 +98,7 @@ SPEC_BEGIN(mysql_column)
 
             unsigned char* ptr = (unsigned char*)calloc(4, sizeof(int));
 
-            sql_blob data(ptr, ptr + (4 * sizeof(int)));
+            sql_blob data(ptr, (4 * sizeof(int)));
 
             user1.set("data", data);
 

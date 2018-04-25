@@ -109,10 +109,10 @@ specification(selects, []() {
             query.execute([](const resultset& rs) {
                 AssertThat(rs.is_valid(), IsTrue());
 
-                rs.for_each([](const row& r) {
+                rs.each([](const row& r) {
                     AssertThat(r.is_valid(), IsTrue());
 
-                    r.for_each([](const column& c) { AssertThat(c.is_valid(), IsTrue()); });
+                    r.each([](const column& c) { AssertThat(c.is_valid(), IsTrue()); });
                 });
             });
         });

@@ -82,7 +82,7 @@ specification(rows, []() {
 
             auto r = rs.begin();
 
-            r->for_each([](const coda::db::column& c) { Assert::That(c.is_valid(), IsTrue()); });
+            r->each([](const coda::db::column& c) { Assert::That(c.is_valid(), IsTrue()); });
         });
 
         it("has an iterator", []() {

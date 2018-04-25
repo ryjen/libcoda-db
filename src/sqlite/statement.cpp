@@ -106,7 +106,7 @@ namespace coda
 
                     bool operator()(const sql_blob &value) const
                     {
-                        return sqlite3_bind_blob(stmt_.get(), index_, value.data(), value.size(), SQLITE_TRANSIENT) ==
+                        return sqlite3_bind_blob(stmt_.get(), index_, value.get(), value.size(), SQLITE_TRANSIENT) ==
                                SQLITE_OK;
                     }
 

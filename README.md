@@ -130,7 +130,7 @@ obj.set("first_name", "John");
 obj.set("last_name", "Doe");
 
 if(!obj.save()) {
-    cerr << testdb.last_error() << endl;
+    cerr << current_session.last_error() << endl;
 }
 ```
 
@@ -143,7 +143,7 @@ user obj;
 obj.set_id(1);
 
 if(!obj.remove()) {
-    cerr << testdb.last_error() << endl;
+    cerr << current_session.last_error() << endl;
 }
 ```
 
@@ -193,10 +193,10 @@ find_by_id<user>(schema, 1234, [](const shared_ptr<user> &record) {
 example using a *return value* for a *generic record*:
 
 ```c++
-auto results = find_all(user.schema());
+auto results = find_all(schema);
 
 for (auto record : results) {
-    cout << "User: " << record->to_string() << endl;
+    cout << "Obj: " << record->to_string() << endl;
 }
 ```
 
@@ -215,7 +215,7 @@ insert.into("users").columns("id", "first_name", "last_name")
 			.values(4321, "dave", "patterson");
 
 if (!query.execute()) {
-    cerr << testdb.last_error() << endl;
+    cerr << current_session.last_error() << endl;
 } else {
     cout << "last insert id " << query.last_insert_id() << endl;
 }
@@ -271,11 +271,11 @@ query.from("users").execute([](const resultset & rs)
 {
     // do something with a resultset
 
-    rs.for_each([](const row & r)
+    rs.each([](const row & r)
     {
         // do something with a row
 
-        r.for_each([](const column & c)
+        r.each([](const column & c)
         {
                 // do something with a column
         });
@@ -305,27 +305,6 @@ select.columns("u.id", "s.setting").from("users u")
 select.execute();
 ```
 
-Batch Queries
--------------
-
-The library supports batch mode by default. This means upon execution, its will reset the query to a pre-bind state.
-
-```c++
-/* execute some raw sql */
-insert_query insert(current_session);
-
-insert.into("users").columns("counter");
-
-for(int i = 1000; i < 3000; i++) {
-    // set new values for the insert
-    insert.bind(1, i);
-
-    if (!insert.execute()) {
-            cerr << testdb.last_error() << endl;
-    }
-}
-```
-
 Raw Queries
 -----------
 
@@ -344,6 +323,7 @@ Transactions
 Transactions can be performed on a session object.
 
 ```c++
+...
 {
 	auto tx = current_session->start_transaction();
 
@@ -360,16 +340,30 @@ Transactions can be performed on a session object.
 	tx->set_successful(true);
 }
 // tx will be commited here
+...
 ```
 
 Prepared Statements
 ===================
 
-By default **the library will use the prepared statement syntax of the database being used**.  This is the most efficient use.
+#### Parameters
 
-If you turn on **ENHANCED_PARAMENTER_MAPPING (experiemental feature)** then the syntaxes are database independent.
+By default the library will use the prepared statement syntax of the database being used.  This is the most efficient use.
 
-Enhanced parameter mapping supports different syntaxes.  You can use different syntaxes in the same query if you really wanted.
+*****
+
+###### **ENHANCED_PARAMENTER_MAPPING (experimental feature)**
+ 
+If you compile with this flag, then the following syntaxes are managed by the library.
+
+- **$1, $2**, etc :
+   - indexed parameter
+- **?** :
+   - ordered index parameter (the first ? is equivalent to $1 and so on)
+- **@name** :
+   - named paramters separate from indexed parameters
+
+With this flag you can combine the different syntaxes.... in the same query if you really wanted.
 
 Example:
 
@@ -379,9 +373,25 @@ Example:
 "?, ?, @name, ?"
 ```
 
-When mixing indexed parameters, the unidentified '?' is equivalent to parameter 1 or '$1' and so on.
+#### Behaviour
 
-Named parameters operate outside indexed parameters.
+Upon execution, the queries will be reset to a pre-bind state.
+
+```c++
+/* execute some raw sql */
+insert_query insert(current_session);
+
+insert.into("users").columns("counter");
+
+for(int i = 1000; i < 3000; i++) {
+    // set new values for the insert
+    insert.bind(1, i);
+
+    if (!insert.execute()) {
+            cerr << current_session.last_error() << endl;
+    }
+}
+```
 
 
 Where Clauses / Binding
@@ -394,9 +404,9 @@ Where clauses in select/delete/join queries have a dedicated class.
 query.where(equals("param1", value1)) and !in("param2", {24, 54}) or startswith("param3", "abc");
 ```
 
-The 'and' and 'or' keywords are the same as calling the && || operators.
+('and' and 'or' keywords are equivalent to the && || operators in c++)
 
-The library will also put the appropriate combined AND/OR into brackets (experiemental). In the above example in postgres would result in:
+The above example would produce the following SQL in postgres:
 
 ```
 (param1 = $1 AND param2 NOT IN ($2,$3)) OR (param3 like $4)
@@ -427,7 +437,7 @@ They can all be negated using the operator! (ex. !like )
 Types
 =====
 
-sql_value is implemented using a variant (currently boost::variant, untill c++17 variant becomes available).
+sql_value is the base type and implemented using a variant (currently boost::variant, until c++17 variant becomes available).
 
 sql_value is capable of converting between the basic SQL values (when possible).
 
@@ -476,7 +486,7 @@ currently defined as a vector of bytes.
 
 ```c++
 /* set data here */
-unsigned char *data = new unsigned char[size];
+void *data = malloc(sz);
 
 /*
  * create a blob value, this will create a copy of the data
@@ -525,7 +535,11 @@ Alternatives
 TODO / ROADMAP
 ==============
 
-* More and better quality tests, especially around binding and data types
-* better benchmarking and perf improvements
+[ ] Custom where clause operators
+[ ] More testing around binding
+[ ] More testing around data types
+[ ] More testing with where clauses
+[ ] Better benchmarking and perf improvements
+[ ] Finish/improve fuzz testing
 
 

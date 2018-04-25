@@ -99,7 +99,7 @@ namespace coda {
             return impl_ != nullptr && impl_->is_valid();
         }
 
-        void row::for_each(const std::function<void( const db::column &)> &funk) const {
+        void row::each(const std::function<void( const db::column &)> &funk) const {
             for ( auto &c : *this) {
                 funk(c);
             }

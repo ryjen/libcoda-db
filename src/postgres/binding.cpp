@@ -35,7 +35,7 @@ namespace coda
                         case BYTEAOID: {
                             size_t blen = 0;
                             unsigned char *b = PQunescapeBytea(reinterpret_cast<const unsigned char *>(value), &blen);
-                            sql_blob bin(b, b + blen);
+                            sql_blob bin(b, blen);
                             free(b);
                             return bin;
                         }
@@ -250,8 +250,8 @@ namespace coda
                     }
                     void operator()(const sql_blob &value) const
                     {
-                        string temp(value.begin(), value.end());
-                        bind_.values_[index_] = strdup(temp.c_str());
+
+                        bind_.values_[index_] = static_cast<char*>(c_copy(value.get(), value.size()));
                         bind_.types_[index_] = BYTEAOID;
                         bind_.lengths_[index_] = value.size();
                         bind_.formats_[index_] = 1;

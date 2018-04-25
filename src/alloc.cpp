@@ -1,4 +1,5 @@
 #include "alloc.h"
+#include <cstring>
 
 namespace coda {
     namespace db {
@@ -14,6 +15,17 @@ namespace coda {
             if (mem == nullptr) {
                 throw std::bad_alloc();
             }
+            return mem;
+        }
+
+        void *c_copy(const void *data, size_t sz) {
+            if (sz == 0 || data == nullptr) {
+                return nullptr;
+            }
+
+            void *mem = c_alloc(sz);
+
+            std::memmove(mem, data, sz);
             return mem;
         }
     }

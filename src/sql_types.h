@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace coda {
     namespace db {
@@ -17,17 +18,26 @@ namespace coda {
          */
         extern const sql_null_type sql_null;
 
-        /*!
-         * blobs are simple vectors of unsigned chars
-         */
-        typedef std::vector<unsigned char> sql_blob;
-
         typedef std::string sql_string;
         typedef std::wstring sql_wstring;
 
         class sql_number;
 
         class sql_time;
+
+        /*!
+         * blobs are simple vectors of unsigned chars
+         */
+        class sql_blob {
+        public:
+            sql_blob();
+            sql_blob(const void *data, size_t size);
+            void *get() const;
+            size_t size() const;
+        private:
+            std::shared_ptr<void> value_;
+            size_t size_;
+        };
 
         /**
          * template helper to see if a type is appropriate for a sql number

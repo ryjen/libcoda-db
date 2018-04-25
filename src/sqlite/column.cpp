@@ -32,9 +32,7 @@ namespace coda
                         case SQLITE_FLOAT:
                             return sql_number(sqlite3_column_double(stmt.get(), column));
                         case SQLITE_BLOB: {
-                            const unsigned char *blob =
-                                reinterpret_cast<const unsigned char *>(sqlite3_column_blob(stmt.get(), column));
-                            return sql_blob(blob, blob + sqlite3_column_bytes(stmt.get(), column));
+                            return sql_blob(sqlite3_column_blob(stmt.get(), column), sqlite3_column_bytes(stmt.get(), column));
                         }
                     }
                 }
