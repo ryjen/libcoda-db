@@ -132,11 +132,17 @@ endif()
 if (DEFINED BANDIT_TARGET)
 	add_dependencies(${COMMON_TEST_PROJECT_NAME} ${BANDIT_TARGET})
 
-	add_dependencies(${MYSQL_TEST_PROJECT_NAME} ${BANDIT_TARGET})
+  if ( MYSQL_FOUND )
+	  add_dependencies(${MYSQL_TEST_PROJECT_NAME} ${BANDIT_TARGET})
+  endif()
 
-	add_dependencies(${SQLITE_TEST_PROJECT_NAME} ${BANDIT_TARGET})
+  if ( SQLITE3_FOUND )
+	  add_dependencies(${SQLITE_TEST_PROJECT_NAME} ${BANDIT_TARGET})
+  endif()
 
-	add_dependencies(${POSTGRES_TEST_PROJECT_NAME} ${BANDIT_TARGET})
+  if ( PostgreSQL_FOUND )
+	  add_dependencies(${POSTGRES_TEST_PROJECT_NAME} ${BANDIT_TARGET})
+  endif()
 
 	add_dependencies(${TEST_PROJECT_NAME} ${BANDIT_TARGET})
 endif()
