@@ -17,7 +17,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 # check for libraries
 find_package(MySQL)
 find_package(SQLite3)
-find_package(PostgreSQL)
+find_package(Postgres)
 
 find_program(CPPCLEAN_FOUND cppclean)
 
@@ -33,7 +33,7 @@ if (MYSQL_FOUND)
 	set(MYSQL_PROJECT_NAME "${PROJECT_NAME}_mysql")
 endif()
 
-if (PostgreSQL_FOUND)
+if (POSTGRES_FOUND)
 	set(POSTGRES_PROJECT_NAME "${PROJECT_NAME}_postgres")
 endif()
 

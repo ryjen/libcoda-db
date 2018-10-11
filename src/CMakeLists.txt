@@ -128,7 +128,7 @@ if (MYSQL_FOUND)
 
 endif ()
 
-if (PostgreSQL_FOUND)
+if (POSTGRES_FOUND)
 
     add_library(${POSTGRES_PROJECT_NAME}
             postgres/binding.cpp
@@ -140,9 +140,9 @@ if (PostgreSQL_FOUND)
             postgres/transaction.cpp
             )
 
-    target_include_directories(${POSTGRES_PROJECT_NAME} SYSTEM PUBLIC ${PostgreSQL_INCLUDE_DIRS})
+    target_include_directories(${POSTGRES_PROJECT_NAME} SYSTEM PUBLIC ${POSTGRES_INCLUDE_DIR} SYSTEM PUBLIC ${POSTGRES_INCLUDE_DIR_SERVER})
 
-    target_link_libraries(${POSTGRES_PROJECT_NAME} ${PROJECT_NAME} ${PostgreSQL_LIBRARIES})
+    target_link_libraries(${POSTGRES_PROJECT_NAME} ${PROJECT_NAME} ${POSTGRES_LIBRARIES})
 
     set(${PROJECT_NAME}_POSTGRES_HEADERS
             postgres/binding.h
