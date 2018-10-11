@@ -1,6 +1,7 @@
 #include "sql_time.h"
 #include "exception.h"
 #include "sql_number.h"
+#include <cstring>
 
 namespace coda {
     namespace db {

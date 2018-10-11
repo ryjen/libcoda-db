@@ -89,12 +89,12 @@ namespace coda {
 
         template<>
         sql_string sql_number::as() const {
-            return boost::apply_visitor(helper::as_sql_string(), value_);
+            return std::visit(helper::as_sql_string(), value_);
         }
 
         template<>
         sql_wstring sql_number::as() const {
-            return boost::apply_visitor(helper::as_sql_wstring(), value_);
+            return std::visit(helper::as_sql_wstring(), value_);
         }
 
         template<>
@@ -163,11 +163,11 @@ namespace coda {
         }
 
         sql_number::operator sql_string() const {
-            return boost::apply_visitor(helper::as_sql_string(), value_);
+            return std::visit(helper::as_sql_string(), value_);
         }
 
         sql_number::operator sql_wstring() const {
-            return boost::apply_visitor(helper::as_sql_wstring(), value_);
+            return std::visit(helper::as_sql_wstring(), value_);
         }
 
         sql_number::operator sql_time() const {
@@ -175,7 +175,7 @@ namespace coda {
         }
 
         bool sql_number::operator==(const sql_number &other) const {
-            return boost::apply_visitor(helper::number_equality(other), value_);
+            return std::visit(helper::number_equality(other), value_);
         }
 
         bool sql_number::operator==(const sql_null_type &value) const {
@@ -256,11 +256,11 @@ namespace coda {
         }
 
         std::string sql_number::to_string() const {
-            return boost::apply_visitor(helper::as_sql_string(), value_);
+            return std::visit(helper::as_sql_string(), value_);
         }
 
         std::wstring sql_number::to_wstring() const {
-            return boost::apply_visitor(helper::as_sql_wstring(), value_);
+            return std::visit(helper::as_sql_wstring(), value_);
         }
 
         std::ostream &operator<<(std::ostream &out, const sql_number &value) {

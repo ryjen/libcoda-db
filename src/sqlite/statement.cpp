@@ -24,7 +24,7 @@ namespace coda
 
             namespace data_mapper
             {
-                class from_number : public boost::static_visitor<bool>
+                class from_number
                 {
                    public:
                     from_number(const std::shared_ptr<sqlite3_stmt> &stmt, size_t index) : stmt_(stmt), index_(index)
@@ -79,7 +79,7 @@ namespace coda
                     std::shared_ptr<sqlite3_stmt> stmt_;
                     size_t index_;
                 };
-                class from_value : public boost::static_visitor<bool>
+                class from_value
                 {
                    public:
                     from_value(const std::shared_ptr<sqlite3_stmt> &stmt, size_t index) : stmt_(stmt), index_(index)

@@ -380,7 +380,7 @@ namespace coda
                 /**
                  * a value visitor to apply to a mysql binding
                  */
-                class from_number : public boost::static_visitor<void>
+                class from_number
                 {
                    public:
                     from_number(MYSQL_BIND *bind) : bind_(bind)
@@ -493,7 +493,7 @@ namespace coda
                 /**
                  * a visitor to apply a value to a mysql binding
                  */
-                class from_value : public boost::static_visitor<void>
+                class from_value 
                 {
                    public:
                     from_value(MYSQL_BIND *bind) : bind_(bind)

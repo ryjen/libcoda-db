@@ -70,12 +70,12 @@ namespace coda {
 
             template<typename T, typename = std::enable_if<is_sql_value<T>::value || is_sql_number<T>::value>>
             bool is() const {
-                return boost::apply_visitor(helper::is_type<T>(), value_);
+                return std::visit(helper::is_type<T>(), value_);
             }
 
             template<typename T, typename = std::enable_if<is_sql_number<T>::value>>
             T as() const {
-                return boost::apply_visitor(helper::as_number<T>(), value_);
+                return std::visit(helper::as_number<T>(), value_);
             }
 
             operator sql_number() const;
@@ -173,16 +173,16 @@ namespace coda {
 
             template<typename V, typename T>
             T apply_visitor(const V &visitor) const {
-                return boost::apply_visitor(visitor, value_);
+                return std::visit(visitor, value_);
             }
 
             template<typename V>
             void apply_visitor(const V &visitor) const {
-                boost::apply_visitor(visitor, value_);
+                std::visit(visitor, value_);
             }
 
         private:
-            boost::variant<sql_null_type, sql_number, sql_string, sql_wstring, sql_time, sql_blob> value_;
+            std::variant<sql_null_type, sql_number, sql_string, sql_wstring, sql_time, sql_blob> value_;
         };
 
         template<>

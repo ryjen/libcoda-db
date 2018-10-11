@@ -2,8 +2,8 @@
 #ifndef CODA_DB_SQL_NUMBER_H
 #define CODA_DB_SQL_NUMBER_H
 
+#include <variant>
 #include <algorithm>
-#include <boost/variant.hpp>
 #include <string>
 #include <vector>
 #include "exception.h"
@@ -12,6 +12,44 @@
 
 namespace coda {
     namespace db {
+
+        namespace helper {
+            template<typename T>
+            class as_number {
+            public:
+                template<typename V>
+                T operator()(const V &value) const {
+                    return value;
+                }
+
+                T operator()(const sql_null_type &value) const {
+                    return 0;
+                }
+
+                T operator()(const sql_blob &value) const {
+                    throw value_conversion_error();
+                }
+
+                T operator()(const sql_time &value) const {
+                    if (std::is_same<T, time_t>::value || std::is_convertible<time_t, T>::value) {
+                        return sql_number(value);
+                    }
+                    throw value_conversion_error();
+                }
+
+                T operator()(const sql_string &value) const {
+                    return sql_number(value);
+                }
+
+                T operator()(const sql_wstring &value) const {
+                    return sql_number(value);
+                }
+
+                T operator()(const sql_number &value) const {
+                    return value;
+                }
+            };
+        }
         class sql_number : public sql_number_convertible {
         public:
             sql_number();
@@ -66,12 +104,12 @@ namespace coda {
 
             template<typename T, typename = std::enable_if<is_sql_number<T>::value>>
             bool is() const {
-                return boost::apply_visitor(helper::is_type<T>(), value_);
+                return std::visit(helper::is_type<T>(), value_);
             }
 
             template<typename T, typename = std::enable_if<is_sql_number<T>::value>>
             T as() const {
-                return boost::apply_visitor(helper::as_number<T>(), value_);
+                return std::visit(helper::as_number<T>(), value_);
             }
 
             /**
@@ -134,12 +172,12 @@ namespace coda {
 
             template<typename V, typename T>
             T apply_visitor(const V &visitor) const {
-                return boost::apply_visitor(visitor, value_);
+                return std::visit(visitor, value_);
             }
 
             template<typename V>
             void apply_visitor(const V &visitor) const {
-                boost::apply_visitor(visitor, value_);
+                std::visit(visitor, value_);
             }
 
             bool operator==(const sql_number &other) const;
@@ -221,7 +259,7 @@ namespace coda {
                 return false;
             }
 
-            boost::variant<sql_null_type, bool, char, unsigned char, wchar_t, short, unsigned short, int, unsigned int,
+            std::variant<sql_null_type, bool, char, unsigned char, wchar_t, short, unsigned short, int, unsigned int,
                     long, unsigned long, long long, unsigned long long, float, double, long double>
                     value_;
         };
@@ -236,44 +274,6 @@ namespace coda {
         sql_time sql_number::as() const;
 
         std::ostream &operator<<(std::ostream &out, const sql_number &value);
-
-        namespace helper {
-            template<typename T, typename>
-            class as_number : public boost::static_visitor<typename std::enable_if<is_sql_number<T>::value, T>::type> {
-            public:
-                template<typename V>
-                T operator()(const V &value) const {
-                    return value;
-                }
-
-                T operator()(const sql_null_type &value) const {
-                    return 0;
-                }
-
-                T operator()(const sql_blob &value) const {
-                    throw value_conversion_error();
-                }
-
-                T operator()(const sql_time &value) const {
-                    if (std::is_same<T, time_t>::value || std::is_convertible<time_t, T>::value) {
-                        return sql_number(value);
-                    }
-                    throw value_conversion_error();
-                }
-
-                T operator()(const sql_string &value) const {
-                    return sql_number(value);
-                }
-
-                T operator()(const sql_wstring &value) const {
-                    return sql_number(value);
-                }
-
-                T operator()(const sql_number &value) const {
-                    return value;
-                }
-            };
-        }
     }
 }
 

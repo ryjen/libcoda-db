@@ -2,13 +2,14 @@
 #include "sql_value.h"
 #include "query.h"
 #include "alloc.h"
+#include <cstring>
 
 using namespace std;
 
 namespace coda {
     namespace db {
         namespace helper {
-            struct as_sql_time : public boost::static_visitor<sql_time> {
+            struct as_sql_time {
             public:
                 as_sql_time() {
                 }
@@ -38,7 +39,7 @@ namespace coda {
                 }
             };
 
-            struct as_sql_blob : public boost::static_visitor<sql_blob> {
+            struct as_sql_blob {
             public:
                 sql_blob operator()(const sql_number &value) const {
                     throw value_conversion_error();
@@ -65,7 +66,7 @@ namespace coda {
                 }
             };
 
-            struct as_sql_number : public boost::static_visitor<sql_number> {
+            struct as_sql_number {
             public:
                 sql_number operator()(const sql_number &value) const {
                     return value;
@@ -170,27 +171,27 @@ namespace coda {
 
         template<>
         sql_string sql_value::as() const {
-            return boost::apply_visitor(helper::as_sql_string(), value_);
+            return std::visit(helper::as_sql_string(), value_);
         }
 
         template<>
         sql_wstring sql_value::as() const {
-            return boost::apply_visitor(helper::as_sql_wstring(), value_);
+            return std::visit(helper::as_sql_wstring(), value_);
         }
 
         template<>
         sql_time sql_value::as() const {
-            return boost::apply_visitor(helper::as_sql_time(), value_);
+            return std::visit(helper::as_sql_time(), value_);
         }
 
         template<>
         sql_blob sql_value::as() const {
-            return boost::apply_visitor(helper::as_sql_blob(), value_);
+            return std::visit(helper::as_sql_blob(), value_);
         }
 
         template<>
         sql_number sql_value::as() const {
-            return boost::apply_visitor(helper::as_sql_number(), value_);
+            return std::visit(helper::as_sql_number(), value_);
         }
 
         sql_value::operator sql_number() const {
@@ -354,7 +355,7 @@ namespace coda {
         }
 
         bool sql_value::operator==(const sql_value &value) const {
-            return boost::apply_visitor(helper::value_equality(value), value_);
+            return std::visit(helper::value_equality(value), value_);
         }
 
         bool sql_value::operator==(const sql_null_type &value) const {

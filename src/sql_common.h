@@ -2,7 +2,6 @@
 #define CODA_DB_SQL_COMMON_H
 
 
-#include <boost/variant/static_visitor.hpp>
 #include <iterator>
 #include <sstream>
 #include <string>
@@ -83,11 +82,8 @@ namespace coda {
                 return 0;
             }
 
-            template<typename T, typename = std::enable_if<is_sql_number<T>::value>>
-            class as_number;
-
             template<typename T>
-            struct is_type : public boost::static_visitor<bool> {
+            struct is_type {
             public:
                 template<typename V>
                 bool operator()(const V &value) const {
@@ -95,7 +91,7 @@ namespace coda {
                 }
             };
 
-            struct number_equality : public boost::static_visitor<bool> {
+            struct number_equality {
             public:
                 number_equality(const sql_number &num) : num_(num) {
                 }
@@ -109,7 +105,7 @@ namespace coda {
                 const sql_number &num_;
             };
 
-            struct value_equality : public boost::static_visitor<bool> {
+            struct value_equality {
             public:
                 value_equality(const sql_value &value) : value_(value) {
                 }
@@ -123,7 +119,7 @@ namespace coda {
                 const sql_value &value_;
             };
 
-            class as_sql_string : public boost::static_visitor<sql_string> {
+            class as_sql_string {
             public:
                 template<typename V>
                 sql_string operator()(const V &value) const {
@@ -143,7 +139,7 @@ namespace coda {
                 sql_string operator()(const sql_number &value) const;
             };
 
-            class as_sql_wstring : public boost::static_visitor<sql_wstring> {
+            class as_sql_wstring {
             public:
                 template<typename V>
                 sql_wstring operator()(const V &value) const {

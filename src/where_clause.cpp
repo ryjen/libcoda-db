@@ -547,7 +547,6 @@ namespace coda
         where_builder::where_builder(const std::shared_ptr<session_impl> &session, bindable *binder)
             : session_(session), binder_(binder)
         {
-            assert(binder != nullptr);
         }
 
         where_builder::where_builder(const where_builder &other)
