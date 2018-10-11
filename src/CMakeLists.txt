@@ -61,11 +61,7 @@ set(LIBRARY_SOURCES ${${PROJECT_NAME}_HEADERS}
 
 string(REPLACE "_" "/" INSTALL_DIRECTORY ${PROJECT_NAME})
 
-add_library(${PROJECT_NAME}
-        ${LIBRARY_SOURCES}
-        )
-
-target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${Boost_INCLUDE_DIRS})
+add_library(${PROJECT_NAME} ${LIBRARY_SOURCES})
 
 create_package(TARGET ${PROJECT_NAME} DESCRIPTION "A c++ database interface.")
 

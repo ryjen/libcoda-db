@@ -39,6 +39,21 @@ set(TEST_SOURCES
 
 set(COMMON_TEST_PROJECT_NAME "${TEST_PROJECT_NAME}_common")
 
+if (SQLITE3_FOUND)
+	set(SQLITE_TEST_PROJECT_NAME "${PROJECT_NAME}_test_sqlite")
+endif()
+
+if (MYSQL_FOUND)
+	set(MYSQL_TEST_PROJECT_NAME "${PROJECT_NAME}_test_mysql")
+endif()
+
+if (PostgreSQL_FOUND)
+	set(POSTGRES_TEST_PROJECT_NAME "${PROJECT_NAME}_test_postgres")
+endif()
+
+set(TEST_PROJECT_NAME "${PROJECT_NAME}_test")
+set(UTIL_TEST_PROJECT_NAME "${PROJECT_NAME}_test_util")
+
 find_program(AFL_COMPILER NAMES "afl-clang++" "afl-clang" "afl-gcc"	)
 
 add_library(${COMMON_TEST_PROJECT_NAME}
@@ -46,7 +61,7 @@ add_library(${COMMON_TEST_PROJECT_NAME}
 )
 
 target_include_directories(${COMMON_TEST_PROJECT_NAME} SYSTEM PUBLIC ${BANDIT_DIR}
-		PUBLIC ${PROJECT_SOURCE_DIR}/src SYSTEM PUBLIC ${Boost_INCLUDE_DIRS})
+		PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
 add_library(${UTIL_TEST_PROJECT_NAME}
 	util.cpp
@@ -123,6 +138,28 @@ add_executable (${PROJECT_NAME}_test_all run_all.test.cpp)
 
 if(ENABLE_BENCHMARKING)
 add_subdirectory(benchmarks)
+endif()
+
+# add target for code coverage
+if(ENABLE_COVERAGE)
+	include(CodeCoverage)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_COVERAGE}")
+	setup_target_for_coverage(TARGET ${PROJECT_NAME}_coverage OUTPUT ${PROJECT_BINARY_DIR}/gen/coverage)
+endif()
+
+include(ValgrindTest)
+add_valgrind_profile_test(ENABLE_PROFILING ENABLE_MEMCHECK TARGET ${TEST_PROJECT_NAME})
+
+if (MYSQL_FOUND)
+	add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${MYSQL_TEST_PROJECT_NAME} )
+endif()
+
+if (PostgreSQL_FOUND)
+	add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${POSTGRES_TEST_PROJECT_NAME} )
+endif()
+
+if (SQLITE3_FOUND)
+	add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${SQLITE_TEST_PROJECT_NAME})
 endif()
 
 if (AFL_COMPILER)
