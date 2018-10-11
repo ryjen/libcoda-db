@@ -1,4 +1,4 @@
-.TH "coda::db::mysql::resultset" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::mysql::resultset" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,32 +20,25 @@ Inherits \fBcoda::db::resultset_impl\fP\&.
 .RI "\fBresultset\fP (const \fBresultset\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBresultset\fP (\fBresultset\fP &&other)"
+.RI "\fBresultset\fP (\fBresultset\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "\fBresultset\fP & \fBoperator=\fP (const \fBresultset\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBresultset\fP & \fBoperator=\fP (\fBresultset\fP &&other)"
+.RI "\fBresultset\fP & \fBoperator=\fP (\fBresultset\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "bool \fBis_valid\fP () const noexcept"
+.RI "bool \fBis_valid\fP () const noexcept override"
 .br
 .ti -1c
-.RI "\fBresultset::row_type\fP \fBcurrent_row\fP ()"
+.RI "\fBresultset::row_type\fP \fBcurrent_row\fP () override"
 .br
 .ti -1c
-.RI "void \fBreset\fP ()"
+.RI "void \fBreset\fP () override"
 .br
 .ti -1c
-.RI "bool \fBnext\fP ()"
-.br
-.in -1c
-.SS "Friends"
-
-.in +1c
-.ti -1c
-.RI "template<typename , typename > class \fBresultset_iterator\fP"
+.RI "bool \fBnext\fP () override"
 .br
 .in -1c
 .SS "Additional Inherited Members"
@@ -67,7 +60,7 @@ a mysql specific implementation of a result set
 
 .SH "Member Function Documentation"
 .PP 
-.SS "\fBresultset::row_type\fP coda::db::mysql::resultset::current_row ()\fC [virtual]\fP"
+.SS "\fBresultset::row_type\fP coda::db::mysql::resultset::current_row ()\fC [override]\fP, \fC [virtual]\fP"
 gets the current row in the results 
 .PP
 \fBReturns:\fP
@@ -78,7 +71,7 @@ the current row object
 
 .PP
 Implements \fBcoda::db::resultset_impl\fP\&.
-.SS "bool coda::db::mysql::resultset::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+.SS "bool coda::db::mysql::resultset::is_valid () const\fC [override]\fP, \fC [virtual]\fP, \fC [noexcept]\fP"
 tests if this implementation is valid 
 .PP
 \fBReturns:\fP
@@ -89,7 +82,7 @@ true if operations can be performed safely
 
 .PP
 Implements \fBcoda::db::resultset_impl\fP\&.
-.SS "bool coda::db::mysql::resultset::next ()\fC [virtual]\fP"
+.SS "bool coda::db::mysql::resultset::next ()\fC [override]\fP, \fC [virtual]\fP"
 moves to the next row in the results 
 .PP
 \fBReturns:\fP
@@ -100,7 +93,7 @@ true if successful
 
 .PP
 Implements \fBcoda::db::resultset_impl\fP\&.
-.SS "void coda::db::mysql::resultset::reset ()\fC [virtual]\fP"
+.SS "void coda::db::mysql::resultset::reset ()\fC [override]\fP, \fC [virtual]\fP"
 resets this resultset back to the first row 
 .PP
 Implements \fBcoda::db::resultset_impl\fP\&.

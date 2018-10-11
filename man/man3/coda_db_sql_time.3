@@ -1,4 +1,4 @@
-.TH "coda::db::sql_time" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::sql_time" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -19,22 +19,22 @@ coda::db::sql_time
 
 .in +1c
 .ti -1c
-.RI "\fBsql_time\fP (time_t value=time(0), \fBformats\fP \fBformat\fP=TIMESTAMP)"
+.RI "\fBsql_time\fP (time_t value=time(nullptr), \fBformats\fP \fBformat\fP=TIMESTAMP)"
 .br
 .ti -1c
 .RI "\fBsql_time\fP (const std::string &value)"
 .br
 .ti -1c
-.RI "\fBsql_time\fP (const \fBsql_time\fP &other)"
+.RI "\fBsql_time\fP (const \fBsql_time\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBsql_time\fP (\fBsql_time\fP &&other)"
+.RI "\fBsql_time\fP (\fBsql_time\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "\fBsql_time\fP & \fBoperator=\fP (const \fBsql_time\fP &other)"
+.RI "\fBsql_time\fP & \fBoperator=\fP (const \fBsql_time\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBsql_time\fP & \fBoperator=\fP (\fBsql_time\fP &&other)"
+.RI "\fBsql_time\fP & \fBoperator=\fP (\fBsql_time\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "\fBformats\fP \fBformat\fP () const"
@@ -76,7 +76,7 @@ a date/time column format
 types of date time values 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::sql_time::sql_time (time_t value = \fCtime(0)\fP, \fBformats\fP format = \fCTIMESTAMP\fP)"
+.SS "coda::db::sql_time::sql_time (time_t value = \fCtime(nullptr)\fP, \fBformats\fP format = \fCTIMESTAMP\fP)"
 
 .PP
 \fBParameters:\fP

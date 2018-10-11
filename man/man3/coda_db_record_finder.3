@@ -1,4 +1,4 @@
-.TH "coda::db::record_finder< T, typename >" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::record_finder< T, typename >" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,13 +20,13 @@ coda::db::record_finder< T, typename >
 .RI "\fBrecord_finder\fP (const \fBrecord_finder\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBrecord_finder\fP (\fBrecord_finder\fP &&other)=default"
+.RI "\fBrecord_finder\fP (\fBrecord_finder\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "\fBrecord_finder\fP & \fBoperator=\fP (const \fBrecord_finder\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBrecord_finder\fP & \fBoperator=\fP (\fBrecord_finder\fP &&other)=default"
+.RI "\fBrecord_finder\fP & \fBoperator=\fP (\fBrecord_finder\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "virtual std::shared_ptr< T > \fBfind_by_id\fP (const \fBsql_value\fP &value) const =0"

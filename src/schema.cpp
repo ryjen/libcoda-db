@@ -3,134 +3,85 @@
 #include "exception.h"
 #include "resultset.h"
 #include "session.h"
-#include "sql_value.h"
 #include "sqldb.h"
 
 using namespace std;
 
-namespace coda {
-    namespace db {
-        ostream &operator<<(ostream &os, const column_definition &def) {
-            os << def.name;
-            return os;
-        }
+namespace coda::db {
+  ostream &operator<<(ostream &os, const column_definition &def) {
+    os << def.name;
+    return os;
+  }
 
-        schema::schema(const std::shared_ptr<coda::db::session> &session, const string &tablename)
-                : session_(session), tableName_(tablename) {
-            if (session_ == nullptr) {
-                throw database_exception("no database provided for schema");
-            }
+  schema::schema(const std::shared_ptr<coda::db::session> &session, const string &tableName)
+      : session_(session), tableName_(tableName) {
+    if (session_ == nullptr) {
+      throw database_exception("no database provided for schema");
+    }
 
-            if (tableName_.empty()) {
-                throw database_exception("no table name provided for schema");
-            }
-        }
+    if (tableName_.empty()) {
+      throw database_exception("no table name provided for schema");
+    }
+  }
 
-        schema::~schema() {
-        }
+  bool schema::is_valid() const noexcept { return !columns_.empty(); }
 
-        schema::schema(const schema &other)
-                : session_(other.session_), tableName_(other.tableName_), columns_(other.columns_) {
-        }
+  void schema::init() {
+    if (!session_->is_open()) {
+      throw database_exception("database is not open");
+    }
 
-        schema::schema(schema &&other)
-                : session_(std::move(other.session_)),
-                  tableName_(std::move(other.tableName_)),
-                  columns_(std::move(other.columns_)) {
-            other.session_ = nullptr;
-            other.columns_.clear();
-        }
+    columns_ = session_->get_columns_for_schema(tableName_);
+  }
 
-        schema &schema::operator=(const schema &other) {
-            columns_ = other.columns_;
-            session_ = other.session_;
-            tableName_ = other.tableName_;
+  vector<column_definition> schema::columns() const noexcept { return columns_; }
 
-            return *this;
-        }
+  vector<string> schema::column_names() const {
+    vector<string> names;
 
-        schema &schema::operator=(schema &&other) {
-            columns_ = std::move(other.columns_);
-            session_ = std::move(other.session_);
-            tableName_ = std::move(other.tableName_);
+    for (auto &c : columns_) {
+      names.push_back(c.name);
+    }
+    return names;
+  }
 
-            other.columns_.clear();
-            other.session_ = nullptr;
+  vector<string> schema::primary_keys() const {
+    vector<string> names;
 
-            return *this;
-        }
+    for (auto &c : columns_) {
+      if (c.pk) {
+        names.push_back(c.name);
+      }
+    }
 
-        bool schema::is_valid() const noexcept {
-            return columns_.size() > 0;
-        }
+    return names;
+  }
 
-        void schema::init() {
-            if (!session_->is_open()) {
-                throw database_exception("database is not open");
-            }
+  std::string schema::primary_key() const {
+    for (auto &c : columns_) {
+      if (c.pk && c.autoincrement) {
+        return c.name;
+      }
+    }
 
-            columns_ = session_->get_columns_for_schema(tableName_);
-        }
+    throw no_primary_key_exception("no primary key found for schema");
+  }
 
-        vector<column_definition> schema::columns() const noexcept {
-            return columns_;
-        }
+  sql_value schema::default_value(const std::string &name) const {
+    for (auto &c : columns_) {
+      if (c.name == name) {
+        return c.default_value;
+      }
+    }
 
-        vector<string> schema::column_names() const {
-            vector<string> names;
+    return sql_value();
+  }
 
-            for (auto &c : columns_) {
-                names.push_back(c.name);
-            }
-            return names;
-        }
+  string schema::table_name() const { return tableName_; }
 
-        vector<string> schema::primary_keys() const {
-            vector<string> names;
+  std::shared_ptr<session> schema::get_session() const { return session_; }
 
-            for (auto &c : columns_) {
-                if (c.pk) {
-                    names.push_back(c.name);
-                }
-            }
+  column_definition schema::operator[](size_t index) const { return columns_[index]; }
 
-            return names;
-        }
-
-        std::string schema::primary_key() const {
-            for (auto &c : columns_) {
-                if (c.pk && c.autoincrement) {
-                    return c.name;
-                }
-            }
-
-            throw no_primary_key_exception("no primary key found for schema");
-        }
-
-        sql_value schema::default_value(const std::string &name) const {
-            for (auto &c : columns_) {
-                if (c.name == name) {
-                    return c.default_value;
-                }
-            }
-
-            return sql_value();
-        }
-
-        string schema::table_name() const {
-            return tableName_;
-        }
-
-        std::shared_ptr<session> schema::get_session() const {
-            return session_;
-        }
-
-        column_definition schema::operator[](size_t index) const {
-            return columns_[index];
-        }
-
-        size_t schema::size() const noexcept {
-            return columns_.size();
-        }
-    };
-}
+  size_t schema::size() const noexcept { return columns_.size(); }
+}  // namespace coda::db

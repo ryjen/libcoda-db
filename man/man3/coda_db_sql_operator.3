@@ -1,4 +1,4 @@
-.TH "coda::db::sql_operator" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::sql_operator" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,16 +15,16 @@ Inherited by \fBcoda::db::sql_operator_builder\fP\&.
 .RI "\fBsql_operator\fP (const \fBsql_operator\fP &other)"
 .br
 .ti -1c
-.RI "\fBsql_operator\fP (\fBsql_operator\fP &&other)"
+.RI "\fBsql_operator\fP (\fBsql_operator\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBsql_operator\fP & \fBoperator=\fP (const \fBsql_operator\fP &other)"
 .br
 .ti -1c
-.RI "\fBsql_operator\fP & \fBoperator=\fP (\fBsql_operator\fP &&other)"
+.RI "\fBsql_operator\fP & \fBoperator=\fP (\fBsql_operator\fP &&other) noexcept"
 .br
 .ti -1c
-.RI "virtual \fB~sql_operator\fP ()"
+.RI "\fB~sql_operator\fP ()"
 .br
 .ti -1c
 .RI "\fBsql_operator\fP & \fBoperator!\fP ()"
@@ -49,7 +49,7 @@ Inherited by \fBcoda::db::sql_operator_builder\fP\&.
 .RI "void \fBcopy\fP (const \fBsql_operator\fP &other)"
 .br
 .ti -1c
-.RI "void \fBmove\fP (\fBsql_operator\fP &&other)"
+.RI "void \fBmove\fP (\fBsql_operator\fP &&other) noexcept"
 .br
 .in -1c
 .SS "Protected Attributes"

@@ -1,4 +1,4 @@
-.TH "coda::db::postgres::binding" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::postgres::binding" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -21,16 +21,16 @@ Inherits \fBcoda::db::bind_mapping\fP\&.
 .RI "\fBbinding\fP (const \fBbinding\fP &other)"
 .br
 .ti -1c
-.RI "\fBbinding\fP (\fBbinding\fP &&other)"
+.RI "\fBbinding\fP (\fBbinding\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBbinding\fP & \fBoperator=\fP (const \fBbinding\fP &other)"
 .br
 .ti -1c
-.RI "\fBbinding\fP & \fBoperator=\fP (\fBbinding\fP &&other)"
+.RI "\fBbinding\fP & \fBoperator=\fP (\fBbinding\fP &&other) noexcept"
 .br
 .ti -1c
-.RI "size_t \fBnum_of_bindings\fP () const noexcept"
+.RI "size_t \fBnum_of_bindings\fP () const noexcept override"
 .br
 .ti -1c
 .RI "size_t \fBcapacity\fP () const"
@@ -42,16 +42,16 @@ Inherits \fBcoda::db::bind_mapping\fP\&.
 .RI "int \fBsql_type\fP (size_t index) const"
 .br
 .ti -1c
-.RI "\fBbinding\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value)"
+.RI "\fBbinding\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value) override"
 .br
 .ti -1c
-.RI "\fBbinding\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value)"
+.RI "\fBbinding\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value) override"
 .br
 .ti -1c
 .RI "std::string \fBprepare\fP (const std::string &sql)"
 .br
 .ti -1c
-.RI "void \fBreset\fP ()"
+.RI "void \fBreset\fP () override"
 .br
 .in -1c
 .SS "Friends"
@@ -75,11 +75,11 @@ Inherits \fBcoda::db::bind_mapping\fP\&.
 .PP 
 .SS "coda::db::postgres::binding::binding ()"
 default constructor 
-.SS "coda::db::postgres::binding::binding (size_t size)"
+.SS "coda::db::postgres::binding::binding (size_t size)\fC [explicit]\fP"
 zero out an array of size for binding 
 .SH "Member Function Documentation"
 .PP 
-.SS "\fBbinding\fP& coda::db::postgres::binding::bind (size_t index, const \fBsql_value\fP & value)\fC [virtual]\fP"
+.SS "\fBbinding\fP& coda::db::postgres::binding::bind (size_t index, const \fBsql_value\fP & value)\fC [override]\fP, \fC [virtual]\fP"
 Binds a \fBsql_value\fP using the other bind methods 
 .PP
 \fBParameters:\fP
@@ -97,7 +97,7 @@ a reference to this instance
 
 .PP
 Implements \fBcoda::db::bind_mapping\fP\&.
-.SS "\fBbinding\fP& coda::db::postgres::binding::bind (const std::string & name, const \fBsql_value\fP & value)\fC [virtual]\fP"
+.SS "\fBbinding\fP& coda::db::postgres::binding::bind (const std::string & name, const \fBsql_value\fP & value)\fC [override]\fP, \fC [virtual]\fP"
 bind a named parameter 
 .PP
 \fBParameters:\fP
@@ -124,7 +124,7 @@ the current capcity of the storage
 .RE
 .PP
 
-.SS "size_t coda::db::postgres::binding::num_of_bindings () const\fC [virtual]\fP, \fC [noexcept]\fP"
+.SS "size_t coda::db::postgres::binding::num_of_bindings () const\fC [override]\fP, \fC [virtual]\fP, \fC [noexcept]\fP"
 
 .PP
 \fBReturns:\fP
@@ -135,7 +135,7 @@ the number of bindings
 
 .PP
 Implements \fBcoda::db::bindable\fP\&.
-.SS "void coda::db::postgres::binding::reset ()\fC [virtual]\fP"
+.SS "void coda::db::postgres::binding::reset ()\fC [override]\fP, \fC [virtual]\fP"
 clear and remove all bindings 
 .PP
 Reimplemented from \fBcoda::db::bind_mapping\fP\&.

@@ -1,4 +1,4 @@
-.TH "coda::db::mysql::transaction" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::mysql::transaction" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,22 +22,22 @@ Inherits \fBcoda::db::transaction_impl\fP\&.
 .RI "\fBtransaction\fP (const std::shared_ptr< MYSQL > &db, const \fBtransaction::mode\fP &\fBmode\fP={})"
 .br
 .ti -1c
-.RI "\fBtransaction\fP (const \fBtransaction\fP &other)"
+.RI "\fBtransaction\fP (const \fBtransaction\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBtransaction\fP (\fBtransaction\fP &&other)"
+.RI "\fBtransaction\fP (\fBtransaction\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "\fBtransaction\fP & \fBoperator=\fP (const \fBtransaction\fP &other)"
+.RI "\fBtransaction\fP & \fBoperator=\fP (const \fBtransaction\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBtransaction\fP & \fBoperator=\fP (\fBtransaction\fP &&other)"
+.RI "\fBtransaction\fP & \fBoperator=\fP (\fBtransaction\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "void \fBstart\fP ()"
+.RI "void \fBstart\fP () override"
 .br
 .ti -1c
-.RI "bool \fBis_active\fP () const noexcept"
+.RI "bool \fBis_active\fP () const noexcept override"
 .br
 .in -1c
 .SS "Friends"

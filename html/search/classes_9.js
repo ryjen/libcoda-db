@@ -4,7 +4,7 @@ var searchData=
   ['record_5ffinder',['record_finder',['../classcoda_1_1db_1_1record__finder.html',1,'coda::db']]],
   ['record_5ffinder_3c_20record_20_3e',['record_finder&lt; record &gt;',['../classcoda_1_1db_1_1record__finder.html',1,'coda::db']]],
   ['record_5ffinder_3c_20t_20_3e',['record_finder&lt; T &gt;',['../classcoda_1_1db_1_1record__finder.html',1,'coda::db']]],
-  ['resultset',['resultset',['../classcoda_1_1db_1_1mysql_1_1resultset.html',1,'coda::db::mysql::resultset'],['../classcoda_1_1db_1_1postgres_1_1resultset.html',1,'coda::db::postgres::resultset'],['../classcoda_1_1db_1_1resultset.html',1,'coda::db::resultset'],['../classcoda_1_1db_1_1sqlite_1_1resultset.html',1,'coda::db::sqlite::resultset']]],
+  ['resultset',['resultset',['../classcoda_1_1db_1_1postgres_1_1resultset.html',1,'coda::db::postgres::resultset'],['../classcoda_1_1db_1_1mysql_1_1resultset.html',1,'coda::db::mysql::resultset'],['../classcoda_1_1db_1_1resultset.html',1,'coda::db::resultset'],['../classcoda_1_1db_1_1sqlite_1_1resultset.html',1,'coda::db::sqlite::resultset']]],
   ['resultset_5fimpl',['resultset_impl',['../classcoda_1_1db_1_1resultset__impl.html',1,'coda::db']]],
   ['resultset_5fiterator',['resultset_iterator',['../classcoda_1_1db_1_1resultset__iterator.html',1,'coda::db']]],
   ['row',['row',['../classcoda_1_1db_1_1sqlite_1_1row.html',1,'coda::db::sqlite::row'],['../classcoda_1_1db_1_1mysql_1_1row.html',1,'coda::db::mysql::row'],['../classcoda_1_1db_1_1postgres_1_1row.html',1,'coda::db::postgres::row'],['../classcoda_1_1db_1_1row.html',1,'coda::db::row']]],

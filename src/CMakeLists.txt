@@ -28,7 +28,7 @@ set(${PROJECT_NAME}_HEADERS
         update_query.h
         uri.h
         where_clause.h
-)
+        )
 
 set(LIBRARY_SOURCES ${${PROJECT_NAME}_HEADERS}
         alloc.cpp
@@ -47,6 +47,7 @@ set(LIBRARY_SOURCES ${${PROJECT_NAME}_HEADERS}
         schema_factory.cpp
         select_query.cpp
         session.cpp
+        session_factory.cpp
         sqldb.cpp
         sql_common.cpp
         sql_generator.cpp
@@ -61,13 +62,12 @@ set(LIBRARY_SOURCES ${${PROJECT_NAME}_HEADERS}
 
 string(REPLACE "_" "/" INSTALL_DIRECTORY ${PROJECT_NAME})
 
-add_library(${PROJECT_NAME}
-        ${LIBRARY_SOURCES}
-        )
+add_library(${PROJECT_NAME} ${LIBRARY_SOURCES})
 
-target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${Boost_INCLUDE_DIRS})
+# ability to create a package
+include(CreatePackages)
 
-create_package(TARGET ${PROJECT_NAME} DESCRIPTION "A c++ database interface.")
+create_packages(TARGET ${PROJECT_NAME} DESCRIPTION "A c++ database interface.")
 
 if (SQLITE3_FOUND)
 
@@ -96,7 +96,7 @@ if (SQLITE3_FOUND)
     install(FILES ${${PROJECT_NAME}_SQLITE_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/sqlite")
 
 
-    create_package(TARGET ${SQLITE_PROJECT_NAME} DESCRIPTION "A c++ sqlite3 database interface.")
+    create_packages(TARGET ${SQLITE_PROJECT_NAME} DESCRIPTION "A c++ sqlite3 database interface.")
 
 endif ()
 
@@ -128,11 +128,11 @@ if (MYSQL_FOUND)
 
     install(FILES ${${PROJECT_NAME}_MYSQL_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/mysql")
 
-    create_package(TARGET ${MYSQL_PROJECT_NAME} DESCRIPTION "A c++ mysql database interface.")
+    create_packages(TARGET ${MYSQL_PROJECT_NAME} DESCRIPTION "A c++ mysql database interface.")
 
 endif ()
 
-if (PostgreSQL_FOUND)
+if (POSTGRES_FOUND)
 
     add_library(${POSTGRES_PROJECT_NAME}
             postgres/binding.cpp
@@ -144,9 +144,9 @@ if (PostgreSQL_FOUND)
             postgres/transaction.cpp
             )
 
-    target_include_directories(${POSTGRES_PROJECT_NAME} SYSTEM PUBLIC ${PostgreSQL_INCLUDE_DIRS})
+    target_include_directories(${POSTGRES_PROJECT_NAME} SYSTEM PUBLIC ${POSTGRES_INCLUDE_DIR} SYSTEM PUBLIC ${POSTGRES_INCLUDE_DIR_SERVER})
 
-    target_link_libraries(${POSTGRES_PROJECT_NAME} ${PROJECT_NAME} ${PostgreSQL_LIBRARIES})
+    target_link_libraries(${POSTGRES_PROJECT_NAME} ${PROJECT_NAME} ${POSTGRES_LIBRARIES})
 
     set(${PROJECT_NAME}_POSTGRES_HEADERS
             postgres/binding.h
@@ -160,7 +160,7 @@ if (PostgreSQL_FOUND)
 
     install(FILES ${${PROJECT_NAME}_POSTGRES_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/postgres")
 
-    create_package(TARGET ${POSTGRES_PROJECT_NAME} DESCRIPTION "A c++ database interface.")
+    create_packages(TARGET ${POSTGRES_PROJECT_NAME} DESCRIPTION "A c++ database interface.")
 
 endif ()
 

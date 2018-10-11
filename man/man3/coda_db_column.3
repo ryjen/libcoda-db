@@ -1,4 +1,4 @@
-.TH "coda::db::column" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::column" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,13 +20,13 @@ Inherits \fBcoda::db::sql_value_convertible\fP\&.
 .RI "\fBcolumn\fP (const \fBcolumn\fP &other)"
 .br
 .ti -1c
-.RI "\fBcolumn\fP (\fBcolumn\fP &&other)"
+.RI "\fBcolumn\fP (\fBcolumn\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBcolumn\fP & \fBoperator=\fP (const \fBcolumn\fP &other)"
 .br
 .ti -1c
-.RI "\fBcolumn\fP & \fBoperator=\fP (\fBcolumn\fP &&other)"
+.RI "\fBcolumn\fP & \fBoperator=\fP (\fBcolumn\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "bool \fBis_valid\fP () const noexcept"
@@ -38,127 +38,121 @@ Inherits \fBcoda::db::sql_value_convertible\fP\&.
 .RI "std::string \fBname\fP () const"
 .br
 .ti -1c
-.RI "\fBoperator sql_string\fP () const"
+.RI "template<typename T > constexpr T \fBas\fP () const"
 .br
 .ti -1c
-.RI "\fBoperator sql_wstring\fP () const"
+.RI "\fBoperator sql_string\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator sql_number\fP () const"
+.RI "\fBoperator sql_wstring\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator sql_time\fP () const"
+.RI "\fBoperator sql_number\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator sql_blob\fP () const"
+.RI "\fBoperator sql_time\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator bool\fP () const"
+.RI "\fBoperator sql_blob\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator char\fP () const"
+.RI "\fBoperator short\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator unsigned char\fP () const"
+.RI "\fBoperator unsigned short\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator wchar_t\fP () const"
+.RI "\fBoperator int\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator short\fP () const"
+.RI "\fBoperator unsigned int\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator unsigned short\fP () const"
+.RI "\fBoperator long\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator int\fP () const"
+.RI "\fBoperator unsigned long\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator unsigned int\fP () const"
+.RI "\fBoperator long long\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator long\fP () const"
+.RI "\fBoperator unsigned long long\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator unsigned long\fP () const"
+.RI "\fBoperator float\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator long long\fP () const"
+.RI "\fBoperator double\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator unsigned long long\fP () const"
+.RI "\fBoperator long double\fP () const override"
 .br
 .ti -1c
-.RI "\fBoperator float\fP () const"
+.RI "bool \fBoperator==\fP (const sql_null_type &other) const override"
 .br
 .ti -1c
-.RI "\fBoperator double\fP () const"
+.RI "bool \fBoperator==\fP (const \fBsql_number\fP &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "\fBoperator long double\fP () const"
+.RI "bool \fBoperator==\fP (const sql_string &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const sql_null_type &other) const"
+.RI "bool \fBoperator==\fP (const sql_wstring &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const \fBsql_number\fP &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const \fBsql_time\fP &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const sql_string &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const \fBsql_blob\fP &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const sql_wstring &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const char *\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const \fBsql_time\fP &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const bool &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const sql_blob &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const char &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const bool &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const unsigned char &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const char &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const wchar_t &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const unsigned char &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const short &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const wchar_t &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const unsigned short &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const short &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const int &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const unsigned short &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const unsigned int &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const int &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const long &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const unsigned int &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const unsigned long &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const long &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const long long &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const unsigned long &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const unsigned long long &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const long long &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const float &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const unsigned long long &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const double &\fBvalue\fP) const override"
 .br
 .ti -1c
-.RI "bool \fBoperator==\fP (const float &\fBvalue\fP) const"
-.br
-.ti -1c
-.RI "bool \fBoperator==\fP (const double &\fBvalue\fP) const"
-.br
-.ti -1c
-.RI "bool \fBoperator==\fP (const long double &\fBvalue\fP) const"
+.RI "bool \fBoperator==\fP (const long double &\fBvalue\fP) const override"
 .br
 .ti -1c
 .RI "bool \fBoperator==\fP (const \fBsql_value\fP &other) const"
@@ -176,7 +170,7 @@ Inherits \fBcoda::db::sql_value_convertible\fP\&.
 a column holds a value 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::column::column (const std::shared_ptr< \fBcolumn_impl\fP > & impl)"
+.SS "coda::db::column::column (const std::shared_ptr< \fBcolumn_impl\fP > & impl)\fC [explicit]\fP"
 default constructor requires an implementation 
 .PP
 \fBParameters:\fP
@@ -187,7 +181,7 @@ default constructor requires an implementation
 
 .SS "coda::db::column::column (const \fBcolumn\fP & other)"
 copy constructor 
-.SS "coda::db::column::column (\fBcolumn\fP && other)"
+.SS "coda::db::column::column (\fBcolumn\fP && other)\fC [noexcept]\fP"
 move constructor 
 .SH "Member Function Documentation"
 .PP 
@@ -211,7 +205,7 @@ the name of this column
 
 .SS "\fBcolumn\fP& coda::db::column::operator= (const \fBcolumn\fP & other)"
 copy assignment 
-.SS "\fBcolumn\fP& coda::db::column::operator= (\fBcolumn\fP && other)"
+.SS "\fBcolumn\fP& coda::db::column::operator= (\fBcolumn\fP && other)\fC [noexcept]\fP"
 move assignment 
 .SS "\fBsql_value\fP coda::db::column::value () const"
 converts this column to a value 

@@ -1,4 +1,4 @@
-.TH "coda::db::transaction" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::transaction" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,7 +20,7 @@ coda::db::transaction
 .RI "enum \fBtype\fP { \fBnone\fP, \fBread_write\fP, \fBread_only\fP }"
 .br
 .ti -1c
-.RI "typedef \fBsession\fP \fBsession_type\fP"
+.RI "using \fBsession_type\fP = \fBsession\fP"
 .br
 .in -1c
 .SS "Public Member Functions"
@@ -30,16 +30,16 @@ coda::db::transaction
 .RI "\fBtransaction\fP (const std::shared_ptr< \fBsession_type\fP > &\fBsession\fP, const std::shared_ptr< \fBtransaction_impl\fP > &impl)"
 .br
 .ti -1c
-.RI "\fBtransaction\fP (const \fBtransaction\fP &other)"
+.RI "\fBtransaction\fP (const \fBtransaction\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBtransaction\fP (\fBtransaction\fP &&other)"
+.RI "\fBtransaction\fP (\fBtransaction\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "\fBtransaction\fP & \fBoperator=\fP (const \fBtransaction\fP &other)"
+.RI "\fBtransaction\fP & \fBoperator=\fP (const \fBtransaction\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBtransaction\fP & \fBoperator=\fP (\fBtransaction\fP &&other)"
+.RI "\fBtransaction\fP & \fBoperator=\fP (\fBtransaction\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "void \fBsave\fP (const std::string &name)"

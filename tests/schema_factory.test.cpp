@@ -1,8 +1,7 @@
 #include <string>
 
-#include <bandit/bandit.h>
 #include "db.test.h"
-#include "schema_factory.h"
+#include <bandit/bandit.h>
 
 using namespace bandit;
 
@@ -13,39 +12,43 @@ using namespace coda::db;
 using namespace snowhouse;
 
 specification(schema_factories, []() {
-    describe("schema factory", []() {
-        before_each([]() { test::setup_current_session(); });
+  describe("schema factory", []() {
+    before_each([]() { test::setup_current_session(); });
 
-        after_each([]() { test::teardown_current_session(); });
+    after_each([]() { test::teardown_current_session(); });
 
-        it("has the rule of five", []() {
-            schema_factory schemas;
+    it("has the rule of five", []() {
+      schema_factory schemas;
 
-            schema_factory other;
+      schema_factory other;
 
-            other = schemas;
+      other = schemas;
 
-            auto s = other.get(test::current_session, test::user::TABLE_NAME);
+      auto s = other.get(test::current_session, test::user::TABLE_NAME);
 
-            s->init();
+      s->init();
 
-            Assert::That(s->is_valid(), Equals(true));
+      Assert::That(s->is_valid(), Equals(true));
 
-            schema_factory moved;
+      schema_factory moved;
 
-            moved = std::move(other);
+      moved = std::move(other);
 
-            Assert::That(moved.get(test::current_session, test::user::TABLE_NAME) != nullptr, Equals(true));
+      Assert::That(moved.get(test::current_session, test::user::TABLE_NAME) !=
+                       nullptr,
+                   Equals(true));
 
-            schema_factory a(moved);
+      schema_factory a(moved);
 
-            Assert::That(a.get(test::current_session, test::user::TABLE_NAME) != nullptr, Equals(true));
+      Assert::That(a.get(test::current_session, test::user::TABLE_NAME) !=
+                       nullptr,
+                   Equals(true));
 
-            schema_factory b(std::move(a));
+      schema_factory b(std::move(a));
 
-            Assert::That(a.get(test::current_session, test::user::TABLE_NAME) != nullptr, Equals(true));
-
-        });
-
+      Assert::That(a.get(test::current_session, test::user::TABLE_NAME) !=
+                       nullptr,
+                   Equals(true));
     });
+  });
 });

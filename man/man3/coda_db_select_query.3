@@ -1,4 +1,4 @@
-.TH "coda::db::select_query" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::select_query" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -26,16 +26,16 @@ Inherits \fBcoda::db::query\fP, and \fBcoda::db::whereable< select_query >\fP\&.
 .RI "\fBselect_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP, const std::vector< std::string > &\fBcolumns\fP, const std::string &tableName)"
 .br
 .ti -1c
-.RI "\fBselect_query\fP (const \fBselect_query\fP &other)"
+.RI "\fBselect_query\fP (const \fBselect_query\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBselect_query\fP (\fBselect_query\fP &&other)"
+.RI "\fBselect_query\fP (\fBselect_query\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "\fBselect_query\fP & \fBoperator=\fP (const \fBselect_query\fP &other)"
+.RI "\fBselect_query\fP & \fBoperator=\fP (const \fBselect_query\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBselect_query\fP & \fBoperator=\fP (\fBselect_query\fP &&other)"
+.RI "\fBselect_query\fP & \fBoperator=\fP (\fBselect_query\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "\fBselect_query\fP & \fBfrom\fP (const std::string &tableName)"
@@ -65,10 +65,10 @@ Inherits \fBcoda::db::query\fP, and \fBcoda::db::whereable< select_query >\fP\&.
 .RI "std::string \fBgroup_by\fP () const"
 .br
 .ti -1c
-.RI "\fBwhere_builder\fP & \fBwhere\fP ()"
+.RI "\fBwhere_builder\fP & \fBwhere\fP () override"
 .br
 .ti -1c
-.RI "\fBwhere_builder\fP & \fBwhere\fP (const \fBsql_operator\fP &value)"
+.RI "\fBwhere_builder\fP & \fBwhere\fP (const \fBsql_operator\fP &value) override"
 .br
 .ti -1c
 .RI "\fBselect_query\fP & \fBlimit\fP (const std::string &value)"
@@ -101,7 +101,7 @@ Inherits \fBcoda::db::query\fP, and \fBcoda::db::whereable< select_query >\fP\&.
 .RI "long long \fBcount\fP ()"
 .br
 .ti -1c
-.RI "void \fBreset\fP ()"
+.RI "void \fBreset\fP () override"
 .br
 .ti -1c
 .RI "template<typename T , typename  = std::enable_if<is_sql_value<T>::value || is_sql_number<T>::value>> T \fBexecute_scalar\fP ()"
@@ -113,7 +113,7 @@ Inherits \fBcoda::db::query\fP, and \fBcoda::db::whereable< select_query >\fP\&.
 a query to select values from a table 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::select_query::select_query (const std::shared_ptr< \fBcoda::db::session\fP > & session)"
+.SS "coda::db::select_query::select_query (const std::shared_ptr< \fBcoda::db::session\fP > & session)\fC [explicit]\fP"
 defaults to 'select *' 
 .PP
 \fBParameters:\fP
@@ -135,7 +135,7 @@ defaults to 'select *'
 .RE
 .PP
 
-.SS "coda::db::select_query::select_query (const std::shared_ptr< \fBschema\fP > & schema)"
+.SS "coda::db::select_query::select_query (const std::shared_ptr< \fBschema\fP > & schema)\fC [explicit]\fP"
 
 .PP
 \fBParameters:\fP
@@ -383,7 +383,7 @@ a reference to this
 .RE
 .PP
 
-.SS "void coda::db::select_query::reset ()\fC [virtual]\fP"
+.SS "void coda::db::select_query::reset ()\fC [override]\fP, \fC [virtual]\fP"
 resets this query for re-execution 
 .PP
 Reimplemented from \fBcoda::db::query\fP\&.
@@ -403,7 +403,7 @@ a reference to this instance
 .RE
 .PP
 
-.SS "\fBwhere_builder\fP& coda::db::select_query::where ()\fC [virtual]\fP"
+.SS "\fBwhere_builder\fP& coda::db::select_query::where ()\fC [override]\fP, \fC [virtual]\fP"
 gets the where builder for the query 
 .PP
 \fBReturns:\fP
@@ -414,7 +414,7 @@ a writeable reference to the where builder
 
 .PP
 Implements \fBcoda::db::whereable< select_query >\fP\&.
-.SS "\fBwhere_builder\fP& coda::db::select_query::where (const \fBsql_operator\fP & value)\fC [virtual]\fP"
+.SS "\fBwhere_builder\fP& coda::db::select_query::where (const \fBsql_operator\fP & value)\fC [override]\fP, \fC [virtual]\fP"
 gets the where clause for this query 
 .PP
 \fBReturns:\fP

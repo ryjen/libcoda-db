@@ -1,4 +1,4 @@
-.TH "coda::db::session" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::session" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,13 +17,13 @@ Inherits enable_shared_from_this< session >\&.
 .RI "enum \fBfeature_type\fP { \fBFEATURE_RETURNING\fP = (1 << 0), \fBFEATURE_FULL_OUTER_JOIN\fP = (1 << 1), \fBFEATURE_RIGHT_JOIN\fP = (1 << 2), \fBFEATURE_NAMED_PARAMS\fP = (1 << 3) }"
 .br
 .ti -1c
-.RI "typedef \fBresultset\fP \fBresultset_type\fP"
+.RI "using \fBresultset_type\fP = \fBresultset\fP"
 .br
 .ti -1c
-.RI "typedef \fBstatement\fP \fBstatement_type\fP"
+.RI "using \fBstatement_type\fP = \fBstatement\fP"
 .br
 .ti -1c
-.RI "typedef \fBtransaction\fP \fBtransaction_type\fP"
+.RI "using \fBtransaction_type\fP = \fBtransaction\fP"
 .br
 .in -1c
 .SS "Public Member Functions"
@@ -33,16 +33,16 @@ Inherits enable_shared_from_this< session >\&.
 .RI "\fBsession\fP (const std::shared_ptr< \fBsession_impl\fP > &impl)"
 .br
 .ti -1c
-.RI "\fBsession\fP (const \fBsession\fP &other)"
+.RI "\fBsession\fP (const \fBsession\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBsession\fP (\fBsession\fP &&other)"
+.RI "\fBsession\fP (\fBsession\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "\fBsession\fP & \fBoperator=\fP (const \fBsession\fP &other)"
+.RI "\fBsession\fP & \fBoperator=\fP (const \fBsession\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBsession\fP & \fBoperator=\fP (\fBsession\fP &&other)"
+.RI "\fBsession\fP & \fBoperator=\fP (\fBsession\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "bool \fBis_open\fP () const noexcept"
@@ -54,13 +54,13 @@ Inherits enable_shared_from_this< session >\&.
 .RI "void \fBclose\fP ()"
 .br
 .ti -1c
-.RI "long long \fBlast_insert_id\fP () const"
+.RI "sql_id \fBlast_insert_id\fP () const"
 .br
 .ti -1c
-.RI "int \fBlast_number_of_changes\fP () const"
+.RI "sql_changes \fBlast_number_of_changes\fP () const"
 .br
 .ti -1c
-.RI "std::shared_ptr< \fBstatement_type\fP > \fBcreate_statement\fP ()"
+.RI "std::shared_ptr< \fBstatement_type\fP > \fBcreate_statement\fP (const std::string &sql='')"
 .br
 .ti -1c
 .RI "\fBtransaction_type\fP \fBcreate_transaction\fP ()"
@@ -139,8 +139,13 @@ the connection info uri
 .RE
 .PP
 
-.SS "std::shared_ptr<\fBstatement_type\fP> coda::db::session::create_statement ()"
+.SS "std::shared_ptr<\fBstatement_type\fP> coda::db::session::create_statement (const std::string & sql = \fC''\fP)"
 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsql\fP the optional sql to prepare 
+.RE
 .PP
 \fBReturns:\fP
 .RS 4
@@ -197,7 +202,7 @@ the last error or an empty string
 .RE
 .PP
 
-.SS "long long coda::db::session::last_insert_id () const"
+.SS "sql_id coda::db::session::last_insert_id () const"
 gets the last insert id from any statement 
 .PP
 \fBReturns:\fP
@@ -206,7 +211,7 @@ the last insert id or zero
 .RE
 .PP
 
-.SS "int coda::db::session::last_number_of_changes () const"
+.SS "sql_changes coda::db::session::last_number_of_changes () const"
 gets the last number of modified records for any statement 
 .PP
 \fBReturns:\fP

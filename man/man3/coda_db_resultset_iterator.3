@@ -1,4 +1,4 @@
-.TH "coda::db::resultset_iterator< ValueType, NonConst >" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::resultset_iterator< ValueType, NonConst >" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,16 +14,16 @@ Inherits iterator< std::input_iterator_tag, ValueType >\&.
 
 .in +1c
 .ti -1c
-.RI "\fBresultset_iterator\fP (const std::shared_ptr< \fBresultset_impl\fP > &rset, int position)"
+.RI "\fBresultset_iterator\fP (const std::shared_ptr< \fBresultset_impl\fP > &impl, int position)"
 .br
 .ti -1c
 .RI "\fBresultset_iterator\fP (const \fBresultset_iterator\fP &other)"
 .br
 .ti -1c
-.RI "\fBresultset_iterator\fP (\fBresultset_iterator\fP &&other)"
+.RI "\fBresultset_iterator\fP (\fBresultset_iterator\fP &&other) noexcept"
 .br
 .ti -1c
-.RI "\fBresultset_iterator\fP & \fBoperator=\fP (\fBresultset_iterator\fP &&other)"
+.RI "\fBresultset_iterator\fP & \fBoperator=\fP (\fBresultset_iterator\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "ValueType & \fBoperator*\fP ()"
@@ -35,7 +35,7 @@ Inherits iterator< std::input_iterator_tag, ValueType >\&.
 .RI "ValueType * \fBoperator\->\fP ()"
 .br
 .ti -1c
-.RI "\fBresultset_iterator\fP \fBoperator++\fP (int)"
+.RI "const \fBresultset_iterator\fP \fBoperator++\fP (int)"
 .br
 .ti -1c
 .RI "\fBresultset_iterator\fP \fBoperator+\fP (int n)"

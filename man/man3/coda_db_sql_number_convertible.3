@@ -1,4 +1,4 @@
-.TH "coda::db::sql_number_convertible" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::sql_number_convertible" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -24,27 +24,6 @@ Inherited by \fBcoda::db::sql_number\fP, and \fBcoda::db::sql_value_convertible\
 .br
 .ti -1c
 .RI "\fBsql_number_convertible\fP & \fBoperator=\fP (\fBsql_number_convertible\fP &&other)=default"
-.br
-.ti -1c
-.RI "virtual \fBoperator sql_string\fP () const =0"
-.br
-.ti -1c
-.RI "virtual \fBoperator sql_wstring\fP () const =0"
-.br
-.ti -1c
-.RI "virtual \fBoperator sql_time\fP () const =0"
-.br
-.ti -1c
-.RI "virtual \fBoperator bool\fP () const =0"
-.br
-.ti -1c
-.RI "virtual \fBoperator char\fP () const =0"
-.br
-.ti -1c
-.RI "virtual \fBoperator unsigned char\fP () const =0"
-.br
-.ti -1c
-.RI "virtual \fBoperator wchar_t\fP () const =0"
 .br
 .ti -1c
 .RI "virtual \fBoperator short\fP () const =0"
@@ -78,18 +57,6 @@ Inherited by \fBcoda::db::sql_number\fP, and \fBcoda::db::sql_value_convertible\
 .br
 .ti -1c
 .RI "virtual \fBoperator long double\fP () const =0"
-.br
-.ti -1c
-.RI "virtual bool \fBoperator==\fP (const sql_null_type &other) const =0"
-.br
-.ti -1c
-.RI "virtual bool \fBoperator==\fP (const sql_string &value) const =0"
-.br
-.ti -1c
-.RI "virtual bool \fBoperator==\fP (const sql_wstring &value) const =0"
-.br
-.ti -1c
-.RI "virtual bool \fBoperator==\fP (const \fBsql_time\fP &value) const =0"
 .br
 .ti -1c
 .RI "virtual bool \fBoperator==\fP (const bool &value) const =0"

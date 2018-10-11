@@ -2,112 +2,53 @@
  * @copyright ryan jennings (coda.life), 2013
  */
 #include "row.h"
-#include "exception.h"
 
 using namespace std;
 
-namespace coda {
-    namespace db {
-        row::row() : impl_(nullptr) {
-        }
+namespace coda::db {
 
-        row::row(const shared_ptr<row_impl> &impl) : impl_(impl) {
-            if (impl_ == nullptr) {
-                throw database_exception("No implementation provided for row");
-            }
-        }
+  row::row(const shared_ptr<row_impl> &impl) : impl_(impl) {}
 
-        row::row(const row &other) : impl_(other.impl_) {
-        }
+  row::iterator row::begin() { return iterator(impl_, 0); }
 
-        row::row(row &&other) : impl_(std::move(other.impl_)) {
-            other.impl_ = nullptr;
-        }
+  row::const_iterator row::begin() const { return const_iterator(impl_, 0); }
 
-        row::~row() {
-        }
+  row::const_iterator row::cbegin() const { return begin(); }
 
-        row &row::operator=(const row &other) {
-            impl_ = other.impl_;
+  row::iterator row::end() { return iterator(impl_, size()); }
 
-            return *this;
-        }
+  row::const_iterator row::end() const { return const_iterator(impl_, size()); }
 
-        row &row::operator=(row &&other) {
-            impl_ = std::move(other.impl_);
-            other.impl_ = nullptr;
+  row::const_iterator row::cend() const { return end(); }
 
-            return *this;
-        }
+  row::column_type row::operator[](size_t nPosition) const { return column(nPosition); }
 
-        row::iterator row::begin() {
-            return iterator(impl_, 0);
-        }
+  row::column_type row::operator[](const string &name) const { return column(name); }
 
-        row::const_iterator row::begin() const {
-            return const_iterator(impl_, 0);
-        }
+  string row::column_name(size_t nPosition) const {
+    return impl_ == nullptr ? string() : impl_->column_name(nPosition);
+  }
 
-        row::const_iterator row::cbegin() const {
-            return begin();
-        }
+  row::column_type row::column(size_t nPosition) const {
+    return impl_->column(nPosition);
+  }
 
-        row::iterator row::end() {
-            return iterator(impl_, size());
-        }
+  row::column_type row::column(const string &name) const {
+    return impl_->column(name);
+  }
 
-        row::const_iterator row::end() const {
-            return const_iterator(impl_, size());
-        }
+  size_t row::size() const noexcept { return impl_ == nullptr ? 0 : impl_->size(); }
 
-        row::const_iterator row::cend() const {
-            return end();
-        }
+  bool row::empty() const noexcept { return size() == 0; }
 
-        row::column_type row::operator[](size_t nPosition) const {
-            return column(nPosition);
-        }
+  bool row::is_valid() const noexcept { return impl_ != nullptr && impl_->is_valid(); }
 
-        row::column_type row::operator[](const string &name) const {
-            return column(name);
-        }
-
-        string row::column_name(size_t nPosition) const {
-            assert(impl_ != nullptr);
-            return impl_->column_name(nPosition);
-        }
-
-        row::column_type row::column(size_t nPosition) const {
-            assert(impl_ != nullptr);
-            return impl_->column(nPosition);
-        }
-
-        row::column_type row::column(const string &name) const {
-            assert(impl_ != nullptr);
-            return impl_->column(name);
-        }
-
-        size_t row::size() const noexcept {
-            return impl_ == nullptr ? 0 : impl_->size();
-        }
-
-        bool row::empty() const noexcept {
-            return size() == 0;
-        }
-
-        bool row::is_valid() const noexcept {
-            return impl_ != nullptr && impl_->is_valid();
-        }
-
-        void row::each(const std::function<void( const db::column &)> &funk) const {
-            for ( auto &c : *this) {
-                funk(c);
-            }
-        }
-
-        shared_ptr<row_impl> row::impl() const {
-            return impl_;
-        }
-
+  void row::each(const std::function<void(const db::column &)> &funk) const {
+    for (auto &c : *this) {
+      funk(c);
     }
-}
+  }
+
+  shared_ptr<row_impl> row::impl() const { return impl_; }
+
+}  // namespace coda::db

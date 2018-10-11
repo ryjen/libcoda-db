@@ -1,4 +1,4 @@
-.TH "coda::db::join_clause" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::join_clause" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -23,22 +23,22 @@ Inherits \fBcoda::db::sql_generator\fP\&.
 .RI "\fBjoin_clause\fP (const std::string &tableName, const std::string &alias, join::type \fBtype\fP=join::none)"
 .br
 .ti -1c
-.RI "\fBjoin_clause\fP (const \fBjoin_clause\fP &other)"
+.RI "\fBjoin_clause\fP (const \fBjoin_clause\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBjoin_clause\fP (\fBjoin_clause\fP &&other)"
+.RI "\fBjoin_clause\fP (\fBjoin_clause\fP &&other)=default"
 .br
 .ti -1c
-.RI "\fBjoin_clause\fP & \fBoperator=\fP (const \fBjoin_clause\fP &other)"
+.RI "\fBjoin_clause\fP & \fBoperator=\fP (const \fBjoin_clause\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBjoin_clause\fP & \fBoperator=\fP (\fBjoin_clause\fP &&other)"
+.RI "\fBjoin_clause\fP & \fBoperator=\fP (\fBjoin_clause\fP &&other)=default"
 .br
 .ti -1c
 .RI "bool \fBempty\fP () const"
 .br
 .ti -1c
-.RI "void \fBreset\fP ()"
+.RI "void \fBreset\fP () override"
 .br
 .ti -1c
 .RI "\fBjoin_clause\fP & \fBtype\fP (join::type value)"
@@ -90,8 +90,6 @@ default no-arg constructor
 .RE
 .PP
 
-.SS "coda::db::join_clause::join_clause (const \fBjoin_clause\fP & other)"
-boilerplate rule of 3 + move 
 .SH "Member Function Documentation"
 .PP 
 .SS "bool coda::db::join_clause::empty () const"
@@ -135,9 +133,7 @@ the where clause
 .RE
 .PP
 
-.SS "coda::db::join_clause::operator std::string ()\fC [explicit]\fP"
-the explicit cast operator to sql string representation 
-.SS "void coda::db::join_clause::reset ()\fC [virtual]\fP"
+.SS "void coda::db::join_clause::reset ()\fC [override]\fP, \fC [virtual]\fP"
 resets the sql 
 .PP
 Reimplemented from \fBcoda::db::sql_generator\fP\&.

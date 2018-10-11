@@ -1,4 +1,4 @@
-.TH "coda::db::column_impl" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::column_impl" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,13 +17,13 @@ Inherited by \fBcoda::db::mysql::column\fP, \fBcoda::db::mysql::stmt_column\fP, 
 .RI "\fBcolumn_impl\fP (const \fBcolumn_impl\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBcolumn_impl\fP (\fBcolumn_impl\fP &&other)=default"
+.RI "\fBcolumn_impl\fP (\fBcolumn_impl\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "\fBcolumn_impl\fP & \fBoperator=\fP (const \fBcolumn_impl\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBcolumn_impl\fP & \fBoperator=\fP (\fBcolumn_impl\fP &&other)=default"
+.RI "\fBcolumn_impl\fP & \fBoperator=\fP (\fBcolumn_impl\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "virtual bool \fBis_valid\fP () const =0"

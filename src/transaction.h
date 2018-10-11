@@ -4,84 +4,78 @@
 #include <memory>
 #include <string>
 
-namespace coda {
-    namespace db {
-        class session;
+namespace coda::db {
+  class session;
 
-        class transaction_impl {
-        public:
-            transaction_impl() = default;
+  class transaction_impl {
+   public:
+    transaction_impl() = default;
 
-            transaction_impl(const transaction_impl &other) = default;
+    transaction_impl(const transaction_impl &other) = default;
 
-            transaction_impl(transaction_impl &&other) = default;
+    transaction_impl(transaction_impl &&other) noexcept = default;
 
-            virtual ~transaction_impl() = default;
+    virtual ~transaction_impl() = default;
 
-            transaction_impl &operator=(const transaction_impl &other) = default;
+    transaction_impl &operator=(const transaction_impl &other) = default;
 
-            transaction_impl &operator=(transaction_impl &&other) = default;
+    transaction_impl &operator=(transaction_impl &&other) noexcept = default;
 
-            virtual void start() = 0;
+    virtual void start() = 0;
 
-            virtual bool is_active() const noexcept = 0;
-        };
+    virtual bool is_active() const noexcept = 0;
+  };
 
-        class transaction {
-            friend class session;
+  class transaction {
+    friend class session;
 
-        public:
-            struct isolation {
-                typedef enum {
-                    none, serializable, repeatable_read, read_commited, read_uncommited
-                } level;
-            };
-            typedef enum {
-                none, read_write, read_only
-            } type;
+   public:
+    struct isolation {
+      typedef enum { none, serializable, repeatable_read, read_commited, read_uncommited } level;
+    };
+    typedef enum { none, read_write, read_only } type;
 
-            typedef session session_type;
+    using session_type = session;
 
-            transaction(const std::shared_ptr<session_type> &session, const std::shared_ptr<transaction_impl> &impl);
+    transaction(const std::shared_ptr<session_type> &session, const std::shared_ptr<transaction_impl> &impl);
 
-            transaction(const transaction &other);
+    transaction(const transaction &other) = default;
 
-            transaction(transaction &&other);
+    transaction(transaction &&other) noexcept = default;
 
-            virtual ~transaction();
+    ~transaction();
 
-            transaction &operator=(const transaction &other);
+    transaction &operator=(const transaction &other) = default;
 
-            transaction &operator=(transaction &&other);
+    transaction &operator=(transaction &&other) noexcept = default;
 
-            void save(const std::string &name);
+    void save(const std::string &name);
 
-            void release(const std::string &name);
+    void release(const std::string &name);
 
-            void rollback(const std::string &name);
+    void rollback(const std::string &name);
 
-            void start();
+    void start();
 
-            void commit();
+    void commit();
 
-            void rollback();
+    void rollback();
 
-            bool is_active() const noexcept;
+    bool is_active() const noexcept;
 
-            void set_successful(bool value);
+    void set_successful(bool value);
 
-            bool is_successful() const noexcept;
+    bool is_successful() const noexcept;
 
-            std::shared_ptr<transaction_impl> impl() const;
+    std::shared_ptr<transaction_impl> impl() const;
 
-            std::shared_ptr<session_type> get_session() const;
+    std::shared_ptr<session_type> get_session() const;
 
-        private:
-            bool successful_;
-            std::shared_ptr<session_type> session_;
-            std::shared_ptr<transaction_impl> impl_;
-        };
-    }
-}
+   private:
+    bool successful_;
+    std::shared_ptr<session_type> session_;
+    std::shared_ptr<transaction_impl> impl_;
+  };
+}  // namespace coda::db
 
 #endif

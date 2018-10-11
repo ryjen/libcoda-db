@@ -1,4 +1,4 @@
-.TH "coda::db::schema_factory" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::schema_factory" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,22 +12,22 @@ coda::db::schema_factory
 
 .in +1c
 .ti -1c
-.RI "\fBschema_factory\fP (\fBschema_factory\fP &&other)"
+.RI "\fBschema_factory\fP (\fBschema_factory\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "\fBschema_factory\fP & \fBoperator=\fP (\fBschema_factory\fP &&other)"
+.RI "\fBschema_factory\fP (const \fBschema_factory\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBschema_factory\fP (const \fBschema_factory\fP &other)"
+.RI "\fBschema_factory\fP & \fBoperator=\fP (const \fBschema_factory\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBschema_factory\fP & \fBoperator=\fP (const \fBschema_factory\fP &other)"
+.RI "\fBschema_factory\fP & \fBoperator=\fP (\fBschema_factory\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "std::shared_ptr< \fBschema\fP > \fBget\fP (const std::shared_ptr< \fBsession\fP > &\fBsession\fP, const std::string &tableName)"
 .br
 .ti -1c
-.RI "void \fBclear\fP (const std::string &tablename)"
+.RI "void \fBclear\fP (const std::string &tableName)"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -35,12 +35,28 @@ coda::db::schema_factory
 Schema factory handles caching of table schemas\&. Caching the schemas reduces the amount of db reads when working with records\&. 
 .SH "Member Function Documentation"
 .PP 
-.SS "void coda::db::schema_factory::clear (const std::string & tablename)"
+.SS "void coda::db::schema_factory::clear (const std::string & tableName)"
 clears a cached schema for the table name 
 .PP
 \fBParameters:\fP
 .RS 4
-\fItablename\fP the table name to clear the schema for 
+\fItableName\fP the table name to clear the schema for 
+.RE
+.PP
+
+.SS "std::shared_ptr<\fBschema\fP> coda::db::schema_factory::get (const std::shared_ptr< \fBsession\fP > & session, const std::string & tableName)"
+gets the schema given a session and a table name 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsession\fP the database session 
+.br
+\fItableName\fP the name of the table 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the schema for the table name in the session 
 .RE
 .PP
 

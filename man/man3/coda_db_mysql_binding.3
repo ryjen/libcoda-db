@@ -1,4 +1,4 @@
-.TH "coda::db::mysql::binding" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::mysql::binding" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -32,16 +32,16 @@ Inherits \fBcoda::db::bind_mapping\fP\&.
 .RI "\fBbinding\fP (const \fBbinding\fP &other)"
 .br
 .ti -1c
-.RI "\fBbinding\fP (\fBbinding\fP &&other)"
+.RI "\fBbinding\fP (\fBbinding\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBbinding\fP & \fBoperator=\fP (const \fBbinding\fP &other)"
 .br
 .ti -1c
-.RI "\fBbinding\fP & \fBoperator=\fP (\fBbinding\fP &&other)"
+.RI "\fBbinding\fP & \fBoperator=\fP (\fBbinding\fP &&other) noexcept"
 .br
 .ti -1c
-.RI "size_t \fBnum_of_bindings\fP () const noexcept"
+.RI "size_t \fBnum_of_bindings\fP () const noexcept override"
 .br
 .ti -1c
 .RI "size_t \fBcapacity\fP () const"
@@ -56,10 +56,10 @@ Inherits \fBcoda::db::bind_mapping\fP\&.
 .RI "int \fBsql_type\fP (size_t index) const"
 .br
 .ti -1c
-.RI "\fBbinding\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value)"
+.RI "\fBbinding\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value) override"
 .br
 .ti -1c
-.RI "\fBbinding\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value)"
+.RI "\fBbinding\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value) override"
 .br
 .ti -1c
 .RI "void \fBbind_params\fP (MYSQL_STMT *stmt) const"
@@ -71,14 +71,7 @@ Inherits \fBcoda::db::bind_mapping\fP\&.
 .RI "std::string \fBprepare\fP (const std::string &sql)"
 .br
 .ti -1c
-.RI "void \fBreset\fP ()"
-.br
-.in -1c
-.SS "Friends"
-
-.in +1c
-.ti -1c
-.RI "class \fBmysql_column\fP"
+.RI "void \fBreset\fP () override"
 .br
 .in -1c
 .SS "Additional Inherited Members"
@@ -89,7 +82,7 @@ makes binding mysql queries simpler
 .PP 
 .SS "coda::db::mysql::binding::binding ()"
 default constructor 
-.SS "coda::db::mysql::binding::binding (size_t size)"
+.SS "coda::db::mysql::binding::binding (size_t size)\fC [explicit]\fP"
 constructor with an empty set of values 
 .PP
 \fBParameters:\fP
@@ -98,7 +91,7 @@ constructor with an empty set of values
 .RE
 .PP
 
-.SS "coda::db::mysql::binding::binding (const MYSQL_BIND & value)"
+.SS "coda::db::mysql::binding::binding (const MYSQL_BIND & value)\fC [explicit]\fP"
 
 .PP
 \fBParameters:\fP
@@ -131,7 +124,7 @@ constructor with an empty set of values
 
 .SH "Member Function Documentation"
 .PP 
-.SS "\fBbinding\fP& coda::db::mysql::binding::bind (size_t index, const \fBsql_value\fP & value)\fC [virtual]\fP"
+.SS "\fBbinding\fP& coda::db::mysql::binding::bind (size_t index, const \fBsql_value\fP & value)\fC [override]\fP, \fC [virtual]\fP"
 Binds a \fBsql_value\fP using the other bind methods 
 .PP
 \fBParameters:\fP
@@ -149,7 +142,7 @@ a reference to this instance
 
 .PP
 Implements \fBcoda::db::bind_mapping\fP\&.
-.SS "\fBbinding\fP& coda::db::mysql::binding::bind (const std::string & name, const \fBsql_value\fP & value)\fC [virtual]\fP"
+.SS "\fBbinding\fP& coda::db::mysql::binding::bind (const std::string & name, const \fBsql_value\fP & value)\fC [override]\fP, \fC [virtual]\fP"
 bind a named parameter 
 .PP
 \fBParameters:\fP
@@ -208,7 +201,7 @@ the raw binding value for the given index
 .RE
 .PP
 
-.SS "size_t coda::db::mysql::binding::num_of_bindings () const\fC [virtual]\fP, \fC [noexcept]\fP"
+.SS "size_t coda::db::mysql::binding::num_of_bindings () const\fC [override]\fP, \fC [virtual]\fP, \fC [noexcept]\fP"
 
 .PP
 \fBReturns:\fP
@@ -228,7 +221,7 @@ validates the sql and prepares the bindinds
 .RE
 .PP
 
-.SS "void coda::db::mysql::binding::reset ()\fC [virtual]\fP"
+.SS "void coda::db::mysql::binding::reset ()\fC [override]\fP, \fC [virtual]\fP"
 reset all the bindings 
 .PP
 Reimplemented from \fBcoda::db::bind_mapping\fP\&.

@@ -1,4 +1,4 @@
-.TH "coda::db::sqlite::column" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::sqlite::column" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,25 +20,25 @@ Inherits \fBcoda::db::column_impl\fP\&.
 .RI "\fBcolumn\fP (const \fBcolumn\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBcolumn\fP (\fBcolumn\fP &&other)"
+.RI "\fBcolumn\fP (\fBcolumn\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "\fBcolumn\fP & \fBoperator=\fP (const \fBcolumn\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBcolumn\fP & \fBoperator=\fP (\fBcolumn\fP &&other)"
+.RI "\fBcolumn\fP & \fBoperator=\fP (\fBcolumn\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "bool \fBis_valid\fP () const"
+.RI "bool \fBis_valid\fP () const override"
 .br
 .ti -1c
-.RI "\fBsql_value\fP \fBto_value\fP () const"
+.RI "\fBsql_value\fP \fBto_value\fP () const override"
 .br
 .ti -1c
 .RI "int \fBsql_type\fP () const"
 .br
 .ti -1c
-.RI "std::string \fBname\fP () const"
+.RI "std::string \fBname\fP () const override"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -59,7 +59,7 @@ a sqlite specific implementation of a column
 
 .SH "Member Function Documentation"
 .PP 
-.SS "bool coda::db::sqlite::column::is_valid () const\fC [virtual]\fP"
+.SS "bool coda::db::sqlite::column::is_valid () const\fC [override]\fP, \fC [virtual]\fP"
 tests if this colums data validity 
 .PP
 \fBReturns:\fP
@@ -70,7 +70,7 @@ true if this columns data is valid
 
 .PP
 Implements \fBcoda::db::column_impl\fP\&.
-.SS "std::string coda::db::sqlite::column::name () const\fC [virtual]\fP"
+.SS "std::string coda::db::sqlite::column::name () const\fC [override]\fP, \fC [virtual]\fP"
 
 .PP
 \fBReturns:\fP
@@ -81,7 +81,7 @@ the name of this column;
 
 .PP
 Implements \fBcoda::db::column_impl\fP\&.
-.SS "\fBsql_value\fP coda::db::sqlite::column::to_value () const\fC [virtual]\fP"
+.SS "\fBsql_value\fP coda::db::sqlite::column::to_value () const\fC [override]\fP, \fC [virtual]\fP"
 converts this column to a value 
 .PP
 \fBReturns:\fP

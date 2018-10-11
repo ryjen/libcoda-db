@@ -9,49 +9,39 @@
 #include <vector>
 #include "../resultset.h"
 
-namespace coda
-{
-    namespace db
-    {
-        namespace postgres
-        {
-            class session;
+namespace coda::db::postgres {
+      class session;
 
-            /*!
-             * a postgres specific implmentation of a result set
-             */
-            class resultset : public resultset_impl
-            {
-                template <typename, typename>
-                friend class resultset_iterator;
+      /*!
+       * a postgres specific implmentation of a result set
+       */
+      class resultset : public resultset_impl {
 
-               private:
-                std::shared_ptr<PGresult> stmt_;
-                std::shared_ptr<postgres::session> sess_;
-                int currentRow_;
+       private:
+        std::shared_ptr<PGresult> stmt_;
+        std::shared_ptr<postgres::session> sess_;
+        int currentRow_;
 
-               public:
-                /*!
-                 * @param  db    the database in use
-                 * @param  stmt  the query result in use
-                 */
-                resultset(const std::shared_ptr<postgres::session> &sess, const std::shared_ptr<PGresult> &stmt);
+       public:
+        /*!
+         * @param  db    the database in use
+         * @param  stmt  the query result in use
+         */
+        resultset(const std::shared_ptr<postgres::session> &sess, const std::shared_ptr<PGresult> &stmt);
 
-                /* non-copyable boilerplate */
-                resultset(const resultset &other) = delete;
-                resultset(resultset &&other);
-                virtual ~resultset();
-                resultset &operator=(const resultset &other) = delete;
-                resultset &operator=(resultset &&other);
+        /* non-copyable boilerplate */
+        resultset(const resultset &other) = delete;
+        resultset(resultset &&other) noexcept = default;
+        ~resultset() override = default;
+        resultset &operator=(const resultset &other) = delete;
+        resultset &operator=(resultset &&other) noexcept = default;
 
-                /* resultset_impl overrides */
-                bool is_valid() const noexcept;
-                row_type current_row();
-                void reset();
-                bool next();
-            };
-        }
-    }
-}
+        /* resultset_impl overrides */
+        bool is_valid() const noexcept override;
+        row_type current_row() override;
+        void reset() override;
+        bool next() override;
+      };
+}  // namespace coda::db::postgres
 
 #endif

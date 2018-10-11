@@ -1,50 +1,68 @@
 version: '2'
+
+networks:
+  data:
+    driver: bridge
+
 services:
   test:
     image: coda_db_test
     build:
       context: .
       args:
-          CMAKE_DEFINES: -DCMAKE_BUILD_TYPE=Release -DENABLE_MEMCHECK=ON -DCMAKE_CXX_COMPILER=g++
-    links:
-      - mysql
-      - postgres
-    working_dir: /usr/src/build
+        CMAKE_DEFINES: -DCMAKE_BUILD_TYPE=Release -DENABLE_MEMCHECK=ON -DCMAKE_CXX_COMPILER=g++
+    working_dir: /usr/src/docker-build
     environment:
-      MYSQL_URI: mysql://mysql:3306/test
+      MYSQL_URI: mysql://root:test@mysql:3306/test
       POSTGRES_URI: postgres://test:test@postgres:5432/test
+    networks:
+      - data
     depends_on:
       - mysql
       - postgres
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_PTRACE
     command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s make test ARGS=-V
   coverage:
     image: coda_db_coverage
     build:
       context: .
       args:
-          CMAKE_DEFINES: -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON -DCMAKE_CXX_COMPILER=g++
+        CMAKE_DEFINES: -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON -DCMAKE_CXX_COMPILER=g++
+    networks:
+      - data
+    working_dir: /usr/src/docker-build
     environment:
-      - TRAVIS_JOB_ID
-    links:
-      - mysql
-      - postgres
-    working_dir: /usr/src/build
-    environment:
-      MYSQL_URI: mysql://mysql:3306/test
+      TRAVIS_JOB_ID:
+      MYSQL_URI: mysql://root:test@mysql:3306/test
       POSTGRES_URI: postgres://test:test@postgres:5432/test
     depends_on:
       - mysql
       - postgres
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_PTRACE
     command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s make coda_db_coverage_coveralls TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
   mysql:
-    image: mysql:5.7
-    hostname: mysql
+    image: yobasystems/alpine-mariadb
+    networks:
+      - data
     environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_USERNAME: test
+      MYSQL_PASSWORD: test
       MYSQL_DATABASE: test
-      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    ports:
+      - 3306
   postgres:
-    image: postgres
-    hostname: postgres
+    image: postgres:alpine
+    networks:
+      - data
+    ports:
+      - 5432
     environment:
       POSTGRES_DB: test
       POSTGRES_USER: test

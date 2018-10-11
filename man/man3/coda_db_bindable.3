@@ -1,4 +1,4 @@
-.TH "coda::db::bindable" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::bindable" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,13 +17,13 @@ Inherited by \fBcoda::db::bind_mapping\fP, \fBcoda::db::query\fP\fC [protected]\
 .RI "\fBbindable\fP (const \fBbindable\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBbindable\fP (\fBbindable\fP &&other)=default"
+.RI "\fBbindable\fP (\fBbindable\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "\fBbindable\fP & \fBoperator=\fP (const \fBbindable\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBbindable\fP & \fBoperator=\fP (\fBbindable\fP &&other)=default"
+.RI "\fBbindable\fP & \fBoperator=\fP (\fBbindable\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "template<typename T , typename\&.\&.\&. List> \fBbindable\fP & \fBbind_all\fP (const T &value, const List &\&.\&.\&. argv)"
@@ -58,10 +58,10 @@ Inherited by \fBcoda::db::bind_mapping\fP, \fBcoda::db::query\fP\fC [protected]\
 
 .in +1c
 .ti -1c
-.RI "static const int \fBprealloc_size\fP"
+.RI "static const size_t \fBprealloc_size\fP"
 .br
 .ti -1c
-.RI "static const int \fBprealloc_increment\fP"
+.RI "static const size_t \fBprealloc_increment\fP"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -134,7 +134,7 @@ a reference to this instance
 .PP
 
 .PP
-Implemented in \fBcoda::db::where_builder\fP, \fBcoda::db::mysql::binding\fP, \fBcoda::db::postgres::binding\fP, \fBcoda::db::mysql::statement\fP, \fBcoda::db::bind_mapping\fP, \fBcoda::db::query\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+Implemented in \fBcoda::db::where_builder\fP, \fBcoda::db::mysql::binding\fP, \fBcoda::db::postgres::binding\fP, \fBcoda::db::bind_mapping\fP, \fBcoda::db::mysql::statement\fP, \fBcoda::db::query\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
 .SS "template<typename T > \fBbindable\fP& coda::db::bindable::bind_list (size_t index, const T & value)\fC [inline]\fP, \fC [protected]\fP"
 bind_all override for one \fBsql_value\fP parameter 
 .PP

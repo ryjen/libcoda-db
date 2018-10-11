@@ -50,7 +50,7 @@ Debugging
 Debugging on docker can be done with docker compose:
 
 ```
-docker-compose run test gdb /usr/src/build/tests/coda_db_test_xxx
+docker-compose run test gdb /usr/src/docker-build/tests/coda_db_test_xxx
 ```
 
 
@@ -535,6 +535,7 @@ Alternatives
 TODO / ROADMAP
 ==============
 
+[ ] Replace exceptions in favor of return types
 [ ] Custom where clause operators
 [ ] More testing around binding
 [ ] More testing around data types

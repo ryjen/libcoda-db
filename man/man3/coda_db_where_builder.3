@@ -1,4 +1,4 @@
-.TH "coda::db::where_builder" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::where_builder" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -18,16 +18,16 @@ Inherits \fBcoda::db::where_clause\fP, and \fBcoda::db::bindable\fP\&.
 .RI "\fBwhere_builder\fP (const \fBwhere_builder\fP &other)"
 .br
 .ti -1c
-.RI "\fBwhere_builder\fP (\fBwhere_builder\fP &&other)"
+.RI "\fBwhere_builder\fP (\fBwhere_builder\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBwhere_builder\fP & \fBoperator=\fP (const \fBwhere_builder\fP &other)"
 .br
 .ti -1c
-.RI "\fBwhere_builder\fP & \fBoperator=\fP (\fBwhere_builder\fP &&other)"
+.RI "\fBwhere_builder\fP & \fBoperator=\fP (\fBwhere_builder\fP &&other) noexcept"
 .br
 .ti -1c
-.RI "size_t \fBnum_of_bindings\fP () const noexcept"
+.RI "size_t \fBnum_of_bindings\fP () const noexcept override"
 .br
 .ti -1c
 .RI "void \fBreset\fP (const \fBsql_operator\fP &value)"
@@ -38,27 +38,21 @@ Inherits \fBcoda::db::where_clause\fP, and \fBcoda::db::bindable\fP\&.
 .ti -1c
 .RI "\fBwhere_builder\fP & \fBoperator||\fP (const \fBsql_operator\fP &value)"
 .br
-.ti -1c
-.RI "std::string \fBto_sql\fP () const"
-.br
-.ti -1c
-.RI "std::string \fBto_sql\fP ()"
-.br
 .in -1c
 .SS "Protected Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBwhere_builder\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value)"
+.RI "\fBwhere_builder\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value) override"
 .br
 .ti -1c
-.RI "\fBwhere_builder\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value)"
+.RI "\fBwhere_builder\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value) override"
 .br
 .in -1c
 .SS "Additional Inherited Members"
 .SH "Member Function Documentation"
 .PP 
-.SS "\fBwhere_builder\fP& coda::db::where_builder::bind (size_t index, const \fBsql_value\fP & value)\fC [protected]\fP, \fC [virtual]\fP"
+.SS "\fBwhere_builder\fP& coda::db::where_builder::bind (size_t index, const \fBsql_value\fP & value)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 Binds a \fBsql_value\fP using the other bind methods 
 .PP
 \fBParameters:\fP
@@ -76,7 +70,7 @@ a reference to this instance
 
 .PP
 Implements \fBcoda::db::bindable\fP\&.
-.SS "\fBwhere_builder\fP& coda::db::where_builder::bind (const std::string & name, const \fBsql_value\fP & value)\fC [protected]\fP, \fC [virtual]\fP"
+.SS "\fBwhere_builder\fP& coda::db::where_builder::bind (const std::string & name, const \fBsql_value\fP & value)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 bind a named parameter 
 .PP
 \fBParameters:\fP

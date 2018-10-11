@@ -1,4 +1,4 @@
-.TH "coda::db::delete_query" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::delete_query" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -26,13 +26,13 @@ Inherits \fBcoda::db::modify_query\fP, and \fBcoda::db::whereable< delete_query 
 .RI "\fBdelete_query\fP (const \fBdelete_query\fP &other)"
 .br
 .ti -1c
-.RI "\fBdelete_query\fP (\fBdelete_query\fP &&other)"
+.RI "\fBdelete_query\fP (\fBdelete_query\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBdelete_query\fP & \fBoperator=\fP (const \fBdelete_query\fP &other)"
 .br
 .ti -1c
-.RI "\fBdelete_query\fP & \fBoperator=\fP (\fBdelete_query\fP &&other)"
+.RI "\fBdelete_query\fP & \fBoperator=\fP (\fBdelete_query\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBdelete_query\fP & \fBfrom\fP (const std::string &tableName)"
@@ -41,16 +41,16 @@ Inherits \fBcoda::db::modify_query\fP, and \fBcoda::db::whereable< delete_query 
 .RI "std::string \fBfrom\fP () const"
 .br
 .ti -1c
-.RI "\fBwhere_builder\fP & \fBwhere\fP ()"
+.RI "\fBwhere_builder\fP & \fBwhere\fP () override"
 .br
 .ti -1c
-.RI "\fBwhere_builder\fP & \fBwhere\fP (const \fBsql_operator\fP &value)"
+.RI "\fBwhere_builder\fP & \fBwhere\fP (const \fBsql_operator\fP &value) override"
 .br
 .ti -1c
 .RI "\fBdelete_query\fP & \fBwhere\fP (const \fBwhere_clause\fP &value)"
 .br
 .ti -1c
-.RI "bool \fBis_valid\fP () const noexcept"
+.RI "bool \fBis_valid\fP () const noexcept override"
 .br
 .in -1c
 .SS "Additional Inherited Members"
@@ -92,7 +92,7 @@ the table name
 .RE
 .PP
 
-.SS "bool coda::db::delete_query::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+.SS "bool coda::db::delete_query::is_valid () const\fC [override]\fP, \fC [virtual]\fP, \fC [noexcept]\fP"
 tests if this query is valid 
 .PP
 \fBReturns:\fP
@@ -103,7 +103,7 @@ true if valid
 
 .PP
 Reimplemented from \fBcoda::db::query\fP\&.
-.SS "\fBwhere_builder\fP& coda::db::delete_query::where ()\fC [virtual]\fP"
+.SS "\fBwhere_builder\fP& coda::db::delete_query::where ()\fC [override]\fP, \fC [virtual]\fP"
 gets the where builder for the query 
 .PP
 \fBReturns:\fP
@@ -114,7 +114,7 @@ a reference to the where builder
 
 .PP
 Implements \fBcoda::db::whereable< delete_query >\fP\&.
-.SS "\fBwhere_builder\fP& coda::db::delete_query::where (const \fBsql_operator\fP & value)\fC [virtual]\fP"
+.SS "\fBwhere_builder\fP& coda::db::delete_query::where (const \fBsql_operator\fP & value)\fC [override]\fP, \fC [virtual]\fP"
 sets the where clause using an operator 
 .PP
 \fBParameters:\fP

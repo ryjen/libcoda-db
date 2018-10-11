@@ -1,4 +1,4 @@
-.TH "coda::db::insert_query" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::insert_query" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -23,19 +23,19 @@ Inherits \fBcoda::db::modify_query\fP\&.
 .RI "\fBinsert_query\fP (const std::shared_ptr< \fBschema\fP > &\fBschema\fP, const std::vector< std::string > &\fBcolumns\fP)"
 .br
 .ti -1c
-.RI "\fBinsert_query\fP (const \fBinsert_query\fP &other)"
+.RI "\fBinsert_query\fP (const \fBinsert_query\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBinsert_query\fP (\fBinsert_query\fP &&other)"
+.RI "\fBinsert_query\fP (\fBinsert_query\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBinsert_query\fP & \fBoperator=\fP (const \fBinsert_query\fP &other)"
 .br
 .ti -1c
-.RI "\fBinsert_query\fP & \fBoperator=\fP (\fBinsert_query\fP &&other)"
+.RI "\fBinsert_query\fP & \fBoperator=\fP (\fBinsert_query\fP &&other) noexcept"
 .br
 .ti -1c
-.RI "long long \fBlast_insert_id\fP () const"
+.RI "sql_id \fBlast_insert_id\fP () const"
 .br
 .ti -1c
 .RI "std::vector< std::string > \fBcolumns\fP () const"
@@ -68,22 +68,10 @@ Inherits \fBcoda::db::modify_query\fP\&.
 .RI "\fBinsert_query\fP & \fBvalue\fP (const \fBsql_value\fP &value)"
 .br
 .ti -1c
-.RI "int \fBexecute\fP ()"
+.RI "sql_changes \fBexecute\fP () override"
 .br
 .ti -1c
-.RI "bool \fBis_valid\fP () const noexcept"
-.br
-.ti -1c
-.RI "\fBmodify_query\fP (const std::shared_ptr< \fBcoda::db::session\fP > &\fBsession\fP)"
-.br
-.ti -1c
-.RI "\fBmodify_query\fP (const std::shared_ptr< \fBschema\fP > &\fBschema\fP)"
-.br
-.ti -1c
-.RI "\fBmodify_query\fP (const \fBmodify_query\fP &other)"
-.br
-.ti -1c
-.RI "\fBmodify_query\fP (\fBmodify_query\fP &&other)"
+.RI "bool \fBis_valid\fP () const noexcept override"
 .br
 .in -1c
 .SS "Additional Inherited Members"
@@ -152,7 +140,7 @@ a reference to this instance
 .RE
 .PP
 
-.SS "int coda::db::insert_query::execute ()\fC [virtual]\fP"
+.SS "sql_changes coda::db::insert_query::execute ()\fC [override]\fP, \fC [virtual]\fP"
 executes the insert query 
 .PP
 \fBReturns:\fP
@@ -196,7 +184,7 @@ the table name
 .RE
 .PP
 
-.SS "bool coda::db::insert_query::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+.SS "bool coda::db::insert_query::is_valid () const\fC [override]\fP, \fC [virtual]\fP, \fC [noexcept]\fP"
 tests if this query is valid 
 .PP
 \fBReturns:\fP
@@ -207,30 +195,12 @@ true if valid
 
 .PP
 Reimplemented from \fBcoda::db::query\fP\&.
-.SS "long long coda::db::insert_query::last_insert_id () const"
+.SS "sql_id coda::db::insert_query::last_insert_id () const"
 
 .PP
 \fBReturns:\fP
 .RS 4
 the id column of the last insert 
-.RE
-.PP
-
-.SS "coda::db::modify_query::modify_query"
-
-.PP
-\fBParameters:\fP
-.RS 4
-\fIdb\fP the database in use 
-.RE
-.PP
-
-.SS "coda::db::modify_query::modify_query"
-
-.PP
-\fBParameters:\fP
-.RS 4
-\fIschema\fP the schema to modify 
 .RE
 .PP
 
