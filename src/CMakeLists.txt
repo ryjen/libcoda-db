@@ -63,7 +63,10 @@ string(REPLACE "_" "/" INSTALL_DIRECTORY ${PROJECT_NAME})
 
 add_library(${PROJECT_NAME} ${LIBRARY_SOURCES})
 
-create_package(TARGET ${PROJECT_NAME} DESCRIPTION "A c++ database interface.")
+# ability to create a package
+include(CreatePackages)
+
+create_packages(TARGET ${PROJECT_NAME} DESCRIPTION "A c++ database interface.")
 
 if (SQLITE3_FOUND)
 
@@ -92,7 +95,7 @@ if (SQLITE3_FOUND)
     install(FILES ${${PROJECT_NAME}_SQLITE_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/sqlite")
 
 
-    create_package(TARGET ${SQLITE_PROJECT_NAME} DESCRIPTION "A c++ sqlite3 database interface.")
+    create_packages(TARGET ${SQLITE_PROJECT_NAME} DESCRIPTION "A c++ sqlite3 database interface.")
 
 endif ()
 
@@ -124,7 +127,7 @@ if (MYSQL_FOUND)
 
     install(FILES ${${PROJECT_NAME}_MYSQL_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/mysql")
 
-    create_package(TARGET ${MYSQL_PROJECT_NAME} DESCRIPTION "A c++ mysql database interface.")
+    create_packages(TARGET ${MYSQL_PROJECT_NAME} DESCRIPTION "A c++ mysql database interface.")
 
 endif ()
 
@@ -156,7 +159,7 @@ if (POSTGRES_FOUND)
 
     install(FILES ${${PROJECT_NAME}_POSTGRES_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/postgres")
 
-    create_package(TARGET ${POSTGRES_PROJECT_NAME} DESCRIPTION "A c++ database interface.")
+    create_packages(TARGET ${POSTGRES_PROJECT_NAME} DESCRIPTION "A c++ database interface.")
 
 endif ()
 
