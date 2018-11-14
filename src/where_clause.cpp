@@ -61,6 +61,8 @@ namespace coda
                 case op::BETWEEN:
                     rrange_.~pair<sql_value, sql_value>();
                     break;
+                default:
+                    break;
             }
         }
 
@@ -85,6 +87,8 @@ namespace coda
                 case op::BETWEEN:
                     new (&rrange_) std::pair<sql_value, sql_value>(other.rrange_);
                     break;
+                default:
+                    break;
             }
         }
 
@@ -108,6 +112,8 @@ namespace coda
                     break;
                 case op::BETWEEN:
                     new (&rrange_) std::pair<sql_value, sql_value>(std::move(other.rrange_));
+                    break;
+                default:
                     break;
             }
         }
@@ -142,6 +148,8 @@ namespace coda
                 }
                 case op::IN:
                 case op::BETWEEN:
+                    return false;
+                default:
                     return false;
             }
         }
@@ -601,6 +609,8 @@ namespace coda
                 case op::BETWEEN:
                     binder_->bind(index, value.rrange_.first);
                     binder_->bind(index, value.rrange_.second);
+                    break;
+                default:
                     break;
             }
             return *this;

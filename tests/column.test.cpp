@@ -1,5 +1,5 @@
 #include <string>
-
+#include <cmath>
 #include <bandit/bandit.h>
 #include "db.test.h"
 #include "record.h"
@@ -12,6 +12,17 @@ using namespace std;
 using namespace coda::db;
 
 using namespace snowhouse;
+
+template <class T>
+typename std::enable_if<!std::numeric_limits<T>::is_integer, bool>::type almost_equal(T x, T y, T tolerance = std::numeric_limits<T>::epsilon())
+{
+  T diff = std::fabs(x - y);
+  if (diff <= tolerance) {
+    return true;
+  }
+
+  return diff < std::fmax(std::fabs(x), std::fabs(y)) * tolerance;
+}
 
 column get_user_column(const string &name)
 {
@@ -114,11 +125,11 @@ specification(columns, []() {
         it("can be a double", []() {
             auto col = get_user_column("dval");
 
-            AssertThat(col.value().as<double>(), Equals(123.321));
+            AssertThat(almost_equal(col.value().as<double>(), 123.321), IsTrue());
 
             double val = col;
 
-            AssertThat(val, Equals(123.321));
+            AssertThat(almost_equal(val, 123.321), IsTrue());
         });
 
         it("can be a float", []() {

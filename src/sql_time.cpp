@@ -109,6 +109,7 @@ namespace coda {
                 case sql_time::TIME:
                     strftime(buf, sizeof(buf), "%H:%M:%S", gmtime(&value_));
                     return buf;
+                default:
                 case sql_time::TIMESTAMP:
                 case sql_time::DATETIME:
                     strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", gmtime(&value_));
@@ -126,6 +127,7 @@ namespace coda {
                 case sql_time::TIME:
                     wcsftime(buf, sizeof(buf), L"%H:%M:%S", gmtime(&value_));
                     return buf;
+                default:
                 case sql_time::TIMESTAMP:
                 case sql_time::DATETIME:
                     wcsftime(buf, sizeof(buf), L"%Y-%m-%d %H:%M:%S", gmtime(&value_));

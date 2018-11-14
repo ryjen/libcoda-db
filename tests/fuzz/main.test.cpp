@@ -68,7 +68,7 @@ namespace grammar
 
     const struct {
         const char *command;
-        func func;
+        func fn;
     } commands[] = {"set",        &perform_set,        "rem",      &perform_delete,
                     "save",       &perform_save,       "refresh",  &perform_refresh,
                     "find_by_id", &perform_find_by_id, "find_all", &perform_find_all,
@@ -78,7 +78,7 @@ namespace grammar
     {
         for (int i = 0; commands[i].command != NULL; i++) {
             if (value == commands[i].command) {
-                return commands[i].func;
+                return commands[i].fn;
             }
         }
         return nullptr;
