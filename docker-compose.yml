@@ -9,7 +9,7 @@ services:
     links:
       - mysql
       - postgres
-    working_dir: /usr/src/build
+    working_dir: /usr/src/docker-build
     environment:
       MYSQL_URI: mysql://mysql:3306/test
       POSTGRES_URI: postgres://test:test@postgres:5432/test
@@ -28,7 +28,7 @@ services:
     links:
       - mysql
       - postgres
-    working_dir: /usr/src/build
+    working_dir: /usr/src/docker-build
     environment:
       MYSQL_URI: mysql://mysql:3306/test
       POSTGRES_URI: postgres://test:test@postgres:5432/test
