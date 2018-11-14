@@ -18,9 +18,9 @@ WORKDIR ${BUILD_SRC}
 
 COPY . ${BUILD_SRC}
 
-RUN mkdir -p ${BUILD_SRC}/build
+RUN mkdir -p ${BUILD_SRC}/docker-build
 
-WORKDIR ${BUILD_SRC}/build
+WORKDIR ${BUILD_SRC}/docker-build
 
 RUN cmake ${CMAKE_DEFINES} -DPostgreSQL_TYPE_INCLUDE_DIR="$(pg_config --includedir-server)" ..
 
