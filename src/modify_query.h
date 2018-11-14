@@ -9,51 +9,51 @@
 #include "query.h"
 
 namespace coda {
-    namespace db {
-        class session;
+  namespace db {
+    class session;
 
-        /*!
-         * a query to modify a table
-         */
-        class modify_query : public query {
-        public:
-            /*!
-             * @param db the database in use
-             */
-            modify_query(const std::shared_ptr<coda::db::session> &session);
+    /*!
+     * a query to modify a table
+     */
+    class modify_query : public query {
+      public:
+      /*!
+       * @param db the database in use
+       */
+      modify_query(const std::shared_ptr<coda::db::session> &session);
 
-            /*!
-             * @param schema the schema to modify
-             */
-            modify_query(const std::shared_ptr<schema> &schema);
+      /*!
+       * @param schema the schema to modify
+       */
+      modify_query(const std::shared_ptr<schema> &schema);
 
-            /* boilerplate */
-            modify_query(const modify_query &other);
+      /* boilerplate */
+      modify_query(const modify_query &other);
 
-            modify_query(modify_query &&other);
+      modify_query(modify_query &&other);
 
-            virtual ~modify_query();
+      virtual ~modify_query();
 
-            modify_query &operator=(const modify_query &other);
+      modify_query &operator=(const modify_query &other);
 
-            modify_query &operator=(modify_query &&other);
+      modify_query &operator=(modify_query &&other);
 
-            /*!
-             * executes this query using a replace statement
-             * @return the last number of changes made by this query
-             */
-            virtual int execute();
+      /*!
+       * executes this query using a replace statement
+       * @return the last number of changes made by this query
+       */
+      virtual int execute();
 
-            /*!
-             * @return the last number of changes made by this query
-             */
-            int last_number_of_changes() const;
+      /*!
+       * @return the last number of changes made by this query
+       */
+      int last_number_of_changes() const;
 
-        protected:
-            int flags_;
-            int numChanges_;
-        };
-    }
-}
+      protected:
+      int flags_;
+      int numChanges_;
+    };
+  } // namespace db
+} // namespace coda
 
 #endif

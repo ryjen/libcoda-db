@@ -1,8 +1,8 @@
 #include <string>
 
-#include <bandit/bandit.h>
 #include "../db.test.h"
 #include "mysql/resultset.h"
+#include <bandit/bandit.h>
 
 using namespace bandit;
 
@@ -12,107 +12,100 @@ using namespace coda::db;
 
 using namespace snowhouse;
 
-shared_ptr<resultset_impl> get_mysql_resultset()
-{
-    auto rs = test::current_session->impl()->query("select * from users");
+shared_ptr<resultset_impl> get_mysql_resultset() {
+  auto rs = test::current_session->impl()->query("select * from users");
 
-    return rs;
+  return rs;
 }
 
-shared_ptr<resultset_impl> get_mysql_stmt_resultset()
-{
-    select_query query(test::current_session, {}, "users");
+shared_ptr<resultset_impl> get_mysql_stmt_resultset() {
+  select_query query(test::current_session, {}, "users");
 
-    auto rs = query.execute();
+  auto rs = query.execute();
 
-    return rs.impl();
-}
-
-
-template <typename T>
-void test_move_resultset(std::function<shared_ptr<resultset_impl>()> funk)
-{
-    auto f1 = funk();
-
-    auto f2 = funk();
-
-    T c2(std::move(*static_pointer_cast<T>(f1)));
-
-    Assert::That(c2.is_valid(), IsTrue());
-
-    c2 = std::move(*static_pointer_cast<T>(f2));
-
-    Assert::That(c2.is_valid(), IsTrue());
+  return rs.impl();
 }
 
 template <typename T>
-void test_resultset_row(std::function<shared_ptr<resultset_impl>()> funk)
-{
-    auto r = funk();
+void test_move_resultset(std::function<shared_ptr<resultset_impl>()> funk) {
+  auto f1 = funk();
 
-    Assert::That(r->next(), IsTrue());
+  auto f2 = funk();
 
-    Assert::That(r->current_row().is_valid(), IsTrue());
+  T c2(std::move(*static_pointer_cast<T>(f1)));
 
-    Assert::That(r->current_row().size() > 0, IsTrue());
+  Assert::That(c2.is_valid(), IsTrue());
+
+  c2 = std::move(*static_pointer_cast<T>(f2));
+
+  Assert::That(c2.is_valid(), IsTrue());
 }
 
-SPEC_BEGIN(mysql_resultset)
-{
-    describe("mysql resultset", []() {
-        before_each([]() {
-            test::setup_current_session();
+template <typename T>
+void test_resultset_row(std::function<shared_ptr<resultset_impl>()> funk) {
+  auto r = funk();
 
-            test::user user1;
+  Assert::That(r->next(), IsTrue());
 
-            user1.set_id(1);
-            user1.set("first_name", "Bryan");
-            user1.set("last_name", "Jenkins");
+  Assert::That(r->current_row().is_valid(), IsTrue());
 
-            user1.save();
+  Assert::That(r->current_row().size() > 0, IsTrue());
+}
 
-            test::user user2;
+SPEC_BEGIN(mysql_resultset) {
+  describe("mysql resultset", []() {
+    before_each([]() {
+      test::setup_current_session();
 
-            user2.set_id(3);
+      test::user user1;
 
-            user2.set("first_name", "Bob");
-            user2.set("last_name", "Smith");
+      user1.set_id(1);
+      user1.set("first_name", "Bryan");
+      user1.set("last_name", "Jenkins");
 
-            user2.set("dval", 3.1456);
+      user1.save();
 
-            user2.save();
-        });
+      test::user user2;
 
-        after_each([]() { test::teardown_current_session(); });
+      user2.set_id(3);
 
-        describe("is movable", []() {
+      user2.set("first_name", "Bob");
+      user2.set("last_name", "Smith");
 
+      user2.set("dval", 3.1456);
 
-            it("as statement results", []() { test_move_resultset<mysql::stmt_resultset>(get_mysql_stmt_resultset); });
-
-            it("as results", []() { test_move_resultset<mysql::resultset>(get_mysql_resultset); });
-
-
-        });
-
-        describe("can get a row", []() {
-
-            it("as statement results", []() {
-                test_resultset_row<mysql::stmt_resultset>(get_mysql_stmt_resultset);
-
-            });
-
-            it("as results", []() { test_resultset_row<mysql::resultset>(get_mysql_resultset); });
-
-        });
-
-        it("can handle a bad query", []() {
-            AssertThat(test::current_session->impl()->execute("select * from asdfasdfasdf"), Equals(false));
-
-            select_query query(test::current_session, {}, "asdfasdfasdf");
-
-            AssertThrows(database_exception, query.execute());
-        });
+      user2.save();
     });
+
+    after_each([]() { test::teardown_current_session(); });
+
+    describe("is movable", []() {
+      it("as statement results", []() {
+        test_move_resultset<mysql::stmt_resultset>(get_mysql_stmt_resultset);
+      });
+
+      it("as results",
+         []() { test_move_resultset<mysql::resultset>(get_mysql_resultset); });
+    });
+
+    describe("can get a row", []() {
+      it("as statement results", []() {
+        test_resultset_row<mysql::stmt_resultset>(get_mysql_stmt_resultset);
+      });
+
+      it("as results",
+         []() { test_resultset_row<mysql::resultset>(get_mysql_resultset); });
+    });
+
+    it("can handle a bad query", []() {
+      AssertThat(
+          test::current_session->impl()->execute("select * from asdfasdfasdf"),
+          Equals(false));
+
+      select_query query(test::current_session, {}, "asdfasdfasdf");
+
+      AssertThrows(database_exception, query.execute());
+    });
+  });
 }
 SPEC_END;

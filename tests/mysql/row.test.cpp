@@ -1,8 +1,8 @@
 #include <string>
 
-#include <bandit/bandit.h>
 #include "../db.test.h"
 #include "mysql/row.h"
+#include <bandit/bandit.h>
 
 using namespace bandit;
 
@@ -12,153 +12,146 @@ using namespace coda::db;
 
 using namespace snowhouse;
 
-shared_ptr<row_impl> get_mysql_results_row(size_t index)
-{
-    auto rsi = test::current_session->impl()->query("select * from users");
+shared_ptr<row_impl> get_mysql_results_row(size_t index) {
+  auto rsi = test::current_session->impl()->query("select * from users");
 
-    resultset rs(rsi);
+  resultset rs(rsi);
 
-    if (index > 0 && index >= rs.size()) {
-        throw database_exception("not enough rows");
-    }
+  if (index > 0 && index >= rs.size()) {
+    throw database_exception("not enough rows");
+  }
 
-    auto i = rs.begin();
+  auto i = rs.begin();
 
-    if (index > 0) {
-        i += index;
-    }
+  if (index > 0) {
+    i += index;
+  }
 
-    if (i == rs.end()) {
-        throw database_exception("No row found");
-    }
+  if (i == rs.end()) {
+    throw database_exception("No row found");
+  }
 
-    return i->impl();
+  return i->impl();
 }
 
-shared_ptr<row_impl> get_mysql_stmt_row(size_t index)
-{
-    select_query query(test::current_session, {}, "users");
+shared_ptr<row_impl> get_mysql_stmt_row(size_t index) {
+  select_query query(test::current_session, {}, "users");
 
-    auto rs = query.execute();
+  auto rs = query.execute();
 
-    if (index > 0 && index >= rs.size()) {
-        throw database_exception("not enough rows");
-    }
+  if (index > 0 && index >= rs.size()) {
+    throw database_exception("not enough rows");
+  }
 
-    auto i = rs.begin();
+  auto i = rs.begin();
 
-    if (index > 0) {
-        i += index;
-    }
+  if (index > 0) {
+    i += index;
+  }
 
-    if (i == rs.end()) {
-        throw database_exception("No row found");
-    }
+  if (i == rs.end()) {
+    throw database_exception("No row found");
+  }
 
-    return i->impl();
-}
-
-template <typename T>
-void test_move_row(std::function<shared_ptr<row_impl>(size_t)> funk)
-{
-    auto f1 = funk(0);
-
-    auto f2 = funk(1);
-
-    auto f1Value = f1->size();
-
-    auto f2Value = f2->size();
-
-    T c2(std::move(*static_pointer_cast<T>(f1)));
-
-    Assert::That(c2.is_valid(), IsTrue());
-
-    Assert::That(c2.size() == f1Value, IsTrue());
-
-    c2 = std::move(*static_pointer_cast<T>(f2));
-
-    Assert::That(c2.is_valid(), IsTrue());
-
-    Assert::That(c2.size() == f2Value, IsTrue());
+  return i->impl();
 }
 
 template <typename T>
-void test_row_column(std::function<shared_ptr<row_impl>(size_t)> funk)
-{
-    auto r = funk(0);
+void test_move_row(std::function<shared_ptr<row_impl>(size_t)> funk) {
+  auto f1 = funk(0);
 
-    Assert::That(r->is_valid(), IsTrue());
+  auto f2 = funk(1);
 
-    Assert::That(r->column(0).is_valid(), IsTrue());
+  auto f1Value = f1->size();
 
-    Assert::That(r->column(1).value(), Equals("Bryan"));
+  auto f2Value = f2->size();
 
-    AssertThrows(database_exception, r->column(1234));
+  T c2(std::move(*static_pointer_cast<T>(f1)));
 
-    AssertThrows(database_exception, r->column("absdfas"));
+  Assert::That(c2.is_valid(), IsTrue());
+
+  Assert::That(c2.size() == f1Value, IsTrue());
+
+  c2 = std::move(*static_pointer_cast<T>(f2));
+
+  Assert::That(c2.is_valid(), IsTrue());
+
+  Assert::That(c2.size() == f2Value, IsTrue());
 }
 
-SPEC_BEGIN(mysql_row)
-{
-    describe("mysql row", []() {
-        before_each([]() {
-            test::setup_current_session();
+template <typename T>
+void test_row_column(std::function<shared_ptr<row_impl>(size_t)> funk) {
+  auto r = funk(0);
 
-            test::user user1;
+  Assert::That(r->is_valid(), IsTrue());
 
-            user1.set("first_name", "Bryan");
-            user1.set("last_name", "Jenkins");
+  Assert::That(r->column(0).is_valid(), IsTrue());
 
-            user1.save();
+  Assert::That(r->column(1).value(), Equals("Bryan"));
 
-            test::user user2;
+  AssertThrows(database_exception, r->column(1234));
 
-            user2.set("first_name", "Bob");
-            user2.set("last_name", "Smith");
+  AssertThrows(database_exception, r->column("absdfas"));
+}
 
-            user2.set("dval", 3.1456);
+SPEC_BEGIN(mysql_row) {
+  describe("mysql row", []() {
+    before_each([]() {
+      test::setup_current_session();
 
-            user2.save();
-        });
+      test::user user1;
 
-        after_each([]() { test::teardown_current_session(); });
+      user1.set("first_name", "Bryan");
+      user1.set("last_name", "Jenkins");
 
-        describe("is movable", []() {
+      user1.save();
 
-            it("as statement results", []() { test_move_row<mysql::stmt_row>(get_mysql_stmt_row); });
+      test::user user2;
 
-            it("as results", []() { test_move_row<mysql::row>(get_mysql_results_row); });
+      user2.set("first_name", "Bob");
+      user2.set("last_name", "Smith");
 
-        });
+      user2.set("dval", 3.1456);
 
-        describe("can get a column name", []() {
-
-            it("as statement results", []() {
-                select_query query(test::current_session, {}, "users");
-                auto rs = query.execute();
-                auto c = rs.begin();
-
-                Assert::That(c->column_name(0), Equals("id"));
-                AssertThrows(database_exception, c->column_name(1234123));
-            });
-
-            it("as results", []() {
-                auto c = get_mysql_results_row(0);
-
-                Assert::That(c->column_name(0), Equals("id"));
-
-                AssertThrows(database_exception, c->column_name(1234123));
-            });
-
-        });
-
-        describe("can get a column", []() {
-
-            it("as statement results", []() { test_row_column<mysql::stmt_row>(get_mysql_stmt_row); });
-
-            it("as results", []() { test_row_column<mysql::row>(get_mysql_results_row); });
-
-        });
+      user2.save();
     });
+
+    after_each([]() { test::teardown_current_session(); });
+
+    describe("is movable", []() {
+      it("as statement results",
+         []() { test_move_row<mysql::stmt_row>(get_mysql_stmt_row); });
+
+      it("as results",
+         []() { test_move_row<mysql::row>(get_mysql_results_row); });
+    });
+
+    describe("can get a column name", []() {
+      it("as statement results", []() {
+        select_query query(test::current_session, {}, "users");
+        auto rs = query.execute();
+        auto c = rs.begin();
+
+        Assert::That(c->column_name(0), Equals("id"));
+        AssertThrows(database_exception, c->column_name(1234123));
+      });
+
+      it("as results", []() {
+        auto c = get_mysql_results_row(0);
+
+        Assert::That(c->column_name(0), Equals("id"));
+
+        AssertThrows(database_exception, c->column_name(1234123));
+      });
+    });
+
+    describe("can get a column", []() {
+      it("as statement results",
+         []() { test_row_column<mysql::stmt_row>(get_mysql_stmt_row); });
+
+      it("as results",
+         []() { test_row_column<mysql::row>(get_mysql_results_row); });
+    });
+  });
 }
 SPEC_END;

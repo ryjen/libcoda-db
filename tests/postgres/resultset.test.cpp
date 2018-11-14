@@ -1,9 +1,9 @@
 #include <string>
 
-#include <bandit/bandit.h>
 #include "../db.test.h"
 #include "postgres/resultset.h"
 #include "postgres/session.h"
+#include <bandit/bandit.h>
 
 using namespace bandit;
 
@@ -13,61 +13,59 @@ using namespace coda::db;
 
 using namespace snowhouse;
 
-shared_ptr<postgres::resultset> get_postgres_resultset()
-{
-    select_query query(test::current_session, {}, test::user::TABLE_NAME);
+shared_ptr<postgres::resultset> get_postgres_resultset() {
+  select_query query(test::current_session, {}, test::user::TABLE_NAME);
 
-    auto rs = query.execute();
+  auto rs = query.execute();
 
-    return static_pointer_cast<postgres::resultset>(rs.impl());
+  return static_pointer_cast<postgres::resultset>(rs.impl());
 }
 
+SPEC_BEGIN(postgres_resultset) {
+  describe("a postgres resultset", []() {
+    before_each([]() {
+      test::setup_current_session();
 
-SPEC_BEGIN(postgres_resultset)
-{
-    describe("a postgres resultset", []() {
+      test::user user1;
 
-        before_each([]() {
-            test::setup_current_session();
+      user1.set("first_name", "Bryan");
+      user1.set("last_name", "Jenkins");
 
-            test::user user1;
+      user1.save();
 
-            user1.set("first_name", "Bryan");
-            user1.set("last_name", "Jenkins");
+      test::user user2;
 
-            user1.save();
+      user2.set("first_name", "Bob");
+      user2.set("last_name", "Smith");
 
-            test::user user2;
+      user2.set("dval", 3.1456);
 
-            user2.set("first_name", "Bob");
-            user2.set("last_name", "Smith");
-
-            user2.set("dval", 3.1456);
-
-            user2.save();
-        });
-
-        after_each([]() { test::teardown_current_session(); });
-
-        it("requires valid initializer parameters", []() {
-            AssertThrows(database_exception, postgres::resultset(nullptr, nullptr));
-            AssertThrows(database_exception,
-                         postgres::resultset(dynamic_pointer_cast<postgres::session>(test::current_session), nullptr));
-        });
-
-        it("is movable", []() {
-            auto rs = get_postgres_resultset();
-
-            postgres::resultset other(std::move(*rs));
-
-            Assert::That(other.is_valid(), IsTrue());
-
-            rs = get_postgres_resultset();
-
-            other = std::move(*rs);
-
-            Assert::That(other.is_valid(), IsTrue());
-        });
+      user2.save();
     });
+
+    after_each([]() { test::teardown_current_session(); });
+
+    it("requires valid initializer parameters", []() {
+      AssertThrows(database_exception, postgres::resultset(nullptr, nullptr));
+      AssertThrows(database_exception,
+                   postgres::resultset(dynamic_pointer_cast<postgres::session>(
+                                           test::current_session),
+                                       nullptr));
+    });
+
+    it("is movable", []() {
+      auto rs = get_postgres_resultset();
+
+      postgres::resultset other(std::move(*rs));
+
+      Assert::That(other.is_valid(), IsTrue());
+
+      rs = get_postgres_resultset();
+
+      other = std::move(*rs);
+
+      Assert::That(other.is_valid(), IsTrue());
+    });
+  });
 }
 SPEC_END;

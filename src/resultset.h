@@ -5,282 +5,278 @@
 #ifndef CODA_DB_RESULTSET_H
 #define CODA_DB_RESULTSET_H
 
-#include <memory>
 #include "row.h"
+#include <memory>
 
 namespace coda {
-    namespace db {
-        class resultset;
+  namespace db {
+    class resultset;
 
-        /*!
-         * an interface for a database specific set of results for a query
-         */
-        class resultset_impl {
-        public:
-            typedef coda::db::row row_type;
+    /*!
+     * an interface for a database specific set of results for a query
+     */
+    class resultset_impl {
+      public:
+      typedef coda::db::row row_type;
 
-        protected:
-            resultset_impl() = default;
+      protected:
+      resultset_impl() = default;
 
-        public:
-            /* non-copyable */
-            resultset_impl(const resultset_impl &other) = delete;
+      public:
+      /* non-copyable */
+      resultset_impl(const resultset_impl &other) = delete;
 
-            resultset_impl(resultset_impl &&other) = default;
+      resultset_impl(resultset_impl &&other) = default;
 
-            virtual ~resultset_impl() = default;
+      virtual ~resultset_impl() = default;
 
-            resultset_impl &operator=(const resultset_impl &other) = delete;
+      resultset_impl &operator=(const resultset_impl &other) = delete;
 
-            resultset_impl &operator=(resultset_impl &&other) = default;
+      resultset_impl &operator=(resultset_impl &&other) = default;
 
-            /*!
-             * tests if this implementation is valid
-             * @return true if operations can be performed safely
-             */
-            virtual bool is_valid() const noexcept = 0;
+      /*!
+       * tests if this implementation is valid
+       * @return true if operations can be performed safely
+       */
+      virtual bool is_valid() const noexcept = 0;
 
-            /*!
-             * moves to the next row in the results
-             * @return true if successful
-             */
-            virtual bool next() = 0;
+      /*!
+       * moves to the next row in the results
+       * @return true if successful
+       */
+      virtual bool next() = 0;
 
-            /*!
-             * gets the current row in the results
-             * @return the current row object
-             */
-            virtual row_type current_row() = 0;
+      /*!
+       * gets the current row in the results
+       * @return the current row object
+       */
+      virtual row_type current_row() = 0;
 
-            /*!
-             * resets this resultset back to the first row
-             */
-            virtual void reset() = 0;
-        };
+      /*!
+       * resets this resultset back to the first row
+       */
+      virtual void reset() = 0;
+    };
 
-        /*!
-         * an iterator for a rows in a set of results
-         */
-        template<typename ValueType, typename NonConst>
-        class resultset_iterator : public std::iterator<std::input_iterator_tag, ValueType> {
-        private:
-            std::shared_ptr<resultset_impl> rs_;
-            int pos_;
-            NonConst value_;
+    /*!
+     * an iterator for a rows in a set of results
+     */
+    template <typename ValueType, typename NonConst>
+    class resultset_iterator
+        : public std::iterator<std::input_iterator_tag, ValueType> {
+      private:
+      std::shared_ptr<resultset_impl> rs_;
+      int pos_;
+      NonConst value_;
 
-        public:
-            resultset_iterator(const std::shared_ptr<resultset_impl> &rset, int position) : rs_(rset), pos_(position) {
-                if (position >= 0) {
-                    value_ = rset->current_row();
-                } else {
-                    value_ = NonConst();
-                }
-            }
+      public:
+      resultset_iterator(const std::shared_ptr<resultset_impl> &rset,
+                         int position)
+          : rs_(rset), pos_(position) {
+        if (position >= 0) {
+          value_ = rset->current_row();
+        } else {
+          value_ = NonConst();
+        }
+      }
 
-            resultset_iterator(const resultset_iterator &other) : rs_(other.rs_), pos_(other.pos_),
-                                                                  value_(other.value_) {
-            }
+      resultset_iterator(const resultset_iterator &other)
+          : rs_(other.rs_), pos_(other.pos_), value_(other.value_) {}
 
+      resultset_iterator(resultset_iterator &&other)
+          : rs_(std::move(other.rs_)), pos_(other.pos_),
+            value_(std::move(other.value_)) {
+        other.rs_ = nullptr;
+        other.pos_ = -1;
+      }
 
-            resultset_iterator(resultset_iterator &&other)
-                    : rs_(std::move(other.rs_)), pos_(other.pos_), value_(std::move(other.value_)) {
-                other.rs_ = nullptr;
-                other.pos_ = -1;
-            }
+      ~resultset_iterator() {}
 
-            ~resultset_iterator() {
-            }
+      resultset_iterator &operator=(resultset_iterator &&other) {
+        rs_ = std::move(other.rs_);
+        pos_ = other.pos_;
+        value_ = std::move(other.value_);
+        other.rs_ = nullptr;
+        other.pos_ = -1;
 
-            resultset_iterator &operator=(resultset_iterator &&other) {
-                rs_ = std::move(other.rs_);
-                pos_ = other.pos_;
-                value_ = std::move(other.value_);
-                other.rs_ = nullptr;
-                other.pos_ = -1;
+        return *this;
+      }
 
-                return *this;
-            }
+      ValueType &operator*() { return value_; }
 
-            ValueType &operator*() {
-                return value_;
-            }
+      resultset_iterator &operator++() {
+        if (pos_ == -1 || rs_ == nullptr) {
+          return *this;
+        }
 
-            resultset_iterator &operator++() {
-                if (pos_ == -1 || rs_ == nullptr) {
-                    return *this;
-                }
+        bool res = rs_->next();
 
-                bool res = rs_->next();
+        if (res) {
+          pos_++;
+          value_ = rs_->current_row();
+        } else {
+          pos_ = -1;
+          value_ = NonConst();
+        }
 
-                if (res) {
-                    pos_++;
-                    value_ = rs_->current_row();
-                } else {
-                    pos_ = -1;
-                    value_ = NonConst();
-                }
+        return *this;
+      }
 
-                return *this;
-            }
+      ValueType *operator->() { return &(operator*()); }
 
+      resultset_iterator operator++(int) {
+        resultset_iterator tmp(*this);
+        ++(*this);
+        return tmp;
+      }
 
-            ValueType *operator->() {
-                return &(operator*());
-            }
+      resultset_iterator operator+(int n) {
+        resultset_iterator tmp(*this);
 
-            resultset_iterator operator++(int) {
-                resultset_iterator tmp(*this);
-                ++(*this);
-                return tmp;
-            }
+        tmp += n;
 
-            resultset_iterator operator+(int n) {
-                resultset_iterator tmp(*this);
+        return tmp;
+      }
 
-                tmp += n;
+      resultset_iterator &operator+=(int n) {
+        for (int i = 0; i < n; i++) {
+          operator++();
+        }
+        return *this;
+      }
 
-                return tmp;
-            }
+      bool operator==(const resultset_iterator &other) const {
+        return pos_ == other.pos_;
+      }
 
-            resultset_iterator &operator+=(int n) {
-                for (int i = 0; i < n; i++) {
-                    operator++();
-                }
-                return *this;
-            }
+      bool operator!=(const resultset_iterator &other) const {
+        return !operator==(other);
+      }
 
-            bool operator==(const resultset_iterator &other) const {
-                return pos_ == other.pos_;
-            }
+      bool operator<(const resultset_iterator &other) const {
+        if (pos_ == -1 && other.pos_ == -1)
+          return false;
+        else if (pos_ == -1)
+          return false;
+        else if (other.pos_ == -1)
+          return true;
+        else
+          return pos_ < other.pos_;
+      }
 
-            bool operator!=(const resultset_iterator &other) const {
-                return !operator==(other);
-            }
+      bool operator<=(const resultset_iterator &other) const {
+        return operator<(other) || operator==(other);
+      }
 
-            bool operator<(const resultset_iterator &other) const {
-                if (pos_ == -1 && other.pos_ == -1)
-                    return false;
-                else if (pos_ == -1)
-                    return false;
-                else if (other.pos_ == -1)
-                    return true;
-                else
-                    return pos_ < other.pos_;
-            }
+      bool operator>(const resultset_iterator &other) const {
+        return !operator<(other);
+      }
 
-            bool operator<=(const resultset_iterator &other) const {
-                return operator<(other) || operator==(other);
-            }
+      bool operator>=(const resultset_iterator &other) const {
+        return operator>(other) || operator==(other);
+      }
+    };
 
-            bool operator>(const resultset_iterator &other) const {
-                return !operator<(other);
-            }
+    /*!
+     * the results (a set of rows) for a query
+     */
+    class resultset {
+      public:
+      typedef coda::db::row row_type;
 
-            bool operator>=(const resultset_iterator &other) const {
-                return operator>(other) || operator==(other);
-            }
-        };
+      private:
+      std::shared_ptr<resultset_impl> impl_;
 
-        /*!
-         * the results (a set of rows) for a query
-         */
-        class resultset {
-        public:
-            typedef coda::db::row row_type;
+      public:
+      typedef resultset_iterator<row_type, row_type> iterator;
+      typedef resultset_iterator<const row_type, row_type> const_iterator;
 
-        private:
-            std::shared_ptr<resultset_impl> impl_;
+      /*!
+       * @param impl the implementation for this resultset
+       */
+      resultset(const std::shared_ptr<resultset_impl> &impl);
 
-        public:
-            typedef resultset_iterator<row_type, row_type> iterator;
-            typedef resultset_iterator<const row_type, row_type> const_iterator;
+      /* non-copyable */
+      resultset(const resultset &other) = delete;
 
-            /*!
-             * @param impl the implementation for this resultset
-             */
-            resultset(const std::shared_ptr<resultset_impl> &impl);
+      resultset(resultset &&other);
 
-            /* non-copyable */
-            resultset(const resultset &other) = delete;
+      virtual ~resultset();
 
-            resultset(resultset &&other);
+      resultset &operator=(const resultset &other) = delete;
 
-            virtual ~resultset();
+      resultset &operator=(resultset &&other);
 
-            resultset &operator=(const resultset &other) = delete;
+      /*!
+       * tests if the result set is valid
+       * @return true if the implementation is valid
+       */
+      bool is_valid() const noexcept;
 
-            resultset &operator=(resultset &&other);
+      /*!
+       * @return an iterator to the first row
+       */
+      iterator begin();
 
-            /*!
-             * tests if the result set is valid
-             * @return true if the implementation is valid
-             */
-            bool is_valid() const noexcept;
+      /*!
+       * @return an immutable iterator to the first row
+       */
+      const_iterator begin() const;
 
-            /*!
-             * @return an iterator to the first row
-             */
-            iterator begin();
+      /*!
+       * @return an iterator to after the last row
+       */
+      iterator end();
 
-            /*!
-             * @return an immutable iterator to the first row
-             */
-            const_iterator begin() const;
+      /*!
+       * @return a immutable iterator the after the last row
+       */
+      const_iterator end() const;
 
-            /*!
-             * @return an iterator to after the last row
-             */
-            iterator end();
+      /*!
+       * gets the current row
+       * @return the current row
+       */
+      row_type current_row();
 
-            /*!
-             * @return a immutable iterator the after the last row
-             */
-            const_iterator end() const;
+      /*!
+       * moves to the next row
+       * @return true if successful
+       */
+      bool next();
 
-            /*!
-             * gets the current row
-             * @return the current row
-             */
-            row_type current_row();
+      /*!
+       * dereference operator to the current row
+       */
+      row_type operator*();
 
-            /*!
-             * moves to the next row
-             * @return true if successful
-             */
-            bool next();
+      /*!
+       * resets this result set back to the first row
+       */
+      void reset();
 
-            /*!
-             * dereference operator to the current row
-             */
-            row_type operator*();
+      /*!
+       * @return the number of rows in the result set
+       */
+      size_t size() const;
 
-            /*!
-             * resets this result set back to the first row
-             */
-            void reset();
+      /*!
+       * tests if the are no results
+       * @return true if there are no results
+       */
+      bool empty() const;
 
-            /*!
-             * @return the number of rows in the result set
-             */
-            size_t size() const;
+      /*!
+       * @param funk the callback to perform for each row
+       */
+      void each(const std::function<void(const row_type &)> &funk) const;
 
-            /*!
-             * tests if the are no results
-             * @return true if there are no results
-             */
-            bool empty() const;
-
-            /*!
-             * @param funk the callback to perform for each row
-             */
-            void each(const std::function<void(const row_type &)> &funk) const;
-
-            /*!
-             * @return a pointer to the implementation
-             */
-            std::shared_ptr<resultset_impl> impl() const;
-        };
-    }
-}
+      /*!
+       * @return a pointer to the implementation
+       */
+      std::shared_ptr<resultset_impl> impl() const;
+    };
+  } // namespace db
+} // namespace coda
 
 #endif

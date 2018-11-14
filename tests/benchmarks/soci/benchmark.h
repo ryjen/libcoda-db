@@ -2,9 +2,9 @@
 #define CODA_DB_BENCHMARK_H
 
 struct User {
-    std::string first_name;
-    std::string last_name;
-    double dval;
+  std::string first_name;
+  std::string last_name;
+  double dval;
 };
 
 void benchmark_insert(soci::session &session);

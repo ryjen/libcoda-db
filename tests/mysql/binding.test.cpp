@@ -1,10 +1,10 @@
 #include <string>
 
+#include "../db.test.h"
+#include "mysql/binding.h"
 #include <bandit/bandit.h>
 #include <cmath>
 #include <cstdlib>
-#include "../db.test.h"
-#include "mysql/binding.h"
 
 using namespace bandit;
 
@@ -14,176 +14,166 @@ using namespace coda::db;
 
 using namespace snowhouse;
 
-bool AreSame(double a, double b)
-{
-    return std::fabs(a - b) < std::numeric_limits<double>::epsilon();
+bool AreSame(double a, double b) {
+  return std::fabs(a - b) < std::numeric_limits<double>::epsilon();
 }
 
-SPEC_BEGIN(mysql_binding)
-{
-    describe("mysql binding", []() {
+SPEC_BEGIN(mysql_binding) {
+  describe("mysql binding", []() {
+    before_each([]() {
+      test::setup_current_session();
 
-        before_each([]() {
+      test::user user1;
 
-            test::setup_current_session();
+      user1.set_id(1);
+      user1.set("first_name", "Bryan");
+      user1.set("last_name", "Jenkins");
 
-            test::user user1;
+      user1.save();
 
-            user1.set_id(1);
-            user1.set("first_name", "Bryan");
-            user1.set("last_name", "Jenkins");
+      test::user user2;
 
-            user1.save();
+      user2.set_id(3);
 
-            test::user user2;
+      user2.set("first_name", "Bob");
+      user2.set("last_name", "Smith");
 
-            user2.set_id(3);
+      user2.set("dval", 3.1456);
 
-            user2.set("first_name", "Bob");
-            user2.set("last_name", "Smith");
+      user2.save();
+    });
 
-            user2.set("dval", 3.1456);
+    after_each([]() { test::teardown_current_session(); });
 
-            user2.save();
-        });
+    it("has a size contructor", []() {
+      mysql::binding b(3);
 
-        after_each([]() { test::teardown_current_session(); });
+      Assert::That(b.capacity(), Equals(3));
 
-        it("has a size contructor", []() {
-            mysql::binding b(3);
+      Assert::That(b.num_of_bindings(), Equals(0));
 
-            Assert::That(b.capacity(), Equals(3));
+      Assert::That(b.get(1)->buffer == NULL, IsTrue());
 
-            Assert::That(b.num_of_bindings(), Equals(0));
+      Assert::That(b.to_value(1) == sql_null, IsTrue());
+    });
 
-            Assert::That(b.get(1)->buffer == NULL, IsTrue());
+    describe("is copyable", []() {
+      it("from a raw mysql binding", []() {
+        mysql::binding b;
 
-            Assert::That(b.to_value(1) == sql_null, IsTrue());
-        });
+        b.bind(1, 24);
 
-        describe("is copyable", []() {
+        mysql::binding other(*b.get(0));
 
-            it("from a raw mysql binding", []() {
-                mysql::binding b;
+        Assert::That(b.num_of_bindings(), Equals(other.num_of_bindings()));
 
-                b.bind(1, 24);
+        Assert::That(other.to_value(0), Equals(24));
+      });
 
-                mysql::binding other(*b.get(0));
+      it("from another", []() {
+        mysql::binding b;
 
-                Assert::That(b.num_of_bindings(), Equals(other.num_of_bindings()));
+        b.bind(1, 24);
 
-                Assert::That(other.to_value(0), Equals(24));
-            });
+        mysql::binding other(b);
 
-            it("from another", []() {
+        Assert::That(b.num_of_bindings(), Equals(other.num_of_bindings()));
 
-                mysql::binding b;
+        Assert::That(other.to_value(0), Equals(24));
 
-                b.bind(1, 24);
+        mysql::binding c;
 
-                mysql::binding other(b);
+        c = other;
 
-                Assert::That(b.num_of_bindings(), Equals(other.num_of_bindings()));
+        Assert::That(c.num_of_bindings(), Equals(other.num_of_bindings()));
 
-                Assert::That(other.to_value(0), Equals(24));
+        Assert::That(c.to_value(0), Equals(other.to_value(0)));
+      });
+    });
 
-                mysql::binding c;
+    it("is movable", []() {
+      mysql::binding b;
 
-                c = other;
+      b.bind(1, 24);
 
-                Assert::That(c.num_of_bindings(), Equals(other.num_of_bindings()));
+      mysql::binding other(std::move(b));
 
-                Assert::That(c.to_value(0), Equals(other.to_value(0)));
-            });
-        });
+      Assert::That(b.num_of_bindings(), Equals(0));
 
-        it("is movable", []() {
-            mysql::binding b;
+      Assert::That(other.num_of_bindings() > 0, IsTrue());
 
-            b.bind(1, 24);
+      Assert::That(other.to_value(0), Equals(24));
 
-            mysql::binding other(std::move(b));
+      mysql::binding c;
 
-            Assert::That(b.num_of_bindings(), Equals(0));
+      c = std::move(other);
 
-            Assert::That(other.num_of_bindings() > 0, IsTrue());
+      Assert::That(other.num_of_bindings(), Equals(0));
 
-            Assert::That(other.to_value(0), Equals(24));
+      Assert::That(c.num_of_bindings() > 0, IsTrue());
 
-            mysql::binding c;
+      Assert::That(c.to_value(0), Equals(24));
+    });
 
-            c = std::move(other);
+    it("can bind a time value", []() {
+      time_t tval = time(0);
 
-            Assert::That(other.num_of_bindings(), Equals(0));
+      mysql::binding b;
 
-            Assert::That(c.num_of_bindings() > 0, IsTrue());
+      b.bind(1, sql_time(tval, sql_time::TIME));
 
-            Assert::That(c.to_value(0), Equals(24));
+      b.bind(2, sql_time(tval, sql_time::DATE));
 
-        });
+      b.bind(3, sql_time(tval, sql_time::DATETIME));
 
-        it("can bind a time value", []() {
-            time_t tval = time(0);
+      b.bind(4, sql_time(tval, sql_time::TIMESTAMP));
 
-            mysql::binding b;
+      Assert::That(b.to_value(0).as<sql_time>().value(), Equals(tval));
 
-            b.bind(1, sql_time(tval, sql_time::TIME));
+      Assert::That(b.to_value(1).as<sql_time>().value(), Equals(tval));
 
-            b.bind(2, sql_time(tval, sql_time::DATE));
+      Assert::That(b.to_value(2).as<sql_time>().value(), Equals(tval));
 
-            b.bind(3, sql_time(tval, sql_time::DATETIME));
+      Assert::That(b.to_value(3).as<sql_time>().value(), Equals(tval));
+    });
 
-            b.bind(4, sql_time(tval, sql_time::TIMESTAMP));
+    it("can bind different values", []() {
+      mysql::binding b;
 
-            Assert::That(b.to_value(0).as<sql_time>().value(), Equals(tval));
+      b.bind(1, 1234LL);
+      Assert::That(b.to_value(0), Equals(1234LL));
 
-            Assert::That(b.to_value(1).as<sql_time>().value(), Equals(tval));
+      b.bind(1, 1234ULL);
+      Assert::That(b.to_value(0), Equals(1234ULL));
 
-            Assert::That(b.to_value(2).as<sql_time>().value(), Equals(tval));
+      b.bind(1, 1234U);
+      Assert::That(b.to_value(0), Equals(1234U));
 
-            Assert::That(b.to_value(3).as<sql_time>().value(), Equals(tval));
-        });
+      b.bind(3, 1234.1234);
+      Assert::That(AreSame(b.to_value(2).as<double>(), 1234.1234), IsTrue());
+      b.bind(3, 123.123f);
+      // Assert::That(AreSame(b.to_value(2).to_float(), 123.123), IsTrue());
 
-        it("can bind different values", []() {
+      b.bind(4, sql_time());
 
-            mysql::binding b;
+      b.bind(2, sql_null);
+      Assert::That(b.to_value(1).is<sql_null_type>(), IsTrue());
 
-            b.bind(1, 1234LL);
-            Assert::That(b.to_value(0), Equals(1234LL));
-
-            b.bind(1, 1234ULL);
-            Assert::That(b.to_value(0), Equals(1234ULL));
-
-
-            b.bind(1, 1234U);
-            Assert::That(b.to_value(0), Equals(1234U));
-
-            b.bind(3, 1234.1234);
-            Assert::That(AreSame(b.to_value(2).as<double>(), 1234.1234), IsTrue());
-            b.bind(3, 123.123f);
-            // Assert::That(AreSame(b.to_value(2).to_float(), 123.123), IsTrue());
-
-            b.bind(4, sql_time());
-
-            b.bind(2, sql_null);
-            Assert::That(b.to_value(1).is<sql_null_type>(), IsTrue());
-
-            b.bind(2, L"test");
-            Assert::That(b.to_value(1), Equals("test"));
-        });
+      b.bind(2, L"test");
+      Assert::That(b.to_value(1), Equals("test"));
+    });
 
 #ifdef ENABLE_PARAMETER_MAPPING
-        it("can reorder and reuse indexes", []() {
-            select_query select(current_session);
+    it("can reorder and reuse indexes", []() {
+      select_query select(current_session);
 
-            select.from("users").where("first_name = $1 or last_name = $1", "Smith");
+      select.from("users").where("first_name = $1 or last_name = $1", "Smith");
 
-            auto results = select.execute();
+      auto results = select.execute();
 
-            Assert::That(results.size(), Equals(1));
-        });
-#endif
-
+      Assert::That(results.size(), Equals(1));
     });
+#endif
+  });
 }
 SPEC_END;

@@ -8,71 +8,56 @@
 
 using namespace std;
 
-namespace coda
-{
-    namespace db
-    {
-        modify_query::modify_query(const std::shared_ptr<coda::db::session> &session)
-            : query(session), flags_(0), numChanges_(0)
-        {
-        }
+namespace coda {
+  namespace db {
+    modify_query::modify_query(
+        const std::shared_ptr<coda::db::session> &session)
+        : query(session), flags_(0), numChanges_(0) {}
 
-        modify_query::modify_query(const shared_ptr<schema> &schema) : modify_query(schema->get_session())
-        {
-        }
+    modify_query::modify_query(const shared_ptr<schema> &schema)
+        : modify_query(schema->get_session()) {}
 
-        modify_query::modify_query(const modify_query &other)
-            : query(other), flags_(other.flags_), numChanges_(other.numChanges_)
-        {
-        }
-        modify_query::modify_query(modify_query &&other)
-            : query(std::move(other)), flags_(other.flags_), numChanges_(other.numChanges_)
-        {
-        }
+    modify_query::modify_query(const modify_query &other)
+        : query(other), flags_(other.flags_), numChanges_(other.numChanges_) {}
+    modify_query::modify_query(modify_query &&other)
+        : query(std::move(other)), flags_(other.flags_),
+          numChanges_(other.numChanges_) {}
 
-        modify_query::~modify_query()
-        {
-        }
-        modify_query &modify_query::operator=(const modify_query &other)
-        {
-            query::operator=(other);
-            flags_ = other.flags_;
-            numChanges_ = other.numChanges_;
-            return *this;
-        }
-
-        modify_query &modify_query::operator=(modify_query &&other)
-        {
-            query::operator=(std::move(other));
-            flags_ = other.flags_;
-            numChanges_ = other.numChanges_;
-            return *this;
-        }
-
-        int modify_query::last_number_of_changes() const
-        {
-            return numChanges_;
-        }
-
-        int modify_query::execute()
-        {
-            if (!is_valid()) {
-                throw database_exception("Invalid modify query");
-            }
-
-            prepare(to_sql());
-
-            bool success = stmt_->result();
-
-            if (success) {
-                numChanges_ = stmt_->last_number_of_changes();
-            } else {
-                numChanges_ = 0;
-            }
-
-            reset();
-
-            return numChanges_;
-        }
+    modify_query::~modify_query() {}
+    modify_query &modify_query::operator=(const modify_query &other) {
+      query::operator=(other);
+      flags_ = other.flags_;
+      numChanges_ = other.numChanges_;
+      return *this;
     }
-}
+
+    modify_query &modify_query::operator=(modify_query &&other) {
+      query::operator=(std::move(other));
+      flags_ = other.flags_;
+      numChanges_ = other.numChanges_;
+      return *this;
+    }
+
+    int modify_query::last_number_of_changes() const { return numChanges_; }
+
+    int modify_query::execute() {
+      if (!is_valid()) {
+        throw database_exception("Invalid modify query");
+      }
+
+      prepare(to_sql());
+
+      bool success = stmt_->result();
+
+      if (success) {
+        numChanges_ = stmt_->last_number_of_changes();
+      } else {
+        numChanges_ = 0;
+      }
+
+      reset();
+
+      return numChanges_;
+    }
+  } // namespace db
+} // namespace coda
