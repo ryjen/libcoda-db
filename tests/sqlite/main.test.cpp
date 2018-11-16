@@ -18,9 +18,7 @@ using namespace coda::db;
 
 using namespace snowhouse;
 
-namespace coda {
-  namespace db {
-    namespace test {
+namespace coda::db::test {
       void register_current_session() {
         auto sqlite_factory = std::make_shared<factory>();
         register_session("file", sqlite_factory);
@@ -36,7 +34,7 @@ namespace coda {
         public:
         using sqlite::session::session;
 
-        void setup() {
+        void setup() override {
           open();
           execute("create table if not exists users(id integer primary key "
                   "autoincrement, first_name "
@@ -50,7 +48,7 @@ namespace coda {
                   "timestamp)");
         }
 
-        void teardown() {
+        void teardown() override {
           close();
           unlink(connection_info().path.c_str());
         }
@@ -60,15 +58,13 @@ namespace coda {
       factory::create(const coda::db::uri &value) {
         return std::make_shared<sqlite_session>(value);
       }
-    } // namespace test
-  }   // namespace db
-} // namespace coda
+} // namespace coda::db::test
 
 go_bandit([]() {
   describe("sqlite database", []() {
     it("can_parse_uri", []() {
       auto file = create_session("file://test.db");
-      AssertThat(file.get() != NULL, IsTrue());
+      AssertThat(file != nullptr, IsTrue());
     });
   });
 });

@@ -6,31 +6,30 @@
 #ifndef CODA_DB_COLUMN_VALUE_H
 #define CODA_DB_COLUMN_VALUE_H
 
-#include "sql_types.h"
 #include <cassert>
 #include <memory>
 #include <string>
+#include "sql_types.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     class sql_value;
 
     /*!
      * an interface for a database specific implementation of a column
      */
     class column_impl {
-      public:
+     public:
       column_impl() = default;
 
       column_impl(const column_impl &other) = default;
 
-      column_impl(column_impl &&other) = default;
+      column_impl(column_impl &&other) noexcept = default;
 
       column_impl &operator=(const column_impl &other) = default;
 
-      column_impl &operator=(column_impl &&other) = default;
+      column_impl &operator=(column_impl &&other) noexcept = default;
 
-      virtual ~column_impl() = default;
+      ~column_impl() = default;
 
       /*!
        * tests if this colums data validity
@@ -54,33 +53,34 @@ namespace coda {
      * a column holds a value
      */
     class column : public sql_value_convertible {
-      template <class A, class B, class C> friend class row_iterator;
+      template <class A, class B, class C>
+      friend class row_iterator;
 
-      private:
+     private:
       std::shared_ptr<column_impl> impl_;
 
-      column();
+      column() = default;
 
-      public:
+     public:
       /*!
        * default constructor requires an implementation
        * @param impl the database specific implementation
        */
-      column(const std::shared_ptr<column_impl> &impl);
+      explicit column(const std::shared_ptr<column_impl> &impl);
 
-      virtual ~column() = default;
+      ~column() override = default;
 
       /*! copy constructor */
       column(const column &other);
 
       /*! move constructor */
-      column(column &&other);
+      column(column &&other) noexcept;
 
       /*! copy assignment */
       column &operator=(const column &other);
 
       /*! move assignment */
-      column &operator=(column &&other);
+      column &operator=(column &&other) noexcept;
 
       /*!
        * tests if this column has valid data
@@ -104,93 +104,92 @@ namespace coda {
        */
       std::shared_ptr<column_impl> impl() const;
 
-      operator sql_string() const;
+       operator sql_string() const override;
 
-      operator sql_wstring() const;
+       operator sql_wstring() const override;
 
-      operator sql_number() const;
+       operator sql_number() const override;
 
-      operator sql_time() const;
+       operator sql_time() const override;
 
-      operator sql_blob() const;
+       operator sql_blob() const override;
 
-      operator bool() const;
+       operator bool() const override;
 
-      operator char() const;
+       operator char() const override;
 
-      operator unsigned char() const;
+       operator unsigned char() const override;
 
-      operator wchar_t() const;
+      operator wchar_t() const override;
 
-      operator short() const;
+      operator short() const override;
 
-      operator unsigned short() const;
+      operator unsigned short() const override;
 
-      operator int() const;
+      operator int() const override;
 
-      operator unsigned int() const;
+      operator unsigned int() const override;
 
-      operator long() const;
+      operator long() const override;
 
-      operator unsigned long() const;
+      operator unsigned long() const override;
 
-      operator long long() const;
+      operator long long() const override;
 
-      operator unsigned long long() const;
+      operator unsigned long long() const override;
 
-      operator float() const;
+      operator float() const override;
 
-      operator double() const;
+      operator double() const override;
 
-      operator long double() const;
+      operator long double() const override;
 
-      bool operator==(const sql_null_type &other) const;
+      bool operator==(const sql_null_type &other) const override;
 
-      bool operator==(const sql_number &value) const;
+      bool operator==(const sql_number &value) const override;
 
-      bool operator==(const sql_string &value) const;
+      bool operator==(const sql_string &value) const override;
 
-      bool operator==(const sql_wstring &value) const;
+      bool operator==(const sql_wstring &value) const override;
 
-      bool operator==(const sql_time &value) const;
+      bool operator==(const sql_time &value) const override;
 
-      bool operator==(const sql_blob &value) const;
+      bool operator==(const sql_blob &value) const override;
 
-      bool operator==(const bool &value) const;
+      bool operator==(const bool &value) const override;
 
-      bool operator==(const char &value) const;
+      bool operator==(const char &value) const override;
 
-      bool operator==(const unsigned char &value) const;
+      bool operator==(const unsigned char &value) const override;
 
-      bool operator==(const wchar_t &value) const;
+      bool operator==(const wchar_t &value) const override;
 
-      bool operator==(const short &value) const;
+      bool operator==(const short &value) const override;
 
-      bool operator==(const unsigned short &value) const;
+      bool operator==(const unsigned short &value) const override;
 
-      bool operator==(const int &value) const;
+      bool operator==(const int &value) const override;
 
-      bool operator==(const unsigned int &value) const;
+      bool operator==(const unsigned int &value) const override;
 
-      bool operator==(const long &value) const;
+      bool operator==(const long &value) const override;
 
-      bool operator==(const unsigned long &value) const;
+      bool operator==(const unsigned long &value) const override;
 
-      bool operator==(const long long &value) const;
+      bool operator==(const long long &value) const override;
 
-      bool operator==(const unsigned long long &value) const;
+      bool operator==(const unsigned long long &value) const override;
 
-      bool operator==(const float &value) const;
+      bool operator==(const float &value) const override;
 
-      bool operator==(const double &value) const;
+      bool operator==(const double &value) const override;
 
-      bool operator==(const long double &value) const;
+      bool operator==(const long double &value) const override;
 
       bool operator==(const sql_value &other) const;
     };
 
     bool operator==(const sql_value &value, const column &column);
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

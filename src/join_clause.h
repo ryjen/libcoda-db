@@ -5,35 +5,34 @@
 #ifndef CODA_DB_JOIN_CLAUSE_H
 #define CODA_DB_JOIN_CLAUSE_H
 
+#include <string>
+#include <unordered_map>
 #include "sql_generator.h"
 #include "sql_types.h"
 #include "where_clause.h"
-#include <string>
-#include <unordered_map>
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     namespace join {
       /*! types of sql joins */
       typedef enum { none, inner, left, right, natural, full, cross } type;
-    } // namespace join
+    }  // namespace join
 
     /*!
      * a utility class aimed at making join statements
      * ex. join("tablename").on("a", "b");
      */
     class join_clause : public sql_generator {
-      public:
-      private:
+     public:
+     private:
       std::string tableName_;
       join::type type_;
       where_clause on_;
 
-      std::string generate_sql() const;
+      std::string generate_sql() const override;
 
       void set_modified();
 
-      public:
+     public:
       /*! default no-arg constructor */
       join_clause();
 
@@ -41,23 +40,19 @@ namespace coda {
        * @param tableName the required name of the table to join
        * @param joinType the type of sql query (default inner)
        */
-      explicit join_clause(const std::string &tableName,
-                           join::type type = join::none);
+      explicit join_clause(const std::string &tableName, join::type type = join::none);
 
-      explicit join_clause(const std::string &tableName,
-                           const std::string &alias,
-                           join::type type = join::none);
+      join_clause(const std::string &tableName, const std::string &alias, join::type type = join::none);
 
-      /*! boilerplate rule of 3 + move */
-      join_clause(const join_clause &other);
+      join_clause(const join_clause &other) = default;
 
-      join_clause(join_clause &&other);
+      join_clause(join_clause &&other) = default;
 
-      join_clause &operator=(const join_clause &other);
+      join_clause &operator=(const join_clause &other) = default;
 
-      join_clause &operator=(join_clause &&other);
+      join_clause &operator=(join_clause &&other) = default;
 
-      virtual ~join_clause();
+      ~join_clause() = default;
 
       /*!
        * tests if the join is empty
@@ -68,7 +63,7 @@ namespace coda {
       /*!
        * resets the sql
        */
-      void reset();
+      void reset() override;
 
       /*!
        * sets the join type
@@ -115,9 +110,6 @@ namespace coda {
        */
       const where_clause &on() const;
 
-      /*!
-       * the explicit cast operator to sql string representation
-       */
       explicit operator std::string();
 
       explicit operator std::string() const;
@@ -127,7 +119,6 @@ namespace coda {
      * stream operator for joins
      */
     std::ostream &operator<<(std::ostream &out, const join_clause &join);
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

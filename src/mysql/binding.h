@@ -5,29 +5,28 @@
 #ifndef CODA_DB_MYSQL_BINDING_H
 #define CODA_DB_MYSQL_BINDING_H
 
-#include "../bind_mapping.h"
 #include <mysql/mysql.h>
 #include <set>
 #include <string>
 #include <unordered_map>
+#include "../bind_mapping.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     class sql_value;
 
     namespace mysql {
+
       namespace data_mapper {
         sql_value to_value(MYSQL_BIND *binding);
         sql_value to_value(int type, const char *value, size_t length);
-      } // namespace data_mapper
+      }  // namespace data_mapper
 
       /*!
        * makes binding mysql queries simpler
        */
       class binding : public coda::db::bind_mapping {
-        friend class mysql_column;
 
-        private:
+       private:
         MYSQL_BIND *value_;
         size_t size_;
         std::unordered_map<size_t, std::set<size_t>> indexes_;
@@ -37,7 +36,7 @@ namespace coda {
         bool reallocate_value(size_t index);
         std::set<size_t> &get_indexes(size_t index);
 
-        public:
+       public:
         /*!
          * default constructor
          */
@@ -47,12 +46,12 @@ namespace coda {
          * constructor with an empty set of values
          * @param size the size of the parameter set
          */
-        binding(size_t size);
+        explicit binding(size_t size);
 
         /*!
          * @param value the single binding to init with
          */
-        binding(const MYSQL_BIND &value);
+        explicit binding(const MYSQL_BIND &value);
         /*!
          * @param value the array of values to init with
          * @param size the size of the value array
@@ -70,12 +69,12 @@ namespace coda {
         binding(binding &&other);
         binding &operator=(const binding &other);
         binding &operator=(binding &&other);
-        virtual ~binding();
+        ~binding() override;
 
         /*!
          * @return the size (number of bindings) of this instance
          */
-        size_t num_of_bindings() const noexcept;
+        size_t num_of_bindings() const noexcept override;
 
         /*!
          * @return the capcity of the storage of this instance
@@ -101,8 +100,8 @@ namespace coda {
         int sql_type(size_t index) const;
 
         /* bindable overrides */
-        binding &bind(size_t index, const sql_value &value);
-        binding &bind(const std::string &name, const sql_value &value);
+        binding &bind(size_t index, const sql_value &value) override;
+        binding &bind(const std::string &name, const sql_value &value) override;
 
         /*!
          * puts values into a query before execution
@@ -125,10 +124,9 @@ namespace coda {
         /*!
          * reset all the bindings
          */
-        void reset();
+        void reset() override;
       };
-    } // namespace mysql
-  }   // namespace db
-} // namespace coda
+    }  // namespace mysql
+}  // namespace coda::db
 
 #endif

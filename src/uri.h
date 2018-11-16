@@ -3,9 +3,9 @@
 
 #include <string>
 
-namespace coda {
-  namespace db {
-    typedef struct uri_type uri;
+namespace coda::db {
+
+  typedef struct uri_type uri;
 
     /*! small utility to parse a uri */
     struct uri_type {
@@ -26,7 +26,7 @@ namespace coda {
 
       std::string protocol, user, password, host, port, path, query, value;
     };
-  } // namespace db
-} // namespace coda
+
+}  // namespace coda::db
 
 #endif

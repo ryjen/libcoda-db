@@ -3,10 +3,8 @@
 
 using namespace std;
 
-namespace coda {
-  namespace db {
-    update_query::update_query(
-        const std::shared_ptr<coda::db::session> &session)
+namespace coda::db {
+    update_query::update_query(const std::shared_ptr<coda::db::session> &session)
         : modify_query(session), where_(session->impl(), this) {}
 
     /*!
@@ -20,9 +18,7 @@ namespace coda {
      * @param tableName the table to modify
      * @param columns the columns to modify
      */
-    update_query::update_query(
-        const std::shared_ptr<coda::db::session> &session,
-        const std::string &tableName)
+    update_query::update_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName)
         : modify_query(session), where_(session->impl(), this) {
       tableName_ = tableName;
     }
@@ -31,9 +27,8 @@ namespace coda {
      * @param db the database to modify
      * @param columns the columns to modify
      */
-    update_query::update_query(
-        const std::shared_ptr<coda::db::session> &session,
-        const std::string &tableName, const std::vector<std::string> &columns)
+    update_query::update_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName,
+                               const std::vector<std::string> &columns)
         : modify_query(session), where_(session->impl(), this) {
       tableName_ = tableName;
       columns_ = columns;
@@ -43,41 +38,13 @@ namespace coda {
      * @param schema the schema to modify
      * @param column the specific columns to modify in the schema
      */
-    update_query::update_query(const std::shared_ptr<schema> &schema,
-                               const std::vector<std::string> &columns)
+    update_query::update_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns)
         : modify_query(schema), where_(schema->get_session()->impl(), this) {
       tableName_ = schema->table_name();
       columns_ = columns;
     }
 
-    update_query::update_query(const update_query &other)
-        : modify_query(other), where_(other.where_), columns_(other.columns_),
-          tableName_(other.tableName_) {}
-    update_query::update_query(update_query &&other)
-        : modify_query(std::move(other)), where_(std::move(other.where_)),
-          columns_(std::move(other.columns_)),
-          tableName_(std::move(other.tableName_)) {}
-
-    update_query::~update_query() {}
-    update_query &update_query::operator=(const update_query &other) {
-      modify_query::operator=(other);
-      where_ = other.where_;
-      columns_ = other.columns_;
-      tableName_ = other.tableName_;
-      return *this;
-    }
-
-    update_query &update_query::operator=(update_query &&other) {
-      modify_query::operator=(std::move(other));
-      where_ = std::move(other.where_);
-      columns_ = std::move(other.columns_);
-      tableName_ = std::move(other.tableName_);
-      return *this;
-    }
-
-    bool update_query::is_valid() const noexcept {
-      return query::is_valid() && !tableName_.empty();
-    }
+    bool update_query::is_valid() const noexcept { return query::is_valid() && !tableName_.empty(); }
 
     string update_query::table() const { return tableName_; }
 
@@ -93,7 +60,7 @@ namespace coda {
       buf += "UPDATE ";
       buf += tableName_;
 
-      if (columns_.size() > 0) {
+      if (!columns_.empty()) {
         buf += " SET ";
         buf += session_->join_params(columns_, op::type_values[op::EQ]);
       }
@@ -135,15 +102,13 @@ namespace coda {
       return *this;
     }
 
-    update_query &update_query::values(
-        const std::unordered_map<std::string, sql_value> &value) {
+    update_query &update_query::values(const std::unordered_map<std::string, sql_value> &value) {
       bindable::bind(value);
       set_modified();
       return *this;
     }
 
-    update_query &update_query::value(const std::string &name,
-                                      const sql_value &value) {
+    update_query &update_query::value(const std::string &name, const sql_value &value) {
       bind(name, value);
       set_modified();
       return *this;
@@ -154,5 +119,4 @@ namespace coda {
       set_modified();
       return *this;
     }
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db

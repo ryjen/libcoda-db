@@ -5,12 +5,11 @@
 #include <string>
 #include <vector>
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     /*
      * a sql null type
      */
-    typedef std::nullptr_t sql_null_type;
+    using sql_null_type = std::nullptr_t;
 
     /*!
      * the instance of a null type
@@ -18,8 +17,11 @@ namespace coda {
      */
     extern const sql_null_type sql_null;
 
-    typedef std::string sql_string;
-    typedef std::wstring sql_wstring;
+    using sql_string = std::string;
+    using sql_wstring = std::wstring;
+
+    using sql_changes = unsigned long long;
+    using sql_id = long long;
 
     class sql_number;
 
@@ -29,13 +31,13 @@ namespace coda {
      * blobs are simple vectors of unsigned chars
      */
     class sql_blob {
-      public:
+     public:
       sql_blob();
       sql_blob(const void *data, size_t size);
       void *get() const;
       size_t size() const;
 
-      private:
+     private:
       std::shared_ptr<void> value_;
       size_t size_;
     };
@@ -45,34 +47,26 @@ namespace coda {
      */
     template <typename T>
     struct is_sql_number
-        : std::integral_constant<bool,
-                                 std::is_arithmetic<T>::value ||
-                                     std::is_same<T, sql_null_type>::value> {};
+        : std::integral_constant<bool, std::is_arithmetic_v<T> || std::is_same<T, sql_null_type>::value> {};
 
     template <typename T>
     struct is_sql_string
-        : std::integral_constant<bool,
-                                 std::is_same<T, sql_string>::value ||
-                                     std::is_same<T, sql_wstring>::value> {};
+        : std::integral_constant<bool, std::is_same<T, sql_string>::value || std::is_same<T, sql_wstring>::value> {};
 
     /*!
      * defines a constant if a type is a valid sql value
      */
     template <typename T>
     struct is_sql_value
-        : std::integral_constant<bool,
-                                 std::is_same<T, sql_null_type>::value ||
-                                     std::is_same<T, sql_number>::value ||
-                                     std::is_same<T, sql_string>::value ||
-                                     std::is_same<T, sql_wstring>::value ||
-                                     std::is_same<T, sql_time>::value ||
-                                     std::is_same<T, sql_blob>::value> {};
+        : std::integral_constant<bool, std::is_same<T, sql_null_type>::value || std::is_same<T, sql_number>::value ||
+                                           std::is_same<T, sql_string>::value || std::is_same<T, sql_wstring>::value ||
+                                           std::is_same<T, sql_time>::value || std::is_same<T, sql_blob>::value> {};
 
     /*!
      * an interface for converting and testing equality of numeric values
      */
     class sql_number_convertible {
-      public:
+     public:
       sql_number_convertible() = default;
 
       sql_number_convertible(const sql_number_convertible &other) = default;
@@ -81,49 +75,47 @@ namespace coda {
 
       virtual ~sql_number_convertible() = default;
 
-      sql_number_convertible &
-      operator=(const sql_number_convertible &other) = default;
+      sql_number_convertible &operator=(const sql_number_convertible &other) = default;
 
-      sql_number_convertible &
-      operator=(sql_number_convertible &&other) = default;
+      sql_number_convertible &operator=(sql_number_convertible &&other) = default;
 
       /* convertibles */
-      virtual operator sql_string() const = 0;
+      virtual  operator sql_string() const = 0;
 
-      virtual operator sql_wstring() const = 0;
+      virtual  operator sql_wstring() const = 0;
 
-      virtual operator sql_time() const = 0;
+      virtual  operator sql_time() const = 0;
 
       /* numeric implicits */
-      virtual operator bool() const = 0;
+      virtual  operator bool() const = 0;
 
-      virtual operator char() const = 0;
+      virtual  operator char() const = 0;
 
-      virtual operator unsigned char() const = 0;
+      virtual  operator unsigned char() const = 0;
 
-      virtual operator wchar_t() const = 0;
+      virtual  operator wchar_t() const = 0;
 
-      virtual operator short() const = 0;
+      virtual  operator short() const = 0;
 
-      virtual operator unsigned short() const = 0;
+      virtual  operator unsigned short() const = 0;
 
-      virtual operator int() const = 0;
+      virtual  operator int() const = 0;
 
-      virtual operator unsigned int() const = 0;
+      virtual  operator unsigned int() const = 0;
 
-      virtual operator long() const = 0;
+      virtual  operator long() const = 0;
 
-      virtual operator unsigned long() const = 0;
+      virtual  operator unsigned long() const = 0;
 
-      virtual operator long long() const = 0;
+      virtual  operator long long() const = 0;
 
-      virtual operator unsigned long long() const = 0;
+      virtual  operator unsigned long long() const = 0;
 
-      virtual operator float() const = 0;
+      virtual  operator float() const = 0;
 
-      virtual operator double() const = 0;
+      virtual  operator double() const = 0;
 
-      virtual operator long double() const = 0;
+      virtual  operator long double() const = 0;
 
       /* convertible equality */
       virtual bool operator==(const sql_null_type &other) const = 0;
@@ -170,16 +162,15 @@ namespace coda {
      * interface for converting and testing equality of sql values
      */
     class sql_value_convertible : public sql_number_convertible {
-      public:
-      virtual operator sql_number() const = 0;
+     public:
+      virtual explicit operator sql_number() const = 0;
 
-      virtual operator sql_blob() const = 0;
+      virtual explicit operator sql_blob() const = 0;
 
       virtual bool operator==(const sql_number &value) const = 0;
 
       virtual bool operator==(const sql_blob &value) const = 0;
     };
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

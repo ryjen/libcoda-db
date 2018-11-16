@@ -9,8 +9,7 @@
 #include <string>
 #include <vector>
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     class session;
 
     class sql_value;
@@ -36,32 +35,31 @@ namespace coda {
      * Allows for quick access to column names and other information
      */
     class schema {
-      public:
+     public:
       typedef session session_type;
 
-      private:
+     private:
       std::shared_ptr<session_type> session_;
       std::string tableName_;
       std::vector<column_definition> columns_;
 
-      public:
+     public:
       /*!
        * @param db the database in use
-       * @param tablename the tablename to query
+       * @param tableName the table name to query
        */
-      schema(const std::shared_ptr<session_type> &sess,
-             const std::string &tablename);
+      schema(const std::shared_ptr<session_type> &sess, const std::string &tableName);
 
       /* boilerplate */
-      virtual ~schema();
+      ~schema() = default;
 
-      schema(const schema &other);
+      schema(const schema &other) = default;
 
-      schema(schema &&other);
+      schema(schema &&other) noexcept = default;
 
-      schema &operator=(const schema &other);
+      schema &operator=(const schema &other) = default;
 
-      schema &operator=(schema &&other);
+      schema &operator=(schema &&other) noexcept = default;
 
       /*!
        * initializes this schema
@@ -126,7 +124,6 @@ namespace coda {
        */
       std::shared_ptr<schema::session_type> get_session() const;
     };
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

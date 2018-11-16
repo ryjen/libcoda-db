@@ -1,11 +1,10 @@
 #ifndef CODA_DB_SQLDB_H
 #define CODA_DB_SQLDB_H
 
-#include "uri.h"
 #include <memory>
+#include "uri.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     class session;
 
     class session_factory;
@@ -44,9 +43,7 @@ namespace coda {
      * @param protocol the protocol, or the 'scheme' of a uri
      * @param factory  a factory instance
      */
-    void register_session(const std::string &protocol,
-                          const std::shared_ptr<session_factory> &factory);
-  } // namespace db
-} // namespace coda
+    void register_session(const std::string &protocol, const std::shared_ptr<session_factory> &factory);
+}  // namespace coda::db
 
 #endif

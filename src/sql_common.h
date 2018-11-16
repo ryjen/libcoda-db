@@ -1,15 +1,14 @@
 #ifndef CODA_DB_SQL_COMMON_H
 #define CODA_DB_SQL_COMMON_H
 
-#include "sql_types.h"
 #include <iterator>
 #include <sstream>
 #include <string>
 #include <type_traits>
 #include <vector>
+#include "sql_types.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     class sql_time;
 
     class sql_value;
@@ -36,7 +35,8 @@ namespace coda {
       /*!
        * utility method used in creating sql
        */
-      template <typename T> std::string join_csv(const std::vector<T> &list) {
+      template <typename T>
+      std::string join_csv(const std::vector<T> &list) {
         std::ostringstream buf;
 
         if (list.size() > 0) {
@@ -80,40 +80,45 @@ namespace coda {
         return 0;
       }
 
-      template <typename T> struct is_type {
-        public:
-        template <typename V> bool operator()(const V &value) const {
+      template <typename T>
+      struct is_type {
+       public:
+        template <typename V>
+        bool operator()(const V &value) const {
           return std::is_same<T, V>::value || std::is_convertible<V, T>::value;
         }
       };
 
       struct number_equality {
-        public:
+       public:
         number_equality(const sql_number &num) : num_(num) {}
 
-        template <typename V> bool operator()(const V &value) const {
+        template <typename V>
+        bool operator()(const V &value) const {
           return num_ == value;
         }
 
-        private:
+       private:
         const sql_number &num_;
       };
 
       struct value_equality {
-        public:
+       public:
         value_equality(const sql_value &value) : value_(value) {}
 
-        template <typename V> bool operator()(const V &value) const {
+        template <typename V>
+        bool operator()(const V &value) const {
           return value_ == value;
         }
 
-        private:
+       private:
         const sql_value &value_;
       };
 
       class as_sql_string {
-        public:
-        template <typename V> sql_string operator()(const V &value) const {
+       public:
+        template <typename V>
+        sql_string operator()(const V &value) const {
           return std::to_string(value);
         }
 
@@ -131,8 +136,9 @@ namespace coda {
       };
 
       class as_sql_wstring {
-        public:
-        template <typename V> sql_wstring operator()(const V &value) const {
+       public:
+        template <typename V>
+        sql_wstring operator()(const V &value) const {
           return std::to_wstring(value);
         }
 
@@ -148,7 +154,6 @@ namespace coda {
 
         sql_wstring operator()(const sql_number &value) const;
       };
-    } // namespace helper
-  }   // namespace db
-} // namespace coda
+    }  // namespace helper
+}  // namespace coda::db
 #endif

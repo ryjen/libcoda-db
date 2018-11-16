@@ -5,24 +5,23 @@
 #ifndef CODA_DB_RESULTSET_H
 #define CODA_DB_RESULTSET_H
 
-#include "row.h"
 #include <memory>
+#include "row.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     class resultset;
 
     /*!
      * an interface for a database specific set of results for a query
      */
     class resultset_impl {
-      public:
+     public:
       typedef coda::db::row row_type;
 
-      protected:
+     protected:
       resultset_impl() = default;
 
-      public:
+     public:
       /* non-copyable */
       resultset_impl(const resultset_impl &other) = delete;
 
@@ -62,43 +61,37 @@ namespace coda {
      * an iterator for a rows in a set of results
      */
     template <typename ValueType, typename NonConst>
-    class resultset_iterator
-        : public std::iterator<std::input_iterator_tag, ValueType> {
-      private:
+    class resultset_iterator : public std::iterator<std::input_iterator_tag, ValueType> {
+     private:
       std::shared_ptr<resultset_impl> rs_;
       int pos_;
       NonConst value_;
 
-      public:
-      resultset_iterator(const std::shared_ptr<resultset_impl> &rset,
-                         int position)
-          : rs_(rset), pos_(position) {
+     public:
+      resultset_iterator(const std::shared_ptr<resultset_impl> &impl, int position) : rs_(impl), pos_(position) {
         if (position >= 0) {
-          value_ = rset->current_row();
+          value_ = impl->current_row();
         } else {
           value_ = NonConst();
         }
       }
 
-      resultset_iterator(const resultset_iterator &other)
-          : rs_(other.rs_), pos_(other.pos_), value_(other.value_) {}
+      resultset_iterator(const resultset_iterator &other) : rs_(other.rs_), pos_(other.pos_), value_(other.value_) {}
 
-      resultset_iterator(resultset_iterator &&other)
-          : rs_(std::move(other.rs_)), pos_(other.pos_),
-            value_(std::move(other.value_)) {
+      resultset_iterator(resultset_iterator &&other) noexcept
+          : rs_(std::move(other.rs_)), pos_(other.pos_), value_(std::move(other.value_)) {
         other.rs_ = nullptr;
         other.pos_ = -1;
       }
 
-      ~resultset_iterator() {}
+      ~resultset_iterator() = default;
 
-      resultset_iterator &operator=(resultset_iterator &&other) {
+      resultset_iterator &operator=(resultset_iterator &&other) noexcept {
         rs_ = std::move(other.rs_);
         pos_ = other.pos_;
         value_ = std::move(other.value_);
         other.rs_ = nullptr;
         other.pos_ = -1;
-
         return *this;
       }
 
@@ -124,7 +117,7 @@ namespace coda {
 
       ValueType *operator->() { return &(operator*()); }
 
-      resultset_iterator operator++(int) {
+      const resultset_iterator operator++(int) {
         resultset_iterator tmp(*this);
         ++(*this);
         return tmp;
@@ -145,13 +138,9 @@ namespace coda {
         return *this;
       }
 
-      bool operator==(const resultset_iterator &other) const {
-        return pos_ == other.pos_;
-      }
+      bool operator==(const resultset_iterator &other) const { return pos_ == other.pos_; }
 
-      bool operator!=(const resultset_iterator &other) const {
-        return !operator==(other);
-      }
+      bool operator!=(const resultset_iterator &other) const { return !operator==(other); }
 
       bool operator<(const resultset_iterator &other) const {
         if (pos_ == -1 && other.pos_ == -1)
@@ -164,48 +153,42 @@ namespace coda {
           return pos_ < other.pos_;
       }
 
-      bool operator<=(const resultset_iterator &other) const {
-        return operator<(other) || operator==(other);
-      }
+      bool operator<=(const resultset_iterator &other) const { return operator<(other) || operator==(other); }
 
-      bool operator>(const resultset_iterator &other) const {
-        return !operator<(other);
-      }
+      bool operator>(const resultset_iterator &other) const { return !operator<(other); }
 
-      bool operator>=(const resultset_iterator &other) const {
-        return operator>(other) || operator==(other);
-      }
+      bool operator>=(const resultset_iterator &other) const { return operator>(other) || operator==(other); }
     };
 
     /*!
      * the results (a set of rows) for a query
      */
     class resultset {
-      public:
+     public:
       typedef coda::db::row row_type;
 
-      private:
+     private:
       std::shared_ptr<resultset_impl> impl_;
 
-      public:
+     public:
       typedef resultset_iterator<row_type, row_type> iterator;
       typedef resultset_iterator<const row_type, row_type> const_iterator;
 
       /*!
        * @param impl the implementation for this resultset
        */
-      resultset(const std::shared_ptr<resultset_impl> &impl);
+      explicit resultset(const std::shared_ptr<resultset_impl> &impl);
 
       /* non-copyable */
       resultset(const resultset &other) = delete;
 
-      resultset(resultset &&other);
+      resultset(resultset &&other) noexcept;
 
-      virtual ~resultset();
+      ~resultset() = default;
 
       resultset &operator=(const resultset &other) = delete;
 
-      resultset &operator=(resultset &&other);
+      resultset &operator=(resultset &&other) noexcept;
 
       /*!
        * tests if the result set is valid
@@ -276,7 +259,6 @@ namespace coda {
        */
       std::shared_ptr<resultset_impl> impl() const;
     };
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

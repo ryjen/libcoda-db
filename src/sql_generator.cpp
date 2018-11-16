@@ -1,7 +1,6 @@
 #include "sql_generator.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     std::string sql_generator::to_sql() const {
       if (!sql_.empty()) {
         return sql_;
@@ -19,5 +18,4 @@ namespace coda {
     }
 
     void sql_generator::reset() { sql_.clear(); }
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db

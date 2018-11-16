@@ -1,12 +1,13 @@
 
+#include <time.h>
 #include <cassert>
 #include <cstdlib>
-#include <postgres.h>
-#include <catalog/pg_type.h>
-#include <libpq-fe.h>
 #include <memory>
 #include <regex>
-#include <time.h>
+#include <libpq-fe.h>
+#include <postgres.h>
+
+#include <catalog/pg_type.h>
 
 #include "../alloc.h"
 #include "../exception.h"
@@ -15,60 +16,57 @@
 
 using namespace std;
 
-namespace coda {
-  namespace db {
-    namespace postgres {
+namespace coda::db::postgres {
       namespace data_mapper {
         // Key function here. Handles conversion from Oid to sql_value
         // TODO: test more
         sql_value to_value(Oid type, const char *value, int len) {
-          if (value == nullptr) {
+          if (value == nullptr || len == 0) {
             return sql_null;
           }
 
           switch (type) {
-          case BYTEAOID: {
-            size_t blen = 0;
-            unsigned char *b = PQunescapeBytea(
-                reinterpret_cast<const unsigned char *>(value), &blen);
-            sql_blob bin(b, blen);
-            free(b);
-            return bin;
-          }
-          case BOOLOID:
-          case CHAROID:
-          case INT8OID:
-          case INT2OID:
-          case INT4OID:
-          case TIMESTAMPOID:
-          case BITOID:
-            try {
-              return sql_number(stol(value));
-            } catch (const std::exception &e) {
-              return sql_null;
+            case BYTEAOID: {
+              size_t blen = 0;
+              unsigned char *b = PQunescapeBytea(reinterpret_cast<const unsigned char *>(value), &blen);
+              sql_blob bin(b, blen);
+              free(b);
+              return bin;
             }
-          case FLOAT4OID:
-            try {
-              return sql_number(stod(value));
-            } catch (const std::exception &e) {
-              return sql_null;
-            }
-          case FLOAT8OID:
-            try {
-              return sql_number(stold(value));
-            } catch (const std::exception &e) {
-              return sql_null;
-            }
-          case UNKNOWNOID:
-            return nullptr;
-          case VARCHAROID:
-          case TEXTOID:
-          case DATEOID:
-          case TIMEOID:
-          case UUIDOID:
-            return sql_string(value);
-          default:
-            return sql_string(value);
+            case BOOLOID:
+            case CHAROID:
+            case INT8OID:
+            case INT2OID:
+            case INT4OID:
+            case TIMESTAMPOID:
+            case BITOID:
+              try {
+                return sql_number(stol(value));
+              } catch (const std::exception &e) {
+                throw database_exception("invalid number: " + string(value));
+              }
+            case FLOAT4OID:
+              try {
+                return sql_number(stod(value));
+              } catch (const std::exception &e) {
+                throw database_exception("invalid floating point: " + string(value));
+              }
+            case FLOAT8OID:
+              try {
+                return sql_number(stold(value));
+              } catch (const std::exception &e) {
+                throw database_exception("invalid floating point: " + string(value));
+              }
+            case UNKNOWNOID:
+              return nullptr;
+            case VARCHAROID:
+            case TEXTOID:
+            case DATEOID:
+            case TIMEOID:
+            case UUIDOID:
+              return sql_string(value);
+            default:
+              return sql_string(value);
           }
         }
 
@@ -76,9 +74,8 @@ namespace coda {
          * a visitor to apply a number to a postgres binding
          */
         class from_number {
-          public:
-          from_number(binding &bind, size_t index)
-              : bind_(bind), index_(index) {}
+         public:
+          from_number(binding &bind, size_t index) : bind_(bind), index_(index) {}
           void operator()(wchar_t value) const {
             wchar_t buf[10] = {0};
             swprintf(buf, 10, L"%c", value);
@@ -187,7 +184,7 @@ namespace coda {
             bind_.formats_[index_] = 0;
           }
 
-          private:
+         private:
           binding &bind_;
           size_t index_;
         };
@@ -196,22 +193,21 @@ namespace coda {
          * a visitor to apply a value to a postgres binding
          */
         class from_value {
-          public:
-          from_value(binding &bind, size_t index)
-              : bind_(bind), index_(index) {}
+         public:
+          from_value(binding &bind, size_t index) : bind_(bind), index_(index) {}
           void operator()(const sql_time &value) const {
             bind_.values_[index_] = strdup(value.to_string().c_str());
             switch (value.format()) {
-            case sql_time::DATE:
-              bind_.types_[index_] = DATEOID;
-              break;
-            case sql_time::TIME:
-              bind_.types_[index_] = TIMEOID;
-              break;
-            case sql_time::DATETIME:
-            case sql_time::TIMESTAMP:
-              bind_.types_[index_] = TIMESTAMPOID;
-              break;
+              case sql_time::DATE:
+                bind_.types_[index_] = DATEOID;
+                break;
+              case sql_time::TIME:
+                bind_.types_[index_] = TIMEOID;
+                break;
+              case sql_time::DATETIME:
+              case sql_time::TIMESTAMP:
+                bind_.types_[index_] = TIMESTAMPOID;
+                break;
             }
             bind_.lengths_[index_] = sizeof(time_t);
             bind_.formats_[index_] = 0;
@@ -223,41 +219,36 @@ namespace coda {
             bind_.formats_[index_] = 0;
           }
           void operator()(const sql_blob &value) const {
-
-            bind_.values_[index_] =
-                static_cast<char *>(c_copy(value.get(), value.size()));
+            bind_.values_[index_] = static_cast<char *>(c_copy(value.get(), value.size()));
             bind_.types_[index_] = BYTEAOID;
-            bind_.lengths_[index_] = value.size();
+            bind_.lengths_[index_] = static_cast<int>(value.size());
             bind_.formats_[index_] = 1;
           }
           void operator()(const sql_wstring &value) const {
             string temp = helper::convert_string(value);
             bind_.values_[index_] = strdup(temp.c_str());
             bind_.types_[index_] = TEXTOID;
-            bind_.lengths_[index_] = temp.size();
+            bind_.lengths_[index_] = static_cast<int>(temp.size());
             bind_.formats_[index_] = 0;
           }
           void operator()(const sql_string &value) const {
             bind_.values_[index_] = strdup(value.c_str());
             bind_.types_[index_] = TEXTOID;
-            bind_.lengths_[index_] = value.size();
+            bind_.lengths_[index_] = static_cast<int>(value.size());
             bind_.formats_[index_] = 0;
           }
-          void operator()(const sql_number &value) const {
-            value.apply_visitor(from_number(bind_, index_));
-          }
+          void operator()(const sql_number &value) const { value.apply_visitor(from_number(bind_, index_)); }
 
-          private:
+         private:
           binding &bind_;
           size_t index_;
         };
-      } // namespace data_mapper
+      }  // namespace data_mapper
 
       binding::binding() : binding(prealloc_size) {}
 
       binding::binding(size_t size)
-          : values_(nullptr), types_(nullptr), lengths_(nullptr),
-            formats_(nullptr), size_(size) {
+          : values_(nullptr), types_(nullptr), lengths_(nullptr), formats_(nullptr), size_(size) {
         values_ = c_alloc<char *>(size);
         types_ = c_alloc<Oid>(size);
         lengths_ = c_alloc<int>(size);
@@ -321,14 +312,16 @@ namespace coda {
       }
 
       binding::binding(const binding &other)
-          : bind_mapping(other), values_(nullptr), types_(nullptr),
-            lengths_(nullptr), formats_(nullptr), size_(0) {
+          : bind_mapping(other), values_(nullptr), types_(nullptr), lengths_(nullptr), formats_(nullptr), size_(0) {
         copy_value(other);
       }
-      binding::binding(binding &&other)
-          : bind_mapping(std::move(other)), values_(other.values_),
-            types_(other.types_), lengths_(other.lengths_),
-            formats_(other.formats_), size_(other.size_) {
+      binding::binding(binding &&other) noexcept
+          : bind_mapping(std::move(other)),
+            values_(other.values_),
+            types_(other.types_),
+            lengths_(other.lengths_),
+            formats_(other.formats_),
+            size_(other.size_) {
         other.values_ = nullptr;
         other.types_ = nullptr;
         other.lengths_ = nullptr;
@@ -342,8 +335,8 @@ namespace coda {
         return *this;
       }
 
-      binding &binding::operator=(binding &&other) {
-        bind_mapping::operator=(std::move(other));
+      binding &binding::operator=(binding &&other) noexcept {
+        bind_mapping::operator=(other);
         clear_value();
         values_ = other.values_;
         types_ = other.types_;
@@ -363,8 +356,7 @@ namespace coda {
         if (index >= size_ || values_ == nullptr || values_[index] == nullptr) {
           return sql_null;
         }
-        return data_mapper::to_value(types_[index], values_[index],
-                                     lengths_[index]);
+        return data_mapper::to_value(types_[index], values_[index], lengths_[index]);
       }
 
       int binding::sql_type(size_t index) const {
@@ -436,8 +428,7 @@ namespace coda {
 
       std::string binding::prepare(const string &sql) {
 #ifdef ENABLE_PARAMETER_MAPPING
-        auto match_begin =
-            std::sregex_iterator(sql.begin(), sql.end(), bindable::index_regex);
+        auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), bindable::index_regex);
         auto match_end = std::sregex_iterator();
 
         std::vector<size_t> indexes;
@@ -467,8 +458,7 @@ namespace coda {
         // TODO: this is ineffecient, find a better way
         std::string formatted = sql;
 
-        match_begin =
-            std::sregex_iterator(sql.begin(), sql.end(), bindable::param_regex);
+        match_begin = std::sregex_iterator(sql.begin(), sql.end(), bindable::param_regex);
         match_end = std::sregex_iterator();
 
         for (auto match = match_begin; match != match_end; ++match) {
@@ -482,8 +472,7 @@ namespace coda {
               // parameter indexes
               auto pos = *mapped.begin();
               // replace the sql with the positional parameter
-              formatted.replace(formatted.find(str), str.length(),
-                                "$" + std::to_string(pos));
+              formatted.replace(formatted.find(str), str.length(), "$" + std::to_string(pos));
             }
             continue;
           }
@@ -492,8 +481,7 @@ namespace coda {
           if (str[0] == '?') {
             // otherwise, replace the matched paramter with the current index
             auto pos = indexes.back();
-            formatted.replace(formatted.find(str), str.length(),
-                              "$" + std::to_string(pos));
+            formatted.replace(formatted.find(str), str.length(), "$" + std::to_string(pos));
             indexes.pop_back();
           }
         }
@@ -503,6 +491,4 @@ namespace coda {
         return sql;
 #endif
       }
-    } // namespace postgres
-  }   // namespace db
-} // namespace coda
+}  // namespace coda::db::postgres

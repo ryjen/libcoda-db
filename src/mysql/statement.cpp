@@ -1,15 +1,14 @@
 
 #include "statement.h"
+#include <string>
 #include "../exception.h"
 #include "resultset.h"
 #include "session.h"
-#include <string>
 
 using namespace std;
 
-namespace coda {
-  namespace db {
-    namespace mysql {
+namespace coda::db::mysql {
+
       namespace helper {
         extern string last_stmt_error(MYSQL_STMT *stmt);
 
@@ -20,29 +19,12 @@ namespace coda {
             }
           }
         };
-      } // namespace helper
+      }  // namespace helper
 
-      statement::statement(const std::shared_ptr<session> &sess)
-          : sess_(sess), stmt_(nullptr) {
+      statement::statement(const std::shared_ptr<session> &sess) : sess_(sess), stmt_(nullptr) {
         if (sess_ == nullptr) {
           throw database_exception("No database provided for mysql statement");
         }
-      }
-
-      statement::statement(statement &&other)
-          : sess_(std::move(other.sess_)), stmt_(std::move(other.stmt_)) {
-        other.sess_ = nullptr;
-        other.stmt_ = nullptr;
-      }
-
-      statement &statement::operator=(statement &&other) {
-        sess_ = std::move(other.sess_);
-        stmt_ = std::move(other.stmt_);
-
-        other.sess_ = nullptr;
-        other.stmt_ = nullptr;
-
-        return *this;
       }
 
       statement::~statement() { finish(); }
@@ -62,15 +44,12 @@ namespace coda {
 
         string formatted_sql = bindings_.prepare(sql);
 
-        if (mysql_stmt_prepare(stmt_.get(), formatted_sql.c_str(),
-                               formatted_sql.length())) {
+        if (mysql_stmt_prepare(stmt_.get(), formatted_sql.c_str(), formatted_sql.length())) {
           throw database_exception(sess_->last_error());
         }
       }
 
-      bool statement::is_valid() const noexcept {
-        return stmt_ != nullptr && stmt_;
-      }
+      bool statement::is_valid() const noexcept { return stmt_ != nullptr && stmt_; }
 
       /**
        * binding methods ensure the dynamic array is sized properly and store
@@ -104,13 +83,10 @@ namespace coda {
 
         bindings_.bind_params(stmt_.get());
 
-        if (mysql_stmt_execute(stmt_.get())) {
-          return false;
-        }
-        return true;
+        return mysql_stmt_execute(stmt_.get()) == 0;
       }
 
-      int statement::last_number_of_changes() {
+      unsigned long long statement::last_number_of_changes() {
         if (!is_valid()) {
           // mysql statement result invalid
           return 0;
@@ -155,9 +131,5 @@ namespace coda {
         return mysql_stmt_insert_id(stmt_.get());
       }
 
-      size_t statement::num_of_bindings() const noexcept {
-        return bindings_.num_of_bindings();
-      }
-    } // namespace mysql
-  }   // namespace db
-} // namespace coda
+      size_t statement::num_of_bindings() const noexcept { return bindings_.num_of_bindings(); }
+}  // namespace coda::db::mysql

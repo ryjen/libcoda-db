@@ -1,9 +1,7 @@
 #include "column.h"
 #include "sql_value.h"
 
-namespace coda {
-  namespace db {
-    column::column() {}
+namespace coda::db {
 
     column::column(const std::shared_ptr<column_impl> &impl) : impl_(impl) {
       if (impl_ == nullptr) {
@@ -13,26 +11,20 @@ namespace coda {
 
     column::column(const column &other) : impl_(other.impl_) {}
 
-    column::column(column &&other) : impl_(std::move(other.impl_)) {
-      other.impl_ = nullptr;
-    }
+    column::column(column &&other) noexcept : impl_(std::move(other.impl_)) { other.impl_ = nullptr; }
 
     column &column::operator=(const column &other) {
       impl_ = other.impl_;
-
       return *this;
     }
 
-    column &column::operator=(column &&other) {
+    column &column::operator=(column &&other) noexcept {
       impl_ = std::move(other.impl_);
       other.impl_ = nullptr;
-
       return *this;
     }
 
-    bool column::is_valid() const noexcept {
-      return impl_ != nullptr && impl_->is_valid();
-    }
+    bool column::is_valid() const noexcept { return impl_ != nullptr && impl_->is_valid(); }
 
     sql_value column::value() const {
       if (impl_ == nullptr) {
@@ -91,96 +83,49 @@ namespace coda {
 
     column::operator long double() const { return impl_->to_value(); }
 
-    bool column::operator==(const sql_value &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const sql_value &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const sql_null_type &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const sql_null_type &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const sql_number &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const sql_number &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const sql_string &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const sql_string &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const sql_wstring &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const sql_wstring &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const sql_time &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const sql_time &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const sql_blob &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const sql_blob &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const bool &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const bool &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const char &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const char &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const unsigned char &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const unsigned char &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const wchar_t &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const wchar_t &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const short &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const short &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const unsigned short &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const unsigned short &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const int &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const int &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const unsigned int &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const unsigned int &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const long &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const long &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const unsigned long &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const unsigned long &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const long long &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const long long &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const unsigned long long &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const unsigned long long &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const float &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const float &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const double &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const double &other) const { return impl_->to_value() == other; }
 
-    bool column::operator==(const long double &other) const {
-      return impl_->to_value() == other;
-    }
+    bool column::operator==(const long double &other) const { return impl_->to_value() == other; }
 
-    bool operator==(const sql_value &other, const column &column) {
-      return other == column.value();
-    }
-  } // namespace db
-} // namespace coda
+    bool operator==(const sql_value &other, const column &column) { return other == column.value(); }
+}  // namespace coda::db

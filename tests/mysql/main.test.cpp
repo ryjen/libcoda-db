@@ -19,14 +19,12 @@ using namespace coda::db;
 
 using namespace snowhouse;
 
-namespace coda {
-  namespace db {
-    namespace test {
+namespace coda::db::test {
       void register_current_session() {
         auto mysql_factory = std::make_shared<test::factory>();
         register_session("mysql", mysql_factory);
 
-        auto uri_s = get_env_uri("MYSQL_URI", "mysql://root@localhost/test");
+        auto uri_s = get_env_uri("MYSQL_URI", "mysql://test:test@localhost:3306/test");
         current_session = coda::db::create_session(uri_s);
         cout << "connecting to " << uri_s << endl;
       }
@@ -38,7 +36,7 @@ namespace coda {
         public:
         using mysql::session::session;
 
-        void setup() {
+        void setup() override {
           open();
           execute("create table if not exists users(id integer primary key "
                   "auto_increment, first_name "
@@ -52,7 +50,7 @@ namespace coda {
                   "timestamp)");
         }
 
-        void teardown() {
+        void teardown() override {
           execute("drop table users");
           execute("drop table user_settings");
           close();
@@ -63,9 +61,7 @@ namespace coda {
       factory::create(const coda::db::uri &value) {
         return std::make_shared<mysql_session>(value);
       }
-    } // namespace test
-  }   // namespace db
-} // namespace coda
+} // namespace coda::db::test
 
 go_bandit([]() {
   describe("mysql database", []() {
@@ -81,7 +77,7 @@ go_bandit([]() {
     });
     it("can_parse_uri", []() {
       auto mysql = create_session("mysql://localhost:4000/test");
-      AssertThat(mysql.get() != NULL, IsTrue());
+      AssertThat(mysql != nullptr, IsTrue());
       AssertThat(mysql->connection_info().host, Equals("localhost"));
       AssertThat(mysql->connection_info().port, Equals("4000"));
       AssertThat(mysql->connection_info().path, Equals("test"));

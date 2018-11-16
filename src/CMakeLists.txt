@@ -47,6 +47,7 @@ set(LIBRARY_SOURCES ${${PROJECT_NAME}_HEADERS}
         schema_factory.cpp
         select_query.cpp
         session.cpp
+        session_factory.cpp
         sqldb.cpp
         sql_common.cpp
         sql_generator.cpp

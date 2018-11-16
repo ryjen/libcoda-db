@@ -5,13 +5,10 @@
 
 using namespace std;
 
-namespace coda {
-  namespace db {
-    namespace sqlite {
-      row::row(const std::shared_ptr<sqlite::session> &sess,
-               const shared_ptr<sqlite3_stmt> &stmt)
+namespace coda::db::sqlite {
+      row::row(const std::shared_ptr<sqlite::session> &sess, const shared_ptr<sqlite3_stmt> &stmt)
           : row_impl(), stmt_(stmt), sess_(sess) {
-        if (sess_ == NULL) {
+        if (sess_ == nullptr) {
           throw database_exception("no database provided to sqlite3 row");
         }
 
@@ -19,26 +16,7 @@ namespace coda {
           throw database_exception("no statement provided to sqlite3 row");
         }
 
-        size_ = sqlite3_column_count(stmt_.get());
-      }
-
-      row::row(row &&other)
-          : row_impl(std::move(other)), stmt_(std::move(other.stmt_)),
-            sess_(std::move(other.sess_)), size_(other.size_) {
-        other.stmt_ = nullptr;
-        other.sess_ = nullptr;
-      }
-
-      row::~row() {}
-
-      row &row::operator=(row &&other) {
-        stmt_ = std::move(other.stmt_);
-        sess_ = std::move(other.sess_);
-        size_ = other.size_;
-        other.stmt_ = nullptr;
-        other.sess_ = nullptr;
-
-        return *this;
+        size_ = static_cast<size_t>(sqlite3_column_count(stmt_.get()));
       }
 
       row::column_type row::column(size_t nPosition) const {
@@ -69,12 +47,10 @@ namespace coda {
           throw no_such_column_exception();
         }
 
-        return sqlite3_column_name(stmt_.get(), nPosition);
+        return sqlite3_column_name(stmt_.get(), static_cast<int>(nPosition));
       }
 
       size_t row::size() const noexcept { return size_; }
 
       bool row::is_valid() const noexcept { return stmt_ != nullptr; }
-    } // namespace sqlite
-  }   // namespace db
-} // namespace coda
+}  // namespace coda::db::sqlite

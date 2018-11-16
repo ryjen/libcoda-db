@@ -16,9 +16,7 @@ using namespace coda::db;
 
 using namespace snowhouse;
 
-namespace coda {
-  namespace db {
-    namespace test {
+namespace coda::db::test {
       std::shared_ptr<coda::db::session> current_session;
 
       namespace spec {
@@ -47,6 +45,4 @@ namespace coda {
         current_session->clear_schema("users");
         current_session->clear_schema("user_settings");
       }
-    } // namespace test
-  }   // namespace db
-} // namespace coda
+} // namespace coda::db::test

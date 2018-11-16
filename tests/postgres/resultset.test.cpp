@@ -1,8 +1,13 @@
 #include <string>
 
-#include "../db.test.h"
+#include "resultset.h"
 #include "postgres/resultset.h"
+
+#include "session.h"
 #include "postgres/session.h"
+
+#include "../db.test.h"
+
 #include <bandit/bandit.h>
 
 using namespace bandit;
@@ -49,7 +54,7 @@ SPEC_BEGIN(postgres_resultset) {
       AssertThrows(database_exception, postgres::resultset(nullptr, nullptr));
       AssertThrows(database_exception,
                    postgres::resultset(dynamic_pointer_cast<postgres::session>(
-                                           test::current_session),
+                                           test::current_session->impl()),
                                        nullptr));
     });
 

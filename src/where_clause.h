@@ -4,15 +4,14 @@
 #ifndef CODA_DB_WHERE_CLAUSE_H
 #define CODA_DB_WHERE_CLAUSE_H
 
-#include "bindable.h"
-#include "sql_generator.h"
-#include "sql_value.h"
 #include <memory>
 #include <string>
 #include <vector>
+#include "bindable.h"
+#include "sql_generator.h"
+#include "sql_value.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     class session_impl;
     class sql_operator;
 
@@ -24,74 +23,46 @@ namespace coda {
     named_param bind(const std::string &name, const sql_value &value);
 
     namespace op {
-      typedef enum {
-        EQ,
-        LIKE,
-        IN,
-        BETWEEN,
-        ISNULL,
-        GREATER,
-        LESSER,
-        EQ_GREATER,
-        EQ_LESSER
-      } type;
+      typedef enum { EQ, LIKE, IN, BETWEEN, ISNULL, GREATER, LESSER, EQ_GREATER, EQ_LESSER } type;
 
-      constexpr static const char *const type_values[] = {
-          "=", "LIKE", "IN", "BETWEEN", "IS NULL", ">", "<", ">=", "<="};
+      constexpr static const char *const type_values[] = {"=", "LIKE", "IN", "BETWEEN", "IS NULL",
+                                                          ">", "<",    ">=", "<="};
 
       constexpr static const char *const not_type_values[] = {
-          "!=", "NOT LIKE", "NOT IN", "NOT BETWEEN", "IS NOT NULL", "!>",
-          "!<", "<",        ">"};
+          "!=", "NOT LIKE", "NOT IN", "NOT BETWEEN", "IS NOT NULL", "!>", "!<", "<", ">"};
 
       sql_operator equals(const sql_value &lvalue, const sql_value &rvalue);
       sql_operator greater(const sql_value &lvalue, const sql_value &rvalue);
       sql_operator lesser(const sql_value &lvalue, const sql_value &rvalue);
-      sql_operator equals_greater(const sql_value &lvalue,
-                                  const sql_value &rvalue);
-      sql_operator equals_lesser(const sql_value &lvalue,
-                                 const sql_value &rvalue);
+      sql_operator equals_greater(const sql_value &lvalue, const sql_value &rvalue);
+      sql_operator equals_lesser(const sql_value &lvalue, const sql_value &rvalue);
       sql_operator like(const sql_value &lvalue, const std::string &rvalue);
-      sql_operator startswith(const sql_value &lvalue,
-                              const std::string &rvalue);
+      sql_operator startswith(const sql_value &lvalue, const std::string &rvalue);
       sql_operator endswith(const sql_value &lvalue, const std::string &rvalue);
       sql_operator contains(const sql_value &lvalue, const std::string &rvalue);
-      sql_operator in(const sql_value &lvalue,
-                      const std::vector<sql_value> &rvalue);
-      sql_operator between(const sql_value &lvalue, const sql_value &rvalue1,
-                           const sql_value &rvalue2);
+      sql_operator in(const sql_value &lvalue, const std::vector<sql_value> &rvalue);
+      sql_operator between(const sql_value &lvalue, const sql_value &rvalue1, const sql_value &rvalue2);
       sql_operator is_null(const sql_value &lvalue);
-    } // namespace op
+    }  // namespace op
 
     class sql_operator {
       friend class where_builder;
-      friend sql_operator op::equals(const sql_value &lvalue,
-                                     const sql_value &rvalue);
-      friend sql_operator op::greater(const sql_value &lvalue,
-                                      const sql_value &rvalue);
-      friend sql_operator op::lesser(const sql_value &lvalue,
-                                     const sql_value &rvalue);
-      friend sql_operator op::equals_greater(const sql_value &lvalue,
-                                             const sql_value &rvalue);
-      friend sql_operator op::equals_lesser(const sql_value &lvalue,
-                                            const sql_value &rvalue);
-      friend sql_operator op::like(const sql_value &lvalue,
-                                   const std::string &rvalue);
-      friend sql_operator op::startswith(const sql_value &lvalue,
-                                         const std::string &rvalue);
-      friend sql_operator op::endswith(const sql_value &lvalue,
-                                       const std::string &rvalue);
-      friend sql_operator op::contains(const sql_value &lvalue,
-                                       const std::string &rvalue);
-      friend sql_operator op::in(const sql_value &lvalue,
-                                 const std::vector<sql_value> &rvalue);
-      friend sql_operator op::between(const sql_value &lvalue,
-                                      const sql_value &rvalue1,
-                                      const sql_value &rvalue2);
+      friend sql_operator op::equals(const sql_value &lvalue, const sql_value &rvalue);
+      friend sql_operator op::greater(const sql_value &lvalue, const sql_value &rvalue);
+      friend sql_operator op::lesser(const sql_value &lvalue, const sql_value &rvalue);
+      friend sql_operator op::equals_greater(const sql_value &lvalue, const sql_value &rvalue);
+      friend sql_operator op::equals_lesser(const sql_value &lvalue, const sql_value &rvalue);
+      friend sql_operator op::like(const sql_value &lvalue, const std::string &rvalue);
+      friend sql_operator op::startswith(const sql_value &lvalue, const std::string &rvalue);
+      friend sql_operator op::endswith(const sql_value &lvalue, const std::string &rvalue);
+      friend sql_operator op::contains(const sql_value &lvalue, const std::string &rvalue);
+      friend sql_operator op::in(const sql_value &lvalue, const std::vector<sql_value> &rvalue);
+      friend sql_operator op::between(const sql_value &lvalue, const sql_value &rvalue1, const sql_value &rvalue2);
       friend sql_operator op::is_null(const sql_value &lvalue);
 
-      protected:
+     protected:
       void copy(const sql_operator &other);
-      void move(sql_operator &&other);
+      void move(sql_operator &&other) noexcept;
       bool not_;
       sql_value lvalue_;
       union {
@@ -102,13 +73,13 @@ namespace coda {
       op::type type_;
       sql_operator();
 
-      public:
+     public:
       /* rule-of-5 */
       sql_operator(const sql_operator &other);
-      sql_operator(sql_operator &&other);
+      sql_operator(sql_operator &&other) noexcept;
       sql_operator &operator=(const sql_operator &other);
-      sql_operator &operator=(sql_operator &&other);
-      virtual ~sql_operator();
+      sql_operator &operator=(sql_operator &&other) noexcept;
+      ~sql_operator();
 
       sql_operator &operator!();
       op::type type() const;
@@ -117,39 +88,37 @@ namespace coda {
 
       bool is_named() const;
 
-      template <typename T> void rvalue(const T &visitor) {
+      template <typename T>
+      void rvalue(const T &visitor) {
         switch (type_) {
-        case op::EQ:
-        case op::LIKE:
-        case op::ISNULL:
-        case op::GREATER:
-        case op::LESSER:
-        case op::EQ_GREATER:
-        case op::EQ_LESSER:
-          visitor(rvalue_);
-          break;
-        case op::IN:
-          visitor(rvalues_);
-          break;
-        case op::BETWEEN:
-          visitor(rrange_);
-          break;
+          case op::EQ:
+          case op::LIKE:
+          case op::ISNULL:
+          case op::GREATER:
+          case op::LESSER:
+          case op::EQ_GREATER:
+          case op::EQ_LESSER:
+            visitor(rvalue_);
+            break;
+          case op::IN:
+            visitor(rvalues_);
+            break;
+          case op::BETWEEN:
+            visitor(rrange_);
+            break;
         }
       }
     };
 
     class sql_operator_builder : public sql_operator {
-      public:
+     public:
       sql_operator_builder(const sql_value &lvalue);
 
-      using sql_operator::sql_operator;
-      using sql_operator::operator=;
-
-      sql_operator_builder(const sql_operator_builder &other);
-      sql_operator_builder(sql_operator_builder &&other);
-      sql_operator_builder &operator=(const sql_operator_builder &other);
-      sql_operator_builder &operator=(sql_operator_builder &&other);
-      virtual ~sql_operator_builder();
+      sql_operator_builder(const sql_operator_builder &other) = default;
+      sql_operator_builder(sql_operator_builder &&other) noexcept = default;
+      sql_operator_builder &operator=(const sql_operator_builder &other) = default;
+      sql_operator_builder &operator=(sql_operator_builder &&other) noexcept = default;
+      ~sql_operator_builder() = default;
 
       // equals
       sql_operator_builder &operator=(const sql_value &rvalue);
@@ -170,8 +139,7 @@ namespace coda {
       // in
       sql_operator_builder &operator[](const std::vector<sql_value> &values);
       // between
-      sql_operator_builder &
-      operator[](const std::pair<sql_value, sql_value> &values);
+      sql_operator_builder &operator[](const std::pair<sql_value, sql_value> &values);
       // is
       sql_operator_builder &operator=(const sql_null_type &rvalue);
       // is not
@@ -185,19 +153,19 @@ namespace coda {
      * ex. where("a = b") || "c == d" && "e == f";
      */
     class where_clause : public sql_generator {
-      private:
+     private:
       std::string value_;
       std::vector<where_clause> and_;
       std::vector<where_clause> or_;
 
-      std::string generate_sql() const;
+      std::string generate_sql() const override;
       void set_modified();
 
-      public:
+     public:
       /*!
        * Default constructor
        */
-      where_clause();
+      where_clause() = default;
 
       /*!
        * construct a where clause with sql
@@ -206,18 +174,18 @@ namespace coda {
       explicit where_clause(const std::string &value);
 
       /* boilerplate */
-      where_clause(const where_clause &other);
-      where_clause(where_clause &&other);
-      where_clause &operator=(const where_clause &other);
-      where_clause &operator=(where_clause &&other);
-      virtual ~where_clause();
+      where_clause(const where_clause &other) = default;
+      where_clause(where_clause &&other) noexcept = default;
+      where_clause &operator=(const where_clause &other) = default;
+      where_clause &operator=(where_clause &&other) noexcept = default;
+      ~where_clause() = default;
 
       /*!
        * explicit cast operator to sql string
        * @return the sql string
        */
-      explicit operator std::string() const;
-      explicit operator std::string();
+       operator std::string() const;
+       operator std::string();
 
       /*!
        * Appends and AND part to this where clause
@@ -251,33 +219,32 @@ namespace coda {
       /*!
        * resets this where clause
        */
-      void reset();
+      void reset() override;
       void reset(const std::string &value);
       void reset(const where_clause &value);
     };
 
     class where_builder : public where_clause, public bindable {
-      private:
+     private:
       bindable *binder_;
       std::shared_ptr<session_impl> session_;
 
       where_builder &bind(size_t index, const sql_operator &value);
       std::string to_sql(size_t index, const sql_operator &value);
 
-      protected:
-      where_builder &bind(size_t index, const sql_value &value);
-      where_builder &bind(const std::string &name, const sql_value &value);
+     protected:
+      where_builder &bind(size_t index, const sql_value &value) override;
+      where_builder &bind(const std::string &name, const sql_value &value) override;
 
-      public:
-      where_builder(const std::shared_ptr<session_impl> &session,
-                    bindable *bindable);
+     public:
+      where_builder(const std::shared_ptr<session_impl> &session, bindable *bindable);
       where_builder(const where_builder &other);
-      where_builder(where_builder &&other);
+      where_builder(where_builder &&other) noexcept;
       where_builder &operator=(const where_builder &other);
-      where_builder &operator=(where_builder &&other);
-      virtual ~where_builder();
+      where_builder &operator=(where_builder &&other) noexcept;
+      ~where_builder() override = default;
 
-      size_t num_of_bindings() const noexcept;
+      size_t num_of_bindings() const noexcept override;
 
       using sql_generator::to_sql;
 
@@ -296,11 +263,12 @@ namespace coda {
       where_builder &operator||(const sql_operator &value);
     };
 
-    template <typename T> class whereable {
-      public:
+    template <typename T>
+    class whereable {
+     public:
       whereable() = default;
       whereable(const whereable &other) = default;
-      whereable(whereable &&other) = default;
+      whereable(whereable &&other) noexcept = default;
       virtual ~whereable() = default;
       whereable &operator=(const whereable &other) = default;
       whereable &operator=(whereable &&other) = default;
@@ -324,8 +292,7 @@ namespace coda {
     /*!
      * simplify the type name
      */
-    typedef where_clause where;
-  } // namespace db
-} // namespace coda
+    using where = where_clause;
+}  // namespace coda::db
 
 #endif

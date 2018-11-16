@@ -22,7 +22,7 @@ RUN mkdir -p ${BUILD_SRC}/docker-build
 
 WORKDIR ${BUILD_SRC}/docker-build
 
-RUN cmake ${CMAKE_DEFINES} -DPostgreSQL_TYPE_INCLUDE_DIR="$(pg_config --includedir-server)" ..
+RUN cmake ${CMAKE_DEFINES} ..
 
 RUN make
 

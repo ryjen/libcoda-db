@@ -10,8 +10,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     class session;
     class schema;
 
@@ -21,32 +20,36 @@ namespace coda {
      *  with records.
      */
     class schema_factory {
-      private:
+     private:
       std::unordered_map<std::string, std::shared_ptr<schema>> schema_cache_;
-      std::shared_ptr<schema> create(const std::shared_ptr<session> &session,
-                                     const std::string &tableName);
+      std::shared_ptr<schema> create(const std::shared_ptr<session> &session, const std::string &tableName);
 
-      public:
+     public:
       /*
        * default constructor
        */
-      schema_factory();
+      schema_factory() = default;
 
       /* boilerplate */
-      schema_factory(schema_factory &&other);
-      schema_factory &operator=(schema_factory &&other);
-      schema_factory(const schema_factory &other);
-      virtual ~schema_factory();
-      schema_factory &operator=(const schema_factory &other);
-      std::shared_ptr<schema> get(const std::shared_ptr<session> &session,
-                                  const std::string &tableName);
+      schema_factory(schema_factory &&other) noexcept = default;
+      schema_factory(const schema_factory &other) = default;
+      ~schema_factory() = default;
+      schema_factory &operator=(const schema_factory &other) = default;
+      schema_factory &operator=(schema_factory &&other) noexcept = default;
+
+      /**
+       * gets the schema given a session and a table name
+       * @param session  the database session
+       * @param tableName the name of the table
+       * @return the schema for the table name in the session
+       */
+      std::shared_ptr<schema> get(const std::shared_ptr<session> &session, const std::string &tableName);
 
       /*!
        * clears a cached schema for the table name
-       * @param tablename the table name to clear the schema for
+       * @param tableName the table name to clear the schema for
        */
-      void clear(const std::string &tablename);
+      void clear(const std::string &tableName);
     };
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 #endif

@@ -1,6 +1,7 @@
 #include <string>
 
 #include "db.test.h"
+#include "session.h"
 #include "resultset.h"
 #include <bandit/bandit.h>
 

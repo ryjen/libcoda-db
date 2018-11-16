@@ -5,12 +5,11 @@
 #ifndef CODA_DB_POSTGRES_BINDING_H
 #define CODA_DB_POSTGRES_BINDING_H
 
-#include "../bind_mapping.h"
 #include <libpq-fe.h>
 #include <string>
+#include "../bind_mapping.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     class sql_value;
 
     namespace postgres {
@@ -18,7 +17,7 @@ namespace coda {
         class from_number;
         class from_value;
         sql_value to_value(Oid type, const char *value, int len);
-      } // namespace data_mapper
+      }  // namespace data_mapper
       /*
        * utility class to simplify binding query parameters
        */
@@ -28,7 +27,7 @@ namespace coda {
         friend class data_mapper::from_number;
         friend class data_mapper::from_value;
 
-        private:
+       private:
         char **values_;
         Oid *types_;
         int *lengths_;
@@ -39,7 +38,7 @@ namespace coda {
         void clear_value(size_t index);
         bool reallocate_value(size_t index);
 
-        public:
+       public:
         /*!
          * default constructor
          */
@@ -47,19 +46,19 @@ namespace coda {
         /*!
          * zero out an array of size for binding
          */
-        binding(size_t size);
+        explicit binding(size_t size);
 
         /* boilerplate */
         binding(const binding &other);
-        binding(binding &&other);
+        binding(binding &&other) noexcept;
         binding &operator=(const binding &other);
-        binding &operator=(binding &&other);
-        virtual ~binding();
+        binding &operator=(binding &&other) noexcept;
+        ~binding() override;
 
         /*!
          * @return the number of bindings
          */
-        size_t num_of_bindings() const noexcept;
+        size_t num_of_bindings() const noexcept override;
 
         /*!
          * @return the current capcity of the storage
@@ -82,18 +81,17 @@ namespace coda {
         int sql_type(size_t index) const;
 
         /* bindable overrides */
-        binding &bind(size_t index, const sql_value &value);
-        binding &bind(const std::string &name, const sql_value &value);
+        binding &bind(size_t index, const sql_value &value) override;
+        binding &bind(const std::string &name, const sql_value &value) override;
 
         std::string prepare(const std::string &sql);
 
         /*!
          * clear and remove all bindings
          */
-        void reset();
+        void reset() override;
       };
-    } // namespace postgres
-  }   // namespace db
-} // namespace coda
+    }  // namespace postgres
+}  // namespace coda::db
 
 #endif

@@ -2,11 +2,8 @@
 #include "transaction.h"
 #include "../exception.h"
 
-namespace coda {
-  namespace db {
-    namespace postgres {
-      transaction::transaction(const std::shared_ptr<PGconn> &db,
-                               const transaction::mode &mode)
+namespace coda::db::postgres {
+      transaction::transaction(const std::shared_ptr<PGconn> &db, const transaction::mode &mode)
           : db_(db), mode_(mode) {}
 
       bool transaction::is_active() const noexcept {
@@ -18,35 +15,34 @@ namespace coda {
         std::string buf = "START TRANSACTION";
 
         switch (mode_.isolation) {
-        default:
-        case db::transaction::isolation::none:
-          break;
-        case db::transaction::isolation::serializable:
-          buf += " ISOLATION LEVEL SERIALIZABLE";
-          break;
-        case db::transaction::isolation::repeatable_read:
-          buf += " ISOLATION LEVEL REPEATABLE READ";
-          break;
-        case db::transaction::isolation::read_commited:
-          buf += " ISOLATION LEVEL READ COMMITTED";
-          break;
-        case db::transaction::isolation::read_uncommited:
-          buf += " ISOLATION LEVEL READ UNCOMMITTED";
-          break;
+          default:
+          case db::transaction::isolation::none:
+            break;
+          case db::transaction::isolation::serializable:
+            buf += " ISOLATION LEVEL SERIALIZABLE";
+            break;
+          case db::transaction::isolation::repeatable_read:
+            buf += " ISOLATION LEVEL REPEATABLE READ";
+            break;
+          case db::transaction::isolation::read_commited:
+            buf += " ISOLATION LEVEL READ COMMITTED";
+            break;
+          case db::transaction::isolation::read_uncommited:
+            buf += " ISOLATION LEVEL READ UNCOMMITTED";
+            break;
         }
         switch (mode_.type) {
-        default:
-        case db::transaction::none:
-          break;
-        case db::transaction::read_write:
-          buf += " READ WRITE";
-          break;
-        case db::transaction::read_only:
-          buf += " READ ONLY";
-          break;
+          default:
+          case db::transaction::none:
+            break;
+          case db::transaction::read_write:
+            buf += " READ WRITE";
+            break;
+          case db::transaction::read_only:
+            buf += " READ ONLY";
+            break;
         }
-        if (mode_.deferrable &&
-            mode_.isolation == db::transaction::isolation::serializable &&
+        if (mode_.deferrable && mode_.isolation == db::transaction::isolation::serializable &&
             mode_.type == db::transaction::read_only) {
           if (mode_.deferrable == 1) {
             buf += " DEFERABLE";
@@ -64,11 +60,7 @@ namespace coda {
         PQclear(res);
 
         if (error) {
-          throw transaction_exception(
-              std::string("unable to start transaction: ") +
-              PQerrorMessage(db_.get()));
+          throw transaction_exception(std::string("unable to start transaction: ") + PQerrorMessage(db_.get()));
         }
       }
-    } // namespace postgres
-  }   // namespace db
-} // namespace coda
+}  // namespace coda::db::postgres

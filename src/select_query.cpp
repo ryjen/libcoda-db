@@ -8,61 +8,19 @@
 
 using namespace std;
 
-namespace coda {
-  namespace db {
-    select_query::select_query(
-        const std::shared_ptr<coda::db::session> &session)
-        : query(session), where_(session->impl(), this) {}
-    select_query::select_query(
-        const std::shared_ptr<coda::db::session> &session,
-        const vector<string> &columns)
-        : query(session), where_(session->impl(), this), columns_(columns) {}
-    select_query::select_query(
-        const std::shared_ptr<coda::db::session> &session,
-        const vector<string> &columns, const string &tableName)
-        : query(session), where_(session->impl(), this), columns_(columns),
-          tableName_(tableName) {}
+namespace coda::db {
 
-    select_query::select_query(const select_query &other)
-        : query(other), where_(other.where_), limit_(other.limit_),
-          orderBy_(other.orderBy_), groupBy_(other.groupBy_),
-          columns_(other.columns_), tableName_(other.tableName_) {}
+    select_query::select_query(const std::shared_ptr<coda::db::session> &session)
+        : query(session), where_(session->impl(), this) {}
+    select_query::select_query(const std::shared_ptr<coda::db::session> &session, const vector<string> &columns)
+        : query(session), where_(session->impl(), this), columns_(columns) {}
+    select_query::select_query(const std::shared_ptr<coda::db::session> &session, const vector<string> &columns,
+                               const string &tableName)
+        : query(session), where_(session->impl(), this), columns_(columns), tableName_(tableName) {}
 
     select_query::select_query(const shared_ptr<schema> &schema)
         : select_query(schema->get_session(), schema->column_names()) {
       tableName_ = schema->table_name();
-    }
-
-    select_query::select_query(select_query &&other)
-        : query(std::move(other)), where_(std::move(other.where_)),
-          limit_(std::move(other.limit_)), orderBy_(std::move(other.orderBy_)),
-          groupBy_(std::move(other.groupBy_)),
-          columns_(std::move(other.columns_)),
-          tableName_(std::move(other.tableName_)) {}
-
-    select_query::~select_query() {}
-    select_query &select_query::operator=(const select_query &other) {
-      query::operator=(other);
-      where_ = other.where_;
-      limit_ = other.limit_;
-      orderBy_ = other.orderBy_;
-      groupBy_ = other.groupBy_;
-      columns_ = other.columns_;
-      tableName_ = other.tableName_;
-
-      return *this;
-    }
-
-    select_query &select_query::operator=(select_query &&other) {
-      query::operator=(std::move(other));
-      where_ = std::move(other.where_);
-      limit_ = std::move(other.limit_);
-      orderBy_ = std::move(other.orderBy_);
-      groupBy_ = std::move(other.groupBy_);
-      columns_ = std::move(other.columns_);
-      tableName_ = std::move(other.tableName_);
-
-      return *this;
     }
 
     select_query &select_query::from(const string &value) {
@@ -136,8 +94,7 @@ namespace coda {
       return join_.back();
     }
 
-    join_clause &select_query::join(const string &tableName,
-                                    const string &alias, join::type type) {
+    join_clause &select_query::join(const string &tableName, const string &alias, join::type type) {
       join_.emplace_back(tableName, alias, type);
       set_modified();
       return join_.back();
@@ -148,8 +105,7 @@ namespace coda {
       return *this;
     }
 
-    select_query &select_query::union_with(const select_query &query,
-                                           union_op::type type) {
+    select_query &select_query::union_with(const select_query &query, union_op::type type) {
       union_ = make_shared<union_operator>(query, type);
       set_modified();
       return *this;
@@ -160,7 +116,7 @@ namespace coda {
 
       buf += "SELECT ";
 
-      buf += (columns_.size() == 0 ? "*" : helper::join_csv(columns_));
+      buf += (columns_.empty() ? "*" : helper::join_csv(columns_));
 
       buf += " FROM ";
 
@@ -215,7 +171,7 @@ namespace coda {
 
         prepare(to_sql());
 
-        sql_number value = execute_scalar<sql_number>();
+        auto value = execute_scalar<sql_number>();
 
         columns_ = cols;
 
@@ -234,8 +190,7 @@ namespace coda {
       return stmt_->results();
     }
 
-    void select_query::execute(
-        const std::function<void(const resultset &rs)> &funk) {
+    void select_query::execute(const std::function<void(const resultset &rs)> &funk) {
       prepare(to_sql());
 
       auto rs = stmt_->results();
@@ -252,5 +207,4 @@ namespace coda {
       out << other.to_sql();
       return out;
     }
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db

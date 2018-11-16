@@ -5,13 +5,10 @@
 
 using namespace std;
 
-namespace coda {
-  namespace db {
-    namespace postgres {
-      row::row(const std::shared_ptr<postgres::session> &sess,
-               const shared_ptr<PGresult> &stmt, int row)
+namespace coda::db::postgres {
+      row::row(const std::shared_ptr<postgres::session> &sess, const shared_ptr<PGresult> &stmt, int row)
           : row_impl(), stmt_(stmt), sess_(sess), row_(row) {
-        if (sess_ == NULL) {
+        if (sess_ == nullptr) {
           throw database_exception("no database provided to postgres row");
         }
 
@@ -19,28 +16,7 @@ namespace coda {
           throw database_exception("no statement provided to postgres row");
         }
 
-        size_ = PQnfields(stmt_.get());
-      }
-
-      row::row(row &&other)
-          : row_impl(std::move(other)), stmt_(std::move(other.stmt_)),
-            sess_(std::move(other.sess_)), size_(other.size_),
-            row_(other.row_) {
-        other.stmt_ = nullptr;
-        other.sess_ = NULL;
-      }
-
-      row::~row() {}
-
-      row &row::operator=(row &&other) {
-        stmt_ = std::move(other.stmt_);
-        sess_ = std::move(other.sess_);
-        size_ = other.size_;
-        row_ = other.row_;
-        other.stmt_ = nullptr;
-        other.sess_ = NULL;
-
-        return *this;
+        size_ = static_cast<size_t>(PQnfields(stmt_.get()));
       }
 
       row::column_type row::column(size_t nPosition) const {
@@ -48,8 +24,7 @@ namespace coda {
           throw no_such_column_exception();
         }
 
-        return column_type(
-            make_shared<postgres::column>(stmt_, row_, nPosition));
+        return column_type(make_shared<postgres::column>(stmt_, row_, nPosition));
       }
 
       row::column_type row::column(const string &name) const {
@@ -72,14 +47,10 @@ namespace coda {
           throw no_such_column_exception();
         }
 
-        return PQfname(stmt_.get(), nPosition);
+        return PQfname(stmt_.get(), static_cast<int>(nPosition));
       }
 
       size_t row::size() const noexcept { return size_; }
 
-      bool row::is_valid() const noexcept {
-        return stmt_ != nullptr && row_ >= 0;
-      }
-    } // namespace postgres
-  }   // namespace db
-} // namespace coda
+      bool row::is_valid() const noexcept { return stmt_ != nullptr && row_ >= 0; }
+}  // namespace coda::db::postgres

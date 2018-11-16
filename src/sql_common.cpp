@@ -1,11 +1,10 @@
 #include "sql_common.h"
-#include "sql_number.h"
 #include <codecvt>
 #include <cstdlib>
 #include <locale>
+#include "sql_number.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     std::ostream &operator<<(std::ostream &out, const sql_blob &value) {
       if (value.size() == 0) {
         out << "NULL";
@@ -52,19 +51,14 @@ namespace coda {
 
     namespace helper {
       bool equals(const std::string &s1, const std::string &s2) {
-        return (
-            (s1.size() == s2.size()) &&
-            std::equal(s1.begin(), s1.end(), s2.begin(), [](char a, char b) {
-              return toupper(a) == toupper(b);
-            }));
+        return ((s1.size() == s2.size()) &&
+                std::equal(s1.begin(), s1.end(), s2.begin(), [](char a, char b) { return toupper(a) == toupper(b); }));
       }
 
       bool equals(const std::wstring &s1, const std::wstring &s2) {
-        return ((s1.size() == s2.size()) &&
-                std::equal(s1.begin(), s1.end(), s2.begin(),
-                           [](wchar_t a, wchar_t b) {
-                             return towupper(a) == towupper(b);
-                           }));
+        return ((s1.size() == s2.size()) && std::equal(s1.begin(), s1.end(), s2.begin(), [](wchar_t a, wchar_t b) {
+                  return towupper(a) == towupper(b);
+                }));
       }
 
       bool is_positive_bool(const sql_string &value) {
@@ -89,21 +83,13 @@ namespace coda {
         return converter.to_bytes(buf);
       }
 
-      std::wstring convert_string(const std::string &buf) {
-        return std::wstring(buf.begin(), buf.end());
-      }
+      std::wstring convert_string(const std::string &buf) { return std::wstring(buf.begin(), buf.end()); }
 
-      sql_string as_sql_string::operator()(const sql_time &value) const {
-        return value.to_string();
-      }
+      sql_string as_sql_string::operator()(const sql_time &value) const { return value.to_string(); }
 
-      sql_string as_sql_string::operator()(const sql_string &value) const {
-        return value;
-      }
+      sql_string as_sql_string::operator()(const sql_string &value) const { return value; }
 
-      sql_string as_sql_string::operator()(const sql_wstring &value) const {
-        return convert_string(value);
-      }
+      sql_string as_sql_string::operator()(const sql_wstring &value) const { return convert_string(value); }
 
       sql_string as_sql_string::operator()(const sql_blob &value) const {
         std::ostringstream ss;
@@ -111,25 +97,15 @@ namespace coda {
         return ss.str();
       }
 
-      sql_string as_sql_string::operator()(const sql_null_type &null) const {
-        return "NULL";
-      }
+      sql_string as_sql_string::operator()(const sql_null_type &null) const { return "NULL"; }
 
-      sql_string as_sql_string::operator()(const sql_number &value) const {
-        return value;
-      }
+      sql_string as_sql_string::operator()(const sql_number &value) const { return value; }
 
-      sql_wstring as_sql_wstring::operator()(const sql_time &value) const {
-        return value;
-      }
+      sql_wstring as_sql_wstring::operator()(const sql_time &value) const { return value; }
 
-      sql_wstring as_sql_wstring::operator()(const sql_string &value) const {
-        return convert_string(value);
-      }
+      sql_wstring as_sql_wstring::operator()(const sql_string &value) const { return convert_string(value); }
 
-      sql_wstring as_sql_wstring::operator()(const sql_wstring &value) const {
-        return value;
-      }
+      sql_wstring as_sql_wstring::operator()(const sql_wstring &value) const { return value; }
 
       sql_wstring as_sql_wstring::operator()(const sql_blob &value) const {
         std::wostringstream ss;
@@ -137,13 +113,8 @@ namespace coda {
         return ss.str();
       }
 
-      sql_wstring as_sql_wstring::operator()(const sql_null_type &null) const {
-        return L"NULL";
-      }
+      sql_wstring as_sql_wstring::operator()(const sql_null_type &null) const { return L"NULL"; }
 
-      sql_wstring as_sql_wstring::operator()(const sql_number &value) const {
-        return value.to_wstring();
-      }
-    }; // namespace helper
-  }    // namespace db
-} // namespace coda
+      sql_wstring as_sql_wstring::operator()(const sql_number &value) const { return value.to_wstring(); }
+    };  // namespace helper
+}  // namespace coda::db

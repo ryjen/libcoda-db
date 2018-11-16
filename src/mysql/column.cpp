@@ -1,17 +1,14 @@
 
 #include "column.h"
+#include <ctime>
+#include <string>
 #include "../sql_value.h"
 #include "binding.h"
-#include <string>
-#include <time.h>
 
 using namespace std;
 
-namespace coda {
-  namespace db {
-    namespace mysql {
-      column::column(const shared_ptr<MYSQL_RES> &res, MYSQL_ROW pValue,
-                     size_t index)
+namespace coda::db::mysql {
+      column::column(const shared_ptr<MYSQL_RES> &res, MYSQL_ROW pValue, unsigned int index)
           : value_(pValue), res_(res), index_(index) {
         if (value_ == nullptr) {
           throw database_exception("no mysql value provided for column");
@@ -21,18 +18,15 @@ namespace coda {
         }
       }
 
-      column::column(column &&other)
-          : value_(other.value_), res_(other.res_), index_(other.index_) {
+      column::column(column &&other) noexcept : value_(other.value_), res_(std::move(other.res_)), index_(other.index_) {
         other.value_ = nullptr;
         other.res_ = nullptr;
       }
 
-      column::~column() {}
-
-      column &column::operator=(column &&other) {
+      column &column::operator=(column &&other) noexcept {
         value_ = other.value_;
         index_ = other.index_;
-        res_ = other.res_;
+        res_ = std::move(other.res_);
 
         other.value_ = nullptr;
         other.res_ = nullptr;
@@ -61,8 +55,7 @@ namespace coda {
 
         auto lengths = mysql_fetch_lengths(res_.get());
 
-        return mysql::data_mapper::to_value(field->type, value_[index_],
-                                            !lengths ? 0 : lengths[index_]);
+        return mysql::data_mapper::to_value(field->type, value_[index_], !lengths ? 0 : lengths[index_]);
       }
 
       int column::sql_type() const {
@@ -95,24 +88,19 @@ namespace coda {
 
       /* statement version */
 
-      stmt_column::stmt_column(const string &name,
-                               const shared_ptr<mysql::binding> &bindings,
-                               size_t position)
+      stmt_column::stmt_column(const string &name, const shared_ptr<mysql::binding> &bindings, size_t position)
           : name_(name), value_(bindings), position_(position) {
         if (bindings == nullptr) {
           throw database_exception("no mysql bindings provided for column");
         }
       }
 
-      stmt_column::stmt_column(stmt_column &&other)
-          : name_(std::move(other.name_)), value_(std::move(other.value_)),
-            position_(other.position_) {
+      stmt_column::stmt_column(stmt_column &&other) noexcept
+          : name_(std::move(other.name_)), value_(std::move(other.value_)), position_(other.position_) {
         other.value_ = nullptr;
       }
 
-      stmt_column::~stmt_column() {}
-
-      stmt_column &stmt_column::operator=(stmt_column &&other) {
+      stmt_column &stmt_column::operator=(stmt_column &&other) noexcept {
         name_ = std::move(other.name_);
         value_ = std::move(other.value_);
         position_ = other.position_;
@@ -139,6 +127,4 @@ namespace coda {
       }
 
       string stmt_column::name() const { return name_; }
-    } // namespace mysql
-  }   // namespace db
-} // namespace coda
+}  // namespace coda::db::mysql

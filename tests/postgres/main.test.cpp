@@ -19,15 +19,13 @@ using namespace coda::db;
 
 using namespace snowhouse;
 
-namespace coda {
-  namespace db {
-    namespace test {
+namespace coda::db::test {
       void register_current_session() {
         auto pq_factory = std::make_shared<test::factory>();
         register_session("postgres", pq_factory);
         register_session("postgresql", pq_factory);
 
-        auto uri_s = get_env_uri("POSTGRES_URI", "postgres://localhost/test");
+        auto uri_s = get_env_uri("POSTGRES_URI", "postgres://test:test@localhost:5432/test");
         current_session = coda::db::create_session(uri_s);
         cout << "connecting to " << uri_s << endl;
       }
@@ -39,7 +37,7 @@ namespace coda {
         public:
         using postgres::session::session;
 
-        void setup() {
+        void setup() override {
           open();
           execute("create table if not exists users(id serial primary key "
                   "unique, first_name varchar(45), "
@@ -54,7 +52,7 @@ namespace coda {
                   "timestamp)");
         }
 
-        void teardown() {
+        void teardown() override {
           execute("drop table users");
           execute("drop table user_settings");
           close();
@@ -65,9 +63,8 @@ namespace coda {
       factory::create(const coda::db::uri &value) {
         return std::make_shared<postgres_session>(value);
       }
-    } // namespace test
-  }   // namespace db
-} // namespace coda
+} // namespace coda::db::test
+
 go_bandit([]() {
   describe("postgres database", []() {
     before_each([]() { test::setup_current_session(); });
@@ -80,7 +77,7 @@ go_bandit([]() {
     });
     it("can_parse_uri", []() {
       auto postgres = create_session("postgres://localhost:4000/test");
-      AssertThat(postgres.get() != NULL, IsTrue());
+      AssertThat(postgres != nullptr, IsTrue());
       AssertThat(postgres->connection_info().host, Equals("localhost"));
       AssertThat(postgres->connection_info().port, Equals("4000"));
       AssertThat(postgres->connection_info().path, Equals("test"));

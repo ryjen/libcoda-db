@@ -4,13 +4,12 @@
 #include <ctime>
 #include <string>
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     /*!
      * a date/time column format
      */
     class sql_time {
-      public:
+     public:
       /*!
        * types of date time values
        */
@@ -20,19 +19,19 @@ namespace coda {
        * @param value the unix timestamp
        * @param format the format to display
        */
-      sql_time(time_t value = time(0), formats format = TIMESTAMP);
+       sql_time(time_t value = time(nullptr), formats format = TIMESTAMP);
 
-      sql_time(const std::string &value);
+       sql_time(const std::string &value);
 
-      sql_time(const sql_time &other);
+      sql_time(const sql_time &other) = default;
 
-      sql_time(sql_time &&other);
+      sql_time(sql_time &&other) noexcept = default;
 
-      sql_time &operator=(const sql_time &other);
+      sql_time &operator=(const sql_time &other) = default;
 
-      sql_time &operator=(sql_time &&other);
+      sql_time &operator=(sql_time &&other) noexcept = default;
 
-      virtual ~sql_time();
+      ~sql_time() = default;
 
       /*!
        * @return the format of the timestamp
@@ -41,11 +40,11 @@ namespace coda {
 
       time_t value() const;
 
-      operator time_t() const;
+       operator time_t() const;
 
-      operator std::string() const;
+       operator std::string() const;
 
-      operator std::wstring() const;
+       operator std::wstring() const;
 
       /*!
        * @return a time structure based on the timestamp
@@ -60,7 +59,7 @@ namespace coda {
 
       bool operator==(const sql_time &other) const;
 
-      private:
+     private:
       bool parse(const std::string &value);
 
       time_t value_;
@@ -68,7 +67,6 @@ namespace coda {
     };
 
     std::ostream &operator<<(std::ostream &out, const sql_time &value);
-  } // namespace db
-} // namespace coda
+}  // namespace coda:db
 
 #endif

@@ -6,13 +6,13 @@
 #ifndef CODA_DB_SESSION_H
 #define CODA_DB_SESSION_H
 
-#include "schema_factory.h"
-#include "uri.h"
 #include <memory>
 #include <vector>
+#include "schema_factory.h"
+#include "uri.h"
+#include "sql_types.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     struct column_definition;
 
     class schema;
@@ -28,15 +28,15 @@ namespace coda {
     class resultset_impl;
 
     class session_impl {
-      public:
-      typedef statement statement_type;
-      typedef transaction_impl transaction_type;
-      typedef resultset_impl resultset_type;
+     public:
+      using statement_type = statement;
+      using transaction_type = transaction_impl;
+      using resultset_type = resultset_impl;
 
       /*!
        * default constructor expects a uri
        */
-      session_impl(const uri &connectionInfo);
+      explicit session_impl(const uri &connectionInfo);
 
       /*!
        * gets the connection info
@@ -64,13 +64,13 @@ namespace coda {
        * gets the last insert id from any statement
        * @return the last insert id or zero
        */
-      virtual long long last_insert_id() const = 0;
+      virtual sql_id last_insert_id() const = 0;
 
       /*!
        * gets the last number of modified records for any statement
        * @return the last number of changes or zero
        */
-      virtual int last_number_of_changes() const = 0;
+      virtual sql_changes last_number_of_changes() const = 0;
 
       /*!
        * gets the last error for any statement
@@ -107,9 +107,8 @@ namespace coda {
        * @param tablename the table to query
        * @param columns   an array to put columns found
        */
-      virtual std::vector<column_definition>
-      get_columns_for_schema(const std::string &dbName,
-                             const std::string &tablename) = 0;
+      virtual std::vector<column_definition> get_columns_for_schema(const std::string &dbName,
+                                                                    const std::string &tablename) = 0;
 
       /*!
        * binds a null value
@@ -118,7 +117,7 @@ namespace coda {
 
       virtual int features() const;
 
-      private:
+     private:
       uri connectionInfo_;
     };
 
@@ -128,23 +127,23 @@ namespace coda {
     class session : public std::enable_shared_from_this<session> {
       friend struct sqldb;
 
-      public:
-      typedef resultset resultset_type;
-      typedef statement statement_type;
-      typedef transaction transaction_type;
+     public:
+      using resultset_type = resultset;
+      using statement_type = statement;
+      using transaction_type = transaction;
 
-      session(const std::shared_ptr<session_impl> &impl);
+      explicit session(const std::shared_ptr<session_impl> &impl);
 
       /* default boilerplate */
-      session(const session &other);
+      session(const session &other) = default;
 
-      session(session &&other);
+      session(session &&other) noexcept = default;
 
-      session &operator=(const session &other);
+      ~session() = default;
 
-      session &operator=(session &&other);
+      session &operator=(const session &other) = default;
 
-      virtual ~session();
+      session &operator=(session &&other) noexcept = default;
 
       /*!
        * tests if a connection to the database is open
@@ -166,13 +165,13 @@ namespace coda {
        * gets the last insert id from any statement
        * @return the last insert id or zero
        */
-      long long last_insert_id() const;
+      sql_id last_insert_id() const;
 
       /*!
        * gets the last number of modified records for any statement
        * @return the last number of changes or zero
        */
-      int last_number_of_changes() const;
+      sql_changes last_number_of_changes() const;
 
       /*!
        * @return a statement for this database
@@ -223,20 +222,20 @@ namespace coda {
       /*!
        * gets the implementation casted to a subtype
        */
-      template <typename T> std::shared_ptr<T> impl() const {
-        return std::dynamic_pointer_cast<T>(impl());
+      template <typename T>
+      std::shared_ptr<T> impl() const {
+        return std::dynamic_pointer_cast<T>(impl_);
       }
 
       /*!
        * utility method used in creating sql
        */
-      std::string join_params(const std::vector<std::string> &columns,
-                              const std::string &op = "") const;
+      std::string join_params(const std::vector<std::string> &columns, const std::string &op = "") const;
 
-      private:
+     private:
       std::shared_ptr<session_impl> impl_;
 
-      protected:
+     protected:
       friend class insert_query;
 
       friend class schema;
@@ -246,12 +245,11 @@ namespace coda {
        * @param tablename the tablename
        * @param columns   the collection of columns to store the results
        */
-      std::vector<column_definition>
-      get_columns_for_schema(const std::string &tablename);
+      std::vector<column_definition> get_columns_for_schema(const std::string &tablename);
 
       schema_factory schema_factory_;
 
-      public:
+     public:
       typedef enum {
         FEATURE_RETURNING = (1 << 0),
         FEATURE_FULL_OUTER_JOIN = (1 << 1),
@@ -261,7 +259,6 @@ namespace coda {
 
       bool has_feature(feature_type feature) const;
     };
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

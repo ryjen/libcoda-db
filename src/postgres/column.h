@@ -5,22 +5,20 @@
 #ifndef CODA_DB_POSTGRES_COLUMN_H
 #define CODA_DB_POSTGRES_COLUMN_H
 
-#include "../column.h"
 #include <libpq-fe.h>
+#include "../column.h"
 
-namespace coda {
-  namespace db {
-    namespace postgres {
+namespace coda::db::postgres {
       /*!
        * a sqlite specific implementation of a column
        */
       class column : public column_impl {
-        private:
+       private:
         std::shared_ptr<PGresult> stmt_;
         int column_;
         int row_;
 
-        public:
+       public:
         /*!
          * @param stmt the query statement in use
          * @param row the row index
@@ -30,19 +28,17 @@ namespace coda {
 
         /* non-copyable boilerplate */
         column(const column &other) = delete;
-        column(column &&other);
-        virtual ~column();
+        column(column &&other) noexcept = default;
+        ~column() = default;
         column &operator=(const column &other) = delete;
-        column &operator=(column &&other);
+        column &operator=(column &&other) noexcept = default;
 
         /* column_impl overrides */
-        bool is_valid() const;
-        sql_value to_value() const;
+        bool is_valid() const override;
+        sql_value to_value() const override;
         int sql_type() const;
-        std::string name() const;
+        std::string name() const override;
       };
-    } // namespace postgres
-  }   // namespace db
-} // namespace coda
+}  // namespace coda::db::postgres
 
 #endif

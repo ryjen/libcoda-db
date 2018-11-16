@@ -5,16 +5,13 @@
 
 using namespace std;
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     /*!
      * @param db the database to modify
      * @param tableName the table to modify
      * @param columns the columns to modify
      */
-    insert_query::insert_query(
-        const std::shared_ptr<coda::db::session> &session,
-        const std::string &tableName)
+    insert_query::insert_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName)
         : modify_query(session) {
       tableName_ = tableName;
     }
@@ -23,9 +20,8 @@ namespace coda {
      * @param db the database to modify
      * @param columns the columns to modify
      */
-    insert_query::insert_query(
-        const std::shared_ptr<coda::db::session> &session,
-        const std::string &tableName, const std::vector<std::string> &columns)
+    insert_query::insert_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName,
+                               const std::vector<std::string> &columns)
         : modify_query(session) {
       tableName_ = tableName;
       columns_ = columns;
@@ -35,22 +31,18 @@ namespace coda {
      * @param schema the schema to modify
      * @param column the specific columns to modify in the schema
      */
-    insert_query::insert_query(const std::shared_ptr<schema> &schema,
-                               const std::vector<std::string> &columns)
+    insert_query::insert_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns)
         : modify_query(schema->get_session()) {
       tableName_ = schema->table_name();
       columns_ = columns;
     }
 
-    insert_query::insert_query(const insert_query &other)
-        : modify_query(other), lastId_(other.lastId_), columns_(other.columns_),
-          tableName_(other.tableName_) {}
-    insert_query::insert_query(insert_query &&other)
-        : modify_query(std::move(other)), lastId_(other.lastId_),
+    insert_query::insert_query(insert_query &&other) noexcept
+        : modify_query(std::move(other)),
+          lastId_(other.lastId_),
           columns_(std::move(other.columns_)),
           tableName_(std::move(other.tableName_)) {}
 
-    insert_query::~insert_query() {}
     insert_query &insert_query::operator=(const insert_query &other) {
       modify_query::operator=(other);
       lastId_ = other.lastId_;
@@ -59,19 +51,17 @@ namespace coda {
       return *this;
     }
 
-    insert_query &insert_query::operator=(insert_query &&other) {
-      modify_query::operator=(std::move(other));
+    insert_query &insert_query::operator=(insert_query &&other) noexcept {
+      modify_query::operator=(other);
       lastId_ = other.lastId_;
       columns_ = std::move(other.columns_);
       tableName_ = std::move(other.tableName_);
       return *this;
     }
 
-    bool insert_query::is_valid() const noexcept {
-      return query::is_valid() && !tableName_.empty();
-    }
+    bool insert_query::is_valid() const noexcept { return query::is_valid() && !tableName_.empty(); }
 
-    long long insert_query::last_insert_id() const { return lastId_; }
+    sql_id insert_query::last_insert_id() const { return lastId_; }
 
     string insert_query::generate_sql() const {
       string buf = "INSERT INTO ";
@@ -121,16 +111,14 @@ namespace coda {
 
     vector<string> insert_query::columns() const { return columns_; }
 
-    int insert_query::execute() {
+    sql_changes insert_query::execute() {
       if (!is_valid()) {
         throw database_exception("invalid insert query");
       }
 
       prepare(to_sql());
 
-      bool success = stmt_->result();
-
-      if (success) {
+      if (stmt_->result()) {
         numChanges_ = stmt_->last_number_of_changes();
         lastId_ = stmt_->last_insert_id();
       } else {
@@ -157,15 +145,13 @@ namespace coda {
       return *this;
     }
 
-    insert_query &insert_query::values(
-        const std::unordered_map<std::string, sql_value> &value) {
+    insert_query &insert_query::values(const std::unordered_map<std::string, sql_value> &value) {
       bindable::bind(value);
       set_modified();
       return *this;
     }
 
-    insert_query &insert_query::value(const std::string &name,
-                                      const sql_value &value) {
+    insert_query &insert_query::value(const std::string &name, const sql_value &value) {
       bind(name, value);
       set_modified();
       return *this;
@@ -176,5 +162,4 @@ namespace coda {
       set_modified();
       return *this;
     }
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db

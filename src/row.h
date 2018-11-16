@@ -5,18 +5,17 @@
 #ifndef CODA_DB_ROW_H
 #define CODA_DB_ROW_H
 
-#include "column.h"
 #include <functional>
 #include <iterator>
 #include <memory>
+#include "column.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     /*!
      * Implementation spefic interface for a row
      */
     class row_impl {
-      public:
+     public:
       typedef coda::db::column column_type;
 
       row_impl() = default;
@@ -69,14 +68,13 @@ namespace coda {
      * iterator for columns in a row
      */
     template <class ValueType, class NonConst, class RowType>
-    class row_iterator
-        : public std::iterator<std::random_access_iterator_tag, ValueType> {
-      protected:
+    class row_iterator : public std::iterator<std::random_access_iterator_tag, ValueType> {
+     protected:
       std::shared_ptr<RowType> row_;
-      int position_;
+      long position_;
       NonConst currentValue_;
 
-      void set_current_value(size_t index) {
+      void set_current_value(long index) {
         if (row_ == nullptr) {
           return;
         }
@@ -88,34 +86,29 @@ namespace coda {
         }
       }
 
-      public:
+     public:
       row_iterator() : row_(nullptr), position_(-1) {}
 
-      row_iterator(const std::shared_ptr<RowType> &pRow, int position)
-          : row_(pRow), position_(position) {}
+      row_iterator(const std::shared_ptr<RowType> &pRow, long position) : row_(pRow), position_(position) {}
 
-      row_iterator(const row_iterator &other)
-          : row_(other.row_), position_(other.position_) {}
+      row_iterator(const row_iterator &other) : row_(other.row_), position_(other.position_) {}
 
-      row_iterator(row_iterator &&other)
-          : row_(std::move(other.row_)), position_(other.position_) {
+      row_iterator(row_iterator &&other) noexcept : row_(std::move(other.row_)), position_(other.position_) {
         other.row_ = nullptr;
       }
 
-      virtual ~row_iterator() {}
+      ~row_iterator() = default;
 
       row_iterator &operator=(const row_iterator &other) {
         row_ = other.row_;
         position_ = other.position_;
-
         return *this;
       }
 
-      row_iterator &operator=(row_iterator &&other) {
+      row_iterator &operator=(row_iterator &&other) noexcept {
         row_ = std::move(other.row_);
         position_ = other.position_;
         other.row_ = nullptr;
-
         return *this;
       }
 
@@ -141,7 +134,7 @@ namespace coda {
         return *this;
       }
 
-      row_iterator operator++(int) {
+      const row_iterator operator++(int) {
         row_iterator tmp(*this);
         ++(*this);
         return tmp;
@@ -154,7 +147,7 @@ namespace coda {
         return *this;
       }
 
-      row_iterator operator--(int) {
+      const row_iterator operator--(int) {
         row_iterator tmp(*this);
         --(*this);
         return tmp;
@@ -178,35 +171,23 @@ namespace coda {
       }
 
       row_iterator &operator-=(int n) {
-        position_ = std::max(position_ - n, 0);
+        position_ = std::max(position_ - n, 0L);
         return *this;
       }
 
-      bool operator==(const row_iterator &other) const {
-        return position_ == other.position_;
-      }
+      bool operator==(const row_iterator &other) const { return position_ == other.position_; }
 
-      bool operator!=(const row_iterator &other) const {
-        return !operator==(other);
-      }
+      bool operator!=(const row_iterator &other) const { return !operator==(other); }
 
-      bool operator<(const row_iterator &other) const {
-        return position_ < other.position_;
-      }
+      bool operator<(const row_iterator &other) const { return position_ < other.position_; }
 
-      bool operator<=(const row_iterator &other) const {
-        return operator<(other) || operator==(other);
-      }
+      bool operator<=(const row_iterator &other) const { return operator<(other) || operator==(other); }
 
-      bool operator>(const row_iterator &other) const {
-        return !operator<(other);
-      }
+      bool operator>(const row_iterator &other) const { return !operator<(other); }
 
-      bool operator>=(const row_iterator &other) const {
-        return operator>(other) || operator==(other);
-      }
+      bool operator>=(const row_iterator &other) const { return operator>(other) || operator==(other); }
 
-      int operator-(const row_iterator &other) {
+      long operator-(const row_iterator &other) {
         if (position_ >= other.position_)
           return position_ - other.position_;
         else
@@ -227,35 +208,33 @@ namespace coda {
      * implementation is specific to a type of database
      */
     class row {
-      private:
+     private:
       std::shared_ptr<row_impl> impl_;
 
-      public:
+     public:
       typedef coda::db::column column_type;
       typedef row_iterator<column_type, column_type, row_impl> iterator;
-      typedef row_iterator<const column_type, column_type, const row_impl>
-          const_iterator;
+      typedef row_iterator<const column_type, column_type, const row_impl> const_iterator;
 
       /*!
        * default constructor
        */
-      row();
+      row() = default;
 
       /*!
        * @param impl  the row implementation
        */
-      row(const std::shared_ptr<row_impl> &impl);
+      explicit row(const std::shared_ptr<row_impl> &impl);
 
-      /* rule of 3 + move */
-      row(const row &other);
+      row(const row &other) = default;
 
-      row(row &&other);
+      row(row &&other) noexcept = default;
 
-      virtual ~row();
+      ~row() = default;
 
-      row &operator=(const row &other);
+      row &operator=(const row &other) = default;
 
-      row &operator=(row &&other);
+      row &operator=(row &&other) noexcept = default;
 
       /*!
        * @return an iterator to the first column
@@ -351,7 +330,6 @@ namespace coda {
        */
       std::shared_ptr<row_impl> impl() const;
     };
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

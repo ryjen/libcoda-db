@@ -11,7 +11,7 @@ services:
       - postgres
     working_dir: /usr/src/docker-build
     environment:
-      MYSQL_URI: mysql://mysql:3306/test
+      MYSQL_URI: mysql://root:test@mysql:3306/test
       POSTGRES_URI: postgres://test:test@postgres:5432/test
     depends_on:
       - mysql
@@ -30,21 +30,25 @@ services:
       - postgres
     working_dir: /usr/src/docker-build
     environment:
-      MYSQL_URI: mysql://mysql:3306/test
+      MYSQL_URI: mysql://root:test@mysql:3306/test
       POSTGRES_URI: postgres://test:test@postgres:5432/test
     depends_on:
       - mysql
       - postgres
     command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s make coda_db_coverage_coveralls TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
   mysql:
-    image: wangxian/alpine-mysql
+    image: webhippie/mariadb
     hostname: mysql
+    expose:
+      - "3306"
     environment:
-      MYSQL_DATABASE: test
-      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MARIADB_DATABASE: test
+      MARIADB_ROOT_PASSWORD: test
   postgres:
     image: postgres:alpine
     hostname: postgres
+    expose: 
+      - "5432"
     environment:
       POSTGRES_DB: test
       POSTGRES_USER: test

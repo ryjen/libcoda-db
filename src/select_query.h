@@ -7,11 +7,11 @@
 
 #include "join_clause.h"
 #include "query.h"
+#include <utility>
 #include "resultset.h"
 #include "where_clause.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     struct union_operator;
 
     namespace union_op {
@@ -22,7 +22,7 @@ namespace coda {
      * a query to select values from a table
      */
     class select_query : public query, public whereable<select_query> {
-      private:
+     private:
       where_builder where_;
       std::vector<join_clause> join_;
       std::string limit_;
@@ -48,47 +48,45 @@ namespace coda {
       /*!
        * generates the sql for this query
        */
-      std::string generate_sql() const;
+      std::string generate_sql() const override;
 
-      public:
+     public:
       /*!
        * defaults to 'select *'
        * @param db the database in use
        */
-      select_query(const std::shared_ptr<coda::db::session> &session);
+      explicit select_query(const std::shared_ptr<coda::db::session> &session);
 
       /*!
        * @param db        the database in use
        * @param tableName the table name to query
        * @param columns   the columns to query
        */
-      select_query(const std::shared_ptr<coda::db::session> &session,
-                   const std::vector<std::string> &columns);
+      select_query(const std::shared_ptr<coda::db::session> &session, const std::vector<std::string> &columns);
 
       /*!
        * @param schema    the schema to query
        */
-      select_query(const std::shared_ptr<schema> &schema);
+      explicit select_query(const std::shared_ptr<schema> &schema);
 
       /*!
        * @param db  the database in use
        * @param columns the columns to query
        * @param tableName the table to query from
        */
-      select_query(const std::shared_ptr<coda::db::session> &session,
-                   const std::vector<std::string> &columns,
+      select_query(const std::shared_ptr<coda::db::session> &session, const std::vector<std::string> &columns,
                    const std::string &tableName);
 
       /* boilerplate */
-      select_query(const select_query &other);
+      select_query(const select_query &other) = default;
 
-      select_query(select_query &&other);
+      select_query(select_query &&other) noexcept = default;
 
-      virtual ~select_query();
+      ~select_query() override = default;
 
-      select_query &operator=(const select_query &other);
+      select_query &operator=(const select_query &other) = default;
 
-      select_query &operator=(select_query &&other);
+      select_query &operator=(select_query &&other) noexcept = default;
 
       /*!
        * sets which table to select from
@@ -103,8 +101,7 @@ namespace coda {
        * @param alias the alias for the table name
        * @return a reference to this
        */
-      select_query &from(const std::string &tableName,
-                         const std::string &alias);
+      select_query &from(const std::string &tableName, const std::string &alias);
 
       /*!
        * gets the select from table name for this query
@@ -159,13 +156,13 @@ namespace coda {
        * gets the where builder for the query
        * @return a writeable reference to the where builder
        */
-      where_builder &where();
+      where_builder &where() override;
 
       /*!
        * gets the where clause for this query
        * @return the where clause
        */
-      where_builder &where(const sql_operator &value);
+      where_builder &where(const sql_operator &value) override;
 
 #ifdef ENABLE_PARAMETER_MAPPING
       /*!
@@ -235,8 +232,7 @@ namespace coda {
        * @param  type      the type of join
        * @return           a join clause to perform additional modification
        */
-      join_clause &join(const std::string &tableName,
-                        join::type type = join::inner);
+      join_clause &join(const std::string &tableName, join::type type = join::inner);
 
       /*!
        * sets the join clause for this query
@@ -245,8 +241,7 @@ namespace coda {
        * @param  type         the type of join
        * @return a reference to this
        */
-      join_clause &join(const std::string &tableName, const std::string &alias,
-                        join::type type = join::inner);
+      join_clause &join(const std::string &tableName, const std::string &alias, join::type type = join::inner);
 
       /*!
        * sets the join clause for this query
@@ -261,8 +256,7 @@ namespace coda {
        * @param  type  the type of union
        * @return       a reference to this instance
        */
-      select_query &union_with(const select_query &query,
-                               union_op::type type = union_op::none);
+      select_query &union_with(const select_query &query, union_op::type type = union_op::none);
 
       /*!
        * executes this query
@@ -285,13 +279,12 @@ namespace coda {
       /*!
        * resets this query for re-execution
        */
-      void reset();
+      void reset() override;
 
       /*!
        * return the first column in the first row of the result set
        */
-      template <typename T, typename = std::enable_if<is_sql_value<T>::value ||
-                                                      is_sql_number<T>::value>>
+      template <typename T, typename = std::enable_if<is_sql_value<T>::value || is_sql_number<T>::value>>
       T execute_scalar() {
         auto rs = execute();
 
@@ -326,16 +319,13 @@ namespace coda {
        * @param query the query to find
        * @param type the type of union
        */
-      union_operator(const select_query &query,
-                     union_op::type type = union_op::none)
-          : query(query), type(type) {}
+      explicit union_operator(select_query query, union_op::type type = union_op::none) : query(std::move(query)), type(type) {}
     };
 
     /*!
      * output stream operator for a select query
      */
     std::ostream &operator<<(std::ostream &out, const select_query &other);
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

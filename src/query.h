@@ -16,8 +16,7 @@
 #include "sql_generator.h"
 #include "sql_value.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     class statement;
 
     /*!
@@ -25,10 +24,10 @@ namespace coda {
      * override to implement a query
      */
     class query : protected bindable, public sql_generator {
-      public:
-      typedef session session_type;
+     public:
+      using session_type = session;
 
-      private:
+     private:
       /*!
        * ensures that the binding storage array is large enough
        * @param index the parameter index for binding
@@ -39,7 +38,7 @@ namespace coda {
 
       bool dirty_;
 
-      protected:
+     protected:
       std::shared_ptr<session_type> session_;
       std::shared_ptr<statement> stmt_;
       std::vector<sql_value> params_;
@@ -54,18 +53,18 @@ namespace coda {
       friend class where_builder;
 
       /* bindable overrides */
-      bindable &bind(size_t index, const sql_value &value);
+      bindable &bind(size_t index, const sql_value &value) override;
 
-      bindable &bind(const std::string &name, const sql_value &value);
+      bindable &bind(const std::string &name, const sql_value &value) override;
 
       virtual void set_modified();
 
-      public:
+     public:
       /*!
        * @param db the database to perform the query on
        * @param tableName the table to perform the query on
        */
-      query(const std::shared_ptr<session_type> &sess);
+      explicit query(const std::shared_ptr<session_type> &sess);
 
       /*!
        * @param other the other query to copy from
@@ -80,12 +79,12 @@ namespace coda {
       /*!
        * deconstructor
        */
-      virtual ~query();
+      ~query() override = default;
 
       /*!
        * resets this query for re-execution
        */
-      virtual void reset();
+      void reset() override;
 
       /*!
        * get the database in use
@@ -101,9 +100,9 @@ namespace coda {
       /*!
        * @param other the query being moved
        */
-      query &operator=(query &&other);
+      query &operator=(query &&other) noexcept;
 
-      size_t num_of_bindings() const noexcept;
+      size_t num_of_bindings() const noexcept override;
 
       using bindable::bind;
 
@@ -118,7 +117,6 @@ namespace coda {
        */
       virtual bool is_valid() const noexcept;
     };
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

@@ -1,89 +1,58 @@
 
 #include "sql_value.h"
+#include <cstring>
 #include "alloc.h"
 #include "query.h"
-#include <cstring>
 
 using namespace std;
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     namespace helper {
       struct as_sql_time {
-        public:
-        as_sql_time() {}
-
+       public:
         sql_time operator()(const sql_number &value) const { return value; }
 
         sql_time operator()(const sql_time &value) const { return value; }
 
-        sql_time operator()(const sql_blob &value) const {
-          throw value_conversion_error();
-        }
+        sql_time operator()(const sql_blob &value) const { throw value_conversion_error(); }
 
-        sql_time operator()(const sql_string &value) const {
-          return sql_time(value);
-        }
+        sql_time operator()(const sql_string &value) const { return sql_time(value); }
 
-        sql_time operator()(const sql_wstring &value) const {
-          return sql_number(value);
-        }
+        sql_time operator()(const sql_wstring &value) const { return sql_number(value); }
 
-        sql_time operator()(const sql_null_type &value) const {
-          throw value_conversion_error();
-        }
+        sql_time operator()(const sql_null_type &value) const { throw value_conversion_error(); }
       };
 
       struct as_sql_blob {
-        public:
-        sql_blob operator()(const sql_number &value) const {
-          throw value_conversion_error();
-        }
+       public:
+        sql_blob operator()(const sql_number &value) const { throw value_conversion_error(); }
 
-        sql_blob operator()(const sql_time &value) const {
-          throw value_conversion_error();
-        }
+        sql_blob operator()(const sql_time &value) const { throw value_conversion_error(); }
 
         sql_blob operator()(const sql_blob &value) const { return value; }
 
-        sql_blob operator()(const sql_string &value) const {
-          return sql_blob(value.data(), value.size());
-        }
+        sql_blob operator()(const sql_string &value) const { return sql_blob(value.data(), value.size()); }
 
-        sql_blob operator()(const sql_wstring &value) const {
-          return sql_blob(value.data(), value.size());
-        }
+        sql_blob operator()(const sql_wstring &value) const { return sql_blob(value.data(), value.size()); }
 
-        sql_blob operator()(const sql_null_type &value) const {
-          return sql_blob();
-        }
+        sql_blob operator()(const sql_null_type &value) const { return sql_blob(); }
       };
 
       struct as_sql_number {
-        public:
+       public:
         sql_number operator()(const sql_number &value) const { return value; }
 
-        sql_number operator()(const sql_time &value) const {
-          return value.value();
-        }
+        sql_number operator()(const sql_time &value) const { return value.value(); }
 
-        sql_number operator()(const sql_blob &value) const {
-          throw value_conversion_error();
-        }
+        sql_number operator()(const sql_blob &value) const { throw value_conversion_error(); }
 
-        sql_number operator()(const sql_string &value) const {
-          return sql_number(value);
-        }
+        sql_number operator()(const sql_string &value) const { return sql_number(value); }
 
-        sql_number operator()(const sql_wstring &value) const {
-          return sql_number(value);
-        }
+        sql_number operator()(const sql_wstring &value) const { return sql_number(value); }
 
-        sql_number operator()(const sql_null_type &value) const {
-          return sql_number(value);
-        }
+        sql_number operator()(const sql_null_type &value) const { return sql_number(value); }
       };
-    } // namespace helper
+    }  // namespace helper
     const nullptr_t sql_null = nullptr;
 
     sql_value::sql_value() : value_(sql_null) {}
@@ -104,37 +73,31 @@ namespace coda {
 
     sql_value::sql_value(const char &value) : value_(sql_number(value)) {}
 
-    sql_value::sql_value(const unsigned char &value)
-        : value_(sql_number(value)) {}
+    sql_value::sql_value(const unsigned char &value) : value_(sql_number(value)) {}
 
     sql_value::sql_value(const wchar_t &value) : value_(sql_number(value)) {}
 
     sql_value::sql_value(const short &value) : value_(sql_number(value)) {}
 
-    sql_value::sql_value(const unsigned short &value)
-        : value_(sql_number(value)) {}
+    sql_value::sql_value(const unsigned short &value) : value_(sql_number(value)) {}
 
     sql_value::sql_value(const int &value) : value_(sql_number(value)) {}
 
-    sql_value::sql_value(const unsigned int &value)
-        : value_(sql_number(value)) {}
+    sql_value::sql_value(const unsigned int &value) : value_(sql_number(value)) {}
 
     sql_value::sql_value(const long &value) : value_(sql_number(value)) {}
 
-    sql_value::sql_value(const unsigned long &value)
-        : value_(sql_number(value)) {}
+    sql_value::sql_value(const unsigned long &value) : value_(sql_number(value)) {}
 
     sql_value::sql_value(const long long &value) : value_(sql_number(value)) {}
 
-    sql_value::sql_value(const unsigned long long &value)
-        : value_(sql_number(value)) {}
+    sql_value::sql_value(const unsigned long long &value) : value_(sql_number(value)) {}
 
     sql_value::sql_value(const float &value) : value_(sql_number(value)) {}
 
     sql_value::sql_value(const double &value) : value_(sql_number(value)) {}
 
-    sql_value::sql_value(const long double &value)
-        : value_(sql_number(value)) {}
+    sql_value::sql_value(const long double &value) : value_(sql_number(value)) {}
 
     sql_value::sql_value(const char *value, std::string::size_type len)
         : value_(sql_string(value, std::min(len, strlen(value)))) {}
@@ -142,23 +105,28 @@ namespace coda {
     sql_value::sql_value(const wchar_t *value, std::string::size_type len)
         : value_(sql_wstring(value, std::min(len, wcslen(value)))) {}
 
-    template <> sql_string sql_value::as() const {
+    template <>
+    sql_string sql_value::as() const {
       return std::visit(helper::as_sql_string(), value_);
     }
 
-    template <> sql_wstring sql_value::as() const {
+    template <>
+    sql_wstring sql_value::as() const {
       return std::visit(helper::as_sql_wstring(), value_);
     }
 
-    template <> sql_time sql_value::as() const {
+    template <>
+    sql_time sql_value::as() const {
       return std::visit(helper::as_sql_time(), value_);
     }
 
-    template <> sql_blob sql_value::as() const {
+    template <>
+    sql_blob sql_value::as() const {
       return std::visit(helper::as_sql_blob(), value_);
     }
 
-    template <> sql_number sql_value::as() const {
+    template <>
+    sql_number sql_value::as() const {
       return std::visit(helper::as_sql_number(), value_);
     }
 
@@ -326,9 +294,7 @@ namespace coda {
       return std::visit(helper::value_equality(value), value_);
     }
 
-    bool sql_value::operator==(const sql_null_type &value) const {
-      return is<sql_null_type>();
-    }
+    bool sql_value::operator==(const sql_null_type &value) const { return is<sql_null_type>(); }
 
     bool sql_value::operator==(const sql_number &value) const {
       try {
@@ -375,7 +341,7 @@ namespace coda {
       try {
         return as<sql_number>() == value;
       } catch (const value_conversion_error &e) {
-        return false == value;
+        return value == 0;
       }
     }
 
@@ -501,11 +467,9 @@ namespace coda {
 
     sql_blob::sql_blob() : value_(nullptr), size_(0) {}
 
-    sql_blob::sql_blob(const void *data, size_t sz)
-        : value_(nullptr), size_(sz) {
+    sql_blob::sql_blob(const void *data, size_t sz) : value_(nullptr), size_(sz) {
       if (data != nullptr && sz > 0) {
-        value_ =
-            std::shared_ptr<void>(c_copy(data, sz), [](void *p) { free(p); });
+        value_ = std::shared_ptr<void>(c_copy(data, sz), [](void *p) { free(p); });
       }
     }
 
@@ -518,89 +482,46 @@ namespace coda {
       return out;
     }
 
-    bool operator==(const sql_null_type &null, const sql_value &value) {
-      return value.operator==(null);
-    }
+    bool operator==(const sql_null_type &null, const sql_value &value) { return value.operator==(null); }
 
-    bool operator==(const sql_string &other, const sql_value &value) {
-      return value.operator==(other);
-    }
+    bool operator==(const sql_string &other, const sql_value &value) { return value.operator==(other); }
 
-    bool operator==(const sql_number &other, const sql_value &value) {
-      return value.operator==(other);
-    }
+    bool operator==(const sql_number &other, const sql_value &value) { return value.operator==(other); }
 
-    bool operator==(const sql_time &time, const sql_value &value) {
-      return value.operator==(time);
-    }
+    bool operator==(const sql_time &time, const sql_value &value) { return value.operator==(time); }
 
-    bool operator==(const sql_wstring &other, const sql_value &value) {
-      return value.operator==(other);
-    }
+    bool operator==(const sql_wstring &other, const sql_value &value) { return value.operator==(other); }
 
-    bool operator==(const sql_blob &other, const sql_value &value) {
-      return value.operator==(other);
-    }
+    bool operator==(const sql_blob &other, const sql_value &value) { return value.operator==(other); }
 
     /* numeric equality */
-    bool operator==(const bool &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const bool &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const char &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const char &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const unsigned char &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const unsigned char &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const wchar_t &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const wchar_t &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const short &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const short &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const unsigned short &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const unsigned short &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const int &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const int &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const unsigned int &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const unsigned int &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const long &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const long &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const unsigned long &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const unsigned long &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const long long &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const long long &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const unsigned long long &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const unsigned long long &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const float &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const float &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const double &value, const sql_value &other) {
-      return other.operator==(value);
-    }
+    bool operator==(const double &value, const sql_value &other) { return other.operator==(value); }
 
-    bool operator==(const long double &value, const sql_value &other) {
-      return other.operator==(value);
-    }
-  } // namespace db
-} // namespace coda
+    bool operator==(const long double &value, const sql_value &other) { return other.operator==(value); }
+}  // namespace coda::db

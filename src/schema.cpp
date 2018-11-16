@@ -8,16 +8,14 @@
 
 using namespace std;
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     ostream &operator<<(ostream &os, const column_definition &def) {
       os << def.name;
       return os;
     }
 
-    schema::schema(const std::shared_ptr<coda::db::session> &session,
-                   const string &tablename)
-        : session_(session), tableName_(tablename) {
+    schema::schema(const std::shared_ptr<coda::db::session> &session, const string &tableName)
+        : session_(session), tableName_(tableName) {
       if (session_ == nullptr) {
         throw database_exception("no database provided for schema");
       }
@@ -27,40 +25,7 @@ namespace coda {
       }
     }
 
-    schema::~schema() {}
-
-    schema::schema(const schema &other)
-        : session_(other.session_), tableName_(other.tableName_),
-          columns_(other.columns_) {}
-
-    schema::schema(schema &&other)
-        : session_(std::move(other.session_)),
-          tableName_(std::move(other.tableName_)),
-          columns_(std::move(other.columns_)) {
-      other.session_ = nullptr;
-      other.columns_.clear();
-    }
-
-    schema &schema::operator=(const schema &other) {
-      columns_ = other.columns_;
-      session_ = other.session_;
-      tableName_ = other.tableName_;
-
-      return *this;
-    }
-
-    schema &schema::operator=(schema &&other) {
-      columns_ = std::move(other.columns_);
-      session_ = std::move(other.session_);
-      tableName_ = std::move(other.tableName_);
-
-      other.columns_.clear();
-      other.session_ = nullptr;
-
-      return *this;
-    }
-
-    bool schema::is_valid() const noexcept { return columns_.size() > 0; }
+    bool schema::is_valid() const noexcept { return !columns_.empty(); }
 
     void schema::init() {
       if (!session_->is_open()) {
@@ -70,9 +35,7 @@ namespace coda {
       columns_ = session_->get_columns_for_schema(tableName_);
     }
 
-    vector<column_definition> schema::columns() const noexcept {
-      return columns_;
-    }
+    vector<column_definition> schema::columns() const noexcept { return columns_; }
 
     vector<string> schema::column_names() const {
       vector<string> names;
@@ -119,10 +82,7 @@ namespace coda {
 
     std::shared_ptr<session> schema::get_session() const { return session_; }
 
-    column_definition schema::operator[](size_t index) const {
-      return columns_[index];
-    }
+    column_definition schema::operator[](size_t index) const { return columns_[index]; }
 
     size_t schema::size() const noexcept { return columns_.size(); }
-  }; // namespace db
-} // namespace coda
+}  // namespace coda::db

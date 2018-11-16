@@ -4,52 +4,48 @@
 #include "modify_query.h"
 #include "where_clause.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     /*!
      * a query to update a table
      */
     class update_query : public modify_query, public whereable<update_query> {
-      public:
+     public:
       /*!
        * @param db the database in use
        */
-      update_query(const std::shared_ptr<coda::db::session> &session);
+      explicit update_query(const std::shared_ptr<coda::db::session> &session);
 
       /*!
        * @param schema the schema to modify
        */
-      update_query(const std::shared_ptr<schema> &schema);
+      explicit update_query(const std::shared_ptr<schema> &schema);
 
       /*!
        * @param db the database to modify
        * @param tableName the table to modify
        * @param columns the columns to modify
        */
-      update_query(const std::shared_ptr<coda::db::session> &session,
-                   const std::string &tableName);
+      update_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName);
 
       /*!
        * @param db the database to modify
        * @param columns the columns to modify
        */
-      update_query(const std::shared_ptr<coda::db::session> &session,
-                   const std::string &tableName,
+      update_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName,
                    const std::vector<std::string> &columns);
 
       /*!
        * @param schema the schema to modify
        * @param column the specific columns to modify in the schema
        */
-      update_query(const std::shared_ptr<schema> &schema,
-                   const std::vector<std::string> &columns);
+      update_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns);
 
       /* boilerplate */
-      update_query(const update_query &other);
-      update_query(update_query &&other);
-      virtual ~update_query();
-      update_query &operator=(const update_query &other);
-      update_query &operator=(update_query &&other);
+      update_query(const update_query &other) = default;
+      update_query(update_query &&other) = default;
+      ~update_query() override = default;
+      update_query &operator=(const update_query &other) = default;
+      update_query &operator=(update_query &&other) = default;
 
       /*!
        * get the columns being modified
@@ -90,7 +86,7 @@ namespace coda {
        * gets the where builder for the query
        * @return a reference to the where builder
        */
-      where_builder &where();
+      where_builder &where() override;
 
       /*!
        * sets the where clause for the update query
@@ -102,7 +98,7 @@ namespace coda {
        * gets the where clause
        * @return the where clause
        */
-      where_builder &where(const sql_operator &value);
+      where_builder &where(const sql_operator &value) override;
 
 #ifdef ENABLE_PARAMETER_MAPPING
       where_builder &where(const std::string &value);
@@ -148,8 +144,7 @@ namespace coda {
 
       update_query &values(const std::vector<sql_value> &value);
 
-      update_query &
-      values(const std::unordered_map<std::string, sql_value> &value);
+      update_query &values(const std::unordered_map<std::string, sql_value> &value);
 
       update_query &value(const std::string &name, const sql_value &value);
 
@@ -159,9 +154,9 @@ namespace coda {
        * tests if this query is valid
        * @return true if valid
        */
-      bool is_valid() const noexcept;
+      bool is_valid() const noexcept override;
 
-      private:
+     private:
       update_query &column(const std::string &value) {
         if (!value.empty()) {
           columns_.push_back(value);
@@ -170,13 +165,12 @@ namespace coda {
         return *this;
       }
 
-      std::string generate_sql() const;
+      std::string generate_sql() const override;
 
       where_builder where_;
       std::vector<std::string> columns_;
       std::string tableName_;
     };
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

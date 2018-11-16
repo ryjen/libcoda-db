@@ -1,51 +1,25 @@
 
 #include "statement.h"
+#include <algorithm>
 #include "../exception.h"
 #include "resultset.h"
 #include "session.h"
-#include <algorithm>
 
 using namespace std;
 
-namespace coda {
-  namespace db {
-    namespace postgres {
+namespace coda::db::postgres {
       namespace helper {
         void res_delete::operator()(PGresult *p) const {
           if (p != nullptr) {
             PQclear(p);
           }
         }
-      } // namespace helper
-      statement::statement(const std::shared_ptr<postgres::session> &sess)
-          : sess_(sess), stmt_(nullptr) {
+      }  // namespace helper
+      statement::statement(const std::shared_ptr<postgres::session> &sess) : sess_(sess), stmt_(nullptr) {
         if (sess_ == nullptr) {
-          throw database_exception(
-              "no database provided to postgres statement");
+          throw database_exception("no database provided to postgres statement");
         }
       }
-
-      statement::statement(statement &&other)
-          : sess_(std::move(other.sess_)), stmt_(std::move(other.stmt_)),
-            bindings_(std::move(other.bindings_)), sql_(std::move(other.sql_)) {
-        other.stmt_ = nullptr;
-        other.sess_ = nullptr;
-      }
-
-      statement &statement::operator=(statement &&other) {
-        sess_ = std::move(other.sess_);
-        stmt_ = std::move(other.stmt_);
-        bindings_ = std::move(other.bindings_);
-        sql_ = std::move(other.sql_);
-
-        other.stmt_ = nullptr;
-        other.sess_ = nullptr;
-        other.sql_.clear();
-
-        return *this;
-      }
-
-      statement::~statement() {}
 
       void statement::prepare(const string &sql) {
         if (!sess_ || !sess_->is_open()) {
@@ -57,17 +31,17 @@ namespace coda {
 
       bool statement::is_valid() const noexcept { return !sql_.empty(); }
 
-      int statement::last_number_of_changes() {
+      unsigned long long statement::last_number_of_changes() {
         if (stmt_ == nullptr) {
           return 0;
         }
         char *changes = PQcmdTuples(stmt_.get());
 
-        int value = 0;
+        unsigned long long value = 0;
 
         if (changes != nullptr && *changes != 0) {
           try {
-            value = stoi(changes);
+            value = static_cast<unsigned long long int>(stoi(changes));
           } catch (const std::exception &e) {
             value = 0;
           }
@@ -102,9 +76,8 @@ namespace coda {
         }
 
         PGresult *res = PQexecParams(sess_->db_.get(), sql_.c_str(),
-                                     bindings_.num_of_bindings(),
-                                     bindings_.types_, bindings_.values_,
-                                     bindings_.lengths_, bindings_.formats_, 0);
+                                     static_cast<int>(bindings_.num_of_bindings()), bindings_.types_,
+                                     bindings_.values_, bindings_.lengths_, bindings_.formats_, 0);
 
         if (PQresultStatus(res) != PGRES_TUPLES_OK) {
           throw database_exception(last_error());
@@ -121,12 +94,10 @@ namespace coda {
         }
 
         PGresult *res = PQexecParams(sess_->db_.get(), sql_.c_str(),
-                                     bindings_.num_of_bindings(),
-                                     bindings_.types_, bindings_.values_,
-                                     bindings_.lengths_, bindings_.formats_, 0);
+                                     static_cast<int>(bindings_.num_of_bindings()), bindings_.types_,
+                                     bindings_.values_, bindings_.lengths_, bindings_.formats_, 0);
 
-        if (PQresultStatus(res) != PGRES_COMMAND_OK &&
-            PQresultStatus(res) != PGRES_TUPLES_OK) {
+        if (PQresultStatus(res) != PGRES_COMMAND_OK && PQresultStatus(res) != PGRES_TUPLES_OK) {
           PQclear(res);
           return false;
         }
@@ -177,9 +148,5 @@ namespace coda {
         return value;
       }
 
-      size_t statement::num_of_bindings() const noexcept {
-        return bindings_.num_of_bindings();
-      }
-    } // namespace postgres
-  }   // namespace db
-} // namespace coda
+      size_t statement::num_of_bindings() const noexcept { return bindings_.num_of_bindings(); }
+}  // namespace coda::db::postgres

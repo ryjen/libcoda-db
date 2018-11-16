@@ -4,17 +4,14 @@
 #include "exception.h"
 #endif
 
-namespace coda {
-  namespace db {
+namespace coda::db {
 #ifdef ENABLE_PARAMETER_MAPPING
 
     bind_mapping::bind_mapping() {}
 
-    bind_mapping::bind_mapping(const bind_mapping &other)
-        : mappings_(other.mappings_) {}
+    bind_mapping::bind_mapping(const bind_mapping &other) : mappings_(other.mappings_) {}
 
-    bind_mapping::bind_mapping(bind_mapping &&other)
-        : mappings_(std::move(other.mappings_)) {}
+    bind_mapping::bind_mapping(bind_mapping &&other) : mappings_(std::move(other.mappings_)) {}
 
     bind_mapping::~bind_mapping() {}
 
@@ -27,8 +24,7 @@ namespace coda {
       mappings_ = std::move(other.mappings_);
       return *this;
     }
-    bind_mapping &bind_mapping::bind(const std::string &name,
-                                     const sql_value &value) {
+    bind_mapping &bind_mapping::bind(const std::string &name, const sql_value &value) {
       if (mappings_.count(name) == 0) {
         throw binding_error("No parameter named '" + name + "' found");
       }
@@ -57,8 +53,7 @@ namespace coda {
       mappings_[name].erase(index);
     }
 
-    std::set<size_t>
-    bind_mapping::get_named_param_indexes(const std::string &name) {
+    std::set<size_t> bind_mapping::get_named_param_indexes(const std::string &name) {
       if (name.empty()) {
         return std::set<size_t>();
       }
@@ -66,12 +61,10 @@ namespace coda {
       return mappings_[name];
     }
 
-    std::string bind_mapping::prepare(const std::string &sql,
-                                      size_t max_index) {
+    std::string bind_mapping::prepare(const std::string &sql, size_t max_index) {
       mappings_.clear();
 
-      auto match_begin =
-          std::sregex_iterator(sql.begin(), sql.end(), named_regex);
+      auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), named_regex);
       auto match_end = std::sregex_iterator();
 
       for (auto match = match_begin; match != match_end; ++match) {
@@ -86,18 +79,13 @@ namespace coda {
     void bind_mapping::reset() { mappings_.clear(); }
 #else
 
-    bind_mapping &bind_mapping::bind(const std::string &name,
-                                     const sql_value &value) {
+    bind_mapping &bind_mapping::bind(const std::string &name, const sql_value &value) {
       throw database_exception("not implemented");
     }
-    std::string bind_mapping::prepare(const std::string &sql,
-                                      size_t max_index) {
-      return sql;
-    }
+    std::string bind_mapping::prepare(const std::string &sql, size_t max_index) { return sql; }
     bool bind_mapping::is_named() const { return false; }
 
     void bind_mapping::reset() {}
 
 #endif
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db

@@ -9,28 +9,27 @@
 #include "resultset.h"
 #include "sql_generator.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     /*!
      * base class for a database specific implementation of a prepared statement
      */
     class statement : public bindable {
-      public:
-      typedef coda::db::resultset resultset_type;
+     public:
+      using resultset_type = coda::db::resultset;
 
-      private:
-      public:
+     private:
+     public:
       statement() = default;
 
       statement(const statement &other) = default;
 
-      statement(statement &&other) = default;
+      statement(statement &&other) noexcept = default;
 
-      virtual ~statement() = default;
+      ~statement() override = default;
 
       statement &operator=(const statement &other) = default;
 
-      statement &operator=(statement &&other) = default;
+      statement &operator=(statement &&other) noexcept = default;
 
       /*!
        * prepares this statement for execution
@@ -72,7 +71,7 @@ namespace coda {
        * gets the last number of changes
        * @return the last number of changes or zero
        */
-      virtual int last_number_of_changes() = 0;
+      virtual sql_changes last_number_of_changes() = 0;
 
       /*!
        * gets the last error
@@ -84,9 +83,8 @@ namespace coda {
        * gets the last insert id
        * @return the last insert id or zero
        */
-      virtual long long last_insert_id() = 0;
+      virtual sql_id last_insert_id() = 0;
     };
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

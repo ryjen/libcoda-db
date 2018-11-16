@@ -28,5 +28,5 @@ namespace coda {
       std::memmove(mem, data, sz);
       return mem;
     }
-  } // namespace db
-} // namespace coda
+  }  // namespace db
+}  // namespace coda

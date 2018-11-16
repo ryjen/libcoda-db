@@ -3,18 +3,17 @@
 
 #include "bindable.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
 #ifdef ENABLE_PARAMETER_MAPPING
     /*!
      * a binding that supports mapping named parameters to indexed parameters
      * for databases that don't support it.
      */
     class bind_mapping : public bindable {
-      protected:
+     protected:
       typedef std::unordered_map<std::string, std::set<size_t>> type;
 
-      public:
+     public:
       bind_mapping();
       bind_mapping(const bind_mapping &other);
       bind_mapping(bind_mapping &&other);
@@ -43,7 +42,7 @@ namespace coda {
        */
       virtual void reset();
 
-      protected:
+     protected:
       void add_named_param(const std::string &name, size_t index);
       void rem_named_param(const std::string &name, size_t index);
       std::set<size_t> get_named_param_indexes(const std::string &name);
@@ -53,14 +52,14 @@ namespace coda {
 #else
 
     class bind_mapping : public bindable {
-      public:
+     public:
       using bindable::bindable;
 
-      bind_mapping &bind(const std::string &name, const sql_value &value);
+      bind_mapping &bind(const std::string &name, const sql_value &value) override;
 
       std::string prepare(const std::string &sql, size_t max_index);
 
-      virtual bindable &bind(size_t index, const sql_value &value) = 0;
+      bindable &bind(size_t index, const sql_value &value) override = 0;
 
       bool is_named() const;
 
@@ -68,7 +67,6 @@ namespace coda {
     };
 
 #endif
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

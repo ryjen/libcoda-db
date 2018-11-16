@@ -8,29 +8,30 @@
 
 using namespace std;
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     query::query(const std::shared_ptr<coda::db::session> &session)
-        : dirty_(false), session_(session), stmt_(nullptr), params_(),
-          named_params_() {
+        : dirty_(false), session_(session), stmt_(nullptr), params_(), named_params_() {
       if (session_ == nullptr) {
         throw database_exception("No database provided for query");
       }
     }
 
     query::query(const query &other) noexcept
-        : dirty_(false), session_(other.session_), stmt_(other.stmt_),
-          params_(other.params_), named_params_(other.named_params_) {}
+        : bindable(other), sql_generator(other), dirty_(false),
+          session_(other.session_),
+          stmt_(other.stmt_),
+          params_(other.params_),
+          named_params_(other.named_params_) {}
 
     query::query(query &&other) noexcept
-        : dirty_(false), session_(std::move(other.session_)),
-          stmt_(std::move(other.stmt_)), params_(std::move(other.params_)),
+        : dirty_(false),
+          session_(std::move(other.session_)),
+          stmt_(std::move(other.stmt_)),
+          params_(std::move(other.params_)),
           named_params_(std::move(other.named_params_)) {
       other.session_ = nullptr;
       other.stmt_ = nullptr;
     }
-
-    query::~query() {}
 
     query &query::operator=(const query &other) {
       dirty_ = other.dirty_;
@@ -41,7 +42,7 @@ namespace coda {
       return *this;
     }
 
-    query &query::operator=(query &&other) {
+    query &query::operator=(query &&other) noexcept {
       dirty_ = other.dirty_;
       session_ = std::move(other.session_);
       stmt_ = std::move(other.stmt_);
@@ -53,12 +54,9 @@ namespace coda {
       return *this;
     }
 
-    std::shared_ptr<query::session_type> query::get_session() const {
-      return session_;
-    }
+    std::shared_ptr<query::session_type> query::get_session() const { return session_; }
 
     void query::prepare(const string &sql) {
-
       if (stmt_ == nullptr || dirty_) {
         stmt_ = session_->create_statement();
 
@@ -128,5 +126,4 @@ namespace coda {
       dirty_ = false;
       stmt_->reset();
     }
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db

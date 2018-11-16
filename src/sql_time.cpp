@@ -1,12 +1,11 @@
 #include "sql_time.h"
+#include <cstring>
 #include "exception.h"
 #include "sql_number.h"
-#include <cstring>
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     bool sql_time::parse(const std::string &value) {
-      struct tm tp;
+      struct tm tp{};
 
       if (value.length() == 0) {
         return false;
@@ -45,36 +44,13 @@ namespace coda {
       }
     }
 
-    sql_time::sql_time(time_t value, formats format)
-        : value_(value), format_(format) {}
+    sql_time::sql_time(time_t value, formats format) : value_(value), format_(format) {}
 
-    sql_time::sql_time(const std::string &value)
-        : value_(0), format_(TIMESTAMP) {
+    sql_time::sql_time(const std::string &value) : value_(0), format_(TIMESTAMP) {
       if (!parse(value)) {
         throw value_conversion_error("unable to convert string to time");
       }
     }
-
-    sql_time::sql_time(const sql_time &other)
-        : value_(other.value_), format_(other.format_) {}
-
-    sql_time::sql_time(sql_time &&other)
-        : value_(other.value_), format_(other.format_) {}
-
-    sql_time::~sql_time() {}
-
-    sql_time &sql_time::operator=(const sql_time &other) {
-      value_ = other.value_;
-      format_ = other.format_;
-      return *this;
-    }
-
-    sql_time &sql_time::operator=(sql_time &&other) {
-      value_ = other.value_;
-      format_ = other.format_;
-      return *this;
-    }
-
     sql_time::formats sql_time::format() const { return format_; }
 
     time_t sql_time::value() const { return value_; }
@@ -95,17 +71,17 @@ namespace coda {
       char buf[500] = {0};
 
       switch (format_) {
-      case sql_time::DATE:
-        strftime(buf, sizeof(buf), "%Y-%m-%d", gmtime(&value_));
-        return buf;
-      case sql_time::TIME:
-        strftime(buf, sizeof(buf), "%H:%M:%S", gmtime(&value_));
-        return buf;
-      default:
-      case sql_time::TIMESTAMP:
-      case sql_time::DATETIME:
-        strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", gmtime(&value_));
-        return buf;
+        case sql_time::DATE:
+          strftime(buf, sizeof(buf), "%Y-%m-%d", gmtime(&value_));
+          return buf;
+        case sql_time::TIME:
+          strftime(buf, sizeof(buf), "%H:%M:%S", gmtime(&value_));
+          return buf;
+        default:
+        case sql_time::TIMESTAMP:
+        case sql_time::DATETIME:
+          strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", gmtime(&value_));
+          return buf;
       }
     }
 
@@ -113,17 +89,17 @@ namespace coda {
       wchar_t buf[500] = {0};
 
       switch (format_) {
-      case sql_time::DATE:
-        wcsftime(buf, sizeof(buf), L"%Y-%m-%d", gmtime(&value_));
-        return buf;
-      case sql_time::TIME:
-        wcsftime(buf, sizeof(buf), L"%H:%M:%S", gmtime(&value_));
-        return buf;
-      default:
-      case sql_time::TIMESTAMP:
-      case sql_time::DATETIME:
-        wcsftime(buf, sizeof(buf), L"%Y-%m-%d %H:%M:%S", gmtime(&value_));
-        return buf;
+        case sql_time::DATE:
+          wcsftime(buf, sizeof(buf), L"%Y-%m-%d", gmtime(&value_));
+          return buf;
+        case sql_time::TIME:
+          wcsftime(buf, sizeof(buf), L"%H:%M:%S", gmtime(&value_));
+          return buf;
+        default:
+        case sql_time::TIMESTAMP:
+        case sql_time::DATETIME:
+          wcsftime(buf, sizeof(buf), L"%Y-%m-%d %H:%M:%S", gmtime(&value_));
+          return buf;
       }
     }
 
@@ -137,5 +113,4 @@ namespace coda {
       out << value.to_string();
       return out;
     }
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db

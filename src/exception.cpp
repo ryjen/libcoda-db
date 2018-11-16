@@ -1,8 +1,7 @@
 
 #include "exception.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     CODA_IMPLEMENT_EXCEPTION(database_exception, std::exception);
 
     CODA_IMPLEMENT_EXCEPTION(no_such_column_exception, database_exception);
@@ -16,5 +15,4 @@ namespace coda {
     CODA_IMPLEMENT_EXCEPTION(no_primary_key_exception, database_exception);
 
     CODA_IMPLEMENT_EXCEPTION(value_conversion_error, database_exception);
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db

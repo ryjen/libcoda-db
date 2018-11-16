@@ -3,13 +3,12 @@
 
 #include "modify_query.h"
 
-namespace coda {
-  namespace db {
+namespace coda::db {
     /*!
      * a query to insert to a table
      */
     class insert_query : public modify_query {
-      public:
+     public:
       using modify_query::modify_query;
 
       /*!
@@ -17,39 +16,35 @@ namespace coda {
        * @param tableName the table to modify
        * @param columns the columns to modify
        */
-      insert_query(const std::shared_ptr<coda::db::session> &session,
-                   const std::string &tableName);
+      insert_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName);
 
       /*!
        * @param db the database to modify
        * @param columns the columns to modify
        */
-      insert_query(const std::shared_ptr<coda::db::session> &session,
-                   const std::string &tableName,
+      insert_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName,
                    const std::vector<std::string> &columns);
 
       /*!
        * @param schema the schema to modify
        * @param column the specific columns to modify in the schema
        */
-      insert_query(const std::shared_ptr<schema> &schema,
-                   const std::vector<std::string> &columns);
+      insert_query(const std::shared_ptr<schema> &schema, const std::vector<std::string> &columns);
 
-      /* boilerplate */
-      insert_query(const insert_query &other);
+      insert_query(const insert_query &other) = default;
 
-      insert_query(insert_query &&other);
+      insert_query(insert_query &&other) noexcept;
 
-      virtual ~insert_query();
+      ~insert_query() override = default;
 
       insert_query &operator=(const insert_query &other);
 
-      insert_query &operator=(insert_query &&other);
+      insert_query &operator=(insert_query &&other) noexcept;
 
       /*!
        * @return the id column of the last insert
        */
-      long long last_insert_id() const;
+      sql_id last_insert_id() const;
 
       /*!
        * get the columns being modified
@@ -101,8 +96,7 @@ namespace coda {
 
       insert_query &values(const std::vector<sql_value> &value);
 
-      insert_query &
-      values(const std::unordered_map<std::string, sql_value> &value);
+      insert_query &values(const std::unordered_map<std::string, sql_value> &value);
 
       insert_query &value(const std::string &name, const sql_value &value);
 
@@ -112,15 +106,15 @@ namespace coda {
        * executes the insert query
        * @return the number of records inserted
        */
-      int execute();
+      sql_changes execute() override;
 
       /*!
        * tests if this query is valid
        * @return true if valid
        */
-      bool is_valid() const noexcept;
+      bool is_valid() const noexcept override;
 
-      private:
+     private:
       insert_query &column(const std::string &value) {
         if (!value.empty()) {
           columns_.push_back(value);
@@ -129,13 +123,12 @@ namespace coda {
         return *this;
       }
 
-      std::string generate_sql() const;
+      std::string generate_sql() const override;
 
-      long long lastId_;
+      sql_id lastId_;
       std::vector<std::string> columns_;
       std::string tableName_;
     };
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db
 
 #endif

@@ -1,16 +1,14 @@
 
 #include "resultset.h"
+#include <string>
 #include "../exception.h"
 #include "binding.h"
 #include "row.h"
 #include "session.h"
-#include <string>
 
 using namespace std;
 
-namespace coda {
-  namespace db {
-    namespace mysql {
+namespace coda::db::mysql {
       namespace helper {
         extern string last_stmt_error(MYSQL_STMT *stmt);
 
@@ -23,35 +21,13 @@ namespace coda {
             mysql_free_result(p);
           }
         }
-      } // namespace helper
+      }  // namespace helper
 
-      resultset::resultset(const std::shared_ptr<mysql::session> &sess,
-                           const shared_ptr<MYSQL_RES> &res)
+      resultset::resultset(const std::shared_ptr<mysql::session> &sess, const shared_ptr<MYSQL_RES> &res)
           : res_(res), row_(nullptr), sess_(sess) {
         if (sess_ == nullptr) {
           throw database_exception("database not provided to mysql resultset");
         }
-      }
-
-      resultset::resultset(resultset &&other)
-          : res_(std::move(other.res_)), row_(other.row_),
-            sess_(std::move(other.sess_)) {
-        other.sess_ = nullptr;
-        other.res_ = nullptr;
-        other.row_ = nullptr;
-      }
-
-      resultset::~resultset() {}
-
-      resultset &resultset::operator=(resultset &&other) {
-        res_ = std::move(other.res_);
-        sess_ = std::move(other.sess_);
-        row_ = other.row_;
-        other.sess_ = nullptr;
-        other.res_ = nullptr;
-        other.row_ = nullptr;
-
-        return *this;
       }
 
       bool resultset::is_valid() const noexcept { return res_ != nullptr; }
@@ -77,50 +53,17 @@ namespace coda {
         }
       }
 
-      resultset::row_type resultset::current_row() {
-        return row_type(make_shared<mysql::row>(sess_, res_, row_));
-      }
+      resultset::row_type resultset::current_row() { return row_type(make_shared<mysql::row>(sess_, res_, row_)); }
       /* Statement version */
 
-      stmt_resultset::stmt_resultset(
-          const std::shared_ptr<mysql::session> &sess,
-          const shared_ptr<MYSQL_STMT> &stmt)
-          : stmt_(stmt), metadata_(nullptr), sess_(sess), bindings_(nullptr),
-            status_(-1) {
+      stmt_resultset::stmt_resultset(const std::shared_ptr<mysql::session> &sess, const shared_ptr<MYSQL_STMT> &stmt)
+          : stmt_(stmt), metadata_(nullptr), sess_(sess), bindings_(nullptr), status_(-1) {
         if (stmt_ == nullptr) {
-          throw database_exception(
-              "invalid statement provided to mysql statement resultset");
+          throw database_exception("invalid statement provided to mysql statement resultset");
         }
         if (sess_ == nullptr) {
-          throw database_exception(
-              "invalid database provided to mysql statement resultset");
+          throw database_exception("invalid database provided to mysql statement resultset");
         }
-      }
-
-      stmt_resultset::stmt_resultset(stmt_resultset &&other)
-          : stmt_(std::move(other.stmt_)),
-            metadata_(std::move(other.metadata_)),
-            sess_(std::move(other.sess_)),
-            bindings_(std::move(other.bindings_)), status_(other.status_) {
-        other.sess_ = nullptr;
-        other.stmt_ = nullptr;
-        other.bindings_ = nullptr;
-        other.metadata_ = nullptr;
-      }
-
-      stmt_resultset::~stmt_resultset() {}
-
-      stmt_resultset &stmt_resultset::operator=(stmt_resultset &&other) {
-        stmt_ = std::move(other.stmt_);
-        sess_ = std::move(other.sess_);
-        metadata_ = std::move(other.metadata_);
-        bindings_ = std::move(other.bindings_);
-        status_ = other.status_;
-        other.sess_ = nullptr;
-        other.bindings_ = nullptr;
-        other.metadata_ = nullptr;
-
-        return *this;
       }
 
       void stmt_resultset::prepare_results() {
@@ -150,9 +93,7 @@ namespace coda {
         bindings_->bind_result(stmt_.get());
       }
 
-      bool stmt_resultset::is_valid() const noexcept {
-        return stmt_ != nullptr && stmt_;
-      }
+      bool stmt_resultset::is_valid() const noexcept { return stmt_ != nullptr && stmt_; }
 
       bool stmt_resultset::next() {
         if (!is_valid()) {
@@ -174,11 +115,8 @@ namespace coda {
           throw database_exception(helper::last_stmt_error(stmt_.get()));
         }
 
-        if (res == MYSQL_NO_DATA) {
-          return false;
-        }
+        return res != MYSQL_NO_DATA;
 
-        return true;
       }
 
       void stmt_resultset::reset() {
@@ -197,9 +135,6 @@ namespace coda {
       }
 
       resultset::row_type stmt_resultset::current_row() {
-        return row_type(
-            make_shared<stmt_row>(sess_, stmt_, metadata_, bindings_));
+        return row_type(make_shared<stmt_row>(sess_, stmt_, metadata_, bindings_));
       }
-    } // namespace mysql
-  }   // namespace db
-} // namespace coda
+}  // namespace coda::db::mysql

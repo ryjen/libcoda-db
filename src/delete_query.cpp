@@ -3,15 +3,11 @@
 
 using namespace std;
 
-namespace coda {
-  namespace db {
-    delete_query::delete_query(
-        const std::shared_ptr<coda::db::session> &session)
+namespace coda::db {
+    delete_query::delete_query(const std::shared_ptr<coda::db::session> &session)
         : modify_query(session), where_(session->impl(), this) {}
 
-    delete_query::delete_query(
-        const std::shared_ptr<coda::db::session> &session,
-        const std::string &tableName)
+    delete_query::delete_query(const std::shared_ptr<coda::db::session> &session, const std::string &tableName)
         : modify_query(session), where_(session->impl(), this) {
       tableName_ = tableName;
     }
@@ -22,14 +18,10 @@ namespace coda {
     }
 
     delete_query::delete_query(const delete_query &other)
-        : modify_query(other), where_(other.where_),
-          tableName_(other.tableName_) {}
+        : modify_query(other), where_(other.where_), tableName_(other.tableName_) {}
 
-    delete_query::delete_query(delete_query &&other)
-        : modify_query(std::move(other)), where_(std::move(other.where_)),
-          tableName_(std::move(other.tableName_)) {}
-
-    delete_query::~delete_query() {}
+    delete_query::delete_query(delete_query &&other) noexcept
+        : modify_query(std::move(other)), where_(std::move(other.where_)), tableName_(std::move(other.tableName_)) {}
 
     delete_query &delete_query::operator=(const delete_query &other) {
       modify_query::operator=(other);
@@ -38,16 +30,14 @@ namespace coda {
       return *this;
     }
 
-    delete_query &delete_query::operator=(delete_query &&other) {
-      modify_query::operator=(std::move(other));
+    delete_query &delete_query::operator=(delete_query &&other) noexcept {
+      modify_query::operator=(other);
       where_ = std::move(other.where_);
       tableName_ = std::move(other.tableName_);
       return *this;
     }
 
-    bool delete_query::is_valid() const noexcept {
-      return query::is_valid() && !tableName_.empty();
-    }
+    bool delete_query::is_valid() const noexcept { return query::is_valid() && !tableName_.empty(); }
 
     where_builder &delete_query::where() { return where_; }
 
@@ -93,5 +83,4 @@ namespace coda {
 
       return buf;
     }
-  } // namespace db
-} // namespace coda
+}  // namespace coda::db

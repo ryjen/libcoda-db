@@ -1,26 +1,24 @@
 
+#include <ctime>
 #include <cassert>
 #include <codecvt>
 #include <cstdlib>
 #include <locale>
 #include <memory>
 #include <regex>
-#include <time.h>
 
 #include "../alloc.h"
 #include "../exception.h"
 #include "../sql_value.h"
 #include "binding.h"
 
-namespace coda {
-  namespace db {
-    namespace mysql {
+namespace coda::db::mysql {
+
       namespace helper {
         // small util method to make a c pointer for a type
-        template <typename T,
-                  typename = std::enable_if<std::is_arithmetic<T>::value>>
+        template <typename T, typename = std::enable_if<std::is_arithmetic<T>::value>>
         void *to_cptr(const T &value) {
-          T *ptr = c_alloc<T>();
+          auto *ptr = c_alloc<T>();
           *ptr = value;
           return ptr;
         }
@@ -36,47 +34,46 @@ namespace coda {
             return;
           }
           value->buffer_type = field->type;
-          value->is_null =
-              (field->flags & NOT_NULL_FLAG) ? 0 : c_alloc<my_bool>();
-          value->is_unsigned = field->flags & UNSIGNED_FLAG;
-          value->error = 0;
-          value->length = 0;
+          value->is_null = (field->flags & NOT_NULL_FLAG) ? nullptr : c_alloc<my_bool>();
+          value->is_unsigned = (field->flags & UNSIGNED_FLAG) != 0;
+          value->error = nullptr;
+          value->length = nullptr;
 
           // so now we have to prepare the buffer size for storing a value
           switch (field->type) {
-          default:
-            value->buffer_length = field->length;
-            break;
-          case MYSQL_TYPE_FLOAT:
-            value->buffer_length = std::max(field->length, sizeof(float));
-            break;
-          case MYSQL_TYPE_DOUBLE:
-            value->buffer_length = std::max(field->length, sizeof(double));
-            break;
-          case MYSQL_TYPE_TINY:
-          case MYSQL_TYPE_SHORT:
-          case MYSQL_TYPE_LONG:
-            value->buffer_length = std::max(field->length, sizeof(long));
-            break;
-          case MYSQL_TYPE_LONGLONG:
-            value->buffer_length = std::max(field->length, sizeof(long long));
-            break;
-          case MYSQL_TYPE_STRING:
-          case MYSQL_TYPE_VAR_STRING:
-          case MYSQL_TYPE_VARCHAR:
-          case MYSQL_TYPE_BLOB:
-          case MYSQL_TYPE_TINY_BLOB:
-          case MYSQL_TYPE_MEDIUM_BLOB:
-          case MYSQL_TYPE_LONG_BLOB:
-            value->length = c_alloc<unsigned long>();
-            value->buffer_length = field->length;
-            break;
-          case MYSQL_TYPE_DATETIME:
-          case MYSQL_TYPE_DATE:
-          case MYSQL_TYPE_TIME:
-          case MYSQL_TYPE_TIMESTAMP:
-            value->buffer_length = sizeof(MYSQL_TIME);
-            break;
+            default:
+              value->buffer_length = field->length;
+              break;
+            case MYSQL_TYPE_FLOAT:
+              value->buffer_length = std::max(field->length, sizeof(float));
+              break;
+            case MYSQL_TYPE_DOUBLE:
+              value->buffer_length = std::max(field->length, sizeof(double));
+              break;
+            case MYSQL_TYPE_TINY:
+            case MYSQL_TYPE_SHORT:
+            case MYSQL_TYPE_LONG:
+              value->buffer_length = std::max(field->length, sizeof(long));
+              break;
+            case MYSQL_TYPE_LONGLONG:
+              value->buffer_length = std::max(field->length, sizeof(long long));
+              break;
+            case MYSQL_TYPE_STRING:
+            case MYSQL_TYPE_VAR_STRING:
+            case MYSQL_TYPE_VARCHAR:
+            case MYSQL_TYPE_BLOB:
+            case MYSQL_TYPE_TINY_BLOB:
+            case MYSQL_TYPE_MEDIUM_BLOB:
+            case MYSQL_TYPE_LONG_BLOB:
+              value->length = c_alloc<unsigned long>();
+              value->buffer_length = field->length;
+              break;
+            case MYSQL_TYPE_DATETIME:
+            case MYSQL_TYPE_DATE:
+            case MYSQL_TYPE_TIME:
+            case MYSQL_TYPE_TIMESTAMP:
+              value->buffer_length = sizeof(MYSQL_TIME);
+              break;
           }
           if (value->buffer_length > 0) {
             value->buffer = c_alloc(value->buffer_length);
@@ -129,7 +126,7 @@ namespace coda {
          * @return         the parsed sql_time value or sql_null
          */
         sql_value parse_time(MYSQL_BIND *binding, sql_time::formats format) {
-          struct tm sys;
+          struct tm sys{};
           MYSQL_TIME *db_tm;
 
           // sanity check
@@ -156,24 +153,24 @@ namespace coda {
         }
 
         extern std::string last_stmt_error(MYSQL_STMT *stmt);
-      } // namespace helper
+      }  // namespace helper
+
       // namespace for converting data
       namespace data_mapper {
         /**
          * handle unsigned/signed flag in binding when converting a number
          */
         template <typename T>
-        typename std::enable_if<std::is_integral<T>::value, sql_value>::type
-        to_number(MYSQL_BIND *binding) {
+        typename std::enable_if<std::is_integral<T>::value, sql_value>::type to_number(MYSQL_BIND *binding) {
           if (binding->is_unsigned) {
             typedef typename std::make_unsigned<T>::type U;
-            U *p = static_cast<U *>(binding->buffer);
+            auto *p = static_cast<U *>(binding->buffer);
             if (p == nullptr) {
               return sql_number(sql_null);
             }
             return sql_number(*p);
           } else {
-            T *p = static_cast<T *>(binding->buffer);
+            auto *p = static_cast<T *>(binding->buffer);
             if (p == nullptr) {
               return sql_number(sql_null);
             }
@@ -193,63 +190,61 @@ namespace coda {
           }
 
           switch (binding->buffer_type) {
-          case MYSQL_TYPE_BIT:
-          case MYSQL_TYPE_TINY:
-          case MYSQL_TYPE_SHORT:
-          case MYSQL_TYPE_INT24:
-          case MYSQL_TYPE_LONG:
-            switch (binding->buffer_length) {
-            case sizeof(char):
-              return to_number<char>(binding);
-            case sizeof(short):
-              return to_number<short>(binding);
-            case sizeof(int):
-            default:
-              return to_number<int>(binding);
-            case sizeof(long):
-              return to_number<long>(binding);
+            case MYSQL_TYPE_BIT:
+            case MYSQL_TYPE_TINY:
+            case MYSQL_TYPE_SHORT:
+            case MYSQL_TYPE_INT24:
+            case MYSQL_TYPE_LONG:
+              switch (binding->buffer_length) {
+                case sizeof(char):
+                  return to_number<char>(binding);
+                case sizeof(short):
+                  return to_number<short>(binding);
+                case sizeof(int):
+                default:
+                  return to_number<int>(binding);
+                case sizeof(long):
+                  return to_number<long>(binding);
+              }
+            case MYSQL_TYPE_LONGLONG:
+              return to_number<long long>(binding);
+            case MYSQL_TYPE_NULL:
+              return sql_null;
+            case MYSQL_TYPE_TIME:
+              return helper::parse_time(binding, sql_time::TIME);
+            case MYSQL_TYPE_DATE:
+              return helper::parse_time(binding, sql_time::DATE);
+            case MYSQL_TYPE_TIMESTAMP:
+              return helper::parse_time(binding, sql_time::TIMESTAMP);
+            case MYSQL_TYPE_DATETIME:
+              return helper::parse_time(binding, sql_time::DATETIME);
+            case MYSQL_TYPE_VAR_STRING:
+            case MYSQL_TYPE_VARCHAR:
+            case MYSQL_TYPE_DECIMAL:
+            case MYSQL_TYPE_SET:
+            case MYSQL_TYPE_ENUM:
+            case MYSQL_TYPE_GEOMETRY:
+            case MYSQL_TYPE_NEWDECIMAL:
+            case MYSQL_TYPE_STRING:
+            default: { return sql_string(static_cast<const char *>(binding->buffer)); }
+            case MYSQL_TYPE_FLOAT: {
+              auto *p = static_cast<float *>(binding->buffer);
+              return sql_number(*p);
             }
-          case MYSQL_TYPE_LONGLONG:
-            return to_number<long long>(binding);
-          case MYSQL_TYPE_NULL:
-            return sql_null;
-          case MYSQL_TYPE_TIME:
-            return helper::parse_time(binding, sql_time::TIME);
-          case MYSQL_TYPE_DATE:
-            return helper::parse_time(binding, sql_time::DATE);
-          case MYSQL_TYPE_TIMESTAMP:
-            return helper::parse_time(binding, sql_time::TIMESTAMP);
-          case MYSQL_TYPE_DATETIME:
-            return helper::parse_time(binding, sql_time::DATETIME);
-          case MYSQL_TYPE_VAR_STRING:
-          case MYSQL_TYPE_VARCHAR:
-          case MYSQL_TYPE_DECIMAL:
-          case MYSQL_TYPE_SET:
-          case MYSQL_TYPE_ENUM:
-          case MYSQL_TYPE_GEOMETRY:
-          case MYSQL_TYPE_NEWDECIMAL:
-          case MYSQL_TYPE_STRING:
-          default: {
-            return sql_string(static_cast<const char *>(binding->buffer));
-          }
-          case MYSQL_TYPE_FLOAT: {
-            float *p = static_cast<float *>(binding->buffer);
-            return sql_number(*p);
-          }
-          case MYSQL_TYPE_DOUBLE: {
-            double *p = static_cast<double *>(binding->buffer);
-            return sql_number(*p);
-          }
-          case MYSQL_TYPE_TINY_BLOB:
-          case MYSQL_TYPE_MEDIUM_BLOB:
-          case MYSQL_TYPE_LONG_BLOB:
-          case MYSQL_TYPE_BLOB: {
-            if (binding->length) {
-              return sql_blob(binding->buffer, *binding->length);
+            case MYSQL_TYPE_DOUBLE: {
+              auto *p = static_cast<double *>(binding->buffer);
+              return sql_number(*p);
             }
+            case MYSQL_TYPE_TINY_BLOB:
+            case MYSQL_TYPE_MEDIUM_BLOB:
+            case MYSQL_TYPE_LONG_BLOB:
+            case MYSQL_TYPE_BLOB: {
+              if (binding->length) {
+                return sql_blob(binding->buffer, *binding->length);
+              }
 
-            return sql_blob();
-          }
+              return sql_blob();
+            }
           }
         }
 
@@ -268,68 +263,67 @@ namespace coda {
           }
 
           switch (type) {
-          case MYSQL_TYPE_BIT:
-          case MYSQL_TYPE_TINY:
-          case MYSQL_TYPE_SHORT:
-          case MYSQL_TYPE_INT24:
-          case MYSQL_TYPE_LONG: {
-            try {
-              return sql_number(std::stoi(std::string(value, 0, length)));
-            } catch (const std::exception &e) {
-              throw value_conversion_error("unable to get integer from value");
+            case MYSQL_TYPE_BIT:
+            case MYSQL_TYPE_TINY:
+            case MYSQL_TYPE_SHORT:
+            case MYSQL_TYPE_INT24:
+            case MYSQL_TYPE_LONG: {
+              try {
+                return sql_number(std::stoi(std::string(value, 0, length)));
+              } catch (const std::exception &e) {
+                throw value_conversion_error("unable to get integer from value");
+              }
             }
-          }
-          case MYSQL_TYPE_LONGLONG: {
-            try {
-              return sql_number(std::stoll(std::string(value, 0, length)));
-            } catch (const std::exception &e) {
-              throw value_conversion_error("unable to get longlong from value");
+            case MYSQL_TYPE_LONGLONG: {
+              try {
+                return sql_number(std::stoll(std::string(value, 0, length)));
+              } catch (const std::exception &e) {
+                throw value_conversion_error("unable to get longlong from value");
+              }
             }
-          }
-          case MYSQL_TYPE_DECIMAL:
-          case MYSQL_TYPE_VARCHAR:
-          case MYSQL_TYPE_VAR_STRING:
-          case MYSQL_TYPE_NEWDECIMAL:
-          case MYSQL_TYPE_GEOMETRY:
-          case MYSQL_TYPE_ENUM:
-          case MYSQL_TYPE_SET:
-          case MYSQL_TYPE_STRING:
-          default:
-            return sql_string(value, 0, length);
-          case MYSQL_TYPE_NEWDATE:
-          case MYSQL_TYPE_DATE:
-          case MYSQL_TYPE_DATETIME:
-          case MYSQL_TYPE_TIMESTAMP:
-          case MYSQL_TYPE_TIME: {
-            try {
-              return sql_time(std::string(value, 0, length));
-            } catch (const value_conversion_error &e) {
-              throw value_conversion_error(
-                  "unable to get time format from value");
+            case MYSQL_TYPE_DECIMAL:
+            case MYSQL_TYPE_VARCHAR:
+            case MYSQL_TYPE_VAR_STRING:
+            case MYSQL_TYPE_NEWDECIMAL:
+            case MYSQL_TYPE_GEOMETRY:
+            case MYSQL_TYPE_ENUM:
+            case MYSQL_TYPE_SET:
+            case MYSQL_TYPE_STRING:
+            default:
+              return sql_string(value, 0, length);
+            case MYSQL_TYPE_NEWDATE:
+            case MYSQL_TYPE_DATE:
+            case MYSQL_TYPE_DATETIME:
+            case MYSQL_TYPE_TIMESTAMP:
+            case MYSQL_TYPE_TIME: {
+              try {
+                return sql_time(std::string(value, 0, length));
+              } catch (const value_conversion_error &e) {
+                throw value_conversion_error("unable to get time format from value");
+              }
             }
-          }
-          case MYSQL_TYPE_FLOAT: {
-            try {
-              return sql_number(std::stof(std::string(value, 0, length)));
-            } catch (const std::exception &e) {
-              throw value_conversion_error("unable to get float from value");
+            case MYSQL_TYPE_FLOAT: {
+              try {
+                return sql_number(std::stof(std::string(value, 0, length)));
+              } catch (const std::exception &e) {
+                throw value_conversion_error("unable to get float from value");
+              }
             }
-          }
-          case MYSQL_TYPE_DOUBLE: {
-            try {
-              return sql_number(std::stod(std::string(value, 0, length)));
-            } catch (const std::exception &e) {
-              throw value_conversion_error("unable to get double from value");
+            case MYSQL_TYPE_DOUBLE: {
+              try {
+                return sql_number(std::stod(std::string(value, 0, length)));
+              } catch (const std::exception &e) {
+                throw value_conversion_error("unable to get double from value");
+              }
             }
-          }
-          case MYSQL_TYPE_TINY_BLOB:
-          case MYSQL_TYPE_MEDIUM_BLOB:
-          case MYSQL_TYPE_LONG_BLOB:
-          case MYSQL_TYPE_BLOB: {
-            return sql_blob(value, length);
-          }
-          case MYSQL_TYPE_NULL:
-            return sql_null;
+            case MYSQL_TYPE_TINY_BLOB:
+            case MYSQL_TYPE_MEDIUM_BLOB:
+            case MYSQL_TYPE_LONG_BLOB:
+            case MYSQL_TYPE_BLOB: {
+              return sql_blob(value, length);
+            }
+            case MYSQL_TYPE_NULL:
+              return sql_null;
           }
         }
 
@@ -343,18 +337,18 @@ namespace coda {
             return;
           }
           switch (value.format()) {
-          case sql_time::DATE:
-            binding->buffer_type = MYSQL_TYPE_DATE;
-            break;
-          case sql_time::TIME:
-            binding->buffer_type = MYSQL_TYPE_TIME;
-            break;
-          case sql_time::DATETIME:
-            binding->buffer_type = MYSQL_TYPE_DATETIME;
-            break;
-          case sql_time::TIMESTAMP:
-            binding->buffer_type = MYSQL_TYPE_TIMESTAMP;
-            break;
+            case sql_time::DATE:
+              binding->buffer_type = MYSQL_TYPE_DATE;
+              break;
+            case sql_time::TIME:
+              binding->buffer_type = MYSQL_TYPE_TIME;
+              break;
+            case sql_time::DATETIME:
+              binding->buffer_type = MYSQL_TYPE_DATETIME;
+              break;
+            case sql_time::TIMESTAMP:
+              binding->buffer_type = MYSQL_TYPE_TIMESTAMP;
+              break;
           }
           tm = c_alloc<MYSQL_TIME>();
           auto gmt = value.to_gmtime();
@@ -372,11 +366,9 @@ namespace coda {
          * a value visitor to apply to a mysql binding
          */
         class from_number {
-          public:
-          from_number(MYSQL_BIND *bind) : bind_(bind) {}
-          void operator()(const sql_null_type &null) const {
-            bind_->buffer_type = MYSQL_TYPE_NULL;
-          }
+         public:
+          explicit from_number(MYSQL_BIND *bind) : bind_(bind) {}
+          void operator()(const sql_null_type &null) const { bind_->buffer_type = MYSQL_TYPE_NULL; }
           void operator()(char value) const {
             bind_->buffer_type = MYSQL_TYPE_TINY;
             bind_->buffer = helper::to_cptr(value);
@@ -458,7 +450,7 @@ namespace coda {
             bind_->buffer_length = 1;
           }
 
-          private:
+         private:
           MYSQL_BIND *bind_;
         };
 
@@ -466,14 +458,10 @@ namespace coda {
          * a visitor to apply a value to a mysql binding
          */
         class from_value {
-          public:
-          from_value(MYSQL_BIND *bind) : bind_(bind) {}
-          void operator()(const sql_time &value) const {
-            data_mapper::set_time(bind_, value);
-          }
-          void operator()(const sql_null_type &value) const {
-            bind_->buffer_type = MYSQL_TYPE_NULL;
-          }
+         public:
+          explicit from_value(MYSQL_BIND *bind) : bind_(bind) {}
+          void operator()(const sql_time &value) const { data_mapper::set_time(bind_, value); }
+          void operator()(const sql_null_type &value) const { bind_->buffer_type = MYSQL_TYPE_NULL; }
           void operator()(const sql_blob &value) const {
             bind_->buffer_type = MYSQL_TYPE_BLOB;
             bind_->buffer = c_copy(value.get(), value.size());
@@ -483,9 +471,7 @@ namespace coda {
             }
             *bind_->length = value.size();
           }
-          void operator()(const sql_number &value) const {
-            value.apply_visitor(data_mapper::from_number(bind_));
-          }
+          void operator()(const sql_number &value) const { value.apply_visitor(data_mapper::from_number(bind_)); }
           void operator()(const sql_string &value) const {
             bind_->buffer_type = MYSQL_TYPE_STRING;
             bind_->buffer = strdup(value.c_str());
@@ -508,24 +494,17 @@ namespace coda {
             *bind_->length = value.size();
           }
 
-          private:
+         private:
           MYSQL_BIND *bind_;
         };
-      } // namespace data_mapper
+      }  // namespace data_mapper
 
       binding::binding() : binding(prealloc_size) {}
 
-      binding::binding(size_t size) : value_(nullptr), size_(size) {
-        value_ = c_alloc<MYSQL_BIND>(size);
-      }
+      binding::binding(size_t size) : value_(nullptr), size_(size) { value_ = c_alloc<MYSQL_BIND>(size); }
 
-      binding::binding(const MYSQL_BIND &value) : value_(nullptr), size_(1) {
-        copy_value(&value, size_);
-      }
-      binding::binding(MYSQL_BIND *values, size_t size)
-          : value_(nullptr), size_(size) {
-        copy_value(values, size);
-      }
+      binding::binding(const MYSQL_BIND &value) : value_(nullptr), size_(1) { copy_value(&value, size_); }
+      binding::binding(MYSQL_BIND *values, size_t size) : value_(nullptr), size_(size) { copy_value(values, size); }
 
       binding::binding(MYSQL_FIELD *fields, size_t size) : size_(size) {
         value_ = c_alloc<MYSQL_BIND>(size);
@@ -584,8 +563,7 @@ namespace coda {
         size_ = size;
       }
 
-      binding::binding(const binding &other)
-          : bind_mapping(other), value_(nullptr), size_(0) {
+      binding::binding(const binding &other) : bind_mapping(other), value_(nullptr), size_(0) {
         copy_value(other.value_, other.size_);
       }
       binding::binding(binding &&other) : bind_mapping(std::move(other)) {
@@ -602,7 +580,7 @@ namespace coda {
       }
 
       binding &binding::operator=(binding &&other) {
-        bind_mapping::operator=(std::move(other));
+        bind_mapping::operator=(other);
         clear_value();
         value_ = other.value_;
         size_ = other.size_;
@@ -630,8 +608,7 @@ namespace coda {
       }
 
       sql_value binding::to_value(size_t index) const {
-        if (index >= size_ || value_ == nullptr ||
-            value_[index].buffer == nullptr) {
+        if (index >= size_ || value_ == nullptr || value_[index].buffer == nullptr) {
           return sql_null;
         }
 
@@ -684,7 +661,7 @@ namespace coda {
       std::set<size_t> &binding::get_indexes(size_t index) {
         auto &indexes = indexes_[index];
 
-        if (indexes.size() == 0) {
+        if (indexes.empty()) {
           indexes.insert(index);
         }
         return indexes;
@@ -738,8 +715,7 @@ namespace coda {
       std::string binding::prepare(const std::string &sql) {
 #ifdef ENABLE_PARAMETER_MAPPING
         // now build the list of indexes
-        auto match_begin =
-            std::sregex_iterator(sql.begin(), sql.end(), bindable::index_regex);
+        auto match_begin = std::sregex_iterator(sql.begin(), sql.end(), bindable::index_regex);
         auto match_end = std::sregex_iterator();
 
         indexes_.clear();
@@ -748,19 +724,19 @@ namespace coda {
         for (auto i = match_begin; i != match_end; ++i) {
           auto str = i->str();
           switch (str[0]) {
-          // if its a ? parameter...
-          case '?': {
-            // then go to the next index
-            ++index;
-            break;
-          }
-          case '$': {
-            auto sub = *i;
-            // if its a $ parameter, mapp the real index
-            auto pos = std::stol(sub[2].str());
-            indexes_[pos].insert(++index);
-            break;
-          }
+            // if its a ? parameter...
+            case '?': {
+              // then go to the next index
+              ++index;
+              break;
+            }
+            case '$': {
+              auto sub = *i;
+              // if its a $ parameter, mapp the real index
+              auto pos = std::stol(sub[2].str());
+              indexes_[pos].insert(++index);
+              break;
+            }
           }
         }
 
@@ -773,6 +749,4 @@ namespace coda {
         return sql;
 #endif
       }
-    } // namespace mysql
-  }   // namespace db
-} // namespace coda
+}  // namespace coda::db::mysql
