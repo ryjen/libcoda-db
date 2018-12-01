@@ -43,56 +43,83 @@ void create_postgres_table(soci::session &session) {
 
 void cleanup_table(soci::session &session) { session << "drop table users"; }
 
-BENCHMARK("sqlite insert", [](benchpress::context *context) {
-  soci::session session("sqlite3", "test.db");
+BENCHMARK("sqlite insert",[](
+benchpress::context *context
+) {
+soci::session session("sqlite3", "test.db");
 
-  create_table(session);
+create_table(session);
 
-  context->reset_timer();
+context->
+reset_timer();
 
-  for (size_t i = 0; i < context->num_iterations(); i++) {
-    benchmark_insert(session);
-  }
+for (
+size_t i = 0;
+i<context->
+num_iterations();
+i++) {
+benchmark_insert(session);
+}
 
-  context->stop_timer();
+context->
+stop_timer();
 
-  session.close();
+session.
+close();
 
-  unlink("test.db");
+unlink("test.db");
 });
 
-BENCHMARK("mysql insert", [](benchpress::context *context) {
-  soci::session session("mysql", "dbname=test");
+BENCHMARK("mysql insert",[](
+benchpress::context *context
+) {
+soci::session session("mysql", "dbname=test");
 
-  create_mysql_table(session);
+create_mysql_table(session);
 
-  context->reset_timer();
+context->
+reset_timer();
 
-  for (size_t i = 0; i < context->num_iterations(); i++) {
-    benchmark_insert(session);
-  }
+for (
+size_t i = 0;
+i<context->
+num_iterations();
+i++) {
+benchmark_insert(session);
+}
 
-  context->stop_timer();
+context->
+stop_timer();
 
-  cleanup_table(session);
+cleanup_table(session);
 
-  session.close();
+session.
+close();
 });
 
-BENCHMARK("postgres insert", [](benchpress::context *context) {
-  soci::session session("postgresql", "dbname=test");
+BENCHMARK("postgres insert",[](
+benchpress::context *context
+) {
+soci::session session("postgresql", "dbname=test");
 
-  create_postgres_table(session);
+create_postgres_table(session);
 
-  context->reset_timer();
+context->
+reset_timer();
 
-  for (size_t i = 0; i < context->num_iterations(); i++) {
-    benchmark_insert(session);
-  }
+for (
+size_t i = 0;
+i<context->
+num_iterations();
+i++) {
+benchmark_insert(session);
+}
 
-  context->stop_timer();
+context->
+stop_timer();
 
-  cleanup_table(session);
+cleanup_table(session);
 
-  session.close();
+session.
+close();
 });

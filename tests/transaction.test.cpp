@@ -81,7 +81,7 @@ specification(transactions, []() {
       select_query select(other_session);
 
       select.from(test::user::TABLE_NAME)
-              .where(op::equals("first_name", "Mike")) &&
+          .where(op::equals("first_name", "Mike")) &&
           op::equals("last_name", "Johnson");
 
       {
@@ -132,7 +132,7 @@ specification(transactions, []() {
       select_query select(other_session);
 
       select.from(test::user::TABLE_NAME)
-              .where(op::equals("first_name", "Jerome")) &&
+          .where(op::equals("first_name", "Jerome")) &&
           op::equals("last_name", "Padington");
 
       auto results = select.execute();
@@ -173,7 +173,7 @@ specification(transactions, []() {
       select_query select(other_session);
 
       select.from(test::user::TABLE_NAME)
-              .where(op::equals("first_name", "Jerome")) &&
+          .where(op::equals("first_name", "Jerome")) &&
           op::equals("last_name", "Padington");
 
       auto results = select.execute();

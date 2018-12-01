@@ -70,7 +70,7 @@ namespace coda::db::postgres {
         return *this;
       }
 
-      statement::resultset_type statement::results() {
+      statement::resultset_type statement::query() {
         if (sess_ == nullptr) {
           throw database_exception("statement::results invalid database");
         }
@@ -88,7 +88,7 @@ namespace coda::db::postgres {
         return resultset_type(make_shared<resultset>(sess_, stmt_));
       }
 
-      bool statement::result() {
+      bool statement::execute() {
         if (sess_ == nullptr) {
           throw database_exception("statement::results invalid database");
         }

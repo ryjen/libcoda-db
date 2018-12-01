@@ -1,4 +1,4 @@
-.TH "coda::db::modify_query" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::modify_query" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,22 +22,22 @@ Inherited by \fBcoda::db::delete_query\fP, \fBcoda::db::insert_query\fP, and \fB
 .RI "\fBmodify_query\fP (const std::shared_ptr< \fBschema\fP > &\fBschema\fP)"
 .br
 .ti -1c
-.RI "\fBmodify_query\fP (const \fBmodify_query\fP &other)"
+.RI "\fBmodify_query\fP (const \fBmodify_query\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBmodify_query\fP (\fBmodify_query\fP &&other)"
+.RI "\fBmodify_query\fP (\fBmodify_query\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "\fBmodify_query\fP & \fBoperator=\fP (const \fBmodify_query\fP &other)"
+.RI "\fBmodify_query\fP & \fBoperator=\fP (const \fBmodify_query\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBmodify_query\fP & \fBoperator=\fP (\fBmodify_query\fP &&other)"
+.RI "\fBmodify_query\fP & \fBoperator=\fP (\fBmodify_query\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "virtual int \fBexecute\fP ()"
+.RI "virtual sql_changes \fBexecute\fP ()"
 .br
 .ti -1c
-.RI "int \fBlast_number_of_changes\fP () const"
+.RI "sql_changes \fBlast_number_of_changes\fP () const"
 .br
 .in -1c
 .SS "Protected Attributes"
@@ -47,7 +47,7 @@ Inherited by \fBcoda::db::delete_query\fP, \fBcoda::db::insert_query\fP, and \fB
 .RI "int \fBflags_\fP"
 .br
 .ti -1c
-.RI "int \fBnumChanges_\fP"
+.RI "sql_changes \fBnumChanges_\fP"
 .br
 .in -1c
 .SS "Additional Inherited Members"
@@ -56,7 +56,7 @@ Inherited by \fBcoda::db::delete_query\fP, \fBcoda::db::insert_query\fP, and \fB
 a query to modify a table 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::modify_query::modify_query (const std::shared_ptr< \fBcoda::db::session\fP > & session)"
+.SS "coda::db::modify_query::modify_query (const std::shared_ptr< \fBcoda::db::session\fP > & session)\fC [explicit]\fP"
 
 .PP
 \fBParameters:\fP
@@ -65,7 +65,7 @@ a query to modify a table
 .RE
 .PP
 
-.SS "coda::db::modify_query::modify_query (const std::shared_ptr< \fBschema\fP > & schema)"
+.SS "coda::db::modify_query::modify_query (const std::shared_ptr< \fBschema\fP > & schema)\fC [explicit]\fP"
 
 .PP
 \fBParameters:\fP
@@ -76,7 +76,7 @@ a query to modify a table
 
 .SH "Member Function Documentation"
 .PP 
-.SS "virtual int coda::db::modify_query::execute ()\fC [virtual]\fP"
+.SS "virtual sql_changes coda::db::modify_query::execute ()\fC [virtual]\fP"
 executes this query using a replace statement 
 .PP
 \fBReturns:\fP
@@ -87,7 +87,7 @@ the last number of changes made by this query
 
 .PP
 Reimplemented in \fBcoda::db::insert_query\fP\&.
-.SS "int coda::db::modify_query::last_number_of_changes () const"
+.SS "sql_changes coda::db::modify_query::last_number_of_changes () const"
 
 .PP
 \fBReturns:\fP

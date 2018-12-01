@@ -9,7 +9,6 @@
     "make"
   ],
   "dependencies": [
-
     {
       "name": "sqlite",
       "version": "3.23.0"

@@ -1,4 +1,4 @@
-.TH "coda::db::mysql::column" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::mysql::column" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,31 +14,31 @@ Inherits \fBcoda::db::column_impl\fP\&.
 
 .in +1c
 .ti -1c
-.RI "\fBcolumn\fP (const std::shared_ptr< MYSQL_RES > &res, MYSQL_ROW value, size_t index)"
+.RI "\fBcolumn\fP (const std::shared_ptr< MYSQL_RES > &res, MYSQL_ROW value, unsigned int index)"
 .br
 .ti -1c
 .RI "\fBcolumn\fP (const \fBcolumn\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBcolumn\fP (\fBcolumn\fP &&other)"
+.RI "\fBcolumn\fP (\fBcolumn\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBcolumn\fP & \fBoperator=\fP (const \fBcolumn\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBcolumn\fP & \fBoperator=\fP (\fBcolumn\fP &&other)"
+.RI "\fBcolumn\fP & \fBoperator=\fP (\fBcolumn\fP &&other) noexcept"
 .br
 .ti -1c
-.RI "bool \fBis_valid\fP () const"
+.RI "bool \fBis_valid\fP () const override"
 .br
 .ti -1c
-.RI "\fBsql_value\fP \fBto_value\fP () const"
+.RI "\fBsql_value\fP \fBto_value\fP () const override"
 .br
 .ti -1c
 .RI "int \fBsql_type\fP () const"
 .br
 .ti -1c
-.RI "std::string \fBname\fP () const"
+.RI "std::string \fBname\fP () const override"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -46,7 +46,7 @@ Inherits \fBcoda::db::column_impl\fP\&.
 a mysql specific implementation of a column using fetching 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::mysql::column::column (const std::shared_ptr< MYSQL_RES > & res, MYSQL_ROW value, size_t index)"
+.SS "coda::db::mysql::column::column (const std::shared_ptr< MYSQL_RES > & res, MYSQL_ROW value, unsigned int index)"
 
 .PP
 \fBParameters:\fP
@@ -61,7 +61,7 @@ a mysql specific implementation of a column using fetching
 
 .SH "Member Function Documentation"
 .PP 
-.SS "bool coda::db::mysql::column::is_valid () const\fC [virtual]\fP"
+.SS "bool coda::db::mysql::column::is_valid () const\fC [override]\fP, \fC [virtual]\fP"
 tests if this colums data validity 
 .PP
 \fBReturns:\fP
@@ -72,7 +72,7 @@ true if this columns data is valid
 
 .PP
 Implements \fBcoda::db::column_impl\fP\&.
-.SS "std::string coda::db::mysql::column::name () const\fC [virtual]\fP"
+.SS "std::string coda::db::mysql::column::name () const\fC [override]\fP, \fC [virtual]\fP"
 
 .PP
 \fBReturns:\fP
@@ -83,7 +83,7 @@ the name of this column;
 
 .PP
 Implements \fBcoda::db::column_impl\fP\&.
-.SS "\fBsql_value\fP coda::db::mysql::column::to_value () const\fC [virtual]\fP"
+.SS "\fBsql_value\fP coda::db::mysql::column::to_value () const\fC [override]\fP, \fC [virtual]\fP"
 converts this column to a value 
 .PP
 \fBReturns:\fP

@@ -41,13 +41,11 @@ namespace coda::db::test {
           execute("create table if not exists users(id integer primary key "
                   "auto_increment, first_name "
                   "varchar(45), last_name varchar(45), dval "
-                  "real, data "
-                  "blob, tval timestamp)");
+                  "real, data blob, tval timestamp)");
           execute("create table if not exists user_settings(id integer primary "
                   "key auto_increment, user_id "
                   "integer not null, valid int(1), "
-                  "created_at "
-                  "timestamp)");
+                  "created_at timestamp)");
         }
 
         void teardown() override {

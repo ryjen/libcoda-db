@@ -1,4 +1,4 @@
-.TH "coda::db::mysql::session" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::mysql::session" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,52 +20,52 @@ Inherits \fBcoda::db::session_impl\fP, and enable_shared_from_this< session >\&.
 .RI "\fBsession\fP (const \fBsession\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBsession\fP (\fBsession\fP &&other)"
+.RI "\fBsession\fP (\fBsession\fP &&other) noexcept=delete"
 .br
 .ti -1c
 .RI "\fBsession\fP & \fBoperator=\fP (const \fBsession\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBsession\fP & \fBoperator=\fP (\fBsession\fP &&other)"
+.RI "\fBsession\fP & \fBoperator=\fP (\fBsession\fP &&other) noexcept=delete"
 .br
 .ti -1c
-.RI "bool \fBis_open\fP () const noexcept"
+.RI "bool \fBis_open\fP () const noexcept override"
 .br
 .ti -1c
-.RI "void \fBopen\fP ()"
+.RI "void \fBopen\fP () override"
 .br
 .ti -1c
-.RI "void \fBclose\fP ()"
+.RI "void \fBclose\fP () override"
 .br
 .ti -1c
-.RI "long long \fBlast_insert_id\fP () const"
+.RI "long long \fBlast_insert_id\fP () const override"
 .br
 .ti -1c
-.RI "int \fBlast_number_of_changes\fP () const"
+.RI "unsigned long long \fBlast_number_of_changes\fP () const override"
 .br
 .ti -1c
-.RI "std::string \fBlast_error\fP () const"
+.RI "std::string \fBlast_error\fP () const override"
 .br
 .ti -1c
-.RI "std::shared_ptr< \fBresultset_impl\fP > \fBquery\fP (const std::string &sql)"
+.RI "std::shared_ptr< \fBresultset_impl\fP > \fBquery\fP (const std::string &sql) override"
 .br
 .ti -1c
-.RI "bool \fBexecute\fP (const std::string &sql)"
+.RI "bool \fBexecute\fP (const std::string &sql) override"
 .br
 .ti -1c
-.RI "std::shared_ptr< \fBstatement_type\fP > \fBcreate_statement\fP ()"
+.RI "std::shared_ptr< \fBstatement_type\fP > \fBcreate_statement\fP () override"
 .br
 .ti -1c
-.RI "std::shared_ptr< \fBtransaction_impl\fP > \fBcreate_transaction\fP () const"
+.RI "std::shared_ptr< \fBtransaction_impl\fP > \fBcreate_transaction\fP () const override"
 .br
 .ti -1c
-.RI "std::vector< \fBcolumn_definition\fP > \fBget_columns_for_schema\fP (const std::string &dbName, const std::string &tablename)"
+.RI "std::vector< \fBcolumn_definition\fP > \fBget_columns_for_schema\fP (const std::string &dbName, const std::string &tablename) override"
 .br
 .ti -1c
-.RI "std::string \fBbind_param\fP (size_t index) const"
+.RI "std::string \fBbind_param\fP (size_t index) const override"
 .br
 .ti -1c
-.RI "int \fBfeatures\fP () const"
+.RI "constexpr int \fBfeatures\fP () const override"
 .br
 .in -1c
 .SS "Protected Attributes"
@@ -94,7 +94,7 @@ Inherits \fBcoda::db::session_impl\fP, and enable_shared_from_this< session >\&.
 a mysql specific implementation of a database 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::mysql::session::session (const \fBuri\fP & connInfo)"
+.SS "coda::db::mysql::session::session (const \fBuri\fP & connInfo)\fC [explicit]\fP"
 default constructor takes a uri to connect to 
 .PP
 \fBParameters:\fP
@@ -105,15 +105,15 @@ default constructor takes a uri to connect to
 
 .SH "Member Function Documentation"
 .PP 
-.SS "std::string coda::db::mysql::session::bind_param (size_t index) const\fC [virtual]\fP"
+.SS "std::string coda::db::mysql::session::bind_param (size_t index) const\fC [override]\fP, \fC [virtual]\fP"
 binds a null value 
 .PP
 Implements \fBcoda::db::session_impl\fP\&.
-.SS "void coda::db::mysql::session::close ()\fC [virtual]\fP"
+.SS "void coda::db::mysql::session::close ()\fC [override]\fP, \fC [virtual]\fP"
 closes the connection to the database 
 .PP
 Implements \fBcoda::db::session_impl\fP\&.
-.SS "std::shared_ptr<\fBstatement_type\fP> coda::db::mysql::session::create_statement ()\fC [virtual]\fP"
+.SS "std::shared_ptr<\fBstatement_type\fP> coda::db::mysql::session::create_statement ()\fC [override]\fP, \fC [virtual]\fP"
 
 .PP
 \fBReturns:\fP
@@ -124,11 +124,11 @@ a statement for this database
 
 .PP
 Implements \fBcoda::db::session_impl\fP\&.
-.SS "std::shared_ptr<\fBtransaction_impl\fP> coda::db::mysql::session::create_transaction () const\fC [virtual]\fP"
+.SS "std::shared_ptr<\fBtransaction_impl\fP> coda::db::mysql::session::create_transaction () const\fC [override]\fP, \fC [virtual]\fP"
 return the created transaction 
 .PP
 Implements \fBcoda::db::session_impl\fP\&.
-.SS "bool coda::db::mysql::session::execute (const std::string & sql)\fC [virtual]\fP"
+.SS "bool coda::db::mysql::session::execute (const std::string & sql)\fC [override]\fP, \fC [virtual]\fP"
 executes a sql statement that does not return results 
 .PP
 \fBParameters:\fP
@@ -144,7 +144,7 @@ true if successful
 
 .PP
 Implements \fBcoda::db::session_impl\fP\&.
-.SS "std::vector<\fBcolumn_definition\fP> coda::db::mysql::session::get_columns_for_schema (const std::string & dbName, const std::string & tablename)\fC [virtual]\fP"
+.SS "std::vector<\fBcolumn_definition\fP> coda::db::mysql::session::get_columns_for_schema (const std::string & dbName, const std::string & tablename)\fC [override]\fP, \fC [virtual]\fP"
 query the schema for a table 
 .PP
 \fBParameters:\fP
@@ -157,7 +157,7 @@ query the schema for a table
 
 .PP
 Implements \fBcoda::db::session_impl\fP\&.
-.SS "bool coda::db::mysql::session::is_open () const\fC [virtual]\fP, \fC [noexcept]\fP"
+.SS "bool coda::db::mysql::session::is_open () const\fC [override]\fP, \fC [virtual]\fP, \fC [noexcept]\fP"
 tests if a connection to the database is open 
 .PP
 \fBReturns:\fP
@@ -168,7 +168,7 @@ true if the connection is open
 
 .PP
 Implements \fBcoda::db::session_impl\fP\&.
-.SS "std::string coda::db::mysql::session::last_error () const\fC [virtual]\fP"
+.SS "std::string coda::db::mysql::session::last_error () const\fC [override]\fP, \fC [virtual]\fP"
 gets the last error for any statement 
 .PP
 \fBReturns:\fP
@@ -179,7 +179,7 @@ the last error or an empty string
 
 .PP
 Implements \fBcoda::db::session_impl\fP\&.
-.SS "long long coda::db::mysql::session::last_insert_id () const\fC [virtual]\fP"
+.SS "long long coda::db::mysql::session::last_insert_id () const\fC [override]\fP, \fC [virtual]\fP"
 gets the last insert id from any statement 
 .PP
 \fBReturns:\fP
@@ -190,7 +190,7 @@ the last insert id or zero
 
 .PP
 Implements \fBcoda::db::session_impl\fP\&.
-.SS "int coda::db::mysql::session::last_number_of_changes () const\fC [virtual]\fP"
+.SS "unsigned long long coda::db::mysql::session::last_number_of_changes () const\fC [override]\fP, \fC [virtual]\fP"
 gets the last number of modified records for any statement 
 .PP
 \fBReturns:\fP
@@ -201,11 +201,11 @@ the last number of changes or zero
 
 .PP
 Implements \fBcoda::db::session_impl\fP\&.
-.SS "void coda::db::mysql::session::open ()\fC [virtual]\fP"
+.SS "void coda::db::mysql::session::open ()\fC [override]\fP, \fC [virtual]\fP"
 opens a connection to the database 
 .PP
 Implements \fBcoda::db::session_impl\fP\&.
-.SS "std::shared_ptr<\fBresultset_impl\fP> coda::db::mysql::session::query (const std::string & sql)\fC [virtual]\fP"
+.SS "std::shared_ptr<\fBresultset_impl\fP> coda::db::mysql::session::query (const std::string & sql)\fC [override]\fP, \fC [virtual]\fP"
 executes a sql statement that returns results 
 .PP
 \fBParameters:\fP

@@ -1,4 +1,4 @@
-.TH "coda::db::resultset" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::resultset" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -31,13 +31,13 @@ coda::db::resultset
 .RI "\fBresultset\fP (const \fBresultset\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBresultset\fP (\fBresultset\fP &&other)"
+.RI "\fBresultset\fP (\fBresultset\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBresultset\fP & \fBoperator=\fP (const \fBresultset\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBresultset\fP & \fBoperator=\fP (\fBresultset\fP &&other)"
+.RI "\fBresultset\fP & \fBoperator=\fP (\fBresultset\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "bool \fBis_valid\fP () const noexcept"
@@ -73,7 +73,7 @@ coda::db::resultset
 .RI "bool \fBempty\fP () const"
 .br
 .ti -1c
-.RI "void \fBfor_each\fP (const std::function< void(const \fBrow_type\fP &)> &funk) const"
+.RI "void \fBeach\fP (const std::function< void(const \fBrow_type\fP &)> &funk) const"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -81,7 +81,7 @@ coda::db::resultset
 the results (a set of rows) for a query 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::resultset::resultset (const std::shared_ptr< \fBresultset_impl\fP > & impl)"
+.SS "coda::db::resultset::resultset (const std::shared_ptr< \fBresultset_impl\fP > & impl)\fC [explicit]\fP"
 
 .PP
 \fBParameters:\fP
@@ -119,6 +119,15 @@ the current row
 .RE
 .PP
 
+.SS "void coda::db::resultset::each (const std::function< void(const \fBrow_type\fP &)> & funk) const"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfunk\fP the callback to perform for each row 
+.RE
+.PP
+
 .SS "bool coda::db::resultset::empty () const"
 tests if the are no results 
 .PP
@@ -143,15 +152,6 @@ an iterator to after the last row
 \fBReturns:\fP
 .RS 4
 a immutable iterator the after the last row 
-.RE
-.PP
-
-.SS "void coda::db::resultset::for_each (const std::function< void(const \fBrow_type\fP &)> & funk) const"
-
-.PP
-\fBParameters:\fP
-.RS 4
-\fIfunk\fP the callback to perform for each row 
 .RE
 .PP
 

@@ -1,181 +1,178 @@
 #include "statement.h"
-#include <utility>
-#include "../exception.h"
-#include "../sql_value.h"
 #include "resultset.h"
 #include "session.h"
 
 using namespace std;
 
 namespace coda::db::sqlite {
-      namespace helper {
-        void stmt_delete::operator()(sqlite3_stmt *p) const {
-          if (p != nullptr) {
-            sqlite3_finalize(p);
-          }
-        }
-      }  // namespace helper
+  namespace helper {
+    void stmt_delete::operator()(sqlite3_stmt *p) const {
+      if (p != nullptr) {
+        sqlite3_finalize(p);
+      }
+    }
+  }  // namespace helper
 
-      namespace data_mapper {
-        class from_number {
-         public:
-          from_number(std::shared_ptr<sqlite3_stmt> stmt, size_t index) : stmt_(std::move(stmt)), index_(index) {}
+  namespace data_mapper {
+    class from_number {
+     public:
+      from_number(std::shared_ptr<sqlite3_stmt> stmt, size_t index) : stmt_(std::move(stmt)), index_(index) {}
 
-          bool operator()(double value) const { return sqlite3_bind_double(stmt_.get(), index_, value) == SQLITE_OK; }
-          bool operator()(long double value) const { return false; }
-          bool operator()(float value) const { return sqlite3_bind_double(stmt_.get(), index_, value) == SQLITE_OK; }
+      bool operator()(double value) const { return sqlite3_bind_double(stmt_.get(), index_, value) == SQLITE_OK; }
+      bool operator()(long double value) const { return false; }
+      bool operator()(float value) const { return sqlite3_bind_double(stmt_.get(), index_, value) == SQLITE_OK; }
 
-          bool operator()(unsigned long long value) const { return false; }
+      bool operator()(unsigned long long value) const { return false; }
 
-          bool operator()(long long value) const { return sqlite3_bind_int64(stmt_.get(), index_, value) == SQLITE_OK; }
+      bool operator()(long long value) const { return sqlite3_bind_int64(stmt_.get(), index_, value) == SQLITE_OK; }
 
-          bool operator()(unsigned int value) const {
-            return sqlite3_bind_int64(stmt_.get(), index_, value) == SQLITE_OK;
-          }
-          bool operator()(int value) const { return sqlite3_bind_int(stmt_.get(), index_, value) == SQLITE_OK; }
-          bool operator()(unsigned long value) const {
-            return sqlite3_bind_int64(stmt_.get(), index_, value) == SQLITE_OK;
-          }
-          bool operator()(long value) const { return sqlite3_bind_int(stmt_.get(), index_, value) == SQLITE_OK; }
-          bool operator()(const sql_null_type &value) const { return sqlite3_bind_null(stmt_.get(), index_); }
+      bool operator()(unsigned int value) const {
+        return sqlite3_bind_int64(stmt_.get(), index_, value) == SQLITE_OK;
+      }
+      bool operator()(int value) const { return sqlite3_bind_int(stmt_.get(), index_, value) == SQLITE_OK; }
+      bool operator()(unsigned long value) const {
+        return sqlite3_bind_int64(stmt_.get(), index_, value) == SQLITE_OK;
+      }
+      bool operator()(long value) const { return sqlite3_bind_int(stmt_.get(), index_, value) == SQLITE_OK; }
+      bool operator()(const sql_null_type &value) const { return sqlite3_bind_null(stmt_.get(), index_); }
 
-         private:
-          std::shared_ptr<sqlite3_stmt> stmt_;
-          size_t index_;
-        };
-        class from_value {
-         public:
-          from_value(std::shared_ptr<sqlite3_stmt> stmt, size_t index) : stmt_(std::move(stmt)), index_(index) {}
+     private:
+      std::shared_ptr<sqlite3_stmt> stmt_;
+      size_t index_;
+    };
+    class from_value {
+     public:
+      from_value(std::shared_ptr<sqlite3_stmt> stmt, size_t index) : stmt_(std::move(stmt)), index_(index) {}
 
-          bool operator()(int value) const { return sqlite3_bind_int(stmt_.get(), index_, value) == SQLITE_OK; }
+      bool operator()(int value) const { return sqlite3_bind_int(stmt_.get(), index_, value) == SQLITE_OK; }
 
-          bool operator()(const sql_time &value) const {
-            auto tstr = value.to_string();
+      bool operator()(const sql_time &value) const {
+        auto tstr = value.to_string();
 
-            return sqlite3_bind_text(stmt_.get(), index_, tstr.c_str(), tstr.size(), SQLITE_TRANSIENT) == SQLITE_OK;
-          }
-
-          bool operator()(const sql_null_type &value) const {
-            return sqlite3_bind_null(stmt_.get(), index_) == SQLITE_OK;
-          }
-
-          bool operator()(const sql_blob &value) const {
-            return sqlite3_bind_blob(stmt_.get(), index_, value.get(), value.size(), SQLITE_TRANSIENT) == SQLITE_OK;
-          }
-
-          bool operator()(const std::wstring &value) const {
-            return sqlite3_bind_text16(stmt_.get(), index_, value.c_str(), -1, SQLITE_TRANSIENT) == SQLITE_OK;
-          }
-
-          bool operator()(const std::string &value) const {
-            return sqlite3_bind_text(stmt_.get(), index_, value.c_str(), -1, SQLITE_TRANSIENT) == SQLITE_OK;
-          }
-
-          bool operator()(const sql_number &value) const {
-            return value.apply_visitor<from_number, bool>(from_number(stmt_, index_));
-          }
-
-         private:
-          std::shared_ptr<sqlite3_stmt> stmt_;
-          size_t index_;
-        };
-      }  // namespace data_mapper
-
-      statement::statement(const std::shared_ptr<sqlite::session> &sess) : sess_(sess), stmt_(nullptr), bound_(0) {
-        if (sess_ == nullptr) {
-          throw database_exception("no database provided to sqlite3 statement");
-        }
+        return sqlite3_bind_text(stmt_.get(), index_, tstr.c_str(), tstr.size(), SQLITE_TRANSIENT) == SQLITE_OK;
       }
 
-      void statement::prepare(const string &sql) {
-        if (!sess_ || !sess_->db_) {
-          throw database_exception("database not open");
-        }
-
-        if (is_valid()) {
-          // sql statement prepare not valid
-          return;
-        }
-
-        sqlite3_stmt *temp;
-
-        if (sqlite3_prepare_v2(sess_->db_.get(), sql.c_str(), -1, &temp, nullptr) != SQLITE_OK) {
-          throw database_exception(sess_->last_error());
-        }
-
-        stmt_ = shared_ptr<sqlite3_stmt>(temp, helper::stmt_delete());
+      bool operator()(const sql_null_type &value) const {
+        return sqlite3_bind_null(stmt_.get(), index_) == SQLITE_OK;
       }
 
-      bool statement::is_valid() const noexcept { return stmt_ != nullptr && stmt_; }
-
-      unsigned long long statement::last_number_of_changes() { return sess_->last_number_of_changes(); }
-
-      string statement::last_error() { return sess_->last_error(); }
-
-      statement &statement::bind(size_t index, const sql_value &value) {
-        if (!is_valid()) {
-          throw binding_error("statement invalid");
-        }
-
-        if (!value.apply_visitor<data_mapper::from_value, bool>(data_mapper::from_value(stmt_, index))) {
-          throw binding_error(sess_->last_error());
-        }
-
-        bound_++;
-
-        return *this;
+      bool operator()(const sql_blob &value) const {
+        return sqlite3_bind_blob(stmt_.get(), index_, value.get(), value.size(), SQLITE_TRANSIENT) == SQLITE_OK;
       }
 
-      statement &statement::bind(const string &name, const sql_value &value) {
-        if (!is_valid()) {
-          throw binding_error("statement invalid");
-        }
-
-        int index = sqlite3_bind_parameter_index(stmt_.get(), name.c_str());
-
-        if (index <= 0) {
-          throw binding_error("No such named parameter '" + name + "'");
-        }
-
-        bind(static_cast<size_t>(index), value);
-
-        return *this;
+      bool operator()(const std::wstring &value) const {
+        return sqlite3_bind_text16(stmt_.get(), index_, value.c_str(), -1, SQLITE_TRANSIENT) == SQLITE_OK;
       }
 
-      statement::resultset_type statement::results() {
-        if (sess_ == nullptr) {
-          throw database_exception("sqlite statement results invalid database");
-        }
-
-        return resultset_type(make_shared<resultset>(sess_, stmt_));
+      bool operator()(const std::string &value) const {
+        return sqlite3_bind_text(stmt_.get(), index_, value.c_str(), -1, SQLITE_TRANSIENT) == SQLITE_OK;
       }
 
-      bool statement::result() {
-        if (!is_valid()) {
-          // sqlite statement result invalid
-          return false;
-        }
-        return sqlite3_step(stmt_.get()) == SQLITE_DONE;
+      bool operator()(const sql_number &value) const {
+        return value.apply_visitor<from_number, bool>(from_number(stmt_, index_));
       }
 
-      void statement::finish() { stmt_ = nullptr; }
+     private:
+      std::shared_ptr<sqlite3_stmt> stmt_;
+      size_t index_;
+    };
+  }  // namespace data_mapper
 
-      void statement::reset() {
-        if (!is_valid()) {
-          // sqlite statement reset invalid
-          return;
-        }
-        if (sqlite3_reset(stmt_.get()) != SQLITE_OK) {
-          throw database_exception(sess_->last_error());
-        }
-      }
+  statement::statement(const std::shared_ptr<sqlite::session> &sess) : sess_(sess), stmt_(nullptr), bound_(0) {
+    if (sess_ == nullptr) {
+      throw database_exception("no database provided to sqlite3 statement");
+    }
+  }
 
-      long long statement::last_insert_id() {
-        if (sess_ == nullptr) {
-          return 0;
-        }
-        return sess_->last_insert_id();
-      }
+  void statement::prepare(const string &sql) {
+    if (!sess_ || !sess_->db_) {
+      throw database_exception("database not open");
+    }
 
-      size_t statement::num_of_bindings() const noexcept { return bound_; }
+    if (is_valid()) {
+      // sql statement prepare not valid
+      return;
+    }
+
+    sqlite3_stmt *temp;
+
+    if (sqlite3_prepare_v2(sess_->db_.get(), sql.c_str(), -1, &temp, nullptr) != SQLITE_OK) {
+      throw database_exception(sess_->last_error());
+    }
+
+    stmt_ = shared_ptr<sqlite3_stmt>(temp, helper::stmt_delete());
+  }
+
+  bool statement::is_valid() const noexcept { return stmt_ != nullptr && stmt_; }
+
+  unsigned long long statement::last_number_of_changes() { return sess_->last_number_of_changes(); }
+
+  string statement::last_error() { return sess_->last_error(); }
+
+  statement &statement::bind(size_t index, const sql_value &value) {
+    if (!is_valid()) {
+      throw binding_error("statement invalid");
+    }
+
+    if (!value.apply_visitor<data_mapper::from_value, bool>(data_mapper::from_value(stmt_, index))) {
+      throw binding_error(sess_->last_error());
+    }
+
+    bound_++;
+
+    return *this;
+  }
+
+  statement &statement::bind(const string &name, const sql_value &value) {
+    if (!is_valid()) {
+      throw binding_error("statement invalid");
+    }
+
+    int index = sqlite3_bind_parameter_index(stmt_.get(), name.c_str());
+
+    if (index <= 0) {
+      throw binding_error("No such named parameter '" + name + "'");
+    }
+
+    bind(static_cast<size_t>(index), value);
+
+    return *this;
+  }
+
+  statement::resultset_type statement::query() {
+    if (sess_ == nullptr) {
+      throw database_exception("sqlite statement results invalid database");
+    }
+
+    return resultset_type(make_shared<resultset>(sess_, stmt_));
+  }
+
+  bool statement::execute() {
+    if (!is_valid()) {
+      // sqlite statement result invalid
+      return false;
+    }
+    return sqlite3_step(stmt_.get()) == SQLITE_DONE;
+  }
+
+  void statement::finish() { stmt_ = nullptr; }
+
+  void statement::reset() {
+    if (!is_valid()) {
+      // sqlite statement reset invalid
+      return;
+    }
+    if (sqlite3_reset(stmt_.get()) != SQLITE_OK) {
+      throw database_exception(sess_->last_error());
+    }
+  }
+
+  long long statement::last_insert_id() {
+    if (sess_ == nullptr) {
+      return 0;
+    }
+    return sess_->last_insert_id();
+  }
+
+  size_t statement::num_of_bindings() const noexcept { return bound_; }
 }  // namespace coda::db::sqlite

@@ -566,7 +566,7 @@ namespace coda::db::mysql {
       binding::binding(const binding &other) : bind_mapping(other), value_(nullptr), size_(0) {
         copy_value(other.value_, other.size_);
       }
-      binding::binding(binding &&other) : bind_mapping(std::move(other)) {
+      binding::binding(binding &&other) noexcept : bind_mapping(std::move(other)) {
         value_ = other.value_;
         size_ = other.size_;
         other.value_ = nullptr;
@@ -579,7 +579,7 @@ namespace coda::db::mysql {
         return *this;
       }
 
-      binding &binding::operator=(binding &&other) {
+      binding &binding::operator=(binding &&other) noexcept {
         bind_mapping::operator=(other);
         clear_value();
         value_ = other.value_;

@@ -1,4 +1,4 @@
-.TH "coda::db::session_impl" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::session_impl" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,13 +12,13 @@ Inherited by \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, 
 
 .in +1c
 .ti -1c
-.RI "typedef \fBstatement\fP \fBstatement_type\fP"
+.RI "using \fBstatement_type\fP = \fBstatement\fP"
 .br
 .ti -1c
-.RI "typedef \fBtransaction_impl\fP \fBtransaction_type\fP"
+.RI "using \fBtransaction_type\fP = \fBtransaction_impl\fP"
 .br
 .ti -1c
-.RI "typedef \fBresultset_impl\fP \fBresultset_type\fP"
+.RI "using \fBresultset_type\fP = \fBresultset_impl\fP"
 .br
 .in -1c
 .SS "Public Member Functions"
@@ -40,10 +40,10 @@ Inherited by \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, 
 .RI "virtual void \fBclose\fP ()=0"
 .br
 .ti -1c
-.RI "virtual long long \fBlast_insert_id\fP () const =0"
+.RI "virtual sql_id \fBlast_insert_id\fP () const =0"
 .br
 .ti -1c
-.RI "virtual int \fBlast_number_of_changes\fP () const =0"
+.RI "virtual sql_changes \fBlast_number_of_changes\fP () const =0"
 .br
 .ti -1c
 .RI "virtual std::string \fBlast_error\fP () const =0"
@@ -72,7 +72,7 @@ Inherited by \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, 
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::session_impl::session_impl (const \fBuri\fP & connectionInfo)"
+.SS "coda::db::session_impl::session_impl (const \fBuri\fP & connectionInfo)\fC [explicit]\fP"
 default constructor expects a uri 
 .SH "Member Function Documentation"
 .PP 
@@ -158,8 +158,8 @@ the last error or an empty string
 .PP
 
 .PP
-Implemented in \fBcoda::db::sqlite::session\fP, \fBcoda::db::mysql::session\fP, and \fBcoda::db::postgres::session\fP\&.
-.SS "virtual long long coda::db::session_impl::last_insert_id () const\fC [pure virtual]\fP"
+Implemented in \fBcoda::db::mysql::session\fP, \fBcoda::db::sqlite::session\fP, and \fBcoda::db::postgres::session\fP\&.
+.SS "virtual sql_id coda::db::session_impl::last_insert_id () const\fC [pure virtual]\fP"
 gets the last insert id from any statement 
 .PP
 \fBReturns:\fP
@@ -170,7 +170,7 @@ the last insert id or zero
 
 .PP
 Implemented in \fBcoda::db::mysql::session\fP, \fBcoda::db::postgres::session\fP, and \fBcoda::db::sqlite::session\fP\&.
-.SS "virtual int coda::db::session_impl::last_number_of_changes () const\fC [pure virtual]\fP"
+.SS "virtual sql_changes coda::db::session_impl::last_number_of_changes () const\fC [pure virtual]\fP"
 gets the last number of modified records for any statement 
 .PP
 \fBReturns:\fP

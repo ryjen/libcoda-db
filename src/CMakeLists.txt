@@ -28,7 +28,7 @@ set(${PROJECT_NAME}_HEADERS
         update_query.h
         uri.h
         where_clause.h
-)
+        )
 
 set(LIBRARY_SOURCES ${${PROJECT_NAME}_HEADERS}
         alloc.cpp

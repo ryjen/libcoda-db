@@ -38,8 +38,8 @@ namespace coda::db::postgres {
         /* statement overrides */
         void prepare(const std::string &sql) override;
         bool is_valid() const noexcept override;
-        resultset_type results() override;
-        bool result() override;
+        resultset_type query() override;
+        bool execute() override;
         void finish() override;
         void reset() override;
         unsigned long long last_number_of_changes() override;

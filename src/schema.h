@@ -10,120 +10,120 @@
 #include <vector>
 
 namespace coda::db {
-    class session;
+  class session;
 
-    class sql_value;
+  class sql_value;
+
+  /*!
+   * Definition of a column in a schema
+   */
+  struct column_definition {
+    std::string name;
+    bool pk;
+    bool autoincrement;
+    std::string type;
+    std::string default_value;
+  };
+
+  /*!
+   * output stream append operator for a column definition
+   */
+  std::ostream &operator<<(std::ostream &os, const column_definition &def);
+
+  /*!
+   * Schema is a definition of a table in a database
+   * Allows for quick access to column names and other information
+   */
+  class schema {
+   public:
+    typedef session session_type;
+
+   private:
+    std::shared_ptr<session_type> session_;
+    std::string tableName_;
+    std::vector<column_definition> columns_;
+
+   public:
+    /*!
+     * @param db the database in use
+     * @param tableName the table name to query
+     */
+    schema(const std::shared_ptr<session_type> &sess, const std::string &tableName);
+
+    /* boilerplate */
+    ~schema() = default;
+
+    schema(const schema &other) = default;
+
+    schema(schema &&other) noexcept = default;
+
+    schema &operator=(const schema &other) = default;
+
+    schema &operator=(schema &&other) noexcept = default;
 
     /*!
-     * Definition of a column in a schema
+     * initializes this schema
      */
-    struct column_definition {
-      std::string name;
-      bool pk;
-      bool autoincrement;
-      std::string type;
-      std::string default_value;
-    };
+    virtual void init();
 
     /*!
-     * output stream append operator for a column definition
+     * @return the column definitions for this schema
      */
-    std::ostream &operator<<(std::ostream &os, const column_definition &def);
+    std::vector<column_definition> columns() const noexcept;
 
     /*!
-     * Schema is a definition of a table in a database
-     * Allows for quick access to column names and other information
+     * @return the column names for this schema
      */
-    class schema {
-     public:
-      typedef session session_type;
+    std::vector<std::string> column_names() const;
 
-     private:
-      std::shared_ptr<session_type> session_;
-      std::string tableName_;
-      std::vector<column_definition> columns_;
+    /*!
+     * @return the primary keys for this schema
+     */
+    std::vector<std::string> primary_keys() const;
 
-     public:
-      /*!
-       * @param db the database in use
-       * @param tableName the table name to query
-       */
-      schema(const std::shared_ptr<session_type> &sess, const std::string &tableName);
+    /*!
+     * gets the only auto incrementing primary key in a table
+     * @return the key name
+     */
+    std::string primary_key() const;
 
-      /* boilerplate */
-      ~schema() = default;
+    /*!
+     * gets the table name for this schema
+     * @return the table name string
+     */
+    std::string table_name() const;
 
-      schema(const schema &other) = default;
+    /*!
+     * gets the default value for a column
+     * @param name the name of the column
+     */
+    sql_value default_value(const std::string &name) const;
 
-      schema(schema &&other) noexcept = default;
+    /*!
+     * gets a column definition by index
+     * @param  index the index of the column definition
+     * @return       a column definition object
+     */
+    column_definition operator[](size_t index) const;
 
-      schema &operator=(const schema &other) = default;
+    /*!
+     * gets the number of columns in this schema
+     * @return the number of columns
+     */
+    size_t size() const noexcept;
 
-      schema &operator=(schema &&other) noexcept = default;
+    /*!
+     * tests if this schema is valid
+     * @return true if valid
+     */
+    bool is_valid() const noexcept;
 
-      /*!
-       * initializes this schema
-       */
-      virtual void init();
-
-      /*!
-       * @return the column definitions for this schema
-       */
-      std::vector<column_definition> columns() const noexcept;
-
-      /*!
-       * @return the column names for this schema
-       */
-      std::vector<std::string> column_names() const;
-
-      /*!
-       * @return the primary keys for this schema
-       */
-      std::vector<std::string> primary_keys() const;
-
-      /*!
-       * gets the only auto incrementing primary key in a table
-       * @return the key name
-       */
-      std::string primary_key() const;
-
-      /*!
-       * gets the table name for this schema
-       * @return the table name string
-       */
-      std::string table_name() const;
-
-      /*!
-       * gets the default value for a column
-       * @param name the name of the column
-       */
-      sql_value default_value(const std::string &name) const;
-
-      /*!
-       * gets a column definition by index
-       * @param  index the index of the column definition
-       * @return       a column definition object
-       */
-      column_definition operator[](size_t index) const;
-
-      /*!
-       * gets the number of columns in this schema
-       * @return the number of columns
-       */
-      size_t size() const noexcept;
-
-      /*!
-       * tests if this schema is valid
-       * @return true if valid
-       */
-      bool is_valid() const noexcept;
-
-      /*!
-       * gets the database for this schema
-       * @return the database object
-       */
-      std::shared_ptr<schema::session_type> get_session() const;
-    };
+    /*!
+     * gets the database for this schema
+     * @return the database object
+     */
+    std::shared_ptr<schema::session_type> get_session() const;
+  };
 }  // namespace coda::db
 
 #endif

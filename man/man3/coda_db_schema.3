@@ -1,4 +1,4 @@
-.TH "coda::db::schema" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::schema" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -19,19 +19,19 @@ coda::db::schema
 
 .in +1c
 .ti -1c
-.RI "\fBschema\fP (const std::shared_ptr< \fBsession_type\fP > &sess, const std::string &tablename)"
+.RI "\fBschema\fP (const std::shared_ptr< \fBsession_type\fP > &sess, const std::string &tableName)"
 .br
 .ti -1c
-.RI "\fBschema\fP (const \fBschema\fP &other)"
+.RI "\fBschema\fP (const \fBschema\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBschema\fP (\fBschema\fP &&other)"
+.RI "\fBschema\fP (\fBschema\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "\fBschema\fP & \fBoperator=\fP (const \fBschema\fP &other)"
+.RI "\fBschema\fP & \fBoperator=\fP (const \fBschema\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBschema\fP & \fBoperator=\fP (\fBschema\fP &&other)"
+.RI "\fBschema\fP & \fBoperator=\fP (\fBschema\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "virtual void \fBinit\fP ()"
@@ -72,14 +72,14 @@ coda::db::schema
 Schema is a definition of a table in a database Allows for quick access to column names and other information 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::schema::schema (const std::shared_ptr< \fBsession_type\fP > & sess, const std::string & tablename)"
+.SS "coda::db::schema::schema (const std::shared_ptr< \fBsession_type\fP > & sess, const std::string & tableName)"
 
 .PP
 \fBParameters:\fP
 .RS 4
 \fIdb\fP the database in use 
 .br
-\fItablename\fP the tablename to query 
+\fItableName\fP the table name to query 
 .RE
 .PP
 

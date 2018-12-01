@@ -30,19 +30,19 @@
   const char *CLASS::context() const noexcept { return context_.c_str(); }
 
 namespace coda::db {
-    CODA_DECLARE_EXCEPTION(database_exception, std::exception);
+  CODA_DECLARE_EXCEPTION(database_exception, std::exception);
 
-    CODA_DECLARE_EXCEPTION(no_such_column_exception, database_exception);
+  CODA_DECLARE_EXCEPTION(no_such_column_exception, database_exception);
 
-    CODA_DECLARE_EXCEPTION(record_not_found_exception, database_exception);
+  CODA_DECLARE_EXCEPTION(record_not_found_exception, database_exception);
 
-    CODA_DECLARE_EXCEPTION(binding_error, database_exception);
+  CODA_DECLARE_EXCEPTION(binding_error, database_exception);
 
-    CODA_DECLARE_EXCEPTION(transaction_exception, database_exception);
+  CODA_DECLARE_EXCEPTION(transaction_exception, database_exception);
 
-    CODA_DECLARE_EXCEPTION(no_primary_key_exception, database_exception);
+  CODA_DECLARE_EXCEPTION(no_primary_key_exception, database_exception);
 
-    CODA_DECLARE_EXCEPTION(value_conversion_error, database_exception);
+  CODA_DECLARE_EXCEPTION(value_conversion_error, database_exception);
 }  // namespace coda::db
 
 #endif

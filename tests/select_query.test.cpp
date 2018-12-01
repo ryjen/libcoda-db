@@ -203,7 +203,7 @@ specification(selects, []() {
       auto callback = [](const resultset &rs) {
         rs.for_each([](const row &row) {
           Assert::That(row.column("first_name").value().to_sql() == "Bryan" ||
-                       row.column("last_name").value().to_sql() == "Bryan");
+              row.column("last_name").value().to_sql() == "Bryan");
         });
       };
 

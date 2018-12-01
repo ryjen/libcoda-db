@@ -1,4 +1,4 @@
-.TH "coda::db::sql_operator_builder" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::sql_operator_builder" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,19 +15,19 @@ Inherits \fBcoda::db::sql_operator\fP\&.
 .RI "\fBsql_operator_builder\fP (const \fBsql_value\fP &lvalue)"
 .br
 .ti -1c
-.RI "\fBsql_operator_builder\fP (const \fBsql_operator_builder\fP &other)"
+.RI "\fBsql_operator_builder\fP (const \fBsql_operator_builder\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBsql_operator_builder\fP (\fBsql_operator_builder\fP &&other)"
+.RI "\fBsql_operator_builder\fP (\fBsql_operator_builder\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "\fBsql_operator_builder\fP & \fBoperator=\fP (const \fBsql_operator_builder\fP &other)"
+.RI "\fBsql_operator_builder\fP & \fBoperator=\fP (const \fBsql_operator_builder\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBsql_operator_builder\fP & \fBoperator=\fP (\fBsql_operator_builder\fP &&other)"
+.RI "\fBsql_operator_builder\fP & \fBoperator=\fP (\fBsql_operator_builder\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "virtual \fB~sql_operator_builder\fP ()"
+.RI "\fB~sql_operator_builder\fP ()=default"
 .br
 .ti -1c
 .RI "\fBsql_operator_builder\fP & \fBoperator=\fP (const \fBsql_value\fP &rvalue)"
@@ -64,21 +64,6 @@ Inherits \fBcoda::db::sql_operator\fP\&.
 .br
 .ti -1c
 .RI "\fBsql_operator_builder\fP & \fBoperator!=\fP (const sql_null_type &rvalue)"
-.br
-.ti -1c
-.RI "\fBsql_operator\fP ()"
-.br
-.ti -1c
-.RI "\fBsql_operator\fP (const \fBsql_operator\fP &other)"
-.br
-.ti -1c
-.RI "\fBsql_operator\fP (\fBsql_operator\fP &&other)"
-.br
-.ti -1c
-.RI "\fBsql_operator\fP & \fBoperator=\fP (const \fBsql_operator\fP &other)"
-.br
-.ti -1c
-.RI "\fBsql_operator\fP & \fBoperator=\fP (\fBsql_operator\fP &&other)"
 .br
 .in -1c
 .SS "Additional Inherited Members"

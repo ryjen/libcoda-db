@@ -61,7 +61,7 @@ SPEC_BEGIN(sqlite_statement) {
 
       AssertThat(stmt.last_error().empty(), IsFalse());
 
-      AssertThat(stmt.result(), IsFalse());
+      AssertThat(stmt.execute(), IsFalse());
     });
 
     it("can handle bad bindings", [&sqlite_session]() {

@@ -221,13 +221,13 @@ go_bandit([]() {
 
       std::ostringstream buf;
 
-      buf << std::hex << (intptr_t)other.get();
+      buf << std::hex << (intptr_t) other.get();
 
       AssertThat(to_string(other), Equals(buf.str()));
 
       std::wostringstream wbuf;
 
-      wbuf << std::hex << (intptr_t)other.get();
+      wbuf << std::hex << (intptr_t) other.get();
 
       AssertThat(to_wstring(other), Equals(wbuf.str()));
     });

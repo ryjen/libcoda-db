@@ -1,7 +1,6 @@
 #include <string>
 
 #include "db.test.h"
-#include "schema_factory.h"
 #include <bandit/bandit.h>
 
 using namespace bandit;

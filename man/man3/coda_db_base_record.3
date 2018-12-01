@@ -1,4 +1,4 @@
-.TH "coda::db::base::record" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::base::record" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -27,16 +27,16 @@ Inherited by \fBcoda::db::generic::record\fP, and \fBcoda::db::record< T, typena
 .RI "\fBrecord\fP (const std::shared_ptr< \fBschema_type\fP > &\fBschema\fP, const \fBrow\fP &values)"
 .br
 .ti -1c
-.RI "\fBrecord\fP (const \fBrecord\fP &other)"
+.RI "\fBrecord\fP (const \fBrecord\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBrecord\fP (\fBrecord\fP &&other)"
+.RI "\fBrecord\fP (\fBrecord\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBrecord\fP & \fBoperator=\fP (const \fBrecord\fP &other)"
 .br
 .ti -1c
-.RI "\fBrecord\fP & \fBoperator=\fP (\fBrecord\fP &&other)"
+.RI "\fBrecord\fP & \fBoperator=\fP (\fBrecord\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "void \fBinit\fP (const \fBrow\fP &values)"
@@ -95,7 +95,7 @@ Inherited by \fBcoda::db::generic::record\fP, and \fBcoda::db::record< T, typena
 base class for a record 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::base::record::record (const std::shared_ptr< \fBschema_type\fP > & schema)"
+.SS "coda::db::base::record::record (const std::shared_ptr< \fBschema_type\fP > & schema)\fC [explicit]\fP"
 
 .PP
 \fBParameters:\fP
@@ -108,9 +108,9 @@ base class for a record
 
 .SS "coda::db::base::record::record (const std::shared_ptr< \fBschema_type\fP > & schema, const \fBrow\fP & values)"
 construct with values from a database row 
-.SS "coda::db::base::record::record (const \fBrecord\fP & other)"
+.SS "coda::db::base::record::record (const \fBrecord\fP & other)\fC [default]\fP"
 copy constructor 
-.SS "coda::db::base::record::record (\fBrecord\fP && other)"
+.SS "coda::db::base::record::record (\fBrecord\fP && other)\fC [noexcept]\fP"
 move constructor 
 .SH "Member Function Documentation"
 .PP 
@@ -189,7 +189,7 @@ called when a record is read from the database Overide in subclasses for custom 
 
 .SS "\fBrecord\fP& coda::db::base::record::operator= (const \fBrecord\fP & other)"
 assignment operator 
-.SS "\fBrecord\fP& coda::db::base::record::operator= (\fBrecord\fP && other)"
+.SS "\fBrecord\fP& coda::db::base::record::operator= (\fBrecord\fP && other)\fC [noexcept]\fP"
 move assignment operator 
 .SS "bool coda::db::base::record::refresh ()"
 refreshes from the database for the value in the id column 

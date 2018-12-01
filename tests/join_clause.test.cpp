@@ -2,7 +2,6 @@
 
 #include "db.test.h"
 #include "insert_query.h"
-#include "row.h"
 #include "util.h"
 #include <bandit/bandit.h>
 
@@ -87,8 +86,8 @@ specification(joins, []() {
       select_query query(test::current_session, {"u.id", "s.created_at"});
 
       query.from(test::user::TABLE_NAME, "u")
-              .join("user_settings", "s")
-              .on("u.id = s.user_id") and
+          .join("user_settings", "s")
+          .on("u.id = s.user_id") and
           ("s.valid = 1");
 
       auto rs = query.execute();
@@ -100,8 +99,8 @@ specification(joins, []() {
       select_query query(test::current_session);
 
       query.from(test::user::TABLE_NAME, "u")
-              .join("user_settings", "s", join::cross)
-              .on("u.id = s.user_id") and
+          .join("user_settings", "s", join::cross)
+          .on("u.id = s.user_id") and
           ("s.valid = 1");
 
       auto rs = query.execute();
@@ -111,12 +110,12 @@ specification(joins, []() {
 
     it("can be full outer", []() {
       if (test::current_session->has_feature(
-              session::FEATURE_FULL_OUTER_JOIN)) {
+          session::FEATURE_FULL_OUTER_JOIN)) {
         select_query query(test::current_session);
 
         query.from(test::user::TABLE_NAME, "u")
-                .join("user_settings", "s", join::full)
-                .on("u.id = s.user_id") and
+            .join("user_settings", "s", join::full)
+            .on("u.id = s.user_id") and
             ("s.valid = 1");
 
         auto rs = query.execute();
@@ -129,8 +128,8 @@ specification(joins, []() {
         select_query query(test::current_session);
 
         query.from(test::user::TABLE_NAME, "u")
-                .join("user_settings", "s", join::right)
-                .on("u.id = s.user_id") and
+            .join("user_settings", "s", join::right)
+            .on("u.id = s.user_id") and
             ("s.valid = 1");
 
         auto rs = query.execute();
@@ -143,8 +142,8 @@ specification(joins, []() {
       select_query query(test::current_session);
 
       query.from(test::user::TABLE_NAME, "u")
-              .join("user_settings", "s", join::left)
-              .on("u.id = s.user_id") and
+          .join("user_settings", "s", join::left)
+          .on("u.id = s.user_id") and
           ("s.valid = 1");
 
       auto rs = query.execute();
@@ -156,8 +155,8 @@ specification(joins, []() {
       select_query query(test::current_session);
 
       query.from(test::user::TABLE_NAME, "u")
-              .join("user_settings", "s", join::inner)
-              .on("u.id = s.user_id") and
+          .join("user_settings", "s", join::inner)
+          .on("u.id = s.user_id") and
           ("s.valid = 1");
 
       auto rs = query.execute();
@@ -180,8 +179,8 @@ specification(joins, []() {
       select_query query(test::current_session);
 
       query.from(test::user::TABLE_NAME, "u")
-              .join("user_settings", "s", join::none)
-              .on("u.id = s.user_id") and
+          .join("user_settings", "s", join::none)
+          .on("u.id = s.user_id") and
           ("s.valid = 1");
 
       auto rs = query.execute();

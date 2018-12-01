@@ -9,151 +9,151 @@
 #include "sql_types.h"
 
 namespace coda::db {
-    class sql_time;
+  class sql_time;
 
-    class sql_value;
+  class sql_value;
 
-    // stream operators for different types
-    std::ostream &operator<<(std::ostream &out, const sql_blob &value);
+  // stream operators for different types
+  std::ostream &operator<<(std::ostream &out, const sql_blob &value);
 
-    std::wostream &operator<<(std::wostream &out, const sql_blob &value);
+  std::wostream &operator<<(std::wostream &out, const sql_blob &value);
 
-    std::ostream &operator<<(std::ostream &out, const sql_null_type &null);
+  std::ostream &operator<<(std::ostream &out, const sql_null_type &null);
 
-    std::wostream &operator<<(std::wostream &out, const sql_null_type &null);
+  std::wostream &operator<<(std::wostream &out, const sql_null_type &null);
 
-    // to string functions
-    std::string to_string(const sql_blob &value);
+  // to string functions
+  std::string to_string(const sql_blob &value);
 
-    std::wstring to_wstring(const sql_blob &value);
+  std::wstring to_wstring(const sql_blob &value);
 
-    std::string to_string(const sql_null_type &value);
+  std::string to_string(const sql_null_type &value);
 
-    std::wstring to_wstring(const sql_null_type &value);
+  std::wstring to_wstring(const sql_null_type &value);
 
-    namespace helper {
-      /*!
-       * utility method used in creating sql
-       */
-      template <typename T>
-      std::string join_csv(const std::vector<T> &list) {
-        std::ostringstream buf;
+  namespace helper {
+    /*!
+     * utility method used in creating sql
+     */
+    template<typename T>
+    std::string join_csv(const std::vector<T> &list) {
+      std::ostringstream buf;
 
-        if (list.size() > 0) {
-          std::ostream_iterator<T> it(buf, ",");
+      if (list.size() > 0) {
+        std::ostream_iterator<T> it(buf, ",");
 
-          copy(list.begin(), list.end() - 1, it);
+        copy(list.begin(), list.end() - 1, it);
 
-          buf << *(list.end() - 1);
-        }
-
-        return buf.str();
+        buf << *(list.end() - 1);
       }
 
-      // convert between different string types
-      std::string convert_string(const std::wstring &buf);
+      return buf.str();
+    }
 
-      std::wstring convert_string(const std::string &buf);
+    // convert between different string types
+    std::string convert_string(const std::wstring &buf);
 
-      // test if a string value is a positive boolean value
-      bool is_positive_bool(const sql_string &value);
+    std::wstring convert_string(const std::string &buf);
 
-      bool is_positive_bool(const sql_wstring &value);
+    // test if a string value is a positive boolean value
+    bool is_positive_bool(const sql_string &value);
 
-      // test if a string value is a negative bool value
-      bool is_negative_bool(const sql_string &value);
+    bool is_positive_bool(const sql_wstring &value);
 
-      bool is_negative_bool(const sql_wstring &value);
+    // test if a string value is a negative bool value
+    bool is_negative_bool(const sql_string &value);
 
-      /**
-       * test if a string value is a positive or negative bool value
-       * @returns 0 if not a boolean, -1 if false, 1 if true
-       */
-      template <typename S, typename = std::enable_if<is_sql_string<S>::value>>
-      int is_bool(const S &value) {
-        if (is_positive_bool(value)) {
-          return 1;
-        }
-        if (is_negative_bool(value)) {
-          return -1;
-        }
-        return 0;
+    bool is_negative_bool(const sql_wstring &value);
+
+    /**
+     * test if a string value is a positive or negative bool value
+     * @returns 0 if not a boolean, -1 if false, 1 if true
+     */
+    template<typename S, typename = std::enable_if<is_sql_string<S>::value>>
+    int is_bool(const S &value) {
+      if (is_positive_bool(value)) {
+        return 1;
+      }
+      if (is_negative_bool(value)) {
+        return -1;
+      }
+      return 0;
+    }
+
+    template<typename T>
+    struct is_type {
+     public:
+      template<typename V>
+      bool operator()(const V &value) const {
+        return std::is_same<T, V>::value || std::is_convertible<V, T>::value;
+      }
+    };
+
+    struct number_equality {
+     public:
+      number_equality(const sql_number &num) : num_(num) {}
+
+      template<typename V>
+      bool operator()(const V &value) const {
+        return num_ == value;
       }
 
-      template <typename T>
-      struct is_type {
-       public:
-        template <typename V>
-        bool operator()(const V &value) const {
-          return std::is_same<T, V>::value || std::is_convertible<V, T>::value;
-        }
-      };
+     private:
+      const sql_number &num_;
+    };
 
-      struct number_equality {
-       public:
-        number_equality(const sql_number &num) : num_(num) {}
+    struct value_equality {
+     public:
+      value_equality(const sql_value &value) : value_(value) {}
 
-        template <typename V>
-        bool operator()(const V &value) const {
-          return num_ == value;
-        }
+      template<typename V>
+      bool operator()(const V &value) const {
+        return value_ == value;
+      }
 
-       private:
-        const sql_number &num_;
-      };
+     private:
+      const sql_value &value_;
+    };
 
-      struct value_equality {
-       public:
-        value_equality(const sql_value &value) : value_(value) {}
+    class as_sql_string {
+     public:
+      template<typename V>
+      sql_string operator()(const V &value) const {
+        return std::to_string(value);
+      }
 
-        template <typename V>
-        bool operator()(const V &value) const {
-          return value_ == value;
-        }
+      sql_string operator()(const sql_time &value) const;
 
-       private:
-        const sql_value &value_;
-      };
+      sql_string operator()(const sql_string &value) const;
 
-      class as_sql_string {
-       public:
-        template <typename V>
-        sql_string operator()(const V &value) const {
-          return std::to_string(value);
-        }
+      sql_string operator()(const sql_wstring &value) const;
 
-        sql_string operator()(const sql_time &value) const;
+      sql_string operator()(const sql_blob &value) const;
 
-        sql_string operator()(const sql_string &value) const;
+      sql_string operator()(const sql_null_type &null) const;
 
-        sql_string operator()(const sql_wstring &value) const;
+      sql_string operator()(const sql_number &value) const;
+    };
 
-        sql_string operator()(const sql_blob &value) const;
+    class as_sql_wstring {
+     public:
+      template<typename V>
+      sql_wstring operator()(const V &value) const {
+        return std::to_wstring(value);
+      }
 
-        sql_string operator()(const sql_null_type &null) const;
+      sql_wstring operator()(const sql_time &value) const;
 
-        sql_string operator()(const sql_number &value) const;
-      };
+      sql_wstring operator()(const sql_string &value) const;
 
-      class as_sql_wstring {
-       public:
-        template <typename V>
-        sql_wstring operator()(const V &value) const {
-          return std::to_wstring(value);
-        }
+      sql_wstring operator()(const sql_wstring &value) const;
 
-        sql_wstring operator()(const sql_time &value) const;
+      sql_wstring operator()(const sql_blob &value) const;
 
-        sql_wstring operator()(const sql_string &value) const;
+      sql_wstring operator()(const sql_null_type &null) const;
 
-        sql_wstring operator()(const sql_wstring &value) const;
-
-        sql_wstring operator()(const sql_blob &value) const;
-
-        sql_wstring operator()(const sql_null_type &null) const;
-
-        sql_wstring operator()(const sql_number &value) const;
-      };
-    }  // namespace helper
+      sql_wstring operator()(const sql_number &value) const;
+    };
+  }  // namespace helper
 }  // namespace coda::db
 #endif

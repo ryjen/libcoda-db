@@ -19,7 +19,7 @@ specification(updates, []() {
 
       Assert::That(query.to_sql(),
                    Equals("UPDATE users SET id=" +
-                          test::current_session->impl()->bind_param(1) + ";"));
+                       test::current_session->impl()->bind_param(1) + ";"));
 
       update_query other(query);
 

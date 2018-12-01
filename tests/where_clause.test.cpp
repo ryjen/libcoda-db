@@ -30,11 +30,11 @@ go_bandit([]() {
 
       w1 or w2;
 
-      string value = (string)w1;
+      string value = (string) w1;
 
       AssertThat(value, Equals("this OR that"));
 
-      w3 &&w4;
+      w3 && w4;
 
       AssertThat(w3.to_sql(), Equals("blah AND bleh"));
     });
@@ -46,7 +46,7 @@ go_bandit([]() {
 
       w1 and "blah";
 
-      string value = (string)w1;
+      string value = (string) w1;
 
       AssertThat(value, Equals("blah"));
 
@@ -56,7 +56,7 @@ go_bandit([]() {
 
       where_clause w3;
 
-      w3 &&w1;
+      w3 && w1;
 
       AssertThat(w3.to_sql(), Equals(w1.to_sql()));
 

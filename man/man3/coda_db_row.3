@@ -1,4 +1,4 @@
-.TH "coda::db::row" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::row" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -25,22 +25,22 @@ coda::db::row
 
 .in +1c
 .ti -1c
-.RI "\fBrow\fP ()"
+.RI "\fBrow\fP ()=default"
 .br
 .ti -1c
 .RI "\fBrow\fP (const std::shared_ptr< \fBrow_impl\fP > &impl)"
 .br
 .ti -1c
-.RI "\fBrow\fP (const \fBrow\fP &other)"
+.RI "\fBrow\fP (const \fBrow\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBrow\fP (\fBrow\fP &&other)"
+.RI "\fBrow\fP (\fBrow\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "\fBrow\fP & \fBoperator=\fP (const \fBrow\fP &other)"
+.RI "\fBrow\fP & \fBoperator=\fP (const \fBrow\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBrow\fP & \fBoperator=\fP (\fBrow\fP &&other)"
+.RI "\fBrow\fP & \fBoperator=\fP (\fBrow\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "\fBiterator\fP \fBbegin\fP ()"
@@ -85,7 +85,7 @@ coda::db::row
 .RI "bool \fBis_valid\fP () const noexcept"
 .br
 .ti -1c
-.RI "void \fBfor_each\fP (const std::function< void(const \fBdb::column\fP &)> &funk) const"
+.RI "void \fBeach\fP (const std::function< void(const \fBdb::column\fP &)> &funk) const"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -93,9 +93,9 @@ coda::db::row
 represent a row in a table implementation is specific to a type of database 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::row::row ()"
+.SS "coda::db::row::row ()\fC [default]\fP"
 default constructor 
-.SS "coda::db::row::row (const std::shared_ptr< \fBrow_impl\fP > & impl)"
+.SS "coda::db::row::row (const std::shared_ptr< \fBrow_impl\fP > & impl)\fC [explicit]\fP"
 
 .PP
 \fBParameters:\fP
@@ -184,6 +184,15 @@ the column name
 .RE
 .PP
 
+.SS "void coda::db::row::each (const std::function< void(const \fBdb::column\fP &)> & funk) const"
+performs a callback for each column 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfunk\fP the callback 
+.RE
+.PP
+
 .SS "bool coda::db::row::empty () const\fC [noexcept]\fP"
 tests if this row has no data 
 .PP
@@ -208,15 +217,6 @@ an iterator to after the last column
 \fBReturns:\fP
 .RS 4
 a const iterator to after the last column 
-.RE
-.PP
-
-.SS "void coda::db::row::for_each (const std::function< void(const \fBdb::column\fP &)> & funk) const"
-performs a callback for each column 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIfunk\fP the callback 
 .RE
 .PP
 

@@ -8,74 +8,107 @@
 
 using namespace coda::db;
 
-BENCHMARK("sqlite insert", [](benchpress::context *context) {
-  uri uri_s("file://test.db");
+BENCHMARK("sqlite insert",[](
+benchpress::context *context
+) {
+uri uri_s("file://test.db");
 
-  benchmark_setup(uri_s);
+benchmark_setup(uri_s);
 
-  sqlite_setup();
+sqlite_setup();
 
-  coda::db::insert_query query(current_session);
+coda::db::insert_query query(current_session);
 
-  query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
+query.
+into(user::TABLE_NAME)
+.columns("first_name", "last_name", "dval");
 
-  context->reset_timer();
+context->
+reset_timer();
 
-  for (size_t i = 0; i < context->num_iterations(); i++) {
-    benchmark_insert(query, current_session);
-  }
+for (
+size_t i = 0;
+i<context->
+num_iterations();
+i++) {
+benchmark_insert(query, current_session
+);
+}
 
-  context->stop_timer();
+context->
+stop_timer();
 
-  sqlite_teardown();
+sqlite_teardown();
 
-  benchmark_teardown();
+benchmark_teardown();
 });
 
-BENCHMARK("mysql insert", [](benchpress::context *context) {
-  auto uri_s = get_env_uri("MYSQL_URI", "mysql://localhost/test");
+BENCHMARK("mysql insert",[](
+benchpress::context *context
+) {
+auto uri_s = get_env_uri("MYSQL_URI", "mysql://localhost/test");
 
-  benchmark_setup(uri_s);
+benchmark_setup(uri_s);
 
-  mysql_setup();
+mysql_setup();
 
-  coda::db::insert_query query(current_session);
+coda::db::insert_query query(current_session);
 
-  query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
+query.
+into(user::TABLE_NAME)
+.columns("first_name", "last_name", "dval");
 
-  context->reset_timer();
+context->
+reset_timer();
 
-  for (size_t i = 0; i < context->num_iterations(); i++) {
-    benchmark_insert(query, current_session);
-  }
+for (
+size_t i = 0;
+i<context->
+num_iterations();
+i++) {
+benchmark_insert(query, current_session
+);
+}
 
-  context->stop_timer();
+context->
+stop_timer();
 
-  mysql_teardown();
+mysql_teardown();
 
-  benchmark_teardown();
+benchmark_teardown();
 });
 
-BENCHMARK("postgres insert", [](benchpress::context *context) {
-  auto uri_s = get_env_uri("POSTGRES_URI", "postgres://localhost/test");
+BENCHMARK("postgres insert",[](
+benchpress::context *context
+) {
+auto uri_s = get_env_uri("POSTGRES_URI", "postgres://localhost/test");
 
-  benchmark_setup(uri_s);
+benchmark_setup(uri_s);
 
-  postgres_setup();
+postgres_setup();
 
-  coda::db::insert_query query(current_session);
+coda::db::insert_query query(current_session);
 
-  query.into(user::TABLE_NAME).columns("first_name", "last_name", "dval");
+query.
+into(user::TABLE_NAME)
+.columns("first_name", "last_name", "dval");
 
-  context->reset_timer();
+context->
+reset_timer();
 
-  for (size_t i = 0; i < context->num_iterations(); i++) {
-    benchmark_insert(query, current_session);
-  }
+for (
+size_t i = 0;
+i<context->
+num_iterations();
+i++) {
+benchmark_insert(query, current_session
+);
+}
 
-  context->stop_timer();
+context->
+stop_timer();
 
-  postgres_teardown();
+postgres_teardown();
 
-  benchmark_teardown();
+benchmark_teardown();
 });

@@ -1,4 +1,4 @@
-.TH "coda::db::where_clause" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::where_clause" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,22 +16,22 @@ Inherited by \fBcoda::db::where_builder\fP\&.
 
 .in +1c
 .ti -1c
-.RI "\fBwhere_clause\fP ()"
+.RI "\fBwhere_clause\fP ()=default"
 .br
 .ti -1c
 .RI "\fBwhere_clause\fP (const std::string &value)"
 .br
 .ti -1c
-.RI "\fBwhere_clause\fP (const \fBwhere_clause\fP &other)"
+.RI "\fBwhere_clause\fP (const \fBwhere_clause\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBwhere_clause\fP (\fBwhere_clause\fP &&other)"
+.RI "\fBwhere_clause\fP (\fBwhere_clause\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "\fBwhere_clause\fP & \fBoperator=\fP (const \fBwhere_clause\fP &other)"
+.RI "\fBwhere_clause\fP & \fBoperator=\fP (const \fBwhere_clause\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBwhere_clause\fP & \fBoperator=\fP (\fBwhere_clause\fP &&other)"
+.RI "\fBwhere_clause\fP & \fBoperator=\fP (\fBwhere_clause\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "\fBoperator std::string\fP () const"
@@ -55,7 +55,7 @@ Inherited by \fBcoda::db::where_builder\fP\&.
 .RI "bool \fBempty\fP () const noexcept"
 .br
 .ti -1c
-.RI "void \fBreset\fP ()"
+.RI "void \fBreset\fP () override"
 .br
 .ti -1c
 .RI "void \fBreset\fP (const std::string &value)"
@@ -70,7 +70,7 @@ Inherited by \fBcoda::db::where_builder\fP\&.
 a utility class aimed at making logic where statements ex\&. where('a = b') || 'c == d' && 'e == f'; 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::where_clause::where_clause ()"
+.SS "coda::db::where_clause::where_clause ()\fC [default]\fP"
 Default constructor 
 .SS "coda::db::where_clause::where_clause (const std::string & value)\fC [explicit]\fP"
 construct a where clause with sql 
@@ -110,7 +110,7 @@ Appends and AND part to this where clause
 .RE
 .PP
 
-.SS "coda::db::where_clause::operator std::string () const\fC [explicit]\fP"
+.SS "coda::db::where_clause::operator std::string () const"
 explicit cast operator to sql string 
 .PP
 \fBReturns:\fP
@@ -137,7 +137,7 @@ Appends and OR part to this where clause
 .RE
 .PP
 
-.SS "void coda::db::where_clause::reset ()\fC [virtual]\fP"
+.SS "void coda::db::where_clause::reset ()\fC [override]\fP, \fC [virtual]\fP"
 resets this where clause 
 .PP
 Reimplemented from \fBcoda::db::sql_generator\fP\&.

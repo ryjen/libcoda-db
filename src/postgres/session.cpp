@@ -122,30 +122,33 @@ namespace coda::db::postgres {
           return columns;
         }
 
-        string pk_sql = string(
-                            "SELECT tc.table_schema, tc.table_name, kc.column_name FROM "
-                            "information_schema.table_constraints tc ") +
+        string pk_sql = "SELECT tc.table_schema, tc.table_name, kc.column_name "
+                        "FROM information_schema.table_constraints tc "
                         "JOIN information_schema.key_column_usage kc ON kc.table_name = "
-                        "tc.table_name AND "
-                        "kc.table_schema = tc.table_schema " +
-                        "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = '" + tableName +
-                        "' ORDER BY tc.table_schema, tc.table_name, "
-                        "kc.position_in_unique_constraint";
+                        "tc.table_name AND kc.table_schema = tc.table_schema "
+                        "WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = $1 "
+                        "ORDER BY tc.table_schema, tc.table_name, kc.position_in_unique_constraint";
 
-        string col_sql = string("SELECT column_name, data_type, pg_get_serial_sequence('" + tableName +
-                                "', column_name) as serial, column_default ") +
-                         "FROM information_schema.columns WHERE table_name = '" + tableName + "'";
+        string col_sql = "SELECT column_name, data_type, pg_get_serial_sequence($1, column_name) as serial, column_default "
+                         "FROM information_schema.columns WHERE table_name = $1";
 
-        auto primary_keys = query(pk_sql);
+        auto pk_stmt = create_statement();
 
-        auto rs = query(col_sql);
+        pk_stmt->prepare(pk_sql);
+        pk_stmt->bind(1, tableName);
 
-        while (rs->next()) {
-          auto row = rs->current_row();
+        auto primary_keys = pk_stmt->query();
+
+        auto col_stmt = create_statement();
+
+        col_stmt->prepare(col_sql);
+        col_stmt->bind(1, tableName);
+
+        for (const auto &row : col_stmt->query()) {
           column_definition def;
 
           // column name
-          def.name = row["column_name"].value().to_string();
+          def.name = row["column_name"].as<std::string>();
 
           if (def.name.empty()) {
             continue;
@@ -154,19 +157,18 @@ namespace coda::db::postgres {
           def.pk = false;
           def.autoincrement = false;
 
-          primary_keys->reset();
+          auto pk = std::find_if(primary_keys.begin(), primary_keys.end(), [&def](const auto &it) {
+            return it["column_name"] == def.name;
+          });
 
-          while (primary_keys->next()) {
-            auto pk = primary_keys->current_row();
-            if (pk["column_name"].value() == def.name) {
-              def.pk = true;
-              def.autoincrement = !row["serial"].value().to_string().empty();
-            }
+          if (pk != primary_keys.end()) {
+            def.pk = true;
+            def.autoincrement = !row["serial"].as<std::string>().empty();
           }
 
           // find type
-          def.type = row["data_type"].value().to_string();
-          def.default_value = row["column_default"].value().to_string();
+          def.type = row["data_type"].as<std::string>();
+          def.default_value = row["column_default"].as<std::string>();
 
           columns.push_back(def);
         }

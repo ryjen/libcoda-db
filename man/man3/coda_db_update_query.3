@@ -1,4 +1,4 @@
-.TH "coda::db::update_query" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::update_query" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -29,16 +29,16 @@ Inherits \fBcoda::db::modify_query\fP, and \fBcoda::db::whereable< update_query 
 .RI "\fBupdate_query\fP (const std::shared_ptr< \fBschema\fP > &\fBschema\fP, const std::vector< std::string > &\fBcolumns\fP)"
 .br
 .ti -1c
-.RI "\fBupdate_query\fP (const \fBupdate_query\fP &other)"
+.RI "\fBupdate_query\fP (const \fBupdate_query\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBupdate_query\fP (\fBupdate_query\fP &&other)"
+.RI "\fBupdate_query\fP (\fBupdate_query\fP &&other)=default"
 .br
 .ti -1c
-.RI "\fBupdate_query\fP & \fBoperator=\fP (const \fBupdate_query\fP &other)"
+.RI "\fBupdate_query\fP & \fBoperator=\fP (const \fBupdate_query\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBupdate_query\fP & \fBoperator=\fP (\fBupdate_query\fP &&other)"
+.RI "\fBupdate_query\fP & \fBoperator=\fP (\fBupdate_query\fP &&other)=default"
 .br
 .ti -1c
 .RI "std::vector< std::string > \fBcolumns\fP () const"
@@ -56,13 +56,13 @@ Inherits \fBcoda::db::modify_query\fP, and \fBcoda::db::whereable< update_query 
 .RI "std::string \fBtable\fP () const"
 .br
 .ti -1c
-.RI "\fBwhere_builder\fP & \fBwhere\fP ()"
+.RI "\fBwhere_builder\fP & \fBwhere\fP () override"
 .br
 .ti -1c
 .RI "\fBupdate_query\fP & \fBwhere\fP (const \fBwhere_clause\fP &value)"
 .br
 .ti -1c
-.RI "\fBwhere_builder\fP & \fBwhere\fP (const \fBsql_operator\fP &value)"
+.RI "\fBwhere_builder\fP & \fBwhere\fP (const \fBsql_operator\fP &value) override"
 .br
 .ti -1c
 .RI "template<typename T , typename\&.\&.\&. List> \fBupdate_query\fP & \fBvalues\fP (const T &value, const List &\&.\&.\&. argv)"
@@ -80,7 +80,7 @@ Inherits \fBcoda::db::modify_query\fP, and \fBcoda::db::whereable< update_query 
 .RI "\fBupdate_query\fP & \fBvalue\fP (const \fBsql_value\fP &value)"
 .br
 .ti -1c
-.RI "bool \fBis_valid\fP () const noexcept"
+.RI "bool \fBis_valid\fP () const noexcept override"
 .br
 .in -1c
 .SS "Additional Inherited Members"
@@ -89,7 +89,7 @@ Inherits \fBcoda::db::modify_query\fP, and \fBcoda::db::whereable< update_query 
 a query to update a table 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::update_query::update_query (const std::shared_ptr< \fBcoda::db::session\fP > & session)"
+.SS "coda::db::update_query::update_query (const std::shared_ptr< \fBcoda::db::session\fP > & session)\fC [explicit]\fP"
 
 .PP
 \fBParameters:\fP
@@ -98,7 +98,7 @@ a query to update a table
 .RE
 .PP
 
-.SS "coda::db::update_query::update_query (const std::shared_ptr< \fBschema\fP > & schema)"
+.SS "coda::db::update_query::update_query (const std::shared_ptr< \fBschema\fP > & schema)\fC [explicit]\fP"
 
 .PP
 \fBParameters:\fP
@@ -167,7 +167,7 @@ a reference to this instance
 .RE
 .PP
 
-.SS "bool coda::db::update_query::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+.SS "bool coda::db::update_query::is_valid () const\fC [override]\fP, \fC [virtual]\fP, \fC [noexcept]\fP"
 tests if this query is valid 
 .PP
 \fBReturns:\fP
@@ -222,7 +222,7 @@ a rename of the bind_all method so it makes sense to the query language
 .RE
 .PP
 
-.SS "\fBwhere_builder\fP& coda::db::update_query::where ()\fC [virtual]\fP"
+.SS "\fBwhere_builder\fP& coda::db::update_query::where ()\fC [override]\fP, \fC [virtual]\fP"
 gets the where builder for the query 
 .PP
 \fBReturns:\fP
@@ -242,7 +242,7 @@ sets the where clause for the update query
 .RE
 .PP
 
-.SS "\fBwhere_builder\fP& coda::db::update_query::where (const \fBsql_operator\fP & value)\fC [virtual]\fP"
+.SS "\fBwhere_builder\fP& coda::db::update_query::where (const \fBsql_operator\fP & value)\fC [override]\fP, \fC [virtual]\fP"
 gets the where clause 
 .PP
 \fBReturns:\fP

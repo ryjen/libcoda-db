@@ -5,18 +5,18 @@
 #include "../transaction.h"
 
 namespace coda::db::sqlite {
-      class transaction : public coda::db::transaction_impl {
-       public:
-        typedef enum { none, deferred, immediate, exclusive } type;
+  class transaction : public coda::db::transaction_impl {
+   public:
+    typedef enum { none, deferred, immediate, exclusive } type;
 
-        explicit transaction(const std::shared_ptr<sqlite3> &db, transaction::type type = none);
-        void start() override;
-        bool is_active() const noexcept override;
+    explicit transaction(const std::shared_ptr<sqlite3> &db, transaction::type type = none);
+    void start() override;
+    bool is_active() const noexcept override;
 
-       private:
-        std::shared_ptr<sqlite3> db_;
-        transaction::type type_;
-      };
+   private:
+    std::shared_ptr<sqlite3> db_;
+    transaction::type type_;
+  };
 }  // namespace coda::db::sqlite
 
 #endif

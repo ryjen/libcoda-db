@@ -1,4 +1,4 @@
-.TH "coda::db::bind_mapping" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::bind_mapping" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,13 +14,13 @@ Inherited by \fBcoda::db::mysql::binding\fP, and \fBcoda::db::postgres::binding\
 
 .in +1c
 .ti -1c
-.RI "\fBbind_mapping\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value)"
+.RI "\fBbind_mapping\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value) override"
 .br
 .ti -1c
 .RI "std::string \fBprepare\fP (const std::string &sql, size_t max_index)"
 .br
 .ti -1c
-.RI "virtual \fBbindable\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value)=0"
+.RI "\fBbindable\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value) override=0"
 .br
 .ti -1c
 .RI "bool \fBis_named\fP () const"
@@ -28,20 +28,11 @@ Inherited by \fBcoda::db::mysql::binding\fP, and \fBcoda::db::postgres::binding\
 .ti -1c
 .RI "virtual void \fBreset\fP ()"
 .br
-.ti -1c
-.RI "\fBbindable\fP ()=default"
-.br
-.ti -1c
-.RI "\fBbindable\fP (const \fBbindable\fP &other)=default"
-.br
-.ti -1c
-.RI "\fBbindable\fP (\fBbindable\fP &&other)=default"
-.br
 .in -1c
 .SS "Additional Inherited Members"
 .SH "Member Function Documentation"
 .PP 
-.SS "\fBbind_mapping\fP& coda::db::bind_mapping::bind (const std::string & name, const \fBsql_value\fP & value)\fC [virtual]\fP"
+.SS "\fBbind_mapping\fP& coda::db::bind_mapping::bind (const std::string & name, const \fBsql_value\fP & value)\fC [override]\fP, \fC [virtual]\fP"
 bind a named parameter 
 .PP
 \fBParameters:\fP
@@ -61,7 +52,7 @@ a reference to this instance
 Implements \fBcoda::db::bindable\fP\&.
 .PP
 Reimplemented in \fBcoda::db::mysql::binding\fP, and \fBcoda::db::postgres::binding\fP\&.
-.SS "virtual \fBbindable\fP& coda::db::bind_mapping::bind (size_t index, const \fBsql_value\fP & value)\fC [pure virtual]\fP"
+.SS "\fBbindable\fP& coda::db::bind_mapping::bind (size_t index, const \fBsql_value\fP & value)\fC [override]\fP, \fC [pure virtual]\fP"
 Binds a \fBsql_value\fP using the other bind methods 
 .PP
 \fBParameters:\fP

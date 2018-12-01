@@ -1,106 +1,97 @@
 
 #include "join_clause.h"
-#include <sstream>
 
 using namespace std;
 
 namespace coda::db {
-    join_clause::join_clause() : type_(join::none) {}
+  join_clause::join_clause() : type_(join::none) {}
 
-    join_clause::join_clause(const string &tableName, join::type type) : tableName_(tableName), type_(type) {}
+  join_clause::join_clause(const string &tableName, join::type type) : tableName_(tableName), type_(type) {}
 
-
-    join_clause::join_clause(const string &tableName, const string &alias, join::type type)
+  join_clause::join_clause(const string &tableName, const string &alias, join::type type)
       : join_clause(tableName + " as " + alias, type) {}
 
-    string join_clause::generate_sql() const {
-      string buf;
+  string join_clause::generate_sql() const {
+    string buf;
 
-      switch (type_) {
-        default:
-        case join::none:
-          break;
-        case join::natural:
-          buf = " NATURAL";
-          break;
-        case join::inner:
-          buf = " INNER";
-          break;
-        case join::left:
-          buf = " LEFT";
-          break;
-        case join::right:
-          buf = " RIGHT";
-          break;
-        case join::full:
-          buf = " FULL OUTER";
-          break;
-        case join::cross:
-          buf = " CROSS";
-          break;
-      }
-
-      buf += " JOIN ";
-      buf += tableName_;
-
-      if (type_ != join::cross && type_ != join::natural) {
-        buf += " ON ";
-        buf += on_.to_sql();
-      }
-
-      return buf;
+    switch (type_) {
+      default:
+      case join::none:break;
+      case join::natural:buf = " NATURAL";
+        break;
+      case join::inner:buf = " INNER";
+        break;
+      case join::left:buf = " LEFT";
+        break;
+      case join::right:buf = " RIGHT";
+        break;
+      case join::full:buf = " FULL OUTER";
+        break;
+      case join::cross:buf = " CROSS";
+        break;
     }
 
-    void join_clause::set_modified() { sql_generator::reset(); }
+    buf += " JOIN ";
+    buf += tableName_;
 
-    join_clause &join_clause::table(const string &value) {
-      tableName_ = value;
-      set_modified();
-      return *this;
-    }
-    join_clause &join_clause::table(const string &value, const string &alias) {
-      tableName_ = value + " " + alias;
-      set_modified();
-      return *this;
-    }
-    std::string join_clause::table() const { return tableName_; }
-
-    join_clause &join_clause::type(join::type value) {
-      type_ = value;
-      set_modified();
-      return *this;
+    if (type_ != join::cross && type_ != join::natural) {
+      buf += " ON ";
+      buf += on_.to_sql();
     }
 
-    join::type join_clause::type() const { return type_; }
+    return buf;
+  }
 
-    where_clause &join_clause::on(const string &value) {
-      on_ = where_clause(value);
-      set_modified();
-      return on_;
-    }
+  void join_clause::set_modified() { sql_generator::reset(); }
 
-    join_clause &join_clause::on(const where_clause &value) {
-      on_ = value;
-      set_modified();
-      return *this;
-    }
+  join_clause &join_clause::table(const string &value) {
+    tableName_ = value;
+    set_modified();
+    return *this;
+  }
+  join_clause &join_clause::table(const string &value, const string &alias) {
+    tableName_ = value + " " + alias;
+    set_modified();
+    return *this;
+  }
+  std::string join_clause::table() const { return tableName_; }
 
-    const where_clause &join_clause::on() const { return on_; }
+  join_clause &join_clause::type(join::type value) {
+    type_ = value;
+    set_modified();
+    return *this;
+  }
 
-    bool join_clause::empty() const { return tableName_.empty() || on_.empty(); }
+  join::type join_clause::type() const { return type_; }
 
-    join_clause::operator string() { return to_sql(); }
+  where_clause &join_clause::on(const string &value) {
+    on_ = where_clause(value);
+    set_modified();
+    return on_;
+  }
 
-    join_clause::operator string() const { return to_sql(); }
+  join_clause &join_clause::on(const where_clause &value) {
+    on_ = value;
+    set_modified();
+    return *this;
+  }
 
-    void join_clause::reset() {
-      tableName_.clear();
-      on_.reset();
-      sql_generator::reset();
-    }
+  const where_clause &join_clause::on() const { return on_; }
 
-    ostream &operator<<(ostream &out, const join_clause &join) {
-      out << join.to_sql();
-      return out;
-    }
+  bool join_clause::empty() const { return tableName_.empty() || on_.empty(); }
+
+  join_clause::operator string() { return to_sql(); }
+
+  join_clause::operator string() const { return to_sql(); }
+
+  void join_clause::reset() {
+    tableName_.clear();
+    on_.reset();
+    sql_generator::reset();
+  }
+
+  ostream &operator<<(ostream &out, const join_clause &join) {
+    out << join.to_sql();
+    return out;
+  }
 }  // namespace coda::db

@@ -1,4 +1,4 @@
-.TH "coda::db::mysql::stmt_column" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::mysql::stmt_column" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,25 +20,25 @@ Inherits \fBcoda::db::column_impl\fP\&.
 .RI "\fBstmt_column\fP (const \fBstmt_column\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBstmt_column\fP (\fBstmt_column\fP &&other)"
+.RI "\fBstmt_column\fP (\fBstmt_column\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBstmt_column\fP & \fBoperator=\fP (const \fBstmt_column\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBstmt_column\fP & \fBoperator=\fP (\fBstmt_column\fP &&other)"
+.RI "\fBstmt_column\fP & \fBoperator=\fP (\fBstmt_column\fP &&other) noexcept"
 .br
 .ti -1c
-.RI "bool \fBis_valid\fP () const"
+.RI "bool \fBis_valid\fP () const override"
 .br
 .ti -1c
-.RI "\fBsql_value\fP \fBto_value\fP () const"
+.RI "\fBsql_value\fP \fBto_value\fP () const override"
 .br
 .ti -1c
 .RI "int \fBsql_type\fP () const"
 .br
 .ti -1c
-.RI "std::string \fBname\fP () const"
+.RI "std::string \fBname\fP () const override"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -61,7 +61,7 @@ a mysql specific version of a column using prepared statements
 
 .SH "Member Function Documentation"
 .PP 
-.SS "bool coda::db::mysql::stmt_column::is_valid () const\fC [virtual]\fP"
+.SS "bool coda::db::mysql::stmt_column::is_valid () const\fC [override]\fP, \fC [virtual]\fP"
 tests if this colums data validity 
 .PP
 \fBReturns:\fP
@@ -72,7 +72,7 @@ true if this columns data is valid
 
 .PP
 Implements \fBcoda::db::column_impl\fP\&.
-.SS "std::string coda::db::mysql::stmt_column::name () const\fC [virtual]\fP"
+.SS "std::string coda::db::mysql::stmt_column::name () const\fC [override]\fP, \fC [virtual]\fP"
 
 .PP
 \fBReturns:\fP
@@ -83,7 +83,7 @@ the name of this column;
 
 .PP
 Implements \fBcoda::db::column_impl\fP\&.
-.SS "\fBsql_value\fP coda::db::mysql::stmt_column::to_value () const\fC [virtual]\fP"
+.SS "\fBsql_value\fP coda::db::mysql::stmt_column::to_value () const\fC [override]\fP, \fC [virtual]\fP"
 converts this column to a value 
 .PP
 \fBReturns:\fP

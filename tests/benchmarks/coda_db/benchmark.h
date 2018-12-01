@@ -32,7 +32,7 @@ void postgres_setup();
 void postgres_teardown();
 
 class user : public coda::db::record<user> {
-  public:
+ public:
   constexpr static const char *const TABLE_NAME = "users";
 
   using coda::db::record<user>::record;

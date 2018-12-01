@@ -4,18 +4,18 @@
 #include <string>
 
 namespace coda::db {
-    class sql_generator {
-     public:
-      std::string to_sql() const;
-      std::string to_sql();
+  class sql_generator {
+   public:
+    std::string to_sql() const;
+    std::string to_sql();
 
-      virtual void reset();
+    virtual void reset();
 
-     protected:
-      virtual std::string generate_sql() const = 0;
+   protected:
+    virtual std::string generate_sql() const = 0;
 
-     private:
-      std::string sql_;
-    };
+   private:
+    std::string sql_;
+  };
 }  // namespace coda::db
 #endif

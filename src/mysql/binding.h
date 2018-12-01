@@ -12,121 +12,121 @@
 #include "../bind_mapping.h"
 
 namespace coda::db {
-    class sql_value;
+  class sql_value;
 
-    namespace mysql {
+  namespace mysql {
 
-      namespace data_mapper {
-        sql_value to_value(MYSQL_BIND *binding);
-        sql_value to_value(int type, const char *value, size_t length);
-      }  // namespace data_mapper
+    namespace data_mapper {
+      sql_value to_value(MYSQL_BIND *binding);
+      sql_value to_value(int type, const char *value, size_t length);
+    }  // namespace data_mapper
+
+    /*!
+     * makes binding mysql queries simpler
+     */
+    class binding : public coda::db::bind_mapping {
+
+     private:
+      MYSQL_BIND *value_;
+      size_t size_;
+      std::unordered_map<size_t, std::set<size_t>> indexes_;
+      void copy_value(const MYSQL_BIND *other, size_t size);
+      void clear_value();
+      void clear_value(size_t index);
+      bool reallocate_value(size_t index);
+      std::set<size_t> &get_indexes(size_t index);
+
+     public:
+      /*!
+       * default constructor
+       */
+      binding();
 
       /*!
-       * makes binding mysql queries simpler
+       * constructor with an empty set of values
+       * @param size the size of the parameter set
        */
-      class binding : public coda::db::bind_mapping {
+      explicit binding(size_t size);
 
-       private:
-        MYSQL_BIND *value_;
-        size_t size_;
-        std::unordered_map<size_t, std::set<size_t>> indexes_;
-        void copy_value(const MYSQL_BIND *other, size_t size);
-        void clear_value();
-        void clear_value(size_t index);
-        bool reallocate_value(size_t index);
-        std::set<size_t> &get_indexes(size_t index);
+      /*!
+       * @param value the single binding to init with
+       */
+      explicit binding(const MYSQL_BIND &value);
+      /*!
+       * @param value the array of values to init with
+       * @param size the size of the value array
+       */
+      binding(MYSQL_BIND *value, size_t size);
 
-       public:
-        /*!
-         * default constructor
-         */
-        binding();
+      /*!
+       * @param fields the array of fields to init with
+       * @param size the size of the fields array
+       */
+      binding(MYSQL_FIELD *fields, size_t size);
 
-        /*!
-         * constructor with an empty set of values
-         * @param size the size of the parameter set
-         */
-        explicit binding(size_t size);
+      /* boilerplate */
+      binding(const binding &other);
+      binding(binding &&other) noexcept;
+      binding &operator=(const binding &other);
+      binding &operator=(binding &&other) noexcept;
+      ~binding() override;
 
-        /*!
-         * @param value the single binding to init with
-         */
-        explicit binding(const MYSQL_BIND &value);
-        /*!
-         * @param value the array of values to init with
-         * @param size the size of the value array
-         */
-        binding(MYSQL_BIND *value, size_t size);
+      /*!
+       * @return the size (number of bindings) of this instance
+       */
+      size_t num_of_bindings() const noexcept override;
 
-        /*!
-         * @param fields the array of fields to init with
-         * @param size the size of the fields array
-         */
-        binding(MYSQL_FIELD *fields, size_t size);
+      /*!
+       * @return the capcity of the storage of this instance
+       */
+      size_t capacity() const;
 
-        /* boilerplate */
-        binding(const binding &other);
-        binding(binding &&other);
-        binding &operator=(const binding &other);
-        binding &operator=(binding &&other);
-        ~binding() override;
+      /*!
+       * @param index the index of the binding to get
+       * @return the raw binding value for the given index
+       */
+      MYSQL_BIND *get(size_t index) const;
 
-        /*!
-         * @return the size (number of bindings) of this instance
-         */
-        size_t num_of_bindings() const noexcept override;
+      /*!
+       * @param index the index of the binding value
+       * @return the value of the binding at the given index
+       */
+      sql_value to_value(size_t index) const;
 
-        /*!
-         * @return the capcity of the storage of this instance
-         */
-        size_t capacity() const;
+      /*!
+       * @param index the index of the binding
+       * @return the value type of the binding at the given index
+       */
+      int sql_type(size_t index) const;
 
-        /*!
-         * @param index the index of the binding to get
-         * @return the raw binding value for the given index
-         */
-        MYSQL_BIND *get(size_t index) const;
+      /* bindable overrides */
+      binding &bind(size_t index, const sql_value &value) override;
+      binding &bind(const std::string &name, const sql_value &value) override;
 
-        /*!
-         * @param index the index of the binding value
-         * @return the value of the binding at the given index
-         */
-        sql_value to_value(size_t index) const;
+      /*!
+       * puts values into a query before execution
+       * @param stmt the statemnt to bind to
+       */
+      void bind_params(MYSQL_STMT *stmt) const;
 
-        /*!
-         * @param index the index of the binding
-         * @return the value type of the binding at the given index
-         */
-        int sql_type(size_t index) const;
+      /*!
+       * prepares the statement to receive results based on the bindings
+       * @param stmt the raw mysql statement to bind to
+       */
+      void bind_result(MYSQL_STMT *stmt) const;
 
-        /* bindable overrides */
-        binding &bind(size_t index, const sql_value &value) override;
-        binding &bind(const std::string &name, const sql_value &value) override;
+      /*!
+       * validates the sql and prepares the bindinds
+       * @param sql the sql to prepare
+       */
+      std::string prepare(const std::string &sql);
 
-        /*!
-         * puts values into a query before execution
-         * @param stmt the statemnt to bind to
-         */
-        void bind_params(MYSQL_STMT *stmt) const;
-
-        /*!
-         * prepares the statement to receive results based on the bindings
-         * @param stmt the raw mysql statement to bind to
-         */
-        void bind_result(MYSQL_STMT *stmt) const;
-
-        /*!
-         * validates the sql and prepares the bindinds
-         * @param sql the sql to prepare
-         */
-        std::string prepare(const std::string &sql);
-
-        /*!
-         * reset all the bindings
-         */
-        void reset() override;
-      };
-    }  // namespace mysql
+      /*!
+       * reset all the bindings
+       */
+      void reset() override;
+    };
+  }  // namespace mysql
 }  // namespace coda::db
 
 #endif

@@ -1,4 +1,4 @@
-.TH "coda::db::row_iterator< ValueType, NonConst, RowType >" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::row_iterator< ValueType, NonConst, RowType >" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,19 +14,19 @@ Inherits iterator< std::random_access_iterator_tag, ValueType >\&.
 
 .in +1c
 .ti -1c
-.RI "\fBrow_iterator\fP (const std::shared_ptr< RowType > &pRow, int position)"
+.RI "\fBrow_iterator\fP (const std::shared_ptr< RowType > &pRow, long position)"
 .br
 .ti -1c
 .RI "\fBrow_iterator\fP (const \fBrow_iterator\fP &other)"
 .br
 .ti -1c
-.RI "\fBrow_iterator\fP (\fBrow_iterator\fP &&other)"
+.RI "\fBrow_iterator\fP (\fBrow_iterator\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "\fBrow_iterator\fP & \fBoperator=\fP (const \fBrow_iterator\fP &other)"
 .br
 .ti -1c
-.RI "\fBrow_iterator\fP & \fBoperator=\fP (\fBrow_iterator\fP &&other)"
+.RI "\fBrow_iterator\fP & \fBoperator=\fP (\fBrow_iterator\fP &&other) noexcept"
 .br
 .ti -1c
 .RI "ValueType & \fBoperator*\fP ()"
@@ -41,13 +41,13 @@ Inherits iterator< std::random_access_iterator_tag, ValueType >\&.
 .RI "\fBrow_iterator\fP & \fBoperator++\fP ()"
 .br
 .ti -1c
-.RI "\fBrow_iterator\fP \fBoperator++\fP (int)"
+.RI "const \fBrow_iterator\fP \fBoperator++\fP (int)"
 .br
 .ti -1c
 .RI "\fBrow_iterator\fP & \fBoperator\-\-\fP ()"
 .br
 .ti -1c
-.RI "\fBrow_iterator\fP \fBoperator\-\-\fP (int)"
+.RI "const \fBrow_iterator\fP \fBoperator\-\-\fP (int)"
 .br
 .ti -1c
 .RI "\fBrow_iterator\fP \fBoperator+\fP (int n)"
@@ -80,7 +80,7 @@ Inherits iterator< std::random_access_iterator_tag, ValueType >\&.
 .RI "bool \fBoperator>=\fP (const \fBrow_iterator\fP &other) const"
 .br
 .ti -1c
-.RI "int \fBoperator\-\fP (const \fBrow_iterator\fP &other)"
+.RI "long \fBoperator\-\fP (const \fBrow_iterator\fP &other)"
 .br
 .ti -1c
 .RI "std::string \fBname\fP () const"
@@ -90,7 +90,7 @@ Inherits iterator< std::random_access_iterator_tag, ValueType >\&.
 
 .in +1c
 .ti -1c
-.RI "void \fBset_current_value\fP (size_t index)"
+.RI "void \fBset_current_value\fP (long index)"
 .br
 .in -1c
 .SS "Protected Attributes"
@@ -100,7 +100,7 @@ Inherits iterator< std::random_access_iterator_tag, ValueType >\&.
 .RI "std::shared_ptr< RowType > \fBrow_\fP"
 .br
 .ti -1c
-.RI "int \fBposition_\fP"
+.RI "long \fBposition_\fP"
 .br
 .ti -1c
 .RI "NonConst \fBcurrentValue_\fP"

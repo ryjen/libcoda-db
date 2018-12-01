@@ -1,4 +1,4 @@
-.TH "coda::db::sqlite::row" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::sqlite::row" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,28 +20,28 @@ Inherits \fBcoda::db::row_impl\fP\&.
 .RI "\fBrow\fP (const \fBrow\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBrow\fP (\fBrow\fP &&other)"
+.RI "\fBrow\fP (\fBrow\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "\fBrow\fP & \fBoperator=\fP (const \fBrow\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBrow\fP & \fBoperator=\fP (\fBrow\fP &&other)"
+.RI "\fBrow\fP & \fBoperator=\fP (\fBrow\fP &&other) noexcept=default"
 .br
 .ti -1c
-.RI "std::string \fBcolumn_name\fP (size_t nPosition) const"
+.RI "std::string \fBcolumn_name\fP (size_t nPosition) const override"
 .br
 .ti -1c
-.RI "\fBcolumn_type\fP \fBcolumn\fP (size_t nPosition) const"
+.RI "\fBcolumn_type\fP \fBcolumn\fP (size_t nPosition) const override"
 .br
 .ti -1c
-.RI "\fBcolumn_type\fP \fBcolumn\fP (const std::string &name) const"
+.RI "\fBcolumn_type\fP \fBcolumn\fP (const std::string &name) const override"
 .br
 .ti -1c
-.RI "size_t \fBsize\fP () const noexcept"
+.RI "size_t \fBsize\fP () const noexcept override"
 .br
 .ti -1c
-.RI "bool \fBis_valid\fP () const noexcept"
+.RI "bool \fBis_valid\fP () const noexcept override"
 .br
 .in -1c
 .SS "Additional Inherited Members"
@@ -63,7 +63,7 @@ a sqlite specific implementation of a row
 
 .SH "Member Function Documentation"
 .PP 
-.SS "\fBcolumn_type\fP coda::db::sqlite::row::column (size_t position) const\fC [virtual]\fP"
+.SS "\fBcolumn_type\fP coda::db::sqlite::row::column (size_t position) const\fC [override]\fP, \fC [virtual]\fP"
 gets a column in the row 
 .PP
 \fBParameters:\fP
@@ -79,7 +79,7 @@ the column object
 
 .PP
 Implements \fBcoda::db::row_impl\fP\&.
-.SS "\fBcolumn_type\fP coda::db::sqlite::row::column (const std::string & name) const\fC [virtual]\fP"
+.SS "\fBcolumn_type\fP coda::db::sqlite::row::column (const std::string & name) const\fC [override]\fP, \fC [virtual]\fP"
 gets a column in the row 
 .PP
 \fBParameters:\fP
@@ -95,7 +95,7 @@ the column object
 
 .PP
 Implements \fBcoda::db::row_impl\fP\&.
-.SS "std::string coda::db::sqlite::row::column_name (size_t position) const\fC [virtual]\fP"
+.SS "std::string coda::db::sqlite::row::column_name (size_t position) const\fC [override]\fP, \fC [virtual]\fP"
 gets the name of a column in the row 
 .PP
 \fBParameters:\fP
@@ -111,7 +111,7 @@ the name of the column at the given position
 
 .PP
 Implements \fBcoda::db::row_impl\fP\&.
-.SS "bool coda::db::sqlite::row::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+.SS "bool coda::db::sqlite::row::is_valid () const\fC [override]\fP, \fC [virtual]\fP, \fC [noexcept]\fP"
 tests if the row internals are valid 
 .PP
 \fBReturns:\fP
@@ -122,7 +122,7 @@ true if the row is valid
 
 .PP
 Implements \fBcoda::db::row_impl\fP\&.
-.SS "size_t coda::db::sqlite::row::size () const\fC [virtual]\fP, \fC [noexcept]\fP"
+.SS "size_t coda::db::sqlite::row::size () const\fC [override]\fP, \fC [virtual]\fP, \fC [noexcept]\fP"
 gets the number of columns in the row 
 .PP
 \fBReturns:\fP

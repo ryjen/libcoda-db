@@ -17,106 +17,106 @@
 #include "sql_value.h"
 
 namespace coda::db {
-    class statement;
+  class statement;
+
+  /*!
+   * abstract class
+   * override to implement a query
+   */
+  class query : protected bindable, public sql_generator {
+   public:
+    using session_type = session;
+
+   private:
+    /*!
+     * ensures that the binding storage array is large enough
+     * @param index the parameter index for binding
+     * @returns the zero-based index suitable for the storage array
+     * @throws invalid_argument if there is no specifier for the argument
+     */
+    size_t assert_binding_index(size_t index);
+
+    bool dirty_;
+
+   protected:
+    std::shared_ptr<session_type> session_;
+    std::shared_ptr<statement> stmt_;
+    std::vector<sql_value> params_;
+    std::unordered_map<std::string, sql_value> named_params_;
 
     /*!
-     * abstract class
-     * override to implement a query
+     * prepares this query for the sql string
+     * @param sql the sql string
      */
-    class query : protected bindable, public sql_generator {
-     public:
-      using session_type = session;
+    void prepare(const std::string &sql);
 
-     private:
-      /*!
-       * ensures that the binding storage array is large enough
-       * @param index the parameter index for binding
-       * @returns the zero-based index suitable for the storage array
-       * @throws invalid_argument if there is no specifier for the argument
-       */
-      size_t assert_binding_index(size_t index);
+    friend class where_builder;
 
-      bool dirty_;
+    /* bindable overrides */
+    bindable &bind(size_t index, const sql_value &value) override;
 
-     protected:
-      std::shared_ptr<session_type> session_;
-      std::shared_ptr<statement> stmt_;
-      std::vector<sql_value> params_;
-      std::unordered_map<std::string, sql_value> named_params_;
+    bindable &bind(const std::string &name, const sql_value &value) override;
 
-      /*!
-       * prepares this query for the sql string
-       * @param sql the sql string
-       */
-      void prepare(const std::string &sql);
+    virtual void set_modified();
 
-      friend class where_builder;
+   public:
+    /*!
+     * @param db the database to perform the query on
+     * @param tableName the table to perform the query on
+     */
+    explicit query(const std::shared_ptr<session_type> &sess);
 
-      /* bindable overrides */
-      bindable &bind(size_t index, const sql_value &value) override;
+    /*!
+     * @param other the other query to copy from
+     */
+    query(const query &other) noexcept;
 
-      bindable &bind(const std::string &name, const sql_value &value) override;
+    /*!
+     * @param other the query being moved
+     */
+    query(query &&other) noexcept;
 
-      virtual void set_modified();
+    /*!
+     * deconstructor
+     */
+    ~query() override = default;
 
-     public:
-      /*!
-       * @param db the database to perform the query on
-       * @param tableName the table to perform the query on
-       */
-      explicit query(const std::shared_ptr<session_type> &sess);
+    /*!
+     * resets this query for re-execution
+     */
+    void reset() override;
 
-      /*!
-       * @param other the other query to copy from
-       */
-      query(const query &other) noexcept;
+    /*!
+     * get the database in use
+     * @return the database object
+     */
+    std::shared_ptr<query::session_type> get_session() const;
 
-      /*!
-       * @param other the query being moved
-       */
-      query(query &&other) noexcept;
+    /*!
+     * @param other the other query being copied from
+     */
+    query &operator=(const query &other);
 
-      /*!
-       * deconstructor
-       */
-      ~query() override = default;
+    /*!
+     * @param other the query being moved
+     */
+    query &operator=(query &&other) noexcept;
 
-      /*!
-       * resets this query for re-execution
-       */
-      void reset() override;
+    size_t num_of_bindings() const noexcept override;
 
-      /*!
-       * get the database in use
-       * @return the database object
-       */
-      std::shared_ptr<query::session_type> get_session() const;
+    using bindable::bind;
 
-      /*!
-       * @param other the other query being copied from
-       */
-      query &operator=(const query &other);
+    /*!
+     * returns the last error the query encountered, if any
+     */
+    std::string last_error();
 
-      /*!
-       * @param other the query being moved
-       */
-      query &operator=(query &&other) noexcept;
-
-      size_t num_of_bindings() const noexcept override;
-
-      using bindable::bind;
-
-      /*!
-       * returns the last error the query encountered, if any
-       */
-      std::string last_error();
-
-      /*!
-       * tests if this query is valid
-       * @return true if the internals are open and valid
-       */
-      virtual bool is_valid() const noexcept;
-    };
+    /*!
+     * tests if this query is valid
+     * @return true if the internals are open and valid
+     */
+    virtual bool is_valid() const noexcept;
+  };
 }  // namespace coda::db
 
 #endif

@@ -1,4 +1,4 @@
-.TH "coda::db::query" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::query" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,7 +16,7 @@ Inherited by \fBcoda::db::modify_query\fP, and \fBcoda::db::select_query\fP\&.
 
 .in +1c
 .ti -1c
-.RI "typedef \fBsession\fP \fBsession_type\fP"
+.RI "using \fBsession_type\fP = \fBsession\fP"
 .br
 .in -1c
 .SS "Public Member Functions"
@@ -32,10 +32,10 @@ Inherited by \fBcoda::db::modify_query\fP, and \fBcoda::db::select_query\fP\&.
 .RI "\fBquery\fP (\fBquery\fP &&other) noexcept"
 .br
 .ti -1c
-.RI "virtual \fB~query\fP ()"
+.RI "\fB~query\fP () override=default"
 .br
 .ti -1c
-.RI "virtual void \fBreset\fP ()"
+.RI "void \fBreset\fP () override"
 .br
 .ti -1c
 .RI "std::shared_ptr< \fBquery::session_type\fP > \fBget_session\fP () const"
@@ -44,28 +44,16 @@ Inherited by \fBcoda::db::modify_query\fP, and \fBcoda::db::select_query\fP\&.
 .RI "\fBquery\fP & \fBoperator=\fP (const \fBquery\fP &other)"
 .br
 .ti -1c
-.RI "\fBquery\fP & \fBoperator=\fP (\fBquery\fP &&other)"
+.RI "\fBquery\fP & \fBoperator=\fP (\fBquery\fP &&other) noexcept"
 .br
 .ti -1c
-.RI "size_t \fBnum_of_bindings\fP () const noexcept"
+.RI "size_t \fBnum_of_bindings\fP () const noexcept override"
 .br
 .ti -1c
 .RI "std::string \fBlast_error\fP ()"
 .br
 .ti -1c
 .RI "virtual bool \fBis_valid\fP () const noexcept"
-.br
-.ti -1c
-.RI "\fBbindable\fP & \fBbind\fP (const std::vector< \fBsql_value\fP > &values, size_t start_index=1)"
-.br
-.ti -1c
-.RI "\fBbindable\fP & \fBbind\fP (const std::unordered_map< std::string, \fBsql_value\fP > &values)"
-.br
-.ti -1c
-.RI "virtual \fBbindable\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value)=0"
-.br
-.ti -1c
-.RI "virtual \fBbindable\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value)=0"
 .br
 .in -1c
 .SS "Protected Member Functions"
@@ -75,10 +63,10 @@ Inherited by \fBcoda::db::modify_query\fP, and \fBcoda::db::select_query\fP\&.
 .RI "void \fBprepare\fP (const std::string &sql)"
 .br
 .ti -1c
-.RI "\fBbindable\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value)"
+.RI "\fBbindable\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value) override"
 .br
 .ti -1c
-.RI "\fBbindable\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value)"
+.RI "\fBbindable\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value) override"
 .br
 .ti -1c
 .RI "virtual void \fBset_modified\fP ()"
@@ -113,7 +101,7 @@ Inherited by \fBcoda::db::modify_query\fP, and \fBcoda::db::select_query\fP\&.
 abstract class override to implement a query 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::query::query (const std::shared_ptr< \fBsession_type\fP > & sess)"
+.SS "coda::db::query::query (const std::shared_ptr< \fBsession_type\fP > & sess)\fC [explicit]\fP"
 
 .PP
 \fBParameters:\fP
@@ -142,11 +130,11 @@ abstract class override to implement a query
 .RE
 .PP
 
-.SS "virtual coda::db::query::~query ()\fC [virtual]\fP"
+.SS "coda::db::query::~query ()\fC [override]\fP, \fC [default]\fP"
 deconstructor 
 .SH "Member Function Documentation"
 .PP 
-.SS "\fBbindable\fP& coda::db::query::bind (size_t index, const \fBsql_value\fP & value)\fC [protected]\fP, \fC [virtual]\fP"
+.SS "\fBbindable\fP& coda::db::query::bind (size_t index, const \fBsql_value\fP & value)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 Binds a \fBsql_value\fP using the other bind methods 
 .PP
 \fBParameters:\fP
@@ -164,7 +152,7 @@ a reference to this instance
 
 .PP
 Implements \fBcoda::db::bindable\fP\&.
-.SS "\fBbindable\fP& coda::db::query::bind (const std::string & name, const \fBsql_value\fP & value)\fC [protected]\fP, \fC [virtual]\fP"
+.SS "\fBbindable\fP& coda::db::query::bind (const std::string & name, const \fBsql_value\fP & value)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 bind a named parameter 
 .PP
 \fBParameters:\fP
@@ -182,68 +170,6 @@ a reference to this instance
 
 .PP
 Implements \fBcoda::db::bindable\fP\&.
-.SS "virtual \fBbindable\fP& coda::db::bindable::bind"
-bind a named parameter 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIname\fP the name of the parameter 
-.br
-\fIvalue\fP the value to bind 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a reference to this instance 
-.RE
-.PP
-
-.SS "\fBbindable\fP& coda::db::bindable::bind"
-Binds a vector of values by index 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIvalues\fP the vector of values 
-.br
-\fIstart_index\fP the starting index for the values 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a reference to this instance 
-.RE
-.PP
-
-.SS "\fBbindable\fP& coda::db::bindable::bind"
-Binds a map of named parameters 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIvalues\fP the map of values 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a reference to this instance 
-.RE
-.PP
-
-.SS "virtual \fBbindable\fP& coda::db::bindable::bind"
-Binds a \fBsql_value\fP using the other bind methods 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIindex\fP the index of the binding 
-.br
-\fIvalue\fP the value of the binding 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a reference to this instance 
-.RE
-.PP
-
 .SS "std::shared_ptr<\fBquery::session_type\fP> coda::db::query::get_session () const"
 get the database in use 
 .PP
@@ -275,7 +201,7 @@ returns the last error the query encountered, if any
 .RE
 .PP
 
-.SS "\fBquery\fP& coda::db::query::operator= (\fBquery\fP && other)"
+.SS "\fBquery\fP& coda::db::query::operator= (\fBquery\fP && other)\fC [noexcept]\fP"
 
 .PP
 \fBParameters:\fP
@@ -293,7 +219,7 @@ prepares this query for the sql string
 .RE
 .PP
 
-.SS "virtual void coda::db::query::reset ()\fC [virtual]\fP"
+.SS "void coda::db::query::reset ()\fC [override]\fP, \fC [virtual]\fP"
 resets this query for re-execution 
 .PP
 Reimplemented from \fBcoda::db::sql_generator\fP\&.

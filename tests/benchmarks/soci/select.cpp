@@ -14,68 +14,107 @@ void benchmark_query(soci::session &session) {
   }
 }
 
-BENCHMARK("sqlite select", [](benchpress::context *context) {
-  soci::session session("sqlite3", "test.db");
+BENCHMARK("sqlite select",[](
+benchpress::context *context
+) {
+soci::session session("sqlite3", "test.db");
 
-  create_table(session);
+create_table(session);
 
-  for (size_t i = 0; i < context->num_iterations(); i++) {
-    benchmark_insert(session);
-  }
+for (
+size_t i = 0;
+i<context->
+num_iterations();
+i++) {
+benchmark_insert(session);
+}
 
-  context->reset_timer();
+context->
+reset_timer();
 
-  for (size_t i = 0; i < context->num_iterations(); i++) {
-    benchmark_query(session);
-  }
+for (
+size_t i = 0;
+i<context->
+num_iterations();
+i++) {
+benchmark_query(session);
+}
 
-  context->stop_timer();
+context->
+stop_timer();
 
-  session.close();
+session.
+close();
 
-  unlink("test.db");
+unlink("test.db");
 });
 
-BENCHMARK("mysql select", [](benchpress::context *context) {
-  soci::session session("mysql", "dbname=test");
+BENCHMARK("mysql select",[](
+benchpress::context *context
+) {
+soci::session session("mysql", "dbname=test");
 
-  create_mysql_table(session);
+create_mysql_table(session);
 
-  for (size_t i = 0; i < context->num_iterations(); i++) {
-    benchmark_insert(session);
-  }
+for (
+size_t i = 0;
+i<context->
+num_iterations();
+i++) {
+benchmark_insert(session);
+}
 
-  context->reset_timer();
+context->
+reset_timer();
 
-  for (size_t i = 0; i < context->num_iterations(); i++) {
-    benchmark_query(session);
-  }
+for (
+size_t i = 0;
+i<context->
+num_iterations();
+i++) {
+benchmark_query(session);
+}
 
-  context->stop_timer();
+context->
+stop_timer();
 
-  cleanup_table(session);
+cleanup_table(session);
 
-  session.close();
+session.
+close();
 });
 
-BENCHMARK("postgres select", [](benchpress::context *context) {
-  soci::session session("postgresql", "dbname=test");
+BENCHMARK("postgres select",[](
+benchpress::context *context
+) {
+soci::session session("postgresql", "dbname=test");
 
-  create_postgres_table(session);
+create_postgres_table(session);
 
-  for (size_t i = 0; i < context->num_iterations(); i++) {
-    benchmark_insert(session);
-  }
+for (
+size_t i = 0;
+i<context->
+num_iterations();
+i++) {
+benchmark_insert(session);
+}
 
-  context->reset_timer();
+context->
+reset_timer();
 
-  for (size_t i = 0; i < context->num_iterations(); i++) {
-    benchmark_query(session);
-  }
+for (
+size_t i = 0;
+i<context->
+num_iterations();
+i++) {
+benchmark_query(session);
+}
 
-  context->stop_timer();
+context->
+stop_timer();
 
-  cleanup_table(session);
+cleanup_table(session);
 
-  session.close();
+session.
+close();
 });

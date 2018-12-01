@@ -11,160 +11,161 @@
 using namespace std;
 
 namespace coda::db::sqlite {
-      namespace helper {
-        struct close_db {
-          void operator()(sqlite3 *p) const {
-            if (p != nullptr) {
-              sqlite3_close(p);
-            }
-          }
-        };
-      }  // namespace helper
-
-      __attribute__((constructor)) void initialize() {
-        auto factory = std::make_shared<sqlite::factory>();
-        register_session("sqlite", factory);
-        register_session("file", factory);
-      }
-
-      std::shared_ptr<coda::db::session_impl> factory::create(const uri &uri) { return std::make_shared<session>(uri); }
-
-      session::session(const uri &info) : session_impl(info), db_(nullptr) {}
-
-      session::~session() {
-        if (is_open()) {
-          close();
+  namespace helper {
+    struct close_db {
+      void operator()(sqlite3 *p) const {
+        if (p != nullptr) {
+          sqlite3_close(p);
         }
       }
+    };
+  }  // namespace helper
 
-      std::vector<column_definition> session::get_columns_for_schema(const string &dbName, const string &tableName) {
-        std::vector<column_definition> columns;
+  __attribute__((constructor)) void initialize() {
+    auto factory = std::make_shared<sqlite::factory>();
+    register_session("sqlite", factory);
+    register_session("file", factory);
+  }
 
-        if (tableName.empty()) {
-          throw database_exception("no table name to query schema");
-        }
+  std::shared_ptr<coda::db::session_impl> factory::create(const uri &uri) { return std::make_shared<session>(uri); }
 
-        auto rs = query("pragma table_info(" + tableName + ")");
+  session::session(const uri &info) : session_impl(info), db_(nullptr) {}
 
-        while (rs->next()) {
-          auto row = rs->current_row();
-          column_definition def;
+  session::~session() {
+    if (is_open()) {
+      close();
+    }
+  }
 
-          // column name
-          def.name = row["name"].value().to_string();
+  std::vector<column_definition> session::get_columns_for_schema(const string &dbName, const string &tableName) {
+    std::vector<column_definition> columns;
 
-          // primary key check
-          def.pk = row["pk"].value().as<sql_number>();
+    if (tableName.empty()) {
+      throw database_exception("no table name to query schema");
+    }
 
-          // find type
-          def.type = row["type"].value().to_string();
+    auto rs = query("pragma table_info(" + tableName + ")");
 
-          def.autoincrement = def.pk;
+    while (rs->next()) {
+      auto row = rs->current_row();
 
-          def.default_value = row["dflt_value"].value().to_string();
+      column_definition def;
 
-          columns.push_back(def);
-        }
+      // column name
+      def.name = row["name"].as<std::string>();
 
-        return columns;
-      }
+      // primary key check
+      def.pk = row["pk"].as<bool>();
 
-      void session::open() { open(SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_URI); }
+      // find type
+      def.type = row["type"].as<std::string>();
 
-      void session::open(int flags) {
-        if (db_ != nullptr) {
-          return;
-        }
+      def.autoincrement = def.pk;
 
-        sqlite3 *conn = nullptr;
+      def.default_value = row["dflt_value"].as<std::string>();
 
-        if (sqlite3_open_v2(connection_info().path.c_str(), &conn, flags, nullptr) != SQLITE_OK) {
-          throw database_exception(last_error());
-        }
+      columns.push_back(def);
+    }
 
-        db_ = shared_ptr<sqlite3>(conn, helper::close_db());
-      }
+    return columns;
+  }
 
-      bool session::is_open() const noexcept { return db_ != nullptr && db_; }
+  void session::open() { open(SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_URI); }
 
-      void session::close() {
-        // the shared_ptr destructor should close
-        db_ = nullptr;
-      }
+  void session::open(int flags) {
+    if (db_ != nullptr) {
+      return;
+    }
 
-      string session::last_error() const {
-        string buf;
+    sqlite3 *conn = nullptr;
 
-        if (db_ == nullptr) {
-          return string();
-        }
+    if (sqlite3_open_v2(connection_info().path.c_str(), &conn, flags, nullptr) != SQLITE_OK) {
+      throw database_exception(last_error());
+    }
 
-        buf += std::to_string(sqlite3_errcode(db_.get()));
-        buf += ": ";
-        buf += sqlite3_errmsg(db_.get());
+    db_ = shared_ptr<sqlite3>(conn, helper::close_db());
+  }
 
-        return buf;
-      }
+  bool session::is_open() const noexcept { return db_ != nullptr && db_; }
 
-      long long session::last_insert_id() const {
-        if (db_ == nullptr) {
-          return 0;
-        }
-        return sqlite3_last_insert_rowid(db_.get());
-      }
+  void session::close() {
+    // the shared_ptr destructor should close
+    db_ = nullptr;
+  }
 
-      unsigned long long session::last_number_of_changes() const {
-        if (db_ == nullptr) {
-          return 0;
-        }
-        return static_cast<unsigned long long int>(sqlite3_changes(db_.get()));
-      }
+  string session::last_error() const {
+    string buf;
 
-      std::shared_ptr<resultset_impl> session::query(const string &sql) {
-        sqlite3_stmt *stmt;
+    if (db_ == nullptr) {
+      return string();
+    }
 
-        if (db_ == nullptr) {
-          throw database_exception("session::query database not open");
-        }
+    buf += std::to_string(sqlite3_errcode(db_.get()));
+    buf += ": ";
+    buf += sqlite3_errmsg(db_.get());
 
-        if (sqlite3_prepare_v2(db_.get(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
-          throw database_exception(last_error());
-        }
+    return buf;
+  }
 
-        return make_shared<resultset>(shared_from_this(), shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
-      }
+  long long session::last_insert_id() const {
+    if (db_ == nullptr) {
+      return 0;
+    }
+    return sqlite3_last_insert_rowid(db_.get());
+  }
 
-      bool session::execute(const string &sql) {
-        sqlite3_stmt *stmt;
+  unsigned long long session::last_number_of_changes() const {
+    if (db_ == nullptr) {
+      return 0;
+    }
+    return static_cast<unsigned long long int>(sqlite3_changes(db_.get()));
+  }
 
-        if (db_ == nullptr) {
-          throw database_exception("session::execute database not open");
-        }
+  std::shared_ptr<resultset_impl> session::query(const string &sql) {
+    sqlite3_stmt *stmt;
 
-        if (sqlite3_prepare_v2(db_.get(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
-          return false;
-        }
+    if (db_ == nullptr) {
+      throw database_exception("session::query database not open");
+    }
 
-        int res = sqlite3_step(stmt);
+    if (sqlite3_prepare_v2(db_.get(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+      throw database_exception(last_error());
+    }
 
-        sqlite3_finalize(stmt);
+    return make_shared<resultset>(shared_from_this(), shared_ptr<sqlite3_stmt>(stmt, helper::stmt_delete()));
+  }
 
-        return res == SQLITE_OK || res == SQLITE_ROW || res == SQLITE_DONE;
-      }
+  bool session::execute(const string &sql) {
+    sqlite3_stmt *stmt;
 
-      shared_ptr<session::statement_type> session::create_statement() {
-        return make_shared<statement>(static_pointer_cast<sqlite::session>(shared_from_this()));
-      }
+    if (db_ == nullptr) {
+      throw database_exception("session::execute database not open");
+    }
 
-      std::shared_ptr<transaction_impl> session::create_transaction() const {
-        return make_shared<sqlite::transaction>(db_);
-      }
+    if (sqlite3_prepare_v2(db_.get(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+      return false;
+    }
 
-      std::shared_ptr<transaction_impl> session::create_transaction(transaction::type type) const {
-        return make_shared<sqlite::transaction>(db_, type);
-      }
+    int res = sqlite3_step(stmt);
 
-      std::string session::bind_param(size_t index) const { return "?" + std::to_string(index); }
+    sqlite3_finalize(stmt);
 
-      constexpr int session::features() const { return db::session::FEATURE_NAMED_PARAMS; }
+    return res == SQLITE_OK || res == SQLITE_ROW || res == SQLITE_DONE;
+  }
+
+  shared_ptr<session::statement_type> session::create_statement() {
+    return make_shared<statement>(static_pointer_cast<sqlite::session>(shared_from_this()));
+  }
+
+  std::shared_ptr<transaction_impl> session::create_transaction() const {
+    return make_shared<sqlite::transaction>(db_);
+  }
+
+  std::shared_ptr<transaction_impl> session::create_transaction(transaction::type type) const {
+    return make_shared<sqlite::transaction>(db_, type);
+  }
+
+  std::string session::bind_param(size_t index) const { return "?" + std::to_string(index); }
+
+  constexpr int session::features() const { return db::session::FEATURE_NAMED_PARAMS; }
 }  // namespace coda::db::sqlite

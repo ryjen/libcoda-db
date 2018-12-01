@@ -1,4 +1,4 @@
-.TH "coda::db::mysql::statement" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::mysql::statement" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,49 +20,49 @@ Inherits \fBcoda::db::statement\fP\&.
 .RI "\fBstatement\fP (const \fBstatement\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBstatement\fP (\fBstatement\fP &&other)"
+.RI "\fBstatement\fP (\fBstatement\fP &&other)=default"
 .br
 .ti -1c
 .RI "\fBstatement\fP & \fBoperator=\fP (const \fBstatement\fP &other)=delete"
 .br
 .ti -1c
-.RI "\fBstatement\fP & \fBoperator=\fP (\fBstatement\fP &&other)"
+.RI "\fBstatement\fP & \fBoperator=\fP (\fBstatement\fP &&other)=default"
 .br
 .ti -1c
-.RI "void \fBprepare\fP (const std::string &sql)"
+.RI "void \fBprepare\fP (const std::string &sql) override"
 .br
 .ti -1c
-.RI "bool \fBis_valid\fP () const noexcept"
+.RI "bool \fBis_valid\fP () const noexcept override"
 .br
 .ti -1c
-.RI "\fBresultset_type\fP \fBresults\fP ()"
+.RI "\fBresultset_type\fP \fBquery\fP () override"
 .br
 .ti -1c
-.RI "bool \fBresult\fP ()"
+.RI "bool \fBexecute\fP () override"
 .br
 .ti -1c
-.RI "void \fBfinish\fP ()"
+.RI "void \fBfinish\fP () override"
 .br
 .ti -1c
-.RI "void \fBreset\fP ()"
+.RI "void \fBreset\fP () override"
 .br
 .ti -1c
-.RI "int \fBlast_number_of_changes\fP ()"
+.RI "unsigned long long \fBlast_number_of_changes\fP () override"
 .br
 .ti -1c
-.RI "long long \fBlast_insert_id\fP ()"
+.RI "long long \fBlast_insert_id\fP () override"
 .br
 .ti -1c
-.RI "std::string \fBlast_error\fP ()"
+.RI "std::string \fBlast_error\fP () override"
 .br
 .ti -1c
-.RI "\fBstatement\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value)"
+.RI "\fBstatement\fP & \fBbind\fP (size_t index, const \fBsql_value\fP &value) override"
 .br
 .ti -1c
-.RI "\fBstatement\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value)"
+.RI "\fBstatement\fP & \fBbind\fP (const std::string &name, const \fBsql_value\fP &value) override"
 .br
 .ti -1c
-.RI "size_t \fBnum_of_bindings\fP () const noexcept"
+.RI "size_t \fBnum_of_bindings\fP () const noexcept override"
 .br
 .in -1c
 .SS "Additional Inherited Members"
@@ -71,7 +71,7 @@ Inherits \fBcoda::db::statement\fP\&.
 a mysql specific implementation of a statement 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "coda::db::mysql::statement::statement (const std::shared_ptr< \fBsession\fP > & sess)"
+.SS "coda::db::mysql::statement::statement (const std::shared_ptr< \fBsession\fP > & sess)\fC [explicit]\fP"
 
 .PP
 \fBParameters:\fP
@@ -82,7 +82,7 @@ a mysql specific implementation of a statement
 
 .SH "Member Function Documentation"
 .PP 
-.SS "\fBstatement\fP& coda::db::mysql::statement::bind (size_t index, const \fBsql_value\fP & value)\fC [virtual]\fP"
+.SS "\fBstatement\fP& coda::db::mysql::statement::bind (size_t index, const \fBsql_value\fP & value)\fC [override]\fP, \fC [virtual]\fP"
 Binds a \fBsql_value\fP using the other bind methods 
 .PP
 \fBParameters:\fP
@@ -100,7 +100,7 @@ a reference to this instance
 
 .PP
 Implements \fBcoda::db::bindable\fP\&.
-.SS "\fBstatement\fP& coda::db::mysql::statement::bind (const std::string & name, const \fBsql_value\fP & value)\fC [virtual]\fP"
+.SS "\fBstatement\fP& coda::db::mysql::statement::bind (const std::string & name, const \fBsql_value\fP & value)\fC [override]\fP, \fC [virtual]\fP"
 bind a named parameter 
 .PP
 \fBParameters:\fP
@@ -118,11 +118,22 @@ a reference to this instance
 
 .PP
 Implements \fBcoda::db::bindable\fP\&.
-.SS "void coda::db::mysql::statement::finish ()\fC [virtual]\fP"
+.SS "bool coda::db::mysql::statement::execute ()\fC [override]\fP, \fC [virtual]\fP"
+executes this statement 
+.PP
+\fBReturns:\fP
+.RS 4
+true if successful 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::statement\fP\&.
+.SS "void coda::db::mysql::statement::finish ()\fC [override]\fP, \fC [virtual]\fP"
 releases resources for this statement 
 .PP
 Implements \fBcoda::db::statement\fP\&.
-.SS "bool coda::db::mysql::statement::is_valid () const\fC [virtual]\fP, \fC [noexcept]\fP"
+.SS "bool coda::db::mysql::statement::is_valid () const\fC [override]\fP, \fC [virtual]\fP, \fC [noexcept]\fP"
 tests if this statement is valid 
 .PP
 \fBReturns:\fP
@@ -133,7 +144,7 @@ true if the internals are valid
 
 .PP
 Implements \fBcoda::db::statement\fP\&.
-.SS "std::string coda::db::mysql::statement::last_error ()\fC [virtual]\fP"
+.SS "std::string coda::db::mysql::statement::last_error ()\fC [override]\fP, \fC [virtual]\fP"
 
 .PP
 \fBExceptions:\fP
@@ -149,7 +160,7 @@ the last error as a string
 
 .PP
 Implements \fBcoda::db::statement\fP\&.
-.SS "long long coda::db::mysql::statement::last_insert_id ()\fC [virtual]\fP"
+.SS "long long coda::db::mysql::statement::last_insert_id ()\fC [override]\fP, \fC [virtual]\fP"
 gets the last insert id 
 .PP
 \fBReturns:\fP
@@ -160,7 +171,7 @@ the last insert id or zero
 
 .PP
 Implements \fBcoda::db::statement\fP\&.
-.SS "int coda::db::mysql::statement::last_number_of_changes ()\fC [virtual]\fP"
+.SS "unsigned long long coda::db::mysql::statement::last_number_of_changes ()\fC [override]\fP, \fC [virtual]\fP"
 gets the last number of changes 
 .PP
 \fBReturns:\fP
@@ -171,7 +182,7 @@ the last number of changes or zero
 
 .PP
 Implements \fBcoda::db::statement\fP\&.
-.SS "void coda::db::mysql::statement::prepare (const std::string & sql)\fC [virtual]\fP"
+.SS "void coda::db::mysql::statement::prepare (const std::string & sql)\fC [override]\fP, \fC [virtual]\fP"
 prepares this statement for execution 
 .PP
 \fBParameters:\fP
@@ -182,34 +193,23 @@ prepares this statement for execution
 
 .PP
 Implements \fBcoda::db::statement\fP\&.
-.SS "void coda::db::mysql::statement::reset ()\fC [virtual]\fP"
-
-.PP
-\fBExceptions:\fP
-.RS 4
-\fIdatabase_exception\fP if unable to reset statement 
-.RE
-.PP
-
-.PP
-Implements \fBcoda::db::statement\fP\&.
-.SS "bool coda::db::mysql::statement::result ()\fC [virtual]\fP"
-executes this statement 
-.PP
-\fBReturns:\fP
-.RS 4
-true if successful 
-.RE
-.PP
-
-.PP
-Implements \fBcoda::db::statement\fP\&.
-.SS "\fBresultset_type\fP coda::db::mysql::statement::results ()\fC [virtual]\fP"
+.SS "\fBresultset_type\fP coda::db::mysql::statement::query ()\fC [override]\fP, \fC [virtual]\fP"
 executes this statement 
 .PP
 \fBReturns:\fP
 .RS 4
 a set of the results 
+.RE
+.PP
+
+.PP
+Implements \fBcoda::db::statement\fP\&.
+.SS "void coda::db::mysql::statement::reset ()\fC [override]\fP, \fC [virtual]\fP"
+
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIdatabase_exception\fP if unable to reset statement 
 .RE
 .PP
 

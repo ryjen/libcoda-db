@@ -1,9 +1,7 @@
 #include "db.test.h"
-#include "record.h"
 #include "sqlite/column.h"
 #include <bandit/bandit.h>
 #include <cmath>
-#include <string>
 
 using namespace bandit;
 
@@ -13,7 +11,7 @@ using namespace coda::db;
 
 using namespace snowhouse;
 
-template <class T>
+template<class T>
 typename std::enable_if<!std::numeric_limits<T>::is_integer, bool>::type
 almost_equal(T x, T y, T tolerance = std::numeric_limits<T>::epsilon()) {
   T diff = std::fabs(x - y);

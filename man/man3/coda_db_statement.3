@@ -1,4 +1,4 @@
-.TH "coda::db::statement" 3 "Mon Apr 23 2018" "coda db" \" -*- nroff -*-
+.TH "coda::db::statement" 3 "Sat Dec 1 2018" "coda db" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,7 +16,7 @@ Inherited by \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\
 
 .in +1c
 .ti -1c
-.RI "typedef \fBcoda::db::resultset\fP \fBresultset_type\fP"
+.RI "using \fBresultset_type\fP = \fBcoda::db::resultset\fP"
 .br
 .in -1c
 .SS "Public Member Functions"
@@ -26,13 +26,13 @@ Inherited by \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\
 .RI "\fBstatement\fP (const \fBstatement\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBstatement\fP (\fBstatement\fP &&other)=default"
+.RI "\fBstatement\fP (\fBstatement\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "\fBstatement\fP & \fBoperator=\fP (const \fBstatement\fP &other)=default"
 .br
 .ti -1c
-.RI "\fBstatement\fP & \fBoperator=\fP (\fBstatement\fP &&other)=default"
+.RI "\fBstatement\fP & \fBoperator=\fP (\fBstatement\fP &&other) noexcept=default"
 .br
 .ti -1c
 .RI "virtual void \fBprepare\fP (const std::string &sql)=0"
@@ -50,19 +50,19 @@ Inherited by \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\
 .RI "virtual bool \fBis_valid\fP () const noexcept=0"
 .br
 .ti -1c
-.RI "virtual \fBresultset_type\fP \fBresults\fP ()=0"
+.RI "virtual \fBresultset_type\fP \fBquery\fP ()=0"
 .br
 .ti -1c
-.RI "virtual bool \fBresult\fP ()=0"
+.RI "virtual bool \fBexecute\fP ()=0"
 .br
 .ti -1c
-.RI "virtual int \fBlast_number_of_changes\fP ()=0"
+.RI "virtual sql_changes \fBlast_number_of_changes\fP ()=0"
 .br
 .ti -1c
 .RI "virtual std::string \fBlast_error\fP ()=0"
 .br
 .ti -1c
-.RI "virtual long long \fBlast_insert_id\fP ()=0"
+.RI "virtual sql_id \fBlast_insert_id\fP ()=0"
 .br
 .in -1c
 .SS "Additional Inherited Members"
@@ -71,6 +71,17 @@ Inherited by \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\
 base class for a database specific implementation of a prepared statement 
 .SH "Member Function Documentation"
 .PP 
+.SS "virtual bool coda::db::statement::execute ()\fC [pure virtual]\fP"
+executes this statement 
+.PP
+\fBReturns:\fP
+.RS 4
+true if successful 
+.RE
+.PP
+
+.PP
+Implemented in \fBcoda::db::postgres::statement\fP, \fBcoda::db::mysql::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
 .SS "virtual void coda::db::statement::finish ()\fC [pure virtual]\fP"
 releases resources for this statement 
 .PP
@@ -97,7 +108,7 @@ the last error or an empty string
 
 .PP
 Implemented in \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
-.SS "virtual long long coda::db::statement::last_insert_id ()\fC [pure virtual]\fP"
+.SS "virtual sql_id coda::db::statement::last_insert_id ()\fC [pure virtual]\fP"
 gets the last insert id 
 .PP
 \fBReturns:\fP
@@ -108,7 +119,7 @@ the last insert id or zero
 
 .PP
 Implemented in \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
-.SS "virtual int coda::db::statement::last_number_of_changes ()\fC [pure virtual]\fP"
+.SS "virtual sql_changes coda::db::statement::last_number_of_changes ()\fC [pure virtual]\fP"
 gets the last number of changes 
 .PP
 \fBReturns:\fP
@@ -130,22 +141,7 @@ prepares this statement for execution
 
 .PP
 Implemented in \fBcoda::db::postgres::statement\fP, \fBcoda::db::mysql::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
-.SS "virtual void coda::db::statement::reset ()\fC [pure virtual]\fP"
-resets this statement for a new execution 
-.PP
-Implemented in \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
-.SS "virtual bool coda::db::statement::result ()\fC [pure virtual]\fP"
-executes this statement 
-.PP
-\fBReturns:\fP
-.RS 4
-true if successful 
-.RE
-.PP
-
-.PP
-Implemented in \fBcoda::db::postgres::statement\fP, \fBcoda::db::mysql::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
-.SS "virtual \fBresultset_type\fP coda::db::statement::results ()\fC [pure virtual]\fP"
+.SS "virtual \fBresultset_type\fP coda::db::statement::query ()\fC [pure virtual]\fP"
 executes this statement 
 .PP
 \fBReturns:\fP
@@ -156,6 +152,10 @@ a set of the results
 
 .PP
 Implemented in \fBcoda::db::postgres::statement\fP, \fBcoda::db::mysql::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
+.SS "virtual void coda::db::statement::reset ()\fC [pure virtual]\fP"
+resets this statement for a new execution 
+.PP
+Implemented in \fBcoda::db::mysql::statement\fP, \fBcoda::db::postgres::statement\fP, and \fBcoda::db::sqlite::statement\fP\&.
 
 .SH "Author"
 .PP 
