@@ -25,9 +25,23 @@ namespace coda::db::test {
         register_session("sqlite", sqlite_factory);
 
         current_session = coda::db::create_session("file://testdb.db");
+        current_session->open();
+        current_session->impl()->execute("create table if not exists users(id integer primary key "
+                  "autoincrement, first_name "
+                  "varchar(45), last_name varchar(45), dval "
+                  "real, data "
+                  "blob, tval timestamp)");
+        current_session->impl()->execute("create table if not exists user_settings(id integer primary "
+                  "key autoincrement, user_id "
+                  "integer not null, valid int(1), "
+                  "created_at "
+                  "timestamp)");
       }
 
-      void unregister_current_session() {}
+      void unregister_current_session() {
+          current_session->close();
+          unlink(current_session->connection_info().path.c_str());
+      }
 
       class sqlite_session : public coda::db::sqlite::session,
                              public test::session {
@@ -35,22 +49,11 @@ namespace coda::db::test {
         using sqlite::session::session;
 
         void setup() override {
-          open();
-          execute("create table if not exists users(id integer primary key "
-                  "autoincrement, first_name "
-                  "varchar(45), last_name varchar(45), dval "
-                  "real, data "
-                  "blob, tval timestamp)");
-          execute("create table if not exists user_settings(id integer primary "
-                  "key autoincrement, user_id "
-                  "integer not null, valid int(1), "
-                  "created_at "
-                  "timestamp)");
         }
 
         void teardown() override {
-          close();
-          unlink(connection_info().path.c_str());
+          execute("delete from users");
+          execute("delete from user_settings");
         }
       };
 

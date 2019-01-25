@@ -41,6 +41,8 @@ endif ()
 include(CreateDocumentation)
 create_documentation()
 
+include(Ctags)
+
 # Setup testing
 enable_testing()
 

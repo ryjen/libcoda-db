@@ -47,7 +47,7 @@ services:
       - SYS_PTRACE
     command: dockerize -wait tcp://mysql:3306 -wait tcp://postgres:5432 -timeout 30s make coda_db_coverage_coveralls TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
   mysql:
-    image: pickapp/mariadb-alpine
+    image: yobasystems/alpine-mariadb
     networks:
       - data
     environment:
@@ -55,10 +55,14 @@ services:
       MYSQL_USERNAME: test
       MYSQL_PASSWORD: test
       MYSQL_DATABASE: test
+    ports:
+      - 3306
   postgres:
     image: postgres:alpine
     networks:
       - data
+    ports:
+      - 5432
     environment:
       POSTGRES_DB: test
       POSTGRES_USER: test

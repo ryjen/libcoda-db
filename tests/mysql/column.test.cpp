@@ -185,6 +185,7 @@ SPEC_BEGIN(mysql_column) {
 
         Assert::That(static_pointer_cast<mysql::column>(c)->sql_type(),
                      Equals(MYSQL_TYPE_DOUBLE));
+
         Assert::That(c->to_value(), Equals(3.1456));
 
         c = get_results_column(1, 0);

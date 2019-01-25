@@ -10,6 +10,7 @@
 #include "select_query.h"
 #include "sqldb.h"
 #include <bandit/bandit.h>
+#include <thread>
 
 using namespace bandit;
 
@@ -24,12 +25,26 @@ namespace coda::db::test {
         auto mysql_factory = std::make_shared<test::factory>();
         register_session("mysql", mysql_factory);
 
-        auto uri_s = get_env_uri("MYSQL_URI", "mysql://test:test@localhost:3306/test");
+        auto uri_s = get_env_uri("MYSQL_URI", "mysql://root:test@127.0.0.1:3306/test");
         current_session = coda::db::create_session(uri_s);
         cout << "connecting to " << uri_s << endl;
+        current_session->open();
+        current_session->impl()->execute("create table if not exists users(id integer primary key "
+                  "auto_increment, first_name "
+                  "varchar(45), last_name varchar(45), dval "
+                  "real, data blob, tval timestamp)");
+        current_session->impl()->execute("create table if not exists user_settings(id integer primary "
+                  "key auto_increment, user_id "
+                  "integer not null, valid int(1), "
+                  "created_at timestamp)");
       }
 
-      void unregister_current_session() { mysql_library_end(); }
+      void unregister_current_session() {
+        current_session->impl()->execute("drop table users");
+        current_session->impl()->execute("drop table user_settings");
+        current_session->close();
+        mysql_library_end();
+      }
 
       class mysql_session : public coda::db::mysql::session,
                             public test::session {
@@ -37,21 +52,11 @@ namespace coda::db::test {
         using mysql::session::session;
 
         void setup() override {
-          open();
-          execute("create table if not exists users(id integer primary key "
-                  "auto_increment, first_name "
-                  "varchar(45), last_name varchar(45), dval "
-                  "real, data blob, tval timestamp)");
-          execute("create table if not exists user_settings(id integer primary "
-                  "key auto_increment, user_id "
-                  "integer not null, valid int(1), "
-                  "created_at timestamp)");
         }
 
         void teardown() override {
-          execute("drop table users");
-          execute("drop table user_settings");
-          close();
+          execute("delete from users");
+          execute("delete from user_settings");
         }
       };
 

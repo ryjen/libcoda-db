@@ -25,12 +25,26 @@ namespace coda::db::test {
         register_session("postgres", pq_factory);
         register_session("postgresql", pq_factory);
 
-        auto uri_s = get_env_uri("POSTGRES_URI", "postgres://test:test@localhost:5432/test");
+        auto uri_s = get_env_uri("POSTGRES_URI", "postgres://test:test@127.0.0.1:5432/test");
         current_session = coda::db::create_session(uri_s);
         cout << "connecting to " << uri_s << endl;
+        current_session->open();
+        current_session->impl()->execute("create table if not exists users(id serial primary key "
+                  "unique, first_name varchar(45), "
+                  "last_name varchar(45), dval real, "
+                  "data bytea, "
+                  "tval "
+                  "timestamp)");
+
+        current_session->impl()->execute("create table if not exists user_settings(id serial primary "
+                  "key unique, user_id integer not "
+                  "null, valid smallint, created_at "
+                  "timestamp)");
       }
 
-      void unregister_current_session() {}
+      void unregister_current_session() {
+        current_session->close();
+      }
 
       class postgres_session : public coda::db::postgres::session,
                                public test::session {
@@ -38,24 +52,11 @@ namespace coda::db::test {
         using postgres::session::session;
 
         void setup() override {
-          open();
-          execute("create table if not exists users(id serial primary key "
-                  "unique, first_name varchar(45), "
-                  "last_name varchar(45), dval real, "
-                  "data bytea, "
-                  "tval "
-                  "timestamp)");
-
-          execute("create table if not exists user_settings(id serial primary "
-                  "key unique, user_id integer not "
-                  "null, valid smallint, created_at "
-                  "timestamp)");
         }
 
         void teardown() override {
-          execute("drop table users");
-          execute("drop table user_settings");
-          close();
+          execute("delete from users");
+          execute("delete from user_settings");
         }
       };
 

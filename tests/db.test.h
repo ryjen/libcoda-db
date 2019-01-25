@@ -8,6 +8,7 @@
 #include <list>
 #include <string>
 #include <unistd.h>
+#include <cmath>
 
 namespace coda::db::test {
   namespace spec {
@@ -68,6 +69,17 @@ namespace coda::db::test {
       return buf.str();
     }
   };
+
+  template<class T>
+  typename std::enable_if<!std::numeric_limits<T>::is_integer, bool>::type
+  almost_equal(T x, T y, T tolerance = std::numeric_limits<T>::epsilon()) {
+    T diff = std::fabs(x - y);
+    if (diff <= tolerance) {
+      return true;
+    }
+
+    return diff < std::fmax(std::fabs(x), std::fabs(y)) * tolerance;
+  }
 } // namespace coda::db::test
 
 #define specification(name, fn) coda::db::test::spec::type spec_file_##name(fn)
