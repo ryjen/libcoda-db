@@ -41,7 +41,7 @@ namespace coda
                         return;
                     }
                     value->buffer_type = field->type;
-                    value->is_null = (field->flags & NOT_NULL_FLAG) ? 0 : c_alloc<my_bool>();
+                    value->is_null = (field->flags & NOT_NULL_FLAG) ? 0 : c_alloc<bool>();
                     value->is_unsigned = field->flags & UNSIGNED_FLAG;
                     value->error = 0;
                     value->length = 0;
@@ -113,13 +113,13 @@ namespace coda
                     }
 
                     if (other->is_null) {
-                        value->is_null = c_alloc<my_bool>();
-                        memmove(value->is_null, other->is_null, sizeof(my_bool));
+                        value->is_null = c_alloc<bool>();
+                        memmove(value->is_null, other->is_null, sizeof(bool));
                     }
 
                     if (other->error) {
-                        value->error = c_alloc<my_bool>();
-                        memmove(value->error, other->error, sizeof(my_bool));
+                        value->error = c_alloc<bool>();
+                        memmove(value->error, other->error, sizeof(bool));
                     }
 
                     value->buffer_type = other->buffer_type;
