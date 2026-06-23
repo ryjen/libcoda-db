@@ -72,7 +72,7 @@ go_bandit([]() {
     after_each([]() { test::teardown_current_session(); });
 
     it("can handle bad parameters", []() {
-      auto db = create_session("postgres://zzzzz:zzzzz@zzzz/zzzzz:0");
+      auto db = create_session("postgres://zzzzz:zzzzz@127.0.0.1:1/zzzzz");
 
       AssertThrows(database_exception, db->open());
     });

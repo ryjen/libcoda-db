@@ -415,7 +415,7 @@ namespace coda::db {
   }
 
   where_builder &where_builder::operator=(where_builder &&other) noexcept {
-    where_clause::operator=(other);
+    where_clause::operator=(std::move(other));
     session_ = std::move(other.session_);
     binder_ = other.binder_;
     return *this;
@@ -494,7 +494,7 @@ namespace coda::db {
    */
   where_builder &where_builder::operator||(const sql_operator &value) {
     size_t index = binder_->num_of_bindings() + 1;
-    where_clause::operator&&(to_sql(index, value));
+    where_clause::operator||(to_sql(index, value));
     return bind(index, value);
   }
 }  // namespace coda::db

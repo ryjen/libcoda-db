@@ -454,7 +454,6 @@ namespace coda::db::mysql {
      */
     class from_value {
      public:
-     public:
       explicit from_value(MYSQL_BIND *bind) : bind_(bind) {}
       void operator()(const sql_time &value) const { data_mapper::set_time(bind_, value); }
       void operator()(const sql_null_type &value) const { bind_->buffer_type = MYSQL_TYPE_NULL; }
@@ -576,7 +575,7 @@ namespace coda::db::mysql {
   }
 
   binding &binding::operator=(binding &&other) noexcept {
-    bind_mapping::operator=(other);
+    bind_mapping::operator=(std::move(other));
     clear_value();
     value_ = other.value_;
     size_ = other.size_;
