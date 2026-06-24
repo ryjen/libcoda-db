@@ -1,21 +1,16 @@
 #include <string>
 
-#include "../db.test.h"
-
-#include "postgres/column.h"
 #include <bandit/bandit.h>
-#include <libpq-fe.h>
 #include <memory>
-#include <postgres.h>
-#include <catalog/pg_type.h>
+#include "../db.test.h"
+#include "postgres/column.h"
 
 using namespace bandit;
-
 using namespace std;
-
 using namespace coda::db;
-
 using namespace snowhouse;
+
+constexpr int POSTGRES_VARCHAR_OID = 1043;
 
 shared_ptr<postgres::column> get_postgres_column(const string &name) {
   select_query q(test::current_session, {}, "users");
@@ -59,10 +54,11 @@ SPEC_BEGIN(postgres_column) {
 
       AssertThat(last.is_valid(), IsTrue());
     });
+
     it("has a type", []() {
       auto col = get_postgres_column("first_name");
 
-      Assert::That(col->sql_type(), Equals(VARCHAROID));
+      Assert::That(col->sql_type(), Equals(POSTGRES_VARCHAR_OID));
     });
 
     it("has a name", []() {

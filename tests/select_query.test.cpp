@@ -122,32 +122,39 @@ specification(selects, []() {
 
       query.columns("first_name", "last_name").from(test::user::TABLE_NAME);
 
-      query.where(op::equals("first_name", "Bryan")) ||
-          op::equals("last_name", "Jenkins");
+      try {
+        query.where(op::equals("first_name", "Bryan")) ||
+            op::equals("last_name", "Jenkins");
 
-      auto results = query.execute();
+        {
+          auto results = query.execute();
 
-      auto row = results.begin();
+          auto row = results.begin();
 
-      Assert::That(row != results.end(), Equals(true));
+          Assert::That(row != results.end(), Equals(true));
 
-      string lastName = row->column("last_name").value();
+          string lastName = row->column("last_name").value();
 
-      Assert::That(lastName, Equals("Jenkins"));
+          Assert::That(lastName, Equals("Jenkins"));
+        }
 
-      query.reset();
+        query.reset();
 
-      query.where(op::equals("last_name", "Smith"));
+        query.where(op::equals("last_name", "Smith"));
 
-      results = query.execute();
+        auto results = query.execute();
 
-      row = results.begin();
+        auto row = results.begin();
 
-      Assert::That(row != results.end(), Equals(true));
+        Assert::That(row != results.end(), Equals(true));
 
-      lastName = row->column("last_name").value().to_string();
+        string lastName = row->column("last_name").value().to_string();
 
-      Assert::That(lastName, Equals("Smith"));
+        Assert::That(lastName, Equals("Smith"));
+      } catch (const database_exception &e) {
+        cout << query.last_error() << endl;
+        throw e;
+      }
     });
 
     it("can execute scalar", []() {
