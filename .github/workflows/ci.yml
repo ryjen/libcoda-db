@@ -40,10 +40,20 @@ jobs:
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
       - name: Build deterministic test targets
+        shell: bash
         run: |
+          set -o pipefail
           cmake --build build --parallel 2 --target \
             coda_db_test \
-            coda_db_test_sqlite
+            coda_db_test_sqlite 2>&1 | tee db-build.log
+
+      - name: Upload build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-build-diagnostics
+          path: db-build.log
+          if-no-files-found: error
 
       - name: Test
         run: ctest --test-dir build --output-on-failure
@@ -75,10 +85,20 @@ jobs:
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
       - name: Build deterministic coverage targets
+        shell: bash
         run: |
+          set -o pipefail
           cmake --build build-coverage --parallel 2 --target \
             coda_db_test \
-            coda_db_test_sqlite
+            coda_db_test_sqlite 2>&1 | tee db-coverage-build.log
+
+      - name: Upload coverage-build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-coverage-build-diagnostics
+          path: db-coverage-build.log
+          if-no-files-found: error
 
       - name: Generate coverage report
         run: cmake --build build-coverage --target coda_db_coverage
