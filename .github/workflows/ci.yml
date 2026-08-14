@@ -56,7 +56,18 @@ jobs:
           if-no-files-found: error
 
       - name: Test
-        run: ctest --test-dir build --output-on-failure
+        shell: bash
+        run: |
+          set -o pipefail
+          ctest --test-dir build --output-on-failure -V 2>&1 | tee db-test.log
+
+      - name: Upload test diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-test-diagnostics
+          path: db-test.log
+          if-no-files-found: error
 
   coverage:
     name: Target-local core and SQLite coverage
@@ -101,7 +112,18 @@ jobs:
           if-no-files-found: error
 
       - name: Generate coverage report
-        run: cmake --build build-coverage --target coda_db_coverage
+        shell: bash
+        run: |
+          set -o pipefail
+          cmake --build build-coverage --target coda_db_coverage 2>&1 | tee db-coverage-report.log
+
+      - name: Upload coverage-report diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-coverage-report-diagnostics
+          path: db-coverage-report.log
+          if-no-files-found: error
 
       - name: Verify coverage report
         run: test -f build-coverage/gen/coverage/index.html
