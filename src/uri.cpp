@@ -6,6 +6,8 @@
 using namespace std;
 
 namespace coda::db {
+  uri_type::uri_type() = default;
+
   uri_type::uri_type(const std::string &url) { parse(url); }
 
   uri_type::operator std::string() const { return value; }

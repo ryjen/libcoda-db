@@ -167,5 +167,5 @@ namespace coda::db::sqlite {
 
   std::string session::bind_param(size_t index) const { return "?" + std::to_string(index); }
 
-  constexpr int session::features() const { return db::session::FEATURE_NAMED_PARAMS; }
+  int session::features() const { return db::session::FEATURE_NAMED_PARAMS; }
 }  // namespace coda::db::sqlite

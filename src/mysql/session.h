@@ -59,7 +59,7 @@ namespace coda::db::mysql {
     std::vector<column_definition> get_columns_for_schema(const std::string &dbName,
                                                           const std::string &tablename) override;
     std::string bind_param(size_t index) const override;
-    [[nodiscard]] constexpr int features() const override;
+    [[nodiscard]] int features() const override;
   };
 }  // namespace coda::db::mysql
 

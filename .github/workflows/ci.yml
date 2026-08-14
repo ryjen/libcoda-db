@@ -1,0 +1,137 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - development
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deterministic-tests:
+    name: ${{ matrix.compiler }} core and SQLite tests
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - compiler: gcc
+            cxx: g++
+          - compiler: clang
+            cxx: clang++
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get -o Acquire::Retries=3 update
+          sudo apt-get -o Acquire::Retries=3 install --yes --no-install-recommends libsqlite3-dev ninja-build
+
+      - name: Configure deterministic test layer
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
+            -DCMAKE_DISABLE_FIND_PACKAGE_MySQL=ON \
+            -DCMAKE_DISABLE_FIND_PACKAGE_PostgreSQL=ON \
+            -DCODA_BUILD_TESTS=ON \
+            -DCODA_BUILD_SERVICE_TESTS=OFF \
+            -DENABLE_TEST_DB_FIXTURES=OFF \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+      - name: Build
+        shell: bash
+        run: |
+          set +e
+          cmake --build build --parallel 2 2>&1 | tee build.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            details=$(grep -E -B 4 -A 12 'FAILED:|error:|undefined reference|ninja: build stopped' build.log | tail -n 100)
+            [ -n "$details" ] || details=$(tail -n 100 build.log)
+            message=$(printf '%s' "$details" | tr '\n' ' ' | sed 's/%/%25/g')
+            echo "::error title=DB build failed::$message"
+            exit "$status"
+          fi
+
+      - name: Test
+        shell: bash
+        run: |
+          set +e
+          ctest --test-dir build --output-on-failure 2>&1 | tee test.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            message=$(tail -n 100 test.log | tr '\n' ' ' | sed 's/%/%25/g')
+            echo "::error title=DB deterministic tests failed::$message"
+            exit "$status"
+          fi
+
+  sanitizers:
+    name: ASAN and UBSAN core and SQLite tests
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get -o Acquire::Retries=3 update
+          sudo apt-get -o Acquire::Retries=3 install --yes --no-install-recommends libsqlite3-dev ninja-build
+
+      - name: Configure sanitizer test layer
+        run: |
+          cmake -S . -B build-sanitizers -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_COMPILER=clang++ \
+            -DCMAKE_CXX_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer' \
+            -DCMAKE_EXE_LINKER_FLAGS='-fsanitize=address,undefined' \
+            -DCMAKE_SHARED_LINKER_FLAGS='-fsanitize=address,undefined' \
+            -DCMAKE_DISABLE_FIND_PACKAGE_MySQL=ON \
+            -DCMAKE_DISABLE_FIND_PACKAGE_PostgreSQL=ON \
+            -DCODA_BUILD_TESTS=ON \
+            -DCODA_BUILD_SERVICE_TESTS=OFF \
+            -DENABLE_TEST_DB_FIXTURES=OFF \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+      - name: Build
+        shell: bash
+        run: |
+          set +e
+          cmake --build build-sanitizers --parallel 2 2>&1 | tee build.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            details=$(grep -E -B 4 -A 12 'FAILED:|error:|undefined reference|ninja: build stopped' build.log | tail -n 100)
+            [ -n "$details" ] || details=$(tail -n 100 build.log)
+            message=$(printf '%s' "$details" | tr '\n' ' ' | sed 's/%/%25/g')
+            echo "::error title=DB sanitizer build failed::$message"
+            exit "$status"
+          fi
+
+      - name: Test with sanitizers
+        shell: bash
+        env:
+          ASAN_OPTIONS: detect_leaks=1:strict_string_checks=1
+          UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+        run: |
+          set +e
+          ctest --test-dir build-sanitizers --output-on-failure 2>&1 | tee test.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            message=$(tail -n 100 test.log | tr '\n' ' ' | sed 's/%/%25/g')
+            echo "::error title=DB sanitizer tests failed::$message"
+            exit "$status"
+          fi

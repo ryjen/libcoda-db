@@ -61,7 +61,7 @@ namespace coda::db::sqlite {
                                                           const std::string &tableName) override;
     std::string bind_param(size_t index) const override;
 
-    [[nodiscard]] constexpr int features() const override;
+    [[nodiscard]] int features() const override;
   };
 }  // namespace coda::db::sqlite
 
