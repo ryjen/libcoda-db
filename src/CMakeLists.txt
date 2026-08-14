@@ -63,6 +63,14 @@ set(LIBRARY_SOURCES ${${PROJECT_NAME}_HEADERS}
 string(REPLACE "_" "/" INSTALL_DIRECTORY ${PROJECT_NAME})
 
 add_library(${PROJECT_NAME} ${LIBRARY_SOURCES})
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+
+# Parameter-mapping conditionals appear in installed/public headers, so this is
+# a propagated consumer compile contract when the feature is enabled.
+if(ENABLE_PARAMETER_MAPPING)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_PARAMETER_MAPPING)
+endif()
+
 set(DB_INSTALL_TARGETS ${PROJECT_NAME})
 
 include(CreatePackages)
@@ -78,6 +86,7 @@ if (SQLITE3_FOUND)
             sqlite/transaction.cpp
             )
 
+    target_compile_features(${SQLITE_PROJECT_NAME} PUBLIC cxx_std_17)
     target_include_directories(${SQLITE_PROJECT_NAME} SYSTEM PUBLIC ${SQLITE3_INCLUDE_DIR})
     target_link_libraries(${SQLITE_PROJECT_NAME} ${PROJECT_NAME} ${SQLITE3_LIBRARIES})
     list(APPEND DB_INSTALL_TARGETS ${SQLITE_PROJECT_NAME})
@@ -106,6 +115,7 @@ if (MYSQL_FOUND)
             mysql/transaction.cpp
             )
 
+    target_compile_features(${MYSQL_PROJECT_NAME} PUBLIC cxx_std_17)
     target_include_directories(${MYSQL_PROJECT_NAME} SYSTEM PUBLIC ${MYSQL_INCLUDE_DIR})
     target_link_libraries(${MYSQL_PROJECT_NAME} ${PROJECT_NAME} ${MYSQL_LIBRARIES})
     list(APPEND DB_INSTALL_TARGETS ${MYSQL_PROJECT_NAME})
@@ -135,6 +145,7 @@ if (PostgreSQL_FOUND)
             postgres/transaction.cpp
             )
 
+    target_compile_features(${POSTGRES_PROJECT_NAME} PUBLIC cxx_std_17)
     target_include_directories(${POSTGRES_PROJECT_NAME}
             SYSTEM PUBLIC
                 ${PostgreSQL_INCLUDE_DIRS}
