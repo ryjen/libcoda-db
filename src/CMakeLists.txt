@@ -136,8 +136,9 @@ if (PostgreSQL_FOUND)
             )
 
     target_include_directories(${POSTGRES_PROJECT_NAME}
-            SYSTEM PUBLIC ${PostgreSQL_INCLUDE_DIRS}
-            SYSTEM PUBLIC ${PostgreSQL_TYPE_INCLUDE_DIR})
+            SYSTEM PUBLIC
+                ${PostgreSQL_INCLUDE_DIRS}
+                ${PostgreSQL_TYPE_INCLUDE_DIR})
 
     target_link_libraries(${POSTGRES_PROJECT_NAME} ${PROJECT_NAME} ${PostgreSQL_LIBRARIES})
     list(APPEND DB_INSTALL_TARGETS ${POSTGRES_PROJECT_NAME})
