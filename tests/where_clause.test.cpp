@@ -145,13 +145,14 @@ go_bandit([]() {
       AssertThat(w.empty(), IsTrue());
     });
 
-    it("can bind values", []() {
-      where_clause w("one", "=", 1);
+    it("binds values through the current where builder", []() {
+      auto session = std::make_shared<test_session>();
       test_bindable bindable;
-      test_session session;
+      where_builder builder(session, &bindable);
 
-      w.bind(session, bindable);
+      builder.reset(op::equals("one", 1));
 
+      AssertThat(builder.to_sql(), Equals("one = $1"));
       AssertThat(bindable.num_of_bindings(), Equals(static_cast<size_t>(1)));
     });
   });
