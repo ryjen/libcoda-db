@@ -177,7 +177,7 @@ namespace coda::db::postgres {
 
       std::string session::bind_param(size_t index) const { return "$" + std::to_string(index); }
 
-      constexpr int session::features() const {
+      int session::features() const {
         return db::session::FEATURE_FULL_OUTER_JOIN | db::session::FEATURE_RETURNING | db::session::FEATURE_RIGHT_JOIN;
       }
 }  // namespace coda::db::postgres
