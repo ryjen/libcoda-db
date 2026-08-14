@@ -73,7 +73,7 @@ namespace coda::db::postgres {
     /**
      * a visitor to apply a number to a postgres binding
      */
-    class from_number : public boost::static_visitor<void> {
+    class from_number {
      public:
       from_number(binding &bind, size_t index) : bind_(bind), index_(index) {}
       void operator()(wchar_t value) const {
@@ -192,7 +192,7 @@ namespace coda::db::postgres {
     /**
      * a visitor to apply a value to a postgres binding
      */
-    class from_value : public boost::static_visitor<void> {
+    class from_value {
      public:
       from_value(binding &bind, size_t index) : bind_(bind), index_(index) {}
       void operator()(const sql_time &value) const {
