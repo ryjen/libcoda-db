@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - development
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deterministic-tests:
+    name: ${{ matrix.compiler }} core and SQLite tests
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - compiler: gcc
+            cxx: g++
+          - compiler: clang
+            cxx: clang++
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends libsqlite3-dev ninja-build
+
+      - name: Configure deterministic test layer
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
+            -DCMAKE_DISABLE_FIND_PACKAGE_MySQL=ON \
+            -DCMAKE_DISABLE_FIND_PACKAGE_PostgreSQL=ON \
+            -DCODA_BUILD_TESTS=ON \
+            -DCODA_BUILD_SERVICE_TESTS=OFF \
+            -DENABLE_TEST_DB_FIXTURES=OFF \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+      - name: Build
+        run: cmake --build build --parallel 2
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+  sanitizers:
+    name: ASAN and UBSAN core and SQLite tests
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends libsqlite3-dev ninja-build
+
+      - name: Configure sanitizer test layer
+        run: |
+          cmake -S . -B build-sanitizers -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_COMPILER=clang++ \
+            -DCMAKE_CXX_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer' \
+            -DCMAKE_EXE_LINKER_FLAGS='-fsanitize=address,undefined' \
+            -DCMAKE_SHARED_LINKER_FLAGS='-fsanitize=address,undefined' \
+            -DCMAKE_DISABLE_FIND_PACKAGE_MySQL=ON \
+            -DCMAKE_DISABLE_FIND_PACKAGE_PostgreSQL=ON \
+            -DCODA_BUILD_TESTS=ON \
+            -DCODA_BUILD_SERVICE_TESTS=OFF \
+            -DENABLE_TEST_DB_FIXTURES=OFF \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+      - name: Build
+        run: cmake --build build-sanitizers --parallel 2
+
+      - name: Test with sanitizers
+        env:
+          ASAN_OPTIONS: detect_leaks=1:strict_string_checks=1
+          UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+        run: ctest --test-dir build-sanitizers --output-on-failure
