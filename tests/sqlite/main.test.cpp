@@ -54,6 +54,12 @@ namespace coda::db::test {
         void teardown() override {
           execute("delete from users");
           execute("delete from user_settings");
+
+          // AUTOINCREMENT survives DELETE. Reset fixture-only sequences so
+          // tests that intentionally exercise NATURAL JOIN on the shared `id`
+          // column are independent of prior test execution order.
+          execute("delete from sqlite_sequence where name = 'users'");
+          execute("delete from sqlite_sequence where name = 'user_settings'");
         }
       };
 
