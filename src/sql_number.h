@@ -14,30 +14,7 @@ namespace coda::db {
 
   namespace helper {
     template<typename T>
-    class as_number {
-     public:
-      template<typename V>
-      T operator()(const V &value) const {
-        return value;
-      }
-
-      T operator()(const sql_null_type &value) const { return 0; }
-
-      T operator()(const sql_blob &value) const { throw value_conversion_error(); }
-
-      T operator()(const sql_time &value) const {
-        if (std::is_same<T, time_t>::value || std::is_convertible<time_t, T>::value) {
-          return sql_number(value);
-        }
-        throw value_conversion_error();
-      }
-
-      T operator()(const sql_string &value) const { return sql_number(value); }
-
-      T operator()(const sql_wstring &value) const { return sql_number(value); }
-
-      T operator()(const sql_number &value) const { return value; }
-    };
+    class as_number;
   }  // namespace helper
 
   class sql_number : public sql_number_convertible {
@@ -98,9 +75,7 @@ namespace coda::db {
     }
 
     template<typename T, typename = std::enable_if<is_sql_number<T>::value>>
-    T as() const {
-      return std::visit(helper::as_number<T>(), value_);
-    }
+    T as() const;
 
     operator sql_string() const;
 
@@ -239,6 +214,39 @@ namespace coda::db {
     std::variant<sql_null_type, bool, char, unsigned char, wchar_t, short, unsigned short, int, unsigned int, long,
                  unsigned long, long long, unsigned long long, float, double, long double> value_;
   };
+
+  namespace helper {
+    template<typename T>
+    class as_number {
+     public:
+      template<typename V>
+      T operator()(const V &value) const {
+        return value;
+      }
+
+      T operator()(const sql_null_type &value) const { return 0; }
+
+      T operator()(const sql_blob &value) const { throw value_conversion_error(); }
+
+      T operator()(const sql_time &value) const {
+        if (std::is_same<T, time_t>::value || std::is_convertible<time_t, T>::value) {
+          return sql_number(value);
+        }
+        throw value_conversion_error();
+      }
+
+      T operator()(const sql_string &value) const { return sql_number(value); }
+
+      T operator()(const sql_wstring &value) const { return sql_number(value); }
+
+      T operator()(const sql_number &value) const { return value; }
+    };
+  }  // namespace helper
+
+  template<typename T, typename Enable>
+  T sql_number::as() const {
+    return std::visit(helper::as_number<T>(), value_);
+  }
 
   template<>
   sql_string sql_number::as<sql_string>() const;
