@@ -43,11 +43,11 @@ namespace {
 
     void close() override {}
 
-    long long last_insert_id() const override {
+    sql_id last_insert_id() const override {
       return 0;
     }
 
-    int last_number_of_changes() const override {
+    sql_changes last_number_of_changes() const override {
       return 0;
     }
 
