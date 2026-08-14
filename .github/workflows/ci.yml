@@ -39,8 +39,11 @@ jobs:
             -DENABLE_TEST_DB_FIXTURES=OFF \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
-      - name: Build
-        run: cmake --build build --parallel 2
+      - name: Build deterministic test targets
+        run: |
+          cmake --build build --parallel 2 --target \
+            coda_db_test \
+            coda_db_test_sqlite
 
       - name: Test
         run: ctest --test-dir build --output-on-failure
@@ -71,8 +74,11 @@ jobs:
             -DENABLE_COVERAGE=ON \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
-      - name: Build
-        run: cmake --build build-coverage --parallel 2
+      - name: Build deterministic coverage targets
+        run: |
+          cmake --build build-coverage --parallel 2 --target \
+            coda_db_test \
+            coda_db_test_sqlite
 
       - name: Generate coverage report
         run: cmake --build build-coverage --target coda_db_coverage
