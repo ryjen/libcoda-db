@@ -21,14 +21,6 @@ find_package(PostgreSQL)
 
 find_program(CPPCLEAN_FOUND cppclean)
 
-# Coverage still uses the legacy shared helper's global flags. Moving coverage
-# instrumentation to target-local options is a separate issue #2/#5 slice.
-if(ENABLE_COVERAGE)
-	include(CodeCoverage)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_COVERAGE}")
-	setup_target_for_coverage(TARGET ${PROJECT_NAME}_coverage OUTPUT ${PROJECT_BINARY_DIR}/gen/coverage)
-endif()
-
 include(CreateDocumentation)
 create_documentation()
 
@@ -55,6 +47,29 @@ add_subdirectory(src)
 if(CODA_BUILD_TESTS)
 	add_subdirectory(tests)
 	enable_testing()
+
+	if(ENABLE_COVERAGE)
+		include(CodaCoverage)
+
+		set(DB_COVERAGE_TARGETS
+			${PROJECT_NAME}
+			${TEST_PROJECT_NAME}
+			${SQLITE_PROJECT_NAME}
+			${SQLITE_TEST_PROJECT_NAME}
+			${MYSQL_PROJECT_NAME}
+			${MYSQL_TEST_PROJECT_NAME}
+			${POSTGRES_PROJECT_NAME}
+			${POSTGRES_TEST_PROJECT_NAME}
+		)
+
+		foreach(COVERAGE_TARGET IN LISTS DB_COVERAGE_TARGETS)
+			if(COVERAGE_TARGET AND TARGET ${COVERAGE_TARGET})
+				coda_enable_target_coverage(TARGET ${COVERAGE_TARGET})
+			endif()
+		endforeach()
+
+		setup_target_for_coverage(TARGET ${PROJECT_NAME}_coverage OUTPUT ${PROJECT_BINARY_DIR}/gen/coverage)
+	endif()
 
 	include(ValgrindTest)
 	add_valgrind_profile_test(ENABLE_PROFILING ENABLE_MEMCHECK TARGET ${TEST_PROJECT_NAME})

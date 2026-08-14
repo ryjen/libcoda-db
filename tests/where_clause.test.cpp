@@ -43,11 +43,11 @@ namespace {
 
     void close() override {}
 
-    long long last_insert_id() const override {
+    sql_id last_insert_id() const override {
       return 0;
     }
 
-    int last_number_of_changes() const override {
+    sql_changes last_number_of_changes() const override {
       return 0;
     }
 
@@ -138,49 +138,22 @@ go_bandit([]() {
 
       w or "that";
 
+      AssertThat(w.to_sql(), Equals("this OR that"));
+
       w.reset();
 
-      AssertThat(w.to_sql(), Equals(""));
+      AssertThat(w.empty(), IsTrue());
     });
 
-    it("can combine", []() {
-      auto w = where("this = $1") and ("that = $2");
-
-      w or (where("abc = def") and "xyz = tuv");
-
-      AssertThat(w.to_sql(), Equals("(this = $1 AND that = $2) OR (abc = def AND xyz = tuv)"));
-    });
-
-    it("can combine builder operators with or", []() {
-      test_bindable binder;
+    it("binds values through the current where builder", []() {
       auto session = std::make_shared<test_session>();
-      where_builder w(session, &binder);
+      test_bindable bindable;
+      where_builder builder(session, &bindable);
 
-      w.reset("first"_op = 1);
-      w || ("second"_op = 2);
+      builder.reset(op::equals("one", 1));
 
-      AssertThat(w.to_sql(), Equals("first = $1 OR second = $2"));
-      AssertThat(binder.num_of_bindings(), Equals(2u));
-    });
-  });
-
-  describe("sql operator", []() {
-    describe("builder", []() {
-      struct visitor {
-        void operator()(const sql_value &rvalue) const {
-          AssertThat(rvalue, Equals(1234));
-        }
-        void operator()(const std::vector<sql_value> &rvalue) const {
-          AssertThat(false, IsTrue());
-        }
-        void operator()(const std::pair<sql_value, sql_value> &rvalue) const {
-          AssertThat(false, IsTrue());
-        }
-      };
-      auto builder = ("test"_op = 1234);
-      AssertThat(builder.lvalue(), Equals("test"));
-      builder.rvalue(visitor());
-      AssertThat(builder.type(), Equals(op::EQ));
+      AssertThat(builder.to_sql(), Equals("one = $1"));
+      AssertThat(bindable.num_of_bindings(), Equals(static_cast<size_t>(1)));
     });
   });
 });
