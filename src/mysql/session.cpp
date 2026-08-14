@@ -237,6 +237,6 @@ namespace coda::db::mysql {
 
   std::string session::bind_param(size_t) const { return "?"; }
 
-  constexpr int session::features() const { return db::session::FEATURE_RIGHT_JOIN; }
+  int session::features() const { return db::session::FEATURE_RIGHT_JOIN; }
 
 }  // namespace coda::db::mysql
