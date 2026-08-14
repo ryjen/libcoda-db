@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - development
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core-sqlite:
+    name: Core and SQLite tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Install SQLite development files
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libsqlite3-dev
+
+      - name: Configure deterministic test slice
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_DISABLE_FIND_PACKAGE_MySQL=TRUE \
+            -DCMAKE_DISABLE_FIND_PACKAGE_PostgreSQL=TRUE \
+            -DENABLE_TEST_DB_FIXTURES=OFF \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+      - name: Build
+        run: cmake --build build --parallel 2
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+  coverage:
+    name: Target-local core and SQLite coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Install SQLite and coverage tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libsqlite3-dev lcov
+
+      - name: Configure deterministic coverage slice
+        run: |
+          cmake -S . -B build-coverage \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_DISABLE_FIND_PACKAGE_MySQL=TRUE \
+            -DCMAKE_DISABLE_FIND_PACKAGE_PostgreSQL=TRUE \
+            -DENABLE_TEST_DB_FIXTURES=OFF \
+            -DENABLE_COVERAGE=ON \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+      - name: Build
+        run: cmake --build build-coverage --parallel 2
+
+      - name: Generate coverage report
+        run: cmake --build build-coverage --target coda_db_coverage
+
+      - name: Verify coverage report
+        run: test -f build-coverage/gen/coverage/index.html
