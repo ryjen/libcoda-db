@@ -1,7 +1,8 @@
-cmake_minimum_required (VERSION 3.1)
-set(CMAKE_CXX_STANDARD 17)
+cmake_minimum_required(VERSION 3.21)
 
-# add options for testing
+project(coda_db VERSION 0.5.1 LANGUAGES CXX)
+
+# build/test options
 option(CODA_BUILD_TESTS "Build libcoda-db tests." ON)
 option(ENABLE_COVERAGE "Enable code coverage testing." OFF)
 option(ENABLE_MEMCHECK "Enable testing for memory leaks." OFF)
@@ -10,9 +11,6 @@ option(ENABLE_PARAMETER_MAPPING "Use regex to map different parameter syntaxes."
 option(ENABLE_BENCHMARKING "Benchmark with other database libraries." OFF)
 option(ENABLE_TEST_DB_FIXTURES "Start disposable local databases for CTest integration targets." ${UNIX})
 
-# define project name
-project (coda_db VERSION 0.5.1)
-
 # set path to custom modules
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -20,19 +18,15 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 find_package(MySQL)
 find_package(SQLite3)
 find_package(PostgreSQL)
-find_package(Boost)
 
 find_program(CPPCLEAN_FOUND cppclean)
 
-# add target for code coverage
+# Coverage still uses the legacy shared helper's global flags. Moving coverage
+# instrumentation to target-local options is a separate issue #2/#5 slice.
 if(ENABLE_COVERAGE)
 	include(CodeCoverage)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_COVERAGE}")
 	setup_target_for_coverage(TARGET ${PROJECT_NAME}_coverage OUTPUT ${PROJECT_BINARY_DIR}/gen/coverage)
-endif()
-
-if (ENABLE_PARAMETER_MAPPING)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_PARAMETER_MAPPING")
 endif()
 
 include(CreateDocumentation)
