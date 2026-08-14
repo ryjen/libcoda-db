@@ -63,14 +63,12 @@ set(LIBRARY_SOURCES ${${PROJECT_NAME}_HEADERS}
 string(REPLACE "_" "/" INSTALL_DIRECTORY ${PROJECT_NAME})
 
 add_library(${PROJECT_NAME} ${LIBRARY_SOURCES})
+set(DB_INSTALL_TARGETS ${PROJECT_NAME})
 
-# ability to create a package
 include(CreatePackages)
-
 create_packages(TARGET ${PROJECT_NAME} DESCRIPTION "A c++ database interface.")
 
 if (SQLITE3_FOUND)
-
     add_library(${SQLITE_PROJECT_NAME}
             sqlite/column.cpp
             sqlite/resultset.cpp
@@ -81,8 +79,8 @@ if (SQLITE3_FOUND)
             )
 
     target_include_directories(${SQLITE_PROJECT_NAME} SYSTEM PUBLIC ${SQLITE3_INCLUDE_DIR})
-
     target_link_libraries(${SQLITE_PROJECT_NAME} ${PROJECT_NAME} ${SQLITE3_LIBRARIES})
+    list(APPEND DB_INSTALL_TARGETS ${SQLITE_PROJECT_NAME})
 
     set(${PROJECT_NAME}_SQLITE_HEADERS
             sqlite/column.h
@@ -94,14 +92,10 @@ if (SQLITE3_FOUND)
             )
 
     install(FILES ${${PROJECT_NAME}_SQLITE_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/sqlite")
-
-
     create_packages(TARGET ${SQLITE_PROJECT_NAME} DESCRIPTION "A c++ sqlite3 database interface.")
-
 endif ()
 
 if (MYSQL_FOUND)
-
     add_library(${MYSQL_PROJECT_NAME}
             mysql/binding.cpp
             mysql/column.cpp
@@ -113,8 +107,8 @@ if (MYSQL_FOUND)
             )
 
     target_include_directories(${MYSQL_PROJECT_NAME} SYSTEM PUBLIC ${MYSQL_INCLUDE_DIR})
-
     target_link_libraries(${MYSQL_PROJECT_NAME} ${PROJECT_NAME} ${MYSQL_LIBRARIES})
+    list(APPEND DB_INSTALL_TARGETS ${MYSQL_PROJECT_NAME})
 
     set(${PROJECT_NAME}_MYSQL_HEADERS
             mysql/binding.h
@@ -127,13 +121,10 @@ if (MYSQL_FOUND)
             )
 
     install(FILES ${${PROJECT_NAME}_MYSQL_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/mysql")
-
     create_packages(TARGET ${MYSQL_PROJECT_NAME} DESCRIPTION "A c++ mysql database interface.")
-
 endif ()
 
-if (POSTGRES_FOUND)
-
+if (PostgreSQL_FOUND)
     add_library(${POSTGRES_PROJECT_NAME}
             postgres/binding.cpp
             postgres/column.cpp
@@ -144,9 +135,13 @@ if (POSTGRES_FOUND)
             postgres/transaction.cpp
             )
 
-    target_include_directories(${POSTGRES_PROJECT_NAME} SYSTEM PUBLIC ${POSTGRES_INCLUDE_DIR} SYSTEM PUBLIC ${POSTGRES_INCLUDE_DIR_SERVER})
+    target_include_directories(${POSTGRES_PROJECT_NAME}
+            SYSTEM PUBLIC
+                ${PostgreSQL_INCLUDE_DIRS}
+                ${PostgreSQL_TYPE_INCLUDE_DIR})
 
-    target_link_libraries(${POSTGRES_PROJECT_NAME} ${PROJECT_NAME} ${POSTGRES_LIBRARIES})
+    target_link_libraries(${POSTGRES_PROJECT_NAME} ${PROJECT_NAME} ${PostgreSQL_LIBRARIES})
+    list(APPEND DB_INSTALL_TARGETS ${POSTGRES_PROJECT_NAME})
 
     set(${PROJECT_NAME}_POSTGRES_HEADERS
             postgres/binding.h
@@ -159,11 +154,8 @@ if (POSTGRES_FOUND)
             )
 
     install(FILES ${${PROJECT_NAME}_POSTGRES_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}/postgres")
-
     create_packages(TARGET ${POSTGRES_PROJECT_NAME} DESCRIPTION "A c++ database interface.")
-
 endif ()
 
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${INSTALL_DIRECTORY}")
-
-install(TARGETS ${PROJECT_NAME} ${SQLITE_PROJECT_NAME} ${MYSQL_PROJECT_NAME} ${POSTGRES_PROJECT_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+install(TARGETS ${DB_INSTALL_TARGETS} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)

@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.1)
 set(CMAKE_CXX_STANDARD 17)
 
 # add options for testing
+option(CODA_BUILD_TESTS "Build libcoda-db tests." ON)
 option(ENABLE_COVERAGE "Enable code coverage testing." OFF)
 option(ENABLE_MEMCHECK "Enable testing for memory leaks." OFF)
 option(ENABLE_PROFILING "Enable profiling code usage." OFF)
@@ -34,10 +35,7 @@ if (ENABLE_PARAMETER_MAPPING)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_PARAMETER_MAPPING")
 endif()
 
-# add packge config file
-include(CreatePackage)
 include(CreateDocumentation)
-
 create_documentation()
 
 if (SQLITE3_FOUND)
@@ -58,55 +56,55 @@ endif()
 set(TEST_PROJECT_NAME "${PROJECT_NAME}_test")
 set(UTIL_TEST_PROJECT_NAME "${PROJECT_NAME}_test_util")
 
-# add directories
 add_subdirectory(src)
-add_subdirectory(tests)
 
-# Setup testing
-enable_testing()
+if(CODA_BUILD_TESTS)
+	add_subdirectory(tests)
+	enable_testing()
 
-include(ValgrindTest)
-add_valgrind_profile_test(ENABLE_PROFILING ENABLE_MEMCHECK TARGET ${TEST_PROJECT_NAME})
-
-if (MYSQL_FOUND)
-	add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${MYSQL_TEST_PROJECT_NAME} )
-endif()
-
-if (PostgreSQL_FOUND)
-	add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${POSTGRES_TEST_PROJECT_NAME} )
-endif()
-
-if (SQLITE3_FOUND)
-	add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${SQLITE_TEST_PROJECT_NAME})
-endif()
-
-if (ENABLE_TEST_DB_FIXTURES AND UNIX)
-	find_program(BASH_COMMAND bash REQUIRED)
+	include(ValgrindTest)
+	add_valgrind_profile_test(ENABLE_PROFILING ENABLE_MEMCHECK TARGET ${TEST_PROJECT_NAME})
 
 	if (MYSQL_FOUND)
-		set(MYSQL_FIXTURE_DIR "${PROJECT_BINARY_DIR}/test-fixtures/mysql")
-		add_test(NAME ${MYSQL_TEST_PROJECT_NAME}_setup
-			COMMAND ${BASH_COMMAND} ${PROJECT_SOURCE_DIR}/tests/fixtures/mysql-fixture.sh setup ${MYSQL_FIXTURE_DIR})
-		add_test(NAME ${MYSQL_TEST_PROJECT_NAME}_cleanup
-			COMMAND ${BASH_COMMAND} ${PROJECT_SOURCE_DIR}/tests/fixtures/mysql-fixture.sh cleanup ${MYSQL_FIXTURE_DIR})
-		set_tests_properties(${MYSQL_TEST_PROJECT_NAME}_setup PROPERTIES FIXTURES_SETUP mysql)
-		set_tests_properties(${MYSQL_TEST_PROJECT_NAME}_cleanup PROPERTIES FIXTURES_CLEANUP mysql)
-		set_tests_properties(${MYSQL_TEST_PROJECT_NAME} PROPERTIES
-			FIXTURES_REQUIRED mysql
-			ENVIRONMENT "MYSQL_URI=mysql://root@127.0.0.1:53306/test")
+		add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${MYSQL_TEST_PROJECT_NAME} )
 	endif()
 
 	if (PostgreSQL_FOUND)
-		set(POSTGRES_FIXTURE_DIR "${PROJECT_BINARY_DIR}/test-fixtures/postgres")
-		add_test(NAME ${POSTGRES_TEST_PROJECT_NAME}_setup
-			COMMAND ${BASH_COMMAND} ${PROJECT_SOURCE_DIR}/tests/fixtures/postgres-fixture.sh setup ${POSTGRES_FIXTURE_DIR})
-		add_test(NAME ${POSTGRES_TEST_PROJECT_NAME}_cleanup
-			COMMAND ${BASH_COMMAND} ${PROJECT_SOURCE_DIR}/tests/fixtures/postgres-fixture.sh cleanup ${POSTGRES_FIXTURE_DIR})
-		set_tests_properties(${POSTGRES_TEST_PROJECT_NAME}_setup PROPERTIES FIXTURES_SETUP postgres)
-		set_tests_properties(${POSTGRES_TEST_PROJECT_NAME}_cleanup PROPERTIES FIXTURES_CLEANUP postgres)
-		set_tests_properties(${POSTGRES_TEST_PROJECT_NAME} PROPERTIES
-			FIXTURES_REQUIRED postgres
-			ENVIRONMENT "POSTGRES_URI=postgres://127.0.0.1:55432/test")
+		add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${POSTGRES_TEST_PROJECT_NAME} )
+	endif()
+
+	if (SQLITE3_FOUND)
+		add_valgrind_profile_test(PROFILING ${ENABLE_PROFILING} MEMCHECK ${ENABLE_MEMCHECK} TARGET ${SQLITE_TEST_PROJECT_NAME})
+	endif()
+
+	if (ENABLE_TEST_DB_FIXTURES AND UNIX)
+		find_program(BASH_COMMAND bash REQUIRED)
+
+		if (MYSQL_FOUND)
+			set(MYSQL_FIXTURE_DIR "${PROJECT_BINARY_DIR}/test-fixtures/mysql")
+			add_test(NAME ${MYSQL_TEST_PROJECT_NAME}_setup
+				COMMAND ${BASH_COMMAND} ${PROJECT_SOURCE_DIR}/tests/fixtures/mysql-fixture.sh setup ${MYSQL_FIXTURE_DIR})
+			add_test(NAME ${MYSQL_TEST_PROJECT_NAME}_cleanup
+				COMMAND ${BASH_COMMAND} ${PROJECT_SOURCE_DIR}/tests/fixtures/mysql-fixture.sh cleanup ${MYSQL_FIXTURE_DIR})
+			set_tests_properties(${MYSQL_TEST_PROJECT_NAME}_setup PROPERTIES FIXTURES_SETUP mysql)
+			set_tests_properties(${MYSQL_TEST_PROJECT_NAME}_cleanup PROPERTIES FIXTURES_CLEANUP mysql)
+			set_tests_properties(${MYSQL_TEST_PROJECT_NAME} PROPERTIES
+				FIXTURES_REQUIRED mysql
+				ENVIRONMENT "MYSQL_URI=mysql://root@127.0.0.1:53306/test")
+		endif()
+
+		if (PostgreSQL_FOUND)
+			set(POSTGRES_FIXTURE_DIR "${PROJECT_BINARY_DIR}/test-fixtures/postgres")
+			add_test(NAME ${POSTGRES_TEST_PROJECT_NAME}_setup
+				COMMAND ${BASH_COMMAND} ${PROJECT_SOURCE_DIR}/tests/fixtures/postgres-fixture.sh setup ${POSTGRES_FIXTURE_DIR})
+			add_test(NAME ${POSTGRES_TEST_PROJECT_NAME}_cleanup
+				COMMAND ${BASH_COMMAND} ${PROJECT_SOURCE_DIR}/tests/fixtures/postgres-fixture.sh cleanup ${POSTGRES_FIXTURE_DIR})
+			set_tests_properties(${POSTGRES_TEST_PROJECT_NAME}_setup PROPERTIES FIXTURES_SETUP postgres)
+			set_tests_properties(${POSTGRES_TEST_PROJECT_NAME}_cleanup PROPERTIES FIXTURES_CLEANUP postgres)
+			set_tests_properties(${POSTGRES_TEST_PROJECT_NAME} PROPERTIES
+				FIXTURES_REQUIRED postgres
+				ENVIRONMENT "POSTGRES_URI=postgres://127.0.0.1:55432/test")
+		endif()
 	endif()
 endif()
 
