@@ -5,6 +5,7 @@
 #ifndef CODA_DB_POSTGRES_BINDING_H
 #define CODA_DB_POSTGRES_BINDING_H
 
+#include <boost/variant/static_visitor.hpp>
 #include <libpq-fe.h>
 #include <string>
 #include "../bind_mapping.h"
