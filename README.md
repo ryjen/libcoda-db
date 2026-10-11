@@ -1,15 +1,12 @@
 > [!NOTE]
 > **Seamwork transition — ARCHIVE.** This repository is no longer an active standalone product. Database adapter, transaction, deterministic SQLite, and security-boundary work are retained as historical evidence. New database work should begin as a focused Seamwork study driven by a concrete consumer. See [Seamwork](https://github.com/ryjen/seamwork) for current C++23 interface and architecture refinement work.
+> [Migration decisions and pinned provenance](MIGRATION.md). The historical API and build instructions below are not a supported Seamwork release.
 
 
 coda_db
 =====
 
-[![Build Status](http://img.shields.io/travis/ryjen/db.svg)](https://travis-ci.org/ryjen/db)
-[![Coverage Status](https://coveralls.io/repos/ryjen/db/badge.svg?branch=master&service=github)](https://coveralls.io/github/ryjen/db?branch=master)
 [![License](http://img.shields.io/:license-gpl.v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![Code Grade](https://img.shields.io/codacy/grade/e98c311926b94b068ef6705245d77739.svg)](https://www.codacy.com/app/ryjen/coda_db/dashboard)
-[![Beer Pay](https://img.shields.io/beerpay/ryjen/db.svg)](https://beerpay.io/ryjen/db)
 
 a sqlite, mysql and postgres api with active record (ish) implementation.   
 
